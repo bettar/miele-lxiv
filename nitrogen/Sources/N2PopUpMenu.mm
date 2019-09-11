@@ -553,13 +553,16 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     [self maybeDoCommandBySelector:command];
 }
 
-- (BOOL)control:(NSControl*)control textView:(NSTextView*)textView doCommandBySelector:(SEL)command {
+- (BOOL)control:(NSControl*)control textView:(NSTextView*)textView doCommandBySelector:(SEL)command
+{
     if (command == @selector(moveRight:) || command == @selector(moveLeft:))
         return NO;
+
     return [self maybeDoCommandBySelector:command];
 }
 
-- (void)insertText:(NSString*)str {
+- (void)insertText:(NSString*)str
+{
     _filterField.stringValue = str;
     
     if (!_filterField.superview) {

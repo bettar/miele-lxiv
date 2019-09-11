@@ -516,7 +516,8 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
 			{
                 status->setStatus(STATUS_FIND_Refused_OutOfResources);
                 return (DcmQROsiriXDatabaseError) ;
-            } else {
+            }
+            else {
                 /* only char string type tags are supported at the moment */
                 char *s = NULL;
                 dcelem->getString(s);
@@ -531,7 +532,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
                 char level [50] ;
 
                 strncpy(level, (char*)elem.PValueField,
-                        (elem.ValueLength<50)? (size_t)(elem.ValueLength) : 49) ;
+                        (elem.ValueLength<50) ? (size_t)(elem.ValueLength) : 49) ;
 
                 /*** Skip this two lines if you want strict comparison
                 **/
@@ -618,7 +619,6 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
 
     /**** Test the consistency of the request list
     ***/
-
 
     if (doCheckFindIdentifier) {
         cond = testFindRequestList (handle_->findRequestList, handle_->queryLevel, qLevel, lLevel) ;
@@ -826,13 +826,13 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::testFindRequestList (
  */
 
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextFindResponse (
-                DcmDataset      **findResponseIdentifiers,
-                DcmQueryRetrieveDatabaseStatus  *status,
+                DcmDataset **findResponseIdentifiers,
+                DcmQueryRetrieveDatabaseStatus *status,
                 const DcmQueryRetrieveCharacterSetOptions& characterSetOptions)
 {
     DCMQRDB_INFO("nextFindResponse () : start");
 
-	OFCondition         cond = EC_Normal;
+	OFCondition cond = EC_Normal;
 	BOOL isComplete;
 
     *findResponseIdentifiers = new DcmDataset ;

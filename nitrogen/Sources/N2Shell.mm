@@ -31,12 +31,18 @@
 	return [N2Shell execute:path arguments:NULL];
 }
 
-+(NSString*)execute:(NSString*)path arguments:(NSArray*)arguments {
++(NSString*)execute:(NSString*)path
+          arguments:(NSArray*)arguments
+{
 	return [N2Shell execute:path arguments:arguments expectedStatus:0];
 }
 
-+(NSString*)execute:(NSString*)path arguments:(NSArray*)arguments outStatus:(int*)outStatus {
-	if (!arguments) arguments = [NSArray array];
++(NSString*)execute:(NSString*)path
+          arguments:(NSArray*)arguments
+          outStatus:(int*)outStatus
+{
+	if (!arguments)
+        arguments = [NSArray array];
 	
 //	int r = random();
 //	NSLog(@"%d [N2Shell execute:] %@ %@", r, path, [arguments componentsJoinedByString:@" "]);
@@ -53,7 +59,7 @@
     
     //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 	
-	NSString* stdout = [[[[NSString alloc] initWithData:[[[task standardOutput] fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	NSString* outString = [[[[NSString alloc] initWithData:[[[task standardOutput] fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 //	NSString* stderr = [[[[NSString alloc] initWithData:[[[task standardError] fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	
 //	
@@ -63,12 +69,14 @@
 	if (outStatus)
 		*outStatus = [task terminationStatus];
 	
-	return stdout;
+	return outString;
 }
 
 +(NSString*)execute:(NSString*)path arguments:(NSArray*)arguments expectedStatus:(int)expectedStatus {
 	int status;
-	NSString* r = [self execute:path arguments:arguments outStatus:&status];
+	NSString* r = [self execute:path
+                      arguments:arguments
+                      outStatus:&status];
 	
 	if (status != expectedStatus)
 		[NSException raise:NSGenericException format:@"Task %@ exited with status %d", path, status];
@@ -101,8 +109,11 @@
 	// [N2Shell execute:@"/bin/hostname" arguments:[NSArray arrayWithObject:@"-s"]];
 }
 
-+(NSString*)mac {
-	NSString* temp = [N2Shell execute:@"/usr/sbin/ipconfig" arguments:[NSArray arrayWithObjects:@"getpacket", @"en0", NULL] outStatus:NULL];
++(NSString*)mac
+{
+	NSString* temp = [N2Shell execute:@"/usr/sbin/ipconfig"
+                            arguments:[NSArray arrayWithObjects:@"getpacket", @"en0", NULL]
+                            outStatus:NULL];
 	NSArray* lines = [temp componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 	
 	NSString* chaddrPrefix = @"chaddr = ";

@@ -584,7 +584,6 @@ extern "C"
 		NSTask* theTask = [[[NSTask alloc] init] autorelease];
 
         NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"echoscu"] path];
-        
         if (![[NSFileManager defaultManager] fileExistsAtPath: launchPath]) {
             NSLog(@"%s %d file doesn't exist:%@", __FUNCTION__, __LINE__, launchPath);
 			return YES;
@@ -2402,19 +2401,20 @@ extern "C"
     }
 }
 
--(BOOL) queryWithDisplayingErrors:(BOOL) showError 
+-(BOOL) queryWithDisplayingErrors: (BOOL) showError
 {
     NSMutableDictionary *instance = [self savePresetInDictionaryWithDICOMNodes: YES];
     
     return [self queryWithDisplayingErrors: showError instance: instance index: -1];
 }
 
--(BOOL) queryWithDisplayingErrors:(BOOL) showError instance: (NSMutableDictionary*) instance index: (int) index
+-(BOOL) queryWithDisplayingErrors: (BOOL) showError
+                         instance: (NSMutableDictionary*) instance
+                            index: (int) index
 {
-	NSString			*theirAET, *hostname, *port;
-	
-	BOOL				error = NO;
-	NSMutableArray		*tempResultArray = [NSMutableArray array];
+	NSString *theirAET, *hostname, *port;
+	BOOL error = NO;
+	NSMutableArray *tempResultArray = [NSMutableArray array];
     
     [temporaryCFindResultArray release];
     temporaryCFindResultArray = nil;
@@ -2522,10 +2522,11 @@ extern "C"
                     case 6:		currentQueryKey = StudyComments;        break;
                     case 7:		currentQueryKey = InstitutionName;      break;
                     case 8:     currentQueryKey = customDICOMField;     break;
-                    case 9:     currentQueryKey = InterpretationStatusID;    break;
+                    case 9:     currentQueryKey = InterpretationStatusID; break;
                 }
                 
-                if (currentQueryKey == customDICOMField && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_custom_dicom_field"])
+                if (currentQueryKey == customDICOMField &&
+                    [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_custom_dicom_field"])
                 {
                     CIADICOMField *dicomField = nil;
                     NSString *customValue = nil;
@@ -2569,7 +2570,8 @@ extern "C"
                         queryItem = YES;
                     }
                 }
-                else if (currentQueryKey == PatientName && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_name"])
+                else if (currentQueryKey == PatientName &&
+                         [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_name"])
                 {
                     NSString *patientNameValue = nil;
                     
@@ -2605,7 +2607,8 @@ extern "C"
                         queryItem = YES;
                     }
                 }
-                else if (currentQueryKey == ReferringPhysician && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_referring_physician"])
+                else if (currentQueryKey == ReferringPhysician &&
+                         [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_referring_physician"])
                 {
                     NSString *refPhysicianValue = nil;
                     
@@ -2636,7 +2639,8 @@ extern "C"
                         queryItem = YES;
                     }
                 }
-                else if (currentQueryKey == InstitutionName && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_institution"])
+                else if (currentQueryKey == InstitutionName &&
+                         [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_institution"])
                 {
                     NSString *institutionNameValue = nil;
                     
@@ -2667,7 +2671,8 @@ extern "C"
                         queryItem = YES;
                     }
                 }
-                else if (currentQueryKey == InterpretationStatusID && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_status"])
+                else if (currentQueryKey == InterpretationStatusID &&
+                         [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_status"])
                 {
                     NSString *studyStatusValue = nil;
                     
@@ -2698,7 +2703,8 @@ extern "C"
                         queryItem = YES;
                     }
                 }
-                else if (currentQueryKey == PatientBirthDate && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_birthdate"])
+                else if (currentQueryKey == PatientBirthDate &&
+                         [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_birthdate"])
                 {
                     int tag;
                     NSDate *date;
@@ -2725,7 +2731,8 @@ extern "C"
                     
                     queryItem = YES;
                 }
-                else if (currentQueryKey == PatientID && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_id"])
+                else if (currentQueryKey == PatientID &&
+                         [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_id"])
                 {
                     NSString *patientIDValue = nil;
                     
@@ -2742,7 +2749,8 @@ extern "C"
                         queryItem = YES;
                     }
                 }
-                else if (currentQueryKey == AccessionNumber && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_accession_number"])
+                else if (currentQueryKey == AccessionNumber &&
+                         [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_accession_number"])
                 {
                     NSString *ANValue = nil;
                     
@@ -2760,7 +2768,8 @@ extern "C"
                         queryItem = YES;
                     }
                 }
-                else if (currentQueryKey == StudyDescription && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_description"])
+                else if (currentQueryKey == StudyDescription &&
+                         [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_description"])
                 {
                     NSString *studyDescriptionValue = nil;
                     
@@ -2791,7 +2800,8 @@ extern "C"
                         queryItem = YES;
                     }
                 }
-                else if (currentQueryKey == StudyComments && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_comments"])
+                else if (currentQueryKey == StudyComments &&
+                         [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_comments"])
                 {
                     NSString *commentsValue = nil;
                     
@@ -2826,7 +2836,11 @@ extern "C"
             
             QueryFilter *dateQueryFilter = nil, *timeQueryFilter = nil, *modalityQueryFilter = nil;
             
-            [QueryController getDateAndTimeQueryFilterWithTag: [[instance objectForKey: @"dateFilterMatrix"] intValue] fromDate: fromDate.dateValue toDate: toDate.dateValue date: &dateQueryFilter time: &timeQueryFilter];
+            [QueryController getDateAndTimeQueryFilterWithTag: [[instance objectForKey: @"dateFilterMatrix"] intValue]
+                                                     fromDate: fromDate.dateValue
+                                                       toDate: toDate.dateValue
+                                                         date: &dateQueryFilter
+                                                         time: &timeQueryFilter];
             
             if ([dateQueryFilter object] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_study_date"])
             {
@@ -3121,7 +3135,7 @@ extern "C"
     {
         if ([sender isKindOfClass:[NSSearchField class]])
         {
-            NSString	*chars = [[NSApp currentEvent] characters];
+            NSString *chars = [[NSApp currentEvent] characters];
             
             if ([chars length])
             {

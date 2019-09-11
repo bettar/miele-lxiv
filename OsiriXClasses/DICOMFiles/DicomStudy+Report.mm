@@ -220,8 +220,11 @@
     {
         int result = 0;
         
-        if( [[NSFileManager defaultManager] fileExistsAtPath: @"/System/Library/Printers/Libraries/convert"]) // Not available anymore in 10.8
-            [N2Shell execute:@"/System/Library/Printers/Libraries/convert" arguments:[NSArray arrayWithObjects: @"-f", reportPath, @"-o", outPdfPath, nil] outStatus:&result];
+        if( [[NSFileManager defaultManager] fileExistsAtPath: @"/System/Library/Printers/Libraries/convert"]) { // Not available anymore in 10.8
+            [N2Shell execute:@"/System/Library/Printers/Libraries/convert"
+                   arguments:[NSArray arrayWithObjects: @"-f", reportPath, @"-o", outPdfPath, nil]
+                   outStatus:&result];
+        }
         else if( [[NSFileManager defaultManager] fileExistsAtPath: @"/usr/sbin/cupsfilter"])
         {
             [NSFileManager.defaultManager removeItemAtPath: outPdfPath error:nil];

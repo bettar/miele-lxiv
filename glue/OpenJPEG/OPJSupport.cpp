@@ -12,7 +12,7 @@
 
 #include "options.h"
 #include "OPJSupport.h"
-#include "openjpeg-2.2/openjpeg.h"
+#include "openjpeg-2.3/openjpeg.h"
 #include "format_defs.h"
 #include "dcmtk/oflog/oflog.h"
 
