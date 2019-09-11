@@ -29,7 +29,7 @@
 
 #define id Id
 
-#include "itkMultiThreader.h"
+#include "itkMultiThreaderBase.h"
 #include "itkImage.h"
 #include "itkMesh.h"
 #include "itkImportImageFilter.h"
@@ -389,7 +389,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                          numPoints:(long) numPoints
                      largestRegion:(BOOL) largestRegion
 {
-	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
+	itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
 	
 	NSMutableArray	*tempArray = [NSMutableArray array];
 	int				dataExtent[ 6];
@@ -520,7 +520,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 {
     if (self = [super init])
 	{
-		itk::MultiThreader::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
+		itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
 		_resampledData = resampleData;
 		NSLog(@"slice ID: %d", (int) slice);
 		itkImage = [[ITK alloc] initWithPix:(NSMutableArray*) pix
@@ -547,7 +547,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                         :(NSString*) newname
                         :(BOOL) mergeWithExistingROIs;
 {
-	NSLog(@"ITK max number of threads: %d", itk::MultiThreader::GetGlobalDefaultNumberOfThreads());
+	NSLog(@"ITK max number of threads: %d", itk::MultiThreaderBase::GetGlobalDefaultNumberOfThreads());
 	
 	// Input image
 	typedef float InternalPixelType;

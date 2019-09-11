@@ -8164,7 +8164,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-4.13",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.0",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-8.2",
 				);
 				USE_HEADERMAP = NO;
@@ -8695,7 +8695,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-4.13",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.0",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-8.2",
 				);
 				USE_HEADERMAP = NO;
@@ -9311,7 +9311,7 @@
 				PRODUCT_NAME = "miele-lxiv";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-4.13",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.0",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-8.2",
 				);
 				USE_HEADERMAP = NO;
