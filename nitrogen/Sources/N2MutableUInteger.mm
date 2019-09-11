@@ -29,8 +29,10 @@
 	return [[[[self class] alloc] initWithUInteger:value] autorelease];
 }
 
--(id)initWithUInteger:(NSUInteger)value {
-	if ((self = [super init])) {
+-(id)initWithUInteger:(NSUInteger)value
+{
+    self = [super init];
+	if (self) {
 		_value = value;
 	}
 	

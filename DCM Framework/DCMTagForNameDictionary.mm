@@ -40,15 +40,15 @@ static DCMTagForNameDictionary *sharedTagForNameDictionary;
 			
 		}
 		
-		sharedTagForNameDictionary = [[NSDictionary dictionaryWithContentsOfFile:path] retain];
+		sharedTagForNameDictionary = (DCMTagForNameDictionary *)[[NSDictionary dictionaryWithContentsOfFile:path] retain];
 	}
-	return sharedTagForNameDictionary;
+
+    return sharedTagForNameDictionary;
 }
 
 - (void) dealloc {
 	[sharedTagForNameDictionary release];
 	[super dealloc];
 }
-
 
 @end

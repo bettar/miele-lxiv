@@ -51,7 +51,10 @@
         NSColor *backc = [[self.backgroundColor copy] autorelease];
         
         if( invertedColors)
-            backc = [NSColor colorWithCalibratedRed: 1.0-backc.redComponent green: 1.0-backc.greenComponent blue: 1.0-backc.blueComponent alpha: backc.alphaComponent];
+            backc = [NSColor colorWithCalibratedRed: 1.0-backc.redComponent
+                                              green: 1.0-backc.greenComponent
+                                               blue: 1.0-backc.blueComponent
+                                              alpha: backc.alphaComponent];
         
         [NSGraphicsContext saveGraphicsState];
         [[backc colorWithAlphaComponent:0.75] setFill];
@@ -61,7 +64,7 @@
 }
 
 - (NSRect)drawTitle:(NSAttributedString*)title withFrame:(NSRect)frame inView:(NSView*)controlView {
-    return [super drawTitle:title withFrame:NSInsetRect(frame, -2,0) inView:controlView]; // very precioussss 4px/pt
+    return [super drawTitle:title withFrame:NSInsetRect(frame, -2,0) inView:controlView]; // very precious 4px/pt
 }
 
 - (NSSize)cellSize
@@ -77,7 +80,7 @@
     
     switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
     {
-        case -1:    return NSMakeSize( [ThumbnailCell thumbnailCellWidth], h * 0.8); break;
+        case -1:   return NSMakeSize( [ThumbnailCell thumbnailCellWidth], h * 0.8); break;
         case 0:    return NSMakeSize( [ThumbnailCell thumbnailCellWidth], h); break;
         case 1:    return NSMakeSize( [ThumbnailCell thumbnailCellWidth], h * 1.3); break;
     }

@@ -123,10 +123,13 @@
 		return [NSString stringWithFormat:@"<base64>%@</base64>", [(NSData*)o base64]];
 	}
 	
-	if ([o isKindOfClass:[NSNumber class]])
-		switch (CFNumberGetType((CFNumberRef)o)) {
+    if ([o isKindOfClass:[NSNumber class]]) {
+        NSNumber *nm = (NSNumber *)o;
+		switch (CFNumberGetType((CFNumberRef)nm)) // Toll-Free Bridged Types
+        {
             case kCFNumberCharType:
 				return [NSString stringWithFormat:@"<boolean>%d</boolean>", int([(NSNumber*)o boolValue])];
+
             case kCFNumberSInt8Type:
             case kCFNumberSInt16Type:
             case kCFNumberSInt32Type:
@@ -138,17 +141,22 @@
             case kCFNumberCFIndexType:
             case kCFNumberNSIntegerType:
 				return [NSString stringWithFormat:@"<int>%d</int>", [(NSNumber*)o intValue]];
+
             case kCFNumberFloatType:
             case kCFNumberFloat32Type:
             case kCFNumberFloat64Type:
             case kCFNumberDoubleType:
             case kCFNumberCGFloatType:
 				return [NSString stringWithFormat:@"<double>%f</double>", [(NSNumber*)o doubleValue]];
+
             default:
-				[NSException raise:NSGenericException format:@"execution succeeded but return NSNumber of type %d unsupported", (int)CFNumberGetType((CFNumberRef)o)]; return NULL;
+				[NSException raise:NSGenericException format:@"execution succeeded but return NSNumber of type %d unsupported", (int)CFNumberGetType((CFNumberRef)nm)];
+                return @"";
         }
+    }
 	
-	[NSException raise:NSGenericException format:@"execution succeeded but return class %@ unsupported", [o className]]; return NULL;
+	[NSException raise:NSGenericException format:@"execution succeeded but return class %@ unsupported", [o className]];
+    return @"";
 }
 
 +(NSString*)FormatElement:(NSObject*)o {

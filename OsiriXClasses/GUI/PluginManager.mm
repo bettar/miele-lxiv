@@ -1317,7 +1317,11 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 			if ([[name stringByDeletingPathExtension] isEqualToString: [pluginName stringByDeletingPathExtension]] && (directory == nil || [directory isEqualTo: path]))
 			{
 				NSInteger tag = 0;
-				[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:path destination:trashDir files:[NSArray arrayWithObject:name] tag:&tag];
+				[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation
+                                                             source:path
+                                                        destination:trashDir
+                                                              files:[NSArray arrayWithObject:name]
+                                                                tag:&tag];
 				if (tag!=0)
 				{
 					NSLog( @"performFileOperation:NSWorkspaceRecycleOperation failed, will us mv");

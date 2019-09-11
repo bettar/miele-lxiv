@@ -42,7 +42,10 @@ enum simpleSearchType {PatientNameSearch, PatientIDSearch};
 enum queueStatus{QueueHasData, QueueEmpty};
 enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
-extern NSString* O2AlbumDragType;
+extern NSString * const O2Album_DragType;
+extern NSString * const DatabaseXID_DragType;
+extern NSString * const SeriesViewer_DragType;
+
 
 @interface NSString (BrowserController)
 -(NSMutableString*)filenameString;

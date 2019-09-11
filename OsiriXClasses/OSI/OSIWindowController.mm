@@ -472,8 +472,10 @@ static BOOL protectedReentryWindowDidResize = NO;
 							
 							dontEnterMagneticFunctions = NO;
 							
-                            if ([self isKindOfClass: [ViewerController class]])
-                                [theWindow.windowController windowDidChangeScreen:nil];
+                            if ([self isKindOfClass: [ViewerController class]]) {
+                                NSNotification *notification = nil; //[NSNotification notificationWithName:NSWindowDidChangeScreenNotification object:theWindow];
+                                [theWindow.windowController windowDidChangeScreen:notification];
+                            }
                             
 		//					[window makeKeyAndOrderFront: self];
 		//					[theWindow makeKeyAndOrderFront: self];

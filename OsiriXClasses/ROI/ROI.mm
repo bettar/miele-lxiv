@@ -4501,11 +4501,14 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 					[self recompute];
                     [self textureBufferHasChanged];
                 }
-				break;
+                    break;
 				
 				case ROI_selected:
 					action = NO;
 					break;
+                    
+                default:
+                    break;
 			}
 		}
         else if (type == tOval || type == tOvalAngle || type == tROI || type == tBall) // TBC
@@ -4600,35 +4603,43 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
                         
                         action = YES;
                     }
-					break;
+                    break;
+                    
+                default:
+                    break;
 			}
 		}
 		else if (type == tPencil )
 		{
-			switch( mode)
+			switch (mode)
 			{
 				case ROI_drawing:
-				if ([[points lastObject] isNearToPoint: pt : scale/(thickness*backingScaleFactor) :[[curView curDCM] pixelRatio]] == NO)
-				{
-					MyPoint *mypt = [[MyPoint alloc] initWithPoint: pt];
-					[points addObject: mypt];
-					[mypt release];
-					clickPoint = pt;
-                    [self recompute];
-					action = YES;
-				}
-				break;
+                    if ([[points lastObject] isNearToPoint: pt
+                                                          : scale/(thickness*backingScaleFactor)
+                                                          : [[curView curDCM] pixelRatio]] == NO)
+                    {
+                        MyPoint *mypt = [[MyPoint alloc] initWithPoint: pt];
+                        [points addObject: mypt];
+                        [mypt release];
+                        clickPoint = pt;
+                        [self recompute];
+                        action = YES;
+                    }
+                    break;
 				
 				case ROI_selected:
 					action = NO;
-				break;
+                    break;
 				
 				case ROI_selectedModify:
-					if (selectedModifyPoint >= 0)
-						[[points objectAtIndex: selectedModifyPoint] setPoint: pt];
-					[self recompute];
-					action = YES;
-				break;
+                    if (selectedModifyPoint >= 0)
+                        [[points objectAtIndex: selectedModifyPoint] setPoint: pt];
+                    [self recompute];
+                    action = YES;
+                    break;
+
+                default:
+                    break;
 			}
 		}
 		else
@@ -4736,7 +4747,10 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
                         
                     [self recompute];
 					action = YES;
-				break;
+                    break;
+                    
+                default:
+                    break;
 			}
 		}
 		
@@ -5679,7 +5693,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				{
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
                     
-                    NSBitmapImageRep* layerImageRep = [[layerImage representations] objectAtIndex:0];
+                    NSBitmapImageRep *layerImageRep = (NSBitmapImageRep *)[[layerImage representations] objectAtIndex:0];
                     
 					NSSize imageSize = NSMakeSize(layerImageRep.pixelsWide, layerImageRep.pixelsHigh); // [layerImage size];
 					float imageWidth = imageSize.width;
@@ -5798,9 +5812,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                 {
                     switch( mode)
                     {
-                        case 	ROI_drawing:
-                        case 	ROI_selected:
-                        case 	ROI_selectedModify:
+                        case ROI_drawing:
+                        case ROI_selected:
+                        case ROI_selectedModify:
                         {
 #define MARGINSELECTED 1
                             int margin = MARGINSELECTED;
@@ -5926,7 +5940,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 glDisable(GL_TEXTURE_RECTANGLE_EXT);
                             }
                         }
-                        break;
+                            break;
+                            
+                        default:
+                            break;
                     }
                 }
                 
@@ -5990,9 +6007,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				switch( mode)
 				{
-					case 	ROI_drawing:
-					case 	ROI_selected:
-					case 	ROI_selectedModify:
+					case ROI_drawing:
+					case ROI_selected:
+					case ROI_selectedModify:
 						if (highlightIfSelected && ROIDrawPlainEdge == NO)
 						{
 							glColor3f (0.5f, 0.5f, 1.0f);
@@ -6008,7 +6025,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							glVertex3f(screenXDr, screenYDr, 0.0);
 							glEnd();
 						}
-					break;
+                        break;
+                        
+                    default:
+                        break;
 				}
 				
 				glLineWidth(1.0 * backingScaleFactor);

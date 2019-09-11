@@ -24,14 +24,16 @@
 
 @synthesize altImage;
 
--(id)initWithImage:(NSImage*)image altImage:(NSImage*)inAltImage {
+-(instancetype)initWithImage:(NSImage*)image altImage:(NSImage*)inAltImage
+{
 	self = [super initImageCell:image];
-	
-	if (inAltImage) // because subclassers might have assigned this through setImage
-		self.altImage = inAltImage;
-	
-	self.gradientType = NSGradientNone;
-//	self.bezelStyle = 0;
+    if (self) {
+        if (inAltImage) // because subclassers might have assigned this through setImage
+            self.altImage = inAltImage;
+        
+        self.gradientType = NSGradientNone;
+        //    self.bezelStyle = 0;
+    }
 
 	return self;
 }

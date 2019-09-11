@@ -693,9 +693,11 @@ static inline int int_ceildivpow2(int a, int b) {
 	_rows = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"Rows"]] value] intValue];
 	_columns = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"Columns"]] value] intValue];
 	_samplesPerPixel = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"SamplesperPixel"]] value] intValue];
-	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"NumberofFrames"]])
+
+    if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"NumberofFrames"]])
 		_numberOfFrames = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"NumberofFrames"]] value] intValue];
-	_isSigned = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"PixelRepresentation"]] value] boolValue];
+
+    _isSigned = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"PixelRepresentation"]] value] boolValue];
 	transferSyntax = [ts retain];
 	_isDecoded = NO;
 
@@ -713,7 +715,6 @@ static inline int int_ceildivpow2(int a, int b) {
 	DCMPixelDataAttribute *pixelAttr = [super copyWithZone:zone];
 	return pixelAttr;
 }
-	
 
 - (void)deencapsulateData:(DCMDataContainer *)dicomData
 {

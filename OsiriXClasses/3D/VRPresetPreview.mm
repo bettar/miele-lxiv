@@ -65,11 +65,10 @@
 	}
 }
 
--(short) setPixSource:(NSMutableArray*) pix
+// Return error flag
+- (BOOL) setPixSource:(NSMutableArray*) pix
                      :(float*) volumeData
 {
-	short error = 0;
-    
 	[[self window] setAcceptsMouseMovedEvents: YES];
 	
     [pix retain];
@@ -616,7 +615,7 @@
 
 	[self setNeedsDisplay:YES];
 	
-    return error;
+    return false; // no error
 }
 
 - (void) setEngine: (int) newEngine

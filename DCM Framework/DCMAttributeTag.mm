@@ -41,8 +41,10 @@
 	return [[[DCMAttributeTag alloc] initWithName:name] autorelease];
 }
 
-- (id) initWithGroup:(int)group element:(int)element{
-	if (self = [super init]) {
+- (instancetype) initWithGroup:(int)group element:(int)element
+{
+    self = [super init];
+	if (self) {
 		_group = group;
 		_element = element;
 		_name = [@"Unknown" retain];
@@ -60,24 +62,25 @@
 		if (![DCMValueRepresentation isValidVR:_vr])
 			_vr = [@"UN" retain];
 		*/
-
-		
 	}
-	return self;
+
+    return self;
 }
 
 - (id) initWithTag:(DCMAttributeTag *)tag{
 	return [self initWithGroup: tag.group element: tag.element];
-	
 }
 
-- (id) initWithTagString:(NSString *)tagString{
-	if (self = [super init])
+- (instancetype) initWithTagString:(NSString *)tagString
+{
+    self = [super init];
+	if (self)
 	{
 		NSScanner *scanner = [NSScanner scannerWithString:tagString];
 		if( tagString == nil)
 			NSLog( @"tagString == nil");
-		unsigned int uGroup, uElement;
+
+        unsigned int uGroup, uElement;
 		[scanner scanHexInt:&uGroup];
 		[scanner scanString:@"," intoString:nil];
 		[scanner scanHexInt:&uElement];
@@ -98,59 +101,67 @@
 			_vr = [@"UN" retain];
 		*/
 	}
-	return self;
-	
+
+    return self;
 }
+
 - (id) initWithName:(NSString *)name
 {
 	NSString *tagString = [(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:name];
-	if( tagString == nil)
+	if (!tagString)
 		return nil;
-	return [self initWithTagString:tagString];
-}
 
+    return [self initWithTagString:tagString];
+}
 
 - (id)copyWithZone:(NSZone *)zone{
 	return [[DCMAttributeTag allocWithZone:zone] initWithTag:self];
 }
 
-- (void) dealloc{
+- (void) dealloc
+{
 	[_name release];
 	[_vr release];
 	[_stringValue release];
 	[super dealloc];
 }
 
-- (BOOL)isPrivate{
+- (BOOL)isPrivate
+{
 	if ((_group%2) == 0)
-		return NO;		
-	return YES;
+		return NO;
+
+    return YES;
 }
 
-- (NSString *)stringValue {
+- (NSString *)stringValue
+{
 	if (!_stringValue)
 		_stringValue = [[NSString alloc] initWithFormat:@"%0004X,%0004X", _group, _element];
-	return _stringValue;
+
+    return _stringValue;
 }
 
 - (NSString *)description {
 	return [NSString stringWithFormat:@"%@\t%@\t%@", self.stringValue, _name, _vr];
 }
 
-- (NSString *)readableDescription {
-    
-    if( _name.length > 0)
+- (NSString *)readableDescription
+{
+    if (_name.length > 0)
         return _name;
-    else
-        return self.stringValue;
+
+    return self.stringValue;
 }
 
-- (long)longValue {
+- (long)longValue
+{
 	NSLog(@"long Value for %@:%ld", self.description, (long)(_group<<16) + (long)(_element&0xffff));
 	return (long)(_group<<16) + (long)(_element&0xffff);
 }
 
-- (NSComparisonResult)compare:(DCMAttributeTag *)tag {
+- (NSComparisonResult)compare:(DCMAttributeTag *)tag
+{
 	//NSNumber *thisTag = [NSNumber numberWithLong:[self longValue]];
 	//NSNumber *otherTag = [NSNumber numberWithLong:[tag longValue]];
 	return [[self stringValue] compare: tag.stringValue];
@@ -158,7 +169,6 @@
 
 - (BOOL)isEquaToTag:(DCMAttributeTag *)tag {
 	return [[tag stringValue] isEqualToString: self.stringValue];
-
 }
 
 -(BOOL)isEqual:(id)object {

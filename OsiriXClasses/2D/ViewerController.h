@@ -619,7 +619,7 @@ enum
 - (IBAction) subCtrlNewMask:(id) sender;
 - (IBAction) subCtrlOffset:(id) sender;
 - (IBAction) subCtrlSliders:(id) sender;
-- (int) threeTestsFivePosibilities: (int) f;
+- (int) threeTestsFivePossibilities: (int) f;
 - (void) roiLoadFromSeries: (NSString*) filename;
 - (void) offsetMatrixSetting: (int) twentyFiveCodes;
 - (IBAction) mergeBrushROI: (id) sender;

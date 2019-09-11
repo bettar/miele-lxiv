@@ -19,6 +19,7 @@
  =========================================================================*/
 
 #import "DicomDatabase.h"
+#import "DicomDatabase+Clean.h"
 #import "NSString+N2.h"
 #import "Notifications.h"
 #import "DicomAlbum.h"
@@ -4303,8 +4304,15 @@ static BOOL protectionAgainstReentry = NO;
 			
 			if ([theTask terminationStatus] == EXIT_SUCCESS) {
 				NSInteger tag = 0;
-				[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:self.sqlFilePath.stringByDeletingLastPathComponent destination:nil files:[NSArray arrayWithObject:self.sqlFilePath.lastPathComponent] tag:&tag];
-				[NSFileManager.defaultManager moveItemAtPath:repairedDBFinalFile toPath:self.sqlFilePath error:nil];
+
+                // TODO: Use -[NSWorkspace recycleURLs:completionHandler:] instead of NSWorkspaceRecycleOperation
+				[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation
+                                                             source:self.sqlFilePath.stringByDeletingLastPathComponent
+                                                        destination:@""
+                                                              files:[NSArray arrayWithObject:self.sqlFilePath.lastPathComponent]
+                                                                tag:&tag];
+
+                [NSFileManager.defaultManager moveItemAtPath:repairedDBFinalFile toPath:self.sqlFilePath error:nil];
 			}
 			
 			[theTask release];

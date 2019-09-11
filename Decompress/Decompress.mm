@@ -810,7 +810,7 @@ int main(int argc, const char *argv[])
                 {
                     [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
                     
-                    if( [NSDate timeIntervalSinceReferenceDate] > timeout)
+                    if ([NSDate timeIntervalSinceReferenceDate] > timeout)
                         break;
                 }
                 

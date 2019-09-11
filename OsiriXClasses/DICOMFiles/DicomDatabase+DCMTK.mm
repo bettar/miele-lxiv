@@ -52,8 +52,8 @@
 
 #import "tmp_locations.h"
 
-#define CHUNK_SUBPROCESS 200
-#define TIMEOUT 20UL
+#define CHUNK_SUBPROCESS    200
+#define TIMEOUT             20UL
 
 // Maximum of 200 files: no more than 10 min...
 
@@ -324,10 +324,10 @@
 	NSThread* thread = [NSThread currentThread];
 	[thread enterOperation];
 	
-	for( int i = 0; i < total;)
+	for (int i = 0; i < total;)
 	{
 		int no;
-		if( i + CHUNK_SUBPROCESS >= total)
+		if (i + CHUNK_SUBPROCESS >= total)
             no = total - i;
 		else
             no = CHUNK_SUBPROCESS;
@@ -338,7 +338,7 @@
 		NSRange range = NSMakeRange( i, no);
 		
 		id *objs = (id*) malloc( no * sizeof( id));
-		if( objs)
+		if (objs)
 		{
 			[files getObjects: objs range: range];
 			
@@ -360,7 +360,7 @@
 				while( [theTask isRunning])
                 {
                     [NSThread sleepForTimeInterval: 0.1];
-                    if( [NSDate timeIntervalSinceReferenceDate] - taskStart > timeout)
+                    if ([NSDate timeIntervalSinceReferenceDate] - taskStart > timeout)
                         break;
                 }
                 

@@ -691,7 +691,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
     
     NSInteger i = [images indexOfObject:image];
 	
-    if( 1) // Multiple files download
+    if ( /* DISABLES CODE */ (1)) // Multiple files download
     {
         NSInteger size = 0;
         while (i < images.count)
@@ -736,7 +736,8 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	[RemoteDicomDatabase _data:request appendInt:localPaths.count];
 	for (NSString* remotePath in remotePaths)
 		[RemoteDicomDatabase _data:request appendStringUTF8:remotePath];
-	for (NSString* localPath in localPaths)
+
+    for (NSString* localPath in localPaths)
 		[RemoteDicomDatabase _data:request appendStringUTF8:localPath];
 	
 	NSMutableArray* context = [NSMutableArray arrayWithObjects: [N2MutableUInteger mutableUIntegerWithUInteger:0], nil];

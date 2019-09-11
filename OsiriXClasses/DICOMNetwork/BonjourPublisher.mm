@@ -410,7 +410,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 
 - (void)_requireDataSize:(int)size {
     if (self.availableSize < size)
-        [NSException raise:O2NotEnoughData format:nil];
+        [NSException raise:O2NotEnoughData format:@""];
 }
 
 - (int)_readInt {

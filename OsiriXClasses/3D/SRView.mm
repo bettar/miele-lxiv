@@ -1566,7 +1566,7 @@ typedef struct _xyzArray
                                                        windowNumber: [theEvent windowNumber]
                                                             context: [theEvent context]
                                                          characters: @"p"
-                                        charactersIgnoringModifiers: nil
+                                        charactersIgnoringModifiers: @""
                                                           isARepeat: NO
                                                             keyCode: 112];
 			[self keyDown:artificialPKeyDown];

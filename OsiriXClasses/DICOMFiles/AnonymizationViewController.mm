@@ -311,7 +311,6 @@ NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void
 	
 	[self refreshTemplatesList];
 	[self observeValueForKeyPath:NULL ofObject:NULL change:NULL context:self.tagsView];
-	
 }
 
 -(void)templatesPopupAction:(NSPopUpButton*)sender {
@@ -352,6 +351,5 @@ NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void
 	[self refreshTemplatesList];
 	[self observeValueForKeyPath:NULL ofObject:NULL change:NULL context:self.tagsView];
 }
-
 
 @end

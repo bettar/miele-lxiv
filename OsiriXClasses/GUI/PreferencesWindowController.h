@@ -23,6 +23,8 @@
 
 @class PreferencesView, PreferencesWindowContext;
 
+#pragma mark -
+
 /** \brief Window Controller for Preferences */
 @interface PreferencesWindowController : NSWindowController <NSWindowDelegate>
 {
@@ -52,10 +54,11 @@
 -(IBAction)authAction:(id)sender;
 
 -(void)reopenDatabase;
-//-(void)setCurrentContextWithResourceName: (NSString*) name;
+-(void)setCurrentContextWithResourceName: (NSString*) name;
 -(void)setCurrentContext:(PreferencesWindowContext*)context;
 @end
 
+#pragma mark -
 
 @interface PreferencesWindowContext : NSObject {
 	NSString* _title;

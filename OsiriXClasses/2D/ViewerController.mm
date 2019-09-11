@@ -1065,7 +1065,7 @@ return YES;
     
     if (saveWindowsStateWindow)
         [NSApp beginSheet: saveWindowsStateWindow
-           modalForWindow: nil
+           modalForWindow: self.window
             modalDelegate: self
            didEndSelector: nil
               contextInfo: nil];
@@ -4596,7 +4596,8 @@ static volatile int numberOfThreadsForRelisce = 0;
         [v computeColor];
 }
 
-- (void) loadSelectedSeries: (id) series rightClick: (BOOL) rightClick
+- (void) loadSelectedSeries: (id) series
+                 rightClick: (BOOL) rightClick
 {
     if ([series isDistant])
     {
@@ -4645,7 +4646,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             else
                 [[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
             
-            for (int i = 0; i < [[NSScreen screens] count]; i++) [thumbnailsListPanel[ i] setThumbnailsView: nil viewer: nil];
+            for (int i = 0; i < [[NSScreen screens] count]; i++)
+                [thumbnailsListPanel[ i] setThumbnailsView: nil viewer: nil];
             
             [[self window] makeKeyAndOrderFront: self];
             [self refreshToolbar];
@@ -4720,10 +4722,13 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [self propagateSettings];
             }
         }
-		else
-			[self mouseMoved: nil];
+        else {
+            NSEvent *event = nil;
+			[self mouseMoved: event];
+        }
 	}
 }
+
 - (IBAction)seriesPopupSelect:(NSMenuItem *)sender
 {
     id series = [sender.representedObject object];
@@ -6317,9 +6322,9 @@ static ViewerController *draggedController = nil;
 		if ([source respondsToSelector:@selector(performPluginDragOperation:destination:)])
 			return [source performPluginDragOperation:sender destination:self];
 	}
-    else if ([[paste availableTypeFromArray: [NSArray arrayWithObject: @"BrowserController.database.context.XIDs"]] isEqualToString: @"BrowserController.database.context.XIDs"])
+    else if ([[paste availableTypeFromArray: [NSArray arrayWithObject: DatabaseXID_DragType]] isEqualToString: DatabaseXID_DragType])
     {
-        NSArray* xids = [NSPropertyListSerialization propertyListFromData:[paste propertyListForType:@"BrowserController.database.context.XIDs"]
+        NSArray* xids = [NSPropertyListSerialization propertyListFromData:[paste propertyListForType:DatabaseXID_DragType]
                                                          mutabilityOption:NSPropertyListImmutable
                                                                    format:NULL
                                                          errorDescription:NULL];
@@ -10734,23 +10739,21 @@ static int avoidReentryRefreshDatabase = 0;
     //    0  0  0   1  4  2  3 3 3
 	if (f == 0)
         return 4;
-	else
-	{
-		if (abs(f) > 1)
-		{
-			if (f > 1)
-                return 3;
-			else
-                return 0;
-		}
-		else
-		{
-			if (f == 1)
-                return 2;
-			else
-                return 1;
-		}
-	}
+
+    if (abs(f) > 1)
+    {
+        if (f > 1)
+            return 3;
+        else
+            return 0;
+    }
+    else
+    {
+        if (f == 1)
+            return 2;
+        else
+            return 1;
+    }
 }
 
 - (void) offsetMatrixSetting: (int) twentyFiveCodes
@@ -14655,7 +14658,7 @@ int i,j,l;
 	float windowLevelMin = windowLevel - 0.5 * windowWidth;
 	
 	float value;
-	char imageValue;
+	unsigned char imageValue;
 
 	int bytesPerRow = [bitmap bytesPerRow];
 
@@ -14681,15 +14684,17 @@ int i,j,l;
                 imageValue = 0;
 			else
 			{
-				imageValue = (char)(a * value + b);
+				imageValue = (unsigned char)(a * value + b);
 			}
 		}
 		else
 			imageValue = value;	
-		imageBuffer[4*(int)x+(int)y*(int)bytesPerRow] = imageValue;
-		imageBuffer[4*(int)x+1+(int)y*(int)bytesPerRow] = imageValue;
-		imageBuffer[4*(int)x+2+(int)y*(int)bytesPerRow] = imageValue;
-		imageBuffer[4*(int)x+3+(int)y*(int)bytesPerRow] = 255;
+
+        int index = 4*(int)x + (int)y*(int)bytesPerRow;
+        imageBuffer[ index ]   = imageValue;
+		imageBuffer[ index+1 ] = imageValue;
+		imageBuffer[ index+2 ] = imageValue;
+		imageBuffer[ index+3 ] = 255;
 	}
 
 	NSImage *image = [[NSImage alloc] init] ;
@@ -14764,8 +14769,8 @@ int i,j,l;
                 [roisToDelete addObject: r];
 		}
 	}
+
     [ROI deleteROIs: roisToDelete];
-    
 	[name release];
 }
 
@@ -19841,7 +19846,11 @@ static BOOL viewerControllerPlaying = NO;
             [v.window orderOut: self];
     }
     
-	[NSApp beginSheet: printWindow modalForWindow:nil modalDelegate:self didEndSelector:nil contextInfo:nil];
+	[NSApp beginSheet:printWindow
+       modalForWindow:self.window
+        modalDelegate:self
+       didEndSelector:nil
+          contextInfo:nil];
 }
 
 #ifndef OSIRIX_LIGHT
@@ -20920,7 +20929,8 @@ static BOOL viewerControllerPlaying = NO;
 
 - (void) exportImage:(id) sender
 {
-	[imageView flagsChanged: nil];	// If shift key was pressed, hiding the ROI data	apple-shift-E
+    NSEvent *event = nil;
+	[imageView flagsChanged: event];	// If shift key was pressed, hiding the ROI data	apple-shift-E
 
 	[imageAllViewers setState: NSOffState];
 	
@@ -22364,7 +22374,13 @@ static BOOL viewerControllerPlaying = NO;
                name: OsirixDCMUpdateCurrentImageNotification
              object: nil];
 	
-    [[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, pasteBoardOsiriXPlugin, OsirixPluginPboardUTI, @"BrowserController.database.context.XIDs", nil]];
+    [[self window] registerForDraggedTypes: [NSArray arrayWithObjects:
+                                             NSFilenamesPboardType,
+                                             pasteBoardOsiriX,
+                                             pasteBoardOsiriXPlugin,
+                                             OsirixPluginPboardUTI,
+                                             DatabaseXID_DragType,
+                                             nil]];
     
 	if ([[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{

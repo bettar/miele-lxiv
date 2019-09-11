@@ -2458,10 +2458,17 @@ static float deg2rad = M_PI/180.0;
 	
 	curExportView = [self selectedView];
 	
+    NSWindow *sheet;
 	if( quicktimeExportMode)
-		[NSApp beginSheet: quicktimeWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+        sheet = quicktimeWindow;
 	else
-		[NSApp beginSheet: dcmWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+        sheet = dcmWindow;
+
+    [NSApp beginSheet:sheet
+       modalForWindow:self.window
+        modalDelegate:self
+       didEndSelector:nil
+          contextInfo:(void*) nil];
 	
 	if( [self selectedView] != mprView1) mprView1.displayCrossLines = YES;
 	if( [self selectedView] != mprView2) mprView2.displayCrossLines = YES;

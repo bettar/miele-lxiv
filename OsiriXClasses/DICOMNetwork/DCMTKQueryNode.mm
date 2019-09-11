@@ -1921,14 +1921,12 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 
 + (void) releaseNetworkVariables
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
 	
     [NSThread currentThread].name = @"DCMTK Network release variables";
     
-    while( 1) // Infinite loop
+    while( 1) @autoreleasepool // Infinite loop
     {
-        NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
-        
         NSString *pathKillAll = [NSTemporaryDirectory() stringByAppendingPathComponent:@"kill_all_storescu"];
         BOOL abortAssociations = [[NSFileManager defaultManager] fileExistsAtPath: pathKillAll];
         
@@ -1941,7 +1939,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
         
         for( NSDictionary *dict in copyArray)
         {
-            if( abortAssociations || [[dict valueForKey: @"date"] timeIntervalSinceNow] < -120) // seconds
+            if ( abortAssociations || [[dict valueForKey: @"date"] timeIntervalSinceNow] < -120) // seconds
             {
                 T_ASC_Association *assoc = (T_ASC_Association*) [[dict objectForKey: @"assoc"] pointerValue];
                 T_ASC_Network *net = (T_ASC_Network*) [[dict objectForKey: @"net"] pointerValue];
@@ -1998,11 +1996,8 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
         }
         
         [NSThread sleepForTimeInterval: 1];
-        
-        [pool2 release];
     }
-    
-	[pool release];
+    }
 }
 
 // common network code for move and query

@@ -27,8 +27,6 @@
 #import "ThumbnailsListPanel.h"
 #import "N2Debug.h"
 
-static NSString *dragType = @"Osirix Series Viewer Drag";
-
 @implementation O2ViewerThumbnailsMatrix // we overload NSMatrix, but this class isn't as capable as NSMatrix: we only support 1-column-wide matrixes! so, actually, this isn't a matrix, it's a list, but we still use NSMAtrix so we don't have to modify ViewerController
 
 - (NSRect*)computeCellRectsForCells:(NSArray*)cells maxIndex:(NSInteger)maxIndex {
@@ -87,13 +85,21 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
             
             NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard];
             
-            [pboard declareTypes:[NSArray arrayWithObjects: @"BrowserController.database.context.XIDs", dragType, nil] owner:self]; //(__bridge NSString *)kPasteboardTypeFileURLPromise, NSFilenamesPboardType, NSPasteboardTypeString
-            [pboard setPropertyList:nil forType:dragType];
+            [pboard declareTypes:[NSArray arrayWithObjects:
+                                  DatabaseXID_DragType,
+                                  SeriesViewer_DragType,
+                                  //(__bridge NSString *)kPasteboardTypeFileURLPromise,
+                                  //NSFilenamesPboardType,
+                                  //NSPasteboardTypeString
+                                  nil]
+                           owner:self];
+
+            [pboard setPropertyList:@{} forType:SeriesViewer_DragType];
             
             NSMutableArray* objects = [NSMutableArray array];
             [objects addObject: [[[self selectedCell] representedObject] object]];
             
-            [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[objects valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:@"BrowserController.database.context.XIDs"];
+            [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[objects valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:DatabaseXID_DragType];
             
             [self dragImage:thumbnail
                          at:local_point

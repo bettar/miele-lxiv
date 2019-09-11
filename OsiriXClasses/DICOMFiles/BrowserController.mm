@@ -27,6 +27,7 @@
 #import "DCMTKStudyQueryNode.h"
 #import "DCMTKSeriesQueryNode.h"
 #import "DicomDatabase+Scan.h"
+#import "DicomDatabase+Clean.h"
 #import "RemoteDicomDatabase.h"
 #import "SRAnnotation.h"
 #import <DiscRecording/DRDevice.h>
@@ -153,7 +154,11 @@
 #import "Reports.h" // for ReportType
 
 static BrowserController *browserWindow = nil;
-NSString* O2AlbumDragType = @"Osirix Album drag";
+
+NSString * const O2Album_DragType = @"Osirix Album drag";
+NSString * const DatabaseXID_DragType = @"BrowserController.database.context.XIDs";
+NSString * const SeriesViewer_DragType = @"Osirix Series Viewer Drag";
+
 static BOOL loadingIsOver = NO;//, isAutoCleanDatabaseRunning = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
@@ -7159,17 +7164,21 @@ static NSConditionLock *threadLock = nil;
     }
     
 	[pboard declareTypes: [NSArray arrayWithObjects:
-                           @"BrowserController.database.context.XIDs",
-                           O2AlbumDragType,
+                           DatabaseXID_DragType,
+                           O2Album_DragType,
                            (__bridge NSString *)kPasteboardTypeFileURLPromise,
                            NSFilenamesPboardType,
                            NSPasteboardTypeString,
                            nil]
                    owner:self];
-	[pboard setPropertyList:nil forType:O2AlbumDragType];
+
+    [pboard setPropertyList:@{} forType:O2Album_DragType];
+
     [pboard setPropertyList:[NSArray arrayWithObject:@"dcm"]
                     forType:(__bridge NSString *)kPasteboardTypeFileURLPromise];
-	[pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[pbItems valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:@"BrowserController.database.context.XIDs"];
+
+    [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[pbItems valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL]
+                    forType:DatabaseXID_DragType];
 	
 	return YES;
 }
@@ -8901,9 +8910,9 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (ViewerController*) loadSeries:(NSManagedObject *)
-                          series:(ViewerController*)
-                          viewer:(BOOL) firstViewer
+- (ViewerController*) loadSeries:(NSManagedObject *) series
+                                :(ViewerController*) viewer
+                                :(BOOL) firstViewer
                    keyImagesOnly:(BOOL) keyImages
 {
     BOOL movie4D = NO;
@@ -11794,7 +11803,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 		DicomAlbum* album = [albumArray objectAtIndex:row];
 		
 		NSPasteboard* pb = [info draggingPasteboard];
-		NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:@"BrowserController.database.context.XIDs"] mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
+		NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:DatabaseXID_DragType] mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
 		NSMutableArray* items = [NSMutableArray array];
 		for (NSString* xid in xids)
 			[items addObject:[_database objectWithID:[NSManagedObject UidForXid:xid]]];
@@ -14683,7 +14692,7 @@ static NSArray*	openSubSeriesArray = nil;
             [cell setEditable:YES];
             [[albumTable tableColumnWithIdentifier:@"Source"] setDataCell:cell];
             [albumTable setDelegate:self];
-            [albumTable registerForDraggedTypes:[NSArray arrayWithObject:O2AlbumDragType]];
+            [albumTable registerForDraggedTypes:[NSArray arrayWithObject:O2Album_DragType]];
             
     //		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
     //		[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
@@ -16267,12 +16276,12 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 	}
-	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+	else
+        filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 	
 	if ([filesToExport count])
-	{
-		[[NSWorkspace sharedWorkspace] selectFile:[filesToExport objectAtIndex: 0] inFileViewerRootedAtPath:nil];
-	}
+		[[NSWorkspace sharedWorkspace] selectFile:[filesToExport objectAtIndex: 0]
+                         inFileViewerRootedAtPath:@""];
 }
 
 static volatile int numberOfThreadsForJPEG = 0;
@@ -19547,7 +19556,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
-	[self flagsChanged: nil];
+	[self flagsChanged:[NSApp currentEvent]];
 	
     @synchronized (_albumNoOfStudiesCache)
     {

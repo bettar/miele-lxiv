@@ -433,7 +433,7 @@
 		for (int i=0; i<numberOfHighlightedPlaceHolders; i++)
 		{
 			placeHolderCenter = [[highlightedPlaceHolders objectAtIndex:i] frame].origin.x + [[highlightedPlaceHolders objectAtIndex:i] frame].size.width/2.0;
-			distanceToMouse[i] = fabsf(mouseLocationInView.x - placeHolderCenter);
+			distanceToMouse[i] = fabs(mouseLocationInView.x - placeHolderCenter);
 		}
 
 		float minDistance = MAXFLOAT;
@@ -673,7 +673,8 @@
 - (void)resizeTokenField; // not used
 {
 	return;
-	NSRect oldTokenFieldFrame = [[prefPane contentTokenField] frame];
+#if 0
+    NSRect oldTokenFieldFrame = [[prefPane contentTokenField] frame];
 	NSSize cellSize = [[[prefPane contentTokenField] cell] cellSizeForBounds:[[prefPane contentTokenField] bounds]];
 
 	NSBox *globalPaneBox = [[[[self window] contentView] subviews] objectAtIndex:0];
@@ -697,7 +698,7 @@
 	[selectedAnnotation setMouseDownLocation:loc];
 
 	[[self window] setFrame:NSMakeRect([[self window] frame].origin.x, [[self window] frame].origin.y+oldTokenFieldFrame.size.height-cellSize.height, [[self window] frame].size.width, [[self window] frame].size.height-oldTokenFieldFrame.size.height+cellSize.height) display:YES];
-	
+#endif
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification

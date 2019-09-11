@@ -73,26 +73,23 @@ NSInteger OSIROIMaskCompareRunValues(NSValue *maskRun1Value, NSValue *maskRun2Va
 
 NSComparisonResult OSIROIMaskCompareRun(OSIROIMaskRun maskRun1, OSIROIMaskRun maskRun2)
 {
-    if (maskRun1.depthIndex < maskRun2.depthIndex) {
+    if (maskRun1.depthIndex < maskRun2.depthIndex)
         return NSOrderedAscending;
-    }
-    else if (maskRun1.depthIndex > maskRun2.depthIndex) {
+
+    if (maskRun1.depthIndex > maskRun2.depthIndex)
         return NSOrderedDescending;
-    }
     
-    if (maskRun1.heightIndex < maskRun2.heightIndex) {
+    if (maskRun1.heightIndex < maskRun2.heightIndex)
         return NSOrderedAscending;
-    }
-    else if (maskRun1.heightIndex > maskRun2.heightIndex) {
-        return NSOrderedDescending;
-    }
     
-    if (maskRun1.widthRange.location < maskRun2.widthRange.location) {
-        return NSOrderedAscending;
-    }
-    else if (maskRun1.widthRange.location > maskRun2.widthRange.location) {
+    if (maskRun1.heightIndex > maskRun2.heightIndex)
         return NSOrderedDescending;
-    }
+    
+    if (maskRun1.widthRange.location < maskRun2.widthRange.location)
+        return NSOrderedAscending;
+    
+    if (maskRun1.widthRange.location > maskRun2.widthRange.location)
+        return NSOrderedDescending;
     
     return NSOrderedSame;
 }
@@ -333,12 +330,13 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 
 - (instancetype)initWithMaskRuns:(NSArray *)maskRuns
 {
-	if ( (self = [super init]) )
-    {
+    self = [super init];
+	if (self) {
 		_maskRuns = [[maskRuns sortedArrayUsingFunction:OSIROIMaskCompareRunValues context:NULL] retain];
         [self checkdebug];
 	}
-	return self;
+
+    return self;
 }
 
 - (instancetype)initWithMaskRunData:(NSData *)maskRunData

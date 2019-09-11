@@ -465,16 +465,16 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
             ([authView authorizationState] == SFAuthorizationViewUnlockedState);
 }
 
-//-(void)setCurrentContextWithResourceName: (NSString*) name
-//{
-//    NSInteger panesCount = [panesListView itemsCount];
-//	
-//    for( NSInteger index = 0; index < panesCount; index++)
-//        if( [[[panesListView contextForItemAtIndex: index] resourceName] isEqualToString: name]) {
-//            [self setCurrentContext:[panesListView contextForItemAtIndex:index]];
-//            return;
-//        }
-//}
+-(void)setCurrentContextWithResourceName: (NSString*) name
+{
+    NSInteger panesCount = [panesListView itemsCount];
+    
+    for( NSInteger index = 0; index < panesCount; index++)
+        if( [[[panesListView contextForItemAtIndex: index] resourceName] isEqualToString: name]) {
+            [self setCurrentContext:[panesListView contextForItemAtIndex:index]];
+            return;
+        }
+}
 
 // If (!context) we show an index page with all the icons
 // If (context) a button (icon) representing a preference pane has been clicked

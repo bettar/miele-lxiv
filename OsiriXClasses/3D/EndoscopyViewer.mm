@@ -1522,7 +1522,7 @@ return YES;
 			// move camera
 			OSIVoxel* cpos = [centerline objectAtIndex:flyAssistantPositionIndex];
 			OSIVoxel * fpos;
-            if (/*NO*/YES) {
+            if (/* DISABLES CODE */ (YES)) {
                 fpos = [assistant computeMaximizingViewDirectionFrom:cpos
                                                            LookingAt:[centerline objectAtIndex:flyAssistantPositionIndex+1]];
             }
@@ -1530,7 +1530,8 @@ return YES;
             {
                 fpos = [centerline objectAtIndex:flyAssistantPositionIndex+1];
             }
-			[self setCameraAtPosition:cpos TowardsPosition:fpos];
+
+            [self setCameraAtPosition:cpos TowardsPosition:fpos];
 			
 			// add current camera to Fly Thru
 			[[vrController flyThruController].stepsArrayController addObject:[vrController flyThruController].currentCamera];

@@ -31,10 +31,14 @@
 	[self setControlSize:NSSmallControlSize];
 	[self sendActionOn:NSLeftMouseDownMask];
 	
+#if 1
+    _attributes = [@{} mutableCopy];
+#else
 	_attributes = [[NSMutableDictionary dictionaryWithObjectsAndKeys:
-//						[NSColor whiteColor], NSForegroundColorAttributeName,
-//						[NSFont labelFontOfSize:[NSFont smallSystemFontSize]], NSFontAttributeName,
-					NULL] retain];
+                    [NSColor whiteColor], NSForegroundColorAttributeName,
+                    [NSFont labelFontOfSize:[NSFont smallSystemFontSize]], NSFontAttributeName,
+                    NULL] retain];
+#endif
 	
 	return self;
 }

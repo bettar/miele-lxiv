@@ -18,7 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-//#import "DCMObjectPixelDataImport.h"
+#import "DCMObjectPixelDataImport.h"
 #import <DCM/DCM.h>
 
 @implementation DCMObjectPixelDataImport

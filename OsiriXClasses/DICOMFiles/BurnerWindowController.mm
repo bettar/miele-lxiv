@@ -730,7 +730,7 @@
 
     NSString *pathBurnAnonymized = [NSTemporaryDirectory() stringByAppendingPathComponent:@"burnAnonymized"];
     [[NSFileManager defaultManager] removeItemAtPath: [self folderToBurn] error:nil];
-    [[NSFileManager defaultManager] removeItemAtPath: [NSString stringWithFormat:pathBurnAnonymized] error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath: [NSString stringWithFormat:@"%@", pathBurnAnonymized] error:nil];
     
     [filesToBurn release];
     filesToBurn = nil;

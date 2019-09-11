@@ -5699,7 +5699,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             if ([ViewerController isFrontMost2DViewer: self.window] == NO)
             {
                 [[self window] makeKeyAndOrderFront: self];
-                [self.windowController windowDidBecomeMain: nil]; //If the application is in background, it will not automatically called.
+                NSNotification *notification = nil; //[NSNotification notificationWithName:NSWindowDidBecomeMainNotification object:self.window];
+                [self.windowController windowDidBecomeMain: notification]; //If the application is in background, it will not automatically called.
             }
         }
         else if ([[self window] isMainWindow] == NO)

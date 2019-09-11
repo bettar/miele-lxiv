@@ -153,7 +153,7 @@ enum {
 	PrettyCell* cell = [[[PrettyCell alloc] init] autorelease];
 	[[_sourcesTableView tableColumnWithIdentifier:@"Source"] setDataCell:cell];
 	
-	[_sourcesTableView registerForDraggedTypes:[NSArray arrayWithObject:O2AlbumDragType]];
+	[_sourcesTableView registerForDraggedTypes:[NSArray arrayWithObject:O2Album_DragType]];
 	
 	[_sourcesTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
 }
@@ -1189,7 +1189,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(BOOL)tableView:(NSTableView*)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
 	NSPasteboard* pb = [info draggingPasteboard];
-	NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:@"BrowserController.database.context.XIDs"] 
+	NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:DatabaseXID_DragType] 
 													 mutabilityOption:NSPropertyListImmutable 
 															   format:NULL 
 													 errorDescription:NULL];

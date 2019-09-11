@@ -103,37 +103,54 @@ static int getfd(id object, BOOL read, int def) { // http://www.quantum-step.com
 	
 	_pid = fork();
 	switch (_pid) {
-		case -1: {
+		case -1:
 			[NSException raise:NSInvalidArgumentException format:@"N2Task failed to create child process"];
-		}
+            break;
 		
-		case 0: {
-			if (idesc != 0)	dup2(idesc, STDIN_FILENO), close(idesc);
-			if ([self.standardInput isKindOfClass:[NSPipe class]])
+		case 0:
+            if (idesc != 0) {
+                dup2(idesc, STDIN_FILENO);
+                close(idesc);
+            }
+
+            if ([self.standardInput isKindOfClass:[NSPipe class]])
 				[[self.standardInput fileHandleForWriting] closeFile];
-			if (odesc != 1) dup2(odesc, STDOUT_FILENO), close(odesc);
-			if ([self.standardOutput isKindOfClass:[NSPipe class]])
+
+            if (odesc != 1) {
+                dup2(odesc, STDOUT_FILENO);
+                close(odesc);
+            }
+
+            if ([self.standardOutput isKindOfClass:[NSPipe class]])
 				[[self.standardOutput fileHandleForReading] closeFile];
-			if (edesc != 2) dup2(edesc, STDERR_FILENO), close(edesc);
-			if ([self.standardError isKindOfClass:[NSPipe class]])
+
+            if (edesc != 2) {
+                dup2(edesc, STDERR_FILENO);
+                close(edesc);
+            }
+
+            if ([self.standardError isKindOfClass:[NSPipe class]])
 				[[self.standardError fileHandleForReading] closeFile];
 				
-			if (_uid) setuid(_uid);
-			if (wd) chdir(wd);
+			if (_uid)
+                setuid(_uid);
+
+            if (wd)
+                chdir(wd);
 				
 			execve(exec, (char* const*)argv, (char* const*)env);
 			exit(127);
-		}
+            break;
 		
-		default: {
+		default:
 			if ([self.standardInput isKindOfClass:[NSPipe class]])
 				[[self.standardInput fileHandleForReading] closeFile];
 			if ([self.standardOutput isKindOfClass:[NSPipe class]])
 				[[self.standardOutput fileHandleForWriting] closeFile];
 			if ([self.standardError isKindOfClass:[NSPipe class]])
 				[[self.standardError fileHandleForWriting] closeFile];
-		}
-	}
+            break;
+    }
 }
 
 -(void)terminate {
