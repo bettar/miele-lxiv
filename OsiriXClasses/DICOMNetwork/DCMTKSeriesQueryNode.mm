@@ -27,6 +27,8 @@
 #undef verify
 #include "dcmtk/dcmdata/dcdeftag.h"
 
+#define NUM_ENCODINGS        10
+
 @implementation DCMTKSeriesQueryNode
 
 @synthesize study;
@@ -69,10 +71,11 @@
 	{
 		_studyInstanceUID = nil;
 		const char *string = nil;
-		NSStringEncoding encoding[ 10];
-		
-		for( int i = 0; i < 10; i++) encoding[ i] = 0;
-		encoding[ 0] = NSISOLatin1StringEncoding;
+
+        NSStringEncoding myEncodings[NUM_ENCODINGS];
+        myEncodings[0] = NSISOLatin1StringEncoding;
+		for (int i = 1; i < NUM_ENCODINGS; i++)
+            myEncodings[i] = NSUTF8StringEncoding;
 		
         if (dataset) {
             if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
@@ -81,12 +84,16 @@
                 
                 NSArray	*c = [_specificCharacterSet componentsSeparatedByString:@"\\"];
                 
-                if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+                if( [c count] >= NUM_ENCODINGS)
+                    NSLog( @"Encoding number >= 10 ???");
                 
-                if( [c count] < 10)
+                if( [c count] < NUM_ENCODINGS)
                 {
-                    for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-                    for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+                    for (int i = 0; i < [c count]; i++)
+                        myEncodings[i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+                    
+                    for (int i = [c count]; i < NUM_ENCODINGS; i++)
+                        myEncodings[i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
                 }
             }
             
@@ -99,13 +106,13 @@
                 _studyInstanceUID = [[extraParameters valueForKey: @"StudyInstanceUID"] retain];
             
             if (dataset ->findAndGetString(DCM_SeriesDescription, string).good() && string != nil) 
-                _theDescription = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
+                _theDescription = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
                 
             if (dataset ->findAndGetString(DCM_SeriesNumber, string).good() && string != nil) 
-                _name = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+                _name = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
                 
             if (dataset ->findAndGetString(DCM_ImageComments, string).good() && string != nil) 
-                _comments = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
+                _comments = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
                 
             if (dataset ->findAndGetString(DCM_SeriesDate, string).good() && string != nil)
             {

@@ -60,7 +60,7 @@ extern "C"
 
 enum DCM_CompressionQuality {DCMLosslessQuality = 0, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
 
-NSLock					*PapyrusLock = 0L;
+NSRecursiveLock			*Papyrus_Lock = 0L;
 NSThread				*mainThread = 0L;
 BOOL					NEEDTOREBUILD = NO;
 NSMutableDictionary		*DATABASECOLUMNS = 0L;

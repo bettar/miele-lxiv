@@ -8206,7 +8206,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			}
 			else
 			{
-				if (sliceFromTo[ 0][ 0] != HUGE_VALF && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
+				if (sliceFromTo[ 0][ 0] != HUGE_VALF &&
+                    (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
                 {
                     sliceFromTo[ 0][ 0] = HUGE_VALF;
                     sliceFromTo2[ 0][ 0] = HUGE_VALF;

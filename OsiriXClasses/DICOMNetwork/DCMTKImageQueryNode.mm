@@ -26,6 +26,7 @@
 #undef verify
 #include "dcmtk/dcmdata/dcdeftag.h"
 
+#define NUM_ENCODINGS        10
 
 @implementation DCMTKImageQueryNode
 
@@ -67,10 +68,10 @@
 	{
 		const char *string = nil;
 		
-		NSStringEncoding encoding[ 10];
-		
-		for( int i = 0; i < 10; i++) encoding[ i] = 0;
-		encoding[ 0] = NSISOLatin1StringEncoding;
+		NSStringEncoding myEncodings[NUM_ENCODINGS];
+        myEncodings[0] = NSISOLatin1StringEncoding;
+		for (int i = 1; i < NUM_ENCODINGS; i++)
+            myEncodings[i] = NSUTF8StringEncoding;
 		
 		if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
 		{
@@ -78,12 +79,16 @@
 			
 			NSArray	*c = [_specificCharacterSet componentsSeparatedByString:@"\\"];
 			
-			if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+			if( [c count] >= NUM_ENCODINGS)
+                NSLog( @"Encoding number >= %d ???", NUM_ENCODINGS);
 			
-			if( [c count] < 10)
+			if( [c count] < NUM_ENCODINGS)
 			{
-				for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-				for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+				for( int i = 0; i < [c count]; i++)
+                    myEncodings[i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+
+				for( int i = [c count]; i < NUM_ENCODINGS; i++)
+                    myEncodings[i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
 			}
 		}
 		
@@ -97,7 +102,7 @@
 			_studyInstanceUID = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 		
 		if (dataset ->findAndGetString(DCM_InstanceNumber, string).good() && string != nil) 
-			_name = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+			_name = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
 		
 		if (dataset ->findAndGetString(DCM_InstanceCreationDate, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];

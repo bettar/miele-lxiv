@@ -49,7 +49,7 @@
 
 #import "tmp_locations.h"
 
-extern NSRecursiveLock *PapyrusLock;
+extern NSRecursiveLock *Papyrus_Lock;
 
 @implementation BrowserController (BrowserControllerDCMTKCategory)
 

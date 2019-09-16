@@ -20,7 +20,6 @@
 
 /* See DCMTK's storescu.cc */
 
-
 #include "url.h"
 
 #undef verify
@@ -99,6 +98,8 @@ END_EXTERN_C
 #import "SendController.h"
 
 #import "OpenGLScreenReader.h"
+
+#define NUM_ENCODINGS        10
 
 #define OFFIS_CONSOLE_APPLICATION "storescu"
 
@@ -1043,7 +1044,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 		[_filesToSend removeDuplicatedStrings];
         
         NSMutableArray *toBeRemoved = [NSMutableArray array];
-        for( NSString *f in _filesToSend)
+        for (NSString *f in _filesToSend)
         {
             if( [[NSFileManager defaultManager] fileExistsAtPath: f] == NO)
             {
@@ -1065,11 +1066,10 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 			if (status.good())
 			{
 				const char *string = NULL;
-                const int NUM_ENCODINGS = 10;
-				NSStringEncoding encoding[ NUM_ENCODINGS];
-				for( int i = 0; i < NUM_ENCODINGS; i++)
-                    encoding[ i] = 0;
-				encoding[ 0] = NSISOLatin1StringEncoding;
+				NSStringEncoding myEncodings[NUM_ENCODINGS];
+                myEncodings[0] = NSISOLatin1StringEncoding;
+				for (int i = 1; i < NUM_ENCODINGS; i++)
+                    myEncodings[i] = NSUTF8StringEncoding;
 				
 				if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != nil)
 				{
@@ -1080,18 +1080,18 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 
 					if( [c count] < NUM_ENCODINGS)
 					{
-						for( int i = 0; i < [c count]; i++)
-                            encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+						for (int i = 0; i < [c count]; i++)
+                            myEncodings[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
 					}
 				}
 
 				if (fileformat.getDataset()->findAndGetString(DCM_PatientName, string, OFFalse).good() && string != nil)
-					_patientName = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+					_patientName = [[DicomFile stringWithBytes: (char*) string encodings:myEncodings] retain];
 				else
                     _patientName = [@"Unnamed" retain];
 				
 				if (fileformat.getDataset()->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != nil)
-					_studyDescription = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+					_studyDescription = [[DicomFile stringWithBytes: (char*) string encodings:myEncodings] retain];
 				else
                     _studyDescription = [@"Unnamed" retain];
 			}

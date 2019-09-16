@@ -66,9 +66,11 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	return mutable1;
 }
 
-// Based on dcmtk 3.6 convertString function
+// Based on dcmtk 3.6.4 function DcmSpecificCharacterSet::convertString()
 
-+ (NSString *) stringWithBytes:(char *) str length:(unsigned) length encodings: (NSStringEncoding*) encodings
++ (NSString *) stringWithBytes:(char *) str
+                        length:(unsigned) length
+                     encodings:(NSStringEncoding*) encodings
 {
 	if( str == nil)
         return nil;
@@ -96,7 +98,8 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	{
 		char c0 = *currentChar++;
         BOOL isEscape = (c0 == '\033');
-        BOOL isDelimiter = (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || (((c0 == '^') || (c0 == '=')) && (((c0 != '^') && (c0 != '=')) || checkPNDelimiters));
+        BOOL isPNDelimiter = ((c0 == '^') || (c0 == '=')) && checkPNDelimiters;
+        BOOL isDelimiter = (c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || isPNDelimiter;
         
         if (isEscape || isDelimiter)
         {

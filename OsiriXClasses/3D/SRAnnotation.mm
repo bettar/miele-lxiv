@@ -36,7 +36,7 @@
 
 #include "dcmtk/dcmsr/dsrtypes.h"
 
-#define DCM_OsirixROI							 DcmTagKey(0x0071, 0x0011)
+#define DCM_OsirixROI				DcmTagKey(0x0071, 0x0011)
 
 @implementation SRAnnotation
 
@@ -225,7 +225,7 @@
 		}
 		
 		// create new Doc 
-		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || !status.good())
+		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || status.bad())
 		{
 			_newSR = YES;
 			document->createNewDocument(DSRTypes::DT_BasicTextSR);	
@@ -275,7 +275,7 @@
 		}
 		
 		// create new Doc
-		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || !status.good())
+		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || status.bad())
 		{
 			_newSR = YES;
 			document->createNewDocument(DSRTypes::DT_BasicTextSR);
@@ -330,7 +330,7 @@
 		}
 		
 		// create new Doc 
-		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || !status.good())
+		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || status.bad())
 		{
 			_newSR = YES;
 			document->createNewDocument(DSRTypes::DT_BasicTextSR);	
@@ -374,7 +374,7 @@
 		}
 		
 		// create new Doc 
-		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || !status.good())
+		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || status.bad())
 		{
 			_newSR = YES;
 			document->createNewDocument(DSRTypes::DT_BasicTextSR);	
@@ -494,7 +494,7 @@
 		}
 		
 		// create new Doc 
-		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || !status.good())
+		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || status.bad())
 		{
 			_newSR = YES;
 			document->createNewDocument(DSRTypes::DT_BasicTextSR);	

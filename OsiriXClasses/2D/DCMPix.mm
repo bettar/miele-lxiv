@@ -116,15 +116,15 @@ static float deg2rad = M_PI / 180.0;
 
 NSString* filenameWithDate( NSString *inputfile);
 
-extern NSRecursiveLock *PapyrusLock;
+extern NSRecursiveLock *Papyrus_Lock;
 extern short Altivec;
 
 void PapyrusLockFunction( int lock)
 {
 	if (lock)
-		[PapyrusLock lock];
+		[Papyrus_Lock lock];
 	else
-		[PapyrusLock unlock];
+		[Papyrus_Lock unlock];
 }
 
 void ConvertFloatToNative (float *theFloat)
@@ -5611,7 +5611,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (void) reloadAnnotations
 {
 #ifdef OSIRIX_VIEWER
-	[PapyrusLock lock];
+	[Papyrus_Lock lock];
 	[annotationsDictionary removeAllObjects];
     
     @try
@@ -5623,7 +5623,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         NSLog( @"*********** reloadAnnotations: %@", e);
     }
     
-	[PapyrusLock unlock];
+	[Papyrus_Lock unlock];
 #endif
 }
 
@@ -6117,7 +6117,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     [purgeCacheLock lock];
     [purgeCacheLock unlockWithCondition: [purgeCacheLock condition]+1];
     
-    [PapyrusLock lock];
+    [Papyrus_Lock lock];
     
     @try
     {
@@ -6158,7 +6158,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         dcmObject = nil;
     }
     
-    [PapyrusLock unlock];
+    [Papyrus_Lock unlock];
     
     if (dcmObject == nil)
     {
@@ -7093,7 +7093,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	if ([purgeCacheLock lockWhenCondition: 0 beforeDate: [NSDate dateWithTimeIntervalSinceNow: 10]])
     {
-        [PapyrusLock lock];
+        [Papyrus_Lock lock];
         
         @try 
         {
@@ -7104,7 +7104,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
         }
         
-        [PapyrusLock unlock];
+        [Papyrus_Lock unlock];
         [purgeCacheLock unlock];
     }
     else
@@ -7113,7 +7113,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) clearCachedDCMFrameworkFiles
 {
-    [PapyrusLock lock];
+    [Papyrus_Lock lock];
     
     @try
     {
@@ -7138,7 +7138,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         N2LogExceptionWithStackTrace(e);
     }
     
-    [PapyrusLock unlock];
+    [Papyrus_Lock unlock];
 }
 
 - (BOOL) loadDICOMPapyrus

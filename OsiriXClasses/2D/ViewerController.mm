@@ -12325,7 +12325,9 @@ static float oldsetww, oldsetwl;
 						[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
 						[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
 						
-						[NSThread detachNewThreadSelector: @selector(applyConvolutionZThread:) toTarget: self withObject: d];
+						[NSThread detachNewThreadSelector: @selector(applyConvolutionZThread:)
+                                                 toTarget: self
+                                               withObject: d];
 					}
 				}
 				else
@@ -12353,7 +12355,9 @@ static float oldsetww, oldsetwl;
 		
 		[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification
+                                                            object: pixList[ curMovieIndex]
+                                                          userInfo: nil];
 	}
 	else
         NSRunAlertPanel(NSLocalizedString(@"Convolution", nil),
@@ -12372,7 +12376,7 @@ static float oldsetww, oldsetwl;
     
 	for (int i = 0; i < 25; i++)
 	{
-		NSCell  *theCell = [convMatrix cellWithTag: i];
+		NSCell *theCell = [convMatrix cellWithTag: i];
 		sum += [[theCell stringValue] floatValue];
 	}
 	
@@ -12383,51 +12387,51 @@ static float oldsetww, oldsetwl;
 
 - (IBAction) changeMatrixSize:(id) sender
 {
-	id          theCell = [sender selectedCell];
-    long		x, y;
+	id theCell = [sender selectedCell];
+    //long x, y;
 	
-    switch( [theCell tag])
+    switch ([theCell tag])
 	{
 		case 3: //3x3
-		for (x = 0; x < 5; x++)
-		{
-			for (y = 0; y < 5; y++)
-			{
-				theCell = [convMatrix cellAtRow:y column:x];
-				
-				if (x < 1 || x > 3 || y < 1 || y > 3)
-				{
-					[theCell setEnabled:NO];
-					[theCell setStringValue:@""];
-					[theCell setAlignment:NSCenterTextAlignment];
-				}
-				else
-				{
-					[theCell setEnabled:YES];
-					if ([[theCell stringValue] isEqualToString:@""] == YES)
-                        [theCell setStringValue:@"0"];
+            for (long x = 0; x < 5; x++)
+            {
+                for (long y = 0; y < 5; y++)
+                {
+                    theCell = [convMatrix cellAtRow:y column:x];
                     
-					[theCell setAlignment:NSCenterTextAlignment];
-				}
-			}
-		}
-		break;
+                    if (x < 1 || x > 3 || y < 1 || y > 3)
+                    {
+                        [theCell setEnabled:NO];
+                        [theCell setStringValue:@""];
+                        [theCell setAlignment:NSCenterTextAlignment];
+                    }
+                    else
+                    {
+                        [theCell setEnabled:YES];
+                        if ([[theCell stringValue] isEqualToString:@""] == YES)
+                            [theCell setStringValue:@"0"];
+                        
+                        [theCell setAlignment:NSCenterTextAlignment];
+                    }
+                }
+            }
+            break;
 		
 		case 5: //5x5
-		for (x = 0; x < 5; x++)
-		{
-			for (y = 0; y < 5; y++)
-			{
-				theCell = [convMatrix cellAtRow:y column:x];
-				
-				[theCell setEnabled:YES];
-				if ([[theCell stringValue] isEqualToString:@""] == YES)
-                    [theCell setStringValue:@"0"];
-                
-				[theCell setAlignment:NSCenterTextAlignment];
-			}
-		}
-		break;
+            for (long x = 0; x < 5; x++)
+            {
+                for (long y = 0; y < 5; y++)
+                {
+                    theCell = [convMatrix cellAtRow:y column:x];
+                    
+                    [theCell setEnabled:YES];
+                    if ([[theCell stringValue] isEqualToString:@""] == YES)
+                        [theCell setStringValue:@"0"];
+                    
+                    [theCell setAlignment:NSCenterTextAlignment];
+                }
+            }
+            break;
 	}
 	
 	[self convMatrixAction:self];

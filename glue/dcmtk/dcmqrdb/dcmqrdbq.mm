@@ -86,6 +86,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcerror.h"
 
 //#define HANDLE_QUERY_IDENTIFIER
+#define NUM_ENCODINGS        10
 
 extern BOOL forkedProcess;
 
@@ -331,8 +332,8 @@ void str_toupper(char *s)
     while(*s)
     {
 		int v = toupper(*s);
-		if( v < 32) v = '0';
-		if( v > 'Z') v = '0';
+		if (v < 32) v = '0';
+		if (v > 'Z') v = '0';
         *s = v;
         s++;
     }
@@ -343,7 +344,7 @@ Log Entry
 *************/
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dataset)
 {
-	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO)
+	if ([[BrowserController currentBrowser] isNetworkLogsActive] == NO)
         return EC_Normal;
 	
 	const char *scs = 0L;
@@ -395,25 +396,26 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	else
         strcpy( seriesUID, patientName);
 	
-	if( handle_->logDictionary == nil)
+	if (handle_->logDictionary == nil)
 	{
 		handle_->logDictionary = [NSMutableDictionary new];
 		
         // Encoding
-        NSStringEncoding encoding[ 10];
-        for( int i = 0; i < 10; i++) encoding[ i] = 0;
-        encoding[ 0] = NSISOLatin1StringEncoding;
+        NSStringEncoding myEncodings[NUM_ENCODINGS];
+        myEncodings[0] = NSISOLatin1StringEncoding;
+        for (int i = 1; i < NUM_ENCODINGS; i++)
+            myEncodings[i] = NSUTF8StringEncoding;
         
         NSArray	*c = [[NSString stringWithCString: specificCharacterSet] componentsSeparatedByString:@"\\"];
         
-        if( [c count] < 10)
+        if ([c count] < NUM_ENCODINGS)
         {
             for (int i = 0; i < [c count]; i++)
-                encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+                myEncodings[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
         }
         
-        [handle_->logDictionary setObject: [DicomFile stringWithBytes: patientName encodings: encoding] forKey: @"logPatientName"];
-        [handle_->logDictionary setObject: [DicomFile stringWithBytes: studyDescription encodings: encoding] forKey: @"logStudyDescription"];
+        [handle_->logDictionary setObject: [DicomFile stringWithBytes: patientName encodings: myEncodings] forKey: @"logPatientName"];
+        [handle_->logDictionary setObject: [DicomFile stringWithBytes: studyDescription encodings: myEncodings] forKey: @"logStudyDescription"];
         [handle_->logDictionary setObject: handle_->callingAET forKey: @"logCallingAET"];
         [handle_->logDictionary setObject: [NSDate date] forKey: @"logStartTime"];
 		[handle_->logDictionary setObject: @"In Progress" forKey: @"logMessage"];
@@ -637,7 +639,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
     ***/
 	
 	// Search Core Data here
-	if( handle_ -> dataHandler == 0L)
+	if (handle_ -> dataHandler == 0L)
 		handle_ -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
 		
 	cond = [handle_->dataHandler prepareFindForDataSet:findRequestIdentifiers];
@@ -838,7 +840,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextFindResponse (
     *findResponseIdentifiers = new DcmDataset ;
     DCMQRDB_INFO("nextFindResponse () : new dataset");
 	
-	if( handle_ -> dataHandler == 0L)
+	if (handle_ -> dataHandler == 0L)
 		handle_ -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
 		
 	cond = [handle_ ->dataHandler nextFindObject:*findResponseIdentifiers isComplete:&isComplete];
@@ -907,7 +909,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
     status->setStatus(STATUS_Pending);
     
     /**** Goto the next matching image number ***/
-    if( handle_ -> dataHandler == 0L)
+    if (handle_ -> dataHandler == 0L)
         handle_ -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
     
     OFCondition cond = [handle_->dataHandler nextMoveObject:imageFileName];
@@ -1097,7 +1099,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
 	
 	// Search Core Data here
 	//NSLog(@"search core data for move");
-	if( handle_ -> dataHandler == 0L)
+	if (handle_ -> dataHandler == 0L)
 		handle_ -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
 	
 	handle_ -> dataHandler.callingAET = [NSString stringWithString: handle_ -> callingAET];

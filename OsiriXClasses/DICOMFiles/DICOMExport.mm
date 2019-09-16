@@ -35,6 +35,8 @@
 #import "DicomStudy.h"
 #include "dcmtk/ofstd/ofcond.h"
 
+#define NUM_ENCODINGS        10
+
 static float deg2rad = M_PI / 180.0f; 
 
 @implementation DICOMExport
@@ -53,7 +55,7 @@ static float deg2rad = M_PI / 180.0f;
 
 - (void) setSeriesDescription: (NSString*) desc
 {
-	if( desc != exportSeriesDescription)
+	if (desc != exportSeriesDescription)
 	{
 		[exportSeriesDescription release];
 		exportSeriesDescription = [desc retain];
@@ -62,7 +64,7 @@ static float deg2rad = M_PI / 180.0f;
 
 - (void) setSeriesNumber: (long) no
 {
-    if( exportSeriesNumber != no)
+    if (exportSeriesNumber != no)
     {
         exportSeriesNumber = no;
         
@@ -70,11 +72,11 @@ static float deg2rad = M_PI / 180.0f;
         exportSeriesUID = nil;
         for( DicomSeries *series in iDicomImage.series.study.series)
         {
-            if( series.id.intValue == exportSeriesNumber)
+            if (series.id.intValue == exportSeriesNumber)
                 exportSeriesUID = [series.seriesDICOMUID copy];
         }
         
-        if( exportSeriesUID == nil)
+        if (exportSeriesUID == nil)
             exportSeriesUID = [[DCMObject newSeriesInstanceUID] retain];
     }
 }
@@ -136,13 +138,14 @@ static float deg2rad = M_PI / 180.0f;
 {
     NSLog(@"DICOMExport released");
     
-    if( localData)
+    if (localData)
         free( localData);
     localData = nil;
     
     [image release];
     [imageRepresentation release];
-    if( freeImageData) free( imageData);
+    if (freeImageData)
+        free( imageData);
     
     [exportSeriesUID release];
     [exportSeriesDescription release];
@@ -150,7 +153,7 @@ static float deg2rad = M_PI / 180.0f;
     [dcmSourcePath release];
     [iDicomImage release];
     
-    if( dcmtkFileFormat)
+    if (dcmtkFileFormat)
         delete dcmtkFileFormat;
     
     [metaDataDict release];
@@ -194,7 +197,7 @@ static float deg2rad = M_PI / 180.0f;
 		width:				(long) iwidth
 		height:				(long) iheight
 {
-	if( localData)
+	if (localData)
 		free( localData);
 	localData = nil;
 	
@@ -204,10 +207,10 @@ static float deg2rad = M_PI / 180.0f;
 	height = iheight;
 	data = idata;
 	
-	if( spp == 4 && bps == 8)
+	if (spp == 4 && bps == 8)
 	{
 		localData = (unsigned char*) malloc( width * height * 3);
-		if( localData)
+		if (localData)
 		{
 			spp = 3;
 			
@@ -241,7 +244,7 @@ static float deg2rad = M_PI / 180.0f;
 
 - (long) setPixelNSImage:	(NSImage*) iimage
 {
-	if( image != iimage)
+	if (image != iimage)
 	{
 		[image release];
 		image = nil;
@@ -249,20 +252,21 @@ static float deg2rad = M_PI / 180.0f;
 		[imageRepresentation release];
 		imageRepresentation = nil;
 		
-		if( freeImageData) free( imageData);
+		if (freeImageData)
+            free( imageData);
 		freeImageData = NO;
 		imageData = nil;
 		
 		image = [iimage retain];
 	}
 
-	if( image)
+	if (image)
 	{
 		NSData				*tiffRep = [image TIFFRepresentation];
 		NSSize				imageSize;
 		long				w, h, i;
 		
-		if( tiffRep)
+		if (tiffRep)
 		{
 			imageRepresentation = [[NSBitmapImageRep alloc] initWithData:tiffRep];
 			imageSize = [imageRepresentation size];
@@ -270,7 +274,7 @@ static float deg2rad = M_PI / 180.0f;
 			w = imageSize.width;
 			h = imageSize.height;
 			
-			if( [imageRepresentation bytesPerRow] != w)
+			if ([imageRepresentation bytesPerRow] != w)
 			{
 				imageData = (unsigned char*) malloc( h * w * [imageRepresentation samplesPerPixel]);
 				freeImageData = YES;
@@ -392,7 +396,7 @@ static float deg2rad = M_PI / 180.0f;
 	dcmGenerateUniqueIdentifier(buf, SITE_STUDY_UID_ROOT);
 	if (result.good())
     {
-        if( [dict objectForKey: @"studyUID"])
+        if ([dict objectForKey: @"studyUID"])
             result = dataset->putAndInsertString(DCM_StudyInstanceUID, [[dict objectForKey: @"studyUID"] UTF8String]);
         else
             result = dataset->putAndInsertString(DCM_StudyInstanceUID, buf);
@@ -401,7 +405,7 @@ static float deg2rad = M_PI / 180.0f;
 	dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
 	if (result.good())
     {
-        if( [dict objectForKey: @"seriesUID"])
+        if ([dict objectForKey: @"seriesUID"])
             result = dataset->putAndInsertString(DCM_SeriesInstanceUID, [[dict objectForKey: @"seriesUID"] UTF8String]);
         else
             result = dataset->putAndInsertString(DCM_SeriesInstanceUID, buf);
@@ -451,45 +455,45 @@ static float deg2rad = M_PI / 180.0f;
     NSLog( @"---- OSIRIX LIGHT CANNOT write DICOM files");
     #endif
     
-	if( spp != 1 && spp != 3)
+	if (spp != 1 && spp != 3)
 	{
 		NSLog( @"**** DICOM Export: sample per pixel not supported: %ld", spp);
 		return nil;
 	}
 	
-	if( spp == 3)
+	if (spp == 3)
 	{
-		if( bps != 8)
+		if (bps != 8)
 		{
 			NSLog( @"**** DICOM Export: for RGB images, only 8 bits per sample is supported: %ld", bps);
 			return nil;
 		}
 	}
 	
-	if( bps != 8 && bps != 16 && bps != 32)
+	if (bps != 8 && bps != 16 && bps != 32)
 	{
 		NSLog( @"**** DICOM Export: unknown bits per sample: %ld", bps);
 		return nil;
 	}
 	
-	if( width != 0 && height != 0 && data != nil)
+	if (width != 0 && height != 0 && data != nil)
 	{
 		@try
 		{
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForDicomExport"])
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForDicomExport"])
 			{
 				const char *string = nil, *modality = nil;
 				unsigned char *squaredata = nil;
 				
-				if( spacingX != 0 && spacingY != 0)
+				if (spacingX != 0 && spacingY != 0)
 				{
-					if( spacingX != spacingY && [[NSUserDefaults standardUserDefaults] boolForKey: @"squarePixelWhenExport"])	// Convert to square pixels
+					if (spacingX != spacingY && [[NSUserDefaults standardUserDefaults] boolForKey: @"squarePixelWhenExport"])	// Convert to square pixels
 					{
-                        if( bps == 16)
+                        if (bps == 16)
                         {
                             long newHeight, newWidth;
                             
-                            if( spacingY > spacingX)
+                            if (spacingY > spacingX)
                             {
                                 newHeight = ((float) height * spacingY) / spacingX;
                                 newWidth = width;
@@ -513,7 +517,7 @@ static float deg2rad = M_PI / 180.0f;
                             float	*tempFloatSrc = (float*) malloc( height * width * sizeof( float));
                             float	*tempFloatDst = (float*) malloc( newHeight * newWidth * sizeof( float));
                             
-                            if( squaredata != nil && tempFloatSrc != nil && tempFloatDst != nil)
+                            if (squaredata != nil && tempFloatSrc != nil && tempFloatDst != nil)
                             {
                                 long err;
                                 
@@ -528,7 +532,7 @@ static float deg2rad = M_PI / 180.0f;
                                 dstVimage.width = width;
                                 dstVimage.rowBytes = width*sizeof( float);
                                 
-                                if( isSigned)
+                                if (isSigned)
                                     err = vImageConvert_16SToF(&srcVimage, &dstVimage, 0,  1, 0);
                                 else
                                     err = vImageConvert_16UToF(&srcVimage, &dstVimage, 0,  1, 0);
@@ -545,7 +549,7 @@ static float deg2rad = M_PI / 180.0f;
                                 dstVimage.rowBytes = newWidth*sizeof( float);
                                 
                                 err = vImageScale_PlanarF( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
-                                //	if( err) NSLog(@"%d", err);
+                                //	if (err) NSLog(@"%d", err);
                                 
                                 // Convert Destination to 16 bits
                                 srcVimage.data = tempFloatDst;
@@ -558,12 +562,12 @@ static float deg2rad = M_PI / 180.0f;
                                 dstVimage.width = newWidth;
                                 dstVimage.rowBytes = newWidth* bps/8;
                                 
-                                if( isSigned)
+                                if (isSigned)
                                     err = vImageConvert_FTo16S( &srcVimage, &dstVimage, 0,  1, 0);
                                 else
                                     err = vImageConvert_FTo16U( &srcVimage, &dstVimage, 0,  1, 0);
 								
-                                if( spacingY > spacingX)
+                                if (spacingY > spacingX)
                                     spacingY = spacingX;
                                 else
                                     spacingX = spacingY;
@@ -580,7 +584,7 @@ static float deg2rad = M_PI / 180.0f;
                     }
                 }
                 
-                if( rotateRawDataBy90degrees)
+                if (rotateRawDataBy90degrees)
                 {
                     float copySpacingX = spacingX;
                     spacingX = spacingY;
@@ -591,12 +595,12 @@ static float deg2rad = M_PI / 180.0f;
                     height = copyWidth;
                     
                     //Origin and vector
-                    if( orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0)
+                    if (orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0)
                     {
                         float x = 0, y = width;
                         float newOrigin[ 3];
                         
-                        if( spacingX != 0 && spacingY != 0)
+                        if (spacingX != 0 && spacingY != 0)
                         {
                             newOrigin[0] = position[0] + y*orientation[3]*spacingY + x*orientation[0]*spacingX;
                             newOrigin[1] = position[1] + y*orientation[4]*spacingY + x*orientation[1]*spacingX;
@@ -727,7 +731,7 @@ static float deg2rad = M_PI / 180.0f;
                 }
                 
 #if __BIG_ENDIAN__
-                if( bps == 16)
+                if (bps == 16)
                 {
                     //Convert to little endian
                     InverseShorts( (vector unsigned short*) data, height * width);
@@ -736,12 +740,13 @@ static float deg2rad = M_PI / 180.0f;
                 
                 int elemLength = height * width * spp * bps / 8;
                 
-                if( elemLength%2 != 0)
+                if (elemLength%2 != 0)
                 {
                     height--;
                     elemLength = height * width * spp * bps / 8;
                     
-                    if( elemLength%2 != 0) NSLog( @"***************** ODD element !!!!!!!!!!");
+                    if (elemLength%2 != 0)
+                        NSLog( @"***************** ODD element !!!!!!!!!!");
                 }
                 
                 int highBit;
@@ -777,16 +782,16 @@ static float deg2rad = M_PI / 180.0f;
                 NSString *photometricInterpretation = @"MONOCHROME2";
                 if (spp == 3) photometricInterpretation = @"RGB";
                 
-                if( dcmtkFileFormat)
+                if (dcmtkFileFormat)
                     delete dcmtkFileFormat;
                 
                 dcmtkFileFormat = new DcmFileFormat();
                 
                 BOOL succeed = NO;
                 
-                if( dcmSourcePath)
+                if (dcmSourcePath)
                 {
-                    if( [DicomFile isDICOMFile: dcmSourcePath])
+                    if ([DicomFile isDICOMFile: dcmSourcePath])
                     {
                         OFCondition cond = dcmtkFileFormat->loadFile( [dcmSourcePath UTF8String], EXS_Unknown, EGL_noChange);
                         succeed = (cond.good()) ? YES : NO;
@@ -795,7 +800,7 @@ static float deg2rad = M_PI / 180.0f;
                     {
                         DicomFile* file = [[[DicomFile alloc] init:dcmSourcePath] autorelease];
                         
-                        if( file)
+                        if (file)
                         {
                             succeed = [self createDICOMHeader: dcmtkFileFormat->getDataset()
                                                    dictionary: [NSDictionary dictionaryWithObjectsAndKeys:
@@ -811,70 +816,74 @@ static float deg2rad = M_PI / 180.0f;
                     }
                 }
 				
-                if( succeed == NO)
+                if (succeed == NO)
                 {
                     succeed = [self createDICOMHeader: dcmtkFileFormat->getDataset() dictionary: metaDataDict];
                     dcmtkFileFormat->getMetaInfo()->putAndInsertString(DCM_MediaStorageSOPClassUID, UID_SecondaryCaptureImageStorage);
                 }
                 
-                if( succeed)
+                if (succeed)
                 {
-                    NSStringEncoding encoding[ 10];
-                    for( int i = 0; i < 10; i++)
-                        encoding[ i] = 0;
-                    encoding[ 0] = NSISOLatin1StringEncoding;
+                    NSStringEncoding myEncodings[NUM_ENCODINGS];
+                    myEncodings[0] = NSISOLatin1StringEncoding;
+                    for (int i = 1; i < NUM_ENCODINGS; i++)
+                        myEncodings[i] = 0;
                     
                     dcmtkFileFormat->loadAllDataIntoMemory();
                     
                     DcmItem *dataset = dcmtkFileFormat->getDataset();
                     DcmMetaInfo *metaInfo = dcmtkFileFormat->getMetaInfo();
                     
-                    if( removeDICOMOverlays == NO)
+                    if (removeDICOMOverlays == NO)
                     {
                         Uint16 existingRows = 0, existingColumns = 0;
                         dataset->findAndGetUint16( DCM_Rows, existingRows);
                         dataset->findAndGetUint16( DCM_Columns, existingColumns);
                         
-                        if( existingColumns != width || existingRows != height)
+                        if (existingColumns != width || existingRows != height)
                             removeDICOMOverlays = YES;
                         
 //                        Float64 existingSpacingY = 0, existingSpacingX = 0;
 //                        dataset->findAndGetFloat64( DCM_PixelSpacing, existingSpacingY, 0);
 //                        dataset->findAndGetFloat64( DCM_PixelSpacing, existingSpacingX, 1);
 //                        
-//                        if( fabs( existingSpacingY - spacingY) > 0.0001 || fabs( existingSpacingX - spacingX) > 0.0001)
+//                        if (fabs( existingSpacingY - spacingY) > 0.0001 || fabs( existingSpacingX - spacingX) > 0.0001)
 //                            removeDICOMOverlays = YES;
                     }
                     
                     [self removeAllFieldsOfGroup: 0x0028 dataset: dataset];
                     [self removeAllFieldsOfGroup: 0x5200 dataset: dataset];     //We don't support multiframe export
 					
-                    if( removeDICOMOverlays)
+                    if (removeDICOMOverlays)
                         [self removeAllFieldsOfGroup: 0x6000 dataset: dataset];
                     
                     if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
                     {
                         NSArray	*c = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
                         
-                        if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+                        if ([c count] >= NUM_ENCODINGS)
+                            NSLog( @"Encoding number >= %d ???", NUM_ENCODINGS);
                         
-                        if( [c count] < 10)
+                        if ([c count] < NUM_ENCODINGS)
                         {
-                            for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-                            for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+                            for( int i = 0; i < [c count]; i++)
+                                myEncodings[i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+    
+                            for( int i = [c count]; i < NUM_ENCODINGS; i++)
+                                myEncodings[i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
                         }
                     }
                     
-                    if( exportSeriesUID)
+                    if (exportSeriesUID)
                         dataset->putAndInsertString( DCM_SeriesInstanceUID, [exportSeriesUID UTF8String]);
                     
-                    if( exportSeriesDescription)
-                        dataset->putAndInsertString( DCM_SeriesDescription, [exportSeriesDescription cStringUsingEncoding: encoding[ 0]]);
+                    if (exportSeriesDescription)
+                        dataset->putAndInsertString( DCM_SeriesDescription, [exportSeriesDescription cStringUsingEncoding: myEncodings[0]]);
                     
-                    if( exportSeriesNumber != -1)
+                    if (exportSeriesNumber != -1)
                         dataset->putAndInsertString( DCM_SeriesNumber, [[NSString stringWithFormat: @"%d", exportSeriesNumber] UTF8String]);
                     
-                    if( modalityAsSource == NO || spp == 3)
+                    if (modalityAsSource == NO || spp == 3)
                     {
                         //						dataset->putAndInsertString( DCM_Modality, "SC");
                         metaInfo->putAndInsertString( DCM_MediaStorageSOPClassUID, UID_SecondaryCaptureImageStorage);
@@ -900,48 +909,48 @@ static float deg2rad = M_PI / 180.0f;
                     delete dataset->remove( DCM_ImagerPixelSpacing);
                     delete dataset->remove( DCM_EstimatedRadiographicMagnificationFactor);
                     
-                    if( spacingX != 0 && spacingY != 0)
+                    if (spacingX != 0 && spacingY != 0)
                         dataset->putAndInsertString( DCM_PixelSpacing, [[NSString stringWithFormat: @"%f\\%f", spacingY, spacingX] UTF8String]);
                     
                     delete dataset->remove( DCM_SliceThickness);
-                    if( sliceThickness != 0)
+                    if (sliceThickness != 0)
                         dataset->putAndInsertString( DCM_SliceThickness, [[NSString stringWithFormat: @"%f", sliceThickness] UTF8String]);
                     
                     delete dataset->remove( DCM_ImageOrientationPatient);
-                    if( orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0)
+                    if (orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0)
                         dataset->putAndInsertString( DCM_ImageOrientationPatient, [[NSString stringWithFormat: @"%f\\%f\\%f\\%f\\%f\\%f", orientation[ 0], orientation[ 1], orientation[ 2], orientation[ 3], orientation[ 4], orientation[ 5]] UTF8String]);
                     
                     delete dataset->remove( DCM_ImagePositionPatient);
-                    if( position[ 0] != 0 || position[ 1] != 0 || position[ 2] != 0)
+                    if (position[ 0] != 0 || position[ 1] != 0 || position[ 2] != 0)
                     {
                         dataset->putAndInsertString( DCM_ImagePositionPatient, [[NSString stringWithFormat: @"%f\\%f\\%f", position[ 0], position[ 1], position[ 2]] UTF8String]);
                     }
                     
                     delete dataset->remove( DCM_SliceLocation);
-                    if( slicePosition != 0)
+                    if (slicePosition != 0)
                         dataset->putAndInsertString( DCM_SliceLocation, [[NSString stringWithFormat: @"%f", slicePosition] UTF8String]);
                     
                     delete dataset->remove( DCM_PlanarConfiguration);
-                    if( spp == 3)
+                    if (spp == 3)
                         dataset->putAndInsertString( DCM_PlanarConfiguration, "0");
                     
-                    if( dataset->findAndGetString( DCM_Modality, string, OFFalse).good() && string != NULL)
+                    if (dataset->findAndGetString( DCM_Modality, string, OFFalse).good() && string != NULL)
                         modality = string;
                     
                     delete dataset->remove( DCM_PixelData);
                     delete dataset->remove( DcmTagKey( 0x0009, 0x1110)); // "GEIIS" The problematic private group, containing a *always* JPEG compressed PixelData
                     
-                    if( bps == 32) // float support
+                    if (bps == 32) // float support
                     {
                         dataset->putAndInsertString( DCM_RescaleIntercept, "0");
                         dataset->putAndInsertString( DCM_RescaleSlope, "1");
                         
-                        if( modality && strcmp( modality, "CT") == 0)
+                        if (modality && strcmp( modality, "CT") == 0)
                             dataset->putAndInsertString( DCM_RescaleType, "HU");
                         else
                             dataset->putAndInsertString( DCM_RescaleType, "US");
                         
-                        if( ww != -1 && ww != -1)
+                        if (ww != -1 && ww != -1)
                         {
                             dataset->putAndInsertString( DCM_WindowCenter, [[NSString stringWithFormat: @"%d", (int) wl] UTF8String]);
                             dataset->putAndInsertString( DCM_WindowWidth, [[NSString stringWithFormat: @"%d", (int) ww] UTF8String]);
@@ -949,21 +958,21 @@ static float deg2rad = M_PI / 180.0f;
                         
                         dataset->putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(Uint8 *, OFconst_cast(void *, (void*) data)), height*width*4);
                     }
-                    else if( bps == 16)
+                    else if (bps == 16)
                     {
-                        if( isSigned == NO)
+                        if (isSigned == NO)
                             dataset->putAndInsertString( DCM_RescaleIntercept, [[NSString stringWithFormat: @"%d", offset] UTF8String]);
                         else
                             dataset->putAndInsertString( DCM_RescaleIntercept, "0");
                         
                         dataset->putAndInsertString( DCM_RescaleSlope, [[NSString stringWithFormat: @"%f", slope] UTF8String]);
                         
-                        if( modality && strcmp( modality, "CT") == 0)
+                        if (modality && strcmp( modality, "CT") == 0)
                             dataset->putAndInsertString( DCM_RescaleType, "HU");
                         else
                             dataset->putAndInsertString( DCM_RescaleType, "US");
                         
-                        if( ww != -1 && ww != -1)
+                        if (ww != -1 && ww != -1)
                         {
                             dataset->putAndInsertString( DCM_WindowCenter, [[NSString stringWithFormat: @"%d", (int) wl] UTF8String]);
                             dataset->putAndInsertString( DCM_WindowWidth, [[NSString stringWithFormat: @"%d", (int) ww] UTF8String]);
@@ -977,7 +986,7 @@ static float deg2rad = M_PI / 180.0f;
                         delete dataset->remove( DCM_WindowWidth);
                         delete dataset->remove( DCM_WindowCenter);
                         
-                        if( spp != 3)
+                        if (spp != 3)
                         {
                             dataset->putAndInsertString( DCM_RescaleIntercept, "0");
                             dataset->putAndInsertString( DCM_RescaleSlope, "1");
@@ -1005,19 +1014,19 @@ static float deg2rad = M_PI / 180.0f;
                     metaInfo->putAndInsertString( DCM_MediaStorageSOPInstanceUID, buf);
                     
                     dcmtkFileFormat->chooseRepresentation( EXS_LittleEndianExplicit, NULL);
-                    if( dcmtkFileFormat->canWriteXfer( EXS_LittleEndianExplicit))
+                    if (dcmtkFileFormat->canWriteXfer( EXS_LittleEndianExplicit))
                     {
                         // Add to the current DB
-                        if( dstPath == nil)
+                        if (dstPath == nil)
                             dstPath = [[[BrowserController currentBrowser] database] uniquePathForNewDataFileWithExtension: @"dcm"];
                         
                         OFCondition cond = dcmtkFileFormat->saveFile( [dstPath UTF8String], EXS_LittleEndianExplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
                         OFBool fileWriteSucceeded = (cond.good()) ? YES : NO;
                         
-                        if( fileWriteSucceeded == NO)
+                        if (fileWriteSucceeded == NO)
                             NSLog( @"******* dcmtkFileFormat->saveFile failed");
                     }
-                    else if( triedToDecompress == NO)
+                    else if (triedToDecompress == NO)
                     {
                         NSLog( @"------ dcmtkFileFormat->canWriteXfer( EXS_LittleEndianExplicit) failed: try to decompress the file");
                         
@@ -1028,9 +1037,9 @@ static float deg2rad = M_PI / 180.0f;
                         [[NSFileManager defaultManager] copyItemAtPath: dcmSourcePath toPath: tmpFile error: nil];
                         [DicomDatabase decompressDicomFilesAtPaths: @[tmpFile]];
                         
-                        if( [[NSFileManager defaultManager] fileExistsAtPath: tmpFile])
+                        if ([[NSFileManager defaultManager] fileExistsAtPath: tmpFile])
                         {
-                            if( squaredata)
+                            if (squaredata)
                                 free( squaredata);
                             squaredata = nil;
                             
@@ -1049,7 +1058,7 @@ static float deg2rad = M_PI / 180.0f;
                         }
                     }
                     
-                    if( squaredata)
+                    if (squaredata)
                         free( squaredata);
                     squaredata = nil;
                     
@@ -1070,7 +1079,7 @@ static float deg2rad = M_PI / 180.0f;
 //				
 //				seriesNumber = [NSNumber numberWithInt:exportSeriesNumber];
 //				
-//				if( dcmSourcePath)
+//				if (dcmSourcePath)
 //				{
 //					if ([DicomFile isDICOMFile:dcmSourcePath])
 //					{
@@ -1091,7 +1100,7 @@ static float deg2rad = M_PI / 180.0f;
 //						contentTime = [dcmObject attributeValueWithName:@"ContentTime"];
 //						charSet = [dcmObject attributeValueWithName:@"SpecificCharacterSet"];
 //						
-//						if( [seriesNumber intValue] == -1)
+//						if ([seriesNumber intValue] == -1)
 //							seriesNumber = [dcmObject attributeValueWithName:@"SeriesNumber"];
 //					}
 //					else if ([DicomFile isFVTiffFile:dcmSourcePath])
@@ -1120,11 +1129,11 @@ static float deg2rad = M_PI / 180.0f;
 //					studyTime = [DCMCalendarDate date];
 //				}
 //				
-//				if( spacingX != 0 && spacingY != 0)
+//				if (spacingX != 0 && spacingY != 0)
 //				{
-//					if( spacingX != spacingY)	// Convert to square pixels
+//					if (spacingX != spacingY)	// Convert to square pixels
 //					{
-//						if( bps == 16)
+//						if (bps == 16)
 //						{
 //							vImage_Buffer	srcVimage, dstVimage;
 //							long			newHeight = ((float) height * spacingY) / spacingX;
@@ -1137,7 +1146,7 @@ static float deg2rad = M_PI / 180.0f;
 //							float	*tempFloatSrc = (float*) malloc( height * width * sizeof( float));
 //							float	*tempFloatDst = (float*) malloc( newHeight * width * sizeof( float));
 //							
-//							if( squaredata != nil && tempFloatSrc != nil && tempFloatDst != nil)
+//							if (squaredata != nil && tempFloatSrc != nil && tempFloatDst != nil)
 //							{
 //								long err;
 //								
@@ -1152,7 +1161,7 @@ static float deg2rad = M_PI / 180.0f;
 //								dstVimage.width = width;
 //								dstVimage.rowBytes = width*sizeof( float);
 //								
-//								if( isSigned)
+//								if (isSigned)
 //									err = vImageConvert_16SToF(&srcVimage, &dstVimage, 0,  1, 0);
 //								else
 //									err = vImageConvert_16UToF(&srcVimage, &dstVimage, 0,  1, 0);
@@ -1169,7 +1178,7 @@ static float deg2rad = M_PI / 180.0f;
 //								dstVimage.rowBytes = width*sizeof( float);
 //								
 //								err = vImageScale_PlanarF( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
-//							//	if( err) NSLog(@"%d", err);
+//							//	if (err) NSLog(@"%d", err);
 //								
 //								// Convert Destination to 16 bits
 //								srcVimage.data = tempFloatDst;
@@ -1182,7 +1191,7 @@ static float deg2rad = M_PI / 180.0f;
 //								dstVimage.width = width;
 //								dstVimage.rowBytes = width* bps/8;
 //								
-//								if( isSigned)
+//								if (isSigned)
 //									err = vImageConvert_FTo16S( &srcVimage, &dstVimage, 0,  1, 0);
 //								else
 //									err = vImageConvert_FTo16U( &srcVimage, &dstVimage, 0,  1, 0);
@@ -1200,7 +1209,7 @@ static float deg2rad = M_PI / 180.0f;
 //				}
 //				
 //				#if __BIG_ENDIAN__
-//				if( bps == 16)
+//				if (bps == 16)
 //				{
 //					//Convert to little endian
 //					InverseShorts( (vector unsigned short*) data, height * width);
@@ -1209,12 +1218,12 @@ static float deg2rad = M_PI / 180.0f;
 //				
 //				int elemLength = height * width * spp * bps / 8;
 //				
-//				if( elemLength%2 != 0)
+//				if (elemLength%2 != 0)
 //				{
 //					height--;
 //					elemLength = height * width * spp * bps / 8;
 //					
-//					if( elemLength%2 != 0) NSLog( @"***************** ODD element !!!!!!!!!!");
+//					if (elemLength%2 != 0) NSLog( @"***************** ODD element !!!!!!!!!!");
 //				}
 //				
 //				NSNumber *rows = [NSNumber numberWithInt: height];
@@ -1258,18 +1267,18 @@ static float deg2rad = M_PI / 180.0f;
 //				[dcmDst release];
 //				dcmDst = [[DCMObject secondaryCaptureObjectWithBitDepth: bps  samplesPerPixel:spp numberOfFrames:1] retain];
 //				
-//				if( charSet) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:charSet] forName:@"SpecificCharacterSet"];
-//				if( studyUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyUID] forName:@"StudyInstanceUID"];
-//				if( exportSeriesUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:exportSeriesUID] forName:@"SeriesInstanceUID"];
-//				if( exportSeriesDescription) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:exportSeriesDescription] forName:@"SeriesDescription"];
+//				if (charSet) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:charSet] forName:@"SpecificCharacterSet"];
+//				if (studyUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyUID] forName:@"StudyInstanceUID"];
+//				if (exportSeriesUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:exportSeriesUID] forName:@"SeriesInstanceUID"];
+//				if (exportSeriesDescription) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:exportSeriesDescription] forName:@"SeriesDescription"];
 //				
-//				if( patientName) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:patientName] forName:@"PatientsName"];
-//				if( patientID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:patientID] forName:@"PatientID"];
-//				if( studyDescription) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyDescription] forName:@"StudyDescription"];
-//				if( seriesNumber) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriesNumber] forName:@"SeriesNumber"];
-//				if( studyID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyID] forName:@"StudyID"];
+//				if (patientName) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:patientName] forName:@"PatientsName"];
+//				if (patientID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:patientID] forName:@"PatientID"];
+//				if (studyDescription) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyDescription] forName:@"StudyDescription"];
+//				if (seriesNumber) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriesNumber] forName:@"SeriesNumber"];
+//				if (studyID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyID] forName:@"StudyID"];
 //				
-//				if( dcmObject)
+//				if (dcmObject)
 //				{
 //					if([dcmObject attributeValueWithName:@"PatientsSex"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"PatientsSex"]] forName:@"PatientsSex"];
 //					if([dcmObject attributeValueWithName:@"PatientsBirthDate"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"PatientsBirthDate"]] forName:@"PatientsBirthDate"];
@@ -1281,7 +1290,7 @@ static float deg2rad = M_PI / 180.0f;
 //					if([dcmObject attributeValueWithName:@"ReferringPhysiciansName"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"ReferringPhysiciansName"]] forName:@"ReferringPhysiciansName"];
 //					else [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @""] forName:@"ReferringPhysiciansName"];
 //					
-//					if( modalityAsSource)
+//					if (modalityAsSource)
 //						[dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"Modality"]] forName:@"Modality"];
 //				}
 //				else
@@ -1291,14 +1300,14 @@ static float deg2rad = M_PI / 180.0f;
 //				
 //				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@OUR_MANUFACTURER_NAME] forName:@"ManufacturersModelName"];
 //				
-//				if( studyDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyDate] forName:@"StudyDate"];
-//				if( studyTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyTime] forName:@"StudyTime"];
-//				if( seriesDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriesDate] forName:@"SeriesDate"];
-//				if( seriesTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriesTime] forName:@"SeriesTime"];
-//				if( acquisitionDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:acquisitionDate] forName:@"AcquisitionDate"];
-//				if( acquisitionTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:acquisitionTime] forName:@"AcquisitionTime"];
-//				if( contentDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:contentDate] forName:@"ContentDate"];
-//				if( contentTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:contentTime] forName:@"ContentTime"];
+//				if (studyDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyDate] forName:@"StudyDate"];
+//				if (studyTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyTime] forName:@"StudyTime"];
+//				if (seriesDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriesDate] forName:@"SeriesDate"];
+//				if (seriesTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriesTime] forName:@"SeriesTime"];
+//				if (acquisitionDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:acquisitionDate] forName:@"AcquisitionDate"];
+//				if (acquisitionTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:acquisitionTime] forName:@"AcquisitionTime"];
+//				if (contentDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:contentDate] forName:@"ContentDate"];
+//				if (contentTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:contentTime] forName:@"ContentTime"];
 //				
 //				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:exportInstanceNumber++]] forName:@"InstanceNumber"];
 //				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@1] forName:@"AcquisitionNumber"];
@@ -1315,47 +1324,47 @@ static float deg2rad = M_PI / 180.0f;
 //				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:bitsAllocated]] forName:@"BitsAllocated"];
 //				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:bitsAllocated]] forName:@"BitsStored"];
 //				
-//				if( spacingX != 0 && spacingY != 0)
+//				if (spacingX != 0 && spacingY != 0)
 //				{
 //					[dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:spacingY], [NSNumber numberWithFloat:spacingX], nil] forName:@"PixelSpacing"];
 //				}
-//				if( sliceThickness != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:sliceThickness]] forName:@"SliceThickness"];
-//				if( orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:orientation[ 0]], [NSNumber numberWithFloat:orientation[ 1]], [NSNumber numberWithFloat:orientation[ 2]], [NSNumber numberWithFloat:orientation[ 3]], [NSNumber numberWithFloat:orientation[ 4]], [NSNumber numberWithFloat:orientation[ 5]], nil] forName:@"ImageOrientationPatient"];
-//				if( position[ 0] != 0 || position[ 1] != 0 || position[ 2] != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:position[ 0]], [NSNumber numberWithFloat:position[ 1]], [NSNumber numberWithFloat:position[ 2]], nil] forName:@"ImagePositionPatient"];
-//				if( slicePosition != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:slicePosition]] forName:@"SliceLocation"];
-//				if( spp == 3) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:0]] forName:@"PlanarConfiguration"];
+//				if (sliceThickness != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:sliceThickness]] forName:@"SliceThickness"];
+//				if (orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:orientation[ 0]], [NSNumber numberWithFloat:orientation[ 1]], [NSNumber numberWithFloat:orientation[ 2]], [NSNumber numberWithFloat:orientation[ 3]], [NSNumber numberWithFloat:orientation[ 4]], [NSNumber numberWithFloat:orientation[ 5]], nil] forName:@"ImageOrientationPatient"];
+//				if (position[ 0] != 0 || position[ 1] != 0 || position[ 2] != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:position[ 0]], [NSNumber numberWithFloat:position[ 1]], [NSNumber numberWithFloat:position[ 2]], nil] forName:@"ImagePositionPatient"];
+//				if (slicePosition != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:slicePosition]] forName:@"SliceLocation"];
+//				if (spp == 3) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:0]] forName:@"PlanarConfiguration"];
 //				
-//				if( bps == 32) // float support
+//				if (bps == 32) // float support
 //				{
 //					vr = @"FL";
 //					
 //					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@0] forName:@"RescaleIntercept"];
 //					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@1.0F] forName:@"RescaleSlope"];
 //					
-//					if( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"CT"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"HU"] forName:@"RescaleType"];
+//					if ([[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"CT"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"HU"] forName:@"RescaleType"];
 //					else [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"US"] forName:@"RescaleType"];
 //					
-//					if( ww != -1 && ww != -1)
+//					if (ww != -1 && ww != -1)
 //					{
 //						[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:wl]] forName:@"WindowCenter"];
 //						[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:ww]] forName:@"WindowWidth"];
 //					}
 //				}
-//				else if( bps == 16)
+//				else if (bps == 16)
 //				{
 //					vr = @"OW";
 //					
-//					if( isSigned == NO)
+//					if (isSigned == NO)
 //						[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt: offset]] forName:@"RescaleIntercept"];
 //					else
 //						[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@0] forName:@"RescaleIntercept"];
 //					
 //					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat: slope]] forName:@"RescaleSlope"];
 //					
-//					if( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"CT"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"HU"] forName:@"RescaleType"];
+//					if ([[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"CT"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"HU"] forName:@"RescaleType"];
 //					else [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"US"] forName:@"RescaleType"];
 //					
-//					if( ww != -1 && ww != -1)
+//					if (ww != -1 && ww != -1)
 //					{
 //						[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:wl]] forName:@"WindowCenter"];
 //						[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:ww]] forName:@"WindowWidth"];
@@ -1363,7 +1372,7 @@ static float deg2rad = M_PI / 180.0f;
 //				}
 //				else
 //				{
-//					if( spp != 3)
+//					if (spp != 3)
 //					{
 //						[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@0.0F] forName:@"RescaleIntercept"];
 //						[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@1.0F] forName:@"RescaleSlope"];
@@ -1392,7 +1401,7 @@ static float deg2rad = M_PI / 180.0f;
 //					[dcmExport finalize: dcmDst withSourceObject: dcmObject];
 //				
 //				// Add to the current DB
-//				if( dstPath == nil)
+//				if (dstPath == nil)
 //				{
 //					dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
 //					[dcmDst writeToFile:dstPath withTransferSyntax:ts quality:DCMLosslessQuality atomically:YES];
@@ -1400,7 +1409,7 @@ static float deg2rad = M_PI / 180.0f;
 //				else
 //					[dcmDst writeToFile:dstPath withTransferSyntax:ts quality:DCMLosslessQuality atomically:YES];
 //				
-//				if( squaredata)
+//				if (squaredata)
 //					free( squaredata);
 //				squaredata = nil;
 //				

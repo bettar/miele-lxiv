@@ -59,58 +59,56 @@
 
 @implementation DicomDatabase (DCMTK)
 
-+(BOOL)fileNeedsDecompression:(NSString*)path {
++(BOOL)fileNeedsDecompression:(NSString*)path
+{
 	DcmFileFormat fileformat;
 	OFCondition cond = fileformat.loadFile( [path UTF8String]);
-	if (cond.good())
-	{
-		DcmDataset *dataset = fileformat.getDataset();
-//		DcmItem *metaInfo = fileformat.getMetaInfo();
-		DcmXfer original_xfer(dataset->getOriginalXfer());
-		if (original_xfer.isEncapsulated())
-		{
-			return NO;
-		}
-		else
-		{
-			const char *string = NULL;
-			NSString *modality = @"OT";
-			if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
-				modality = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
-			
-			NSString *SOPClassUID = @"";
-			if (dataset->findAndGetString(DCM_SOPClassUID, string, OFFalse).good() && string != NULL)
-				SOPClassUID = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
-			
-			// See Decompress.mm for these exceptions
-			if( [DCMAbstractSyntaxUID isImageStorage: SOPClassUID] == YES &&
-               [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]] == NO &&
-               [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID EncapsulatedCDAStorage]] == NO &&
-               [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] == NO)
-			{
-				int resolution = 0;
-				unsigned short rows = 0;
-				if (dataset->findAndGetUint16( DCM_Rows, rows, OFFalse).good())
-				{
-					if( resolution == 0 || resolution > rows)
-						resolution = rows;
-				}
-				unsigned short columns = 0;
-				if (dataset->findAndGetUint16( DCM_Columns, columns, OFFalse).good())
-				{
-					if( resolution == 0 || resolution > columns)
-						resolution = columns;
-				}
-				
-				int quality, compression = [BrowserController compressionForModality: modality quality: &quality resolution: resolution];
-				
-				if( compression == compression_none)
-					return NO;
-				
-				return YES;
-			}
-		}
-	}
+	if (cond.bad())
+        return NO;
+
+    DcmDataset *dataset = fileformat.getDataset();
+//	DcmItem *metaInfo = fileformat.getMetaInfo();
+    DcmXfer original_xfer(dataset->getOriginalXfer());
+    if (original_xfer.isEncapsulated())
+        return NO;
+
+    const char *string = NULL;
+    NSString *modality = @"OT";
+    if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
+        modality = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
+    
+    NSString *SOPClassUID = @"";
+    if (dataset->findAndGetString(DCM_SOPClassUID, string, OFFalse).good() && string != NULL)
+        SOPClassUID = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
+    
+    // See Decompress.mm for these exceptions
+    if ([DCMAbstractSyntaxUID isImageStorage: SOPClassUID] == YES &&
+       [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]] == NO &&
+       [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID EncapsulatedCDAStorage]] == NO &&
+       [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] == NO)
+    {
+        int resolution = 0;
+        unsigned short rows = 0;
+        if (dataset->findAndGetUint16( DCM_Rows, rows, OFFalse).good())
+        {
+            if (resolution == 0 || resolution > rows)
+                resolution = rows;
+        }
+
+        unsigned short columns = 0;
+        if (dataset->findAndGetUint16( DCM_Columns, columns, OFFalse).good())
+        {
+            if (resolution == 0 || resolution > columns)
+                resolution = columns;
+        }
+        
+        int quality, compression = [BrowserController compressionForModality: modality quality: &quality resolution: resolution];
+        
+        if (compression == compression_none)
+            return NO;
+        
+        return YES;
+    }
 	
 	return NO;
 }
@@ -136,7 +134,7 @@
 	for( int i = 0; i < total;)
 	{
 		int no;
-		if( i + CHUNK_SUBPROCESS >= total)
+		if (i + CHUNK_SUBPROCESS >= total)
             no = total - i;
 		else
             no = CHUNK_SUBPROCESS;
@@ -147,7 +145,7 @@
 		NSRange range = NSMakeRange( i, no);
 		
 		id *objs = (id*) malloc( no * sizeof( id));
-		if( objs)
+		if (objs)
 		{
 			[paths getObjects: objs range: range];
 			
@@ -162,26 +160,26 @@
 				[theTask launch];
                 
                 NSTimeInterval timeout = TIMEOUT * subArray.count;
-                if( timeout < 600)
+                if (timeout < 600)
                     timeout = 600;
                 NSTimeInterval taskStart = [NSDate timeIntervalSinceReferenceDate];
 				while( [theTask isRunning])
                 {
                     [NSThread sleepForTimeInterval: 0.1];
-                    if( [NSDate timeIntervalSinceReferenceDate] - taskStart > timeout)
+                    if ([NSDate timeIntervalSinceReferenceDate] - taskStart > timeout)
                         break;
                 }
                 
-                if( [theTask isRunning])
+                if ([theTask isRunning])
                 {
                     N2LogStackTrace( @"***** task timeout reached -> terminate the NSTask : %@", paths);
                     [theTask terminate];
                 }
-                else if( [theTask terminationReason] == NSTaskTerminationReasonUncaughtSignal)
+                else if ([theTask terminationReason] == NSTaskTerminationReasonUncaughtSignal)
                 {
                     N2LogStackTrace( @"***** Decompress process crashed.");
                     
-                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"])
+                    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"])
                     {
                         for( NSString *path in paths)
                             [[NSFileManager defaultManager] moveItemAtPath: path toPath: [[[DicomDatabase defaultDatabase] errorsDirPath] stringByAppendingPathComponent: [path lastPathComponent]] error: nil];
@@ -210,7 +208,7 @@
 //			DcmFileFormat fileformat;
 //			OFCondition cond = fileformat.loadFile( [path UTF8String]);
 //			
-//			if( cond.good())
+//			if (cond.good())
 //			{
 //				DJ_RPLossy lossyParams( DCMHighQuality);
 //				DJ_RPLossless losslessParams(6,0);
@@ -240,7 +238,7 @@
 //					cond = fileformat.saveFile( [[path stringByAppendingString: @"cc.dcm"] UTF8String], tSyntax);
 //					BOOL status = (cond.good()) ? YES : NO;
 //					
-//					if( status == NO)
+//					if (status == NO)
 //						NSLog( @"failed to compress file: %@", [paths lastObject]);
 //				}
 //				else NSLog( @"err");
@@ -301,9 +299,9 @@
 //	}
 //	[dcmObject release];
 //	
-//	if( succeed)
+//	if (succeed)
 //	{
-//		if( dest2 == [paths lastObject])
+//		if (dest2 == [paths lastObject])
 //			[[NSFileManager defaultManager] removeItemAtPath: [paths lastObject] error: nil];
 //		[[NSFileManager defaultManager] moveItemAtPath: [dest2 stringByAppendingString: @" temp"] toPath: dest2 error: nil];
 //	}
@@ -364,7 +362,7 @@
                         break;
                 }
                 
-                if( [theTask isRunning])
+                if ([theTask isRunning])
                 {
                     N2LogStackTrace( @"***** task timeout reached -> terminate the NSTask : %@", files);
                     [theTask terminate];
@@ -401,7 +399,7 @@
 //			{
 //				DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 //				
-//				if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
+//				if (filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
 //				{
 //					DcmDataset *dataset = fileformat.getDataset();
 //					
@@ -451,7 +449,7 @@
     NSString *pathZippedSlash = [NSTemporaryDirectory() stringByAppendingPathComponent: @"zippedFile/"];
 	NSString* destPath = nil;
 	NSString* uidName = [SRAnnotation getReportFilenameFromSR: dicomSR];
-	if( [uidName length] > 0)
+	if ([uidName length] > 0)
 	{
  		NSString *zipFile = [pathSlash stringByAppendingPathComponent: uidName];
 		
@@ -460,11 +458,11 @@
 		[[NSFileManager defaultManager] removeItemAtPath: zipFile error: nil];
 		
 		// Check for http/https !
-		if( [[r reportURL] length] > 8 && ([[r reportURL] hasPrefix: @"http://"] || [[r reportURL] hasPrefix: @"https://"]))
+		if ([[r reportURL] length] > 8 && ([[r reportURL] hasPrefix: @"http://"] || [[r reportURL] hasPrefix: @"https://"]))
 			destPath = [[[r reportURL] copy] autorelease];
 		else
 		{
-			if( [[r dataEncapsulated] length] > 0)
+			if ([[r dataEncapsulated] length] > 0)
 			{
 				[[r dataEncapsulated] writeToFile: zipFile atomically: YES];
 
@@ -474,13 +472,13 @@
 				
 				for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: pathZippedSlash error: nil])
 				{
-					if( [f hasPrefix: @"."] == NO)
+					if ([f hasPrefix: @"."] == NO)
 					{
-						if( destPath)
+						if (destPath)
 							NSLog( @"*** multiple files in Report decompression ?");
 						
 						destPath = [pathSlash stringByAppendingPathComponent: f];
-						if( destPath)
+						if (destPath)
 						{
 							[[NSFileManager defaultManager] removeItemAtPath: destPath error: nil];
 							[[NSFileManager defaultManager] moveItemAtPath: [pathZippedSlash stringByAppendingPathComponent: f] toPath: destPath error: nil];
@@ -493,7 +491,7 @@
 	
 	[[NSFileManager defaultManager] removeItemAtPath: pathZippedSlash error: nil];
 	
-	if( destPath)
+	if (destPath)
 		[[NSFileManager defaultManager] setAttributes: [NSDictionary dictionaryWithObjectsAndKeys: date, NSFileModificationDate, nil] ofItemAtPath: destPath error: nil];
 	
 	return destPath;
@@ -521,7 +519,7 @@
 	int total = [files count];
 	
 	CHUNK_SIZE = total / [[NSProcessInfo processInfo] processorCount];
-	if( CHUNK_SIZE > 500)
+	if (CHUNK_SIZE > 500)
 		CHUNK_SIZE = 500;
 	else
 		CHUNK_SIZE += 20;
@@ -532,7 +530,7 @@
 		{
 			int no;
 			
-			if( i + CHUNK_SIZE >= total)
+			if (i + CHUNK_SIZE >= total)
                 no = total - i;
 			else
                 no = CHUNK_SIZE;
@@ -540,7 +538,7 @@
 			NSRange range = NSMakeRange( i, no);
 			
 			id *objs = (id*) malloc( no * sizeof( id));
-			if( objs)
+			if (objs)
 			{
 				[files getObjects: objs range: range];
 				
@@ -579,14 +577,14 @@
 				[splash run];
 			}
 			
-			if( [splash aborted])
+			if ([splash aborted])
 				break;
 			
-			if( [t terminationStatus] != EXIT_SUCCESS)
+			if ([t terminationStatus] != EXIT_SUCCESS)
 				succeed = NO;
 		}
 		
-		if( [splash aborted])
+		if ([splash aborted])
 		{
 			for( NSTask *t in tasksArray)
 				[t interrupt];
@@ -600,7 +598,7 @@
 	[splash close];
 	[splash autorelease];
 	
-	if( succeed == NO)
+	if (succeed == NO)
 		NSLog( @"******* test Files FAILED : one of more of these files are corrupted : %@", files);
 	
 	return succeed;

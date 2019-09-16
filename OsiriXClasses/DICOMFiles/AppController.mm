@@ -144,9 +144,17 @@ BOOL					USETOOLBARPANEL = NO;
 short					Altivec = 1;
 short                   Use_kdu_IfAvailable = 0;
 AppController			*appController = nil;
-DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil, *dcmtkQRSCPTLS = nil;
-NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil, *STORESCPTLS = nil;			// Papyrus is NOT thread-safe
-NSMutableArray			*accumulateAnimationsArray = nil, *recentStudies = nil;
+
+DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil;
+DCMTKQueryRetrieveSCP   *dcmtkQRSCPTLS = nil;
+
+NSRecursiveLock			*Papyrus_Lock = nil;            // Papyrus is NOT thread-safe
+NSRecursiveLock         *STORESCP_Lock = nil;
+NSRecursiveLock         *STORESCPTLS_Lock = nil;
+
+NSMutableArray			*accumulateAnimationsArray = nil;
+NSMutableArray          *recentStudies = nil;
+
 NSMutableDictionary     *recentStudiesAlbums = nil;
 BOOL					accumulateAnimations = NO;
 
@@ -2254,11 +2262,11 @@ static NSDate *lastWarningDate = nil;
 			
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"])
 			{
-				if ([STORESCP tryLock])
+				if ([STORESCP_Lock tryLock])
 				{
 					[NSThread detachNewThreadSelector: @selector(startSTORESCP:) toTarget: self withObject: self];
 					
-					[STORESCP unlock];
+					[STORESCP_Lock unlock];
 				}
 				else
                     NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Listener Error", nil),
@@ -2278,11 +2286,11 @@ static NSDate *lastWarningDate = nil;
 			NSString* path = [[DicomDatabase activeLocalDatabase] incomingDirPath];
 			[[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath:path];
 			
-			if ([STORESCPTLS tryLock])
+			if ([STORESCPTLS_Lock tryLock])
 			{
 				[NSThread detachNewThreadSelector: @selector(startSTORESCPTLS:) toTarget: self withObject: self];
 				
-				[STORESCPTLS unlock];
+				[STORESCPTLS_Lock unlock];
 			}
 			else
                 NSRunCriticalAlertPanel(NSLocalizedString( @"DICOM TLS Listener Error", nil),
@@ -2344,7 +2352,7 @@ static NSDate *lastWarningDate = nil;
 {
 	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
 #ifndef OSIRIX_LIGHT
-	[STORESCP lock];
+	[STORESCP_Lock lock];
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
     [NSThread currentThread].name = @"DICOM Store-SCP";
@@ -2376,7 +2384,7 @@ static NSDate *lastWarningDate = nil;
 	}
 	
 	[pool release];
-	[STORESCP unlock];
+	[STORESCP_Lock unlock];
 #endif
 }
 
@@ -2390,7 +2398,7 @@ static NSDate *lastWarningDate = nil;
     
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
 	{
-		[STORESCPTLS lock];
+		[STORESCPTLS_Lock lock];
 		
 		@try 
 		{
@@ -2413,7 +2421,7 @@ static NSDate *lastWarningDate = nil;
             N2LogExceptionWithStackTrace(e);
 		}
 		
-		[STORESCPTLS unlock];
+		[STORESCPTLS_Lock unlock];
 	}	
 	
 	[pool release];
@@ -2913,9 +2921,9 @@ static BOOL firstCall = YES;
         
     //  NSLog(@"%@ -> %d", [[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"], [N2Debug isActive]);
         
-        PapyrusLock = [[NSRecursiveLock alloc] init];
-        STORESCP = [[NSRecursiveLock alloc] init];
-        STORESCPTLS = [[NSRecursiveLock alloc] init];
+        Papyrus_Lock = [NSRecursiveLock new];
+        STORESCP_Lock = [NSRecursiveLock new];
+        STORESCPTLS_Lock = [NSRecursiveLock new];
         
         [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
         

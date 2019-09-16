@@ -166,21 +166,26 @@ static NSHost *currentHost = nil;
 		NSLog(@"CLUT plist not found: %@", filename);
 }
 
-+ (void) addConvolutionFilter: (short) size :(short*) vals :(NSString*) name :(NSMutableDictionary*) convValues
++ (void) addConvolutionFilter:(short) size
+                             :(short*) vals
+                             :(NSString*) name
+                             :(NSMutableDictionary*) convValues
 {
-	long				i;
 	NSMutableDictionary *aConvFilter = [NSMutableDictionary dictionary];
-	NSMutableArray		*valArray = [NSMutableArray array];
 
 	[aConvFilter setObject:[NSNumber numberWithLong:size] forKey:@"Size"];
 	
 	long norm = 0;
-	for ( i = 0; i < size*size; i++) norm += vals[i];
-	[aConvFilter setObject:[NSNumber numberWithLong:norm] forKey:@"Normalization"];
+	for (long i = 0; i < size*size; i++)
+        norm += vals[i];
+
+    [aConvFilter setObject:[NSNumber numberWithLong:norm] forKey:@"Normalization"];
 	
-	for ( i = 0; i < size*size; i++) [valArray addObject:[NSNumber numberWithLong:vals[i]]];
-	[aConvFilter setObject:valArray forKey:@"Matrix"];
-	
+    NSMutableArray *valArray = [NSMutableArray array];
+	for (long i = 0; i < size*size; i++)
+        [valArray addObject:[NSNumber numberWithLong:vals[i]]];
+
+    [aConvFilter setObject:valArray forKey:@"Matrix"];
 	[convValues setObject:aConvFilter forKey:name];
 }
 
@@ -287,8 +292,6 @@ static NSHost *currentHost = nil;
 
 + (NSMutableDictionary*) getDefaults
 {
-	long i;
-	
 	NSMutableDictionary *defaultValues = [NSMutableDictionary dictionary];
 	
 	// ** WLWW PRESETS
@@ -296,22 +299,33 @@ static NSHost *currentHost = nil;
 	
 	NSMutableDictionary *wlwwValues = [NSMutableDictionary dictionary];
 	
-	iww = 1400;          iwl = -500;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:@"CT - Pulmonary"];
+	iww = 1400;
+    iwl = -500;
+	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
+                   forKey:@"CT - Pulmonary"];
 	
-	iww = 1500;          iwl = 300;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:@"CT - Bone"];
+	iww = 1500;
+    iwl = 300;
+	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
+                   forKey:@"CT - Bone"];
 	
-	iww = 100;          iwl = 50;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:@"CT - Brain"];
+	iww = 100;
+    iwl = 50;
+	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
+                   forKey:@"CT - Brain"];
 	
-	iww = 350;          iwl = 40;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:@"CT - Abdomen"];
+	iww = 350;
+    iwl = 40;
+	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
+                   forKey:@"CT - Abdomen"];
 	
-	iww = 700;          iwl = -300;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:@"VR - Endoscopy"];
+	iww = 700;
+    iwl = -300;
+	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
+                   forKey:@"VR - Endoscopy"];
 	
-	[defaultValues setObject:wlwwValues forKey:@"WLWW3"];
+	[defaultValues setObject:wlwwValues
+                      forKey:@"WLWW3"];
 	
 	// ** CONVOLUTION PRESETS
 	
@@ -320,21 +334,22 @@ static NSHost *currentHost = nil;
 	// --
 	{
 		NSMutableDictionary *aConvFilter = [NSMutableDictionary dictionary];
-		NSMutableArray		*valArray = [NSMutableArray array];
-		short				vals[9] = {-1, -1, -1, -1, 9, -1, -1, -1, -1};
+		NSMutableArray *valArray = [NSMutableArray array];
+		short vals[9] = {-1, -1, -1, -1, 9, -1, -1, -1, -1};
 		
 		[aConvFilter setObject:[NSNumber numberWithLong:3] forKey:@"Size"];
 		[aConvFilter setObject:[NSNumber numberWithLong:1] forKey:@"Normalization"];
-		for ( i = 0; i < 9; i++)
+		for (int i = 0; i < 9; i++)
             [valArray addObject: [NSNumber numberWithLong:vals[i]]];
-		[aConvFilter setObject:valArray forKey:@"Matrix"];
+
+        [aConvFilter setObject:valArray forKey:@"Matrix"];
 		[convValues setObject:aConvFilter forKey:@"Bone Filter 3x3"];
 	}
 	// --
 	// --
 	{
 		NSMutableDictionary *aConvFilter = [NSMutableDictionary dictionary];
-		NSMutableArray		*valArray = [NSMutableArray array];
+		NSMutableArray *valArray = [NSMutableArray array];
 		short vals[25] = {
             1, 1, 1, 1, 1,
 			1, 4, 4, 4, 1,
@@ -344,95 +359,97 @@ static NSHost *currentHost = nil;
 		
 		[aConvFilter setObject:[NSNumber numberWithLong:5] forKey:@"Size"];
 		[aConvFilter setObject:[NSNumber numberWithLong:60] forKey:@"Normalization"];
-		for ( i = 0; i < 25; i++)
+		for (int i = 0; i < 25; i++)
             [valArray addObject:[NSNumber numberWithLong:vals[i]]];
-		[aConvFilter setObject:valArray forKey:@"Matrix"];
+
+        [aConvFilter setObject:valArray forKey:@"Matrix"];
 		[convValues setObject:aConvFilter forKey:@"Basic Smooth 5x5"];
 	}
 	{
-		short				vals[9] = {1, 2, 1, 2, 4, 2, 1, 2, 1};
+		short vals[9] = {1, 2, 1, 2, 4, 2, 1, 2, 1};
 		[self addConvolutionFilter:3 :vals :@"Blur 3x3" :convValues];
 	}
 	{
-		short				vals[25] = {1, 1, 2, 1, 1, 1, 2, 3, 2, 1, 2, 3, 4, 3, 2, 1, 2, 3, 2, 1, 1, 1, 2, 1, 1};
+		short vals[25] = {1, 1, 2, 1, 1, 1, 2, 3, 2, 1, 2, 3, 4, 3, 2, 1, 2, 3, 2, 1, 1, 1, 2, 1, 1};
 		[self addConvolutionFilter:5 :vals :@"Blur 5x5" :convValues];
 	}
 	{
-		short				vals[25] = {3, 3, 2, 3, 3, 3, 2, 1, 2, 3, 2, 1, 0, 1, 2, 3, 2, 1, 2, 3, 3, 3, 2, 3, 3};
+		short vals[25] = {3, 3, 2, 3, 3, 3, 2, 1, 2, 3, 2, 1, 0, 1, 2, 3, 2, 1, 2, 3, 3, 3, 2, 3, 3};
 		[self addConvolutionFilter:5 :vals :@"Inverted blur" :convValues];
 	}
 	{
-		short				vals[25] = {0, 0, -1, 0, 0, 0, -1, -2, -1, 0, -1, -2, -3, -2, -1, 0, -1, -2, -1, 0, 0, 0, -1, 0, 0};
+		short vals[25] = {0, 0, -1, 0, 0, 0, -1, -2, -1, 0, -1, -2, -3, -2, -1, 0, -1, -2, -1, 0, 0, 0, -1, 0, 0};
 		[self addConvolutionFilter:5 :vals :@"Negative blur" :convValues];
 	}
 	{
-		short				vals[9] = {1, 2, 1, 0, 0, 0, -1, -2, -1};
+		short vals[9] = {1, 2, 1, 0, 0, 0, -1, -2, -1};
 		[self addConvolutionFilter:3 :vals :@"Emboss north" :convValues];
 	}
 	{
-		short				vals[9] = {1, 0, -1, 2, 0, -2, 1, 0, -1};
+		short vals[9] = {1, 0, -1, 2, 0, -2, 1, 0, -1};
 		[self addConvolutionFilter:3 :vals :@"Emboss west" :convValues];
 	}
 	{
-		short				vals[9] = {0, 1, 0, -1, 0, 1, 0, -1, 0};
+		short vals[9] = {0, 1, 0, -1, 0, 1, 0, -1, 0};
 		[self addConvolutionFilter:3 :vals :@"Emboss diagonal" :convValues];
 	}
 	{
-		short				vals[9] = {-1, -1, -1, -1, 8, -1, -1, -1, -1};
+		short vals[9] = {-1, -1, -1, -1, 8, -1, -1, -1, -1};
 		[self addConvolutionFilter:3 :vals :@"Laplacian 8" :convValues];
 	}
 	{
-		short				vals[9] = {0, -1, 0, -1, 4, -1, 0, -1, 0};
+		short vals[9] = {0, -1, 0, -1, 4, -1, 0, -1, 0};
 		[self addConvolutionFilter:3 :vals :@"Laplacian 4" :convValues];
 	}	
 	{
-		short				vals[9] = {-1, 0, -1, 0, 7, 0, -1, 0, -1};
+		short vals[9] = {-1, 0, -1, 0, 7, 0, -1, 0, -1};
 		[self addConvolutionFilter:3 :vals :@"Sharpen 3x3" :convValues];
 	}
 	{
-		short				vals[9] = {-1, 0, 0, 0, 0, 0, 0, 0, 1};
+		short vals[9] = {-1, 0, 0, 0, 0, 0, 0, 0, 1};
 		[self addConvolutionFilter:3 :vals :@"Emboss" :convValues];
 	}
 	{
-		short				vals[9] = {-1, -1, 0, -1, 0, 1, 0, 1, 1};
+		short vals[9] = {-1, -1, 0, -1, 0, 1, 0, 1, 1};
 		[self addConvolutionFilter:3 :vals :@"Emboss heavy" :convValues];
 	}
 	{
-		short				vals[9] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
+		short vals[9] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
 		[self addConvolutionFilter:3 :vals :@"Lowpass" :convValues];
 	}
 	{
-		short				vals[9] = {1, -2, 1, -2, 4, -2, 1, -2, 1};
+		short vals[9] = {1, -2, 1, -2, 4, -2, 1, -2, 1};
 		[self addConvolutionFilter:3 :vals :@"Edge 3x3" :convValues];
 	}
 	{
-		short				vals[25] = {0, -1, -1, -1, 0, -1, 2, -4, 2, -1, -1, -4, 13, -4, -1, -1, 2, -4, 2, -1, 0, -1, -1, -1, 0};
+		short vals[25] = {0, -1, -1, -1, 0, -1, 2, -4, 2, -1, -1, -4, 13, -4, -1, -1, 2, -4, 2, -1, 0, -1, -1, -1, 0};
 		[self addConvolutionFilter:5 :vals :@"Highpass 5x5" :convValues];
 	}
 	{
-		short				vals[25] = {1, 1, 2, 1, 1, 1, 2, 4, 2, 1, 2, 4, 8, 4, 2, 1, 2, 4, 2, 1, 1, 1, 2, 1, 1};
+		short vals[25] = {1, 1, 2, 1, 1, 1, 2, 4, 2, 1, 2, 4, 8, 4, 2, 1, 2, 4, 2, 1, 1, 1, 2, 1, 1};
 		[self addConvolutionFilter:5 :vals :@"Gaussian blur" :convValues];
 	}
 	{
-		short				vals[25] = {0,  0, -1,  0,  0, 0, -1, -2, -1,  0, -1, -2, 16, -2, -1, 0, -1, -2, -1,  0, 0,   0,  -1,   0,   0};
+		short vals[25] = {0,  0, -1,  0,  0, 0, -1, -2, -1,  0, -1, -2, 16, -2, -1, 0, -1, -2, -1,  0, 0,   0,  -1,   0,   0};
 		[self addConvolutionFilter:5 :vals :@"Hat" :convValues];
 	}
 	{
-		short				vals[25] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 24, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+		short vals[25] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 24, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 		[self addConvolutionFilter:5 :vals :@"Laplacian" :convValues];
 	}
 	{
-		short				vals[25] = {-1, -1, -1, -1, -1, -1, 2, 2, 2, -1, -1, 2, 8, 2, -1, -1, 2, 2, 2, -1, -1, -1, -1, -1, -1};
+		short vals[25] = {-1, -1, -1, -1, -1, -1, 2, 2, 2, -1, -1, 2, 8, 2, -1, -1, 2, 2, 2, -1, -1, -1, -1, -1, -1};
 		[self addConvolutionFilter:5 :vals :@"Sharpen 5x5" :convValues];
 	}
 	{
-		short				vals[9] = {1, 1, 1, 1, -7, 1, 1, 1, 1};
+		short vals[9] = {1, 1, 1, 1, -7, 1, 1, 1, 1};
 		[self addConvolutionFilter:3 :vals :@"Excessive edges" :convValues];
 	}
 	
 	// --
 	
-	[defaultValues setObject:convValues forKey:@"Convolution"];
+	[defaultValues setObject:convValues
+                      forKey:@"Convolution"];
 	
 	// ** OPACITY TABLES
 	NSMutableDictionary *opacityValues = [NSMutableDictionary dictionary];
@@ -440,7 +457,7 @@ static NSHost *currentHost = nil;
 	NSMutableDictionary *aOpacityFilter = [NSMutableDictionary dictionary];
 	NSMutableArray *points = [NSMutableArray array];
 	
-	for ( i = 0; i < 256; i++)
+	for (int i = 0; i < 256; i++)
 	{
 		NSPoint pt;
 		//math.h
@@ -458,7 +475,7 @@ static NSHost *currentHost = nil;
 	aOpacityFilter = [NSMutableDictionary dictionary];
 	points = [NSMutableArray array];
 	
-	for ( i = 0; i < 256; i++)
+	for (int i = 0; i < 256; i++)
 	{
 		NSPoint pt;
 		//math.h
@@ -522,21 +539,35 @@ static NSHost *currentHost = nil;
 	// --
 	{
 		NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
-		NSMutableArray		*rArray = [NSMutableArray array];
-		for ( i = 0; i < 128; i++) [rArray addObject: [NSNumber numberWithLong:i*2]];
-		for ( i = 128; i < 256; i++) [rArray addObject: [NSNumber numberWithLong:255L]];
-		[aCLUTFilter setObject:rArray forKey:@"Red"];
+		NSMutableArray *rArray = [NSMutableArray array];
+		for (int i = 0; i < 128; i++)
+            [rArray addObject: [NSNumber numberWithLong:i*2]];
+
+        for (int i = 128; i < 256; i++)
+            [rArray addObject: [NSNumber numberWithLong:255L]];
+
+        [aCLUTFilter setObject:rArray forKey:@"Red"];
 		
-		NSMutableArray		*gArray = [NSMutableArray array];
-		for ( i = 0; i < 128; i++) [gArray addObject: [NSNumber numberWithLong:0L]];
-		for ( i = 128; i < 192; i++) [gArray addObject: [NSNumber numberWithLong: (i-128)*4]];
-		for ( i = 192; i < 256; i++) [gArray addObject: [NSNumber numberWithLong: 255L]];
-		[aCLUTFilter setObject:gArray forKey:@"Green"];
+		NSMutableArray *gArray = [NSMutableArray array];
+		for (int i = 0; i < 128; i++)
+            [gArray addObject: [NSNumber numberWithLong:0L]];
+
+        for (int i = 128; i < 192; i++)
+            [gArray addObject: [NSNumber numberWithLong: (i-128)*4]];
 		
-		NSMutableArray		*bArray = [NSMutableArray array];
-		for ( i = 0; i < 192; i++) [bArray addObject: [NSNumber numberWithLong:0L]];
-		for ( i = 192; i < 256; i++) [bArray addObject: [NSNumber numberWithLong:(i-192)*4]];
-		[aCLUTFilter setObject:bArray forKey:@"Blue"];
+        for (int i = 192; i < 256; i++)
+            [gArray addObject: [NSNumber numberWithLong: 255L]];
+
+        [aCLUTFilter setObject:gArray forKey:@"Green"];
+		
+		NSMutableArray *bArray = [NSMutableArray array];
+		for (int i = 0; i < 192; i++)
+            [bArray addObject: [NSNumber numberWithLong:0L]];
+
+        for (int i = 192; i < 256; i++)
+            [bArray addObject: [NSNumber numberWithLong:(i-192)*4]];
+
+        [aCLUTFilter setObject:bArray forKey:@"Blue"];
 		
 		// Points & Colors
 		NSMutableArray *colors = [NSMutableArray array], *points = [NSMutableArray array];
@@ -562,16 +593,19 @@ static NSHost *currentHost = nil;
 	// --
 	{
 		NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
-		NSMutableArray		*rArray = [NSMutableArray array];
-		for ( i = 0; i < 256; i++) [rArray addObject: [NSNumber numberWithLong:255-i]];
+		NSMutableArray *rArray = [NSMutableArray array];
+		for (int i = 0; i < 256; i++)
+            [rArray addObject: [NSNumber numberWithLong:255-i]];
 		[aCLUTFilter setObject:rArray forKey:@"Red"];
 		
-		NSMutableArray		*gArray = [NSMutableArray array];
-		for ( i = 0; i < 256; i++) [gArray addObject: [NSNumber numberWithLong:255-i]];
+		NSMutableArray *gArray = [NSMutableArray array];
+		for (int i = 0; i < 256; i++)
+            [gArray addObject: [NSNumber numberWithLong:255-i]];
 		[aCLUTFilter setObject:gArray forKey:@"Green"];
 		
-		NSMutableArray		*bArray = [NSMutableArray array];
-		for ( i = 0; i < 256; i++) [bArray addObject: [NSNumber numberWithLong:255-i]];
+		NSMutableArray *bArray = [NSMutableArray array];
+		for (int i = 0; i < 256; i++)
+            [bArray addObject: [NSNumber numberWithLong:255-i]];
 		[aCLUTFilter setObject:bArray forKey:@"Blue"];
 		
 		// Points & Colors
@@ -591,15 +625,16 @@ static NSHost *currentHost = nil;
 	
 	{
 		NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
-		NSMutableArray		*rArray = [NSMutableArray array];
-		NSMutableArray		*gArray = [NSMutableArray array];
-		NSMutableArray		*bArray = [NSMutableArray array];
-		for ( i = 0; i < 256; i++)  {
+		NSMutableArray *rArray = [NSMutableArray array];
+		NSMutableArray *gArray = [NSMutableArray array];
+		NSMutableArray *bArray = [NSMutableArray array];
+		for (int i = 0; i < 256; i++)  {
 			[bArray addObject: [NSNumber numberWithLong:(195 - (i * 0.26))]];
 			[gArray addObject: [NSNumber numberWithLong:(187 - (i *0.26))]];
 			[rArray addObject: [NSNumber numberWithLong:(240 + (i * 0.02))]];
 		}
-		[aCLUTFilter setObject:rArray forKey:@"Red"];
+
+        [aCLUTFilter setObject:rArray forKey:@"Red"];
 		[aCLUTFilter setObject:gArray forKey:@"Green"];
 		[aCLUTFilter setObject:bArray forKey:@"Blue"];
 		
@@ -611,7 +646,6 @@ static NSHost *currentHost = nil;
 		[colors addObject:[NSArray arrayWithObjects: @1.0F, @1.0F, @1.0F, nil]];
 		[colors addObject:[NSArray arrayWithObjects: @0.0F, @0.0F, @0.0F, nil]];
 
-		
 		[aCLUTFilter setObject:colors forKey:@"Colors"];
 		[aCLUTFilter setObject:points forKey:@"Points"];
 		
@@ -630,7 +664,7 @@ static NSHost *currentHost = nil;
 		NSMutableArray		*rArray = [NSMutableArray array];
 		NSMutableArray		*gArray = [NSMutableArray array];
 		NSMutableArray		*bArray = [NSMutableArray array];
-		for ( i = 0; i < 256; i++)
+		for (int i = 0; i < 256; i++)
         {
 			[bArray addObject: [NSNumber numberWithLong: r[ i]]];
 			[gArray addObject: [NSNumber numberWithLong: g[ i]]];
@@ -664,10 +698,10 @@ static NSHost *currentHost = nil;
         
         int b[ 256] = {0,6,12,16,22,26,32,36,42,46,52,56,62,68,72,78,82,88,92,98,102,108,112,118,122,128,134,138,144,148,154,158,164,168,174,178,184,188,194,200,204,210,214,220,224,230,234,240,244,250,252,250,246,244,240,238,234,232,230,226,224,220,218,214,212,210,206,204,200,198,194,192,190,186,184,180,178,174,172,170,166,164,160,158,154,152,150,146,144,140,138,134,132,130,126,124,120,118,114,112,110,106,104,100,98,94,92,90,86,84,80,78,74,72,70,66,64,60,58,54,52,50,46,44,40,38,34,32,30,26,24,20,18,14,12,10,6,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,14,28,42,56,68,82,96,110,124,136,150,164,178,190};
         
-		NSMutableArray		*rArray = [NSMutableArray array];
-		NSMutableArray		*gArray = [NSMutableArray array];
-		NSMutableArray		*bArray = [NSMutableArray array];
-		for ( i = 0; i < 256; i++)
+		NSMutableArray *rArray = [NSMutableArray array];
+		NSMutableArray *gArray = [NSMutableArray array];
+		NSMutableArray *bArray = [NSMutableArray array];
+		for (int i = 0; i < 256; i++)
         {
 			[bArray addObject: [NSNumber numberWithLong: r[ i]]];
 			[gArray addObject: [NSNumber numberWithLong: g[ i]]];
@@ -684,8 +718,7 @@ static NSHost *currentHost = nil;
 		
 		[colors addObject:[NSArray arrayWithObjects: @1.0F, @1.0F, @1.0F, nil]];
 		[colors addObject:[NSArray arrayWithObjects: @0.0F, @0.0F, @0.0F, nil]];
-        
-		
+
 		[aCLUTFilter setObject:colors forKey:@"Colors"];
 		[aCLUTFilter setObject:points forKey:@"Points"];
 		

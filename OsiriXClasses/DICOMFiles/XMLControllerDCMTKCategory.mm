@@ -37,7 +37,7 @@
 #define INCLUDE_CTIME
 #include "dcmtk/ofstd/ofstdinc.h"
 
-extern NSRecursiveLock *PapyrusLock;
+extern NSRecursiveLock *Papyrus_Lock;
 
 @implementation XMLController (XMLControllerDCMTKCategory)
 

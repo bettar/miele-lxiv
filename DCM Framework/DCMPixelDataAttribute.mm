@@ -1316,7 +1316,7 @@ static inline int int_ceildivpow2(int a, int b) {
     size_t compressedLength = [jpegData length];
     JLS_ERROR error = JpegLsReadHeader(compressedData, compressedLength, &params);
     //OFCondition result = DJLSError::convert(error);
-    //if (!result.good())
+    //if (result.bad())
 	if (error != OK)
     {
 //        NSLog(@"ERROR JpegLsReadHeader:%i %s", error, result.text());
