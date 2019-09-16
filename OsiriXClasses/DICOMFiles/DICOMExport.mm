@@ -866,10 +866,10 @@ static float deg2rad = M_PI / 180.0f;
                         
                         if ([c count] < NUM_ENCODINGS)
                         {
-                            for( int i = 0; i < [c count]; i++)
+                            for (int i = 0; i < [c count]; i++)
                                 myEncodings[i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
     
-                            for( int i = [c count]; i < NUM_ENCODINGS; i++)
+                            for (int i = [c count]; i < NUM_ENCODINGS; i++)
                                 myEncodings[i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
                         }
                     }

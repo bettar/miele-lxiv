@@ -579,7 +579,6 @@
 	N3MutableBezierPath *flattenedPath;
 	N3BezierCoreRef bezierCore;
 	NSInteger intersectionCount;
-	NSInteger i;
 	NSMutableArray *intersectionArray;
 	NSMutableArray *relativePositionArray;
 	CGFloat *relativePositions;
@@ -592,7 +591,8 @@
         
         bezierCore = (N3BezierCoreRef)N3BezierCoreRetain([flattenedPath N3BezierCore]);
         [flattenedPath release];
-    } else {
+    }
+    else {
         bezierCore = (N3BezierCoreRef)N3BezierCoreRetain(_bezierCore);
     }
 
@@ -604,7 +604,7 @@
 	
 	intersectionArray = [NSMutableArray arrayWithCapacity:intersectionCount];
 	relativePositionArray = [NSMutableArray arrayWithCapacity:intersectionCount];
-	for (i = 0; i < intersectionCount; i++) {
+	for (NSInteger i = 0; i < intersectionCount; i++) {
 		[intersectionArray addObject:[NSValue valueWithN3Vector:intersections[i]]];
 		[relativePositionArray addObject:[NSNumber numberWithDouble:relativePositions[i]]];
 	}
@@ -616,16 +616,16 @@
     if (returnedRelativePositions) {
         *returnedRelativePositions = relativePositionArray;
     }
-	return intersectionArray;
+
+    return intersectionArray;
 }
 
 - (NSArray *)subPaths
 {
     NSMutableArray *subPaths = [NSMutableArray array];
     CFArrayRef cfSubPaths = N3BezierCoreCopySubpaths(_bezierCore);
-    NSUInteger i;
     
-    for (i = 0; i < CFArrayGetCount(cfSubPaths); i++) {
+    for (NSUInteger i = 0; i < CFArrayGetCount(cfSubPaths); i++) {
         [subPaths addObject:[N3BezierPath bezierPathN3BezierCore:(N3BezierCoreRef)CFArrayGetValueAtIndex(cfSubPaths, i)]];
     }
     

@@ -90,7 +90,6 @@
 - (NSArray *)convexHull
 {
 	NSMutableArray *convexHull;
-	NSUInteger i;
 	N3Vector control1;
 	N3Vector control2;
 	N3Vector endpoint;
@@ -98,7 +97,7 @@
 	
 	convexHull = [NSMutableArray array];
 	
-	for (i = 0; i < [_bezierPath elementCount]; i++) {
+	for (NSUInteger i = 0; i < [_bezierPath elementCount]; i++) {
 		elementType = [_bezierPath elementAtIndex:i control1:&control1 control2:&control2 endpoint:&endpoint];
 		switch (elementType) {
 			case N3MoveToBezierPathElement:

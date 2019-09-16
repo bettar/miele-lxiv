@@ -2147,7 +2147,6 @@ return YES;
 {
     NSSavePanel *panel = [NSSavePanel savePanel];
 	BOOL all = YES;
-	int i;
 	NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 	
 	long deltaX, deltaY, x, y, oldX, oldY, max;
@@ -2196,7 +2195,7 @@ return YES;
 				max = [[view curDCM] pheight];
 			}
 			
-			for (i = 0; i < max; i++)
+			for (int i = 0; i < max; i++)
 			{
 				[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
 				[modalitySplitView display];
@@ -2211,7 +2210,8 @@ return YES;
 
 				[bitmapData writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%d.jpg", i+1]] atomically:YES];
 			}
-			[view setCrossPosition:oldX+0.5 :oldY+0.5];
+
+            [view setCrossPosition:oldX+0.5 :oldY+0.5];
 			[view setNeedsDisplay:YES];
 
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) 

@@ -234,10 +234,10 @@
 
 - (void)setTitle:(NSString*)aTitle;
 {
-	if([aTitle isEqualToString:@""])
+	if (aTitle.length == 0)
         return;
     
-	if(title)
+	if (title)
         [title release];
     
 	title = [aTitle retain];

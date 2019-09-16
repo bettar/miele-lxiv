@@ -59,12 +59,11 @@
     NSValue *maskRunValue;
     NSData *maskRunData;
     OSIROIMaskRun *maskRuns;
-    NSInteger i;
 
     maskRunData = [roiMask maskRunsData];
     maskRuns = (OSIROIMaskRun *)[maskRunData bytes];
 
-    for (i = 0; i < [roiMask maskRunCount]; i++) {
+    for (NSInteger i = 0; i < [roiMask maskRunCount]; i++) {
         if (maskRuns[i].depthIndex >= _pixelsDeep || maskRuns[i].heightIndex >= _pixelsHigh ||
             maskRuns[i].widthRange.location + maskRuns[i].widthRange.length >= _pixelsWide) {
             return NO;

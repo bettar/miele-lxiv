@@ -179,7 +179,6 @@ NSString * const _CPRGeneratorRunLoopMode = @"_CPRGeneratorRunLoopMode";
     CPRVolumeData *volumeData;
     CPRGeneratorOperation *operation;
     NSArray *finishedOperations;
-	NSInteger i;
     BOOL sentGeneratedVolume;
     
 	assert([NSThread isMainThread]);
@@ -191,7 +190,7 @@ NSString * const _CPRGeneratorRunLoopMode = @"_CPRGeneratorRunLoopMode";
         [_finishedOperations removeAllObjects];
     }
     
-	for (i = [finishedOperations count] - 1; i >= 0; i--) {
+	for (NSInteger i = [finishedOperations count] - 1; i >= 0; i--) {
 		operation = [finishedOperations objectAtIndex:i];
         [operation removeObserver:self forKeyPath:@"isFinished"];
         [self autorelease]; // to match the retain in -[CPRGenerator requestVolume:]

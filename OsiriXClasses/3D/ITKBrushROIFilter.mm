@@ -119,8 +119,8 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 
 - (void) computeKernelDilate:(int) structuringElementRadius
 {
-	kernelDilate = (unsigned char*) calloc( structuringElementRadius*structuringElementRadius, sizeof(unsigned char));
-	memset(kernelDilate,0xff,structuringElementRadius*structuringElementRadius);
+	kernelDilate = (unsigned char*) malloc( structuringElementRadius*structuringElementRadius * sizeof(unsigned char));
+	memset(kernelDilate,0xff,structuringElementRadius*structuringElementRadius * sizeof(unsigned char));
 	draw_filled_circle(kernelDilate, structuringElementRadius, 0x0);
 }
 

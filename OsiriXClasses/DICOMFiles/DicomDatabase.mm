@@ -2080,11 +2080,13 @@ static BOOL protectionAgainstReentry = NO;
                                 if ([[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
                                     study.modality = [curDict objectForKey: @"modality"];
                                 
-                                if ([study valueForKey: @"studyName"] == nil || [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] || [[study valueForKey: @"studyName"] isEqualToString: @""])
-                                    
+                                if ([study valueForKey: @"studyName"] == nil ||
+                                    [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] ||
+                                    [[study valueForKey: @"studyName"] isEqualToString: @""])
                                     study.studyName = [curDict objectForKey: @"studyDescription"];
-                                    if( study.studyName.length == 0 || [study.studyName isEqualToString: @"unnamed"])
-                                        study.studyName = [curDict objectForKey: @"seriesDescription"];
+
+                                if (study.studyName.length == 0 || [study.studyName isEqualToString: @"unnamed"])
+                                    study.studyName = [curDict objectForKey: @"seriesDescription"];
                             }
                             
                             if ([curDict objectForKey: @"studyDate"] && [[curDict objectForKey: @"studyDate"] isEqualToDate: defaultDate] == NO)
@@ -2724,10 +2726,7 @@ static BOOL protectionAgainstReentry = NO;
                         {
                             NSString *extension = [srcPath pathExtension];
                             
-                            if( [extension isEqualToString:@""])
-                                extension = @"dcm"; 
-                            
-                            if( [extension length] > 4 || [extension length] < 3)
+                            if ([extension length] == 0 || [extension length] > 4 || [extension length] < 3)
                                 extension = @"dcm";
                             
                             dstPath = [self uniquePathForNewDataFileWithExtension:extension];

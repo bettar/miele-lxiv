@@ -1009,7 +1009,6 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutline(N3BezierCoreRef bezierCo
     N3Vector endpoint;
     N3Vector endpointNormal;
     CGFloat length;
-    NSInteger i;
     NSUInteger numVectors;
     N3VectorArray vectors;
     N3VectorArray normals;
@@ -1026,7 +1025,8 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutline(N3BezierCoreRef bezierCo
         flattenedBezierCore = N3BezierCoreCreateMutableCopy(bezierCore);
         N3BezierCoreSubdivide((N3MutableBezierCoreRef)flattenedBezierCore, N3BezierDefaultSubdivideSegmentLength);
         N3BezierCoreFlatten((N3MutableBezierCoreRef)flattenedBezierCore, N3BezierDefaultFlatness);
-    } else {
+    }
+    else {
         flattenedBezierCore = N3BezierCoreRetain(bezierCore); 
     }
     
@@ -1057,7 +1057,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutline(N3BezierCoreRef bezierCo
     N3VectorAddVectors(side, scaledNormals, numVectors);
     
     N3BezierCoreAddSegment(outlineBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[0]);
-    for (i = 1; i < numVectors; i++) {
+    for (NSInteger i = 1; i < numVectors; i++) {
         N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[i]);
     }
     N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, N3VectorAdd(endpoint, endpointNormal));
@@ -1069,7 +1069,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutline(N3BezierCoreRef bezierCo
     N3VectorAddVectors(side, scaledNormals, numVectors);
     
     N3BezierCoreAddSegment(outlineBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[0]);
-    for (i = 1; i < numVectors; i++) {
+    for (NSInteger i = 1; i < numVectors; i++) {
         N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[i]);
     }
     N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, N3VectorAdd(endpoint, N3VectorInvert(endpointNormal)));
@@ -1096,7 +1096,6 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutlineWithNormal(N3BezierCoreRe
     N3Vector endpoint;
     N3Vector endpointNormal;
     CGFloat length;
-    NSInteger i;
     NSUInteger numVectors;
     N3VectorArray vectors;
     N3VectorArray tangents;
@@ -1113,7 +1112,8 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutlineWithNormal(N3BezierCoreRe
         flattenedBezierCore = N3BezierCoreCreateMutableCopy(bezierCore);
         N3BezierCoreSubdivide((N3MutableBezierCoreRef)flattenedBezierCore, N3BezierDefaultSubdivideSegmentLength);
         N3BezierCoreFlatten((N3MutableBezierCoreRef)flattenedBezierCore, N3BezierDefaultFlatness);
-    } else {
+    }
+    else {
         flattenedBezierCore = N3BezierCoreRetain(bezierCore); 
     }
     
@@ -1145,7 +1145,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutlineWithNormal(N3BezierCoreRe
     N3VectorAddVectors(side, normals, numVectors);
     
     N3BezierCoreAddSegment(outlineBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[0]);
-    for (i = 1; i < numVectors; i++) {
+    for (NSInteger i = 1; i < numVectors; i++) {
         N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[i]);
     }
     N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, N3VectorAdd(endpoint, endpointNormal));
@@ -1156,7 +1156,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutlineWithNormal(N3BezierCoreRe
     N3VectorAddVectors(side, normals, numVectors);
     
     N3BezierCoreAddSegment(outlineBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[0]);
-    for (i = 1; i < numVectors; i++) {
+    for (NSInteger i = 1; i < numVectors; i++) {
         N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[i]);
     }
     N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, N3VectorAdd(endpoint, N3VectorInvert(endpointNormal)));

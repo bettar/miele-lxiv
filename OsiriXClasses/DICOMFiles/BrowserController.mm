@@ -1241,7 +1241,8 @@ static NSConditionLock *threadLock = nil;
                                     {
                                         NSManagedObject *study = [series valueForKey: @"study"];
                                         
-                                        if ([study valueForKey: commentField] == nil || [[study valueForKey: commentField] isEqualToString:@""])
+                                        if ([study valueForKey: commentField] == nil ||
+                                            [[study valueForKey: commentField] isEqualToString:@""])
                                         {
                                             [study willChangeValueForKey: commentField];
                                             [study setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
@@ -2195,7 +2196,7 @@ static NSConditionLock *threadLock = nil;
 				if ([[im valueForKey: @"fileType"] hasPrefix: @"DICOM"])
 					extension = @"dcm";
 				
-				if ([extension isEqualToString:@""])
+				if (extension.length == 0)
 					extension = @"dcm";
 				
 				NSString *dstPath = [self getNewFileDatabasePath:extension];
@@ -2377,10 +2378,7 @@ static NSConditionLock *threadLock = nil;
 							if ([[[curFile dicomElements] objectForKey: @"fileType"] hasPrefix: @"DICOM"])
 								extension = @"dcm";
                             
-							if ([extension isEqualToString:@""])
-								extension = @"dcm"; 
-							
-							if ([extension length] > 4 || [extension length] < 3)
+							if ([extension length] == 0 || [extension length] > 4 || [extension length] < 3)
 								extension = @"dcm";
 							
 							NSString *dstPath = [self getNewFileDatabasePath:extension];
@@ -17774,15 +17772,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 			for (int i = 0; i < [filesToExport count]; i++)
 			{
 				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
-				NSString		*extension = [[filesToExport objectAtIndex:i] pathExtension];
+				NSString *extension = [[filesToExport objectAtIndex:i] pathExtension];
 				
 				if ([curImage valueForKey: @"fileType"])
-				{
 					if ([[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"])
 						extension = @"dcm";
-				}
 				
-				if ([extension isEqualToString:@""])
+				if (extension.length == 0)
 					extension = @"dcm"; 
 				
 				NSString *tempPath;

@@ -524,37 +524,44 @@
 	
 }
 
--(int) resamplecrosssection:(Point3D*) pt : (Point3D*) dir :(float) steplength
+-(int) resamplecrosssection:(Point3D*) pt
+                           :(Point3D*) dir
+                           :(float) steplength
 {
-	int err=[self calculateSampleMetric:dir.x :dir.y :dir.z];
-	if (err) {
+	int err = [self calculateSampleMetric:dir.x :dir.y :dir.z];
+	if (err)
 		return err;
-	}
-	int i,j;
+
 	float a=dir.x,b=dir.y,c=dir.z;
 	float centerx,centery,centerz;
 	centerx = pt.x + steplength * a / sqrt( a*a + b*b + c*c );
 	centery = pt.y + steplength * b / sqrt( a*a + b*b + c*c );
 	centerz = pt.z + steplength * c / sqrt( a*a + b*b + c*c );
 	
-	for (i = 0; i < CROSSECTIONIMSIZE; i++) {
-		for (j = 0; j < CROSSECTIONIMSIZE; j++) {
+	for (int i = 0; i < CROSSECTIONIMSIZE; i++) {
+		for (int j = 0; j < CROSSECTIONIMSIZE; j++) {
 			
 			float x, y, z;
 			x = centerx + (i - CROSSECTIONIMSIZE/2) *  sampleMetric[0][0] + (j - CROSSECTIONIMSIZE/2) * sampleMetric[1][0];
 			y = centery + (i - CROSSECTIONIMSIZE/2) *  sampleMetric[0][1] + (j - CROSSECTIONIMSIZE/2) * sampleMetric[1][1];
 			z = centerz + (i - CROSSECTIONIMSIZE/2) *  sampleMetric[0][2] + (j - CROSSECTIONIMSIZE/2) * sampleMetric[1][2];
 			
-			if(x>=0 && x<distmapWidth && y>=0 && y<distmapHeight && z>=0 && z<distmapDepth)
-				csmap[i*CROSSECTIONIMSIZE+j]=distmap[(int)z*distmapImageSize+(int)y*distmapWidth+(int)x];
+			if (x>=0 &&
+                x<distmapWidth &&
+                y>=0 &&
+                y<distmapHeight &&
+                z>=0 &&
+                z<distmapDepth)
+            {
+				csmap[i*CROSSECTIONIMSIZE+j] = distmap[(int)z*distmapImageSize + (int)y*distmapWidth+(int)x];
+            }
 			else {
-				csmap[i*CROSSECTIONIMSIZE+j]=0;
+				csmap[i*CROSSECTIONIMSIZE+j] = 0;
 			}
-			
-			
 		}
 	}
-	return 0;
+
+    return 0;
 }
 
 - (int) caculateNextPositionFrom: (Point3D*) pt Towards:(Point3D*)dir;
@@ -600,10 +607,10 @@
 	float x,y,z;
 	x = 0; y = 0; z = 0;
 	
-	int i;
-	for (i=0;i<20;i++)
+	int ii;
+	for (ii=0; ii<20; ii++)
 	{
-		Point3D* nextcenter = [self caculateNextCenterPointFrom:pt Towards:dir WithStepLength:steplen+steplen*0.1*i];
+		Point3D* nextcenter = [self caculateNextCenterPointFrom:pt Towards:dir WithStepLength:steplen+steplen*0.1*ii];
 		if (!nextcenter)
 			break;
 
@@ -619,9 +626,9 @@
 		z += newdir.z/len;
 	}
     
-	if (i<10) {
+	if (ii<10) {
 //		printf("turning \n");
-		i=0;
+		ii=0;
 		newpos = [Point3D point];
 		newpos.x = pt.x;
 		newpos.y = pt.y;
@@ -634,8 +641,7 @@
 		z = 0;
 	}
 
-
-	for (; i<10; i++) {
+	for (; ii<10; ii++) {
 		Point3D* nextcenter = [self caculateNextCenterPointFrom:newpos Towards:newdir WithStepLength:steplen];
 		if (!nextcenter)
 			break;

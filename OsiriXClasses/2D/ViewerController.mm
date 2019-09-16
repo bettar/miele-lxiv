@@ -9188,10 +9188,10 @@ static int avoidReentryRefreshDatabase = 0;
 					
 					NSString *com = imageView.seriesObj.comment;
 					
-					if (com == nil || [com isEqualToString:@""])
+					if (com.length == 0)
 						com = imageView.studyObj.comment;
 					
-					if (com == nil || [com isEqualToString:@""])
+                    if (com.length == 0)
                         [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 					else
                         [CommentsField setTitle: com];
@@ -9207,7 +9207,6 @@ static int avoidReentryRefreshDatabase = 0;
 					{
 						[self showCurrentThumbnail:self];
 					}
-					
 					
 					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDisplayImagesOfSamePatient"])
 					{
@@ -12408,7 +12407,7 @@ static float oldsetww, oldsetwl;
                     else
                     {
                         [theCell setEnabled:YES];
-                        if ([[theCell stringValue] isEqualToString:@""] == YES)
+                        if ([theCell stringValue].length == 0)
                             [theCell setStringValue:@"0"];
                         
                         [theCell setAlignment:NSCenterTextAlignment];
@@ -12423,9 +12422,8 @@ static float oldsetww, oldsetwl;
                 for (long y = 0; y < 5; y++)
                 {
                     theCell = [convMatrix cellAtRow:y column:x];
-                    
                     [theCell setEnabled:YES];
-                    if ([[theCell stringValue] isEqualToString:@""] == YES)
+                    if ([theCell stringValue].length == 0)
                         [theCell setStringValue:@"0"];
                     
                     [theCell setAlignment:NSCenterTextAlignment];
@@ -12566,7 +12564,7 @@ static float oldsetww, oldsetwl;
 						else
 						{
 							[theCell setEnabled:YES];
-							if ([[theCell stringValue] isEqualToString:@""])
+							if ([theCell stringValue].length == 0)
                                 [theCell setStringValue:@"0"];
                             
 							[theCell setAlignment:NSCenterTextAlignment];
@@ -12583,9 +12581,8 @@ static float oldsetww, oldsetwl;
 					for (y = 0; y < 5; y++)
 					{
 						NSCell *theCell = [convMatrix cellAtRow:y column:x];
-						
 						[theCell setEnabled:YES];
-						if ([[theCell stringValue] isEqualToString:@""])
+						if ([theCell stringValue].length == 0)
                             [theCell setStringValue:@"0"];
                         
 						[theCell setAlignment:NSCenterTextAlignment];
@@ -12711,9 +12708,8 @@ long				x, y;
 		for (long y = 0; y < 5; y++)
 		{
 			NSCell *theCell = [convMatrix cellAtRow:y column:x];
-			
 			[theCell setEnabled:YES];
-			if ([[theCell stringValue] isEqualToString:@""])
+			if ([theCell stringValue].length == 0)
                 [theCell setStringValue:@"0"];
             
 			[theCell setAlignment:NSCenterTextAlignment];
@@ -14252,9 +14248,9 @@ long				x, y;
 	[self addPlainRoiToCurrentSliceFromBuffer:buff withName:@""];
 }
 
--(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff withName:(NSString*)name
+-(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff
+                                  withName:(NSString*)name
 {
-int i,j,l;
 	unsigned char tempValue;
 	BOOL alreadyIn=NO;
 	
@@ -14298,101 +14294,109 @@ int i,j,l;
 	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	long height=[curPix pheight];
 	long width=[curPix pwidth];
-		for (j=0;j<height;j++)
-		{
-			for (i=0;i<width;i++)
-			{
-				tempValue=buff[(long)(i+j*width)];
-				if (tempValue!=0)
-				{
-					alreadyIn=NO;
-					// check if the region has not been already added to the nbRegion Mutable Array
-					for (l=0;l<[nbRegion count];l++)
-						if ([[nbRegion objectAtIndex:l] intValue]==tempValue)
-							alreadyIn=YES;
-					if (!alreadyIn)
-						[nbRegion addObject:[NSNumber numberWithInt:tempValue]];
-				}
-			}
-		}
+		
+    for (int j=0;j<height; j++)
+    {
+        for (int i=0; i<width; i++)
+        {
+            tempValue = buff[(long)(i+j*width)];
+            if (tempValue!=0)
+            {
+                alreadyIn=NO;
+                // check if the region has not been already added to the nbRegion Mutable Array
+                for (int k=0; k<[nbRegion count]; k++)
+                    if ([[nbRegion objectAtIndex:k] intValue] == tempValue)
+                        alreadyIn=YES;
+
+                if (!alreadyIn)
+                    [nbRegion addObject:[NSNumber numberWithInt:tempValue]];
+            }
+        }
+    }
 	
-	for (l=0;l<[nbRegion count];l++)
-		[self	addPlainRoiToCurrentSliceFromBuffer:buff
-				forSpecificValue:[[nbRegion objectAtIndex:l] intValue]
-				withColor:rgbList[l % nbColor]
-				withName:name];
-	
+	for (int k=0; k<[nbRegion count]; k++)
+		[self addPlainRoiToCurrentSliceFromBuffer: buff
+                                 forSpecificValue: [[nbRegion objectAtIndex:k] intValue]
+                                        withColor: rgbList[k % nbColor]
+                                         withName: name];
 }
--(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name
+
+-(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff
+                          forSpecificValue:(unsigned char)value
+                                 withColor:(RGBColor)aColor
+                                  withName:(NSString*)name
 {
-	int i,j,l;
-	ROI		*theNewROI;
-	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
-	long height=[curPix pheight];
-    long width=[curPix pwidth];
+	ROI	*theNewROI;
+	DCMPix *curPix = [[self pixList] objectAtIndex: [imageView curImage]];
+	long height = [curPix pheight];
+    long width = [curPix pwidth];
 	int upLeftX,upLeftY,dRightX,dRightY;
 	int tWidth,tHeight;
 	unsigned char* textureBuffer;
 	BOOL findOne=false;
-
-		// 1- For a Slice find the texture dimension for the specific value (param: value)
-		findOne=NO;
-		upLeftX=width;upLeftY=height;dRightX=0;dRightY=0; // initialisation with opposite values
-		for (j=0;j<height;j++)
-			for (i=0;i<width;i++)
-			{
-				if (buff[(long)(i+j*width)]==value)
-				{
-					findOne=YES;
-					// boundary check
-					if (i<upLeftX)
-						upLeftX=i;
-                    
-					if (j<upLeftY)
-						upLeftY=j;
-                    
-					if (i>dRightX)
-						dRightX=i;
-                    
-					if (j>dRightY)
-						dRightY=j;
-				}
-			}
+		
+    // 1- For a Slice find the texture dimension for the specific value (param: value)
+    findOne=NO;
+    upLeftX=width;upLeftY=height;dRightX=0;dRightY=0; // initialisation with opposite values
+    for (int j=0;j<height;j++)
+        for (int i=0;i<width;i++)
+        {
+            if (buff[(long)(i+j*width)]==value)
+            {
+                findOne=YES;
+                // boundary check
+                if (i<upLeftX)
+                    upLeftX=i;
+                
+                if (j<upLeftY)
+                    upLeftY=j;
+                
+                if (i>dRightX)
+                    dRightX=i;
+                
+                if (j>dRightY)
+                    dRightY=j;
+            }
+        }
 				
-				// Create texture ...		
-				if (findOne)
-				{
-					tWidth=dRightX-upLeftX+1;
-					tHeight=dRightY-upLeftY+1;
-					textureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
-					// clear texture
-					for (l=0;l<tWidth*tHeight;l++)       
-						textureBuffer[(long)l]=0;
-					
-					// fill in the texture
-					for (j=0;j<height;j++)
-						for (i=0;i<width;i++)
-							if (buff[(long)(i+j*width)]==value)
-								textureBuffer[(long)((i-upLeftX)+(j-upLeftY)*tWidth)]=0xFF;
-					
-					// 2- create a roi with the (initWithTexture) at slice k
-					name = ([name isEqualToString:@""])? [NSString stringWithFormat:@"area %d",value] : name;
-					theNewROI = [[[ROI alloc] initWithTexture:textureBuffer  textWidth:tWidth textHeight:tHeight textName:name
-													positionX:upLeftX positionY:upLeftY
-													 spacingX:[curPix pixelSpacingX]  spacingY:[curPix pixelSpacingY]
-												  imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
-					free(textureBuffer);
-					[theNewROI setColor:aColor];
-					//	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
-					[[[self roiList] objectAtIndex:[imageView curImage]] addObject:theNewROI];		
-					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
-				}
-	
+    
+    // Create texture ...
+    if (findOne)
+    {
+        tWidth = dRightX-upLeftX+1;
+        tHeight = dRightY-upLeftY+1;
+        textureBuffer = (unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
+        // clear texture
+        for (long k=0; k<tWidth*tHeight; k++)
+            textureBuffer[k]=0;
+        
+        // fill in the texture
+        for (int j=0;j<height;j++)
+            for (int i=0;i<width;i++)
+                if (buff[(long)(i+j*width)]==value)
+                    textureBuffer[(long)((i-upLeftX)+(j-upLeftY)*tWidth)] = 0xFF;
+        
+        // 2- create a ROI with the (initWithTexture) at slice k
+        name = (name.length == 0) ? [NSString stringWithFormat:@"area %d",value] : name;
+        theNewROI = [[[ROI alloc] initWithTexture:textureBuffer
+                                        textWidth:tWidth
+                                       textHeight:tHeight
+                                         textName:name
+                                        positionX:upLeftX
+                                        positionY:upLeftY
+                                         spacingX:[curPix pixelSpacingX]
+                                         spacingY:[curPix pixelSpacingY]
+                                      imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
+        free(textureBuffer);
+        [theNewROI setColor:aColor];
+        //	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
+        [[[self roiList] objectAtIndex:[imageView curImage]] addObject:theNewROI];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
+    }
 }
 
 -(void)addRoiFromFullStackBuffer:(unsigned char*)buff withName:(NSString*)name
 {
-	int i,j,k,l;
 	unsigned char tempValue;
 	BOOL alreadyIn=NO;
 	
@@ -14483,22 +14487,22 @@ int i,j,l;
 	 NSLog(@"color r=%d, g=%d, b=%d", aColor.red, aColor.green, aColor.blue);
 	 */
 	NSMutableArray* nbRegion=[NSMutableArray array];
-	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
+	DCMPix *curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	long height=[curPix pheight];
 	long width=[curPix pwidth];
 	long depth=[[self pixList] count];	
-	for (k=0;k<depth;k++)
+	for (int k=0; k<depth; k++)
 	{
-		for (j=0;j<height;j++)
+		for (int j=0; j<height; j++)
 		{
-			for (i=0;i<width;i++)
+			for (int i=0; i<width; i++)
 			{
 				tempValue=buff[(long)(i+j*width+k*width*height)];
 				if (tempValue!=0)
 				{
 					alreadyIn=NO;
 					// check if the region has not been already added to the nbRegion Mutable Array
-					for (l=0;l<[nbRegion count];l++)
+					for (int l=0;l<[nbRegion count];l++)
 						if ([[nbRegion objectAtIndex:l] intValue]==tempValue)
 							alreadyIn=YES;
 					if (!alreadyIn)
@@ -14507,7 +14511,8 @@ int i,j,l;
 			}
 		}
 	}
-	for (l=0;l<[nbRegion count];l++)
+
+    for (int l=0; l<[nbRegion count]; l++)
 		[self	addRoiFromFullStackBuffer:buff
 				forSpecificValue:[[nbRegion objectAtIndex:l] intValue]
 				withColor:rgbList[l % nbColor]
@@ -14521,9 +14526,8 @@ int i,j,l;
 }
 -(void)addRoiFromFullStackBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name
 {
-	int i,j,k,l;
-	ROI		*theNewROI;
-	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
+	ROI *theNewROI;
+	DCMPix *curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	long height=[curPix pheight];
     long width=[curPix pwidth];
 	long depth=[[self pixList] count];
@@ -14531,13 +14535,13 @@ int i,j,l;
 	int tWidth,tHeight;
 	unsigned char* textureBuffer;
 	BOOL findOne=false;
-	for (k=0;k<depth;k++)
+	for (int k=0; k<depth; k++)
 	{
 		// 1- For a Slice find the texture dimension for the specific value (param: value)
 		findOne=NO;
-		upLeftX=width;upLeftY=height;dRightX=0;dRightY=0; // initialisation with opposite values
-		for (j=0;j<height;j++)
-			for (i=0;i<width;i++)
+		upLeftX=width; upLeftY=height; dRightX=0; dRightY=0; // initialisation with opposite values
+		for (int j=0; j<height; j++)
+			for (int i=0; i<width; i++)
 			{
 				if (buff[(long)(i+j*width+k*width*height)]==value)
 				{
@@ -14557,34 +14561,34 @@ int i,j,l;
 				}
 			}
 				
-				// Create texture ...		
-				if (findOne)
-				{
-					tWidth=dRightX-upLeftX+1;
-					tHeight=dRightY-upLeftY+1;
-					textureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
-					// clear texture
-					for (l=0;l<tWidth*tHeight;l++)       
-						textureBuffer[(long)l]=0;
-					
-					// fill in the texture
-					for (j=0;j<height;j++)
-						for (i=0;i<width;i++)
-							if (buff[(long)(i+j*width+k*width*height)]==value)
-								textureBuffer[(long)((i-upLeftX)+(j-upLeftY)*tWidth)]=0xFF;
-					
-					// 2- create a roi with the (initWithTexture) at slice k
-					name = ([name isEqualToString:@""])? [NSString stringWithFormat:@"area %d",value] : name;
-					theNewROI = [[[ROI alloc] initWithTexture:textureBuffer  textWidth:tWidth textHeight:tHeight textName:name
-													positionX:upLeftX positionY:upLeftY
-													 spacingX:[curPix pixelSpacingX]  spacingY:[curPix pixelSpacingY]
-												  imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
-					free(textureBuffer);
-					[theNewROI setColor:aColor];
-					//	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
-					[[[self roiList] objectAtIndex:k] addObject:theNewROI];		
-					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
-				}
+        // Create texture ...
+        if (findOne)
+        {
+            tWidth=dRightX-upLeftX+1;
+            tHeight=dRightY-upLeftY+1;
+            textureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
+            // clear texture
+            for (int l=0; l<tWidth*tHeight; l++)
+                textureBuffer[(long)l]=0;
+            
+            // fill in the texture
+            for (int j=0; j<height; j++)
+                for (int i=0; i<width; i++)
+                    if (buff[(long)(i+j*width+k*width*height)]==value)
+                        textureBuffer[(long)((i-upLeftX)+(j-upLeftY)*tWidth)]=0xFF;
+            
+            // 2- create a ROI with the (initWithTexture) at slice k
+            name = (name.length == 0) ? [NSString stringWithFormat:@"area %d",value] : name;
+            theNewROI = [[[ROI alloc] initWithTexture:textureBuffer  textWidth:tWidth textHeight:tHeight textName:name
+                                            positionX:upLeftX positionY:upLeftY
+                                             spacingX:[curPix pixelSpacingX]  spacingY:[curPix pixelSpacingY]
+                                          imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
+            free(textureBuffer);
+            [theNewROI setColor:aColor];
+            //	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
+            [[[self roiList] objectAtIndex:k] addObject:theNewROI];
+            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
+        }
 	}
 }
 
@@ -18248,15 +18252,14 @@ int i,j,l;
 		
 		[[[movingViewer pixList] objectAtIndex:0] orientation: vectorSensor];
 		[[[self pixList] objectAtIndex:0] orientation: vectorModel];
-		
-		int i,j; // 'for' indexes
-		for (i=0; i<[modelPointROIs count] && pointsNamesMatch2by2 && !triplets; i++)
+
+		for (int i=0; i<[modelPointROIs count] && pointsNamesMatch2by2 && !triplets; i++)
 		{
 			ROI *curModelPoint2D = [modelPointROIs objectAtIndex:i];
 			modelName = [curModelPoint2D name];
 			foundAMatchingName = NO;
 			
-			for (j=0; j<[sensorPointROIs count] && !foundAMatchingName; j++)
+			for (int j=0; j<[sensorPointROIs count] && !foundAMatchingName; j++)
 			{
 				ROI *curSensorPoint2D = [sensorPointROIs objectAtIndex:j];
 				sensorName = [curSensorPoint2D name];
@@ -22450,7 +22453,7 @@ static BOOL viewerControllerPlaying = NO;
 	
 	NSString *com = [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.comment"];//JF20070103
 	
-	if (com == nil || [com isEqualToString:@""])
+	if (com.length == 0)
         [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 	else
         [CommentsField setTitle: com];
@@ -24123,10 +24126,10 @@ static BOOL viewerControllerPlaying = NO;
 	
 	NSString *com = [[fileList[ curMovieIndex] objectAtIndex: [imageView curImage]] valueForKeyPath:@"series.comment"];
 	
-	if (com == nil || [com isEqualToString:@""])
+	if (com.length == 0)
 		com = [[fileList[ curMovieIndex] objectAtIndex: [imageView curImage]] valueForKeyPath:@"series.study.comment"];
 	
-	if (com == nil || [com isEqualToString:@""])
+    if (com.length == 0)
         [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
     else
         [CommentsField setTitle: com];

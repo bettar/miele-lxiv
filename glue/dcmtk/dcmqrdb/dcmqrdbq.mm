@@ -206,13 +206,13 @@ static int DB_TagSupported (DcmTagKey tag)
 
 static OFCondition DB_GetTagLevel (DcmTagKey tag, DB_LEVEL *level)
 {
-    int i;
-    for (i = 0; i < NbFindAttr; i++)
-        if (TbFindAttr[i]. tag == tag)
+    int ii;
+    for (ii = 0; ii < NbFindAttr; ii++)
+        if (TbFindAttr[ii]. tag == tag)
             break;
 
-    if (i < NbFindAttr) {
-        *level = TbFindAttr[i]. level;
+    if (ii < NbFindAttr) {
+        *level = TbFindAttr[ii]. level;
         return (EC_Normal);
     }
     
@@ -225,18 +225,18 @@ static OFCondition DB_GetTagLevel (DcmTagKey tag, DB_LEVEL *level)
 
 static OFCondition DB_GetTagKeyAttr (DcmTagKey tag, DB_KEY_TYPE *keyAttr)
 {
-    int i;
-
-    for (i = 0; i < NbFindAttr; i++)
-    if (TbFindAttr[i]. tag == tag)
-        break;
-
-    if (i < NbFindAttr) {
-    *keyAttr = TbFindAttr[i]. keyAttr;
-    return (EC_Normal);
+    int ii;
+    
+    for (ii = 0; ii < NbFindAttr; ii++)
+        if (TbFindAttr[ii]. tag == tag)
+            break;
+    
+    if (ii < NbFindAttr) {
+        *keyAttr = TbFindAttr[ii]. keyAttr;
+        return (EC_Normal);
     }
     else
-    return (DcmQROsiriXDatabaseError);
+        return (DcmQROsiriXDatabaseError);
 }
 
 /*******************
@@ -245,14 +245,14 @@ static OFCondition DB_GetTagKeyAttr (DcmTagKey tag, DB_KEY_TYPE *keyAttr)
 
 //static OFCondition DB_GetTagKeyClass (DcmTagKey tag, DB_KEY_CLASS *keyAttr)
 //{
-//    int i;
+//    int ii;
 //
-//    for (i = 0; i < NbFindAttr; i++)
-//    if (TbFindAttr[i]. tag == tag)
+//    for (ii = 0; ii < NbFindAttr; ii++)
+//    if (TbFindAttr[ii]. tag == tag)
 //        break;
 //
-//    if (i < NbFindAttr) {
-//    *keyAttr = TbFindAttr[i]. keyClass;
+//    if (ii < NbFindAttr) {
+//    *keyAttr = TbFindAttr[ii]. keyClass;
 //    return (EC_Normal);
 //    }
 //    else
@@ -1191,7 +1191,6 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 
 DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 {
-
 	if (handle_)
 	{
 		// set logEntry to complete

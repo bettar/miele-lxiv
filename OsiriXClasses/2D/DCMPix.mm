@@ -174,22 +174,21 @@ void SwitchFloat (float *theFloat)
 unsigned char* CreateIconFrom16 (float* image, unsigned char* icon,  int height, int width, int iconWidth, long wl, long ww, BOOL isRGB)
 // create an icon from an 12 or 16 bit image
 {
-	float				ratio;
-	long				i, j;
-	long				line, destWidth, destHeight;
-	long				value;
-	long				min, max, diff;
+	float ratio;
+	long line, destWidth, destHeight;
+	long value;
+	long min, max, diff;
 	
 	min = wl - ww / 2; //if (min < 0) min = 0;
 	max = wl + ww / 2;
 	diff = max - min;
 	
-	if (diff <= 0)
-	{
+	if (diff <= 0) {
 		diff = 1;
 		max = min + 1;
 	}
-	if (width > height)
+
+    if (width > height)
         ratio = (float) width / PREVIEWSIZE;
 	else
         ratio = (float) height / PREVIEWSIZE;
@@ -205,17 +204,16 @@ unsigned char* CreateIconFrom16 (float* image, unsigned char* icon,  int height,
         
 		if (isRGB)
 		{
-			int x;
 			unsigned char *rgbImage = (unsigned char*) image;
 			int rowBytes = iconWidth*4;
 			
-			for (i = 0; i < destHeight; i++)  // lines
+			for (long i = 0; i < destHeight; i++)  // lines
 			{
 				line = width * (long) (ratio * i)*4 ;   //ARGB
 				iconPtr = icon + rowBytes*i;
-				for (j = 0; j < destWidth; j++)         // columns 
+				for (long j = 0; j < destWidth; j++)         // columns
 				{
-					for (x = 1; x< 4;x++, iconPtr++)		// Don't take alpha channel
+					for (int x = 1; x< 4;x++, iconPtr++)		// Don't take alpha channel
 					{
 						value = *( rgbImage + line + x + (long) (j * ratio)*4); //ARGB
 						
@@ -230,11 +228,11 @@ unsigned char* CreateIconFrom16 (float* image, unsigned char* icon,  int height,
 		else
 		{
 			int rowBytes = iconWidth;
-			for (i = 0; i < destHeight; i++)  // lines
+			for (long i = 0; i < destHeight; i++)  // lines
 			{
 				line = width * (long) (ratio * i) ;
 				iconPtr = icon + rowBytes*i;
-				for (j = 0; j < destWidth; j++, iconPtr++)         // columns 
+				for (long j = 0; j < destWidth; j++, iconPtr++)         // columns
 				{ 
 					value = *( image + line + (long) (j * ratio));
 					
@@ -9617,7 +9615,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	subtractedfZero = subtractedfZ - 0.8 + (p*0.8);
 	subtractedfGamma = g;
 	
-	if (subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
+	if (subGammaFunction)
+        vImageDestroyGammaFunction( subGammaFunction);
 	
 	subGammaFunction = vImageCreateGammaFunction( subtractedfGamma, kvImageGamma_UseGammaValue_half_precision, 0);	
 	
@@ -9865,12 +9864,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             else
             {
                 float  fkernel[25], m;
-                int i;
                 
                 if (normalization != 0)
-                    for (i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i] / (float) normalization;
+                    for (int i = 0; i < 25; i++)
+                        fkernel[ i] = (float) kernel[ i] / (float) normalization;
                 else
-                    for (i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i];
+                    for (int i = 0; i < 25; i++)
+                        fkernel[ i] = (float) kernel[ i];
                 
                 m = *src;
                 err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, kernelsize, kernelsize, 0, kvImageDoNotTile + kvImageEdgeExtend);
@@ -11189,9 +11189,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                 else if ([type isEqualToString:@"Manual"])
                                 {
                                     value = [field objectForKey:@"field"];
-                                    if (value==nil || [value length] == 0) value = @"-";
+                                    if ([value length] == 0)
+                                        value = @"-";
                                     
-                                    if (![value isEqualToString:@""]) value = [value stringByAppendingString:@" "];
+                                    if (![value isEqualToString:@""])
+                                        value = [value stringByAppendingString:@" "];
                                 }
                                 
                                 if (value) [contentOUT addObject:value];

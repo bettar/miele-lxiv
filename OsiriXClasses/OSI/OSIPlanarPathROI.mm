@@ -42,7 +42,6 @@
 	MyPoint *myPoint;
 	NSMutableArray *nodes;
     NSMutableArray *tempPointArray;
-    NSInteger i;
 	
 	if ( (self = [super init]) ) {
 		_osiriXROI = [roi retain];
@@ -55,7 +54,8 @@
 			[_bezierPath moveToVector:N3VectorApplyTransform(N3VectorMakeFromNSPoint(point), pixToDICOMTransfrom)];
 			point = [roi pointAtIndex:1];
 			[_bezierPath lineToVector:N3VectorApplyTransform(N3VectorMakeFromNSPoint(point), pixToDICOMTransfrom)];
-		} else if ([roi type] == tOPolygon) {
+		}
+        else if ([roi type] == tOPolygon) {
 			pointArray = [roi points];
             
 //            if ([pointArray count] <= 1 || [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
@@ -72,7 +72,8 @@
 			}
             [_bezierPath applyAffineTransform:pixToDICOMTransfrom];
 			[nodes release];
-		} else if ([roi type] == tCPolygon || [roi type] == tOval || [roi type] == tPencil) {
+		}
+        else if ([roi type] == tCPolygon || [roi type] == tOval || [roi type] == tPencil) {
 			pointArray = [roi points];
             
             if ([roi type] == tOval && [pointArray count] >= 2 && [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
@@ -116,7 +117,7 @@
             _bezierPath = [[N3MutableBezierPath alloc] init];
             [_bezierPath moveToVector:N3VectorMakeFromNSPoint([[pointArray objectAtIndex:0] point])];
             
-            for (i = 1; i < [pointArray count]; i++) {
+            for (NSInteger i = 1; i < [pointArray count]; i++) {
                 [_bezierPath lineToVector:N3VectorMakeFromNSPoint([[pointArray objectAtIndex:i] point])];
             }
             
@@ -158,7 +159,6 @@
 - (NSArray *)convexHull
 {
 	NSMutableArray *convexHull;
-	NSUInteger i;
 	N3Vector control1;
 	N3Vector control2;
 	N3Vector endpoint;
@@ -166,7 +166,7 @@
 	
 	convexHull = [NSMutableArray array];
 	
-	for (i = 0; i < [_bezierPath elementCount]; i++) {
+	for (NSUInteger i = 0; i < [_bezierPath elementCount]; i++) {
 		elementType = [_bezierPath elementAtIndex:i control1:&control1 control2:&control2 endpoint:&endpoint];
 		switch (elementType) {
 			case N3MoveToBezierPathElement:
@@ -199,8 +199,6 @@
 	CGFloat z;
 	BOOL zSet;
 	NSValue *vectorValue;
-	NSInteger i;
-	NSInteger j;
 	NSInteger runStart;
 	NSInteger runEnd;
 	
@@ -216,7 +214,7 @@
 	maxY = -CGFLOAT_MAX;
     z = 0;
 	
-	for (i = 0; i < [volumeBezierPath elementCount]; i++) {
+	for (NSInteger i = 0; i < [volumeBezierPath elementCount]; i++) {
 		[volumeBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
 #if CGFLOAT_IS_DOUBLE
 		endpoint.z = round(endpoint.z);
@@ -244,7 +242,7 @@
         return [[[OSIROIMask alloc] initWithMaskRuns:[NSArray array]] autorelease];
     }
 	
-	for (i = minY; i <= maxY; i++) {
+	for (NSInteger i = minY; i <= maxY; i++) {
         if (i < 0 || i >= floatVolume.pixelsHigh) {
             continue;
         }
@@ -257,7 +255,7 @@
 			[intersectionNumbers addObject:[NSNumber numberWithDouble:[vectorValue N3VectorValue].x]];
 		}
 		[intersectionNumbers sortUsingSelector:@selector(compare:)];
-		for(j = 0; j+1 < [intersectionNumbers count]; j++, j++) {
+		for(NSInteger j = 0; j+1 < [intersectionNumbers count]; j++, j++) {
 			runStart = round([[intersectionNumbers objectAtIndex:j] doubleValue]);
 			runEnd = round([[intersectionNumbers objectAtIndex:j+1] doubleValue]);
             
@@ -298,13 +296,11 @@
 - (void)drawRect:(NSRect)rect inSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
 {
 	double dicomToPixGLTransform[16];
-	NSInteger i;
 	N3Vector endpoint;
     N3BezierPath *flattenedPath;
 	
-	if (OSISlabContainsPlane(slab, _plane) == NO) {
+	if (OSISlabContainsPlane(slab, _plane) == NO)
 		return; // this ROI does not live on this slice
-	}
 
     N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
 	
@@ -317,7 +313,7 @@
     glLineWidth(3.0);
     glColor3f(1, 0, 0);
     glBegin(GL_LINE_STRIP);
-    for (i = 0; i < [flattenedPath elementCount]; i++) {
+    for (NSInteger i = 0; i < [flattenedPath elementCount]; i++) {
         [flattenedPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
         glVertex3d(endpoint.x, endpoint.y, endpoint.z);
     }   

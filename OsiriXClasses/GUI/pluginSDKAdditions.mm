@@ -50,7 +50,7 @@
     N3AffineTransform pixToDicomTransform;
     double spacingX;
     double spacingY;
-    //    double spacingZ;
+//    double spacingZ;
     double pixOrientation[9];
     
     memset(pixOrientation, 0, sizeof(double) * 9);

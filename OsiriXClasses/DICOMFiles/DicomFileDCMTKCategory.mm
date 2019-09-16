@@ -329,10 +329,10 @@ extern NSRecursiveLock *Papyrus_Lock;
     {
         NSArray	*c = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
         
-        if ( [c count] >= NUM_ENCODINGS)
+        if ([c count] >= NUM_ENCODINGS)
             NSLog( @"Encoding number >= %d ???", NUM_ENCODINGS);
         
-        if ( [c count] < NUM_ENCODINGS)
+        if ([c count] < NUM_ENCODINGS)
         {
             for (int i = 0; i < [c count]; i++)
                 myEncodings[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];

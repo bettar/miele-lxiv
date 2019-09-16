@@ -2487,7 +2487,7 @@ char * nifti_findimgname(const char* fname , int nifti_type)
 
    basename =  nifti_makebasename(fname);
    imgname = (char *)calloc(sizeof(char),strlen(basename)+8);
-   if( !imgname ){
+   if ( !imgname ) {
       fprintf(stderr,"** nifti_findimgname: failed to alloc imgname\n");
       free(basename);
       return NULL;

@@ -34,8 +34,6 @@
 - (id)initWithOsiriXROI:(ROI *)roi pixToDICOMTransfrom:(N3AffineTransform)pixToDICOMTransfrom
 {
 	NSMutableArray *hullPoints;
-    NSInteger i;
-    NSInteger j;
     N3AffineTransform volumeTransform;
     float* mask;
 	
@@ -53,23 +51,31 @@
             [hullPoints addObject:[NSValue valueWithN3Vector:N3VectorApplyTransform(N3VectorMake(roi.textureDownRightCornerX, roi.textureDownRightCornerY, 0), pixToDICOMTransfrom)]];
             _convexHull = hullPoints;
             
-            mask = (float *)malloc(roi.textureWidth * roi.textureHeight * sizeof(float));
-            memset(mask, 0, roi.textureWidth * roi.textureHeight * sizeof(float));
+            mask = (float *)calloc(1, roi.textureWidth * roi.textureHeight * sizeof(float));
             
-            for (j = 0; j < roi.textureHeight; j++) {
-                for (i = 0; i < roi.textureWidth; i++) {
+            for (NSInteger j = 0; j < roi.textureHeight; j++) {
+                for (NSInteger i = 0; i < roi.textureWidth; i++) {
                     mask[j*roi.textureWidth + i] = ((float)roi.textureBuffer[j*roi.textureWidth + i])/255.0;
                 }
             }
+
             volumeTransform = N3AffineTransformConcat(N3AffineTransformInvert(pixToDICOMTransfrom), N3AffineTransformMakeTranslation(-roi.textureUpLeftCornerX, -roi.textureUpLeftCornerY, 0));
-            _brushMask = [[OSIFloatVolumeData alloc] initWithFloatBytesNoCopy:mask pixelsWide:roi.textureWidth pixelsHigh:roi.textureHeight pixelsDeep:1 volumeTransform:volumeTransform outOfBoundsValue:0 freeWhenDone:YES];
+
+            _brushMask = [[OSIFloatVolumeData alloc] initWithFloatBytesNoCopy:mask
+                                                                   pixelsWide:roi.textureWidth
+                                                                   pixelsHigh:roi.textureHeight
+                                                                   pixelsDeep:1
+                                                              volumeTransform:volumeTransform
+                                                             outOfBoundsValue:0
+                                                                 freeWhenDone:YES];
         }
         else {
 			[self autorelease];
 			self = nil;
 		}
 	}
-	return self;
+
+    return self;
 }
 
 @end

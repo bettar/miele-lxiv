@@ -169,7 +169,6 @@
 
         OSIROIMaskRun *maskRuns = (OSIROIMaskRun *)[[mask maskRunsData] bytes];
         NSInteger maskRunCount = [mask maskRunCount];
-        NSInteger i;
 
         CPRVolumeDataInlineBuffer inlineBuffer;
 
@@ -179,13 +178,14 @@
         NSInteger height = _cachedBitmapMask.pixelsHigh;
 
         // draw in the runs
-        for (i = 0; i < maskRunCount; i++) {
+        for (NSInteger i = 0; i < maskRunCount; i++) {
             NSInteger x = maskRuns[i].widthRange.location - corner.x;
             NSInteger y = maskRuns[i].heightIndex - corner.y;
             NSInteger z = maskRuns[i].depthIndex - corner.z;
 
             vDSP_vfill(&(maskRuns[i].intensity), &(bitmapMaskBytes[x + y*width + z*width*height]), 1, maskRuns[i].widthRange.length);
         }
+
         OSIROIMask *newMask = [self.mask ROIMaskByUnioningWithMask:mask];
         [self willChangeValueForKey:@"mask"];
         [_mask release];
@@ -218,7 +218,6 @@
 
         OSIROIMaskRun *maskRuns = (OSIROIMaskRun *)[[mask maskRunsData] bytes];
         NSInteger maskRunCount = [mask maskRunCount];
-        NSInteger i;
 
         CPRVolumeDataInlineBuffer inlineBuffer;
 
@@ -228,13 +227,14 @@
         NSInteger height = _cachedBitmapMask.pixelsHigh;
 
         // draw in the runs
-        for (i = 0; i < maskRunCount; i++) {
+        for (NSInteger i = 0; i < maskRunCount; i++) {
             NSInteger x = maskRuns[i].widthRange.location - corner.x;
             NSInteger y = maskRuns[i].heightIndex - corner.y;
             NSInteger z = maskRuns[i].depthIndex - corner.z;
 
             memset(&(bitmapMaskBytes[x + y*width + z*width*height]), 0, maskRuns[i].widthRange.length * sizeof(float));
         }
+
         OSIROIMask *newMask = [self.mask ROIMaskBySubtractingMask:mask];
         [self willChangeValueForKey:@"mask"];
         [_mask release];
@@ -281,9 +281,8 @@
     NSInteger minDepth = NSIntegerMax;
 
     OSIROIMaskRun *maskRuns = (OSIROIMaskRun *)[[self.mask maskRunsData] bytes];
-    NSInteger i;
 
-    for (i = 0; i < maskRunCount; i++) {
+    for (NSInteger i = 0; i < maskRunCount; i++) {
         maxWidth = MAX(maxWidth, (NSInteger)OSIROIMaskRunLastWidthIndex(maskRuns[i]));
         minWidth = MIN(minWidth, (NSInteger)OSIROIMaskRunFirstWidthIndex(maskRuns[i]));
 
@@ -301,12 +300,12 @@
     N3AffineTransform bitmapMaskVolumeTransform = N3AffineTransformConcat(_volumeTransform, N3AffineTransformMakeTranslation(-1.0*(CGFloat)minWidth, -1.0*(CGFloat)minHeight, -1.0*(CGFloat)minDepth));
 
     // create the FloatVolumeData
-    float *bitmapMaskBytes = (float *)malloc(width * height * depth * sizeof(float));
-    memset(bitmapMaskBytes, 0, width * height * depth * sizeof(float));
+    float *bitmapMaskBytes = (float *)calloc(1, width * height * depth * sizeof(float));
+
     OSIFloatVolumeData *bitmapMask = [[OSIFloatVolumeData alloc] initWithFloatBytesNoCopy:bitmapMaskBytes pixelsWide:width pixelsHigh:height pixelsDeep:depth volumeTransform:bitmapMaskVolumeTransform outOfBoundsValue:0 freeWhenDone:YES];
 
     // draw in the runs
-    for (i = 0; i < maskRunCount; i++) {
+    for (NSInteger i = 0; i < maskRunCount; i++) {
         NSInteger x = maskRuns[i].widthRange.location - minWidth;
         NSInteger y = maskRuns[i].heightIndex - minHeight;
         NSInteger z = maskRuns[i].depthIndex - minDepth;
@@ -318,13 +317,11 @@
     return _cachedBitmapMask;
 }
 
-
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
     OSIROIMaskRun maskRun;
     NSData *maskRunsData;
     N3Vector minCorner;
-    NSInteger i;
     NSInteger runsCount;
     const OSIROIMaskRun *maskRunsBytes;
     double widthIndex;
@@ -332,9 +329,8 @@
     double heightIndex;
     double depthIndex;
 
-    if (self.fillColor == nil) {
+    if (self.fillColor == nil)
         return;
-    }
 
     NSColor *deviceColor = [self.fillColor colorUsingColorSpaceName:NSDeviceRGBColorSpace];
 
@@ -356,7 +352,7 @@
     glBegin(GL_QUADS);
     runsCount = [maskRunsData length] / sizeof(OSIROIMaskRun);
     maskRunsBytes = (const OSIROIMaskRun *)[maskRunsData bytes];
-    for (i = 0; i < runsCount; i++) {
+    for (NSInteger i = 0; i < runsCount; i++) {
         maskRun = maskRunsBytes[i];
         widthIndex = (double)maskRun.widthRange.location + minCorner.x;
         maxWidthIndex = widthIndex + (double)maskRun.widthRange.length;
@@ -500,9 +496,8 @@
 
     OSIROIMaskRun *maskRuns = (OSIROIMaskRun *)[[mask maskRunsData] bytes];
     NSInteger maskRunCount = [mask maskRunCount];
-    NSInteger i;
 
-    for (i = 0; i < maskRunCount; i++) {
+    for (NSInteger i = 0; i < maskRunCount; i++) {
         maxWidth = MAX(maxWidth, (NSInteger)OSIROIMaskRunLastWidthIndex(maskRuns[i]));
         minWidth = MIN(minWidth, (NSInteger)OSIROIMaskRunFirstWidthIndex(maskRuns[i]));
 
@@ -573,9 +568,8 @@
     NSInteger stampCount = N3VectorDistance(fromMaskVector, toMaskVector) + 1;
     OSIROIMask *mask = [OSIROIMask ROIMask];
 
-    NSInteger i;
     const CGFloat sphereSize = 2;
-    for (i = 0; i < stampCount; i++) {
+    for (NSInteger i = 0; i < stampCount; i++) {
         N3Vector brushPosition = N3VectorRound(N3VectorLerp(fromMaskVector, toMaskVector, (CGFloat)i/(CGFloat)stampCount));
         OSIROIMask *brushMask = [sphereMask ROIMaskByTranslatingByX:brushPosition.x - (width-1)/2 Y:brushPosition.y - (height-1)/2 Z:brushPosition.z - (depth-1)/2];
         mask = [mask ROIMaskByUnioningWithMask:brushMask];

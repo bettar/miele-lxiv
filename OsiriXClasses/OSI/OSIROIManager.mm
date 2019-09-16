@@ -407,8 +407,6 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 	ViewerController *viewController;
 	NSArray *movieFrameROIList;
 	NSArray *movieFramePixList;
-	NSInteger i;
-	NSInteger j;
 	long maxMovieIndex;
 	OSIROI *roi;
 	ROI *osirixROI;
@@ -428,11 +426,11 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 	if (viewController) {
 		maxMovieIndex = [viewController maxMovieIndex];
 		
-		for (i = 0; i < maxMovieIndex; i++) {
+		for (NSInteger i = 0; i < maxMovieIndex; i++) {
 			movieFrameROIList = [viewController roiList:i];
 			movieFramePixList = [viewController pixList:i];
 			
-			for (j = 0; j < [movieFramePixList count]; j++) {
+			for (NSInteger j = 0; j < [movieFramePixList count]; j++) {
 				pix = [movieFramePixList objectAtIndex:j];
 				pixROIList = [movieFrameROIList objectAtIndex:j];
 				

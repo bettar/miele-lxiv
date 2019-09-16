@@ -377,7 +377,7 @@ ss
             NSMutableArray *newComponents = [NSMutableArray array];
             for (NSString *comp in components)
             {
-                if (![comp isEqualToString:@""])
+                if (comp.length > 0)
                     [newComponents addObject:comp];
             }
             
@@ -406,7 +406,7 @@ ss
             NSMutableArray *newComponents = [NSMutableArray array];
             for (NSString *comp in components)
             {
-                if (![comp isEqualToString:@""])
+                if (comp.length > 0)
                     [newComponents addObject:comp];
             }
             
@@ -428,7 +428,7 @@ ss
             NSMutableArray *newComponents = [NSMutableArray array];
             for (NSString *comp in components)
             {
-                if (![comp isEqualToString:@""])
+                if (comp.length > 0)
                     [newComponents addObject:comp];
             }
             

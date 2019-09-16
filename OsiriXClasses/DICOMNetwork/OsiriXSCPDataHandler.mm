@@ -501,9 +501,8 @@ extern BOOL forkedProcess;
 						NSString *u = [NSString stringWithCString:string  DICOMEncoding:nil];
 						NSArray *uids = [u componentsSeparatedByString:@"\\"];
 						NSArray *predicateArray = [NSArray array];
-						
-						int x;
-						for(x = 0; x < [uids count]; x++)
+
+						for (int x = 0; x < [uids count]; x++)
 						{
 							NSString *curString = [uids objectAtIndex: x];
 							

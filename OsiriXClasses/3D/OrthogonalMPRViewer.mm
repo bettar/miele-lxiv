@@ -1373,7 +1373,7 @@ return YES;
 - (void) exportJPEG:(id) sender
 {
 	BOOL all = NO;
-	int i;
+	//int i;
 	NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 	
 	long deltaX, deltaY, x, y, oldX, oldY, max;
@@ -1424,7 +1424,7 @@ return YES;
 				max = [[view curDCM] pheight];
 			}
 			
-			for( i = 0; i < max; i++)
+			for (int i = 0; i < max; i++)
 			{
 				NSDisableScreenUpdates();
 				[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];

@@ -45,7 +45,8 @@
 {
 	NSAppleEventDescriptor *description  = [compiledScript executeAndReturnError:nil];
 	NSString *route = [description stringValue];
-	if (route && ![route isEqualToString: @""]) {
+	if (route.length > 0)
+    {
 		NSArray *routes = [route componentsSeparatedByString:@"/"];
 		NSString *nextRoute;
 		for (nextRoute in routes) {

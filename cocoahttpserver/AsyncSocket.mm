@@ -335,16 +335,16 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 	// i = index within buffer at which to check data
 	// j = length of term to check against
 	
-	NSUInteger i, j;
+	NSUInteger ii, jj;
 	if (bytesDone >= termLength)
 	{
-		i = bytesDone - termLength + 1;
-		j = termLength - 1;
+		ii = bytesDone - termLength + 1;
+		jj = termLength - 1;
 	}
 	else
 	{
-		i = 0;
-		j = bytesDone;
+		ii = 0;
+		jj = bytesDone;
 	}
 	
 	NSUInteger result = termLength;
@@ -352,24 +352,22 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 	void *buf = [buffer mutableBytes];
 	const void *termBuf = [term bytes];
 	
-	while (i < bytesDone)
+	while (ii < bytesDone)
 	{
-		void *subbuf = (uint8_t *)buf + startOffset + i;
+		void *subbuf = (uint8_t *)buf + startOffset + ii;
 		
-		if (memcmp(subbuf, termBuf, j) == 0)
+		if (memcmp(subbuf, termBuf, jj) == 0)
 		{
-			result = termLength - j;
+			result = termLength - jj;
 			break;
 		}
 		
-		i++;
-		j--;
+		ii++;
+		jj--;
 	}
 	
 	if (maxLength > 0)
-	{
 		result = MIN(result, (maxLength - bytesDone));
-	}
 	
 	if (!bufferOwner)
 	{
@@ -576,22 +574,22 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 	
 	NSUInteger prevBytesDone = bytesDone - numBytes;
 	
-	NSUInteger i;
+	NSUInteger ii;
 	if (prevBytesDone >= termLength)
-		i = prevBytesDone - termLength + 1;
+		ii = prevBytesDone - termLength + 1;
 	else
-		i = 0;
+		ii = 0;
 	
-	while ((i + termLength) <= bytesDone)
+	while ((ii + termLength) <= bytesDone)
 	{
-		uint8_t *subBuffer = (uint8_t *)[buffer mutableBytes] + startOffset + i;
+		uint8_t *subBuffer = (uint8_t *)[buffer mutableBytes] + startOffset + ii;
 		
 		if (memcmp(subBuffer, termBuffer, termLength) == 0)
 		{
-			return bytesDone - (i + termLength);
+			return bytesDone - (ii + termLength);
 		}
 		
-		i++;
+		ii++;
 	}
 	
 	return -1;

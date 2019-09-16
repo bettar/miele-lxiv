@@ -975,16 +975,15 @@
     
     int imageWidth = [[[yReslicedView pixList] lastObject] pwidth];
     int imageHeight = [[[yReslicedView pixList] lastObject] pheight];
-    
-	int i, j;
-	for(i=0; i<[rois count]; i++)
+
+	for (int i=0; i<[rois count]; i++)
 	{
-		for(j=0; j<[[rois objectAtIndex:i] count]; j++)
+		for (int j=0; j<[[rois objectAtIndex:i] count]; j++)
 		{
 			ROI *aROI = [[rois objectAtIndex:i] objectAtIndex:j];
-			if([aROI type]==t2DPoint)
+			if ([aROI type]==t2DPoint)
 			{
-				if((long)([[[aROI points] objectAtIndex:0] x])==x)
+				if ((long)([[[aROI points] objectAtIndex:0] x])==x)
 				{
 					ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[yReslicedView pixelSpacingX] :[yReslicedView pixelSpacingY] :NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
 					NSRect irect;
@@ -1001,11 +1000,11 @@
 				}
 			}
             
-            if( [aROI type] == tPlain)
+            if ( [aROI type] == tPlain)
             {
-                if( x >= aROI.textureUpLeftCornerX && x < aROI.textureDownRightCornerX)
+                if ( x >= aROI.textureUpLeftCornerX && x < aROI.textureDownRightCornerX)
                 {
-                    if( [plainDict objectForKey: [aROI name]] == nil)
+                    if ( [plainDict objectForKey: [aROI name]] == nil)
                     {
                         unsigned char *t = (unsigned char *)calloc( imageWidth * imageHeight, sizeof(unsigned char));                        
                         if (t)
@@ -1068,15 +1067,14 @@
     int imageWidth = [[[xReslicedView pixList] lastObject] pwidth];
     int imageHeight = [[[xReslicedView pixList] lastObject] pheight];
     
-	int i, j;
-	for(i=0; i<[rois count]; i++)
+	for (int i=0; i<[rois count]; i++)
 	{
-		for(j=0; j<[[rois objectAtIndex:i] count]; j++)
+		for (int j=0; j<[[rois objectAtIndex:i] count]; j++)
 		{
 			ROI *aROI = [[rois objectAtIndex:i] objectAtIndex:j];
-			if([aROI type]==t2DPoint)
+			if ([aROI type]==t2DPoint)
 			{
-				if((long)([[[aROI points] objectAtIndex:0] y])==y)
+				if ((long)([[[aROI points] objectAtIndex:0] y])==y)
 				{
 					ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[xReslicedView pixelSpacingX] :[xReslicedView pixelSpacingY] :NSMakePoint( [xReslicedView origin].x, [xReslicedView origin].y)] autorelease];
 					NSRect irect;
@@ -1093,11 +1091,12 @@
 				}
 			}
             
-            if( [aROI type] == tPlain)
+            if ([aROI type] == tPlain)
             {
-                if( y >= aROI.textureUpLeftCornerY && y < aROI.textureDownRightCornerY)
+                if (y >= aROI.textureUpLeftCornerY &&
+                    y <  aROI.textureDownRightCornerY)
                 {
-                    if( [plainDict objectForKey: [aROI name]] == nil)
+                    if ([plainDict objectForKey: [aROI name]] == nil)
                     {
                         unsigned char *t = (unsigned char *)calloc( imageWidth * imageHeight, sizeof(unsigned char));
                         if (t)

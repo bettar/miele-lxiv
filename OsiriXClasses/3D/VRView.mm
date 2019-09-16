@@ -7764,8 +7764,6 @@ public:
 		}
 		else
 		{
-			int i;
-			
 			NSRect size = [self bounds];
 			
 			*width = (long) size.size.width;
@@ -7788,7 +7786,7 @@ public:
 					glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 #else
 					glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
-					i = *width * *height;
+					int i = *width * *height;
 					unsigned char	*t_argb = buf;
 					unsigned char	*t_rgb = buf;
 					while (i-- > 0)
@@ -7806,7 +7804,7 @@ public:
 					
 					if (tempBuf)
 					{
-						for (i = 0; i < *height/2; i++)
+						for (int i = 0; i < *height/2; i++)
 						{
 							memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
 							memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
@@ -7823,7 +7821,7 @@ public:
 				
 				if (TIFFRep)
 				{
-					for (i = 0; i < [TIFFRep pixelsHigh]; i++)
+					for (int i = 0; i < [TIFFRep pixelsHigh]; i++)
 					{
 						unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
 						unsigned char *dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + 2*3);

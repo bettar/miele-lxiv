@@ -181,7 +181,7 @@
         // *****************Texture
         NSString *location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
         
-        if( location == nil || [location isEqualToString:@""])
+        if (location.length == 0)
             location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
         
         vtkTIFFReader *bmpread = vtkTIFFReader::New();

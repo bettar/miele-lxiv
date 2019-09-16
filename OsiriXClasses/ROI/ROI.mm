@@ -87,7 +87,6 @@ static BOOL displayCobbAngle = NO;
 int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt, double scale)
 {
 	NSPoint p1, p2;
-	long long  i, j;
 	double xi, yi;
 	long long nb;
 	double *px, *py;
@@ -97,7 +96,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	double bet, *gam;
 	double aax, bbx, ccx, ddx, aay, bby, ccy, ddy; // coef of spline
 
-	if (scale > 5) scale = 5;
+	if (scale > 5)
+        scale = 5;
 
 	// function spline S(x) = a x3 + bx2 + cx + d
 	// with S continue, S1 continue, S2 continue.
@@ -160,12 +160,12 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	}
 	
 	//initialisation
-	for (i=0; i<nb; i++)
+	for (long long i=0; i<nb; i++)
 		h[i] = a[i] = cx[i] = d[i] = c[i] = cy[i] = g[i] = gam[i] = 0.0;
 
 	// as a spline starts and ends with a line one adds two points
 	// in order to have continuity in starting point
-	for (i=0; i<tot; i++)
+	for (long long i=0; i<tot; i++)
 	{
 		px[i+1] = Pt[i].x;// * fZoom / 100;
 		py[i+1] = Pt[i].y;// * fZoom / 100;
@@ -181,7 +181,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	if (nb<3)
         ok=FALSE;
 
-	for (i=1; i<nb; i++)
+	for (long long i=1; i<nb; i++)
         if (px[i] == px[i-1] && py[i] == py[i-1])
         {
             ok = FALSE;
@@ -209,7 +209,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			 
 	// define hi (distance between points) h0 distance between 0 and 1.
 	// di distance of point i from start point
-	for (i = 0; i<nb-1; i++)
+	for (long long i = 0; i<nb-1; i++)
 	{
 		xi = px[i+1] - px[i];
 		yi = py[i+1] - py[i];
@@ -218,46 +218,50 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	}
 
 	// define ai and ci
-	for (i=2; i<nb-1; i++) a[i] = 2.0 * h[i-1] / (h[i] + h[i-1]);
-	for (i=1; i<nb-2; i++) c[i] = 2.0 * h[i]   / (h[i] + h[i-1]);
+	for (long long i=2; i<nb-1; i++)
+        a[i] = 2.0 * h[i-1] / (h[i] + h[i-1]);
+
+	for (long long i=1; i<nb-2; i++)
+        c[i] = 2.0 * h[i]   / (h[i] + h[i-1]);
 
 	// define gi in function of x
 	// gi+1 = 6 * Y[hi, hi+1, hi+2], 
 	// Y[hi, hi+1, hi+2] = [(yi - yi+1)/(di - di+1) - (yi+1 - yi+2)/(di+1 - di+2)]
 	//                      / (di - di+2)
-	for (i=1; i<nb-1; i++) 
+	for (long long i=1; i<nb-1; i++)
 		g[i] = 6.0 * ( ((px[i-1] - px[i]) / (d[i-1] - d[i])) - ((px[i] - px[i+1]) / (d[i] - d[i+1])) ) / (d[i-1]-d[i+1]);
 
 	// compute cx vector
 	b=4; bet=4;
 	cx[1] = g[1]/b;
-	for (j=2; j<nb-1; j++)
+	for (long long j=2; j<nb-1; j++)
 	{
 		gam[j] = c[j-1] / bet;
 		bet = b - a[j] * gam[j];
 		cx[j] = (g[j] - a[j] * cx[j-1]) / bet;
 	}
     
-	for (j=(nb-2); j>=1; j--)
+	for (long long j=(nb-2); j>=1; j--)
         cx[j] -= gam[j+1] * cx[j+1];
 
 	// define gi in function of y
 	// gi+1 = 6 * Y[hi, hi+1, hi+2], 
 	// Y[hi, hi+1, hi+2] = [(yi - yi+1)/(hi - hi+1) - (yi+1 - yi+2)/(hi+1 - hi+2)]
 	//                      / (hi - hi+2)
-	for (i=1; i<nb-1; i++)
+	for (long long i=1; i<nb-1; i++)
 		g[i] = 6.0 * ( ((py[i-1] - py[i]) / (d[i-1] - d[i])) - ((py[i] - py[i+1]) / (d[i] - d[i+1])) ) / (d[i-1]-d[i+1]);
 
 	// compute cy vector
 	b = 4.0; bet = 4.0;
 	cy[1] = g[1] / b;
-	for (j=2; j<nb-1; j++)
+	for (long long j=2; j<nb-1; j++)
 	{
 		gam[j] = c[j-1] / bet;
 		bet = b - a[j] * gam[j];
 		cy[j] = (g[j] - a[j] * cy[j-1]) / bet;
 	}
-	for (j=(nb-2); j>=1; j--)
+
+    for (long long j=(nb-2); j>=1; j--)
         cy[j] -= gam[j+1] * cy[j+1];
 
 	// OK we have the cx and cy vectors, from that we can compute the
@@ -267,10 +271,10 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	// ai = yi
 	// bi = ((ai+1 - ai) / hi) - (hi/3) (ci+1 + 2 ci)
 	int totNewPt = 0;
-	for (i=1; i<nb-2; i++)
+	for (long long i=1; i<nb-2; i++)
 	{
 		totNewPt++;
-		for (j = 1; j <= h[i]; j++)
+		for (long long j = 1; j <= h[i]; j++)
             totNewPt++;
 	}
 
@@ -315,7 +319,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		
 	int tt = 0;
 	// for each interval
-	for (i=1; i<nb-2; i++)
+	for (long long i=1; i<nb-2; i++)
 	{
 		// compute coef for x polynom
 		ccx = cx[i];
@@ -338,7 +342,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			(*correspondingSegmentPt)[tt]=i-1;
 		tt++;
 		
-		for (j = 1; j <= h[i]; j++)
+		for (long long j = 1; j <= h[i]; j++)
 		{
 			p2.x = (aax + bbx * (double)j + ccx * (double)(j * j) + ddx * (double)(j * j * j));
 			p2.y = (aay + bby * (double)j + ccy * (double)(j * j) + ddy * (double)(j * j * j));
@@ -1010,14 +1014,14 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 + (NSMutableArray*) resamplePoints: (NSArray*) points number:(int) no
 {
 	double length = 0.0;
-    int i;
-	for (i = 0; i < (long)[points count]-1; i++ )
+    int ii;
+	for (ii = 0; ii < (long)[points count]-1; ii++ )
 	{
-		length += [ROI lengthBetween:[[points objectAtIndex:i] point]
-                            andPoint:[[points objectAtIndex:i+1] point]];
+		length += [ROI lengthBetween:[[points objectAtIndex:ii] point]
+                            andPoint:[[points objectAtIndex:ii+1] point]];
 	}
 
-    length += [ROI lengthBetween:[[points objectAtIndex:i] point]
+    length += [ROI lengthBetween:[[points objectAtIndex:ii] point]
                         andPoint:[[points objectAtIndex:0] point]];
 	
 	NSMutableArray* newPts = [NSMutableArray array];
@@ -3154,12 +3158,12 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 				
 				if ([splinePoints count] > 0)
 				{
-					int i;
-					for (i = 0; i < ([splinePoints count] - 1); i++ )
+					int ii;
+					for (ii = 0; ii < ([splinePoints count] - 1); ii++ )
 					{					
 						[self DistancePointLine:pt
-                                               :[[splinePoints objectAtIndex:i] point]
-                                               :[[splinePoints objectAtIndex:(i+1)] point]
+                                               :[[splinePoints objectAtIndex:ii] point]
+                                               :[[splinePoints objectAtIndex:(ii+1)] point]
                                                :&distance];
 						if (distance*scale < neighborhoodRad/2)
 						{
@@ -3169,7 +3173,7 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 					}
 					
 					[self DistancePointLine:pt
-                                           :[[splinePoints objectAtIndex:i] point]
+                                           :[[splinePoints objectAtIndex:ii] point]
                                            :[[splinePoints objectAtIndex:0] point]
                                            :&distance];
                     
@@ -3468,16 +3472,13 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 	}
 	
 	if (mode == ROI_sleep)
-	{
 		self.ROImode = ROI_drawing;
-	}
 	
 	if (locked)
-	{
 		return NO;
-	}
 	
-	if ([self.comments isEqualToString: @"morphing generated"] ) self.comments = @"";
+	if ([self.comments isEqualToString: @"morphing generated"] )
+        self.comments = @"";
 	
     if ([NSThread isMainThread])
         [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
@@ -3493,8 +3494,7 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 			textureFirstPoint=1;
 			textureWidth=2;
 			textureHeight=2;
-			textureBuffer = (unsigned char *)malloc(textureWidth*textureHeight*sizeof(unsigned char));
-			memset (textureBuffer, 0, textureHeight*textureWidth);
+			textureBuffer = (unsigned char *)calloc(1, textureWidth*textureHeight*sizeof(unsigned char));
 			
             [self textureBufferHasChanged];
             
@@ -5847,11 +5847,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                             margin *= 2;
                                             margin ++;
                                             
-                                            unsigned char *kernelDilate = (unsigned char*) calloc( margin*margin, sizeof(unsigned char));
-                                            if (kernelDilate)
                                             {
-                                                memset(kernelDilate,0x00,margin*margin);
-                                                
+                                                unsigned char *kernelDilate = (unsigned char*) calloc( margin*margin, sizeof(unsigned char));
+                                                assert (kernelDilate);
                                                 vImage_Buffer srcbuf, dstBuf;
                                                 vImage_Error err;
                                                 srcbuf.data = buff;
@@ -5866,6 +5864,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                                     memcpy(buff,dstBuf.data,bufferWidth*bufferHeight);
                                                     free( dstBuf.data);
                                                 }
+
                                                 free( kernelDilate);
                                             }
                                         }

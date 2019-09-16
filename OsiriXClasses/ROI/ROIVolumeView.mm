@@ -414,13 +414,13 @@
             for ( DCMPix *p in copyPixList)
                 memset( p.fImage, 0, p.pheight*p.pwidth*sizeof( float));
             
-            for ( int z = 1; z < [copyPixList count]-1; z++) // Black 3D Frame
+            for (int z = 1; z < [copyPixList count]-1; z++) // Black 3D Frame
             {
-                for( int i = 0; i < [[vc.roiList objectAtIndex: z] count]; i++)
+                for (int i = 0; i < [[vc.roiList objectAtIndex: z] count]; i++)
                 {
                     ROI	*curROI = [[vc.roiList objectAtIndex: z] objectAtIndex: i];
                     
-                    if( [[curROI name] isEqualToString: [roi name]])
+                    if ([[curROI name] isEqualToString: [roi name]])
                     {
                         DCMPix *p = [copyPixList objectAtIndex: z];
                         
@@ -631,7 +631,7 @@
 			// *****************Texture
 			NSString *location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
 			
-			if( location == nil || [location isEqualToString:@""])
+			if (location.length == 0)
 				location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
 			
 			vtkTIFFReader *bmpread = vtkTIFFReader::New();

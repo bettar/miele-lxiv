@@ -949,19 +949,18 @@ static NSDate *lastWarningDate = nil;
 		if ([addresses count])
 		{
 			void * backtrace_frames[[addresses count]];
-			int i = 0;
+			int ii = 0;
 			for (NSNumber * address in addresses)
 			{
-				backtrace_frames[i] = (void *)[address unsignedLongValue];
-				i++;
+				backtrace_frames[ii] = (void *)[address unsignedLongValue];
+				ii++;
 			}
 			
 			char **frameStrings = backtrace_symbols(&backtrace_frames[0], [addresses count]);
 			
 			if (frameStrings != NULL)
 			{
-				int x;
-				for (x = 0; x < [addresses count]; x++)
+				for (int x = 0; x < [addresses count]; x++)
 				{
 					NSString *frame_description = [NSString stringWithUTF8String:frameStrings[ x]];
 					NSLog( @"------- %@", frame_description);
@@ -2479,11 +2478,10 @@ static NSDate *lastWarningDate = nil;
 		
         if ([urlComponents count] == 2)
 		{
-            NSString *parameterString = @"";
-			parameterString = [[urlComponents lastObject] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+            NSString *parameterString = [[urlComponents lastObject] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
 		
 			NSMutableDictionary *urlParameters = [NSMutableDictionary dictionary];
-			if (![parameterString isEqualToString: @""])
+			if (parameterString.length > 0)
 			{
 				NSMutableString *parsedParameterString = [NSMutableString string];
 				for (int i = 0 ; i < parameterString.length; i++)
@@ -3951,7 +3949,10 @@ static BOOL initialized = NO;
     
 	NSUInteger size = 32, size2 = size*size;
 	
-	NSWindow* win = [[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,size,size) styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:NO];
+	NSWindow* win = [[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,size,size)
+                                                styleMask:NSWindowStyleMaskTitled
+                                                  backing:NSBackingStoreBuffered
+                                                    defer:NO];
 	
 	long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
 	long clutBarsCopy = [[NSUserDefaults standardUserDefaults] integerForKey:@"CLUTBARS"];
@@ -4063,7 +4064,8 @@ static BOOL initialized = NO;
 	CGFloat delta = 0;
 	for (int i = 0; i < size2; ++i)
 		delta += fabsf((float)gray_1[i]-(float)gray_2[i]);
-	BOOL has32bitPipeline = delta > 1000; // we may want to raise this..
+
+    BOOL has32bitPipeline = delta > 1000.0F; // we may want to raise this..
 	
 	if (has32bitPipeline)
 	{

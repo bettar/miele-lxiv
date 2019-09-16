@@ -459,7 +459,8 @@
 	
 	if ([[sender selectedCell] tag] == 1)
 	{
-		if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isEqualToString:@""]) [self setLocationURL: self];
+		if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isEqualToString:@""])
+            [self setLocationURL: self];
 		
 		if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isEqualToString:@""] == NO)
 		{

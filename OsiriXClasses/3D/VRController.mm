@@ -167,9 +167,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 -(void) UpdateWLWWMenu: (NSNotification*) note
 {
     //*** Build the menu
-    NSUInteger i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
 
     // Presets VIEWER Menu
 	
@@ -191,10 +190,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[[wlwwPopup menu] addItemWithTitle:NSLocalizedString(@"Full dynamic", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
 	[[wlwwPopup menu] addItem: [NSMenuItem separatorItem]];
     
-    for (i = 0; i < [sortedKeys count]; i++)
+    for (NSUInteger i = 0; i < [sortedKeys count]; i++)
     {
         [[wlwwPopup menu] addItemWithTitle:[NSString stringWithFormat:@"%d - %@", (int) i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
     }
+
     [[wlwwPopup menu] addItem: [NSMenuItem separatorItem]];
     [[wlwwPopup menu] addItemWithTitle:NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
 	[[wlwwPopup menu] addItemWithTitle:NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector (SetWLWW:) keyEquivalent:@""];

@@ -238,7 +238,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
         {
             int user_changed_area=0;
 
-            if(user_changed_area)
+            if (user_changed_area)
             {
 
             }
@@ -738,8 +738,7 @@ OPJSupport::compressJPEG2K(  void *data,
         if ( bSuccess && bUseTiles ) {
             OPJ_BYTE *l_data;
             OPJ_UINT32 l_data_size = 512*512*3;
-            l_data = (OPJ_BYTE*) malloc( l_data_size * sizeof(OPJ_BYTE));
-            memset(l_data, 0, l_data_size );
+            l_data = (OPJ_BYTE*) calloc(1, l_data_size * sizeof(OPJ_BYTE));
             assert( l_data );
             for (int i=0;i<l_nb_tiles;++i) {
                 if (! opj_write_tile(l_codec,i,l_data,l_data_size,l_stream)) {

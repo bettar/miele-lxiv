@@ -180,7 +180,7 @@ void vsubtractNoAltivecAbs( float *a,  float *b,  float *r, long size)
 {
 	long i = size;
 	
-	while(i-- > 0)
+	while (i-- > 0)
 	{
 		*r++ = fabsf(*a++ - *b++);
 	}

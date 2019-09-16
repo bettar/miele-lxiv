@@ -2416,7 +2416,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     N3MutableBezierPath *outlinePath;
     N3Vector vector;
     N3Vector cursorVector;
-    NSInteger i;
+
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
@@ -2470,10 +2470,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     
     glLineWidth(2.0 * self.window.backingScaleFactor);
     glBegin(GL_LINE_STRIP);
-    for (i = 0; i < [flattenedBezierPath elementCount]; i++) { // draw the line segments
+    for (NSInteger i = 0; i < [flattenedBezierPath elementCount]; i++) { // draw the line segments
         [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
         
-        if(ABS(vector.z) <= 0.5) {
+        if (ABS(vector.z) <= 0.5) {
 			glColor4d( pathRed, pathGreen, pathBlue, 1.0);
 		}
         else if(ABS(vector.z) >= 1.0){
@@ -2501,7 +2501,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         [outlinePath applyAffineTransform:transform];
         glColor4d(0.0, 1.0, 0.0, 1.0); 
         glBegin(GL_LINE_STRIP);
-        for (i = 0; i < [outlinePath elementCount]; i++) {
+        for (NSInteger i = 0; i < [outlinePath elementCount]; i++) {
             if ([outlinePath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector] == N3LineToBezierPathElement) {
                 glVertex2d(vector.x, vector.y);
             }
@@ -2529,7 +2529,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         [outlinePath applyAffineTransform:transform];
         glColor4d(0.0, 1.0, 0.0, 1.0); 
         glBegin(GL_LINE_STRIP);
-        for (i = 0; i < [outlinePath elementCount]; i++) {
+        for (NSInteger i = 0; i < [outlinePath elementCount]; i++) {
             if ([outlinePath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector] == N3LineToBezierPathElement) {
                 glVertex2d(vector.x, vector.y);
             }
@@ -2546,19 +2546,19 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	}
 	
     
-	//    glColor4d(1.0, 0.0, 1.0, 1.0); // draw the normal lines
-	//    glBegin(GL_LINES);
-	//    for (i = 0; i < numVectors; i++) {
-	//        N3Vector start = N3VectorApplyTransform(N3VectorAdd(vectors[i], N3VectorScalarMultiply(normals[i], 10)), transform);
-	//        N3Vector end = N3VectorApplyTransform(N3VectorSubtract(vectors[i], N3VectorScalarMultiply(normals[i], 10)), transform);
-	//        glVertex2d(start.x, start.y);
-	//        glVertex2d(end.x, end.y);
-	//    }
-	//    glEnd();
+//    glColor4d(1.0, 0.0, 1.0, 1.0); // draw the normal lines
+//    glBegin(GL_LINES);
+//    for (i = 0; i < numVectors; i++) {
+//        N3Vector start = N3VectorApplyTransform(N3VectorAdd(vectors[i], N3VectorScalarMultiply(normals[i], 10)), transform);
+//        N3Vector end = N3VectorApplyTransform(N3VectorSubtract(vectors[i], N3VectorScalarMultiply(normals[i], 10)), transform);
+//        glVertex2d(start.x, start.y);
+//        glVertex2d(end.x, end.y);
+//    }
+//    glEnd();
     
     
     glColor4d(1.0, 0.0, 0.0, 1.0); // draw the ends of the line segements
-    for (i = 0; i < [transformedBezierPath elementCount]; i++) {
+    for (NSInteger i = 0; i < [transformedBezierPath elementCount]; i++) {
         [transformedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
 		
 		if (fabs( vector.z) <= 0.5)
@@ -2602,19 +2602,20 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		[self drawCircleAtPoint:NSPointFromN3Vector(cursorVector) pointSize:4];
 	}
 
-	//    glColor4d(1.0, 1.0, 0.0, 1.0); // draw the endpoints
-	//    for (i = 0; i < [flattenedBezierPath elementCount]; i++) {
-	//        [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
-	//        [self drawCircleAtPoint:NSMakePoint(vector.x, vector.y)];
-	//    }
-    
-	//    glColor4d(0.0, 1.0, 1.0, 1.0); // draw the control points
-	//    for (i = 0; i < [transformedBezierPath elementCount]; i++) {
-	//        if ([transformedBezierPath elementAtIndex:i control1:&control1 control2:&control2 endpoint:&vector] == N3CurveToBezierPathElement) {
-	//            [self drawCircleAtPoint:NSMakePoint(control1.x, control1.y)];
-	//            [self drawCircleAtPoint:NSMakePoint(control2.x, control2.y)];
-	//        }
-	//    }
+//    glColor4d(1.0, 1.0, 0.0, 1.0); // draw the endpoints
+//    for (i = 0; i < [flattenedBezierPath elementCount]; i++) {
+//        [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
+//        [self drawCircleAtPoint:NSMakePoint(vector.x, vector.y)];
+//    }
+
+//    glColor4d(0.0, 1.0, 1.0, 1.0); // draw the control points
+//    for (i = 0; i < [transformedBezierPath elementCount]; i++) {
+//        if ([transformedBezierPath elementAtIndex:i control1:&control1 control2:&control2 endpoint:&vector] == N3CurveToBezierPathElement) {
+//            [self drawCircleAtPoint:NSMakePoint(control1.x, control1.y)];
+//            [self drawCircleAtPoint:NSMakePoint(control2.x, control2.y)];
+//        }
+//    }
+
 //    [self _debugDrawDebugPoints];
 }
 
@@ -2698,7 +2699,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     [pix orientationDouble:orientation];
     spacingX = pix.pixelSpacingX;
     spacingY = pix.pixelSpacingY;
-    //    spacingZ = pix.sliceInterval;
+//    spacingZ = pix.sliceInterval;
     
     pixToDicomTransform = N3AffineTransformIdentity;
     pixToDicomTransform.m41 = pix.originX;

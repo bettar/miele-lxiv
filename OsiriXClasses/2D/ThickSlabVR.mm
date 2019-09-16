@@ -409,120 +409,122 @@ extern short Altivec;
 	
 //	if( ALTIVECVR)
 //	{
-		vImage_Buffer src, srcA, destR, destG, destB, dstARGB;
-		long	i, x, size;
-		
-		unsigned char   *dstA, *dstPlan;
+    vImage_Buffer src, srcA, destR, destG, destB, dstARGB;
+    long	i, x, size;
+    
+    unsigned char   *dstA, *dstPlan;
 
 //		NSLog(@"IN");
+    
+    size = height * width;
+    
+    dst = (unsigned char*) malloc( height * width * 4);
+    dstPlan = (unsigned char*) malloc( height * width * 4);
+    
+    dstFloatR = (float*) malloc( height * width * sizeof(float));		//bzero(dstFloatR, height * width * sizeof(float));
+    dstFloatG = (float*) malloc( height * width * sizeof(float));		//bzero(dstFloatG, height * width * sizeof(float));
+    dstFloatB = (float*) malloc( height * width * sizeof(float));		//bzero(dstFloatB, height * width * sizeof(float));
+    
+    dstA = (unsigned char*) malloc( height * width);
+    memset(dstA, 255, height * width);
 		
-		size = height * width;
-		
-		dst = (unsigned char*) malloc( height * width * 4);
-		dstPlan = (unsigned char*) malloc( height * width * 4);
-		
-		dstFloatR = (float*) malloc( height * width * sizeof(float));		//bzero(dstFloatR, height * width * sizeof(float));
-		dstFloatG = (float*) malloc( height * width * sizeof(float));		//bzero(dstFloatG, height * width * sizeof(float));
-		dstFloatB = (float*) malloc( height * width * sizeof(float));		//bzero(dstFloatB, height * width * sizeof(float));
-		
-		dstA	= (unsigned char*) malloc( height * width);					memset(dstA, 255, height * width);
-		
-		if( imageBlendingPtr)
-		{
-			i = size;
-			while( i-- > 0)
-			{
-				float			opacityTot = 1.0, opacity, opacityBlending, opacityAdd, dstFloatRv = 0, dstFloatGv = 0, dstFloatBv = 0;
-				unsigned char   *pixels, *pixelsBlending;
-				
-				pixels = ((unsigned char*) dst8.data) +i;
-				pixelsBlending = ((unsigned char*) dst8Blending.data) +i;
-				
-				x = count;
-				while( x-- > 0)
-				{
-					unsigned char val = *pixels;
-					unsigned char valBlending = *pixelsBlending;
-					
-					pixels += size;
-					pixelsBlending += size;
-					
-					opacityBlending = opacityTable[ valBlending];
-					opacity = opacityTable[ val];
-					
-					opacityAdd = opacity + opacityBlending;
-					
-					if( opacityAdd > opacityTot)
-					{
-						opacityBlending *= opacityTot/opacityAdd;
-						opacity *= opacityTot/opacityAdd;
-						x = 0;
-					}
-					else
-                        opacityTot -= opacityAdd;
-					
-					dstFloatRv += tableFloatR[ val]*opacity + tableBlendingFloatR[ valBlending]*opacityBlending;
-					dstFloatGv += tableFloatG[ val]*opacity + tableBlendingFloatG[ valBlending]*opacityBlending;
-					dstFloatBv += tableFloatB[ val]*opacity + tableBlendingFloatB[ valBlending]*opacityBlending;
-				}
-				
-				dstFloatR[ i] = dstFloatRv;
-				dstFloatG[ i] = dstFloatGv;
-				dstFloatB[ i] = dstFloatBv;
-			}
-		}
-		else
-		{
-			if( processorsLock == nil)
-				processorsLock = [[NSLock alloc] init];
-			
-			numberOfThreadsForCompute = [[NSProcessInfo processInfo] processorCount];
-			for( i = 0; i < [[NSProcessInfo processInfo] processorCount]-1; i++)
-			{
-				[NSThread detachNewThreadSelector: @selector(subRender:)
-                                         toTarget: self
-                                       withObject: [NSDictionary dictionaryWithObjectsAndKeys:
-                                                    [NSNumber numberWithInt: size], @"size",
-                                                    [NSNumber numberWithInt: i], @"pos",
-                                                    nil]];
-			}
-			
-			[self subRender: [NSDictionary dictionaryWithObjectsAndKeys:
-                              [NSNumber numberWithInt: size], @"size",
-                              [NSNumber numberWithInt: i], @"pos",
-                              nil]];
-			
-			BOOL done = NO;
-			while( done == NO)
-			{
-				[processorsLock lock];
-				if( numberOfThreadsForCompute <= 0) done = YES;
-				[processorsLock unlock];
-			}
-		}
-		
-		src.height = height;		src.width = width;			src.rowBytes = width*4;		src.data = dstFloatR;
-		destR.height = height;		destR.width = width;		destR.rowBytes = width;		destR.data = dstPlan;
-		vImageConvert_PlanarFtoPlanar8( &src, &destR, 255., 0., 0);
+    if( imageBlendingPtr)
+    {
+        i = size;
+        while( i-- > 0)
+        {
+            float			opacityTot = 1.0, opacity, opacityBlending, opacityAdd, dstFloatRv = 0, dstFloatGv = 0, dstFloatBv = 0;
+            unsigned char   *pixels, *pixelsBlending;
+            
+            pixels = ((unsigned char*) dst8.data) +i;
+            pixelsBlending = ((unsigned char*) dst8Blending.data) +i;
+            
+            x = count;
+            while( x-- > 0)
+            {
+                unsigned char val = *pixels;
+                unsigned char valBlending = *pixelsBlending;
+                
+                pixels += size;
+                pixelsBlending += size;
+                
+                opacityBlending = opacityTable[ valBlending];
+                opacity = opacityTable[ val];
+                
+                opacityAdd = opacity + opacityBlending;
+                
+                if( opacityAdd > opacityTot)
+                {
+                    opacityBlending *= opacityTot/opacityAdd;
+                    opacity *= opacityTot/opacityAdd;
+                    x = 0;
+                }
+                else
+                    opacityTot -= opacityAdd;
+                
+                dstFloatRv += tableFloatR[ val]*opacity + tableBlendingFloatR[ valBlending]*opacityBlending;
+                dstFloatGv += tableFloatG[ val]*opacity + tableBlendingFloatG[ valBlending]*opacityBlending;
+                dstFloatBv += tableFloatB[ val]*opacity + tableBlendingFloatB[ valBlending]*opacityBlending;
+            }
+            
+            dstFloatR[ i] = dstFloatRv;
+            dstFloatG[ i] = dstFloatGv;
+            dstFloatB[ i] = dstFloatBv;
+        }
+    }
+    else
+    {
+        if( processorsLock == nil)
+            processorsLock = [[NSLock alloc] init];
+        
+        numberOfThreadsForCompute = [[NSProcessInfo processInfo] processorCount];
+        for( i = 0; i < [[NSProcessInfo processInfo] processorCount]-1; i++)
+        {
+            [NSThread detachNewThreadSelector: @selector(subRender:)
+                                     toTarget: self
+                                   withObject: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                [NSNumber numberWithInt: size], @"size",
+                                                [NSNumber numberWithInt: i], @"pos",
+                                                nil]];
+        }
+        
+        [self subRender: [NSDictionary dictionaryWithObjectsAndKeys:
+                          [NSNumber numberWithInt: size], @"size",
+                          [NSNumber numberWithInt: i], @"pos",
+                          nil]];
+        
+        BOOL done = NO;
+        while( done == NO) {
+            [processorsLock lock];
+            if (numberOfThreadsForCompute <= 0)
+                done = YES;
 
-		src.height = height;		src.width = width;			src.rowBytes = width*4;		src.data = dstFloatG;
-		destG.height = height;		destG.width = width;		destG.rowBytes = width;		destG.data = dstPlan + size;
-		vImageConvert_PlanarFtoPlanar8( &src, &destG, 255., 0., 0);
+            [processorsLock unlock];
+        }
+    }
+    
+    src.height = height;		src.width = width;			src.rowBytes = width*4;		src.data = dstFloatR;
+    destR.height = height;		destR.width = width;		destR.rowBytes = width;		destR.data = dstPlan;
+    vImageConvert_PlanarFtoPlanar8( &src, &destR, 255., 0., 0);
 
-		src.height = height;		src.width = width;			src.rowBytes = width*4;		src.data = dstFloatB;
-		destB.height = height;		destB.width = width;		destB.rowBytes = width;		destB.data = dstPlan + size*2;
-		vImageConvert_PlanarFtoPlanar8( &src, &destB, 255., 0., 0);
-		
-		srcA.height = height;		srcA.width = width;			srcA.rowBytes = width;		srcA.data = dstA;
-		
-		dstARGB.height = height;	dstARGB.width = width;		dstARGB.rowBytes = width*4; dstARGB.data = dst;
-		vImageConvert_Planar8toARGB8888( &srcA, &destR, &destG, &destB, &dstARGB, 0);
-		
-		free( dstPlan);
-		free( dstFloatR);
-		free( dstFloatG);
-		free( dstFloatB);
-		free( dstA);
+    src.height = height;		src.width = width;			src.rowBytes = width*4;		src.data = dstFloatG;
+    destG.height = height;		destG.width = width;		destG.rowBytes = width;		destG.data = dstPlan + size;
+    vImageConvert_PlanarFtoPlanar8( &src, &destG, 255., 0., 0);
+
+    src.height = height;		src.width = width;			src.rowBytes = width*4;		src.data = dstFloatB;
+    destB.height = height;		destB.width = width;		destB.rowBytes = width;		destB.data = dstPlan + size*2;
+    vImageConvert_PlanarFtoPlanar8( &src, &destB, 255., 0., 0);
+    
+    srcA.height = height;		srcA.width = width;			srcA.rowBytes = width;		srcA.data = dstA;
+    
+    dstARGB.height = height;	dstARGB.width = width;		dstARGB.rowBytes = width*4; dstARGB.data = dst;
+    vImageConvert_Planar8toARGB8888( &srcA, &destR, &destG, &destB, &dstARGB, 0);
+    
+    free( dstPlan);
+    free( dstFloatR);
+    free( dstFloatG);
+    free( dstFloatB);
+    free( dstA);
 //		NSLog(@"OUT");
 
 //	}

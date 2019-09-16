@@ -3669,8 +3669,7 @@ int reduce_inner(basis_s *v, simplex *s, int k) {
 #define trans(z,p,q) {int i; for (i=0;i<pdim;i++) z[i+rdim] = z[i] = p[i] - q[i];}
 #else
 void trans(point z, point p, point q) {
-	int i; 
-	for (i=0;i<pdim;i++) 
+	for (int i=0;i<pdim;i++)
 		z[i+rdim] = z[i] = p[i] - q[i];
 
 }
@@ -6206,11 +6205,16 @@ void *facets_print(simplex *s, void *p) {
 
     static out_func *out_func_here;
     point v[MAXDIM];
-    int j;
+
  
-    if (p) {out_func_here = (out_func*)p; if (!s) return NULL;} 
+    if (p) {
+        out_func_here = (out_func*)p;
+        if (!s)
+            return NULL;
+    }
  
-    for (j=0;j<cdim;j++) v[j] = s->neigh[j].vert;
+    for (int j=0;j<cdim;j++)
+        v[j] = s->neigh[j].vert;
  
     out_func_here(v,cdim,0,0);
  
@@ -6221,13 +6225,17 @@ void *ridges_print(simplex *s, void *p) {
 
     static out_func *out_func_here;
     point v[MAXDIM];
-    int j,k,vnum;
+    int vnum;
 
-    if (p) {out_func_here = (out_func*)p; if (!s) return NULL;}
+    if (p) {
+        out_func_here = (out_func*)p;
+        if (!s)
+            return NULL;
+    }
 
-    for (j=0;j<cdim;j++) {
+    for (int j=0;j<cdim;j++) {
         vnum=0;
-        for (k=0;k<cdim;k++) {
+        for (int k=0;k<cdim;k++) {
             if (k==j)
                 continue;
             
@@ -6676,12 +6684,15 @@ double sqdist(double a[3], double b[3])
   return SQ(a[0]-b[0])+SQ(a[1]-b[1])+SQ(a[2]-b[2]);
 }
 
-void dir_and_dist(double a[3], double b[3], double dir[3], double* dist) {
-    int k;
+void dir_and_dist(double a[3], double b[3], double dir[3], double* dist)
+{
+    for (int k=0; k<3; k++)
+        dir[k] = b[k] - a[k];
 
-    for (k=0; k<3; k++) dir[k] = b[k] - a[k];
     *dist = sqrt( SQ(dir[0])+SQ(dir[1])+SQ(dir[2]));
-    for (k=0; k<3; k++) dir[k] = dir[k] / (*dist);
+
+    for (int k=0; k<3; k++)
+        dir[k] = dir[k] / (*dist);
 }
 
 
@@ -7076,35 +7087,38 @@ Coord maxdist(int dim, point p1, point p2) {
   return d;
 }
 
-void print_point(FILE *F, int dim, point p) {
-  int j;
-  if (!p) {
-    fprintf(F, "NULL");
-    return;
-  }
-  for (j=0;j<dim;j++) fprintf(F, "%g  ", *p++);
+void print_point(FILE *F, int dim, point p)
+{
+    if (!p) {
+        fprintf(F, "NULL");
+        return;
+    }
+
+    for (int j=0;j<dim;j++)
+      fprintf(F, "%g  ", *p++);
 }
 
-void print_point_int(FILE *F, int dim, point p) {
-  int j;
-  if (!p) {
-    fprintf(F, "NULL");
-    return;
-  }
-  for (j=0;j<dim;j++) fprintf(F, "%.20g  ", *p++);
+void print_point_int(FILE *F, int dim, point p)
+{
+    if (!p) {
+        fprintf(F, "NULL");
+        return;
+    }
+
+    for (int j=0;j<dim;j++)
+        fprintf(F, "%.20g  ", *p++);
 }
 
 
-int scale(int dim, point p) {
+int scale(int dim, point p)
+{
   Coord max = 0;
-  int i;
   Coord abs,val;
-  for (i=0;i<dim;i++) {
+  for (int i=0; i<dim; i++) {
     val = p[i];
     abs = (val > 0) ? val: -val;
     max = (abs > max) ? abs : max;
   }
-
 
   if (max< 100*DBL_EPSILON) {
     fprintf(stderr, "fails to scale: ");
@@ -7113,7 +7127,8 @@ int scale(int dim, point p) {
     return 1;
   }
 
-  for (i=0;i<dim;i++) p[i] /= max;
+  for (int i=0; i<dim; i++)
+      p[i] /= max;
 
   return 0;
 }

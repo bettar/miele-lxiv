@@ -39,6 +39,8 @@
 
 #include "dcmtk/dcmdata/dcdeftag.h"
 
+#define NUM_ENCODINGS        10
+
 @interface _DicomDatabaseScanDcmElement : NSObject {
 	DcmElement* _element;
 }
@@ -251,15 +253,19 @@ static NSString* _dcmElementKey(DcmElement* element) {
             
             [item conditionallySetObject:[[elements objectForKeyRemove: @"0008,0005"] stringValue] forKey:@"specificCharacterSet"];
             
-            NSStringEncoding encodings[ 10];
+            NSStringEncoding encodings[NUM_ENCODINGS];
             NSArray	*c = [[[elements objectForKeyRemove: @"0008,0005"] stringValue] componentsSeparatedByString:@"\\"];
             
-            if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+            if ([c count] >= NUM_ENCODINGS)
+                NSLog( @"Encoding number >= %d ???", NUM_ENCODINGS);
             
-            if( [c count] < 10)
+            if ([c count] < NUM_ENCODINGS)
             {
-                for( int i = 0; i < [c count]; i++) encodings[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-                for( int i = [c count]; i < 10; i++) encodings[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+                for (int i = 0; i < [c count]; i++)
+                    encodings[i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+
+                for (int i = [c count]; i < NUM_ENCODINGS; i++)
+                    encodings[i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
             }
             
             [item conditionallySetObject:[[elements objectForKeyRemove: @"0020,000D"] stringValue] forKey:@"studyID"];

@@ -70,17 +70,15 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 
 + (void) resetFont: (int) fontType
 {
-	int i;
-	
-	if( fontOpenGLInitialized == NO)
+	if (fontOpenGLInitialized == NO)
 	{
-		for( i = 0; i < MAXCOUNT; i++) charPtrArrayPreview[ i] = 0;
-		for( i = 0; i < MAXCOUNT; i++) charPtrArray[ i] = 0;
-		for( i = 0; i < MAXCOUNT; i++) charPtrArrayROI[ i] = 0;
+		for (int i = 0; i < MAXCOUNT; i++) charPtrArrayPreview[ i] = 0;
+		for (int i = 0; i < MAXCOUNT; i++) charPtrArray[ i] = 0;
+		for (int i = 0; i < MAXCOUNT; i++) charPtrArrayROI[ i] = 0;
         
-        for( i = 0; i < MAXCOUNT; i++) charPtrArrayPreviewScale2[ i] = 0;
-		for( i = 0; i < MAXCOUNT; i++) charPtrArrayScale2[ i] = 0;
-		for( i = 0; i < MAXCOUNT; i++) charPtrArrayROIScale2[ i] = 0;
+        for (int i = 0; i < MAXCOUNT; i++) charPtrArrayPreviewScale2[ i] = 0;
+		for (int i = 0; i < MAXCOUNT; i++) charPtrArrayScale2[ i] = 0;
+		for (int i = 0; i < MAXCOUNT; i++) charPtrArrayROIScale2[ i] = 0;
 		
 		fontOpenGLInitialized = YES;
 	}
@@ -88,9 +86,9 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 	switch( fontType)
 	{
 		case 0:
-			if( imageArray)
+			if (imageArray)
 			{
-				for( i = 0; i < MAXCOUNT; i++)
+				for(int i = 0; i < MAXCOUNT; i++)
 				{
 					if( charPtrArray[ i]) free( charPtrArray[ i]);
 					charPtrArray[ i] = 0L;
@@ -100,11 +98,11 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 				imageArray = nil;
 			}
             
-            if( imageArrayScale2)
+            if (imageArrayScale2)
 			{
-				for( i = 0; i < MAXCOUNT; i++)
+				for (int i = 0; i < MAXCOUNT; i++)
 				{
-                    if( charPtrArrayScale2[ i]) {
+                    if ( charPtrArrayScale2[ i]) {
                         free( charPtrArrayScale2[ i]);
                         charPtrArrayScale2[ i] = NULL;
                     }
@@ -116,11 +114,11 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 		break;
 		
 		case 1:
-			if( imageArrayPreview)
+			if (imageArrayPreview)
 			{
-				for( i = 0; i < MAXCOUNT; i++)
+				for (int i = 0; i < MAXCOUNT; i++)
 				{
-					if( charPtrArrayPreview[ i])
+					if (charPtrArrayPreview[ i])
                         free( charPtrArrayPreview[ i]);
                     
 					charPtrArrayPreview[ i] = 0L;
@@ -130,11 +128,11 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 				imageArrayPreview = nil;
 			}
             
-            if( imageArrayPreviewScale2)
+            if (imageArrayPreviewScale2)
 			{
-				for( i = 0; i < MAXCOUNT; i++)
+				for (int i = 0; i < MAXCOUNT; i++)
 				{
-					if( charPtrArrayPreviewScale2[ i])
+					if (charPtrArrayPreviewScale2[ i])
                         free( charPtrArrayPreviewScale2[ i]);
                     
 					charPtrArrayPreviewScale2[ i] = 0L;
@@ -146,9 +144,9 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 		break;
 		
 		case 2:
-			if( imageArrayROI)
+			if ( imageArrayROI)
 			{
-				for( i = 0; i < MAXCOUNT; i++)
+				for (int i = 0; i < MAXCOUNT; i++)
 				{
 					if( charPtrArrayROI[ i])
                         free( charPtrArrayROI[ i]);
@@ -160,11 +158,11 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 				imageArrayROI = nil;
 			}
             
-            if( imageArrayROIScale2)
+            if ( imageArrayROIScale2)
 			{
-				for( i = 0; i < MAXCOUNT; i++)
+				for (int i = 0; i < MAXCOUNT; i++)
 				{
-					if( charPtrArrayROIScale2[ i])
+					if ( charPtrArrayROIScale2[ i])
                         free( charPtrArrayROIScale2[ i]);
                     
 					charPtrArrayROIScale2[ i] = 0L;
@@ -497,7 +495,6 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
    unsigned char	*bitmapBytes;
    int				currentBit, byteValue;
    unsigned char	*newBuffer, *movingBuffer;
-   int				rowIndex, colIndex;
 
    pixelsHigh = [bitmap pixelsHigh];
    pixelsWide = [bitmap pixelsWide];
@@ -518,11 +515,11 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
     * read at last row, write to first row as Cocoa and OpenGL have opposite
     * y origins
     */
-   for ( rowIndex = pixelsHigh - 1; rowIndex >= 0; rowIndex --)
+   for (int rowIndex = pixelsHigh - 1; rowIndex >= 0; rowIndex --)
    {
       currentBit = 0x80;
       byteValue = 0;
-      for( colIndex = 0; colIndex < pixelsWide; colIndex++)
+      for (int colIndex = 0; colIndex < pixelsWide; colIndex++)
       {
          if (bitmapBytes[ rowIndex * bytesPerRow + colIndex * samplesPerPixel])
              byteValue |= currentBit;

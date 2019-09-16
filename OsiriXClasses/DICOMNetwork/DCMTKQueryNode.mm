@@ -1763,8 +1763,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     }
 	
 	OFCondition cond = EC_Normal;
-
-    int i;
     int pid = 1;
 	
 	ASC_addPresentationContext(
@@ -1772,21 +1770,22 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         transferSyntaxes, numTransferSyntaxes);
 		
 	// For C-GET we also need the storage presentation contexts : the is only one association
-	if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+	if (strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
 		strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
 		strcmp(abstractSyntax, UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
-	if( abstractSyntax)
-	{
-		pid += 2;
-		
-		for (i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++)
-		{
-			cond = ASC_addPresentationContext(
-				params, pid, dcmLongSCUStorageSOPClassUIDs[i],
-				transferSyntaxes, numTransferSyntaxes);
-			pid += 2;	/* only odd presentation context id's */
-		}
-	}
+
+        if ( abstractSyntax)
+        {
+            pid += 2;
+            
+            for (int i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++)
+            {
+                cond = ASC_addPresentationContext(
+                                                  params, pid, dcmLongSCUStorageSOPClassUIDs[i],
+                                                  transferSyntaxes, numTransferSyntaxes);
+                pid += 2;    /* only odd presentation context id's */
+            }
+        }
 	
     return cond;
 }

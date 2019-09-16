@@ -453,8 +453,7 @@ extern BOOL FULL32BITPIPELINE;
 	{
 		unsigned char *sourceBuffer = bitMapDataPtr + i * [imageRepresentation bytesPerRow];
 
-		int x;
-		for(x = 0; x <  [imageRepresentation size].width; x++)
+		for (int x = 0; x <  [imageRepresentation size].width; x++)
 		{
 			monoR = 0.299 * (float) *sourceBuffer++;	//76.245
 			monoG = 0.587 * (float) *sourceBuffer++;	//149.685
@@ -466,7 +465,7 @@ extern BOOL FULL32BITPIPELINE;
 		}
 	}
 
-	if(bytesWritten % 2 != 0)
+	if (bytesWritten % 2 != 0)
 	{
 		grayValue = 0;
 		[m_ImageDataBytes appendBytes: &grayValue length: 1];
@@ -478,9 +477,11 @@ extern BOOL FULL32BITPIPELINE;
 	return rawImage;
 }
 
-
 //********************************************************************************************
-- (void) _drawString: (id) stringObj atPoint: (NSPoint) point withFontSize: (float) fontSize atRightBorder: (BOOL) rightBorder
+- (void) _drawString: (id) stringObj
+             atPoint: (NSPoint) point
+        withFontSize: (float) fontSize
+       atRightBorder: (BOOL) rightBorder
 {
 	float whiteXOffset = 1.0;
 	float whiteYOffset = 1.0;

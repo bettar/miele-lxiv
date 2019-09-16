@@ -2170,71 +2170,76 @@ static inline int int_ceildivpow2(int a, int b) {
 	NSMutableData *offsetTable = [NSMutableData data];
 	unsigned long offset = 0;
 	[offsetTable appendBytes:&offset length:4];
-	NSUInteger i;
+
 	NSUInteger count = [_values count];
-	for (i = 1; i < count; i++) {
+	for (NSUInteger i = 1; i < count; i++) {
 		offset += NSSwapHostLongToLittle([(NSData *)[_values objectAtIndex:i -1] length] + 8);
 		[offsetTable appendBytes:&offset length:4];
 	}
 	[_values insertObject:offsetTable atIndex:0];
 }
 
-- (NSData *)interleavePlanesInData:(NSData *)planarData{
+- (NSData *)interleavePlanesInData:(NSData *)planarData
+{
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PlanarConfiguration"];
 	DCMAttribute *attr = [_dcmObject attributeForTag:(DCMAttributeTag *)tag];
 	int numberofPlanes = [[attr value] intValue];
-	int i,j, k;
-	int bytes = 1;
+
+    int bytes;
 	if (_pixelDepth <= 8)
 		bytes = 1;
 	else if (_pixelDepth <= 16)
 		bytes = 2;
 	else
 		bytes = 4;
-	int planeLength = _rows * _columns;
+
+    int planeLength = _rows * _columns;
 	NSMutableData *interleavedData = nil;
-	if (numberofPlanes > 0 && numberofPlanes <= 4) {
+	if (numberofPlanes > 0 && numberofPlanes <= 4)
+    {
 		interleavedData = [NSMutableData dataWithLength:[planarData length]];
 		if (bytes == 1) {
 
-			unsigned char *planarBuffer = (unsigned char *)[planarData  bytes];
-			unsigned char *bitmapData = (unsigned char *)[interleavedData  mutableBytes];
-			for(i=0; i< _rows; i++){
+			unsigned char *planarBuffer = (unsigned char *)[planarData bytes];
+			unsigned char *bitmapData = (unsigned char *)[interleavedData mutableBytes];
+			for (int i=0; i< _rows; i++){
 
-				for(j=0; j< _columns; j++){
-					for (k = 0; k < _samplesPerPixel; k++)
+				for (int j=0; j< _columns; j++){
+					for (int k = 0; k < _samplesPerPixel; k++)
 						*bitmapData++ = planarBuffer[planeLength*k + i*_columns + j ];
 
 				}
 			}
 		}
 		else if (bytes == 2) {
-			unsigned short *planarBuffer = (unsigned short *)[planarData  bytes];
-			unsigned short *bitmapData = (unsigned short *)[interleavedData  mutableBytes];
-			for(i=0; i< _rows; i++){
-				for(j=0; j< _columns; j++){
-					for (k = 0; k < _samplesPerPixel; k++)
+			unsigned short *planarBuffer = (unsigned short *)[planarData bytes];
+			unsigned short *bitmapData = (unsigned short *)[interleavedData mutableBytes];
+			for (int i=0; i< _rows; i++){
+				for (int j=0; j< _columns; j++){
+					for (int k = 0; k < _samplesPerPixel; k++)
 						*bitmapData++ = planarBuffer[planeLength*k + i*_columns + j ];
 
 				}
 			}
 		}
 		else {
-			unsigned long *planarBuffer = (unsigned long *)[planarData  bytes];
-			unsigned long *bitmapData = (unsigned long *)[interleavedData  mutableBytes];
-			for(i=0; i< _rows; i++){
-				for(j=0; j< _columns; j++){
-					for (k = 0; k < _samplesPerPixel; k++)
+			unsigned long *planarBuffer = (unsigned long *)[planarData bytes];
+			unsigned long *bitmapData = (unsigned long *)[interleavedData mutableBytes];
+			for (int i=0; i< _rows; i++){
+				for (int j=0; j< _columns; j++){
+					for (int k = 0; k < _samplesPerPixel; k++)
 						*bitmapData++ = planarBuffer[planeLength*k + i*_columns + j ];
 
 				}
 			}
 		}
+
+        return interleavedData;
 	}
-	//already interleaved
-	else
-		return planarData;
-	return interleavedData;
+	
+    //already interleaved
+    return planarData;
+
 }
 
 - (void)interleavePlanes{
@@ -2408,23 +2413,22 @@ static inline int int_ceildivpow2(int a, int b) {
 {	
 	BOOL			fSetClut = NO, fSetClut16 = NO;
 	unsigned char   *clutRed = nil, *clutGreen = nil, *clutBlue = nil;
-	int		clutEntryR = 0, clutEntryG = 0, clutEntryB = 0;
-	unsigned short		clutDepthR, clutDepthG, clutDepthB;
-	unsigned short	*shortRed = nil, *shortGreen = nil, *shortBlue = nil;
+	int clutEntryR = 0, clutEntryG = 0, clutEntryB = 0;
+	unsigned short clutDepthR, clutDepthG, clutDepthB;
+	unsigned short *shortRed = nil, *shortGreen = nil, *shortBlue = nil;
 	long height = _rows;
 	long width = _columns;
 	long realwidth = width;
 	long depth = _pixelDepth;
-	int j;
 	NSMutableData *rgbData = nil;
 	@try {
 	//PhotoInterpret
 	if ([[_dcmObject attributeValueWithName:@"PhotometricInterpretation"] rangeOfString:@"PALETTE"].location != NSNotFound)
 	{
 		BOOL found = NO, found16 = NO;
-		clutRed = (unsigned char*) calloc( 65536, 1);
+		clutRed   = (unsigned char*) calloc( 65536, 1);
 		clutGreen = (unsigned char*) calloc( 65536, 1);
-		clutBlue = (unsigned char*) calloc( 65536, 1);
+		clutBlue  = (unsigned char*) calloc( 65536, 1);
 		
 		// initialisation
 		clutEntryR = clutEntryG = clutEntryB = 0;
@@ -2433,10 +2437,12 @@ static inline int int_ceildivpow2(int a, int b) {
 		NSArray *redLUTDescriptor = [_dcmObject attributeArrayWithName:@"RedPaletteColorLookupTableDescriptor"];
 		clutEntryR = (unsigned short)[[redLUTDescriptor objectAtIndex:0] intValue];
 		clutDepthR = (unsigned short)[[redLUTDescriptor objectAtIndex:2] intValue];
-		NSArray *greenLUTDescriptor = [_dcmObject attributeArrayWithName:@"GreenPaletteColorLookupTableDescriptor"];
+
+        NSArray *greenLUTDescriptor = [_dcmObject attributeArrayWithName:@"GreenPaletteColorLookupTableDescriptor"];
 		clutEntryG = (unsigned short)[[greenLUTDescriptor objectAtIndex:0] intValue];
 		clutDepthG = (unsigned short)[[greenLUTDescriptor objectAtIndex:2] intValue];
-		NSArray *blueLUTDescriptor = [_dcmObject attributeArrayWithName:@"BluePaletteColorLookupTableDescriptor"];
+
+        NSArray *blueLUTDescriptor = [_dcmObject attributeArrayWithName:@"BluePaletteColorLookupTableDescriptor"];
 		clutEntryB = (unsigned short)[[blueLUTDescriptor objectAtIndex:0] intValue];
 		clutDepthB = (unsigned short)[[blueLUTDescriptor objectAtIndex:2] intValue];
 		
@@ -2456,7 +2462,7 @@ static inline int int_ceildivpow2(int a, int b) {
 			//NSLog(@"Segmented LUT");
 			if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
 			{
-				long			length, xx, xxindex, jj;
+				long length, xx, xxindex, jj;
 				
 				shortRed = (unsigned short*) malloc( 65535L * sizeof( unsigned short));
 				shortGreen = (unsigned short*) malloc( 65535L * sizeof( unsigned short));
@@ -2666,10 +2672,11 @@ static inline int int_ceildivpow2(int a, int b) {
 				
 				//NSLog(@"Red CLUT length: %d %d ", clutEntryR, lutLength);
 				unsigned short  *ptrs =  (unsigned short*) [redCLUT bytes];				
-				for (j = 0; j < clutEntryR; j++, ptrs++) {
+				for (int j = 0; j < clutEntryR; j++, ptrs++) {
 					clutRed [j] = (int) (NSSwapLittleShortToHost(*ptrs)/256);
 				}
-				found = YES; 	// this is used to let us know we have to look for the other element 
+
+                found = YES; 	// this is used to let us know we have to look for the other element
 			}//endif red
 			
 					// extract the GREEN palette clut data
@@ -2678,7 +2685,8 @@ static inline int int_ceildivpow2(int a, int b) {
 				if (clutEntryG == 0)
 					clutEntryG = [greenCLUT length] / 2;
 				unsigned short  *ptrs =  (unsigned short*) [greenCLUT bytes];
-				for (j = 0; j < clutEntryG; j++, ptrs++) clutGreen [j] = (int) (NSSwapLittleShortToHost(*ptrs)/256);
+				for (int j = 0; j < clutEntryG; j++, ptrs++)
+                    clutGreen [j] = (int) (NSSwapLittleShortToHost(*ptrs)/256);
 			}//endif green
 			
 			// extract the BLUE palette clut data
@@ -2687,7 +2695,8 @@ static inline int int_ceildivpow2(int a, int b) {
 				if (clutEntryB == 0)
 					clutEntryB = [blueCLUT length] / 2;
 				unsigned short  *ptrs =  (unsigned short*) [blueCLUT bytes];
-				for (j = 0; j < clutEntryB; j++, ptrs++) clutBlue [j] = (int) (NSSwapLittleShortToHost(*ptrs)/256);
+				for (int j = 0; j < clutEntryB; j++, ptrs++)
+                    clutBlue [j] = (int) (NSSwapLittleShortToHost(*ptrs)/256);
 			} //endif blue
 			
 		}  //end 16 bit
@@ -2702,13 +2711,17 @@ static inline int int_ceildivpow2(int a, int b) {
 				// in case we have an array rather than NSData
 				if ([redCLUT valueMultiplicity] > 1) {
 					NSArray *lut = [redCLUT values];
-					for (j = 0; j < clutEntryR; j++) clutRed [j] = (int) [[lut objectAtIndex:j] intValue];
-					found = YES;
+					for (int j = 0; j < clutEntryR; j++)
+                        clutRed [j] = (int) [[lut objectAtIndex:j] intValue];
+
+                    found = YES;
 				}
-				else{
+				else {
 					unsigned char  *ptrs =  (unsigned char*) [[redCLUT value] bytes];
-					for (j = 0; j < clutEntryR; j++, ptrs++) clutRed [j] = (int) (*ptrs);
-						found = YES; 	// this is used to let us know we have to look for the other element 
+					for (int j = 0; j < clutEntryR; j++, ptrs++)
+                        clutRed [j] = (int) (*ptrs);
+	
+                    found = YES; 	// this is used to let us know we have to look for the other element
 				}
 			}
 			
@@ -2719,13 +2732,17 @@ static inline int int_ceildivpow2(int a, int b) {
 				// in case we have an array rather than NSData
 				if ([greenCLUT valueMultiplicity] > 1) {
 					NSArray *lut = [greenCLUT values];
-					for (j = 0; j < clutEntryG; j++) clutGreen [j] = (int) [[lut objectAtIndex:j] intValue];
-					found = YES;
+					for (int j = 0; j < clutEntryG; j++)
+                        clutGreen [j] = (int) [[lut objectAtIndex:j] intValue];
+
+                    found = YES;
 				}
-				else{
+				else {
 					unsigned char  *ptrs =  (unsigned char*) [[greenCLUT value] bytes];
-					for (j = 0; j < clutEntryG; j++, ptrs++) clutGreen [j] = (int) (*ptrs);
-						found = YES; 	// this is used to let us know we have to look for the other element 
+					for (int j = 0; j < clutEntryG; j++, ptrs++)
+                        clutGreen [j] = (int) (*ptrs);
+
+                    found = YES; 	// this is used to let us know we have to look for the other element
 				}
 			}
 			
@@ -2736,25 +2753,33 @@ static inline int int_ceildivpow2(int a, int b) {
 				// in case we have an array rather than NSData
 				if ([blueCLUT valueMultiplicity] > 1) {
 					NSArray *lut = [blueCLUT values];
-					for (j = 0; j < clutEntryB; j++) clutBlue [j] = (int) [[lut objectAtIndex:j] intValue];
-					found = YES;
+					for (int j = 0; j < clutEntryB; j++)
+                        clutBlue [j] = (int) [[lut objectAtIndex:j] intValue];
+
+                    found = YES;
 				}
-				else{
+				else {
 					unsigned char  *ptrs =  (unsigned char*) [[greenCLUT value] bytes];
-					for (j = 0; j < clutEntryB; j++, ptrs++) clutBlue [j] = (int) (*ptrs);
-						found = YES; 	// this is used to let us know we have to look for the other element 
+					for (int j = 0; j < clutEntryB; j++, ptrs++)
+                        clutBlue [j] = (int) (*ptrs);
+
+                    found = YES; 	// this is used to let us know we have to look for the other element
 				}
 
 			}
 			// let the rest of the routine know that it should set the clut
 		}
-		if (found) fSetClut = YES;
-		if (found16) fSetClut16 = YES;
+
+        if (found)
+            fSetClut = YES;
+
+        if (found16)
+            fSetClut16 = YES;
 	
 	} // endif ...extraction of the color palette
 	
 // This image has a palette -> Convert it to a RGB image !
-	if( fSetClut)
+	if ( fSetClut)
 	{
 		if( clutRed != nil && clutGreen != nil && clutBlue != nil)
 		{
@@ -3323,9 +3348,9 @@ static inline int int_ceildivpow2(int a, int b) {
 					endItem++;
 					dataLength += ([(NSData *)[values objectAtIndex:endItem] length] + 8);
 				}
-				int j;
+
 				subData = [NSMutableData data];
-				for (j = startingItem; j <= endItem ; j++) 
+				for (int j = startingItem; j <= endItem ; j++)
 					[subData appendData:[values objectAtIndex:j]];	
 			} //appending fragments
 
@@ -3340,11 +3365,12 @@ static inline int int_ceildivpow2(int a, int b) {
 				depth = 2;
 			else
 				depth = 4;
-			int frameLength = _rows * _columns * _samplesPerPixel * depth;
+
+            int frameLength = _rows * _columns * _samplesPerPixel * depth;
 			NSRange range = NSMakeRange(index * frameLength, frameLength);
             
             void *ptr = malloc( frameLength);
-            if( ptr)
+            if ( ptr)
             {
                 if( [[_values objectAtIndex:0] length] < range.location + range.length)
                     subData = nil;

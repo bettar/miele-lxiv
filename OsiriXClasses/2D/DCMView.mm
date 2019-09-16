@@ -7395,19 +7395,19 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	NSDictionary *aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Blending CLUT"]];
 	if (aCLUT)
 	{
-		int i;
+		int ii;
 		
-        i = 0;
+        ii = 0;
 		for (NSNumber *n in [aCLUT objectForKey:@"Red"])
-			PETredTable[ i++] = [n longValue];  // TODO: unsignedCharValue ?
+			PETredTable[ ii++] = [n longValue];  // TODO: unsignedCharValue ?
 		
-        i = 0;
+        ii = 0;
 		for (NSNumber *n in [aCLUT objectForKey:@"Green"])
-			PETgreenTable[ i++] = [n longValue];
+			PETgreenTable[ ii++] = [n longValue];
 		
-        i = 0;
+        ii = 0;
 		for (NSNumber *n in [aCLUT objectForKey:@"Blue"])
-			PETblueTable[ i++] = [n longValue];
+			PETblueTable[ ii++] = [n longValue];
         
         return;
 	}
@@ -9907,7 +9907,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					[tempString3 setString:[tempString3 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
 					[tempString4 setString:[tempString4 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
 
-					if (![tempString isEqualToString:@""])
+					if (tempString.length > 0)
 					{
                         long xAdd = 0;
                         if ([key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
@@ -9923,7 +9923,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 						yRaster += increment;
 					}
 
-                    if (![tempString2 isEqualToString:@""])
+                    if (tempString2.length > 0)
 					{
                         long xAdd = 0;
                         if ([key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
@@ -9939,7 +9939,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 						yRaster += increment;
 					}
 
-                    if (![tempString3 isEqualToString:@""])
+                    if (tempString3.length > 0)
 					{
                         long xAdd = 0;
                         if ([key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
@@ -9955,7 +9955,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 						yRaster += increment;
 					}
                     
-					if (![tempString4 isEqualToString:@""])
+					if (tempString4.length > 0)
 					{
                         long xAdd = 0;
                         if ([key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
@@ -12463,7 +12463,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			*spp = 3;
 			*bpp = 8;
 			
-			buf = (unsigned char *)calloc( 1, 10 + *width * *height * 4 * *bpp/8);
+			buf = (unsigned char *)calloc(1, 10 + *width * *height * 4 * *bpp/8);
 			if (buf)
 			{
 				NSOpenGLContext *c = [self openGLContext];

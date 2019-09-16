@@ -379,11 +379,9 @@
 
 //- (void)fillCurvesInRect:(NSRect)rect;
 //{
-//	int i, j;
-//		
 //	NSAffineTransform* transform = [self transform];
 //	
-//	for (i=[curves count]-1; i>=0; i--)
+//	for (int i=[curves count]-1; i>=0; i--)
 //	{
 //		NSArray *aCurve = [curves objectAtIndex:i];
 //
@@ -391,15 +389,14 @@
 //		NSRect smallRect;
 //		NSPoint p0, p1;
 //		NSColor *c, *c0, *c1;
-//		for (j=0; j<[aCurve count]-1; j++)
+//		for (int j=0; j<[aCurve count]-1; j++)
 //		{
 //			p0 = [transform transformPoint:[[aCurve objectAtIndex:j] pointValue]];
 //			p1 = [transform transformPoint:[[aCurve objectAtIndex:j+1] pointValue]];
 //			c0 = [[pointColors objectAtIndex:i] objectAtIndex:j];
 //			c1 = [[pointColors objectAtIndex:i] objectAtIndex:j+1];
 //			int numberOfSmallRect = p1.x - p0.x + 1;
-//			int n;
-//			for(n=0; n<numberOfSmallRect; n++)
+//			for (int n=0; n<numberOfSmallRect; n++)
 //			{
 //				if(p0.y<p1.y)
 //					smallRect = NSMakeRect(p0.x+n, 0, 2, ((numberOfSmallRect-n)*p0.y+n*p1.y)/numberOfSmallRect);
@@ -458,21 +455,19 @@
 }
 
 - (void)drawCurvesInRect:(NSRect)rect;
-{
-	int i, j;
-		
+{		
 	NSAffineTransform* transform = [self transform];
 	
-	for (i=(long)[curves count]-1; i>=0; i--)
+	for (int i=(long)[curves count]-1; i>=0; i--)
 	{
 		NSArray *aCurve = [curves objectAtIndex:i];
 	
 		// CONTROL POINT SELECTED?
 		NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
 		BOOL controlPointSelected = NO;
-		if([self isAnyPointSelected])
+		if ([self isAnyPointSelected])
 		{
-			if((int) selectedPoint.x==(int) controlPoint.x && (float) selectedPoint.y==(float) controlPoint.y)
+			if ((int) selectedPoint.x==(int) controlPoint.x && (float) selectedPoint.y==(float) controlPoint.y)
 			{
 				[selectedPointColor set];
 				controlPointSelected = YES;
@@ -482,14 +477,15 @@
 		// LINE
 		NSBezierPath *line = [NSBezierPath bezierPath];
 		[line moveToPoint:[[aCurve objectAtIndex:0] pointValue]];
-		for (j=1; j<[aCurve count]; j++)
+		for (int j=1; j<[aCurve count]; j++)
 		{
 			NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 			[line lineToPoint:pt];
 		}
 		line = [transform transformBezierPath:line];
 		[curveColor set];
-		if(controlPointSelected) [selectedPointColor set];
+		if (controlPointSelected)
+            [selectedPointColor set];
 		[line setLineWidth:lineWidth];
 		[line stroke];
 				
@@ -500,19 +496,20 @@
 		[pointsColor set];
 		[control fill];
 		[curveColor set];
-		if(controlPointSelected) [selectedPointColor set];
+		if (controlPointSelected)
+            [selectedPointColor set];
 		[control stroke];
 		
 		// DOTS
 		NSPoint selectedPointForLabel = NSMakePoint(-1.0, -1.0);
 		
-		for (j=0; j<[aCurve count]; j++)
+		for (int j=0; j<[aCurve count]; j++)
 		{
 			NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 			BOOL selected = NO;
-			if([self isAnyPointSelected])
+			if ([self isAnyPointSelected])
 			{
-				if((int) selectedPoint.x==(int) pt.x && (float) selectedPoint.y==(float) pt.y)
+				if ((int) selectedPoint.x==(int) pt.x && (float) selectedPoint.y==(float) pt.y)
 				{
 					selected = YES;
 				}
@@ -524,7 +521,8 @@
 			[pointsColor set];
 			[dot1 stroke];
 			[curveColor set];
-			if(selected || controlPointSelected) [selectedPointColor set];
+			if (selected || controlPointSelected)
+                [selectedPointColor set];
 			[dot1 fill];
 				
 			//inside
@@ -538,24 +536,26 @@
 			[c set];
 			[dot fill];
 			
-			if(selected) selectedPointForLabel = pt;
+			if (selected)
+                selectedPointForLabel = pt;
 		}
 		
 		// LABEL FOR SELECTED POINT
-		if(selectedPointForLabel.y>=0.0)[self drawPointLabelAtPosition:selectedPointForLabel];
+		if (selectedPointForLabel.y>=0.0)
+            [self drawPointLabelAtPosition:selectedPointForLabel];
 		
 		// LABEL FOR ALL POINTS
-		if(controlPointSelected)
+		if (controlPointSelected)
 		{
 			int maxYIndex = -1;
 			int minYIndex = -1;
 			float minY = 1.0;
 			float maxY = 0.0;
 			NSPoint currentPoint;
-			for (j=0; j<[aCurve count]; j++)
+			for (int j=0; j<[aCurve count]; j++)
 			{
 				currentPoint = [[aCurve objectAtIndex:j] pointValue];
-				if(currentPoint.y<minY)
+				if (currentPoint.y<minY)
 				{
 					minY = currentPoint.y;
 					minYIndex = j;
@@ -760,16 +760,18 @@
 
 - (BOOL)selectPointAtPosition:(NSPoint)position;
 {
-	int i, j;
-	for (i=0; i<[curves count]; i++)
+	for (int i=0; i<[curves count]; i++)
 	{
 		NSArray *aCurve = [curves objectAtIndex:i];
-		for (j=0; j<[aCurve count]; j++)
+		for (int j=0; j<[aCurve count]; j++)
 		{
 			NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 			NSAffineTransform* transform = [self transform];
 			NSPoint pt2 = [transform transformPoint:pt];
-			if(position.x>=pt2.x-pointDiameter && position.y>=pt2.y-pointDiameter && position.x<=pt2.x+pointDiameter && position.y<=pt2.y+pointDiameter)
+			if (position.x>=pt2.x-pointDiameter &&
+                position.y>=pt2.y-pointDiameter &&
+                position.x<=pt2.x+pointDiameter &&
+                position.y<=pt2.y+pointDiameter)
 			{
 				selectedPoint = [[aCurve objectAtIndex:j] pointValue];
 				[[NSColorPanel sharedColorPanel] setColor:[[pointColors objectAtIndex:i] objectAtIndex:j]];
@@ -782,7 +784,8 @@
 			}
 		}
 	}
-	[self setCLUTtoVRView:NO];
+
+    [self setCLUTtoVRView:NO];
 	return NO;
 }
 
@@ -800,15 +803,14 @@
 
 - (void)changePointColor:(NSNotification *)notification;
 {
-	if([self isAnyPointSelected])
+	if ([self isAnyPointSelected])
 	{
 		vrViewLowResolution = YES;
 		
-		int i, j;
-		for (i=0; i<[curves count]; i++)
+		for (int i=0; i<[curves count]; i++)
 		{
 			NSMutableArray *aCurve = [curves objectAtIndex:i];
-			for (j=0; j<[aCurve count]; j++)
+			for (int j=0; j<[aCurve count]; j++)
 			{
 				NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 				if((int) pt.x==(int) selectedPoint.x && (float) pt.y==(float) selectedPoint.y)
@@ -819,7 +821,8 @@
 				}
 			}
 			NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
-			if((int) controlPoint.x==(int) selectedPoint.x && (float) controlPoint.y==(float) selectedPoint.y)
+			if ((int) controlPoint.x == (int) selectedPoint.x &&
+                (float) controlPoint.y == (float) selectedPoint.y)
 			{
 				[self setColor:[[(NSColorPanel*)[notification object] color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace] forCurveAtIndex:i];
 				[self updateView];
@@ -979,7 +982,7 @@ NSRect rect = drawingRect;
 
 - (BOOL)clickOnLineAtPosition:(NSPoint)position;
 {
-	int i, j;
+    int ii, jj;
 	NSPoint pt0, pt1, p0, p1;
 	float a, b; // line between p0 & p1 : y = a x + b
 	NSAffineTransform* transform = [self transform];
@@ -987,37 +990,42 @@ NSRect rect = drawingRect;
 	
 	BOOL addPoint = NO;
 	
-	for (i=0; i<[curves count] && !addPoint; i++)
+	for (ii=0; ii<[curves count] && !addPoint; ii++)
 	{
-		aCurve = [curves objectAtIndex:i];
-		colors = [pointColors objectAtIndex:i];
-		for (j=1; j<[aCurve count] && !addPoint; j++)
+		aCurve = [curves objectAtIndex:ii];
+		colors = [pointColors objectAtIndex:ii];
+		for (jj=1; jj<[aCurve count] && !addPoint; jj++)
 		{
-			pt0 = [[aCurve objectAtIndex:j-1] pointValue];
-			pt1 = [[aCurve objectAtIndex:j] pointValue];
+			pt0 = [[aCurve objectAtIndex:jj-1] pointValue];
+			pt1 = [[aCurve objectAtIndex:jj] pointValue];
 			p0 = [transform transformPoint:pt0];
 			p1 = [transform transformPoint:pt1];
 
-			if(position.x>p0.x && position.x<p1.x)
+			if (position.x > p0.x &&
+                position.x < p1.x)
 			{
-				if((position.y>=p0.y && position.y<=p1.y) || (position.y<=p0.y && position.y>=p1.y) || (p0.y==p1.y && position.y>=p0.y-10.0 && position.y<=p0.y+10.0))
+				if ((position.y>=p0.y && position.y<=p1.y) ||
+                    (position.y<=p0.y && position.y>=p1.y) ||
+                    (p0.y==p1.y && position.y >= p0.y-10.0 && position.y <= p0.y+10.0))
 				{
 					a = (p1.y-p0.y)/(p1.x-p0.x);
 					b = p0.y - a*p0.x;
-					if(position.y>=a*position.x+b-10.0 && position.y<=a*position.x+b+10.0)
+					if (position.y >= a*position.x+b-10.0 &&
+                        position.y <= a*position.x+b+10.0)
 					{
 						addPoint = YES;
 					}
 				}
 			}
-			else if(position.x==p0.x && position.x==p1.x)
+			else if (position.x == p0.x &&
+                     position.x == p1.x)
 			{
 				addPoint = YES;
 			}
 		}
 	}
 	
-	if(addPoint)
+	if (addPoint)
 	{
 		nothingChanged = NO;
 		clutChanged = YES;
@@ -1025,9 +1033,9 @@ NSRect rect = drawingRect;
 		NSPoint newPoint = [transform transformPoint:position];
 		selectedPoint.x = newPoint.x;
 		selectedPoint.y = newPoint.y;
-		float blendingFactor = (newPoint.x - [[aCurve objectAtIndex:j-2] pointValue].x) / ([[aCurve objectAtIndex:j-1] pointValue].x - [[aCurve objectAtIndex:j-2] pointValue].x);
-		[self addPoint:newPoint atIndex:j-1 inCurveAtIndex:i-1 withColor:[[colors objectAtIndex:j-2] blendedColorWithFraction:blendingFactor ofColor:[colors objectAtIndex:j-1]]];
-		[self sendToFrontCurveAtIndex:i-1];
+		float blendingFactor = (newPoint.x - [[aCurve objectAtIndex:jj-2] pointValue].x) / ([[aCurve objectAtIndex:jj-1] pointValue].x - [[aCurve objectAtIndex:jj-2] pointValue].x);
+		[self addPoint:newPoint atIndex:jj-1 inCurveAtIndex:ii-1 withColor:[[colors objectAtIndex:jj-2] blendedColorWithFraction:blendingFactor ofColor:[colors objectAtIndex:jj-1]]];
+		[self sendToFrontCurveAtIndex:ii-1];
 		selectedCurveIndex = 0;
 		[self updateView];
 	}
@@ -1202,17 +1210,17 @@ NSRect rect = drawingRect;
 		NSPoint mouseLocation = [transformView2Coordinate transformPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
 		mousePositionX = mouseLocation.x;
 			
-		int i, j;
-		for (i=0; i<[curves count]; i++)
+		for (int i=0; i<[curves count]; i++)
 		{
 			NSMutableArray *aCurve = [curves objectAtIndex:i];
 			
 			if(!([theEvent modifierFlags] & NSEventModifierFlagOption))
 			{
-				for (j=0; j<[aCurve count]; j++)
+				for (int j=0; j<[aCurve count]; j++)
 				{
 					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-					if((int) pt.x==(int) selectedPoint.x && (float) pt.y==(float) selectedPoint.y)
+					if ((int)pt.x == (int)selectedPoint.x &&
+                        (float)pt.y == (float)selectedPoint.y)
 					{
 						NSPoint newPoint = [transformView2Coordinate transformPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
 						newPoint = [self legalizePoint:newPoint inCurve:aCurve atIndex:j];
@@ -1231,31 +1239,32 @@ NSRect rect = drawingRect;
 				BOOL lastPointSelected = ((int) lastPoint.x==(int) selectedPoint.x && (float) lastPoint.y==(float) selectedPoint.y);
 				firstPoint = [transformCoordinate2View transformPoint:firstPoint];
 				lastPoint = [transformCoordinate2View transformPoint:lastPoint];
-				if( firstPointSelected || lastPointSelected)
+				if (firstPointSelected || lastPointSelected)
 				{
 					float shiftX = [theEvent deltaX];
 					float d = lastPoint.x - firstPoint.x;
-					for (j=0; j<[aCurve count]; j++)
+					for (int j=0; j<[aCurve count]; j++)
 					{
 						NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 						pt = [transformCoordinate2View transformPoint:pt];
 						NSPoint shiftedPoint;
-						float alpha = 1.0;
-						if(firstPointSelected)
-							alpha = fabsf(pt.x - lastPoint.x) / d;
+						double alpha;
+						if (firstPointSelected)
+							alpha = fabs(pt.x - lastPoint.x) / d;
 						else
-							alpha = fabsf(pt.x - firstPoint.x) / d;
-						shiftedPoint = NSMakePoint(pt.x + alpha * shiftX, pt.y);
+							alpha = fabs(pt.x - firstPoint.x) / d;
+
+                        shiftedPoint = NSMakePoint(pt.x + alpha * shiftX, pt.y);
 						shiftedPoint = [transformView2Coordinate transformPoint:shiftedPoint];
 						[self replacePointAtIndex:j inCurveAtIndex:i withPoint:shiftedPoint];
 					}
-					for (j=0; j<[aCurve count]; j++)
+					for (int j=0; j<[aCurve count]; j++)
 					{
 						NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 						pt = [self legalizePoint:pt inCurve:aCurve atIndex:j];
 						[self replacePointAtIndex:j inCurveAtIndex:i withPoint:pt];
 					}
-					if(firstPointSelected)
+					if (firstPointSelected)
 						selectedPoint = [[aCurve objectAtIndex:0] pointValue];
 					else
 						selectedPoint = [[aCurve lastObject] pointValue];
@@ -1265,7 +1274,8 @@ NSRect rect = drawingRect;
 			}
 			
 			NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
-			if( (int) controlPoint.x == (int) selectedPoint.x && (float) controlPoint.y == (float) selectedPoint.y)
+			if ((int) controlPoint.x == (int) selectedPoint.x &&
+                (float) controlPoint.y == (float) selectedPoint.y)
 			{			
 				NSPoint newPointInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 //				NSPoint newPoint = [transformView2Coordinate transformPoint:newPointInView];
@@ -1278,23 +1288,28 @@ NSRect rect = drawingRect;
 				float d = lastPoint.x - firstPoint.x;
 				float middlePointX = firstPoint.x + d / 2.0;
 
-				for (j=0; j<[aCurve count]; j++)
+				for (int j=0; j<[aCurve count]; j++)
 				{
 					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 					pt = [transformCoordinate2View transformPoint:pt];
 					NSPoint shiftedPoint;
-					if([theEvent modifierFlags] & NSEventModifierFlagOption)
+					if ([theEvent modifierFlags] & NSEventModifierFlagOption)
 					{
 						shiftY = 0;
-						
-						float alpha = 1.0;
-						if(j>0 && j<(long)[aCurve count]-1)
-							alpha = 2.0*fabsf(middlePointX - pt.x) / d;
-						if(pt.x<=controlPoint.x)
+						double alpha = 1.0F;
+						if (j>0 && j<(long)[aCurve count]-1)
+							alpha = 2.0F*fabs(middlePointX - pt.x) / d;
+
+                        if (pt.x<=controlPoint.x)
 							shiftedPoint = NSMakePoint(pt.x - alpha * shiftX, pt.y-shiftY);
 						else
 							shiftedPoint = NSMakePoint(pt.x + alpha * shiftX, pt.y-shiftY);
-						if(shiftedPoint.x > controlPoint.x+10.0 || shiftedPoint.x < controlPoint.x-10.0 || pt.x == controlPoint.x || (pt.x < controlPoint.x+10.0 && shiftedPoint.x > controlPoint.x+10.0) || (pt.x > controlPoint.x-10.0 && shiftedPoint.x < controlPoint.x-10.0))
+
+                        if (shiftedPoint.x > controlPoint.x+10.0 ||
+                            shiftedPoint.x < controlPoint.x-10.0 ||
+                            pt.x == controlPoint.x ||
+                            (pt.x < controlPoint.x+10.0 && shiftedPoint.x > controlPoint.x+10.0) ||
+                            (pt.x > controlPoint.x-10.0 && shiftedPoint.x < controlPoint.x-10.0))
 						{
 							shiftedPoint = [transformView2Coordinate transformPoint:shiftedPoint];
 							[self replacePointAtIndex:j inCurveAtIndex:i withPoint:shiftedPoint];
@@ -1304,14 +1319,15 @@ NSRect rect = drawingRect;
 					else
 					{
 						shiftedPoint = NSMakePoint(pt.x+shiftX, pt.y-shiftY);
-						if(j==0) shiftedPoint = NSMakePoint(pt.x+shiftX, pt.y);
+						if (j==0)
+                            shiftedPoint = NSMakePoint(pt.x+shiftX, pt.y);
 						shiftedPoint = [transformView2Coordinate transformPoint:shiftedPoint];
 						[self replacePointAtIndex:j inCurveAtIndex:i withPoint:shiftedPoint];
 						controlPoint = [self controlPointForCurveAtIndex:i];
 					}
 				}
 				
-				for (j=0; j<[aCurve count]; j++)
+				for (int j=0; j<[aCurve count]; j++)
 				{
 					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 					pt = [self legalizePoint:pt inCurve:aCurve atIndex:j];
@@ -1327,7 +1343,7 @@ NSRect rect = drawingRect;
 	}
 	else
 	{
-		if(fabsf([theEvent deltaX])>fabsf([theEvent deltaY]))
+		if (fabs([theEvent deltaX]) > fabs([theEvent deltaY]))
 		{
 			zoomFixedPoint -= [theEvent deltaX] / zoomFactor;
 		}
@@ -1498,13 +1514,12 @@ NSRect rect = drawingRect;
 
 - (IBAction)sendToBack:(id)sender;
 {
-	NSUInteger i, j;
 	int curveIndex = -1;
 
-	for (i=0; i<[curves count] && curveIndex<0; i++)
+	for (NSUInteger i=0; i<[curves count] && curveIndex<0; i++)
 	{
 		NSArray *aCurve = [curves objectAtIndex:i];
-		for (j=0; j<[aCurve count] && curveIndex<0; j++)
+		for (NSUInteger j=0; j<[aCurve count] && curveIndex<0; j++)
 		{
 			NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 			if((int) selectedPoint.x==(int) pt.x && (float) selectedPoint.y==(float) pt.y)
@@ -1512,13 +1527,16 @@ NSRect rect = drawingRect;
 		}
 	}
 
-	if(curveIndex<0)
+	if (curveIndex < 0)
 	{
-		for (i=0; i<[curves count] && curveIndex<0; i++)
+		for (NSUInteger i=0; i<[curves count] && curveIndex<0; i++)
 		{
 			NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
-			if((int) selectedPoint.x==(int) controlPoint.x && (float) selectedPoint.y==(float) controlPoint.y)
+			if ((int) selectedPoint.x==(int) controlPoint.x &&
+                (float) selectedPoint.y==(float) controlPoint.y)
+            {
 				curveIndex = i;
+            }
 		}
 	}
 
@@ -1781,7 +1799,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 {
 	int curveIndex = [self selectedCurveIndex];
 	
-	if(curveIndex >= 0 && [curves count] > 0)
+	if (curveIndex >= 0 && [curves count] > 0)
 	{
 		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:2];
 		[dict setObject:[curves objectAtIndex:curveIndex] forKey:@"curve"];
@@ -1795,27 +1813,27 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	}
 	else
 	{
-		if(selectedPoint.y>=0.0)
-		{
-			int i, j;
-			for (i=0; i<[curves count]; i++)
-			{
-				NSArray *aCurve = [curves objectAtIndex:i];
-				for (j=0; j<[aCurve count]; j++)
-				{
-					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-					if((int) selectedPoint.x==(int) pt.x && (float) selectedPoint.y==(float) pt.y)
-					{
-						NSData* colorData = [NSArchiver archivedDataWithRootObject:[[pointColors objectAtIndex:i] objectAtIndex:j]];
-						NSPasteboard* pasteboard = [NSPasteboard generalPasteboard];
+		if (selectedPoint.y < 0.0)
+            return;
 
-						[pasteboard declareTypes:[NSArray arrayWithObjects:@"osirixCLUTOpacityPointColor", nil] owner:self];
-						[pasteboard setData:colorData forType:@"osirixCLUTOpacityPointColor"];
-						return;
-					}
-				}
-			}
-		}
+        for (int i=0; i<[curves count]; i++)
+        {
+            NSArray *aCurve = [curves objectAtIndex:i];
+            for (int j=0; j<[aCurve count]; j++)
+            {
+                NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
+                if ((int) selectedPoint.x==(int) pt.x &&
+                    (float) selectedPoint.y==(float) pt.y)
+                {
+                    NSData* colorData = [NSArchiver archivedDataWithRootObject:[[pointColors objectAtIndex:i] objectAtIndex:j]];
+                    NSPasteboard* pasteboard = [NSPasteboard generalPasteboard];
+
+                    [pasteboard declareTypes:[NSArray arrayWithObjects:@"osirixCLUTOpacityPointColor", nil] owner:self];
+                    [pasteboard setData:colorData forType:@"osirixCLUTOpacityPointColor"];
+                    return;
+                }
+            }
+        }
 	}
 }
 
@@ -1854,16 +1872,16 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	}
 	else if([type isEqualToString:@"osirixCLUTOpacityPointColor"])
 	{
-		if(selectedPoint.y>=0.0)
+		if (selectedPoint.y >= 0.0)
 		{
-			int i, j;
-			for (i=0; i<[curves count]; i++)
+			for (int i=0; i<[curves count]; i++)
 			{
 				NSArray *aCurve = [curves objectAtIndex:i];
-				for (j=0; j<[aCurve count]; j++)
+				for (int j=0; j<[aCurve count]; j++)
 				{
 					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-					if((int) selectedPoint.x==(int) pt.x && (float) selectedPoint.y==(float) pt.y)
+					if ((int) selectedPoint.x==(int) pt.x &&
+                        (float) selectedPoint.y==(float) pt.y)
 					{
 						NSData* colorData = [pasteboard dataForType:type];
 						NSColor *color = [NSUnarchiver unarchiveObjectWithData:colorData];
@@ -1888,16 +1906,16 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	}
 	else
 	{
-		if(selectedPoint.y>=0.0)
+		if (selectedPoint.y >= 0.0)
 		{
-			int i, j;
-			for (i=0; i<[curves count]; i++)
+			for (int i=0; i<[curves count]; i++)
 			{
 				NSArray *aCurve = [curves objectAtIndex:i];
-				for (j=0; j<[aCurve count]; j++)
+				for (int j=0; j<[aCurve count]; j++)
 				{
 					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-					if((int) selectedPoint.x==(int) pt.x && (float) selectedPoint.y==(float) pt.y)
+					if ((int) selectedPoint.x==(int) pt.x &&
+                        (float) selectedPoint.y==(float) pt.y)
 					{
 						if([aCurve count]<=3)
 						{
@@ -2008,60 +2026,57 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[path appendString:CLUTDATABASE];
 	[path appendString:name];
 	
-	if([[NSFileManager defaultManager] fileExistsAtPath:path])
+	if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 	{
-		if([[path pathExtension] isEqualToString:@""])
+		if ([[path pathExtension] isEqualToString:@""])
 		{
 			NSMutableDictionary *clut = [NSUnarchiver unarchiveObjectWithFile:path];
 			return clut;
 		}
-		else
-			return nil;
 	}
 	else
 	{
 		[path appendString:@".plist"];
-		if([[NSFileManager defaultManager] fileExistsAtPath:path])
+		if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 		{
 			NSMutableDictionary *clutFromFile = [NSMutableDictionary dictionaryWithContentsOfFile:path];
 			NSArray *curveArray = [CLUTOpacityView convertCurvesFromPlist:[clutFromFile objectForKey:@"curves"]];
 			NSArray *colorArray = [CLUTOpacityView convertPointColorsFromPlist:[clutFromFile objectForKey:@"colors"]];
 			NSMutableDictionary *clut = [NSMutableDictionary dictionary];
-			if([curveArray count]>0 && [colorArray count]>0)
+			if ([curveArray count] > 0 &&
+                [colorArray count] > 0)
 			{
 				[clut setObject:curveArray forKey:@"curves"];
 				[clut setObject:colorArray forKey:@"colors"];
 				return clut;
 			}
-			else
-                return nil;
 		}
-		else
-		{
+		else {
 			// look in the resources bundle path
 			[path setString:[[NSBundle mainBundle] resourcePath]];
 			[path appendString:CLUTDATABASE];
 			[path appendString:name];
 			[path appendString:@".plist"];
-			if([[NSFileManager defaultManager] fileExistsAtPath:path])
+			if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 			{
 				NSMutableDictionary *clutFromFile = [NSMutableDictionary dictionaryWithContentsOfFile:path];
 				NSArray *curveArray = [CLUTOpacityView convertCurvesFromPlist:[clutFromFile objectForKey:@"curves"]];
 				NSArray *colorArray = [CLUTOpacityView convertPointColorsFromPlist:[clutFromFile objectForKey:@"colors"]];
 				NSMutableDictionary *clut = [NSMutableDictionary dictionary];
-				if([curveArray count]>0 && [colorArray count]>0)
+				if ([curveArray count] > 0 &&
+                    [colorArray count] > 0)
 				{
 					[clut setObject:curveArray forKey:@"curves"];
 					[clut setObject:colorArray forKey:@"colors"];
 					return clut;
 				}
-				else
-                    return nil;
+
+                return nil;
 			}
-			else
-				return nil;
 		}
 	}
+
+    return nil;
 }
 
 - (void)loadFromFileWithName:(NSString*)name;
@@ -2081,12 +2096,11 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 - (NSArray*)convertPointColorsForPlist;
 {
 	NSMutableArray *convertedPointColors = [NSMutableArray array];
-	int i, j;
-	for (i=0; i<[pointColors count]; i++)
+	for (int i=0; i<[pointColors count]; i++)
 	{
 		NSArray *colors = [pointColors objectAtIndex:i];
 		NSMutableArray *newColors = [NSMutableArray array];
-		for (j=0; j<[colors count]; j++)
+		for (int j=0; j<[colors count]; j++)
 		{
 			NSColor *color = [colors objectAtIndex:j];
 			[newColors addObject:[self convertColorToDict:color]];
@@ -2099,12 +2113,11 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 - (NSArray*)convertCurvesForPlist;
 {
 	NSMutableArray *convertedCurves = [NSMutableArray array];
-	int i, j;
-	for (i=0; i<[curves count]; i++)
+	for (int i=0; i<[curves count]; i++)
 	{
 		NSArray *curve = [curves objectAtIndex:i];
 		NSMutableArray *newCurves = [NSMutableArray array];
-		for (j=0; j<[curve count]; j++)
+		for (int j=0; j<[curve count]; j++)
 		{
 			NSPoint point = [[curve objectAtIndex:j] pointValue];
 			[newCurves addObject:[self convertPointToDict:point]];
@@ -2137,15 +2150,17 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 + (NSMutableArray*)convertPointColorsFromPlist:(NSArray*)plistPointColor;
 {
 	NSMutableArray *convertedPointColors = [NSMutableArray array];
-	int i, j;
-	for (i=0; i<[plistPointColor count]; i++)
+	for (int i=0; i<[plistPointColor count]; i++)
 	{
 		NSArray *colors = [plistPointColor objectAtIndex:i];
 		NSMutableArray *newColors = [NSMutableArray array];
-		for (j=0; j<[colors count]; j++)
+		for (int j=0; j<[colors count]; j++)
 		{
 			NSDictionary *colorDict = [colors objectAtIndex:j];
-			NSColor *color = [NSColor colorWithCalibratedRed:[[colorDict objectForKey:@"red"] floatValue] green:[[colorDict objectForKey:@"green"] floatValue] blue:[[colorDict objectForKey:@"blue"] floatValue] alpha:1.0];
+			NSColor *color = [NSColor colorWithCalibratedRed:[[colorDict objectForKey:@"red"] floatValue]
+                                                       green:[[colorDict objectForKey:@"green"] floatValue]
+                                                        blue:[[colorDict objectForKey:@"blue"] floatValue]
+                                                       alpha:1.0];
 			[newColors addObject:color];
 		}
 		[convertedPointColors addObject:newColors];
@@ -2156,15 +2171,15 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 + (NSMutableArray*)convertCurvesFromPlist:(NSArray*)plistCurves;
 {
 	NSMutableArray *convertedCurves = [NSMutableArray array];
-	int i, j;
-	for (i=0; i<[plistCurves count]; i++)
+	for (int i=0; i<[plistCurves count]; i++)
 	{
 		NSArray *curve = [plistCurves objectAtIndex:i];
 		NSMutableArray *newCurve = [NSMutableArray array];
-		for (j=0; j<[curve count]; j++)
+		for (int j=0; j<[curve count]; j++)
 		{
 			NSDictionary *pointDict = [curve objectAtIndex:j];
-			NSPoint point = NSMakePoint([[pointDict objectForKey:@"x"] floatValue], [[pointDict objectForKey:@"y"] floatValue]);
+			NSPoint point = NSMakePoint([[pointDict objectForKey:@"x"] floatValue],
+                                        [[pointDict objectForKey:@"y"] floatValue]);
 			[newCurve addObject:[NSValue valueWithPoint:point]];
 		}
 		[convertedCurves addObject:newCurve];
@@ -2253,11 +2268,11 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	float shiftWW = firstPoint.x + shiftWL - (wl - 0.5 * ww);
 	
 	NSPoint pt;
-	float factor = 1.0;
+	double factor = 1.0;
 	for (int i=0; i<[theCurve count]; i++)
 	{
 		pt = [[theCurve objectAtIndex:i] pointValue];
-		factor = fabsf(pt.x - middle) / half;
+		factor = fabs(pt.x - middle) / half;
 		if(factor<0.0)
             factor = 0.0;
         
@@ -2288,7 +2303,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 - (void)setCursorLabelWithText:(NSString*)text;
 {
-	if([text isEqualToString:@""])
+	if (text.length == 0)
 	{
 		[[NSCursor arrowCursor] set];
 		return;

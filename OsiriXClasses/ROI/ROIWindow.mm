@@ -281,11 +281,9 @@
 {		
 	NSArray *roiSeriesList = [curController roiList];	
 	
-	for ( NSMutableArray *roiImageList in roiSeriesList )
+	for (NSMutableArray *roiImageList in roiSeriesList )
 	{
-		int j;
-		
-		for ( j = 0; j < [roiImageList count]; j++ )
+		for (int j = 0; j < [roiImageList count]; j++ )
 		{
 			ROI *roi = [roiImageList objectAtIndex: j ];
 			
@@ -296,8 +294,8 @@
 			}
 		}
 	}
-	[[curController imageView] setNeedsDisplay: YES];
-	
+
+    [[curController imageView] setNeedsDisplay: YES];
 	[self windowWillClose: nil];
 }
 

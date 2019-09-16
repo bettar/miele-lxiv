@@ -865,7 +865,7 @@ extern "C"
 {
 	if ([sender tag])
 	{
-		if ([[autoQRInstanceName stringValue] isEqualToString: @""])
+		if ([autoQRInstanceName stringValue].length == 0)
 		{
 			NSRunCriticalAlertPanel(NSLocalizedString(@"Create Auto QR Instance", nil),
                                     NSLocalizedString(@"Give a name !", nil),
@@ -1085,7 +1085,7 @@ extern "C"
 {
 	if ([sender tag])
 	{
-		if ([[presetName stringValue] isEqualToString: @""])
+		if ([presetName stringValue].length == 0)
 		{
 			NSRunCriticalAlertPanel(NSLocalizedString(@"Add Preset", nil),
                                     NSLocalizedString(@"Give a name !", nil),

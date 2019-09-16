@@ -801,7 +801,6 @@ extern int splitPosition[ 3];
 		NSPoint viewPoint;
 		N3Vector pixVector;
 		N3Line line;
-		NSInteger i;
 		BOOL overNode;
 		NSInteger hoverNodeIndex;
 		CGFloat relativePosition;
@@ -858,7 +857,7 @@ extern int splitPosition[ 3];
 			overNode = NO;
 			hoverNodeIndex = 0;
 			if (self.drawAllNodes) {
-				for (i = 0; i < [_curvedPath.nodes count]; i++) {
+				for (NSInteger i = 0; i < [_curvedPath.nodes count]; i++) {
 					relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
 					
 					if (N3VectorDistance(N3VectorMakeFromNSPoint(viewPoint),
@@ -919,7 +918,6 @@ extern int splitPosition[ 3];
     N3Vector pixVector;
     CGFloat pixWidth;
     CGFloat relativePosition;
-    NSInteger i;
     
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
@@ -933,10 +931,10 @@ extern int splitPosition[ 3];
 	
 	float exportTransverseSliceInterval = 0;
 	
-	if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
+	if ( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
 		exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
 	
-    if( exportTransverseSliceInterval == 0 && _displayTransverseLines && (ABS((pixVector.x/pixWidth) - _curvedPath.transverseSectionPosition)*pixWidth < 5.0))
+    if ( exportTransverseSliceInterval == 0 && _displayTransverseLines && (ABS((pixVector.x/pixWidth) - _curvedPath.transverseSectionPosition)*pixWidth < 5.0))
 	{
 		[self _sendWillEditCurvedPath];
         _draggingTransverse = YES;
@@ -950,7 +948,7 @@ extern int splitPosition[ 3];
     }
 	else
 	{
-        for (i = 0; i < [_curvedPath.nodes count]; i++)
+        for (NSInteger i = 0; i < [_curvedPath.nodes count]; i++)
 		{
             relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
             
@@ -1168,7 +1166,6 @@ extern int splitPosition[ 3];
 //    [lastDate release];
 //    lastDate = [[NSDate date] retain];
     
-    NSUInteger i;
     NSMutableArray *pixArray;
     DCMPix *newPix;
 	CPRVolumeDataInlineBuffer inlineBuffer;
@@ -1186,7 +1183,7 @@ extern int splitPosition[ 3];
     
     pixArray = [[NSMutableArray alloc] init];
     
-    for (i = 0; i < self.curvedVolumeData.pixelsDeep; i++)
+    for (NSUInteger i = 0; i < self.curvedVolumeData.pixelsDeep; i++)
 	{
 		[self.curvedVolumeData aquireInlineBuffer:&inlineBuffer];
         newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.curvedVolumeData.pixelsWide*self.curvedVolumeData.pixelsHigh) :32
@@ -1204,7 +1201,7 @@ extern int splitPosition[ 3];
 	
 	if( [pixArray count])
 	{
-		for( i = 0; i < [pixArray count]; i++)
+		for (NSUInteger i = 0; i < [pixArray count]; i++)
 			[[pixArray objectAtIndex: i] setArrayPix:pixArray :i];
 		
 		[self setPixels:pixArray files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
@@ -1215,7 +1212,8 @@ extern int splitPosition[ 3];
 		
 		[self setFusion:[[self class] _fusionModeForCPRViewClippingRangeMode:_clippingRangeMode] :self.curvedVolumeData.pixelsDeep];
 		
-		if( previousWidth == [curDCM pwidth] && previousHeight == [curDCM pheight])
+		if (previousWidth == [curDCM pwidth] &&
+            previousHeight == [curDCM pheight])
 		{
 			[self setOrigin:previousOrigin];
 			[self setScaleValue: previousScale];
@@ -1485,7 +1483,6 @@ extern int splitPosition[ 3];
 - (void)_drawPlaneRuns:(NSArray*)planeRuns
 {
 	CGFloat pixelsPerMm;
-	NSInteger i;
 	N3Vector planePointVector;
 	_CPRStraightenedViewPlaneRun *planeRun;
     double pixToSubdrawRectOpenGLTransform[16];
@@ -1504,7 +1501,7 @@ extern int splitPosition[ 3];
     glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
 	for (planeRun in planeRuns) {
 		glBegin(GL_LINE_STRIP);
-		for (i = 0; i < planeRun.range.length; i++) {
+		for (NSInteger i = 0; i < planeRun.range.length; i++) {
 			planePointVector = N3VectorMake(planeRun.range.location + i, ([[planeRun.distances objectAtIndex:i] doubleValue] * pixelsPerMm) + pheight_2, 0);
 			glVertex2d(planePointVector.x, planePointVector.y);
 		}
@@ -1516,7 +1513,6 @@ extern int splitPosition[ 3];
 - (NSArray *)_runsForPlane:(N3Plane)plane verticalLineIndexes:(NSArray **)verticalLinesHandle
 {
 	NSInteger numVectors;
-	NSInteger i;
 	BOOL topPointAbove;
 	BOOL bottomPointAbove;
 	BOOL prevBottomPointAbove;
@@ -1552,7 +1548,7 @@ extern int splitPosition[ 3];
 	halfHeight = ((CGFloat)curDCM.pheight*mmPerPixel)/2.0;
 	numVectors = N3BezierCoreGetVectorInfo([_curvedPath.bezierPath N3BezierCore], [_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth, 0, _curvedPath.initialNormal, points, NULL, normals, curDCM.pwidth);
 	
-	for (i = 0; i < numVectors; i++) {
+	for (NSInteger i = 0; i < numVectors; i++) {
 		bottom = N3VectorAdd(points[i], N3VectorScalarMultiply(normals[i], -halfHeight));
 		top = N3VectorAdd(points[i], N3VectorScalarMultiply(normals[i], halfHeight));
 		
@@ -1607,7 +1603,8 @@ extern int splitPosition[ 3];
 				[runs addObject:planeRun];
 				[planeRun release];
 				planeRun = nil;
-			} else if (ABS(prevAboveOrBelow - aboveOrBelow) == 2) { // if we switched sides without ever getting any points, put in a vertical line
+			}
+            else if (ABS(prevAboveOrBelow - aboveOrBelow) == 2) { // if we switched sides without ever getting any points, put in a vertical line
 				[verticalLines addObject:[NSNumber numberWithInteger:i]];
 			}
 		}
@@ -1887,11 +1884,9 @@ extern int splitPosition[ 3];
 
 - (id)initWithCPRStraightenedViewPlaneRun:(_CPRStraightenedViewPlaneRun *)planeRun heightPixelsPerMm:(CGFloat)pixelsPerMm
 {
-	NSInteger i;
-	N3MutableBezierPath *mutableBezierPath;
-	
-	mutableBezierPath = [[N3MutableBezierPath alloc] init];
-	for (i = planeRun.range.location; i < NSMaxRange(planeRun.range); i++) {
+	N3MutableBezierPath *mutableBezierPath = [[N3MutableBezierPath alloc] init];
+
+    for (NSInteger i = planeRun.range.location; i < NSMaxRange(planeRun.range); i++) {
 		if (i == planeRun.range.location) {
 			[mutableBezierPath moveToVector:N3VectorMake(i, [[planeRun.distances objectAtIndex:i - planeRun.range.location] doubleValue] * pixelsPerMm, 0)];
 		}

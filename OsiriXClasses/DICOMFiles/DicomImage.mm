@@ -750,8 +750,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
             return extension;
         
         NSString *f = [self primitiveValueForKey:@"storedExtension"];
-        
-        if( f == 0 || [f isEqualToString:@""]) f = @"dcm";
+        if (f.length == 0)
+            f = @"dcm";
 
         [extension release];
         extension = [f retain];
@@ -782,12 +782,13 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 - (NSString*) modality
 {
     @synchronized (self) {
-        if( modality)
+        if (modality)
             return modality;
         
         NSString *f = [self primitiveValueForKey:@"storedModality"];
         
-        if( f == 0 || [f isEqualToString:@""]) f = @"CT";
+        if (f.length == 0)
+            f = @"CT";
 
         [modality release];
         modality = [f retain];
@@ -818,12 +819,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 - (NSString*) fileType
 {
     @synchronized (self) {
-        if( fileType)
+        if (fileType)
             return fileType;
         
         NSString *f = [self primitiveValueForKey:@"storedFileType"];
-        
-        if( f == 0 || [f isEqualToString:@""])
+        if (f.length == 0)
             f = @"DICOM";
         
         [fileType release];

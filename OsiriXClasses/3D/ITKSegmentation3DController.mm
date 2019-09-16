@@ -238,7 +238,6 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 -(IBAction) preview:(id) sender
 {
 	BOOL parametersProvided = YES;
-	int p;
 	
 	float f = [[NSUserDefaults standardUserDefaults] floatForKey: @"growingRegionInterval"];
 	int fd = f * 1000.;
@@ -249,19 +248,19 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	
 	[viewer roiDeleteWithName: name];
 	
-	if( sender == viewer)
+	if (sender == viewer)
 	{
-		if( [[growingMode selectedCell] tag] != 1)
+		if ([[growingMode selectedCell] tag] != 1)
 		{
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"segmentationDirectlyGenerate"])
 				name = [newName stringValue];
 		}
 	}
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"previewGrowingRegion"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"segmentationDirectlyGenerate"] == NO)
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"previewGrowingRegion"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"segmentationDirectlyGenerate"] == NO)
         return;
 	
-	for(p=0;p<[params numberOfRows]; p++)
+	for (int p=0; p<[params numberOfRows]; p++)
 	{
 		parametersProvided = parametersProvided && (![[[params cellAtRow:p column:0] stringValue] isEqualToString:@""]);
 	}
@@ -269,7 +268,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	if (!parametersProvided)
 		return;
 	
-	if ( startingPoint.x == 0 && startingPoint.y == 0)
+	if (startingPoint.x == 0 && startingPoint.y == 0)
 		return;
 
 	long slice;
@@ -322,9 +321,8 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 -(IBAction) compute:(id) sender
 {
 	BOOL parametersProvided = YES;
-	int p;
 	
-	for(p=0;p<[params numberOfRows]; p++)
+	for (int p=0; p<[params numberOfRows]; p++)
 	{
 		parametersProvided = parametersProvided && (![[[params cellAtRow:p column:0] stringValue] isEqualToString:@""]);
 	}
