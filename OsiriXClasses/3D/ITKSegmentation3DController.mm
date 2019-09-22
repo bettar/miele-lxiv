@@ -163,9 +163,9 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 
 - (void) drawStartingPoint:(NSNotification*) note
 {
-	if([note object] == [viewer imageView])
+	if ([note object] == [viewer imageView])
 	{
-		if( startingPoint.x != 0 && startingPoint.y != 0)
+		if ( startingPoint.x != 0 && startingPoint.y != 0)
 		{
 			NSDictionary *userInfo = [note userInfo];
 			
@@ -175,22 +175,21 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
             
 			glColor3f (0.0f, 1.0f, 0.5f);
 			glLineWidth(2.0 * self.window.backingScaleFactor);
-			glBegin(GL_LINES);
-			
-			float crossx, crossy, scaleValue = [[userInfo valueForKey:@"scaleValue"] floatValue];
-			
-			crossx = startingPoint.x - [[userInfo valueForKey:@"offsetx"] floatValue];
-			crossy = startingPoint.y - [[userInfo valueForKey:@"offsety"] floatValue];
-			
-			glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
-			glVertex2f( scaleValue * (crossx -  5), scaleValue*(crossy));
-			glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
-			glVertex2f( scaleValue * (crossx +  5), scaleValue*(crossy));
-			
-			glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
-			glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
-			glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
-			glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
+            float scaleValue = [[userInfo valueForKey:@"scaleValue"] floatValue];
+            float crossx = startingPoint.x - [[userInfo valueForKey:@"offsetx"] floatValue];
+            float crossy = startingPoint.y - [[userInfo valueForKey:@"offsety"] floatValue];
+            glBegin(GL_LINES);
+            {
+                glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
+                glVertex2f( scaleValue * (crossx -  5), scaleValue*(crossy));
+                glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
+                glVertex2f( scaleValue * (crossx +  5), scaleValue*(crossy));
+                
+                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
+                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
+                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
+                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
+            }
 			glEnd();
 		}
 	}

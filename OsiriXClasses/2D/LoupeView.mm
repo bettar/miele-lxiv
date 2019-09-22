@@ -145,7 +145,7 @@
 	if(loupeMaskTextureID==0)
 		[self makeTextureFromImage:loupeMaskImage forTexture:&loupeMaskTextureID buffer:loupeMaskTextureBuffer];
 
-	if(loupeMaskTextureID)
+	if (loupeMaskTextureID)
 	{		
 		glEnable(GL_TEXTURE_RECTANGLE_EXT);
 		
@@ -154,25 +154,25 @@
 		glColor4f(1.0, 1.0, 1.0, 1.0);
 		
 		glBegin(GL_QUAD_STRIP);
-		
-		glTexCoord2f(0, 0);
-		glVertex2f(0, 0);
-		
-		glTexCoord2f(loupeMaskTextureWidth, 0);
-		glVertex2f(loupeMaskTextureWidth, 0);
-		
-		glTexCoord2f(0, loupeMaskTextureHeight);
-		glVertex2f(0, loupeMaskTextureHeight);
-		
-		glTexCoord2f(loupeMaskTextureWidth, loupeMaskTextureHeight);
-		glVertex2f(loupeMaskTextureWidth, loupeMaskTextureHeight);
-		
+        {
+            glTexCoord2f(0, 0);
+            glVertex2f(0, 0);
+            
+            glTexCoord2f(loupeMaskTextureWidth, 0);
+            glVertex2f(loupeMaskTextureWidth, 0);
+            
+            glTexCoord2f(0, loupeMaskTextureHeight);
+            glVertex2f(0, loupeMaskTextureHeight);
+            
+            glTexCoord2f(loupeMaskTextureWidth, loupeMaskTextureHeight);
+            glVertex2f(loupeMaskTextureWidth, loupeMaskTextureHeight);
+        }
 		glEnd();
 		
 		glDisable(GL_TEXTURE_RECTANGLE_EXT);
 	}
 
-	if(textureID)
+	if (textureID)
 	{
 		glBlendFunc(GL_DST_ALPHA, GL_ZERO);
 		
@@ -193,19 +193,19 @@
 		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 
 		glBegin(GL_QUAD_STRIP);
-		
-		glTexCoord2f(0, 0);
-		glVertex2f(0, 0);
-		
-		glTexCoord2f(textureWidth, 0);
-		glVertex2f([self frame].size.width, 0);
-		
-		glTexCoord2f(0, textureHeight);
-		glVertex2f(0, [self frame].size.height);
-		
-		glTexCoord2f(textureWidth, textureHeight);
-		glVertex2f([self frame].size.width, [self frame].size.height);
-	
+        {
+            glTexCoord2f(0, 0);
+            glVertex2f(0, 0);
+            
+            glTexCoord2f(textureWidth, 0);
+            glVertex2f([self frame].size.width, 0);
+            
+            glTexCoord2f(0, textureHeight);
+            glVertex2f(0, [self frame].size.height);
+            
+            glTexCoord2f(textureWidth, textureHeight);
+            glVertex2f([self frame].size.width, [self frame].size.height);
+        }
 		glEnd();
 		
 		glDisable(GL_TEXTURE_RECTANGLE_EXT);
@@ -218,7 +218,7 @@
 	glBlendEquation(GL_FUNC_ADD);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	if(loupeTextureID && drawLoupeBorder)
+	if (loupeTextureID && drawLoupeBorder)
 	{
 		glEnable(GL_TEXTURE_RECTANGLE_EXT);
 		
@@ -227,7 +227,7 @@
 		glColor4f(1.0, 1.0, 1.0, 1.0);
 		
 		glBegin(GL_QUAD_STRIP);
-		
+        {
 			glTexCoord2f(0, 0);
 			glVertex2f(0, 0);
 			
@@ -239,7 +239,7 @@
 			
 			glTexCoord2f(loupeTextureWidth, loupeTextureHeight);
 			glVertex2f(loupeTextureWidth, loupeTextureHeight);
-		
+        }
 		glEnd();
 
 		glDisable(GL_TEXTURE_RECTANGLE_EXT);

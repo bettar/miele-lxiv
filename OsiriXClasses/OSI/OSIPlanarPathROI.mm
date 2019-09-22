@@ -313,10 +313,12 @@
     glLineWidth(3.0);
     glColor3f(1, 0, 0);
     glBegin(GL_LINE_STRIP);
-    for (NSInteger i = 0; i < [flattenedPath elementCount]; i++) {
-        [flattenedPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
-        glVertex3d(endpoint.x, endpoint.y, endpoint.z);
-    }   
+    {
+        for (NSInteger i = 0; i < [flattenedPath elementCount]; i++) {
+            [flattenedPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
+            glVertex3d(endpoint.x, endpoint.y, endpoint.z);
+        }
+    }
     glEnd();
     
     
@@ -331,8 +333,12 @@
     
     N3AffineTransform dicomToFloatDataTransform = N3AffineTransformConcat(dicomToPixTransform, N3AffineTransformMakeTranslation(-rect.origin.x, -rect.origin.y, 0));
     NSData *floatData = [NSData dataWithBytes:NULL length:rect.size.width * rect.size.height];
-    OSIFloatVolumeData *volumeData = [[OSIFloatVolumeData alloc] initWithData:floatData pixelsWide:rect.size.width pixelsHigh:rect.size.height pixelsDeep:1
-                                                              volumeTransform:dicomToFloatDataTransform outOfBoundsValue:0];
+    OSIFloatVolumeData *volumeData = [[OSIFloatVolumeData alloc] initWithData:floatData
+                                                                   pixelsWide:rect.size.width
+                                                                   pixelsHigh:rect.size.height
+                                                                   pixelsDeep:1
+                                                              volumeTransform:dicomToFloatDataTransform
+                                                             outOfBoundsValue:0];
 
     inverseVolumeTransform = N3AffineTransformInvert([volumeData volumeTransform]);
     mask = [self ROIMaskForFloatVolumeData:volumeData];
@@ -340,17 +346,19 @@
 
     glColor3f(1, 0, 1);
     glBegin(GL_LINES);
-    for (maskRunValue in maskRuns) {
-        maskRun = [maskRunValue OSIROIMaskRunValue];
-        
-        lineStart = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex + 0.5, maskRun.depthIndex);
-        lineEnd = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex + 0.5, maskRun.depthIndex);
-        
-        lineStart = N3VectorApplyTransform(lineStart, inverseVolumeTransform);
-        lineEnd = N3VectorApplyTransform(lineEnd, inverseVolumeTransform);
-        
-        glVertex3d(lineStart.x, lineStart.y, lineStart.z);
-        glVertex3d(lineEnd.x, lineEnd.y, lineEnd.z);
+    {
+        for (maskRunValue in maskRuns) {
+            maskRun = [maskRunValue OSIROIMaskRunValue];
+            
+            lineStart = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex + 0.5, maskRun.depthIndex);
+            lineEnd = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex + 0.5, maskRun.depthIndex);
+            
+            lineStart = N3VectorApplyTransform(lineStart, inverseVolumeTransform);
+            lineEnd = N3VectorApplyTransform(lineEnd, inverseVolumeTransform);
+            
+            glVertex3d(lineStart.x, lineStart.y, lineStart.z);
+            glVertex3d(lineEnd.x, lineEnd.y, lineEnd.z);
+        }
     }
     glEnd();
     

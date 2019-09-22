@@ -348,21 +348,27 @@
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glColor4f((float)[deviceColor redComponent], (float)[deviceColor greenComponent], (float)[deviceColor blueComponent], (float)[deviceColor alphaComponent]);
-    glBegin(GL_QUADS);
+    glColor4f((float)[deviceColor redComponent],
+              (float)[deviceColor greenComponent],
+              (float)[deviceColor blueComponent],
+              (float)[deviceColor alphaComponent]);
+
     runsCount = [maskRunsData length] / sizeof(OSIROIMaskRun);
     maskRunsBytes = (const OSIROIMaskRun *)[maskRunsData bytes];
-    for (NSInteger i = 0; i < runsCount; i++) {
-        maskRun = maskRunsBytes[i];
-        widthIndex = (double)maskRun.widthRange.location + minCorner.x;
-        maxWidthIndex = widthIndex + (double)maskRun.widthRange.length;
-        heightIndex = (double)maskRun.heightIndex + minCorner.y;
-        depthIndex = maskRun.depthIndex;
+    glBegin(GL_QUADS);
+    {
+        for (NSInteger i = 0; i < runsCount; i++) {
+            maskRun = maskRunsBytes[i];
+            widthIndex = (double)maskRun.widthRange.location + minCorner.x;
+            maxWidthIndex = widthIndex + (double)maskRun.widthRange.length;
+            heightIndex = (double)maskRun.heightIndex + minCorner.y;
+            depthIndex = maskRun.depthIndex;
 
-        glVertex3d(widthIndex, heightIndex, depthIndex);
-        glVertex3d(maxWidthIndex, heightIndex, depthIndex);
-        glVertex3d(maxWidthIndex, heightIndex + 1.0, depthIndex);
-        glVertex3d(widthIndex, heightIndex + 1.0, depthIndex);
+            glVertex3d(widthIndex, heightIndex, depthIndex);
+            glVertex3d(maxWidthIndex, heightIndex, depthIndex);
+            glVertex3d(maxWidthIndex, heightIndex + 1.0, depthIndex);
+            glVertex3d(widthIndex, heightIndex + 1.0, depthIndex);
+        }
     }
     glEnd();
 
@@ -370,7 +376,6 @@
     glDisable(GL_POLYGON_SMOOTH);
     glDisable(GL_POINT_SMOOTH);
     glDisable(GL_BLEND);
-
 }
 
 - (CGFloat)volume

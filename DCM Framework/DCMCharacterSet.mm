@@ -113,14 +113,12 @@ char* DCMreplaceInvalidCharacter( char* str ) {
         if (isEscape || isDelimiter)
         {
             // convert the sub-string (before the delimiter) with the current character set
-            int convertLength = currentChar - firstChar - 1;
+            long int convertLength = currentChar - firstChar - 1;
             if (convertLength - (escLength+1) >= 0)
             {
-                NSString *s = nil;
-                
-                s = [[[NSString alloc] initWithBytes: firstChar
-                                              length: convertLength
-                                            encoding: currentEncoding] autorelease];
+                NSString *s = [[[NSString alloc] initWithBytes: firstChar
+                                                        length: convertLength
+                                                      encoding: currentEncoding] autorelease];
                 if (s)
                     [result appendString: s];
             }
@@ -288,16 +286,17 @@ char* DCMreplaceInvalidCharacter( char* str ) {
     
     // convert any remaining characters from the input string
     {
-        int convertLength = currentChar - firstChar;
+        long convertLength = currentChar - firstChar;
         if (convertLength > 0)
         {
-            int convertLength = currentChar - firstChar;
-            
-            if( firstChar + convertLength <= str + fromLength && ( convertLength - (escLength+1) >= 0))
+            if (firstChar + convertLength <= str + fromLength &&
+                (convertLength - (escLength+1) >= 0))
             {
-                NSString *s = [[[NSString alloc] initWithBytes: firstChar length:convertLength encoding: currentEncoding] autorelease];
+                NSString *s = [[[NSString alloc] initWithBytes: firstChar
+                                                        length: convertLength
+                                                      encoding: currentEncoding] autorelease];
                 
-                if( s)
+                if (s)
                     [result appendString: s];
             }
         }

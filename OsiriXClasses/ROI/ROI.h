@@ -106,6 +106,8 @@ typedef enum ToolMode_
 @class StringTexture;
 @class DCMObject;
 
+#pragma mark -
+
 @interface ROI : NSObject <NSCoding, NSCopying>
 {
 	NSRecursiveLock *roiLock;
@@ -245,6 +247,8 @@ typedef enum ToolMode_
 @property(assign) NSColor* NSColor;
 @property(assign) BOOL isSpline;
 @property(readonly) NSMutableDictionary *peakValue, *isoContour;
+
+#pragma mark -
 
 - (void) setNSColor:(NSColor*)color globally:(BOOL)g;
 - (void) setColor:(RGBColor) a globally: (BOOL) g;

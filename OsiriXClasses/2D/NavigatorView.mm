@@ -426,22 +426,24 @@ static float deg2rad = M_PI/180.0;
 							
 					glTranslatef(-offset.x/sizeFactor, -offset.y/sizeFactor, 0.0);
 							
+                    // draw texture
 					//if([pix pixelRatio]!=1.0) glScalef( 1.0, [pix pixelRatio], 1.0);
-						// draw texture
-						glBegin(GL_QUAD_STRIP);
-							glTexCoord2f(texUpperLeft.x, texUpperLeft.y);
-							glVertex2f(upperLeft.x, upperLeft.y);
-							
-							glTexCoord2f(texUpperRight.x, texUpperRight.y);
-							glVertex2f(upperLeft.x+scaledThumbnailWidth, upperLeft.y);
+                    glBegin(GL_QUAD_STRIP);
+                    {
+                        glTexCoord2f(texUpperLeft.x, texUpperLeft.y);
+                        glVertex2f(upperLeft.x, upperLeft.y);
+                        
+                        glTexCoord2f(texUpperRight.x, texUpperRight.y);
+                        glVertex2f(upperLeft.x+scaledThumbnailWidth, upperLeft.y);
 
-							
-							glTexCoord2f(texLowerLeft.x, texLowerLeft.y);
-							glVertex2f(upperLeft.x, upperLeft.y+scaledThumbnailHeight);
-						
-							glTexCoord2f(texLowerRight.x, texLowerRight.y);
-							glVertex2f(upperLeft.x+scaledThumbnailWidth, upperLeft.y+scaledThumbnailHeight);					
-						glEnd();
+                        
+                        glTexCoord2f(texLowerLeft.x, texLowerLeft.y);
+                        glVertex2f(upperLeft.x, upperLeft.y+scaledThumbnailHeight);
+                    
+                        glTexCoord2f(texLowerRight.x, texLowerRight.y);
+                        glVertex2f(upperLeft.x+scaledThumbnailWidth, upperLeft.y+scaledThumbnailHeight);
+                    }
+                    glEnd();
 						
 					glDisable(GL_SCISSOR_TEST);
 
@@ -549,10 +551,12 @@ static float deg2rad = M_PI/180.0;
 			glLineWidth(6.0 * self.window.backingScaleFactor);
 			glColor3f(0.0f, 1.0f, 0.0f);
 			glBegin(GL_LINE_LOOP);
+            {
 				glVertex2f(upperLeft.x+1, upperLeft.y+1);
 				glVertex2f(upperLeft.x-1+scaledThumbnailWidth, upperLeft.y+1);
 				glVertex2f(upperLeft.x-1+scaledThumbnailWidth, upperLeft.y+scaledThumbnailHeight-1);
 				glVertex2f(upperLeft.x+1, upperLeft.y+scaledThumbnailHeight-1);
+            }
 			glEnd();
 			glDisable(GL_SCISSOR_TEST);
 			
@@ -570,7 +574,7 @@ static float deg2rad = M_PI/180.0;
 	upperLeft.x = z*scaledThumbnailWidth-viewBounds.origin.x;
 	thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, scaledThumbnailWidth, scaledThumbnailHeight);
 
-	if(NSIntersectsRect(thumbRect, viewFrame))
+	if (NSIntersectsRect(thumbRect, viewFrame))
 	{
 		glScissor( upperLeft.x, viewSize.height - (upperLeft.y+scaledThumbnailHeight), scaledThumbnailWidth, scaledThumbnailHeight);
 		glEnable(GL_SCISSOR_TEST);
@@ -578,13 +582,15 @@ static float deg2rad = M_PI/180.0;
 		glLineWidth(6.0 * self.window.backingScaleFactor);
 		glColor3f(1.0f, 0.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
+        {
 			glVertex2f(upperLeft.x+1, upperLeft.y+1);
 			glVertex2f(upperLeft.x-1+scaledThumbnailWidth, upperLeft.y+1);
 			glVertex2f(upperLeft.x-1+scaledThumbnailWidth, upperLeft.y+scaledThumbnailHeight-1);
 			glVertex2f(upperLeft.x+1, upperLeft.y+scaledThumbnailHeight-1);
+        }
 		glEnd();
+        
 		glDisable(GL_SCISSOR_TEST);
-		
 		glColor3f(0.0f, 0.0f, 0.0f);
 		glLineWidth(1.0 * self.window.backingScaleFactor);	
 	}
@@ -592,7 +598,7 @@ static float deg2rad = M_PI/180.0;
 	glDisable(GL_LINE_SMOOTH);
 	
 	// lateral scroll bar	
-	if(drawLeftLateralScrollBar && [self cansScrollLeft])
+	if (drawLeftLateralScrollBar && [self cansScrollLeft])
 	{
 		// draw the dark part
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -600,26 +606,30 @@ static float deg2rad = M_PI/180.0;
 		glEnable(GL_POLYGON_SMOOTH);
 		glColor4f(0.0f, 0.0f, 0.0f, 0.75f);
 		glBegin(GL_POLYGON);
+        {
 			glVertex2f(0.0, 0.0);
 			glVertex2f(lateralScrollBarSize, 0.0);
 			glVertex2f(lateralScrollBarSize, viewSize.height);
 			glVertex2f(0.0, viewSize.height);
+        }
 		glEnd();
 		
 		// draw the triangle
 		glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
 		glBegin(GL_POLYGON);
+        {
 			glVertex2f(lateralScrollBarSize-7.0, viewBounds.size.height/2.0-6.0);
 			glVertex2f(lateralScrollBarSize-7.0, viewBounds.size.height/2.0+6.0);
 			glVertex2f(3.0, viewBounds.size.height/2.0);
+        }
 		glEnd();
-		glColor3f(0.0f, 0.0f, 0.0f);
-		
+
+        glColor3f(0.0f, 0.0f, 0.0f);
 		glDisable(GL_BLEND);
 		glDisable(GL_POLYGON_SMOOTH);
 	}
 	
-	if(drawRightLateralScrollBar && [self cansScrollRight])
+	if (drawRightLateralScrollBar && [self cansScrollRight])
 	{
 		// draw the dark part
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -627,21 +637,25 @@ static float deg2rad = M_PI/180.0;
 		glEnable(GL_POLYGON_SMOOTH);
 		glColor4f(0.0f, 0.0f, 0.0f, 0.75f);
 		glBegin(GL_POLYGON);
+        {
 			glVertex2f(viewBounds.size.width-lateralScrollBarSize, 0.0);
 			glVertex2f(viewBounds.size.width, 0.0);
 			glVertex2f(viewBounds.size.width, viewSize.height);
 			glVertex2f(viewBounds.size.width-lateralScrollBarSize, viewSize.height);
+        }
 		glEnd();
 				
 		// draw the triangle
 		glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
 		glBegin(GL_POLYGON);
+        {
 			glVertex2f(viewBounds.size.width-lateralScrollBarSize+6.0, viewBounds.size.height/2.0-6.0);
 			glVertex2f(viewBounds.size.width-lateralScrollBarSize+6.0, viewBounds.size.height/2.0+6.0);
 			glVertex2f(viewBounds.size.width-4.0, viewBounds.size.height/2.0);
+        }
 		glEnd();
+        
 		glColor3f(0.0f, 0.0f, 0.0f);
-		
 		glDisable(GL_BLEND);
 		glDisable(GL_POLYGON_SMOOTH);
 	}

@@ -537,7 +537,9 @@ extern int splitPosition[ 3];
         glEnable(GL_POINT_SMOOTH);
         glPointSize(8 * self.window.backingScaleFactor);
         glBegin(GL_POINTS);
-        glVertex2f(cursorVector.x, cursorVector.y);
+        {
+            glVertex2f(cursorVector.x, cursorVector.y);
+        }
         glEnd();
     }
 	
@@ -554,24 +556,26 @@ extern int splitPosition[ 3];
 		
 		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_LOOP);
-        glVertex2f(  -widthhalf, -heighthalf);
-        glVertex2f(  -widthhalf, heighthalf);
-        glVertex2f(  widthhalf, heighthalf);
-        glVertex2f(  widthhalf, -heighthalf);
+        {
+            glVertex2f(  -widthhalf, -heighthalf);
+            glVertex2f(  -widthhalf, heighthalf);
+            glVertex2f(  widthhalf, heighthalf);
+            glVertex2f(  widthhalf, -heighthalf);
+        }
 		glEnd();
 	}
 	
-	if( stanStringAttrib == nil)
+	if ( stanStringAttrib == nil)
 	{
 		stanStringAttrib = [[NSMutableDictionary dictionary] retain];
 		[stanStringAttrib setObject:[NSFont fontWithName:@"Helvetica" size: 14.0] forKey:NSFontAttributeName];
 		[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 	}
 	
-	if( stringTex == nil)
+	if ( stringTex == nil)
 	{
 		NSString *textValue = nil;
-		switch( _sectionType)
+		switch ( _sectionType)
 		{
 			case CPRTransverseViewCenterSectionType: textValue = @"B"; break;
 			case CPRTransverseViewLeftSectionType: textValue = @"A"; break;

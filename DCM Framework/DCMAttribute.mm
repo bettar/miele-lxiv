@@ -81,11 +81,12 @@
 		_valueLength = vl;
 		_values =  nil;
 		if (dicomData) {
-			NSArray *array = [self valuesForVR:_vr length:_valueLength data:dicomData];
+			NSArray *array = [self valuesForVR:_vr
+                                        length:(int)_valueLength
+                                          data:dicomData];
 			_values = [[NSMutableArray alloc]  initWithArray:array];
-			if (DCMDEBUG){
+			if (DCMDEBUG)
 				NSLog( @"%@", [self description]);
-			}
 		}
 		_dataPtr = nil;
 	}
@@ -98,9 +99,11 @@
 	return [self initWithAttributeTag:tag  vr:nil];
 }
 
-- (id)initWithAttributeTag:(DCMAttributeTag *)tag vr:(NSString *)vr
+- (id)initWithAttributeTag:(DCMAttributeTag *)tag
+                        vr:(NSString *)vr
 {
-	if (self = [super init])
+    self = [super init];
+	if (self)
     {
         _tag = [tag retain];
         _valueLength =0;
@@ -117,8 +120,13 @@
 	return self;
 }
 
-- (id)initWithAttributeTag:(DCMAttributeTag *)tag  vr:(NSString *)vr  values:(NSMutableArray *)values{
-	if (self = [super init]) {
+- (id)initWithAttributeTag:(DCMAttributeTag *)tag
+                        vr:(NSString *)vr
+                    values:(NSMutableArray *)values
+{
+    self = [super init];
+	if (self)
+    {
 		_tag = [tag retain];
 		_valueLength =0;
 		_values = [values retain];
@@ -132,7 +140,8 @@
 	return self;
 }
 
-- (id)initWithAttribute:(DCMAttribute *)attr{
+- (id)initWithAttribute:(DCMAttribute *)attr
+{
 	if (self = [super init]) {
 		_tag = [[DCMAttributeTag  alloc] initWithTag:(DCMAttributeTag *)attr.attrTag];
 		_values = [attr.values mutableCopy];
@@ -145,7 +154,8 @@
 - (id) initWithAttributeTag:(DCMAttributeTag *)tag 
 			vr:(NSString *)vr 
 			length:(long) vl 
-			dataPtr: (unsigned char *)dataPtr{
+			dataPtr: (unsigned char *)dataPtr
+{
 	if (self = [super init]) {
 		_tag = [tag retain];
 		_valueLength = vl;
@@ -159,7 +169,8 @@
 	return self;
 }
 	
-- (id)copyWithZone:(NSZone *)zone{
+- (id)copyWithZone:(NSZone *)zone
+{
 	return [[DCMAttribute allocWithZone:zone] initWithAttribute:self];
 }
 
@@ -198,7 +209,8 @@
 		case DCM_SS:	//signed short
 			length = vm * 2;
 			break;
-		case DCM_DA:	//Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
+
+        case DCM_DA:	//Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
 			if ([_values count] && 
 				[[_values objectAtIndex:0] isKindOfClass:[DCMCalendarDate class]] && 
 				[[_values objectAtIndex:0] isQuery]) {
@@ -262,9 +274,10 @@
 		case DCM_FL:	//floating point Single 4 bytes fixed
 			length = vm * 4;
 			if (length%2)
-			 length++;
+                length++;
 			break;
-		case DCM_FD:	//double floating point 8 bytes fixed
+
+        case DCM_FD:	//double floating point 8 bytes fixed
 			length = vm * 8;
 			break;           
 			
@@ -307,7 +320,8 @@
 	long paddedLength = self.valueLength;
 	if (paddedLength%2)
 		paddedLength++;
-	return paddedLength;
+
+    return paddedLength;
 }
 
 - (int)valueMultiplicity{
@@ -381,11 +395,11 @@
 	{
 		switch (vr)
 		{
-		// unsigned Short
-		 case DCM_US:   //unsigned short
+            case DCM_US:   //unsigned short
 				for (int i = 0; i< vm; i++)
 					[container addUnsignedShort:[[_values objectAtIndex:i] intValue]]; 
 				break;
+
             case DCM_SS:	//signed short
 				for (int i = 0; i< vm; i++)
 					[container addSignedShort:[[_values objectAtIndex:i] intValue]];
@@ -505,28 +519,34 @@
 		return @"";
 }
 
-- (NSString *)description{
+- (NSString *)description
+{
 	if (self.valueLength < 100)
 		return  [NSString stringWithFormat:@"%@\t %@\t vl:%d\t vm:%d\t %@", _tag.description, _tag.vr, (int)self.valueLength, self.valueMultiplicity, [self valuesAsString]];
     
 	return [NSString stringWithFormat:@"%@\t vl:%d\t vm:%d", _tag.description, (int) self.valueLength, self.valueMultiplicity];
 }
 	
-- (NSString *)readableDescription{
+- (NSString *)readableDescription
+{
 	if (self.valueLength < 100)
 		return  [NSString stringWithFormat:@"%@ : %@", _tag.readableDescription, [_values componentsJoinedByString:@","]];
 	return @"";
 }
 
-- (NSArray *)valuesForVR:(NSString *)vrString  length:(int)length data:(DCMDataContainer *)dicomData{
+- (NSArray *)valuesForVR:(NSString *)vrString
+                  length:(int)length
+                    data:(DCMDataContainer *)dicomData
+{
 	NSMutableArray *values;
-	int i = 0;
 	int count = 0;
 	NSString *string = nil;
 	const char *chars = [vrString UTF8String];
 	int vr = chars[0]<<8 | chars[1];
-	if (length == 0)
+
+    if (length == 0) {
 		values = [NSMutableArray array];
+    }
 	else if ([DCMValueRepresentation isAffectedBySpecificCharacterSet:vrString])
 	{
 		string = [dicomData nextStringWithLength:length encodings:[characterSet encodings]];
@@ -536,29 +556,31 @@
 		if (DCMDEBUG && vr == DCM_DT)
 			NSLog(@"valuesForVR: length %d", length);
         
-		switch (vr) {
-		// unsigned Short
-		 case DCM_US:   //unsigned short
+		switch (vr)
+        {
+            case DCM_US:   //unsigned short
 				count = length/2;
 				values = [NSMutableArray array];
-				for (i = 0; i < count; i ++) 
+				for (int i = 0; i < count; i ++)
 					[values addObject:[NSNumber numberWithInt:[dicomData nextUnsignedShort]]];
                 break;
+
             case DCM_SS:	//signed short
 				count = length/2;
 				values = [NSMutableArray array];
-				for (i = 0; i < count; i ++) 
+				for (int i = 0; i < count; i ++)
 					[values addObject:[NSNumber numberWithInt:[dicomData nextSignedShort]]];
                 break;
 
             case DCM_DA:	//Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
 				values = [dicomData nextDatesWithLength:length];
-
                 break;
+
             case DCM_TM:
 				values = [dicomData nextTimesWithLength:length];
                 break;
-			case DCM_DT:	//Date Time YYYYMMDDHHMMSS.FFFFFF&ZZZZ FFFFFF= fractional Sec. ZZZZ=offset from Hr and min offset from universal time
+
+            case DCM_DT:	//Date Time YYYYMMDDHHMMSS.FFFFFF&ZZZZ FFFFFF= fractional Sec. ZZZZ=offset from Hr and min offset from universal time
 				values = [dicomData nextDateTimesWithLength:length];
                 break;
 				
@@ -566,24 +588,25 @@
 				//shouldn't get here
 				values = nil;
                 break;
-			case DCM_UN:	//unknown
+
+            case DCM_UN:	//unknown
             case DCM_OB:	//other Byte byte string not little/big endian sensitive
             case DCM_OW:	//other word 16bit word
 				values = [NSMutableArray arrayWithObject:[dicomData nextDataWithLength:length]];
                 break;
-			case DCM_AT:	//Attribute Tag 16bit unsigned integer
+
+            case DCM_AT:	//Attribute Tag 16bit unsigned integer
             case DCM_UL:	//unsigned Long
 				{
 					int p = 0;
 					count = length/4;
 					values = [NSMutableArray array];
-					for (i = 0; i < count; i ++)
-					{
+					for (int i = 0; i < count; i ++) {
 						[values addObject:[NSNumber numberWithUnsignedLong: [dicomData nextUnsignedLong]]];
 						p += 4;
 					}
                     
-					if( length - p > 0)
+					if (length - p > 0)
                         [dicomData skipLength: length - p];
 				}
 				break;
@@ -593,40 +616,45 @@
 					int p = 0;
 					count = length/4;
 					values = [NSMutableArray array];
-					for (i = 0; i < count; i ++)
-					{
+					for (int i = 0; i < count; i ++) {
 						[values addObject:[NSNumber numberWithLong:[dicomData nextSignedLong]]];
 						p += 4;
 					}
-					if( length - p > 0) [dicomData skipLength: length - p];
+
+                    if (length - p > 0)
+                        [dicomData skipLength: length - p];
 				}
                 break;
+
             case DCM_FL:	//floating point Single 4 bytes fixed
 				{
 					int p = 0;
 					count = length/4;
 					values = [NSMutableArray array];
-					for (i = 0; i < count; i ++) 
-					{
+					for (int i = 0; i < count; i ++) {
 						[values addObject:[NSNumber numberWithFloat:[dicomData nextFloat]]];
 						p += 4;
 					}
-					if( length - p > 0) [dicomData skipLength: length - p];
+
+                    if (length - p > 0)
+                        [dicomData skipLength: length - p];
 				}
 				break;
+
             case DCM_FD:	//double floating point 8 bytes fixed
 				{
 					int p = 0;
 					count = length/8;
 					values = [NSMutableArray array];
-					for (i = 0; i < count; i ++)
-					{
+					for (int i = 0; i < count; i ++) {
 						[values addObject:[NSNumber numberWithDouble:[dicomData nextDouble]]];
 						p += 8;
 					}
-					if( length - p > 0) [dicomData skipLength: length - p];
+
+                    if (length - p > 0)
+                        [dicomData skipLength: length - p];
 				}
-			break;           
+                break;
 			
             case DCM_AE:	//Application Entity  String 16bytes max
             case DCM_AS:	//Age String Format mmmM,dddD,nnnY ie 018Y
@@ -645,14 +673,14 @@
 				string = [dicomData nextStringWithLength:length];
 				values = [NSMutableArray arrayWithArray: [string componentsSeparatedByString:@"\\"]];
                 break;
-            default: 
+
+            default:
 				values = [NSMutableArray arrayWithObject:[dicomData nextDataWithLength:length]];
                 break;
-
 		}
 	}
-	return values;
-	
+
+    return values;
 }
 
 - (void)swapBytes:(NSMutableData *)data{

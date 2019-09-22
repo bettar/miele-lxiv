@@ -37,8 +37,11 @@
 - (id)initWithData:(NSData *)data lastGroup:(unsigned short)lastGroup{
 	DCMDataContainer *container = [DCMDataContainer dataContainerWithData:data];
 	int offset = 0;
-	return [self  initWithDataContainer:container lengthToRead:[container length] - [container offset] byteOffset:&offset characterSet:nil lastGroup:(unsigned short)lastGroup];
-
+	return [self  initWithDataContainer:container
+                           lengthToRead:[container length] - [container offset]
+                             byteOffset:&offset
+                           characterSet:nil
+                              lastGroup:(unsigned short)lastGroup];
 }
 
 - (id)initWithContentsOfFile:(NSString *)file lastGroup:(unsigned short)lastGroup{
@@ -51,9 +54,14 @@
 	return [self initWithData:aData lastGroup:(unsigned short)lastGroup] ;
 }
 
-- (id)initWithDataContainer:(DCMDataContainer *)data lengthToRead:(int)lengthToRead byteOffset:(int*)byteOffset characterSet:(DCMCharacterSet *)characterSet lastGroup:(unsigned short)lastGroup{
-
-	if (self = [super init]) {
+- (id)initWithDataContainer:(DCMDataContainer *)data
+               lengthToRead:(int)lengthToRead
+                 byteOffset:(int*)byteOffset
+               characterSet:(DCMCharacterSet *)characterSet
+                  lastGroup:(unsigned short)lastGroup
+{
+    self = [super init];
+	if (self) {
 		//NSDate *timestamp =[NSDate date];
 
 		sharedTagDictionary = [DCMTagDictionary sharedTagDictionary];
@@ -68,7 +76,9 @@
 		DCMDataContainer *dicomData;
 		dicomData = [data retain];
 			
-		*byteOffset = [self readDataSet:dicomData toGroup:(unsigned short)lastGroup byteOffset:byteOffset];
+		*byteOffset = [self readDataSet:dicomData
+                                toGroup:(unsigned short)lastGroup
+                             byteOffset:byteOffset];
 		
 		if (*byteOffset == 0xFFFFFFFF)
         {
@@ -86,8 +96,10 @@
 	return self;
 }
 
-- (int)readDataSet:(DCMDataContainer *)dicomData toGroup:(unsigned short)lastGroup byteOffset:(int *)byteOffset{
-
+- (int)readDataSet:(DCMDataContainer *)dicomData
+           toGroup:(unsigned short)lastGroup
+        byteOffset:(int *)byteOffset
+{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL readingMetaHeader = NO;
 	int endMetaHeaderPosition = 0;					
@@ -219,25 +231,32 @@
                     DCMAttribute *attr = nil;
                     //sequence attribute
                     
-                    if ([DCMValueRepresentation isSequenceVR:vr] || ([DCMValueRepresentation  isUnknownVR:vr] && vl == 0xFFFFFFFF)) {
+                    if ([DCMValueRepresentation isSequenceVR:vr] ||
+                        ([DCMValueRepresentation isUnknownVR:vr] && vl == 0xFFFFFFFFL))
+                    {
                         //NSLog(@"DCMObject sequence: %f", -[timestamp  timeIntervalSinceNow]);
-                            attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
-                            *byteOffset = [self readNewSequenceAttribute:attr dicomData:dicomData byteOffset:byteOffset lengthToRead:vl specificCharacterSet:specificCharacterSet];
+                        attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
+                        *byteOffset = [self readNewSequenceAttribute:attr
+                                                           dicomData:dicomData
+                                                          byteOffset:byteOffset
+                                                        lengthToRead:(int)vl
+                                                specificCharacterSet:specificCharacterSet];
                     }
                     else if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"PixelData"]])
                     {
-                        attr = (DCMPixelDataAttribute *) [[[DCMPixelDataAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag 
-                        vr:(NSString *)vr 
-                        length:(long) vl 
-                        data:(DCMDataContainer *)dicomData 
-                        specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
-                        transferSyntax:[dicomData transferSyntaxForDataset]
-                        dcmObject:self
-                        decodeData:NO] autorelease];
+                        attr = (DCMPixelDataAttribute *)[[[DCMPixelDataAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag
+                                                                                                          vr:(NSString *)vr
+                                                                                                      length:vl
+                                                                                                        data:(DCMDataContainer *)dicomData
+                                                                                        specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
+                                                                                              transferSyntax:[dicomData transferSyntaxForDataset]
+                                                                                                   dcmObject:self
+                                                                                                  decodeData:NO] autorelease];
                         
                         *byteOffset = endByteOffset;
                     }
-                    else if (vl != 0xFFFFFFFF && vl != 0)
+                    else if (vl != 0xFFFFFFFFL &&
+                             vl != 0)
                     {
                         //[self newAttr];
                         attr = [[[DCMAttribute alloc] initWithAttributeTag:tag 

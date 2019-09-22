@@ -3036,12 +3036,13 @@ static BOOL initialized = NO;
                 NSArray *tiffLines = [tiffVersion componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
                 NSLog(@"%@", tiffLines[0]);
 
-                CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-                if (cgl_ctx) {
-                    const GLubyte * strVersion = glGetString (GL_VERSION); // get version string
-                    const GLubyte * strExtension = glGetString (GL_EXTENSIONS);	// get extension string
-                    NSLog(@"OpenGL version:%s, extension:%s", strVersion, strExtension);
-                }
+                // Too early here
+//                CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+//                if (cgl_ctx) {
+//                    const GLubyte * strVersion = glGetString (GL_VERSION); // get version string
+//                    const GLubyte * strExtension = glGetString (GL_EXTENSIONS);	// get extension string
+//                    NSLog(@"OpenGL version:%s, extension:%s", strVersion, strExtension);
+//                }
                 
                 NSMutableArray *components = [[[NSBundle mainBundle] localizations] mutableCopy];
                 if ([components containsObject:@"Base"])
@@ -3844,6 +3845,16 @@ static BOOL initialized = NO;
         [[QueryController currentQueryController] showWindow: self];
     }
 #endif
+    
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (cgl_ctx) {
+        const GLubyte *strVersion = glGetString (GL_VERSION); // get version string
+        NSLog(@"OpenGL version: %s", strVersion);
+#if 0 //ndef NDEBUG
+        const GLubyte *strExtension = glGetString (GL_EXTENSIONS);    // get extension string
+        NSLog(@"OpenGL extension: %s", strExtension);
+#endif
+    }
 }
 
 - (void) checkForOsirixMimeType

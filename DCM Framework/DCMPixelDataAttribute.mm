@@ -664,7 +664,7 @@ static inline int int_ceildivpow2(int a, int b) {
 		NSLog(@"init Pixel Data");
 		
 	// may an ImageIconSequence in an encapsualted file. The icon is not encapsulated so don't de-encapsulate
-	if ( dicomData.isEncapsulated && vl == 0xFFFFFFFF)
+	if ( dicomData.isEncapsulated && vl == 0xFFFFFFFFL)
 	{
 		self = [super initWithAttributeTag:tag vr:theVR];
 		[self deencapsulateData:dicomData];
@@ -765,15 +765,17 @@ static inline int int_ceildivpow2(int a, int b) {
 	if ( ts.isEncapsulated ) {		
 		[dcmData addUnsignedShort:[self group]];
 		[dcmData addUnsignedShort:[self element]];
-		if (DCMDEBUG)
+
+        if (DCMDEBUG)
 			NSLog(@"Write Sequence Base Length:%d", 0xFFFFFFFF);
-		if ( ts.isExplicit ) {
+
+        if ( ts.isExplicit ) {
 			[dcmData addString:_vr];
-			[dcmData  addUnsignedShort:0];		// reserved bytes
-			[dcmData  addUnsignedLong:(0xFFFFFFFF)];
+			[dcmData addUnsignedShort:0];		// reserved bytes
+			[dcmData addUnsignedLong:(0xFFFFFFFFL)];
 		}
 		else {			
-			[dcmData  addUnsignedLong:(0xFFFFFFFF)];
+			[dcmData addUnsignedLong:(0xFFFFFFFFL)];
 		}
 	}
 	//can do unencapsualated Syntaxes
@@ -1001,14 +1003,14 @@ static inline int int_ceildivpow2(int a, int b) {
 			if (_pixelDepth <= 16 && _pixelDepth > 8)
 			{
 				unsigned short *shortsToSwap = (unsigned short *) ptr;
-				int length = [data length]/2;
-				while( length-- > 0)
+				long length = [data length]/2;
+				while (length-- > 0)
 					shortsToSwap[ length] = NSSwapShort(shortsToSwap[ length]);
 			}
 			else if (_pixelDepth > 16)
 			{
 				unsigned long *longsToSwap = (unsigned long *) ptr;
-				int length = [data length]/4;
+				long length = [data length]/4;
 				while( length-- > 0)
 					longsToSwap[ length] = NSSwapLong(longsToSwap[ length]);
 			}
@@ -2411,8 +2413,8 @@ static inline int int_ceildivpow2(int a, int b) {
 
 - (NSData *)convertPaletteToRGB:(NSData *)data
 {	
-	BOOL			fSetClut = NO, fSetClut16 = NO;
-	unsigned char   *clutRed = nil, *clutGreen = nil, *clutBlue = nil;
+	BOOL fSetClut = NO, fSetClut16 = NO;
+	unsigned char *clutRed = nil, *clutGreen = nil, *clutBlue = nil;
 	int clutEntryR = 0, clutEntryG = 0, clutEntryB = 0;
 	unsigned short clutDepthR, clutDepthG, clutDepthB;
 	unsigned short *shortRed = nil, *shortGreen = nil, *shortBlue = nil;
@@ -2462,7 +2464,7 @@ static inline int int_ceildivpow2(int a, int b) {
 			//NSLog(@"Segmented LUT");
 			if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
 			{
-				long length, xx, xxindex, jj;
+                long length, xxindex;
 				
 				shortRed = (unsigned short*) malloc( 65535L * sizeof( unsigned short));
 				shortGreen = (unsigned short*) malloc( 65535L * sizeof( unsigned short));
@@ -2478,7 +2480,7 @@ static inline int int_ceildivpow2(int a, int b) {
 					//NSLog(@"red");
 					
 					xxindex = 0;
-					for( jj = 0; jj < nbVal;jj++)
+					for (long jj = 0; jj < nbVal;jj++)
 					{
 						int type = NSSwapLittleShortToHost(ptrs[jj]);
 						//NSLog(@"Type: %d", type);
@@ -2488,26 +2490,26 @@ static inline int int_ceildivpow2(int a, int b) {
 								jj++;
 								length = NSSwapLittleShortToHost(ptrs[jj]);
 								jj++;
-								for( xx = xxindex; xxindex < xx + length; xxindex++)
+								for (long xx = xxindex; xxindex < xx + length; xxindex++)
 								{
 									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj++]);
 									shortRed[ xxindex] = pixel;
 									//if( xxindex < 256) NSLog(@"Type: %d  pixel:%d, swapped: %d", shortRed[ xxindex], NSSwapLittleShortToHost(shortRed[ xxindex]));
 								}
 								jj--;
-							break;
+                                break;
 							
 							case 1:	// Linear
 								jj++;
 								length = NSSwapLittleShortToHost(ptrs[jj]);
-								for( xx = xxindex; xxindex < xx + length; xxindex++)
+								for (long xx = xxindex; xxindex < xx + length; xxindex++)
 								{
 									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj + 1]);
 									shortRed[ xxindex] = shortRed[ xx-1] + ((pixel - shortRed[ xx-1]) * (1+xxindex - xx)) / (length);
 									//if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
 								}
-								jj ++;
-							break;
+								jj++;
+                                break;
 							
 							case 2: // Indirect
 								NSLog(@"indirect not supported");
@@ -2515,11 +2517,11 @@ static inline int int_ceildivpow2(int a, int b) {
 								length = NSSwapLittleShortToHost(ptrs[jj]);
 
 								jj += 2;
-							break;
+                                break;
 							
 							default:
 								NSLog(@"Error, Error, OsiriX will soon crash...");
-							break;
+                                break;
 						}
 					}
 					found16 = YES; 	// this is used to let us know we have to look for the other element */
@@ -2537,7 +2539,7 @@ static inline int int_ceildivpow2(int a, int b) {
 					//NSLog(@"green");
 					
 					xxindex = 0;
-					for( jj = 0; jj < nbVal; jj++)
+					for (long jj = 0; jj < nbVal; jj++)
 					{
 						int type = NSSwapLittleShortToHost(ptrs[jj]);
 						//NSLog(@"Green Type: %d", type);
@@ -2547,38 +2549,37 @@ static inline int int_ceildivpow2(int a, int b) {
 								jj++;
 								length = NSSwapLittleShortToHost(ptrs[jj]);
 								jj++;
-								for( xx = xxindex; xxindex < xx + length; xxindex++)
+								for (long xx = xxindex; xxindex < xx + length; xxindex++)
 								{
 									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj++]);
 									shortGreen[ xxindex] = pixel;
 									//if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
 								}
 								jj--;
-							break;
+                                break;
 							
 							case 1:	// Linear
 								jj++;
 								length = NSSwapLittleShortToHost(ptrs[jj]);
-								for( xx = xxindex; xxindex < xx + length; xxindex++)
+								for (long xx = xxindex; xxindex < xx + length; xxindex++)
 								{
 									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj + 1]);
 									shortGreen[ xxindex] = shortGreen[ xx-1] + ((pixel - shortGreen[ xx-1]) * (1+xxindex - xx)) / (length);
 								//	if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
 								}
-								jj ++;
-							break;
+								jj++;
+                                break;
 							
 							case 2: // Indirect
 								NSLog(@"indirect not supported");
 								jj++;
 								length = NSSwapLittleShortToHost(ptrs[jj]);
-
 								jj += 2;
-							break;
+                                break;
 							
 							default:
 								NSLog(@"Error, Error, OsiriX will soon crash...");
-							break;
+                                break;
 						}
 					}
 					found16 = YES; 	// this is used to let us know we have to look for the other element 
@@ -2596,7 +2597,7 @@ static inline int int_ceildivpow2(int a, int b) {
 					//NSLog(@"blue");
 					
 					xxindex = 0;
-					for( jj = 0; jj < nbVal; jj++)
+					for (long jj = 0; jj < nbVal; jj++)
 					{
 						int type = NSSwapLittleShortToHost(ptrs[jj]);
 						//NSLog(@"Blue Type: %d", type);
@@ -2606,38 +2607,37 @@ static inline int int_ceildivpow2(int a, int b) {
 								jj++;
 								length = NSSwapLittleShortToHost(ptrs[jj]);
 								jj++;
-								for( xx = xxindex; xxindex < xx + length; xxindex++)
+								for (long xx = xxindex; xxindex < xx + length; xxindex++)
 								{
 									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj++]);
 									shortBlue[ xxindex] = pixel;
 						//			if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
 								}
 								jj--;
-							break;
+                                break;
 							
 							case 1:	// Linear
 								jj++;
 								length = NSSwapLittleShortToHost(ptrs[jj]);
-								for( xx = xxindex; xxindex < xx + length; xxindex++)
+								for (long xx = xxindex; xxindex < xx + length; xxindex++)
 								{
 									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj + 1]);
 									shortBlue[ xxindex] = shortBlue[ xx-1] + ((pixel - shortBlue[ xx-1]) * (xxindex - xx + 1)) / (length);
 									//if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
 								}
-								jj ++;
-							break;
+								jj++;
+                                break;
 							
 							case 2: // Indirect
 								NSLog(@"indirect not supported");
 								jj++;
 								length = NSSwapLittleShortToHost(ptrs[jj]);
-
 								jj += 2;
-							break;
+                                break;
 							
 							default:
 								NSLog(@"Error, Error, OsiriX will soon crash...");
-							break;
+                                break;
 						}
 					}
 					found16 = YES; 	// this is used to let us know we have to look for the other element 
@@ -2652,17 +2652,21 @@ static inline int int_ceildivpow2(int a, int b) {
 				}
 				*/
 			}  //end 16 bit
-			else if (clutDepthR == 8  && clutDepthG == 8  && clutDepthB == 8)
+			else if (clutDepthR == 8 &&
+                     clutDepthG == 8 &&
+                     clutDepthB == 8)
 			{
 				NSLog(@"Segmented palettes for 8 bits ?");
 			}
 			else
-			{
+            {
 				NSLog(@"Don't know this kind of DICOM CLUT...");
 			}
 		} //end segmented
 		// EXTRACT THE PALETTE data only if there is 256 entries and depth is 16 bits
-		else if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
+		else if (clutDepthR == 16 &&
+                 clutDepthG == 16 &&
+                 clutDepthB == 16)
 		{
 //			NSLog(@"16 bit PALETTE");
 			NSData *redCLUT = [_dcmObject attributeValueWithName:@"RedPaletteColorLookupTableData"];
@@ -2671,39 +2675,43 @@ static inline int int_ceildivpow2(int a, int b) {
 					clutEntryR = [redCLUT length] / 2;
 				
 				//NSLog(@"Red CLUT length: %d %d ", clutEntryR, lutLength);
-				unsigned short  *ptrs =  (unsigned short*) [redCLUT bytes];				
+				unsigned short *ptrs =  (unsigned short*) [redCLUT bytes];
 				for (int j = 0; j < clutEntryR; j++, ptrs++) {
 					clutRed [j] = (int) (NSSwapLittleShortToHost(*ptrs)/256);
 				}
 
                 found = YES; 	// this is used to let us know we have to look for the other element
-			}//endif red
+			}
 			
-					// extract the GREEN palette clut data
+            // extract the GREEN palette clut data
 			NSData *greenCLUT = [_dcmObject attributeValueWithName:@"GreenPaletteColorLookupTableData"];
 			if (greenCLUT) {
 				if (clutEntryG == 0)
 					clutEntryG = [greenCLUT length] / 2;
-				unsigned short  *ptrs =  (unsigned short*) [greenCLUT bytes];
+
+                unsigned short *ptrs =  (unsigned short*) [greenCLUT bytes];
 				for (int j = 0; j < clutEntryG; j++, ptrs++)
                     clutGreen [j] = (int) (NSSwapLittleShortToHost(*ptrs)/256);
-			}//endif green
+			}
 			
 			// extract the BLUE palette clut data
 			NSData *blueCLUT = [_dcmObject attributeValueWithName:@"BluePaletteColorLookupTableData"];
 			if (blueCLUT) {
 				if (clutEntryB == 0)
 					clutEntryB = [blueCLUT length] / 2;
-				unsigned short  *ptrs =  (unsigned short*) [blueCLUT bytes];
+
+                unsigned short *ptrs =  (unsigned short*) [blueCLUT bytes];
 				for (int j = 0; j < clutEntryB; j++, ptrs++)
                     clutBlue [j] = (int) (NSSwapLittleShortToHost(*ptrs)/256);
-			} //endif blue
-			
+			}
 		}  //end 16 bit
 		
 		// if ...the palette has 256 entries and thus we extract the clut datas
 	
-		else if (clutDepthR == 8  && clutDepthG == 8  && clutDepthB == 8) {
+		else if (clutDepthR == 8 &&
+                 clutDepthG == 8 &&
+                 clutDepthB == 8)
+        {
 			NSLog(@"Converting 8 bit LUT. Red LUT: %@", [_dcmObject attributeWithName:@"RedPaletteColorLookupTableData"].description );
 			DCMAttribute *redCLUT = [_dcmObject attributeWithName:@"RedPaletteColorLookupTableData"];
 			//NSData *redCLUT = [_dcmObject attributeValueWithName:@"RedPaletteColorLookupTableData"];
@@ -2765,7 +2773,6 @@ static inline int int_ceildivpow2(int a, int b) {
 
                     found = YES; 	// this is used to let us know we have to look for the other element
 				}
-
 			}
 			// let the rest of the routine know that it should set the clut
 		}
@@ -2779,15 +2786,16 @@ static inline int int_ceildivpow2(int a, int b) {
 	} // endif ...extraction of the color palette
 	
 // This image has a palette -> Convert it to a RGB image !
-	if ( fSetClut)
+	if (fSetClut)
 	{
-		if( clutRed != nil && clutGreen != nil && clutBlue != nil)
+		if (clutRed != nil &&
+            clutGreen != nil &&
+            clutBlue != nil)
 		{
-			unsigned char   *bufPtr = (unsigned char*) [data bytes];
-			unsigned short	*bufPtr16 = (unsigned short*) [data bytes];
-			unsigned char   *tmpImage;
-			long			totSize, pixelR, pixelG, pixelB, x, y;
-			int i= 0;
+			unsigned char *bufPtr = (unsigned char*) [data bytes];
+			unsigned short *bufPtr16 = (unsigned short*) [data bytes];
+			unsigned char *tmpImage;
+			long totSize, pixelR, pixelG, pixelB;
 			totSize = (long) ((long) height * (long) realwidth * 3L);
 			//tmpImage = malloc( totSize);
 			rgbData = [NSMutableData dataWithLength:totSize];
@@ -2798,10 +2806,9 @@ static inline int int_ceildivpow2(int a, int b) {
 			switch(_pixelDepth)
 			{
 				case 8:
-					
-					for( y = 0; y < height; y++)
+					for (long y = 0; y < height; y++)
 					{
-						for( x = 0; x < width; x++)
+						for (long x = 0; x < width; x++)
 						{
 							pixelR = pixelG = pixelB = bufPtr[y*width + x];
 							
@@ -2814,50 +2821,46 @@ static inline int int_ceildivpow2(int a, int b) {
 							tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
 						}
 					}
-				
-				break;
+                    break;
 			
 				case 16:
-					i = 0;
-					for( y = 0; y < height; y++)
+                    {
+					int i = 0;
+					for (long y = 0; y < height; y++)
 					{
-						for( x = 0; x < width; x++)
+						for (long x = 0; x < width; x++)
 						{
 							pixelR = pixelG = pixelB = NSSwapBigShortToHost( bufPtr16[i]);
 							tmpImage[i*3 + 0] = clutRed[ pixelR];
 							tmpImage[i*3 + 1] = clutGreen[ pixelG];
 							tmpImage[i*3 + 2] = clutBlue[ pixelB];
 							i++;
-							
 						}
 					}
-				break;
+                    }
+                    break;
 			}
-			
 		}
 	}
 	
-	if( fSetClut16){
-		unsigned short	*bufPtr = (unsigned short*) [data bytes];
-		unsigned short   *tmpImage;
-		long			totSize, x, y, ii;
-
-		unsigned short pixel;
-		
-		totSize = (long) ((long) _rows * (long) _columns * 3L * 2);
+	if (fSetClut16)
+    {
+		unsigned short *bufPtr = (unsigned short*) [data bytes];
+		long totSize = (long) ((long) _rows * (long) _columns * 3L * 2);
 		rgbData = [NSMutableData dataWithLength:totSize];
-		tmpImage = (unsigned short *)[rgbData mutableBytes];
+		unsigned short *tmpImage = (unsigned short *)[rgbData mutableBytes];
 		
-		if( depth != 16) NSLog(@"Segmented Palette with a non-16 bit image???");
+		if (depth != 16)
+            NSLog(@"Segmented Palette with a non-16 bit image???");
 		
-		ii = height * realwidth;
+		//long ii = height * realwidth;
 				
-		for( y = 0; y < height; y++)
+		for (long y = 0; y < height; y++)
 		{
-			for( x = 0; x < width; x++)
+			for (long x = 0; x < width; x++)
 			{
-				//pixel = NSSwapLittleShortToHost(bufPtr[y*width + x]);
-				pixel = (bufPtr[y*width + x]);
+				//unsigned short pixel = NSSwapLittleShortToHost(bufPtr[y*width + x]);
+				unsigned short pixel = (bufPtr[y*width + x]);
 				tmpImage[y*width*3 + x*3 + 0] = shortRed[pixel];
 				tmpImage[y*width*3 + x*3 + 1] = shortGreen[ pixel];
 				tmpImage[y*width*3 + x*3 + 2] = shortBlue[ pixel];
@@ -2865,14 +2868,14 @@ static inline int int_ceildivpow2(int a, int b) {
 				//	NSLog(@"y: %d x: %d red: %d  green: %d  blue: %d", y , x, shortRed[pixel], shortGreen[ pixel],shortBlue[ pixel]);
 			}
 		}
-		
-
 	} //done converting Palette
-} @catch( NSException *localException) {
-	rgbData = nil;
-	NSLog(@"Exception converting Palette to RGB: %@", localException.name);
-}
-	if( clutRed != nil)
+
+    } @catch( NSException *localException) {
+        rgbData = nil;
+        NSLog(@"Exception converting Palette to RGB: %@", localException.name);
+    }
+
+    if( clutRed != nil)
 		free(clutRed);
 	if ( clutGreen != nil)
 		free(clutGreen);
@@ -2888,24 +2891,24 @@ static inline int int_ceildivpow2(int a, int b) {
 	//NSLog(@"end palette conversion end length: %d", [rgbData length]);
 	_pixelDepth = 8;	
 	return rgbData;
-
 }
 
 - (NSData *) convertYBrToRGB:(NSData *)ybrData kind:(NSString *)theKind isPlanar:(BOOL)isPlanar
 {
-  long			loop, size;
-  unsigned char		*pYBR, *pRGB;
-  unsigned char		*theRGB;
-  int			y, y1, r;
-  NSMutableData *rgbData;
+    long loop;
+    long size;
+    unsigned char *pYBR, *pRGB;
+    unsigned char *theRGB;
+    int y, y1, r;
+    NSMutableData *rgbData;
   
 //  NSLog(@"convertYBrToRGB:%@ isPlanar:%d", theKind, isPlanar);
   // the planar configuration should be set to 0 whenever
   // YBR_FULL_422 or YBR_PARTIAL_422 is used
-  if (![theKind isEqualToString:@"YBR_FULL"] && isPlanar == 1)
-    return nil;
+    if (![theKind isEqualToString:@"YBR_FULL"] && isPlanar == 1)
+        return nil;
   
-    if( ybrData == nil)
+    if (ybrData == nil)
         return nil;
     
   // allocate room for the RGB image
@@ -2919,7 +2922,7 @@ static inline int int_ceildivpow2(int a, int b) {
   size = (long) _rows * (long) _columns;
  // int kind = 0;
  
-    int32_t R, G, B;
+   int32_t R, G, B;
    uint8_t a;
    uint8_t b;
    uint8_t c;
@@ -2936,24 +2939,25 @@ static inline int int_ceildivpow2(int a, int b) {
 //            y = (int) pYBR [0];
 //            b = (int) pYBR [1];
 //            r = (int) pYBR [2];
-			a = (int) pYBR [0];
-            b = (int) pYBR [1];
-            c = (int) pYBR [2];
 
-         R = 38142 *(a-16) + 52298 *(c -128);
-         G = 38142 *(a-16) - 26640 *(c -128) - 12845 *(b -128);
-         B = 38142 *(a-16) + 66093 *(b -128);
+              a = (int) pYBR [0];
+              b = (int) pYBR [1];
+              c = (int) pYBR [2];
 
-         R = (R+16384)>>15;
-         G = (G+16384)>>15;
-         B = (B+16384)>>15;
+             R = 38142 *(a-16) + 52298 *(c -128);
+             G = 38142 *(a-16) - 26640 *(c -128) - 12845 *(b -128);
+             B = 38142 *(a-16) + 66093 *(b -128);
 
-         if (R < 0)   R = 0;
-         if (G < 0)   G = 0;
-         if (B < 0)   B = 0;
-         if (R > 255) R = 255;
-         if (G > 255) G = 255;
-         if (B > 255) B = 255;
+             R = (R+16384)>>15;
+             G = (G+16384)>>15;
+             B = (B+16384)>>15;
+
+             if (R < 0)   R = 0;
+             if (G < 0)   G = 0;
+             if (B < 0)   B = 0;
+             if (R > 255) R = 255;
+             if (G > 255) G = 255;
+             if (B > 255) B = 255;
 
 
             // red
@@ -2974,14 +2978,13 @@ static inline int int_ceildivpow2(int a, int b) {
 		{
          // loop on the pixels of the image
 		  pYBR = (unsigned char *) [ybrData bytes];
-          
-		  int yy, x;
-		  for( yy = 0; yy < _rows; yy++)	//_rows/2
+
+		  for (int yy = 0; yy < _rows; yy++)	//_rows/2
 		  {
 			unsigned char	*rr = pRGB;
 //			unsigned char	*rr2 = pRGB+3*_columns;
 			
-			for( x = 0; x < _columns; x++)
+			for (int x = 0; x < _columns; x++)
 			{
 				y  = (int) pYBR [0];
 				b = (int) pYBR [1];
@@ -3003,7 +3006,6 @@ static inline int int_ceildivpow2(int a, int b) {
 //			pRGB += 2*_columns*3;
 			pRGB += _columns*3;
 		  }
-
 		}
         else if ([theKind isEqualToString:@"YBR_PARTIAL_422"])
         {

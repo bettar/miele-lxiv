@@ -19042,11 +19042,10 @@ static BOOL viewerControllerPlaying = NO;
                 
                 NSMutableArray *tempArray = [NSMutableArray array];
                 
-                for (int x = 0, size = 0; x < [pixList[ i] count]; x++)
+                for (int x = 0; x < [pixList[ i] count]; x++)
                 {
                     int oldIndex = [pixList[ i] indexOfObjectIdenticalTo: [sortedPixArray objectAtIndex: x]];
                     id o = [fileList[ i] objectAtIndex: oldIndex];
-                    
                     [tempArray addObject: o];
                 }
                 

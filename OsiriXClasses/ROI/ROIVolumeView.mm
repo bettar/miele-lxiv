@@ -72,8 +72,7 @@
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
-	unsigned char	*buf = nil;
-	long			i;
+	unsigned char *buf = nil;
 	
 	NSRect size = [self bounds];
 	
@@ -85,7 +84,7 @@
 	*bpp = 8;
 	
 	buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
-	if( buf)
+	if (buf)
 	{
 		[self getVTKRenderWindow]->MakeCurrent();
 //		[[NSOpenGLContext currentContext] flushBuffer];
@@ -97,41 +96,39 @@
 #if __BIG_ENDIAN__
 			glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 #else
-			glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
-			i = *width * *height;
-			unsigned char	*t_argb = buf;
-			unsigned char	*t_rgb = buf;
-			while( i-- > 0)
-			{
-				*((int*) t_rgb) = *((int*) t_argb);
-				t_argb+=4;
-				t_rgb+=3;
-			}
+			
+        glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
+        long ii = *width * *height;
+        unsigned char *t_argb = buf;
+        unsigned char *t_rgb = buf;
+        while (ii-- > 0)
+        {
+            *((int*) t_rgb) = *((int*) t_argb);
+            t_argb += 4;
+            t_rgb += 3;
+        }
 #endif
 		
 		long rowBytes = *width**spp**bpp/8;
-		
-		{
-			unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
-			
-			for( i = 0; i < *height/2; i++)
-			{
-				memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
-				memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
-				memcpy( buf + i*rowBytes, tempBuf, rowBytes);
-			}
-			
-			free( tempBuf);
-		}
+        unsigned char *tempBuf = (unsigned char*)malloc( rowBytes);
+        for (long  i = 0; i < *height/2; i++)
+        {
+            memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+            memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
+            memcpy( buf + i*rowBytes, tempBuf, rowBytes);
+        }
+        
+        free(tempBuf);
+
 		
 		//Add the small OsiriX logo at the bottom right of the image
-		NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];
-		NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
+		NSImage *logo = [NSImage imageNamed:@"SmallLogo.tif"];
+		NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
 		
-		for( i = 0; i < [TIFFRep pixelsHigh]; i++)
+		for (long i = 0; i < [TIFFRep pixelsHigh]; i++)
 		{
-			unsigned char	*srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-			unsigned char	*dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
+			unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
+			unsigned char *dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
 			
 			long x = [TIFFRep bytesPerRow]/3;
 			while( x-- > 0)
@@ -166,7 +163,7 @@
 	
 	dataPtr = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES];
 
-	if( spp == 3)
+	if (spp == 3)
         colorSpace = NSCalibratedRGBColorSpace;
 	else
         colorSpace = NSCalibratedWhiteColorSpace;
@@ -185,8 +182,8 @@
 
 	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
 		
-	 NSImage *image = [[[NSImage alloc] init] autorelease];
-	 [image addRepresentation:rep];
+    NSImage *image = [[[NSImage alloc] init] autorelease];
+    [image addRepresentation:rep];
 	 
 	free( dataPtr);
 	

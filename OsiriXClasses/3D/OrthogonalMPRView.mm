@@ -475,72 +475,85 @@
 		
 		glColor3f (0.0f, 1.0f, 0.0f);
 		glLineWidth(1.0 * self.window.backingScaleFactor);
-		glBegin(GL_LINES);
-		// vertical axis
-		glVertex2f(xCrossCenter,-4000);
-		glVertex2f(xCrossCenter,yCrossCenter -50.0/curDCM.pixelRatio);
-	
-		if (displayResliceAxes == 2)
-		{
-			glVertex2f(xCrossCenter,yCrossCenter -10.0/curDCM.pixelRatio);
-			glVertex2f(xCrossCenter,yCrossCenter +10.0/curDCM.pixelRatio);
-		}
-		
-		glColor3f (0.0f, 1.0f, 0.0f);
-		glVertex2f(xCrossCenter,yCrossCenter +50.0/curDCM.pixelRatio);
-		glVertex2f(xCrossCenter,4000);
-		
-		// horizontal axis
-		glVertex2f(-4000,yCrossCenter);
-		glVertex2f(xCrossCenter-50.0,yCrossCenter);
-	
-		if (displayResliceAxes == 2)
-		{
-			glVertex2f(xCrossCenter-10.0,yCrossCenter);
-			glVertex2f(xCrossCenter+10.0,yCrossCenter);
-		}
-		
-		glColor3f (0.0f, 1.0f, 0.0f);
-		glVertex2f(xCrossCenter+50.0,yCrossCenter);
-		glVertex2f(4000,yCrossCenter);
-		
-		float shift;
-		if (thickSlabX>0)
-		{
-			shift =  (float)thickSlabX / 2.0 * scaleValue;
-			glColor3f (0.0f, 0.0f, 1.0f);
-			glVertex2f(xCrossCenter-shift,-4000);
-			glVertex2f(xCrossCenter-shift,yCrossCenter -50.0/curDCM.pixelRatio);
-			
-			glVertex2f(xCrossCenter-shift,yCrossCenter +50.0/curDCM.pixelRatio);
-			glVertex2f(xCrossCenter-shift,4000);
-			
-			glVertex2f(xCrossCenter+shift,-4000);
-			glVertex2f(xCrossCenter+shift,yCrossCenter -50.0/curDCM.pixelRatio);
-			
-			glVertex2f(xCrossCenter+shift,yCrossCenter +50.0/curDCM.pixelRatio);
-			glVertex2f(xCrossCenter+shift,4000);
-		}
-		
-		if (thickSlabY>0)
-		{
-			shift =  (float)thickSlabY / 2.0 * scaleValue;
-			glColor3f (0.0f, 0.0f, 1.0f);
-			glVertex2f(-4000,yCrossCenter-shift);
-			glVertex2f(xCrossCenter-50.0,yCrossCenter-shift);
-			
-			glVertex2f(xCrossCenter+50.0,yCrossCenter-shift);
-			glVertex2f(4000,yCrossCenter-shift);
-			
-			
-			glVertex2f(-4000,yCrossCenter+shift);
-			glVertex2f(xCrossCenter-50.0,yCrossCenter+shift);
-			
-			glVertex2f(xCrossCenter+50.0,yCrossCenter+shift);
-			glVertex2f(4000,yCrossCenter+shift);
-		}
-		
-		glEnd();
+
+        // vertical axis
+        glBegin(GL_LINES);
+        {
+            glVertex2f(xCrossCenter,-4000);
+            glVertex2f(xCrossCenter,yCrossCenter -50.0/curDCM.pixelRatio);
+        
+            if (displayResliceAxes == 2)
+            {
+                glVertex2f(xCrossCenter,yCrossCenter -10.0/curDCM.pixelRatio);
+                glVertex2f(xCrossCenter,yCrossCenter +10.0/curDCM.pixelRatio);
+            }
+            
+            glColor3f (0.0f, 1.0f, 0.0f);
+            glVertex2f(xCrossCenter,yCrossCenter +50.0/curDCM.pixelRatio);
+            glVertex2f(xCrossCenter,4000);
+        }
+        glEnd();
+
+        // horizontal axis
+        glBegin(GL_LINES);
+        {
+            glVertex2f(-4000,yCrossCenter);
+            glVertex2f(xCrossCenter-50.0,yCrossCenter);
+        
+            if (displayResliceAxes == 2)
+            {
+                glVertex2f(xCrossCenter-10.0,yCrossCenter);
+                glVertex2f(xCrossCenter+10.0,yCrossCenter);
+            }
+            
+            glColor3f (0.0f, 1.0f, 0.0f);
+            glVertex2f(xCrossCenter+50.0,yCrossCenter);
+            glVertex2f(4000,yCrossCenter);
+        }
+        glEnd();
+
+        if (thickSlabX > 0)
+        {
+            glBegin(GL_LINES);
+            {
+                float shift = (float)thickSlabX / 2.0 * scaleValue;
+                glColor3f (0.0f, 0.0f, 1.0f);
+                glVertex2f(xCrossCenter-shift,-4000);
+                glVertex2f(xCrossCenter-shift,yCrossCenter -50.0/curDCM.pixelRatio);
+                
+                glVertex2f(xCrossCenter-shift,yCrossCenter +50.0/curDCM.pixelRatio);
+                glVertex2f(xCrossCenter-shift,4000);
+                
+                glVertex2f(xCrossCenter+shift,-4000);
+                glVertex2f(xCrossCenter+shift,yCrossCenter -50.0/curDCM.pixelRatio);
+                
+                glVertex2f(xCrossCenter+shift,yCrossCenter +50.0/curDCM.pixelRatio);
+                glVertex2f(xCrossCenter+shift,4000);
+            }
+            glEnd();
+        }
+
+        if (thickSlabY > 0)
+        {
+            glBegin(GL_LINES);
+            {
+                float shift = (float)thickSlabY / 2.0 * scaleValue;
+                glColor3f (0.0f, 0.0f, 1.0f);
+                glVertex2f(-4000,yCrossCenter-shift);
+                glVertex2f(xCrossCenter-50.0,yCrossCenter-shift);
+                
+                glVertex2f(xCrossCenter+50.0,yCrossCenter-shift);
+                glVertex2f(4000,yCrossCenter-shift);
+                
+                
+                glVertex2f(-4000,yCrossCenter+shift);
+                glVertex2f(xCrossCenter-50.0,yCrossCenter+shift);
+                
+                glVertex2f(xCrossCenter+50.0,yCrossCenter+shift);
+                glVertex2f(4000,yCrossCenter+shift);
+            }
+            glEnd();
+        }
 		
 		glDisable(GL_LINE_SMOOTH);
 		glDisable(GL_POLYGON_SMOOTH);
@@ -557,7 +570,7 @@
 		
 		// draw line around key View
 		
-		if( isKeyView && [[self windowController] FullScreenON] == FALSE)
+		if ( isKeyView && [[self windowController] FullScreenON] == FALSE)
 		{
 			float heighthalf = drawingFrameRect.size.height/2;
 			float widthhalf = drawingFrameRect.size.width/2;
@@ -566,10 +579,12 @@
 			glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
 			glLineWidth(8.0 * self.window.backingScaleFactor);
 			glBegin(GL_LINE_LOOP);
-			glVertex2f(  -widthhalf, -heighthalf);
-			glVertex2f(  -widthhalf, heighthalf);
-			glVertex2f(  widthhalf, heighthalf);
-			glVertex2f(  widthhalf, -heighthalf);
+            {
+                glVertex2f(  -widthhalf, -heighthalf);
+                glVertex2f(  -widthhalf, heighthalf);
+                glVertex2f(  widthhalf, heighthalf);
+                glVertex2f(  widthhalf, -heighthalf);
+            }
 			glEnd();
 			glLineWidth(1.0 * self.window.backingScaleFactor);
 		}

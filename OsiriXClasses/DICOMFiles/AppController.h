@@ -113,6 +113,8 @@ extern "C"
 
 extern AppController* OsiriX;
 
+#pragma mark -
+
 @interface AppController : NSObject	<NSApplicationDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate, NSSoundDelegate, NSMenuDelegate> // GrowlApplicationBridgeDelegate
 {
 	IBOutlet BrowserController		*browserController;

@@ -179,7 +179,7 @@
 // for the benefit of writeBaseToData
 
 - (long)valueLength {
-	return 0xFFFFFFFF;	
+	return 0xFFFFFFFFL;	
 }
 
 - (NSString *)readableDescription {

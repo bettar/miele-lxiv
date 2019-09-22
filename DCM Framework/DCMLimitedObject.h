@@ -32,8 +32,15 @@
 - (id)initWithData:(NSData *)data lastGroup:(unsigned short)lastGroup;
 - (id)initWithContentsOfFile:(NSString *)file lastGroup:(unsigned short)lastGroup;
 - (id)initWithContentsOfURL:(NSURL *)aURL lastGroup:(unsigned short)lastGroup;
-- (id)initWithDataContainer:(DCMDataContainer *)data lengthToRead:(int)lengthToRead byteOffset:(int*)byteOffset characterSet:(DCMCharacterSet *)characterSet lastGroup:(unsigned short)lastGroup;
 
-- (int)readDataSet:(DCMDataContainer *)dicomData toGroup:(unsigned short)lastGroup byteOffset:(int *)byteOffset;
+- (id)initWithDataContainer:(DCMDataContainer *)data
+               lengthToRead:(int)lengthToRead
+                 byteOffset:(int*)byteOffset
+               characterSet:(DCMCharacterSet *)characterSet
+                  lastGroup:(unsigned short)lastGroup;
+
+- (int)readDataSet:(DCMDataContainer *)dicomData
+           toGroup:(unsigned short)lastGroup
+        byteOffset:(int *)byteOffset;
 
 @end

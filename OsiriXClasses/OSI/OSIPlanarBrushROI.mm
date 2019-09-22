@@ -183,17 +183,19 @@
     
     glColor3f(1, 0, 1);
     glBegin(GL_LINES);
-    for (maskRunValue in maskRuns) {
-        maskRun = [maskRunValue OSIROIMaskRunValue];
-        
-        lineStart = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex + 0.5, maskRun.depthIndex);
-        lineEnd = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex + 0.5, maskRun.depthIndex);
-        
-        lineStart = N3VectorApplyTransform(lineStart, inverseVolumeTransform);
-        lineEnd = N3VectorApplyTransform(lineEnd, inverseVolumeTransform);
-        
-        glVertex3d(lineStart.x, lineStart.y, lineStart.z);
-        glVertex3d(lineEnd.x, lineEnd.y, lineEnd.z);
+    {
+        for (maskRunValue in maskRuns) {
+            maskRun = [maskRunValue OSIROIMaskRunValue];
+            
+            lineStart = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex + 0.5, maskRun.depthIndex);
+            lineEnd = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex + 0.5, maskRun.depthIndex);
+            
+            lineStart = N3VectorApplyTransform(lineStart, inverseVolumeTransform);
+            lineEnd = N3VectorApplyTransform(lineEnd, inverseVolumeTransform);
+            
+            glVertex3d(lineStart.x, lineStart.y, lineStart.z);
+            glVertex3d(lineEnd.x, lineEnd.y, lineEnd.z);
+        }
     }
     glEnd();
     

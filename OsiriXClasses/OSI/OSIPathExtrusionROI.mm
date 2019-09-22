@@ -249,14 +249,14 @@
         glPushMatrix();
         glMultMatrixd(dicomToPixGLTransform);
         
-        glBegin(GL_LINE_STRIP);
-        
         flattenedPath = [_path bezierPathByFlattening:N3BezierDefaultFlatness/5.0];
-        for (NSInteger i = 0; i < [flattenedPath elementCount]; i++) {
-            [flattenedPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
-            glVertex3d(endpoint.x, endpoint.y, endpoint.z);
+        glBegin(GL_LINE_STRIP);
+        {
+            for (NSInteger i = 0; i < [flattenedPath elementCount]; i++) {
+                [flattenedPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
+                glVertex3d(endpoint.x, endpoint.y, endpoint.z);
+            }
         }
-        
         glEnd();
         
         glPopMatrix();

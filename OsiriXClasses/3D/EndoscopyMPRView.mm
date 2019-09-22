@@ -94,33 +94,37 @@
 	// draw the direction vector
 	glColor3f (1.0f, 0.0f, 1.0f);
 	glLineWidth(1.0 * self.window.backingScaleFactor);
-	glBegin(GL_LINES);
-	glVertex2f(xCrossCenter,yCrossCenter);
-	
-	float cfocalShiftX = focalShiftX;
-	float cfocalShiftY = focalShiftY;
-	
-	if (xFlipped)
-		cfocalShiftX *= -1.0;
-		
-	if (yFlipped)
-		cfocalShiftY *= -1.0;
-	
-	cfocalShiftX = cfocalShiftX;
-	cfocalShiftY = cfocalShiftY;
-	
-	glVertex2f(	xCrossCenter+cfocalShiftX*normalizationFactor,
-				yCrossCenter+cfocalShiftY*normalizationFactor);	//*[self pixelSpacingY]/[self pixelSpacingX]
+
+    float cfocalShiftX = focalShiftX;
+    float cfocalShiftY = focalShiftY;
+    
+    if (xFlipped)
+        cfocalShiftX *= -1.0;
+        
+    if (yFlipped)
+        cfocalShiftY *= -1.0;
+    
+//    cfocalShiftX = cfocalShiftX;
+//    cfocalShiftY = cfocalShiftY;
+
+    glBegin(GL_LINES);
+    {
+        glVertex2f(xCrossCenter,yCrossCenter);
+        glVertex2f(xCrossCenter + cfocalShiftX * normalizationFactor,
+                   yCrossCenter + cfocalShiftY * normalizationFactor);    //*[self pixelSpacingY]/[self pixelSpacingX]
+    }
 	glEnd();
 				
 	// draw a point at the end of FOCAL POINT vector (handle to move the vector)
 	glPointSize(2.0 * near * self.window.backingScaleFactor);
-	glBegin(GL_POINTS);	
-	
-	glVertex2f(	xCrossCenter+cfocalShiftX*normalizationFactor,
-				yCrossCenter+cfocalShiftY*normalizationFactor);	//*[self pixelSpacingY]/[self pixelSpacingX]
+	glBegin(GL_POINTS);
+    {
+        glVertex2f(xCrossCenter + cfocalShiftX * normalizationFactor,
+                   yCrossCenter + cfocalShiftY * normalizationFactor);    //*[self pixelSpacingY]/[self pixelSpacingX]
+    }
 	glEnd();
-	glPointSize(1.0 * self.window.backingScaleFactor);
+
+    glPointSize(1.0 * self.window.backingScaleFactor);
 	
 	// normalization of VIEW UP VECTOR
 	float vectViewUpNorm = sqrt(pow(viewUpX,2)+pow(viewUpY,2));
@@ -134,26 +138,30 @@
 	glColor3f (0.0f, 0.75f, 1.0f);
 	glLineWidth(1.0 * self.window.backingScaleFactor);
 	glBegin(GL_LINES);
-	glVertex2f(xCrossCenter,yCrossCenter);
-	glVertex2f(	xCrossCenter+viewUpX*normalizationViewUpFactor,
-				yCrossCenter+viewUpY*normalizationViewUpFactor);	//*[self pixelSpacingY]/[self pixelSpacingX]
+    {
+        glVertex2f(xCrossCenter,yCrossCenter);
+        glVertex2f(xCrossCenter + viewUpX * normalizationViewUpFactor,
+                   yCrossCenter + viewUpY * normalizationViewUpFactor);    //*[self pixelSpacingY]/[self pixelSpacingX]
+    }
 	glEnd();
 	
 	// draw the Fly Through Path
-	glColor3f (0.8f, 0.0f, 0.25f);
-	glLineWidth(1.0 * self.window.backingScaleFactor);
-	glBegin(GL_LINE_STRIP);
-	if (flyThroughPath)
-		for (int i=0;i<[flyThroughPath count];i++)
-		{
-			Point3D* pt = [flyThroughPath objectAtIndex:i];
-			float x = (pt.x-[[self curDCM] pwidth]/2) * scaleValue;
-			float y = (pt.y-[[self curDCM] pheight]/2) * scaleValue ; //* [self pixelSpacingY]/[self pixelSpacingX];
-			glVertex2f(x,y);
-		}
-	
-	glEnd();
-	
+    if (flyThroughPath)
+    {
+        glColor3f (0.8f, 0.0f, 0.25f);
+        glLineWidth(1.0 * self.window.backingScaleFactor);
+        glBegin(GL_LINE_STRIP);
+        {
+            for (int i=0; i<[flyThroughPath count]; i++)
+            {
+                Point3D *pt = [flyThroughPath objectAtIndex:i];
+                float x = (pt.x - [[self curDCM] pwidth]/2) * scaleValue;
+                float y = (pt.y - [[self curDCM] pheight]/2) * scaleValue ; //* [self pixelSpacingY]/[self pixelSpacingX];
+                glVertex2f(x,y);
+            }
+        }
+        glEnd();
+    }
 	
 	// antialiasing end
 	glDisable(GL_LINE_SMOOTH);

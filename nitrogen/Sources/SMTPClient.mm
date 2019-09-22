@@ -219,7 +219,10 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 @interface NSString (SMTP)
 
 //-(NSData*)UTF7Data;
--(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator;
+-(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset
+                          intoChunks:(NSString**)part1
+                                    :(NSString**)part2
+                           separator:(unichar*)separator;
 
 @end
 

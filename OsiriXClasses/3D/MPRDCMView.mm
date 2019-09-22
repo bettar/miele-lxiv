@@ -880,19 +880,23 @@ unsigned int minimumStep;
 	{
 		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_LOOP);
+        {
 			glVertex2f(  -widthhalf, -heighthalf);
 			glVertex2f(  -widthhalf, heighthalf);
 			glVertex2f(  widthhalf, heighthalf);
 			glVertex2f(  widthhalf, -heighthalf);
+        }
 		glEnd();
 	}
 	
 	glLineWidth(2.0 * self.window.backingScaleFactor);
 	glBegin(GL_POLYGON);
+    {
 		glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
 		glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
 		glVertex2f(widthhalf, -heighthalf);
 		glVertex2f(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
+    }
 	glEnd();
 	glLineWidth(1.0 * self.window.backingScaleFactor);
 	
@@ -943,33 +947,38 @@ unsigned int minimumStep;
 			[pixA convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
 			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
 			
+            sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+            sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+            sc[0] -= curDCM.pwidth * 0.5f;
+            sc[1] -= curDCM.pheight * 0.5f;
 			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
-			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-			sc[0] -= curDCM.pwidth * 0.5f;
-			sc[1] -= curDCM.pheight * 0.5f;
-			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            {
+                glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            }
 			glEnd();
 			
 			[self colorForView:viewIDB];
 			pt = windowController.mousePosition;
-			dc[0] = pt.x; dc[1] = pt.y; dc[2] = pt.z;
+			dc[0] = pt.x;
+            dc[1] = pt.y;
+            dc[2] = pt.z;
 			[pixB convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
 			sc[0] = sc[ 0] / pixB.pixelSpacingX;
 			sc[1] = sc[ 1] / pixB.pixelSpacingY;
 			[pixB convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
 			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
 			
+            sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+            sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+            sc[0] -= curDCM.pwidth * 0.5f;
+            sc[1] -= curDCM.pheight * 0.5f;
 			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
-			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-			sc[0] -= curDCM.pwidth * 0.5f;
-			sc[1] -= curDCM.pheight * 0.5f;
-			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            {
+                glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            }
 			glEnd();
-
 		}
 
         if (viewID != windowController.mouseViewID)
@@ -977,17 +986,20 @@ unsigned int minimumStep;
 			[self colorForView: viewID];
 //			[self colorForView: windowController.mouseViewID];
 			Point3D *pt = windowController.mousePosition;
-			float sc[ 3], dc[ 3] = { pt.x, pt.y, pt.z};
+            float sc[ 3];
+            float dc[ 3] = { pt.x, pt.y, pt.z};
 			
 			[pix convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
 			
+            sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+            sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+            sc[0] -= curDCM.pwidth * 0.5f;
+            sc[1] -= curDCM.pheight * 0.5f;
 			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
-			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-			sc[0] -= curDCM.pwidth * 0.5f;
-			sc[1] -= curDCM.pheight * 0.5f;
-			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            {
+                glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            }
 			glEnd();
 		}
 	}

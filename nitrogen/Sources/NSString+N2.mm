@@ -401,24 +401,26 @@
     return [[NSPredicate predicateWithFormat:@"SELF MATCHES %@", @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"] evaluateWithObject:self];
 }
 
--(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator {
-	NSInteger i = [self rangeOfCharacterFromSet:charset].location;
-	if (i != NSNotFound) {
-		if (part1) *part1 = [self substringToIndex:i];
-		if (separator) *separator = [self characterAtIndex:i];
-		if (part2) *part2 = [self substringFromIndex:i+1];
-	} else {
-		if (part1) *part1 = self;
-		if (separator) *separator = 0;
-		if (part2) *part2 = nil;
-	}
-}
+//-(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator {
+//	NSInteger i = [self rangeOfCharacterFromSet:charset].location;
+//	if (i != NSNotFound) {
+//		if (part1) *part1 = [self substringToIndex:i];
+//		if (separator) *separator = [self characterAtIndex:i];
+//		if (part2) *part2 = [self substringFromIndex:i+1];
+//	} else {
+//		if (part1) *part1 = self;
+//		if (separator) *separator = 0;
+//		if (part2) *part2 = nil;
+//	}
+//}
 
 -(NSString*)md5 {
 	return [[(NSData*)[NSData dataWithBytesNoCopy:(void*)self.UTF8String length:strlen(self.UTF8String) freeWhenDone:NO] md5] hex];
 }
 
 @end
+
+#pragma mark -
 
 @implementation NSAttributedString (N2)
 

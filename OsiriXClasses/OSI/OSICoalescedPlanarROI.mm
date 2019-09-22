@@ -161,24 +161,26 @@
         minCorner = _cachedMinCorner;
     }
 
-
-    glLineWidth(3.0);    
-
+    glLineWidth(3.0);
     glColor4f(1, 0, 0, .4);
-    glBegin(GL_QUADS);
+
     runsCount = [maskRunsData length] / sizeof(OSIROIMaskRun);
     maskRunsBytes = (const OSIROIMaskRun *)[maskRunsData bytes];
-    for (NSInteger i = 0; i < runsCount; i++) {
-        maskRun = maskRunsBytes[i];
-        widthIndex = (double)maskRun.widthRange.location + minCorner.x;
-        maxWidthIndex = widthIndex + (double)maskRun.widthRange.length;
-        heightIndex = (double)maskRun.heightIndex + minCorner.y;
-        depthIndex = maskRun.depthIndex;
 
-        glVertex3d(widthIndex, heightIndex, depthIndex);
-        glVertex3d(maxWidthIndex, heightIndex, depthIndex);
-        glVertex3d(maxWidthIndex, heightIndex + 1.0, depthIndex);
-        glVertex3d(widthIndex, heightIndex + 1.0, depthIndex);
+    glBegin(GL_QUADS);
+    {
+        for (NSInteger i = 0; i < runsCount; i++) {
+            maskRun = maskRunsBytes[i];
+            widthIndex = (double)maskRun.widthRange.location + minCorner.x;
+            maxWidthIndex = widthIndex + (double)maskRun.widthRange.length;
+            heightIndex = (double)maskRun.heightIndex + minCorner.y;
+            depthIndex = maskRun.depthIndex;
+
+            glVertex3d(widthIndex, heightIndex, depthIndex);
+            glVertex3d(maxWidthIndex, heightIndex, depthIndex);
+            glVertex3d(maxWidthIndex, heightIndex + 1.0, depthIndex);
+            glVertex3d(widthIndex, heightIndex + 1.0, depthIndex);
+        }
     }
     glEnd();
 }

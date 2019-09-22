@@ -485,6 +485,7 @@ static void DrawGLImageTile (unsigned long drawType,
 #else  // WITH_OPENGL_32
     // draw either tri strips of line strips (so this will draw either 2 tris or 3 lines)
 	glBegin (drawType);
+    {
 		glTexCoord2f (startXTexCoord, startYTexCoord); // draw upper left in world coordinates
 		glVertex3d (startXDraw, startYDraw, 0.0);
 
@@ -496,6 +497,7 @@ static void DrawGLImageTile (unsigned long drawType,
 
 		glTexCoord2f (endXTexCoord, endYTexCoord); // draw lower right in world coordinates
 		glVertex3d (endXDraw, endYDraw, 0.0);
+    }
 	glEnd();
 #endif // WITH_OPENGL_32
 	
@@ -503,11 +505,13 @@ static void DrawGLImageTile (unsigned long drawType,
 /*	if (drawType == GL_LINE_STRIP) // draw top and bottom lines which were not draw with above
 	{
 		glBegin (GL_LINES);
+        {
 			glVertex3d(startXDraw, endYDraw, 0.0); // top edge
 			glVertex3d(startXDraw, startYDraw, 0.0);
 	
 			glVertex3d(endXDraw, startYDraw, 0.0); // bottom edge
 			glVertex3d(endXDraw, endYDraw, 0.0);
+        }
 		glEnd();
 	}*/
 }
@@ -1519,16 +1523,17 @@ void checkOGLVersion()
             glColor3f (0.0f, 0.5f, 1.0f);
             glLineWidth(2.0 * self.window.backingScaleFactor);
             glBegin(GL_LINES);
-            
-            glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
-            glVertex2f( scaleValue * (crossx -  5), scaleValue*(crossy));
-            glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
-            glVertex2f( scaleValue * (crossx +  5), scaleValue*(crossy));
-            
-            glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
-            glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
-            glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
-            glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
+            {
+                glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
+                glVertex2f( scaleValue * (crossx -  5), scaleValue*(crossy));
+                glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
+                glVertex2f( scaleValue * (crossx +  5), scaleValue*(crossy));
+                
+                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
+                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
+                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
+                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
+            }
             glEnd();
 #endif
         }
@@ -1567,13 +1572,15 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
     pt.y = [self drawingFrameRect].size.height - pt.y;		// inverse Y scaling system
     
-	glBegin(GL_POLYGON);	
-	for (long i = 0; i < circleRes ; i++)
-	{
-		// M_PI defined in cmath.h
-		float alpha = i * 2 * M_PI /circleRes;
-		glVertex2f( pt.x + repulsorRadius*cos(alpha)*scaleValue, pt.y + repulsorRadius*sin(alpha)*scaleValue);//*curDCM.pixelSpacingY/curDCM.pixelSpacingX
-	}
+	glBegin(GL_POLYGON);
+    {
+        for (long i = 0; i < circleRes ; i++)
+        {
+            // M_PI defined in cmath.h
+            float alpha = i * 2 * M_PI /circleRes;
+            glVertex2f( pt.x + repulsorRadius*cos(alpha)*scaleValue, pt.y + repulsorRadius*sin(alpha)*scaleValue);//*curDCM.pixelSpacingY/curDCM.pixelSpacingX
+        }
+    }
 	glEnd();
 	glDisable(GL_BLEND);
 #endif // WITH_OPENGL_32
@@ -1620,20 +1627,24 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
 	// inside: fill
 	glColor4f(ROISELECTORREGION_R, ROISELECTORREGION_G, ROISELECTORREGION_B, 0.3);
-	glBegin(GL_POLYGON);		
-	glVertex2f(startPt.x, startPt.y);
-	glVertex2f(startPt.x, endPt.y);
-	glVertex2f(endPt.x, endPt.y);
-	glVertex2f(endPt.x, startPt.y);
+	glBegin(GL_POLYGON);
+    {
+        glVertex2f(startPt.x, startPt.y);
+        glVertex2f(startPt.x, endPt.y);
+        glVertex2f(endPt.x, endPt.y);
+        glVertex2f(endPt.x, startPt.y);
+    }
 	glEnd();
 
 	// border
 	glColor4f(ROISELECTORREGION_R, ROISELECTORREGION_G, ROISELECTORREGION_B, 0.75);
 	glBegin(GL_LINE_LOOP);
-	glVertex2f(startPt.x, startPt.y);
-	glVertex2f(startPt.x, endPt.y);
-	glVertex2f(endPt.x, endPt.y);
-	glVertex2f(endPt.x, startPt.y);
+    {
+        glVertex2f(startPt.x, startPt.y);
+        glVertex2f(startPt.x, endPt.y);
+        glVertex2f(endPt.x, endPt.y);
+        glVertex2f(endPt.x, startPt.y);
+    }
 	glEnd();
 	
 	glDisable(GL_BLEND);
@@ -9312,10 +9323,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glColor3f (1.0f, 1.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
+        {
 			glVertex2f(0.0,                                      0.0);
 			glVertex2f(0.0,                   size.size.height - 0.0);
 			glVertex2f(size.size.width - 0.0, size.size.height - 0.0);
 			glVertex2f(size.size.width - 0.0,                    0.0);
+        }
 		glEnd();
 	}
 	
@@ -10258,7 +10271,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		glPointSize( 12 * self.window.backingScaleFactor);
 		
 		glBegin(GL_POINTS);
-		glVertex2f( x1, y1);
+        {
+            glVertex2f( x1, y1);
+        }
 		glEnd();
 	}
 	else
@@ -10278,8 +10293,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable(GL_BLEND);
 		glBegin(GL_LINES);
+        {
 			glVertex2f( x1, y1);
 			glVertex2f( x2, y2);
+        }
 		glEnd();
 	}
 	
@@ -10298,13 +10315,17 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 		glLineWidth(1.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINES);
+        {
 			glVertex2f( x1, y1);
 			glVertex2f( x2, y2);
+        }
 		glEnd();
 		
 		glBegin(GL_LINES);
+        {
 			glVertex2f( x3, y3);
 			glVertex2f( x4, y4);
+        }
 		glEnd();
 	}
 }
@@ -10391,26 +10412,31 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         
         glLineWidth(1.0 * sf);
         glBegin(GL_LINES);
-        for (int i = 0; i < 256; i++ )
         {
-            glColor3ub ( redTable[ i], greenTable[ i], blueTable[ i]);
-            
-            glVertex2f(  widthhalf - BARPOSX1*sf, heighthalf - (-128.f*sf + i*sf));
-            glVertex2f(  widthhalf - BARPOSX2*sf, heighthalf - (-128.f*sf + i*sf));
+            for (int i = 0; i < 256; i++) {
+                glColor3ub ( redTable[ i], greenTable[ i], blueTable[ i]);
+                
+                glVertex2f(  widthhalf - BARPOSX1*sf, heighthalf - (-128.f*sf + i*sf));
+                glVertex2f(  widthhalf - BARPOSX2*sf, heighthalf - (-128.f*sf + i*sf));
+            }
         }
-        
+        glEnd();
+
         glColor3ub ( 128, 128, 128);
-        glVertex2f( widthhalf - BARPOSX1*sf, heighthalf - (-128.f)*sf);
-        glVertex2f( widthhalf - BARPOSX2*sf, heighthalf - (-128.f)*sf);
-        
-        glVertex2f( widthhalf - BARPOSX1*sf, heighthalf - 127.f*sf);
-        glVertex2f( widthhalf - BARPOSX2*sf, heighthalf - 127.f*sf);
-        
-        glVertex2f( widthhalf - BARPOSX1*sf, heighthalf - (-128.f)*sf);
-        glVertex2f( widthhalf - BARPOSX1*sf, heighthalf - ( 127.f)*sf);
-        
-        glVertex2f( widthhalf - BARPOSX2*sf, heighthalf - (-128.f)*sf);
-        glVertex2f( widthhalf - BARPOSX2*sf, heighthalf - ( 127.f)*sf);
+        glBegin(GL_LINES);
+        {
+            glVertex2f( widthhalf - BARPOSX1*sf, heighthalf - (-128.f)*sf);
+            glVertex2f( widthhalf - BARPOSX2*sf, heighthalf - (-128.f)*sf);
+            
+            glVertex2f( widthhalf - BARPOSX1*sf, heighthalf - 127.f*sf);
+            glVertex2f( widthhalf - BARPOSX2*sf, heighthalf - 127.f*sf);
+            
+            glVertex2f( widthhalf - BARPOSX1*sf, heighthalf - (-128.f)*sf);
+            glVertex2f( widthhalf - BARPOSX1*sf, heighthalf - ( 127.f)*sf);
+            
+            glVertex2f( widthhalf - BARPOSX2*sf, heighthalf - (-128.f)*sf);
+            glVertex2f( widthhalf - BARPOSX2*sf, heighthalf - ( 127.f)*sf);
+        }
         glEnd();
         
         if (curWW < 50 )
@@ -10461,37 +10487,39 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             
             heighthalf = 0;
             
-#if 1
             glLineWidth(1.0 * sf);
-            glBegin(GL_LINES);
-            
+
             if (bred)
             {
-                for (int i = 0; i < 256; i++ )
+                glBegin(GL_LINES);
                 {
-                    glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
-                    
-                    glVertex2f( -widthhalf + BBARPOSX1*sf, heighthalf - (-128.f*sf + i*sf));
-                    glVertex2f( -widthhalf + BBARPOSX2*sf, heighthalf - (-128.f*sf + i*sf));
+                    for (int i = 0; i < 256; i++)
+                    {
+                        glColor3ub( bred[ i], bgreen[ i], bblue[ i]);
+                        
+                        glVertex2f( -widthhalf + BBARPOSX1*sf, heighthalf - (-128.f*sf + i*sf));
+                        glVertex2f( -widthhalf + BBARPOSX2*sf, heighthalf - (-128.f*sf + i*sf));
+                    }
                 }
+                glEnd();
             }
-            else
-                NSLog( @"bred == nil");
-            
-            glColor3ub ( 128, 128, 128);
-            glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - (-128.f)*sf);
-            glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - (-128.f)*sf);
-            
-            glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - (127.f)*sf);
-            glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - (127.f)*sf);
-            
-            glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - (-128.f)*sf);
-            glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - ( 127.f)*sf);
-            
-            glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - (-128.f)*sf);
-            glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - ( 127.f)*sf);
+
+            glColor3ub( 128, 128, 128);
+            glBegin(GL_LINES);
+            {
+                glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - (-128.f)*sf);
+                glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - (-128.f)*sf);
+                
+                glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - (127.f)*sf);
+                glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - (127.f)*sf);
+                
+                glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - (-128.f)*sf);
+                glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - ( 127.f)*sf);
+                
+                glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - (-128.f)*sf);
+                glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - ( 127.f)*sf);
+            }
             glEnd();
-#endif
             
             [blendingView getWLWW: &bwl :&bww];
             
@@ -10553,7 +10581,6 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     } //blendingView
 }
 
-////////////////////////////////////////////////////////////////////////////////
 // PIXELSPACING LINES - RULER
 // Draw one horizontal and one vertical ruler with 11 marks each
 - (void) drawRuler
@@ -10607,42 +10634,46 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     glColor3f(0.0f, 1.0f, 0.0f);
     glLineWidth(1.0 * sf);
     glBegin(GL_LINES);
-    
-    // horiz. ruler
-    glVertex2f(rr.origin.x + scaleValue  * (-k1/curDCM.pixelSpacingX),
-               rr.origin.y + rr.size.height/2 - yOffset);
-    glVertex2f(rr.origin.x + scaleValue  * (k1/curDCM.pixelSpacingX),
-               rr.origin.y + rr.size.height/2 - yOffset);
-    
-    // vert. ruler
-    glVertex2f(rr.origin.x + -rr.size.width/2 + xOffset,
-               rr.origin.y + scaleValue  * (-k1/curDCM.pixelSpacingY*curDCM.pixelRatio));
-    glVertex2f(rr.origin.x + -rr.size.width/2 + xOffset,
-               rr.origin.y + scaleValue  * (k1/curDCM.pixelSpacingY*curDCM.pixelRatio));
-    
-    for (short i = -5; i<=5; i++)
     {
-        short length = (i % 5 == 0) ? 10 : 5;
-        length *= sf;
-        
-        // Marks for horiz. ruler
-        glVertex2f(rr.origin.x + i*scaleValue *k2/curDCM.pixelSpacingX,
+        // horiz. ruler
+        glVertex2f(rr.origin.x + scaleValue  * (-k1/curDCM.pixelSpacingX),
                    rr.origin.y + rr.size.height/2 - yOffset);
-        glVertex2f(rr.origin.x + i*scaleValue *k2/curDCM.pixelSpacingX,
-                   rr.origin.y + rr.size.height/2 - yOffset - length);
+        glVertex2f(rr.origin.x + scaleValue  * (k1/curDCM.pixelSpacingX),
+                   rr.origin.y + rr.size.height/2 - yOffset);
         
-        // Marks for vert. ruler
-        glVertex2f(rr.origin.x + -rr.size.width/2 + xOffset + length,
-                   rr.origin.y + i* scaleValue *k2/curDCM.pixelSpacingY*curDCM.pixelRatio);
+        // vert. ruler
         glVertex2f(rr.origin.x + -rr.size.width/2 + xOffset,
-                   rr.origin.y + i* scaleValue * k2/curDCM.pixelSpacingY*curDCM.pixelRatio);
+                   rr.origin.y + scaleValue  * (-k1/curDCM.pixelSpacingY*curDCM.pixelRatio));
+        glVertex2f(rr.origin.x + -rr.size.width/2 + xOffset,
+                   rr.origin.y + scaleValue  * (k1/curDCM.pixelSpacingY*curDCM.pixelRatio));
+        
+        for (short i = -5; i<=5; i++)
+        {
+            short length = (i % 5 == 0) ? 10 : 5;
+            length *= sf;
+            
+            // Marks for horiz. ruler
+            glVertex2f(rr.origin.x + i*scaleValue *k2/curDCM.pixelSpacingX,
+                       rr.origin.y + rr.size.height/2 - yOffset);
+            glVertex2f(rr.origin.x + i*scaleValue *k2/curDCM.pixelSpacingX,
+                       rr.origin.y + rr.size.height/2 - yOffset - length);
+            
+            // Marks for vert. ruler
+            glVertex2f(rr.origin.x + -rr.size.width/2 + xOffset + length,
+                       rr.origin.y + i* scaleValue *k2/curDCM.pixelSpacingY*curDCM.pixelRatio);
+            glVertex2f(rr.origin.x + -rr.size.width/2 + xOffset,
+                       rr.origin.y + i* scaleValue * k2/curDCM.pixelSpacingY*curDCM.pixelRatio);
+        }
     }
     glEnd();
 }
 
-////////////////////////////////////////////////////////////////////////////////
 - (void) drawKeyViewBox
 {
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (cgl_ctx == nil)
+        return;
+
     float sf = self.window.backingScaleFactor;
     float heighthalf = drawingFrameRect.size.height/2 - 1;
     float widthhalf = drawingFrameRect.size.width/2 - 1;
@@ -10650,7 +10681,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     GLfloat r,g,b;
     GLfloat width;
     
-    NSLog(@"DCMView.mm:%d %s", __LINE__, __PRETTY_FUNCTION__);
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
 
     if (isKeyView &&
         [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController)
@@ -10663,23 +10694,20 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         r = g = b = 0.5f;
         width = 1.0 * sf;
     }
-
-    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if (cgl_ctx == nil)
-        return;
     
     glColor3f(r, g, b);
     glLineWidth(width);
     glBegin(GL_LINE_LOOP);
-    glVertex2f( -widthhalf, -heighthalf);
-    glVertex2f( -widthhalf,  heighthalf);
-    glVertex2f(  widthhalf,  heighthalf);
-    glVertex2f(  widthhalf, -heighthalf);
+    {
+        glVertex2f( -widthhalf, -heighthalf);
+        glVertex2f( -widthhalf,  heighthalf);
+        glVertex2f(  widthhalf,  heighthalf);
+        glVertex2f(  widthhalf, -heighthalf);
+    }
     glEnd();
     glLineWidth(1.0 * sf);
 }
 
-////////////////////////////////////////////////////////////////////////////////
 - (void)drawWaveform
 {
     checkOpenGLErrors(__LINE__);
@@ -10741,8 +10769,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
     for (size_t i = 1; i < numberOfChannels; ++i) {
         glBegin(GL_LINE);
-        glVertex2f(0,h*i);
-        glVertex2f(1,h*i);
+        {
+            glVertex2f(0,h*i);
+            glVertex2f(1,h*i);
+        }
         glEnd();
     }
     
@@ -10753,9 +10783,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         CGFloat mm = MAX(fabs(min), fabs(max));
         CGFloat* v = &values[i];
         glBegin(GL_LINE_STRIP);
-        for (NSUInteger x = 0; x < numberOfSamples; ++x, v += numberOfChannels)
-            glVertex2d(1./numberOfSamples*x, h*(0.5+i)+(*v/mm/2)*h);
-        
+        {
+            for (NSUInteger x = 0; x < numberOfSamples; ++x, v += numberOfChannels)
+                glVertex2d(1./numberOfSamples*x, h*(0.5+i)+(*v/mm/2)*h);
+
+        }
         glEnd();
     }
     
@@ -10765,12 +10797,14 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //    glColor4f(249./255., 240./255., 140./255., 1);
 //
 //    glBegin(GL_LINE_STRIP);
-//    glVertex2f(0.5,0.5);
-//    glVertex2f(0.5,1);
-//    glVertex2f(1,1);
-//    glVertex2f(1,0);
-//    glVertex2f(0,0);
-//    glVertex2f(0,1);
+//    {
+//        glVertex2f(0.5,0.5);
+//        glVertex2f(0.5,1);
+//        glVertex2f(1,1);
+//        glVertex2f(1,0);
+//        glVertex2f(0,0);
+//        glVertex2f(0,1);
+//    }
 //    glEnd();
 }
 
@@ -10938,10 +10972,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     
 					glLineWidth(1.0 * sf);
 					glBegin(GL_QUADS);
+                    {
 						glVertex2f(0.0, 0.0);
 						glVertex2f(0.0, drawingFrameRect.size.height);
 						glVertex2f(drawingFrameRect.size.width, drawingFrameRect.size.height);
 						glVertex2f(drawingFrameRect.size.width, 0);
+                    }
 					glEnd();
 					glDisable(GL_BLEND);
 				}
@@ -11045,10 +11081,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                             glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
                             glLineWidth(8.0 * sf);
                             glBegin(GL_LINE_LOOP);
+                            {
                                 glVertex2f(  -widthhalf, -heighthalf);
                                 glVertex2f(  -widthhalf, heighthalf);
                                 glVertex2f(  widthhalf, heighthalf);
                                 glVertex2f(  widthhalf, -heighthalf);
+                            }
                             glEnd();
                             glLineWidth(1.0 * sf);
         //					glDisable(GL_BLEND);
@@ -11078,8 +11116,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     if (dstRect.origin.x <= -5)
                     {
                         glBegin(GL_LINES);
-                        glVertex2f( -widthhalf +offset, dstRect.origin.y -heighthalf);
-                        glVertex2f( -widthhalf +offset, dstRect.origin.y +dstRect.size.height -heighthalf);
+                        {
+                            glVertex2f( -widthhalf +offset, dstRect.origin.y -heighthalf);
+                            glVertex2f( -widthhalf +offset, dstRect.origin.y +dstRect.size.height -heighthalf);
+                        }
                         glEnd();
                     }
                     
@@ -11087,8 +11127,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     if (dstRect.origin.y <= -5)
                     {
                         glBegin(GL_LINES);
-                        glVertex2f( dstRect.origin.x -widthhalf, -heighthalf +offset);
-                        glVertex2f( dstRect.origin.x +dstRect.size.width -widthhalf, -heighthalf +offset);
+                        {
+                            glVertex2f( dstRect.origin.x -widthhalf, -heighthalf +offset);
+                            glVertex2f( dstRect.origin.x +dstRect.size.width -widthhalf, -heighthalf +offset);
+                        }
                         glEnd();
                     }
                     
@@ -11096,8 +11138,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     if (dstRect.origin.x + dstRect.size.width >= drawingFrameRect.size.width+5)
                     {
                         glBegin(GL_LINES);
-                        glVertex2f( widthhalf -offset, dstRect.origin.y -heighthalf);
-                        glVertex2f( widthhalf -offset, dstRect.origin.y +dstRect.size.height -heighthalf);
+                        {
+                            glVertex2f( widthhalf -offset, dstRect.origin.y -heighthalf);
+                            glVertex2f( widthhalf -offset, dstRect.origin.y +dstRect.size.height -heighthalf);
+                        }
                         glEnd();
                     }
                     
@@ -11105,8 +11149,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     if (dstRect.origin.y + dstRect.size.height >= drawingFrameRect.size.height+5)
                     {
                         glBegin(GL_LINES);
-                        glVertex2f( dstRect.origin.x -widthhalf, heighthalf -offset);
-                        glVertex2f( dstRect.origin.x +dstRect.size.width -widthhalf, heighthalf -offset);
+                        {
+                            glVertex2f( dstRect.origin.x -widthhalf, heighthalf -offset);
+                            glVertex2f( dstRect.origin.x +dstRect.size.width -widthhalf, heighthalf -offset);
+                        }
                         glEnd();
                     }
                    
@@ -11328,11 +11374,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 							
 #define LINELENGTH 15
 							glBegin(GL_LINES);
+                            {
 								glVertex2f(scaleValue*(tempPoint3D[ 0]-LINELENGTH/curDCM.pixelSpacingX *  a[ 0]),
                                            scaleValue*(tempPoint3D[ 1]+LINELENGTH/curDCM.pixelSpacingY * (a[ 1])));
                             
 								glVertex2f(scaleValue*(tempPoint3D[ 0]+LINELENGTH/curDCM.pixelSpacingX *  a[ 0]),
                                            scaleValue*(tempPoint3D[ 1]-LINELENGTH/curDCM.pixelSpacingY * (a[ 1])));
+                            }
 							glEnd();
 						}
 						else
@@ -11340,20 +11388,21 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 							float crossx = tempPoint3D[0];
 							float crossy = tempPoint3D[1];
 							glBegin(GL_LINES);
-							
-							glVertex2f( scaleValue * (crossx - LINELENGTH/curDCM.pixelSpacingX), scaleValue*(crossy));
-							glVertex2f( scaleValue * (crossx - 5/curDCM.pixelSpacingX), scaleValue*(crossy));
-							glVertex2f( scaleValue * (crossx + LINELENGTH/curDCM.pixelSpacingX), scaleValue*(crossy));
-							glVertex2f( scaleValue * (crossx + 5/curDCM.pixelSpacingX), scaleValue*(crossy));
-							
-							glVertex2f( scaleValue * (crossx), scaleValue*(crossy-LINELENGTH/curDCM.pixelSpacingX));
-							glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5/curDCM.pixelSpacingX));
-							glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5/curDCM.pixelSpacingX));
-							glVertex2f( scaleValue * (crossx), scaleValue*(crossy+LINELENGTH/curDCM.pixelSpacingX));
-							
+                            {
+                                glVertex2f( scaleValue * (crossx - LINELENGTH/curDCM.pixelSpacingX), scaleValue*(crossy));
+                                glVertex2f( scaleValue * (crossx - 5/curDCM.pixelSpacingX), scaleValue*(crossy));
+                                glVertex2f( scaleValue * (crossx + LINELENGTH/curDCM.pixelSpacingX), scaleValue*(crossy));
+                                glVertex2f( scaleValue * (crossx + 5/curDCM.pixelSpacingX), scaleValue*(crossy));
+                                
+                                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-LINELENGTH/curDCM.pixelSpacingX));
+                                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5/curDCM.pixelSpacingX));
+                                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5/curDCM.pixelSpacingX));
+                                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+LINELENGTH/curDCM.pixelSpacingX));
+                            }
 							glEnd();
 						}
-						glLineWidth(1.0 * sf);
+
+                        glLineWidth(1.0 * sf);
 					}
 					
 					glDisable(GL_LINE_SMOOTH);
@@ -11461,6 +11510,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //					
 //					glColor4f(1.0, 1.0, 1.0, 1.0);
 //					glBegin(GL_QUAD_STRIP);
+//                  {
 //						glTexCoord2f(0, 0);
 //						glVertex2f(eventLocation.x, eventLocation.y);
 //					
@@ -11472,8 +11522,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //					
 //						glTexCoord2f(iChatCursorImageSize.width, iChatCursorImageSize.height);
 //						glVertex2f(eventLocation.x + iChatCursorImageSize.width, eventLocation.y + iChatCursorImageSize.height);
-//					
-//						glEnd();
+//
+//                  }
+//					glEnd();
 //					glDisable(GL_BLEND);
 //					
 //					glDisable(GL_TEXTURE_RECTANGLE_EXT);
@@ -11649,6 +11700,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			glEnable(TEXTRECTMODE);
 			
 			glBegin (GL_QUAD_STRIP);
+            {
 				glMultiTexCoord2f (GL_TEXTURE1, 0, 0); // lensTexture : upper left in texture coordinates
 				glMultiTexCoord2f (GL_TEXTURE0, 0, 0); // mask texture : upper left in texture coordinates
 				glVertex3d (eventLocation.x, eventLocation.y, 0.0);
@@ -11670,6 +11722,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO,
                             eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO,
                             0.0);
+            }
 			glEnd();
 			
 			glActiveTexture(GL_TEXTURE1); // deactivate multitexturing
@@ -11692,18 +11745,20 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				
 				glColor4f(1.0, 1.0, 1.0, 1.0);
 				
-				glBegin(GL_QUAD_STRIP);			
-					glTexCoord2f(0, 0);
-					glVertex3d (eventLocation.x, eventLocation.y, 0.0);
+				glBegin(GL_QUAD_STRIP);
+                {
+                    glTexCoord2f(0, 0);
+                    glVertex3d (eventLocation.x, eventLocation.y, 0.0);
                 
-					glTexCoord2f(loupeTextureWidth, 0);
-					glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y, 0.0);
+                    glTexCoord2f(loupeTextureWidth, 0);
+                    glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y, 0.0);
                 
-					glTexCoord2f(0, loupeTextureHeight);
-					glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+                    glTexCoord2f(0, loupeTextureHeight);
+                    glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
                 
-					glTexCoord2f(loupeTextureWidth, loupeTextureHeight);
-					glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+                    glTexCoord2f(loupeTextureWidth, loupeTextureHeight);
+                    glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+                }
 				glEnd();
 				
 				glDisable(GL_TEXTURE_RECTANGLE_EXT);

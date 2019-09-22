@@ -164,7 +164,11 @@
 * @param characterSet The DCMCharacterSet used for decoding
 * @param decodePixelData Flag to decode contained pixelData
 */
-- (id)initWithDataContainer:(DCMDataContainer *)data lengthToRead:(int)lengthToRead byteOffset:(int  *)byteOffset characterSet:(DCMCharacterSet *)characterSet decodingPixelData:(BOOL)decodePixelData;
+- (id)initWithDataContainer:(DCMDataContainer *)data
+               lengthToRead:(long)lengthToRead
+                 byteOffset:(int *)byteOffset
+               characterSet:(DCMCharacterSet *)characterSet
+          decodingPixelData:(BOOL)decodePixelData;
 
 /** Empty initializer */
 - (id)init;
@@ -194,11 +198,17 @@
 
 /** Parse the dataset\n
 * Used when parsing the DICOM data. */
-- (int)readDataSet:(DCMDataContainer *)dicomData lengthToRead:(int)lengthToRead byteOffset:(int *)byteOffset;
+- (int)readDataSet:(DCMDataContainer *)dicomData
+      lengthToRead:(int)lengthToRead
+        byteOffset:(int *)byteOffset;
 
 /** Parse of Sequence attribute\n
 * Used when parsing the DICOM data. */
-- (int)readNewSequenceAttribute:(DCMAttribute *)attr dicomData:(DCMDataContainer *)dicomData byteOffset:(int *)byteOffset lengthToRead:(int)lengthToRead specificCharacterSet:(DCMCharacterSet *)specificCharacterSet;
+- (int)readNewSequenceAttribute:(DCMAttribute *)attr
+                      dicomData:(DCMDataContainer *)dicomData
+                     byteOffset:(int *)byteOffset
+                   lengthToRead:(int)lengthToRead
+           specificCharacterSet:(DCMCharacterSet *)specificCharacterSet;
 
 /** Create a DCMAttribute\n
 * Used when parsing the DICOM data. */

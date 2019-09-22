@@ -21,7 +21,6 @@
 #import <Cocoa/Cocoa.h>
 #import "N3Geometry.h"
 
-
 #ifndef _OSIGEOMETRY_H_
 #define _OSIGEOMETRY_H_
 

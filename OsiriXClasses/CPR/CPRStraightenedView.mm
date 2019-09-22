@@ -469,9 +469,11 @@ extern int splitPosition[ 3];
     
 	glLineWidth(2.0 * self.window.backingScaleFactor);
     glBegin(GL_LINES);
-    glColor4d(0.0, 1.0, 0.0, 0.2);
-    glVertex2d(lineStart.x, lineStart.y);
-    glVertex2d(lineEnd.x, lineEnd.y);
+    {
+        glColor4d(0.0, 1.0, 0.0, 0.2);
+        glVertex2d(lineStart.x, lineStart.y);
+        glVertex2d(lineEnd.x, lineEnd.y);
+    }
     glEnd();
 	
 	glColor4d(0.0, 1.0, 0.0, 0.8);
@@ -486,7 +488,9 @@ extern int splitPosition[ 3];
         glPointSize(8 * self.window.backingScaleFactor);
         
         glBegin(GL_POINTS);
-        glVertex2f(cursorVector.x, cursorVector.y);
+        {
+            glVertex2f(cursorVector.x, cursorVector.y);
+        }
         glEnd();
     }
     
@@ -498,8 +502,10 @@ extern int splitPosition[ 3];
         lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*draggedPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
         glLineWidth(2.0 * self.window.backingScaleFactor);
         glBegin(GL_LINE_STRIP);
-        glVertex2f(lineStart.x, lineStart.y);
-        glVertex2f(lineEnd.x, lineEnd.y);
+        {
+            glVertex2f(lineStart.x, lineStart.y);
+            glVertex2f(lineEnd.x, lineEnd.y);
+        }
         glEnd();
 	}
     
@@ -537,8 +543,10 @@ extern int splitPosition[ 3];
 			lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight/2. + transverseWidth/2., 0), pixToSubDrawRectTransform);
 			glLineWidth(2.0 * self.window.backingScaleFactor);
 			glBegin(GL_LINE_STRIP);
-			glVertex2f(lineStart.x, lineStart.y);
-			glVertex2f(lineEnd.x, lineEnd.y);
+            {
+                glVertex2f(lineStart.x, lineStart.y);
+                glVertex2f(lineEnd.x, lineEnd.y);
+            }
 			glEnd();
 		}
 	}
@@ -561,8 +569,10 @@ extern int splitPosition[ 3];
 
 		glLineWidth(2.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_STRIP);
-		glVertex2f(lineBStart.x, lineBStart.y);
-		glVertex2f(lineBEnd.x, lineBEnd.y);
+        {
+            glVertex2f(lineBStart.x, lineBStart.y);
+            glVertex2f(lineBEnd.x, lineBEnd.y);
+        }
 		glEnd();
 				
 		leftTransverseSectionPosition = _curvedPath.leftTransverseSectionPosition;
@@ -573,8 +583,10 @@ extern int splitPosition[ 3];
 
 		glLineWidth(1.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_STRIP);
-		glVertex2f(lineAStart.x, lineAStart.y);
-		glVertex2f(lineAEnd.x, lineAEnd.y);
+        {
+            glVertex2f(lineAStart.x, lineAStart.y);
+            glVertex2f(lineAEnd.x, lineAEnd.y);
+        }
 		glEnd();
 		
 		rightTransverseSectionPosition = _curvedPath.rightTransverseSectionPosition;
@@ -584,8 +596,10 @@ extern int splitPosition[ 3];
 		lineCEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, curDCM.pheight/2. + transverseWidth/2., 0), pixToSubDrawRectTransform);
 
 		glBegin(GL_LINE_STRIP);
-		glVertex2f(lineCStart.x, lineCStart.y);
-		glVertex2f(lineCEnd.x, lineCEnd.y);
+        {
+            glVertex2f(lineCStart.x, lineCStart.y);
+            glVertex2f(lineCEnd.x, lineCEnd.y);
+        }
 		glEnd();
 		
 		// --- Text
@@ -681,7 +695,9 @@ extern int splitPosition[ 3];
 			glPointSize(8 * self.window.backingScaleFactor);
 			cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue], pixToSubDrawRectTransform);
 			glBegin(GL_POINTS);
-			glVertex2f(cursorVector.x, cursorVector.y);
+            {
+                glVertex2f(cursorVector.x, cursorVector.y);
+            }
 			glEnd();	
 		}
         
@@ -708,7 +724,9 @@ extern int splitPosition[ 3];
             glEnable(GL_POINT_SMOOTH);
             glPointSize(8 * self.window.backingScaleFactor);
             glBegin(GL_POINTS);
-            glVertex2f(cursorVector.x, cursorVector.y);
+            {
+                glVertex2f(cursorVector.x, cursorVector.y);
+            }
             glEnd();
         }
     }
@@ -733,7 +751,9 @@ extern int splitPosition[ 3];
             glPointSize(8 * self.window.backingScaleFactor);
             
             glBegin(GL_POINTS);
-            glVertex2f(cursorVector.x, cursorVector.y);
+            {
+                glVertex2f(cursorVector.x, cursorVector.y);
+            }
             glEnd();
         }
     }
@@ -754,10 +774,12 @@ extern int splitPosition[ 3];
 		
 		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_LOOP);
-        glVertex2f(  -widthhalf, -heighthalf);
-        glVertex2f(  -widthhalf, heighthalf);
-        glVertex2f(  widthhalf, heighthalf);
-        glVertex2f(  widthhalf, -heighthalf);
+        {
+            glVertex2f(  -widthhalf, -heighthalf);
+            glVertex2f(  -widthhalf, heighthalf);
+            glVertex2f(  widthhalf, heighthalf);
+            glVertex2f(  widthhalf, -heighthalf);
+        }
 		glEnd();
 	}
 	
@@ -1473,8 +1495,10 @@ extern int splitPosition[ 3];
 		lineStart = N3VectorMake([indexNumber doubleValue], 0, 0);
         lineEnd = N3VectorMake([indexNumber doubleValue], curDCM.pheight, 0);
         glBegin(GL_LINE_STRIP);
-        glVertex2d(lineStart.x, lineStart.y);
-        glVertex2d(lineEnd.x, lineEnd.y);
+        {
+            glVertex2d(lineStart.x, lineStart.y);
+            glVertex2d(lineEnd.x, lineEnd.y);
+        }
         glEnd();
 	}
     glPopMatrix();
@@ -1501,10 +1525,15 @@ extern int splitPosition[ 3];
     glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
 	for (planeRun in planeRuns) {
 		glBegin(GL_LINE_STRIP);
-		for (NSInteger i = 0; i < planeRun.range.length; i++) {
-			planePointVector = N3VectorMake(planeRun.range.location + i, ([[planeRun.distances objectAtIndex:i] doubleValue] * pixelsPerMm) + pheight_2, 0);
-			glVertex2d(planePointVector.x, planePointVector.y);
-		}
+        {
+            for (NSInteger i = 0; i < planeRun.range.length; i++)
+            {
+                planePointVector = N3VectorMake(planeRun.range.location + i,
+                                                ([[planeRun.distances objectAtIndex:i] doubleValue] * pixelsPerMm) + pheight_2,
+                                                0);
+                glVertex2d(planePointVector.x, planePointVector.y);
+            }
+        }
 		glEnd();
 	}
     glPopMatrix();

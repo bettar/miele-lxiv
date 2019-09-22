@@ -2296,29 +2296,27 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	return max;
 }
 
+#define MAXLENGTH 300
+
 - (void) glStr: (NSString*) str :(float) x :(float) y :(float) line
 {
-#define MAXLENGTH 300
-    
 	if (str.length == 0)
         return;
     
     if (str.length > MAXLENGTH)
         str = [str substringToIndex: MAXLENGTH];
-    
-	float xx, yy;
-	
-	line *= fontHeight*curView.window.backingScaleFactor;
-	
-	xx = x;
-	yy = y + line;
-	
-    StringTexture *sT= [self stringTextureForString: str];
-    
+
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
-
+	
+	line *= fontHeight * curView.window.backingScaleFactor;
+	
+	float xx = x;
+	float yy = y + line;
+	
+    StringTexture *sT= [self stringTextureForString: str];
+    
     glEnable (GL_TEXTURE_RECTANGLE_EXT);
 //    glEnable(GL_BLEND);
 //    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -5095,34 +5093,33 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
     if (fabs( miny-maxy) < rad * 5.)
         rad = fabs( miny-maxy) / 5.;
     
-    for (int a=0; a<7; a++)
-    {
+    for (int a=0; a<7; a++) {
         vec[a][0] *= rad;
         vec[a][1] *= rad;
     }
     
     glBegin(mode);
-    
-    glVertex2f( maxx-rad, miny);
-    for (int a=0; a<7; a++)
-        glVertex2f( maxx-rad+vec[a][0], miny+vec[a][1]);
-    glVertex2f( maxx, miny+rad);
-    
-    glVertex2f( maxx, maxy-rad);
-    for (int a=0; a<7; a++)
-        glVertex2f( maxx-vec[a][1], maxy-rad+vec[a][0]);
-    glVertex2f( maxx-rad, maxy);
-    
-    glVertex2f( minx+rad, maxy);
-    for (int a=0; a<7; a++)
-        glVertex2f( minx+rad-vec[a][0], maxy-vec[a][1]);
-    glVertex2f( minx, maxy-rad);
-    
-    glVertex2f( minx, miny+rad);
-    for (int a=0; a<7; a++)
-        glVertex2f( minx+vec[a][1], miny+rad-vec[a][0]);
-    glVertex2f( minx+rad, miny);
-	 
+    {
+        glVertex2f( maxx-rad, miny);
+        for (int a=0; a<7; a++)
+            glVertex2f( maxx-rad+vec[a][0], miny+vec[a][1]);
+        glVertex2f( maxx, miny+rad);
+        
+        glVertex2f( maxx, maxy-rad);
+        for (int a=0; a<7; a++)
+            glVertex2f( maxx-vec[a][1], maxy-rad+vec[a][0]);
+        glVertex2f( maxx-rad, maxy);
+        
+        glVertex2f( minx+rad, maxy);
+        for (int a=0; a<7; a++)
+            glVertex2f( minx+rad-vec[a][0], maxy-vec[a][1]);
+        glVertex2f( minx, maxy-rad);
+        
+        glVertex2f( minx, miny+rad);
+        for (int a=0; a<7; a++)
+            glVertex2f( minx+vec[a][1], miny+rad-vec[a][0]);
+        glVertex2f( minx+rad, miny);
+    }
     glEnd();
 }
 
@@ -5306,8 +5303,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
         if (cgl_ctx == nil)
             return;
 
-	glPushMatrix();
-        
+        glPushMatrix();
 		glLoadIdentity();
 //		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);	// JORIS ! Here is the problem for iChat : if ICHAT [curView frame] should be 640 *480....
 		glScalef( 2.0f /([curView drawingFrameRect].size.width), -2.0f / ([curView drawingFrameRect].size.height), 1.0f);
@@ -5338,8 +5334,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		glEnable(GL_MAP1_VERTEX_3);
 		
 	    glBegin(GL_LINE_STRIP);
-        for ( int i = 0; i <= 30; i++ )
-            glEvalCoord1f((GLfloat) i/30.0);
+        {
+            for ( int i = 0; i <= 30; i++ )
+                glEvalCoord1f((GLfloat) i/30.0);
+        }
 		glEnd();
 		glDisable(GL_MAP1_VERTEX_3);
 		
@@ -5351,8 +5349,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		glEnable(GL_MAP1_VERTEX_3);
 		
 	    glBegin(GL_LINE_STRIP);
-        for ( int i = 0; i <= 30; i++ )
-            glEvalCoord1f((GLfloat) i/30.0);
+        {
+            for ( int i = 0; i <= 30; i++ )
+                glEvalCoord1f((GLfloat) i/30.0);
+        }
 		glEnd();
 		glDisable(GL_MAP1_VERTEX_3);
 		
@@ -5386,10 +5386,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                 glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
             
             glBegin(GL_POLYGON);
-            glVertex2f(  drawRect.origin.x, drawRect.origin.y-1);
-            glVertex2f(  drawRect.origin.x, drawRect.origin.y+drawRect.size.height);
-            glVertex2f(  drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height);
-            glVertex2f(  drawRect.origin.x+drawRect.size.width, drawRect.origin.y-1);
+            {
+                glVertex2f(  drawRect.origin.x, drawRect.origin.y-1);
+                glVertex2f(  drawRect.origin.x, drawRect.origin.y+drawRect.size.height);
+                glVertex2f(  drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height);
+                glVertex2f(  drawRect.origin.x+drawRect.size.width, drawRect.origin.y-1);
+            }
             glEnd();
 #endif
             
@@ -5748,18 +5750,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					p4.y = (p4.y-offsety)*scaleValue;
 								
 					glBegin(GL_QUAD_STRIP); // draw either tri strips of line strips (so this will draw either two tris or 3 lines)
-						glTexCoord2f(0, 0); // draw upper left corner
-						glVertex3d(p1.x, p1.y, 0.0);
-						
-						glTexCoord2f(imageWidth, 0); // draw upper left corner
-						glVertex3d(p2.x, p2.y, 0.0);
-						
-						glTexCoord2f(0, imageHeight); // draw lower left corner
-						glVertex3d(p4.x, p4.y, 0.0);
-																					
-						glTexCoord2f(imageWidth, imageHeight); // draw lower right corner
-						glVertex3d(p3.x, p3.y, 0.0);
-						
+                    {
+                        glTexCoord2f(0, 0); // draw upper left corner
+                        glVertex3d(p1.x, p1.y, 0.0);
+                        
+                        glTexCoord2f(imageWidth, 0); // draw upper left corner
+                        glVertex3d(p2.x, p2.y, 0.0);
+                        
+                        glTexCoord2f(0, imageHeight); // draw lower left corner
+                        glVertex3d(p4.x, p4.y, 0.0);
+                                                                                    
+                        glTexCoord2f(imageWidth, imageHeight); // draw lower right corner
+                        glVertex3d(p3.x, p3.y, 0.0);
+                    }
 					glEnd();
 					glDisable( GL_BLEND);
 					
@@ -5772,10 +5775,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						glColor3f (0.5f, 0.5f, 1.0f);
 						glPointSize( 8.0 * backingScaleFactor);
 						glBegin(GL_POINTS);
-						glVertex3f(p1.x, p1.y, 0.0);
-						glVertex3f(p2.x, p2.y, 0.0);
-						glVertex3f(p3.x, p3.y, 0.0);
-						glVertex3f(p4.x, p4.y, 0.0);
+                        {
+                            glVertex3f(p1.x, p1.y, 0.0);
+                            glVertex3f(p2.x, p2.y, 0.0);
+                            glVertex3f(p3.x, p3.y, 0.0);
+                            glVertex3f(p4.x, p4.y, 0.0);
+                        }
 						glEnd();
 						glColor3f (1.0f, 1.0f, 1.0f);
 					}
@@ -5921,17 +5926,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 // TODO: check comment:
                                 // draw either tri strips of line strips (so this will draw either 2 tris or 3 lines)
                                 glBegin (GL_QUAD_STRIP);
-                                glTexCoord2f (0, 0); // draw upper left in world coordinates
-                                glVertex3d (screenXUpL, screenYUpL, 0.0);
-                                
-                                glTexCoord2f (newWidth, 0); // draw upper right in world coordinates
-                                glVertex3d (screenXDr, screenYUpL, 0.0);
-                                
-                                glTexCoord2f (0, newHeight); // draw lower left in world coordinates
-                                glVertex3d (screenXUpL, screenYDr, 0.0);
-                                
-                                glTexCoord2f (newWidth, newHeight); // draw lower right in world coordinates
-                                glVertex3d (screenXDr, screenYDr, 0.0);
+                                {
+                                    glTexCoord2f (0, 0); // draw upper left in world coordinates
+                                    glVertex3d (screenXUpL, screenYUpL, 0.0);
+                                    
+                                    glTexCoord2f (newWidth, 0); // draw upper right in world coordinates
+                                    glVertex3d (screenXDr, screenYUpL, 0.0);
+                                    
+                                    glTexCoord2f (0, newHeight); // draw lower left in world coordinates
+                                    glVertex3d (screenXUpL, screenYDr, 0.0);
+                                    
+                                    glTexCoord2f (newWidth, newHeight); // draw lower right in world coordinates
+                                    glVertex3d (screenXDr, screenYDr, 0.0);
+                                }
                                 glEnd();
                                 
                                 glDeleteTextures( 1, &textureName);
@@ -5985,17 +5992,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                 
                 // draw either tri strips of line strips (so this will draw either 2 tris or 3 lines)
 				glBegin (GL_QUAD_STRIP);
-				glTexCoord2f (0, 0); // draw upper left in world coordinates
-				glVertex3d (screenXUpL, screenYUpL, 0.0);
-				
-				glTexCoord2f (textureWidth, 0); // draw upper right in world coordinates
-				glVertex3d (screenXDr, screenYUpL, 0.0);
-				
-				glTexCoord2f (0, textureHeight); // draw lower left in world coordinates
-				glVertex3d (screenXUpL, screenYDr, 0.0);
-				
-				glTexCoord2f (textureWidth, textureHeight); // draw lower right in world coordinates
-				glVertex3d (screenXDr, screenYDr, 0.0);
+                {
+                    glTexCoord2f (0, 0); // draw upper left in world coordinates
+                    glVertex3d (screenXUpL, screenYUpL, 0.0);
+                    
+                    glTexCoord2f (textureWidth, 0); // draw upper right in world coordinates
+                    glVertex3d (screenXDr, screenYUpL, 0.0);
+                    
+                    glTexCoord2f (0, textureHeight); // draw lower left in world coordinates
+                    glVertex3d (screenXUpL, screenYDr, 0.0);
+                    
+                    glTexCoord2f (textureWidth, textureHeight); // draw lower right in world coordinates
+                    glVertex3d (screenXDr, screenYDr, 0.0);
+                }
 				glEnd();
 				
                 glDeleteTextures( 1, &textureName);
@@ -6017,11 +6026,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 								glPointSize( 3.0 * backingScaleFactor);
 							else
 								glPointSize( 8.0 * backingScaleFactor);
-							glBegin(GL_POINTS);
-							glVertex3f(screenXUpL, screenYUpL, 0.0);
-							glVertex3f(screenXDr, screenYUpL, 0.0);
-							glVertex3f(screenXUpL, screenYDr, 0.0);
-							glVertex3f(screenXDr, screenYDr, 0.0);
+
+                            glBegin(GL_POINTS);
+                            {
+                                glVertex3f(screenXUpL, screenYUpL, 0.0);
+                                glVertex3f(screenXDr, screenYUpL, 0.0);
+                                glVertex3f(screenXUpL, screenYDr, 0.0);
+                                glVertex3f(screenXDr, screenYDr, 0.0);
+                            }
 							glEnd();
 						}
                         break;
@@ -6146,15 +6158,18 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 
 				glBegin(GL_LINE_LOOP);
-				for (int i = 0; i < CIRCLE_RESOLUTION ; i++ )
-				{
-				  angle = i * 2 * M_PI /CIRCLE_RESOLUTION;
-				  
-				  if (pixelSpacingX != 0 && pixelSpacingY != 0 )
-					glVertex2f( (rect.origin.x - offsetx)*scaleValue + 8*cos(angle), (rect.origin.y - offsety)*scaleValue + 8*sin(angle)*pixelSpacingX/pixelSpacingY);
-				  else
-					glVertex2f( (rect.origin.x - offsetx)*scaleValue + 8*cos(angle), (rect.origin.y - offsety)*scaleValue + 8*sin(angle));
-				}
+                {
+                    for (int i = 0; i < CIRCLE_RESOLUTION ; i++ ) {
+                      angle = i * 2 * M_PI /CIRCLE_RESOLUTION;
+                      
+                      if (pixelSpacingX != 0 && pixelSpacingY != 0 )
+                        glVertex2f((rect.origin.x - offsetx)*scaleValue + 8*cos(angle),
+                                   (rect.origin.y - offsety)*scaleValue + 8*sin(angle)*pixelSpacingX/pixelSpacingY);
+                      else
+                        glVertex2f((rect.origin.x - offsetx)*scaleValue + 8*cos(angle),
+                                   (rect.origin.y - offsety)*scaleValue + 8*sin(angle));
+                    }
+                }
 				glEnd();
 				
 				if ((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
@@ -6165,7 +6180,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				glPointSize( (1 + sqrt( thick))*3.5 * backingScaleFactor);
 				glBegin( GL_POINTS);
-				glVertex2f(  (rect.origin.x  - offsetx)*scaleValue, (rect.origin.y  - offsety)*scaleValue);
+                {
+                    glVertex2f(  (rect.origin.x  - offsetx)*scaleValue, (rect.origin.y  - offsety)*scaleValue);
+                }
 				glEnd();
 				
 				glLineWidth(1.0 * backingScaleFactor);
@@ -6337,10 +6354,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glColor3f (0.5f, 0.5f, 1.0f);
 					glPointSize( 2.0 * 3 * backingScaleFactor);
 					glBegin( GL_POINTS);
-					glVertex2f(  (unrotatedRect.origin.x - offsetx)*scaleValue - unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)/ratio*scaleValue - unrotatedRect.size.height/2/ratio);
-					glVertex2f(  (unrotatedRect.origin.x - offsetx)*scaleValue - unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)/ratio*scaleValue + unrotatedRect.size.height/2/ratio);
-					glVertex2f(  (unrotatedRect.origin.x- offsetx)*scaleValue + unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)/ratio*scaleValue + unrotatedRect.size.height/2/ratio);
-					glVertex2f(  (unrotatedRect.origin.x - offsetx)*scaleValue + unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)/ratio*scaleValue - unrotatedRect.size.height/2/ratio);
+                    {
+                        glVertex2f((unrotatedRect.origin.x - offsetx)*scaleValue - unrotatedRect.size.width/2,
+                                   (unrotatedRect.origin.y - offsety)/ratio*scaleValue - unrotatedRect.size.height/2/ratio);
+
+                        glVertex2f((unrotatedRect.origin.x - offsetx)*scaleValue - unrotatedRect.size.width/2,
+                                   (unrotatedRect.origin.y - offsety)/ratio*scaleValue + unrotatedRect.size.height/2/ratio);
+
+                        glVertex2f((unrotatedRect.origin.x- offsetx)*scaleValue + unrotatedRect.size.width/2,
+                                   (unrotatedRect.origin.y - offsety)/ratio*scaleValue + unrotatedRect.size.height/2/ratio);
+
+                        glVertex2f((unrotatedRect.origin.x - offsetx)*scaleValue + unrotatedRect.size.width/2,
+                                   (unrotatedRect.origin.y - offsety)/ratio*scaleValue - unrotatedRect.size.height/2/ratio);
+                    }
 					glEnd();
 				}
 				
@@ -6422,41 +6448,45 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					op = (ARROWSIZE + thick * backingScaleFactor * 13) * sin( angle*deg2rad);
 					
 					glBegin(GL_LINE_STRIP);
-						if (b.y-a.y > 0)
-						{	
-							if (pixelSpacingX != 0 && pixelSpacingY != 0 )
-								glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
-							else
-								glVertex2f( a.x + adj, a.y + (op));
-						}
-						else
-						{
-							if (pixelSpacingX != 0 && pixelSpacingY != 0 )
-								glVertex2f( a.x - adj, a.y - (op*pixelSpacingX / pixelSpacingY));
-							else
-								glVertex2f( a.x - adj, a.y - (op));
-						}
-						glVertex2f( b.x, b.y);
+                    {
+                        if (b.y-a.y > 0)
+                        {
+                            if (pixelSpacingX != 0 && pixelSpacingY != 0 )
+                                glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+                            else
+                                glVertex2f( a.x + adj, a.y + (op));
+                        }
+                        else
+                        {
+                            if (pixelSpacingX != 0 && pixelSpacingY != 0 )
+                                glVertex2f( a.x - adj, a.y - (op*pixelSpacingX / pixelSpacingY));
+                            else
+                                glVertex2f( a.x - adj, a.y - (op));
+                        }
+                        glVertex2f( b.x, b.y);
+                    }
 					glEnd();
 					
 					glPointSize( thick*2 * backingScaleFactor);
 						
 					glBegin( GL_POINTS);
-					if (b.y-a.y > 0)
-					{	
-						if (pixelSpacingX != 0 && pixelSpacingY != 0 )
-							glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
-						else
-							glVertex2f( a.x + adj, a.y + (op));
-					}
-					else
-					{
-						if (pixelSpacingX != 0 && pixelSpacingY != 0 )
-							glVertex2f( a.x - adj, a.y - (op*pixelSpacingX / pixelSpacingY));
-						else
-							glVertex2f( a.x - adj, a.y - (op));
-					}
-					glVertex2f( b.x, b.y);
+                    {
+                        if (b.y-a.y > 0)
+                        {
+                            if (pixelSpacingX != 0 && pixelSpacingY != 0 )
+                                glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+                            else
+                                glVertex2f( a.x + adj, a.y + (op));
+                        }
+                        else
+                        {
+                            if (pixelSpacingX != 0 && pixelSpacingY != 0 )
+                                glVertex2f( a.x - adj, a.y - (op*pixelSpacingX / pixelSpacingY));
+                            else
+                                glVertex2f( a.x - adj, a.y - (op));
+                        }
+                        glVertex2f( b.x, b.y);
+                    }
 					glEnd();
 					
 					// ARROW
@@ -6510,23 +6540,24 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					
 					glLineWidth( 1.0*backingScaleFactor);
 					glBegin(GL_TRIANGLES);
-					
-					glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-					
-					glVertex2f( arh1.x, arh1.y);
-					glVertex2f( arh2.x, arh2.y);
-					glVertex2f( arh3.x, arh3.y);
-					
+                    {
+                        glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+                        
+                        glVertex2f( arh1.x, arh1.y);
+                        glVertex2f( arh2.x, arh2.y);
+                        glVertex2f( arh3.x, arh3.y);
+                    }
 					glEnd();
 //
 //					glBegin(GL_LINE_LOOP);
-//					glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//					glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-//					
-//					glVertex2f( aa1.x, aa1.y);
-//					glVertex2f( aa2.x, aa2.y);
-//					glVertex2f( aa3.x, aa3.y);
-//					
+//                    {
+//                        glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//                        glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+//
+//                        glVertex2f( aa1.x, aa1.y);
+//                        glVertex2f( aa2.x, aa2.y);
+//                        glVertex2f( aa3.x, aa3.y);
+//                    }
 //					glEnd();
 				}
 				else  // type == tMeasure
@@ -6585,21 +6616,23 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					}
 					
 					glBegin(GL_LINE_STRIP);
-					for (id pt in points)
-					{
-						glVertex2f(([pt x]- offsetx) * scaleValue,
-                                   ([pt y]- offsety) * scaleValue );
-					}
+                    {
+                        for (id pt in points) {
+                            glVertex2f(([pt x]- offsetx) * scaleValue,
+                                       ([pt y]- offsety) * scaleValue );
+                        }
+                    }
 					glEnd();
 					
 					glPointSize( thick * backingScaleFactor);
 				
 					glBegin( GL_POINTS);
-					for (id pt in points)
-					{
-						glVertex2f(([pt x]- offsetx) * scaleValue,
-                                   ([pt y]- offsety) * scaleValue );
-					}
+                    {
+                        for (id pt in points) {
+                            glVertex2f(([pt x]- offsetx) * scaleValue,
+                                       ([pt y]- offsety) * scaleValue );
+                        }
+                    }
 					glEnd();
 				}    // type == tMeasure
 				
@@ -6613,26 +6646,29 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						glPointSize( thick*2 * backingScaleFactor);
 					
 					glBegin( GL_POINTS);
-					for (long i = 0; i < [points count]; i++)
-					{
-						if (i == selectedModifyPoint || i == PointUnderMouse)
-						{
-							glColor3f (1.0f, 0.2f, 0.2f);
-							glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
-						}
-						else if (mode >= ROI_selected)
-						{
-							glColor3f (0.5f, 0.5f, 1.0f);
-							glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
-						}
-					}
+                    {
+                        for (long i = 0; i < [points count]; i++){
+                            if (i == selectedModifyPoint || i == PointUnderMouse)
+                            {
+                                glColor3f (1.0f, 0.2f, 0.2f);
+                                glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue ,
+                                           ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+                            }
+                            else if (mode >= ROI_selected)
+                            {
+                                glColor3f (0.5f, 0.5f, 1.0f);
+                                glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue ,
+                                           ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+                            }
+                        }
+                    }
 					glEnd();
 				}
 				
 				if (mousePosMeasure != -1)
 				{
 					NSPoint	pt = NSMakePoint( [[points objectAtIndex: 0] x], [[points objectAtIndex: 0] y]);
-					float	theta, pyth;
+					float theta, pyth;
 					
 					theta = atan( ([[points objectAtIndex: 1] y] - [[points objectAtIndex: 0] y]) / ([[points objectAtIndex: 1] x] - [[points objectAtIndex: 0] x]));
 					
@@ -6654,7 +6690,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glColor3f (1.0f, 0.0f, 0.0f);
 					glPointSize( (1 * backingScaleFactor + sqrt( thick))*3.5 * backingScaleFactor);
 					glBegin( GL_POINTS);
+                    {
 						glVertex2f( (pt.x - offsetx) * scaleValue , (pt.y - offsety) * scaleValue);
+                    }
 					glEnd();
 				}
 				
@@ -6871,25 +6909,45 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 #pragma mark - tROI
 			case tROI:
 			{
-				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+				glColor4f (color.red / 65535.,
+                           color.green / 65535.,
+                           color.blue / 65535.,
+                           opacity);
 				glLineWidth( thick*backingScaleFactor);
 				glBegin(GL_LINE_LOOP);
-					glVertex2f(  (rect.origin.x - offsetx)*scaleValue, (rect.origin.y - offsety)*scaleValue);
-					glVertex2f(  (rect.origin.x - offsetx)*scaleValue, (rect.origin.y + rect.size.height- offsety)*scaleValue);
-					glVertex2f(  (rect.origin.x+ rect.size.width- offsetx)*scaleValue, (rect.origin.y + rect.size.height- offsety)*scaleValue);
-					glVertex2f(  (rect.origin.x+ rect.size.width - offsetx)*scaleValue, (rect.origin.y - offsety)*scaleValue);
+                {
+					glVertex2f((rect.origin.x - offsetx)*scaleValue,
+                               (rect.origin.y - offsety)*scaleValue);
+
+                    glVertex2f((rect.origin.x - offsetx)*scaleValue,
+                               (rect.origin.y + rect.size.height- offsety)*scaleValue);
+					
+                    glVertex2f((rect.origin.x+ rect.size.width- offsetx)*scaleValue,
+                               (rect.origin.y + rect.size.height- offsety)*scaleValue);
+					
+                    glVertex2f((rect.origin.x+ rect.size.width - offsetx)*scaleValue,
+                               (rect.origin.y - offsety)*scaleValue);
+                }
 				glEnd();
 				
 				glPointSize( thick * backingScaleFactor);
 				glBegin( GL_POINTS);
-					glVertex2f(  (rect.origin.x - offsetx)*scaleValue, (rect.origin.y - offsety)*scaleValue);
-					glVertex2f(  (rect.origin.x - offsetx)*scaleValue, (rect.origin.y + rect.size.height- offsety)*scaleValue);
-					glVertex2f(  (rect.origin.x+ rect.size.width- offsetx)*scaleValue, (rect.origin.y + rect.size.height- offsety)*scaleValue);
-					glVertex2f(  (rect.origin.x+ rect.size.width - offsetx)*scaleValue, (rect.origin.y - offsety)*scaleValue);
+                {
+					glVertex2f((rect.origin.x - offsetx)*scaleValue,
+                               (rect.origin.y - offsety)*scaleValue);
+
+                    glVertex2f((rect.origin.x - offsetx)*scaleValue,
+                               (rect.origin.y + rect.size.height- offsety)*scaleValue);
+					
+                    glVertex2f((rect.origin.x+ rect.size.width- offsetx)*scaleValue,
+                               (rect.origin.y + rect.size.height- offsety)*scaleValue);
+					
+                    glVertex2f((rect.origin.x+ rect.size.width - offsetx)*scaleValue,
+                               (rect.origin.y - offsety)*scaleValue);
                 
                     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"drawROICircleCenter"])
                         glVertex2f( (rect.origin.x +rect.size.width/2. - offsetx) * scaleValue, (rect.origin.y +rect.size.height/2.- offsety) * scaleValue);
-                
+                }
 				glEnd();
 				
 				if ((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
@@ -7040,40 +7098,44 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                     r.size.height *= scaleValue;
 
                     glBegin(GL_LINE_LOOP);
-                    for (int i = 0; i < resol ; i++ )
                     {
-                        angle = i * 2 * M_PI /resol;
-                      
-                        glVertex2f( r.size.width*cos(angle), r.size.height*sin(angle));
+                        for (int i = 0; i < resol ; i++ ) {
+                            angle = i * 2 * M_PI /resol;
+                            glVertex2f( r.size.width*cos(angle), r.size.height*sin(angle));
+                        }
                     }
                     glEnd();
                     
                     glPointSize( thick * backingScaleFactor);
                     glBegin( GL_POINTS);
-                    for (int i = 0; i < resol ; i++ )
                     {
-                        angle = i * 2 * M_PI /resol;
+                        for (int i = 0; i < resol ; i++ ){
+                            angle = i * 2 * M_PI /resol;
+                            glVertex2f( r.size.width*cos(angle), r.size.height*sin(angle));
+                        }
+                        
+                        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"drawROICircleCenter"])
+                            glVertex2f( 0, 0);
 
-                        glVertex2f( r.size.width*cos(angle), r.size.height*sin(angle));
                     }
-                    
-                    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"drawROICircleCenter"])
-                        glVertex2f( 0, 0);
-                    
                     glEnd();
                     
                     if (type == tOvalAngle)    // draw the angle
                     {
                         glBegin(GL_LINE_LOOP);
-                        glVertex2f( 0, 0);
-                        glVertex2f(armScale*r.size.width*cos(ovalAngle[0]),
-                                   armScale*r.size.height*sin(ovalAngle[0]));
+                        {
+                            glVertex2f( 0, 0);
+                            glVertex2f(armScale*r.size.width*cos(ovalAngle[0]),
+                                       armScale*r.size.height*sin(ovalAngle[0]));
+                        }
                         glEnd();
                         
                         glBegin(GL_LINE_LOOP);
-                        glVertex2f( 0, 0);
-                        glVertex2f(armScale*r.size.width*cos(ovalAngle[1]),
-                                   armScale*r.size.height*sin(ovalAngle[1]));
+                        {
+                            glVertex2f( 0, 0);
+                            glVertex2f(armScale*r.size.width*cos(ovalAngle[1]),
+                                       armScale*r.size.height*sin(ovalAngle[1]));
+                        }
                         glEnd();
                     }
 				
@@ -7082,18 +7144,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         glColor3f (0.5f, 0.5f, 1.0f);
                         glPointSize( (1 * backingScaleFactor + sqrt( thick))*3.5 * backingScaleFactor);
                         glBegin( GL_POINTS);
-                        glVertex2f( - r.size.width, - r.size.height);
-                        glVertex2f( - r.size.width, + r.size.height);
-                        glVertex2f( + r.size.width, + r.size.height);
-                        glVertex2f( + r.size.width, - r.size.height);
-                        
-                        //Center
-                        glVertex2f( 0, 0);
-                        
-                        if (type == tOvalAngle)
                         {
-                            glVertex2f( armScale*r.size.width*cos(ovalAngle[0]), armScale*r.size.height*sin(ovalAngle[0]));
-                            glVertex2f( armScale*r.size.width*cos(ovalAngle[1]), armScale*r.size.height*sin(ovalAngle[1]));
+                            glVertex2f( - r.size.width, - r.size.height);
+                            glVertex2f( - r.size.width, + r.size.height);
+                            glVertex2f( + r.size.width, + r.size.height);
+                            glVertex2f( + r.size.width, - r.size.height);
+                            
+                            //Center
+                            glVertex2f( 0, 0);
+                            
+                            if (type == tOvalAngle){
+                                glVertex2f( armScale*r.size.width*cos(ovalAngle[0]), armScale*r.size.height*sin(ovalAngle[0]));
+                                glVertex2f( armScale*r.size.width*cos(ovalAngle[1]), armScale*r.size.height*sin(ovalAngle[1]));
+                            }
                         }
                         glEnd();
                     }
@@ -7271,25 +7334,26 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
                     glColor4f( color.red / 65535., color.green / 65535., color.blue / 65535., opacity/2.);
                     glBegin(GL_TRIANGLE_FAN); // The circle gets filled
-                    for (int i = 0; i < resol ; i++ )
                     {
-                        angle = i * 2 * M_PI /resol;
-                        glVertex2f( r.size.width*cos(angle), r.size.height*sin(angle));
+                        for (int i = 0; i < resol ; i++ ) {
+                            angle = i * 2 * M_PI /resol;
+                            glVertex2f( r.size.width*cos(angle), r.size.height*sin(angle));
+                        }
                     }
                     glEnd();
                     
                     glColor4f( color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
                     glPointSize( thick * backingScaleFactor);
                     glBegin( GL_POINTS);
-                    for (int i = 0; i < resol ; i++ )
                     {
-                        angle = i * 2 * M_PI /resol;
-                        glVertex2f( r.size.width*cos(angle), r.size.height*sin(angle));
+                        for (int i = 0; i < resol ; i++ ) {
+                            angle = i * 2 * M_PI /resol;
+                            glVertex2f( r.size.width*cos(angle), r.size.height*sin(angle));
+                        }
+                        
+                        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"drawROICircleCenter"])
+                            glVertex2f( 0, 0);
                     }
-                    
-                    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"drawROICircleCenter"])
-                        glVertex2f( 0, 0);
-                    
                     glEnd();
                     
                     // TODO: draw the pink circle
@@ -7306,14 +7370,15 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         glColor3f (0.5f, 0.5f, 1.0f);
                         glPointSize( (1 * backingScaleFactor + sqrt( thick))*3.5 * backingScaleFactor);
                         glBegin( GL_POINTS);
-                        glVertex2f( - r.size.width, - r.size.height);
-                        glVertex2f( - r.size.width, + r.size.height);
-                        glVertex2f( + r.size.width, + r.size.height);
-                        glVertex2f( + r.size.width, - r.size.height);
-                        
-                        //Center
-                        glVertex2f( 0, 0);
-                        
+                        {
+                            glVertex2f( - r.size.width, - r.size.height);
+                            glVertex2f( - r.size.width, + r.size.height);
+                            glVertex2f( + r.size.width, + r.size.height);
+                            glVertex2f( + r.size.width, - r.size.height);
+                            
+                            //Center
+                            glVertex2f( 0, 0);
+                        }
                         glEnd();
                     }
                     
@@ -7455,24 +7520,25 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         glLineWidth( thick * backingScaleFactor);
                     
                     glBegin(GL_LINE_LOOP);
-                    
-                    for (long i = 0; i < [points count]; i++)
-                    {				
-                        //NSLog(@"JJCP--	tAxis- New point: %f x, %f y",[[points objectAtIndex:i] x],[[points objectAtIndex:i] y]);
-                        glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
-                        if (i>2)
-                        {
-                            //glEnd();
-                            break;
+                    {
+                        for (long i = 0; i < [points count]; i++) {
+                            //NSLog(@"tAxis- New point: %f x, %f y",[[points objectAtIndex:i] x],[[points objectAtIndex:i] y]);
+                            glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue,
+                                       ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+
+                            if (i>2) {
+                                //glEnd();
+                                break;
+                            }
                         }
                     }
                     glEnd();
-                    if ([points count]>3 )
-                    {
-                        for (long i=4;i<[points count];i++ ) [points removeObjectAtIndex: i];
-                    }
+
+                    if ([points count] > 3)
+                        for (long i=4;i<[points count];i++ )
+                            [points removeObjectAtIndex: i];
                     
-                    //TEXT
+                    // TEXT
                     if (self.isTextualDataDisplayed && prepareTextualData)
                     {
                         NSPoint tPt = self.lowerRightPoint;
@@ -7496,16 +7562,18 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         glColor3f (0.5f, 0.5f, 1.0f);
                         glPointSize( (1 * backingScaleFactor + sqrt( thick))*3.5 * backingScaleFactor);
                         glBegin( GL_POINTS);
-                        for (long i = 0; i < [points count]; i++) {
-                            if (mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse))
-                                glColor3f (1.0f, 0.2f, 0.2f);
-                            else if (mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/(thick*backingScaleFactor) :[[curView curDCM] pixelRatio]] == YES)
-                                glColor3f (1.0f, 0.0f, 1.0f);
-                            else
-                                glColor3f (0.5f, 0.5f, 1.0f);
-                            
-                            glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue,
-                                       ([[points objectAtIndex: i] y]- offsety) * scaleValue);
+                        {
+                            for (long i = 0; i < [points count]; i++) {
+                                if (mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse))
+                                    glColor3f (1.0f, 0.2f, 0.2f);
+                                else if (mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/(thick*backingScaleFactor) :[[curView curDCM] pixelRatio]] == YES)
+                                    glColor3f (1.0f, 0.0f, 1.0f);
+                                else
+                                    glColor3f (0.5f, 0.5f, 1.0f);
+                                
+                                glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue,
+                                           ([[points objectAtIndex: i] y]- offsety) * scaleValue);
+                            }
                         }
                         glEnd();
                     }
@@ -7584,18 +7652,23 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         if (plot)
                         {
                             glBegin(GL_LINE_STRIP);
-                            glColor3f (0.0f, 0.0f, 1.0f);
-                            glVertex2f(x1,y1);
-                            glVertex2f(x2,y2);
-                            //glVertex2f(tPt01.x, tPt01.y);
-                            //glVertex2f(tPt23.x, tPt23.y);
+                            {
+                                glColor3f (0.0f, 0.0f, 1.0f);
+                                glVertex2f(x1,y1);
+                                glVertex2f(x2,y2);
+                                //glVertex2f(tPt01.x, tPt01.y);
+                                //glVertex2f(tPt23.x, tPt23.y);
+                            }
                             glEnd();
+
                             glBegin(GL_LINE_STRIP);
-                            glColor3f (1.0f, 0.0f, 0.0f);
-                            glVertex2f(x3,y3);
-                            glVertex2f(x4,y4);
-                            //glVertex2f(tPt03.x, tPt03.y);
-                            //glVertex2f(tPt21.x, tPt21.y);
+                            {
+                                glColor3f (1.0f, 0.0f, 0.0f);
+                                glVertex2f(x3,y3);
+                                glVertex2f(x4,y4);
+                                //glVertex2f(tPt03.x, tPt03.y);
+                                //glVertex2f(tPt21.x, tPt21.y);
+                            }
                             glEnd();
                         }
                         
@@ -7623,21 +7696,26 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                                 // inside: fill							
                                 glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., 0.25);
-                                glBegin(GL_POLYGON);		
-                                glVertex2f(p1.x, p1.y);
-                                glVertex2f(p2.x, p2.y);
-                                glVertex2f(p3.x, p3.y);
-                                glVertex2f(p4.x, p4.y);
+                                glBegin(GL_POLYGON);
+                                {
+                                    glVertex2f(p1.x, p1.y);
+                                    glVertex2f(p2.x, p2.y);
+                                    glVertex2f(p3.x, p3.y);
+                                    glVertex2f(p4.x, p4.y);
+                                }
                                 glEnd();
                                 
                                 // no border
                                 
-                                /*	glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., 0.2);						
+                                /*
+                                glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., 0.2);
                                 glBegin(GL_LINE_LOOP);
-                                glVertex2f(p1.x, p1.y);
-                                glVertex2f(p2.x, p2.y);
-                                glVertex2f(p3.x, p3.y);
-                                glVertex2f(p4.x, p4.y);
+                                {
+                                    glVertex2f(p1.x, p1.y);
+                                    glVertex2f(p2.x, p2.y);
+                                    glVertex2f(p3.x, p3.y);
+                                    glVertex2f(p4.x, p4.y);
+                                }
                                 glEnd();
                                 */	
                                 glDisable(GL_BLEND);
@@ -7661,32 +7739,41 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                 
                 // A : main line
                 glBegin(GL_LINE_STRIP);
-                glVertex2f(([[points objectAtIndex: 0] x]- offsetx) * scaleValue ,
-                           ([[points objectAtIndex: 0] y]- offsety) * scaleValue);
-                glVertex2f(([[points objectAtIndex: 1] x]- offsetx) * scaleValue ,
-                           ([[points objectAtIndex: 1] y]- offsety) * scaleValue);
+                {
+                    glVertex2f(([[points objectAtIndex: 0] x]- offsetx) * scaleValue ,
+                               ([[points objectAtIndex: 0] y]- offsety) * scaleValue);
+
+                    glVertex2f(([[points objectAtIndex: 1] x]- offsetx) * scaleValue ,
+                               ([[points objectAtIndex: 1] y]- offsety) * scaleValue);
+                }
                 glEnd();
                 
                 if ([points count] == 6)
                 {
                     // C
                     glBegin(GL_LINE_STRIP);
-                    glVertex2f(([[points objectAtIndex: 2] x]- offsetx) * scaleValue,
-                               ([[points objectAtIndex: 2] y]- offsety) * scaleValue);
-                    glVertex2f(([[points objectAtIndex: 3] x]- offsetx) * scaleValue,
-                               ([[points objectAtIndex: 3] y]- offsety) * scaleValue);
+                    {
+                        glVertex2f(([[points objectAtIndex: 2] x]- offsetx) * scaleValue,
+                                   ([[points objectAtIndex: 2] y]- offsety) * scaleValue);
+
+                        glVertex2f(([[points objectAtIndex: 3] x]- offsetx) * scaleValue,
+                                   ([[points objectAtIndex: 3] y]- offsety) * scaleValue);
+                    }
                     glEnd();
                     
                     // B
                     glBegin(GL_LINE_STRIP);
-                    glVertex2f(([[points objectAtIndex: 4] x]- offsetx) * scaleValue,
-                               ([[points objectAtIndex: 4] y]- offsety) * scaleValue);
-                    glVertex2f(([[points objectAtIndex: 5] x]- offsetx) * scaleValue,
-                               ([[points objectAtIndex: 5] y]- offsety) * scaleValue);
+                    {
+                        glVertex2f(([[points objectAtIndex: 4] x]- offsetx) * scaleValue,
+                                   ([[points objectAtIndex: 4] y]- offsety) * scaleValue);
+
+                        glVertex2f(([[points objectAtIndex: 5] x]- offsetx) * scaleValue,
+                                   ([[points objectAtIndex: 5] y]- offsety) * scaleValue);
+                    }
                     glEnd();
                 }
                 
-				//TEXT
+				// TEXT
 				if (self.isTextualDataDisplayed && prepareTextualData)
 				{
                     NSPoint tPt = self.lowerRightPoint;
@@ -7737,28 +7824,29 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glColor3f (0.5f, 0.5f, 1.0f);
 					glPointSize( thick*2 * backingScaleFactor);
 					glBegin( GL_POINTS);
-                    for (long i = 0; i < [points count]; i++)
                     {
-                        if (i == 0 || i == 2)
-                            continue;
-                        
-                        if (mode >= ROI_selected &&
-                            (i == selectedModifyPoint || i == PointUnderMouse))
-                        {
-                            glColor3f (1.0f, 0.2f, 0.2f);
+                        for (long i = 0; i < [points count]; i++) {
+                            if (i == 0 || i == 2)
+                                continue;
+                            
+                            if (mode >= ROI_selected &&
+                                (i == selectedModifyPoint || i == PointUnderMouse))
+                            {
+                                glColor3f (1.0f, 0.2f, 0.2f);
+                            }
+                            else if (mode == ROI_drawing &&
+                                    [[points objectAtIndex: i] isNearToPoint:tempPt
+                                                                            :scaleValue/(thick*backingScaleFactor)
+                                                                            :[[curView curDCM] pixelRatio]] == YES)
+                            {
+                                glColor3f (1.0f, 0.0f, 1.0f);
+                            }
+                            else
+                                glColor3f (0.5f, 0.5f, 1.0f);
+                            
+                            glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue ,
+                                       ([[points objectAtIndex: i] y]- offsety) * scaleValue);
                         }
-                        else if (mode == ROI_drawing &&
-                                [[points objectAtIndex: i] isNearToPoint:tempPt
-                                                                        :scaleValue/(thick*backingScaleFactor)
-                                                                        :[[curView curDCM] pixelRatio]] == YES)
-                        {
-                            glColor3f (1.0f, 0.0f, 1.0f);
-                        }
-                        else
-                            glColor3f (0.5f, 0.5f, 1.0f);
-                        
-                        glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue ,
-                                   ([[points objectAtIndex: i] y]- offsety) * scaleValue);
                     }
 					glEnd();
 				}
@@ -7847,25 +7935,25 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                     glLineWidth(thick * backingScaleFactor);
                 
                 glBegin(GL_LINE_STRIP);
-                
-                for (long i = 0; i < [points count]; i++)
                 {
-                    if (i==1||i==2)
-                        glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., 0.1);
-                    else
-                        glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-                    
-                    glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue ,
-                               ([[points objectAtIndex: i] y]- offsety) * scaleValue );
-                    if (i>2)
-                        break;
+                    for (long i = 0; i < [points count]; i++)
+                    {
+                        if (i==1||i==2)
+                            glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., 0.1);
+                        else
+                            glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+                        
+                        glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue ,
+                                   ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+                        if (i>2)
+                            break;
+                    }
                 }
                 glEnd();
-                if ([points count]>3)
-                {
+
+                if ([points count] > 3)
                     for (long i=4; i<[points count]; i++ )
                         [points removeObjectAtIndex: i];
-                }
                 
 				NSPoint a1,a2,b1,b2;
 				float angle=0;
@@ -7930,25 +8018,26 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glColor3f (0.5f, 0.5f, 1.0f);
 					glPointSize( (1 * backingScaleFactor + sqrt( thick))*3.5 * backingScaleFactor);
 					glBegin( GL_POINTS);
-					for (long i = 0; i < [points count]; i++)
                     {
-						if (mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse))
-                        {
-                            glColor3f (1.0f, 0.2f, 0.2f);
+                        for (long i = 0; i < [points count]; i++) {
+                            if (mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse))
+                            {
+                                glColor3f (1.0f, 0.2f, 0.2f);
+                            }
+                            else if (mode == ROI_drawing &&
+                                     [[points objectAtIndex: i] isNearToPoint:tempPt
+                                                                             :scaleValue/(thick*backingScaleFactor)
+                                                                             :[[curView curDCM] pixelRatio]])
+                            {
+                                glColor3f (1.0f, 0.0f, 1.0f);
+                            }
+                            else
+                                glColor3f (0.5f, 0.5f, 1.0f);
+                            
+                            glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue ,
+                                       ([[points objectAtIndex: i] y]- offsety) * scaleValue);
                         }
-						else if (mode == ROI_drawing &&
-                                 [[points objectAtIndex: i] isNearToPoint:tempPt
-                                                                         :scaleValue/(thick*backingScaleFactor)
-                                                                         :[[curView curDCM] pixelRatio]])
-                        {
-                            glColor3f (1.0f, 0.0f, 1.0f);
-                        }
-						else
-                            glColor3f (0.5f, 0.5f, 1.0f);
-						
-						glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue ,
-                                   ([[points objectAtIndex: i] y]- offsety) * scaleValue);
-					}
+                    }
 					glEnd();
 				}
 				
@@ -7956,8 +8045,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glColor3f (1.0f, 1.0f, 1.0f);
 			}
 			break;
+
 #pragma mark - tCPolygon, tOPolygon, tAngle, tPencil
-			case tCPolygon:
+
+            case tCPolygon:
 			case tOPolygon:
 			case tAngle:
 			case tPencil:
@@ -7994,15 +8085,18 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				if ([splinePoints count] >= 1)
 				{
+                    GLenum mode;
 					if ((type == tCPolygon || type == tPencil) && mode != ROI_drawing )
-                        glBegin(GL_LINE_LOOP);
+                        mode = GL_LINE_LOOP;
 					else
-                        glBegin(GL_LINE_STRIP);
+                        mode = GL_LINE_STRIP;
 					
-					for (MyPoint *p in splinePoints)
-						glVertex2d(((double) [p x]-(double) offsetx)*(double) scaleValue,
-                                   ((double) [p y]-(double) offsety)*(double) scaleValue);
-                    
+                    glBegin(mode);
+                    {
+                        for (MyPoint *p in splinePoints)
+                            glVertex2d(((double) [p x]-(double) offsetx)*(double) scaleValue,
+                                       ((double) [p y]-(double) offsety)*(double) scaleValue);
+                    }
 					glEnd();
 					
 					if (type == tOPolygon)
@@ -8013,10 +8107,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						{
 							glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity/4.);
 							glBegin(GL_LINE_STRIP);
-							glVertex2d(((double) [[splinePoints objectAtIndex: 0] x]-(double) offsetx)*(double) scaleValue,
-                                       ((double) [[splinePoints objectAtIndex: 0] y]-(double) offsety)*(double) scaleValue);
-							glVertex2d(((double) [[splinePoints lastObject] x]-(double) offsetx)*(double) scaleValue,
-                                       ((double) [[splinePoints lastObject] y]-(double) offsety)*(double) scaleValue);
+                            {
+                                glVertex2d(((double) [[splinePoints objectAtIndex: 0] x]-(double) offsetx)*(double) scaleValue,
+                                           ((double) [[splinePoints objectAtIndex: 0] y]-(double) offsety)*(double) scaleValue);
+
+                                glVertex2d(((double) [[splinePoints lastObject] x]-(double) offsetx)*(double) scaleValue,
+                                           ((double) [[splinePoints lastObject] y]-(double) offsety)*(double) scaleValue);
+                            }
 							glEnd();
 							glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 						}
@@ -8039,14 +8136,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                     }
                     
 					glBegin( GL_POINTS);
-					for (MyPoint *p in splinePoints)
-						glVertex2d(((double) [p x]-(double) offsetx)*(double) scaleValue,
-                                   ((double) [p y]-(double) offsety)*(double) scaleValue);
-                    
-                    if (rectPoly && [[NSUserDefaults standardUserDefaults] boolForKey: @"drawROICircleCenter"])
-                        glVertex2f((rectCenter.x - offsetx) * scaleValue,
-                                   (rectCenter.y - offsety) * scaleValue);
-                    
+                    {
+                        for (MyPoint *p in splinePoints)
+                            glVertex2d(((double) [p x]-(double) offsetx)*(double) scaleValue,
+                                       ((double) [p y]-(double) offsety)*(double) scaleValue);
+                        
+                        if (rectPoly && [[NSUserDefaults standardUserDefaults] boolForKey: @"drawROICircleCenter"])
+                            glVertex2f((rectCenter.x - offsetx) * scaleValue,
+                                       (rectCenter.y - offsety) * scaleValue);
+
+                    }
 					glEnd();
 					
 					// TEXT
@@ -8465,22 +8564,23 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						glColor3f (0.5f, 0.5f, 1.0f);
 						glPointSize( (1 * backingScaleFactor + sqrt( thick))*3.5 * backingScaleFactor);
 						glBegin( GL_POINTS);
-						for (long i = 0; i < [points count]; i++)
-						{
-							if (mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse))
-                                glColor3f (1.0f, 0.2f, 0.2f);
-							else if (mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/(thick*backingScaleFactor) :[[curView curDCM] pixelRatio]] == YES)
-                                glColor3f (1.0f, 0.0f, 1.0f);
-							else
-                                glColor3f (0.5f, 0.5f, 1.0f);
-							
-							glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue,
-                                       ([[points objectAtIndex: i] y]- offsety) * scaleValue);
-						}
-                        
-                        if (rectPoly && [[NSUserDefaults standardUserDefaults] boolForKey: @"drawROICircleCenter"])
-                            glVertex2f( (rectCenter.x - offsetx) * scaleValue, (rectCenter.y - offsety) * scaleValue);
-                        
+                        {
+                            for (long i = 0; i < [points count]; i++)
+                            {
+                                if (mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse))
+                                    glColor3f (1.0f, 0.2f, 0.2f);
+                                else if (mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/(thick*backingScaleFactor) :[[curView curDCM] pixelRatio]] == YES)
+                                    glColor3f (1.0f, 0.0f, 1.0f);
+                                else
+                                    glColor3f (0.5f, 0.5f, 1.0f);
+                                
+                                glVertex2f(([[points objectAtIndex: i] x]- offsetx) * scaleValue,
+                                           ([[points objectAtIndex: i] y]- offsety) * scaleValue);
+                            }
+                            
+                            if (rectPoly && [[NSUserDefaults standardUserDefaults] boolForKey: @"drawROICircleCenter"])
+                                glVertex2f( (rectCenter.x - offsetx) * scaleValue, (rectCenter.y - offsety) * scaleValue);
+                        }
 						glEnd();
 					}
 					
@@ -8491,10 +8591,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							glColor3f (1.0f, 0.0f, 1.0f);
 							glPointSize( (1 * backingScaleFactor + sqrt( thick))*3.5 * backingScaleFactor);
 							glBegin( GL_POINTS);
-							
-							glVertex2f(([[points objectAtIndex: PointUnderMouse] x]- offsetx) * scaleValue,
-                                       ([[points objectAtIndex: PointUnderMouse] y]- offsety) * scaleValue);
-							
+                            {
+                                glVertex2f(([[points objectAtIndex: PointUnderMouse] x]- offsetx) * scaleValue,
+                                           ([[points objectAtIndex: PointUnderMouse] y]- offsety) * scaleValue);
+                            }
 							glEnd();
 						}
 					}

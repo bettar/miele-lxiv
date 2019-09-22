@@ -426,6 +426,7 @@
 		
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
 		glBegin (GL_QUADS);
+        {
 			glTexCoord2f (0.0f, 0.0f); // draw upper left in world coordinates
 			glVertex2f (bounds.origin.x, bounds.origin.y);
 	
@@ -437,6 +438,7 @@
 	
 			glTexCoord2f (texSize.width, 0.0f); // draw lower right in world coordinates
 			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
+        }
 		glEnd ();
 		
 		glPopAttrib();
