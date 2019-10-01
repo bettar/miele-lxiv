@@ -535,11 +535,13 @@ extern int splitPosition[ 3];
     
     float exportTransverseSliceInterval = 0;
 	
-	if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
+	if ([[self windowController] exportSequenceType] == CPRSeriesExportSequenceType &&
+        [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
+    {
         exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
+    }
     
-    
-    if( exportTransverseSliceInterval > 0)
+    if (exportTransverseSliceInterval > 0)
 	{
 		glColor4d(1.0, 1.0, 0.0, 1.0);
 		

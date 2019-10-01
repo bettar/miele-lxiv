@@ -59,6 +59,12 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
     MY_SCROLL_MODE_HOR = 2
 };
 
+typedef NS_ENUM(NSUInteger, PETWindowingMode) {
+    PETWindowingMode_CLASSIC = 0,   // X window width, Y window level
+    PETWindowingMode_FIXED_MIN = 1, // X nothing, Y maximum with specified minimum
+    PETWindowingMode_MAXIMUM = 2    // X minimum, Y maximum
+};
+
 @class GLString;
 @class DCMPix;
 @class DCMView;

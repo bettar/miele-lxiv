@@ -306,8 +306,8 @@ static void DrawGLTexelGrid (float _textureWidth, float _textureHeight, float im
 		coordStep = imageWidth / _textureWidth * zoom; // space between each line (maps texture size to image size)
 		for (i = 0; i <= _textureWidth; i++) // ith column
 		{
-			glVertex3f (coord, -perpenCoord, 0.0f); // draw from current column, top of image to...
-			glVertex3f (coord, perpenCoord, 0.0f); // current column, bottom of image
+			glVertex2f (coord, -perpenCoord); // draw from current column, top of image to...
+			glVertex2f (coord, perpenCoord); // current column, bottom of image
 			coord += coordStep; // step to next column
 		}
 		// horizontal lines
@@ -316,8 +316,8 @@ static void DrawGLTexelGrid (float _textureWidth, float _textureHeight, float im
 		coordStep = imageHeight / _textureHeight * zoom; // space between each line (maps texture size to image size)
 		for (i = 0; i <= _textureHeight; i++) // ith row
 		{
-			glVertex3f (-perpenCoord, coord, 0.0f); // draw from current row, left edge of image to...
-			glVertex3f (perpenCoord, coord, 0.0f);// current row, right edge of image
+			glVertex2f (-perpenCoord, coord); // draw from current row, left edge of image to...
+			glVertex2f (perpenCoord, coord);// current row, right edge of image
 			coord += coordStep; // step to next row
 		}
 	glEnd(); // end our set of lines
@@ -646,7 +646,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     return [d2 compare: d1];
 }
 
-////////////////////////////////////////////////////////////////////////////////
+///
 
 int checkOpenGLErrors(int lineNo)
 {
@@ -6542,7 +6542,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		
 		switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 		{
-			case 0:
+			case PETWindowingMode_CLASSIC:
 				eWL = bdstartWL + (current.y - start.y)*WWAdapter;
 				eWW = bdstartWW + (current.x - start.x)*WWAdapter;
 				
@@ -6551,7 +6551,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                 
                 break;
 			
-			case 1:
+			case PETWindowingMode_FIXED_MIN:
 				endlevel = bdstartMax + (current.y - start.y) * WWAdapter ;
 				
 				eWL = (endlevel - bdstartMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
@@ -6565,7 +6565,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                 
                 break;
 			
-			case 2:
+			case PETWindowingMode_MAXIMUM:
 				endlevel   = bdstartMax + (current.y - start.y) * WWAdapter ;
 				startlevel = bdstartMin + (current.x - start.x) * WWAdapter ;
 				
@@ -6603,7 +6603,6 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeWLWWNotification
                                                         object: blendingView
                                                       userInfo: nil];
-
 }
 
 - (void)mouseDraggedWindowLevel:(NSEvent *)event
@@ -6641,7 +6640,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
                     break;
 				
-				case 1:
+				case PETWindowingMode_FIXED_MIN:
 					endlevel = startMax + (current.y - start.y) * WWAdapter ;
 					
 					eWL = (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
@@ -6655,7 +6654,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
                     break;
 				
-				case 2:
+				case PETWindowingMode_MAXIMUM:
 					endlevel   = startMax + (current.y - start.y) * WWAdapter ;
 					startlevel = startMin + (current.x - start.x) * WWAdapter ;
 					

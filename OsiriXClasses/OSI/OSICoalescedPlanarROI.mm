@@ -136,7 +136,10 @@
     return osirixROIs;
 }
 
-- (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
+- (void)drawSlab:(OSISlab)slab
+    inCGLContext:(CGLContextObj)cgl_ctx
+     pixelFormat:(CGLPixelFormatObj)pixelFormat
+dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
     OSIROIMaskRun maskRun;
     NSData *maskRunsData;
@@ -184,7 +187,6 @@
     }
     glEnd();
 }
-
 
 - (OSIFloatVolumeData *)coalescedROIMaskVolumeData
 {

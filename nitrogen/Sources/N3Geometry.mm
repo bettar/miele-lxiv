@@ -741,20 +741,28 @@ CFDictionaryRef N3AffineTransformCreateDictionaryRepresentation(N3AffineTransfor
     numbers[1] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m12));
     numbers[2] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m13));
     numbers[3] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m14));
+
     numbers[4] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m21));
     numbers[5] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m22));
     numbers[6] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m23));
     numbers[7] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m24));
+
     numbers[8] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m31));
     numbers[9] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m32));
     numbers[10] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m33));
     numbers[11] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m34));
+
     numbers[12] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m41));
     numbers[13] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m42));
     numbers[14] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m43));
     numbers[15] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(transform.m44));
 
-    dict = CFDictionaryCreate(kCFAllocatorDefault, (const void **)keys, (const void **)numbers, 16, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    dict = CFDictionaryCreate(kCFAllocatorDefault,
+                              (const void **)keys,
+                              (const void **)numbers,
+                              16,
+                              &kCFCopyStringDictionaryKeyCallBacks,
+                              &kCFTypeDictionaryValueCallBacks);
 
     for (int i = 0; i < 16; i++) {
         CFRelease(keys[i]);
@@ -777,12 +785,16 @@ CFDictionaryRef N3VectorCreateDictionaryRepresentation(N3Vector vector)
 	numbers[0] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(vector.x));
 	numbers[1] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(vector.y));
 	numbers[2] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(vector.z));
+
+	dict = CFDictionaryCreate(kCFAllocatorDefault,
+                              (const void **)keys,
+                              (const void **)numbers,
+                              3,
+                              &kCFCopyStringDictionaryKeyCallBacks,
+                              &kCFTypeDictionaryValueCallBacks);
 	
-	dict = CFDictionaryCreate(kCFAllocatorDefault, (const void **)keys, (const void **)numbers, 3, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-	
-	CFRelease(numbers[0]);
-	CFRelease(numbers[1]);
-	CFRelease(numbers[2]);
+    for (int i = 0; i < 3; i++)
+        CFRelease(numbers[i]);
 	
 	return dict;
 }

@@ -78,8 +78,10 @@ extern short Altivec;
 	
 	srcfBlending.data = imageBlendingPtr;
 	
-	if( dst8Blending.data) free( dst8Blending.data);
-	dst8Blending.data = (char*) malloc( dst8Blending.height * dst8Blending.width * sizeof(char));
+	if( dst8Blending.data)
+        free( dst8Blending.data);
+
+    dst8Blending.data = (char*) malloc( dst8Blending.height * dst8Blending.width * sizeof(char));
 }
 
 -(void) setImageSource: (float*) i :(long) c
@@ -92,8 +94,10 @@ extern short Altivec;
 	if( count != c)
 	{
 		count = c;
-		if( dst8.data) free( dst8.data);
-		dst8.data = (char*) malloc( dst8.height * dst8.width * sizeof(char));
+		if( dst8.data)
+            free( dst8.data);
+
+        dst8.data = (char*) malloc( dst8.height * dst8.width * sizeof(char));
 	}
 
 	srcf.data = imagePtr;
@@ -141,17 +145,18 @@ extern short Altivec;
 	dst8Blending.width = width;
 	dst8Blending.rowBytes = width * sizeof(char);
 	
-	if( dst8.data) free( dst8.data);
+	if( dst8.data)
+        free( dst8.data);
 	dst8.data = (char*) malloc( dst8.height * dst8.width * sizeof(char));
 	if( dst8.data == nil)
         return;
 	
 	flipReader = nil;
-	}
+}
 
 -(void) setOpacity:(NSArray*) array
 {
-	long i;
+	//long i;
 	NSPoint pt;
 	
 	NSLog(@"Opacity Table");
@@ -170,21 +175,24 @@ extern short Altivec;
 	else
         opacityTransferFunction->AddPoint(0, 0);
 	
-	for( i = 0; i < [array count]; i++)
+	for (long i = 0; i < [array count]; i++)
 	{
 		pt = NSPointFromString( [array objectAtIndex: i]);
 		pt.x -= 1000;
 		opacityTransferFunction->AddPoint(pt.x, pt.y);
 	}
 	
-	if( [array count] == 0 || pt.x != 256) opacityTransferFunction->AddPoint(255, 1);
+	if ([array count] == 0 || pt.x != 256)
+    {
+        opacityTransferFunction->AddPoint(255, 1);
+    }
 	else
 	{
 		opacityTransferFunction->AddPoint(255, pt.y);
 		NSLog(@"end point");
 	}
 	
-	for( i = 0; i < 256; i++)
+	for (long i = 0; i < 256; i++)
 	{
 		opacityTable[i] = opacityTransferFunction->GetValue(i);
 	}
@@ -199,16 +207,15 @@ extern short Altivec;
 	
 	if( flipData == NO)
 	{
-		long			i, size;
-		unsigned char   *tempPtr = (unsigned char*) malloc( height * width * count);
+		long size;
+		unsigned char *tempPtr = (unsigned char*) malloc( height * width * count);
 		
 		size = height * width;
 		
-		for( i=0; i < count; i++)
-		{
-			memcpy(tempPtr+ (count-i-1)*size,  (unsigned char*) dst8.data + i*size, size);
-		}
-		free( dst8.data);
+		for (int i=0; i < count; i++)
+			memcpy(tempPtr+ (count-i-1)*size, (unsigned char*) dst8.data + i*size, size);
+
+        free( dst8.data);
 		dst8.data = tempPtr;
 //		reader->SetImportVoidPointer(dst8.data);
 	}
@@ -222,16 +229,15 @@ extern short Altivec;
 		
 		if( flipData == NO)
 		{
-			long			i, size;
-			unsigned char   *tempPtr = (unsigned char*) malloc( height * width * count);
+			long size;
+			unsigned char *tempPtr = (unsigned char*) malloc( height * width * count);
 			
 			size = height * width;
 			
-			for( i=0; i < count; i++)
-			{
+			for (int  i=0; i < count; i++)
 				memcpy( tempPtr+ (count-i-1)*size, (unsigned char*) dst8Blending.data + i*size, size);
-			}
-			free( dst8Blending.data);
+
+            free( dst8Blending.data);
 			dst8Blending.data = tempPtr;
 		}
 	}
@@ -239,13 +245,11 @@ extern short Altivec;
 
 -(void) setBlendingCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
-	long	i;
+	NSLog(@"Blending CLUT Table");
 	
-	NSLog(@"CLUT Table");
-	
-	if( r)
+	if (r)
 	{
-		for( i = 0; i < 256; i++)
+		for (long  i = 0; i < 256; i++)
 		{
 			tableBlendingFloatR[i] = r[i];
 			tableBlendingFloatG[i] = g[i];
@@ -255,7 +259,7 @@ extern short Altivec;
 	}
 	else
 	{
-		for( i = 0; i < 256; i++)
+		for (long i = 0; i < 256; i++)
 		{
 			tableBlendingFloatR[i] = i;
 			tableBlendingFloatG[i] = i;
@@ -267,15 +271,13 @@ extern short Altivec;
 
 -(void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
-	long	i;
-
 	NSLog(@"CLUT Table");
 	
-	if( r)
+	if ( r)
 	{
 		isRGB = YES;
 		
-		for( i = 0; i < 256; i++)
+		for (long i = 0; i < 256; i++)
 		{
 			tableFloatR[i] = r[i];
 			tableFloatG[i] = g[i];
@@ -287,7 +289,7 @@ extern short Altivec;
 	{
 		isRGB = NO;
 		
-		for( i = 0; i < 256; i++)
+		for (long i = 0; i < 256; i++)
 		{
 			tableFloatR[i] = i;
 			tableFloatG[i] = i;
@@ -304,19 +306,19 @@ extern short Altivec;
 
 -(void) subRender:(NSDictionary*) dict
 {
-	long			x, i, from, to, size, pos, threads, slicesize;
-	
-	threads = [[NSProcessInfo processInfo] processorCount];
-	pos = [[dict valueForKey:@"pos"] intValue];
-	slicesize = [[dict valueForKey:@"size"] intValue];
+	int threads = [[NSProcessInfo processInfo] processorCount];
+	int pos = [[dict valueForKey:@"pos"] intValue];
+	int slicesize = [[dict valueForKey:@"size"] intValue];
 
-	from = (pos * slicesize) / threads;
-	to = ((pos+1) * slicesize) / threads;
-	size = to - from;
+	int from = (pos * slicesize) / threads;
+	int to = ((pos+1) * slicesize) / threads;
+	//int size = to - from;
 	
-	float			*dstFloatRi = dstFloatR + from, *dstFloatGi = dstFloatG + from, *dstFloatBi = dstFloatB + from;
+    float *dstFloatRi = dstFloatR + from;
+    float *dstFloatGi = dstFloatG + from;
+    float *dstFloatBi = dstFloatB + from;
 	
-	for( i = from; i < to; i+= 4)
+	for (int i = from; i < to; i+= 4)
 	{
 		float dstFloatRv1 = 0, dstFloatGv1 = 0, dstFloatBv1 = 0;
 		float dstFloatRv2 = 0, dstFloatGv2 = 0, dstFloatBv2 = 0;
@@ -326,9 +328,9 @@ extern short Altivec;
 		float opacityTotPtr1 = 1, opacityTotPtr2 = 1, opacityTotPtr3 = 1, opacityTotPtr4 = 1;
 		float opacityPtr1, opacityPtr2, opacityPtr3, opacityPtr4;
 		
-		unsigned char   *pixels = ((unsigned char*) dst8.data) +i;
+		unsigned char *pixels = ((unsigned char*) dst8.data) +i;
 		
-		x = count;
+		long x = count;
 		while( x-- > 0)
 		{
 			unsigned char val1, val2, val3, val4;   //= *pixels;
@@ -403,38 +405,34 @@ extern short Altivec;
 
 -(unsigned char*) renderSlab
 {
-	unsigned char*  dst;
-	
 //	NSLog(@"IN");
 	
 //	if( ALTIVECVR)
 //	{
     vImage_Buffer src, srcA, destR, destG, destB, dstARGB;
-    long	i, x, size;
-    
-    unsigned char   *dstA, *dstPlan;
+    long i, x;
 
 //		NSLog(@"IN");
     
-    size = height * width;
+    long size = height * width;
     
-    dst = (unsigned char*) malloc( height * width * 4);
-    dstPlan = (unsigned char*) malloc( height * width * 4);
+    unsigned char *dst = (unsigned char*) malloc( height * width * 4);
+    unsigned char *dstPlan = (unsigned char*) malloc( height * width * 4);
     
     dstFloatR = (float*) malloc( height * width * sizeof(float));		//bzero(dstFloatR, height * width * sizeof(float));
     dstFloatG = (float*) malloc( height * width * sizeof(float));		//bzero(dstFloatG, height * width * sizeof(float));
     dstFloatB = (float*) malloc( height * width * sizeof(float));		//bzero(dstFloatB, height * width * sizeof(float));
     
-    dstA = (unsigned char*) malloc( height * width);
+    unsigned char *dstA = (unsigned char*) malloc( height * width);
     memset(dstA, 255, height * width);
 		
-    if( imageBlendingPtr)
+    if (imageBlendingPtr)
     {
         i = size;
         while( i-- > 0)
         {
-            float			opacityTot = 1.0, opacity, opacityBlending, opacityAdd, dstFloatRv = 0, dstFloatGv = 0, dstFloatBv = 0;
-            unsigned char   *pixels, *pixelsBlending;
+            float opacityTot = 1.0, opacity, opacityBlending, opacityAdd, dstFloatRv = 0, dstFloatGv = 0, dstFloatBv = 0;
+            unsigned char *pixels, *pixelsBlending;
             
             pixels = ((unsigned char*) dst8.data) +i;
             pixelsBlending = ((unsigned char*) dst8Blending.data) +i;
@@ -516,7 +514,6 @@ extern short Altivec;
     vImageConvert_PlanarFtoPlanar8( &src, &destB, 255., 0., 0);
     
     srcA.height = height;		srcA.width = width;			srcA.rowBytes = width;		srcA.data = dstA;
-    
     dstARGB.height = height;	dstARGB.width = width;		dstARGB.rowBytes = width*4; dstARGB.data = dst;
     vImageConvert_Planar8toARGB8888( &srcA, &destR, &destG, &destB, &dstARGB, 0);
     
@@ -555,7 +552,6 @@ extern short Altivec;
 //		
 //		[[self window] orderOut:self];
 //	}
-	
 	return dst;
 }
 

@@ -1210,114 +1210,116 @@ unsigned int minimumStep;
 - (void) detect2DPointInThisSlice
 {
 	ViewerController *viewer2D = [windowController viewer];
-	
-	if (viewer2D)
-	{
-		// First delete all 2D Points in our pix
-		
-		NSMutableDictionary *ROIsStateSaved = [NSMutableDictionary dictionary];
-		
-		for (int i = (long)[curRoiList count] -1 ; i >= 0; i--)
-		{
-			ROI *r = [curRoiList objectAtIndex: i];
-			if ([r type] == t2DPoint)
-			{
-				if (r.parentROI)
-					[ROIsStateSaved setObject: [NSNumber numberWithInt: [r ROImode]] forKey: [NSValue valueWithPointer: r.parentROI]];
-				[curRoiList removeObjectAtIndex: i];
-			}
-		}
-		
-		NSArray *roiList = [viewer2D roiList: [windowController curMovieIndex]];
-		NSArray *pixList = [viewer2D pixList: [windowController curMovieIndex]];
-		
-		for (int i = 0; i < [roiList count]; i++)
-		{
-			NSArray *pts = [roiList objectAtIndex: i];
-			DCMPix *p = [pixList objectAtIndex: i];
-			
-			for( ROI *r in pts)
-			{
-				if ([r type] == t2DPoint)
-				{
-					float location[ 3];
-					
-					[p convertPixX: r.rect.origin.x pixY: r.rect.origin.y toDICOMCoords: location pixelCenter: YES];
-					
-					// Is this point in our plane?
-					
-					float vectors[ 9], orig[ 3], locationTemp[ 3];
-					float distance = 999999;
-					
-					orig[ 0] = [pix originX];
-					orig[ 1] = [pix originY];
-					orig[ 2] = [pix originZ];
-					
-					[pix orientation: vectors];
-					
-					distance = [DCMView pbase_Plane: location :orig :&(vectors[ 6]) :locationTemp];
-					
-					if (distance < pix.sliceThickness)
-					{
-						float sc[ 3];
-						
-						[pix convertDICOMCoords: location toSliceCoords: sc pixelCenter: YES];
-						
-						sc[ 0] = sc[ 0] / pix.pixelSpacingX;
-						sc[ 1] = sc[ 1] / pix.pixelSpacingY;
-						
-						ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :pix.pixelSpacingX :pix.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: pix]];
-						
-						[new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
-						
-						[new2DPointROI setParentROI: r];
-						[self roiSet: new2DPointROI];
-						[curRoiList addObject: new2DPointROI];
-						
-						int mode = [[ROIsStateSaved objectForKey: [NSValue valueWithPointer: r]] intValue];
-						if (mode)
-							[new2DPointROI setROIMode: (ROI_mode)mode];
-					}
-				}
-			}
-		}
-		
-		[self setNeedsDisplay: YES];
-	}
+	if (!viewer2D)
+        return;
+
+    // First delete all 2D Points in our pix
+    
+    NSMutableDictionary *ROIsStateSaved = [NSMutableDictionary dictionary];
+    
+    for (int i = (long)[curRoiList count] -1 ; i >= 0; i--)
+    {
+        ROI *r = [curRoiList objectAtIndex: i];
+        if ([r type] == t2DPoint)
+        {
+            if (r.parentROI)
+                [ROIsStateSaved setObject: [NSNumber numberWithInt: [r ROImode]] forKey: [NSValue valueWithPointer: r.parentROI]];
+
+            [curRoiList removeObjectAtIndex: i];
+        }
+    }
+    
+    NSArray *roiList = [viewer2D roiList: [windowController curMovieIndex]];
+    NSArray *pixList = [viewer2D pixList: [windowController curMovieIndex]];
+    
+    for (int i = 0; i < [roiList count]; i++)
+    {
+        NSArray *pts = [roiList objectAtIndex: i];
+        DCMPix *p = [pixList objectAtIndex: i];
+        
+        for( ROI *r in pts)
+        {
+            if ([r type] == t2DPoint)
+            {
+                float location[ 3];
+                
+                [p convertPixX: r.rect.origin.x pixY: r.rect.origin.y toDICOMCoords: location pixelCenter: YES];
+                
+                // Is this point in our plane?
+                
+                float vectors[ 9], orig[ 3], locationTemp[ 3];
+                float distance = 999999;
+                
+                orig[ 0] = [pix originX];
+                orig[ 1] = [pix originY];
+                orig[ 2] = [pix originZ];
+                
+                [pix orientation: vectors];
+                
+                distance = [DCMView pbase_Plane: location :orig :&(vectors[ 6]) :locationTemp];
+                
+                if (distance < pix.sliceThickness)
+                {
+                    float sc[ 3];
+                    
+                    [pix convertDICOMCoords: location toSliceCoords: sc pixelCenter: YES];
+                    
+                    sc[ 0] = sc[ 0] / pix.pixelSpacingX;
+                    sc[ 1] = sc[ 1] / pix.pixelSpacingY;
+                    
+                    ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint
+                                                                  : pix.pixelSpacingX
+                                                                  : pix.pixelSpacingY
+                                                                  : [DCMPix originCorrectedAccordingToOrientation: pix]];
+                    
+                    [new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
+                    
+                    [new2DPointROI setParentROI: r];
+                    [self roiSet: new2DPointROI];
+                    [curRoiList addObject: new2DPointROI];
+                    
+                    int mode = [[ROIsStateSaved objectForKey: [NSValue valueWithPointer: r]] intValue];
+                    if (mode)
+                        [new2DPointROI setROIMode: (ROI_mode)mode];
+                }
+            }
+        }
+    }
+    
+    [self setNeedsDisplay: YES];
 }
 
 - (void) add2DPoint: (float*) r
 {
 	ViewerController *viewer2D = [windowController viewer];
-	
-	if (viewer2D)
-	{
-		DCMPix *p = [[viewer2D pixList] objectAtIndex: 0];
-		
-		float sc[ 3];
-		
-		[p convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
+	if (!viewer2D)
+        return;
 
-		sc[ 0] = sc[ 0] / p.pixelSpacingX;
-		sc[ 1] = sc[ 1] / p.pixelSpacingY;
-		sc[ 2] = sc[ 2] / p.sliceInterval;
-		
-		sc[ 2] = round( sc[ 2]);
-		
-		if (sc[ 2] >= 0 && sc[ 2] < [[viewer2D pixList] count])
-		{
-			// Create the new 2D Point ROI
-			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :p.pixelSpacingX :p.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: p]] autorelease];
-			
-			[new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
-			
-			[[viewer2D imageView] roiSet:new2DPointROI];
-			[[[viewer2D roiList] objectAtIndex: sc[ 2]] addObject: new2DPointROI];
-			
-			// notify the change
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: new2DPointROI userInfo: nil];
-		}
-	}
+    DCMPix *p = [[viewer2D pixList] objectAtIndex: 0];
+    
+    float sc[ 3];
+    
+    [p convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
+
+    sc[ 0] = sc[ 0] / p.pixelSpacingX;
+    sc[ 1] = sc[ 1] / p.pixelSpacingY;
+    sc[ 2] = sc[ 2] / p.sliceInterval;
+    
+    sc[ 2] = round( sc[ 2]);
+    
+    if (sc[ 2] >= 0 && sc[ 2] < [[viewer2D pixList] count])
+    {
+        // Create the new 2D Point ROI
+        ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :p.pixelSpacingX :p.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: p]] autorelease];
+        
+        [new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
+        
+        [[viewer2D imageView] roiSet:new2DPointROI];
+        [[[viewer2D roiList] objectAtIndex: sc[ 2]] addObject: new2DPointROI];
+        
+        // notify the change
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: new2DPointROI userInfo: nil];
+    }
 }
 
 -(void) roiChange:(NSNotification*)note

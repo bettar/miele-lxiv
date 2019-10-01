@@ -134,13 +134,16 @@
 #endif
 }
 
-- (void)drawRect:(NSRect)rect inSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
+- (void)drawRect:(NSRect)rect
+          inSlab:(OSISlab)slab
+    inCGLContext:(CGLContextObj)cgl_ctx
+     pixelFormat:(CGLPixelFormatObj)pixelFormat
+dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
 {
 	double dicomToPixGLTransform[16];
 	
-	if (OSISlabContainsPlane(slab, _plane) == NO) {
+	if (OSISlabContainsPlane(slab, _plane) == NO)
 		return; // this ROI does not live on this slice
-	}
     
     N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
 	

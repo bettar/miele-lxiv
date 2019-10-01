@@ -1086,24 +1086,24 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 				{
 					switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 					{
-						case 0:
-							blendingWl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
-							blendingWw =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+						case PETWindowingMode_CLASSIC:
+							blendingWl = (_startWL - (long) ([theEvent deltaY])*WWAdapter);
+							blendingWw = (_startWW + (long) ([theEvent deltaX])*WWAdapter);
 							
 							if( blendingWw < 0.1) blendingWw = 0.1;
 							break;
 							
-						case 1:
+						case PETWindowingMode_FIXED_MIN:
 							endlevel = _startMax + (-[theEvent deltaY]) * WWAdapter ;
 							
-							blendingWl =  (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+							blendingWl = (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
 							blendingWw = endlevel - _startMin;
 							
 							if( blendingWw < 0.1) blendingWw = 0.1;
 							if( blendingWl - blendingWw/2 < 0) blendingWl = blendingWw/2;
 							break;
 							
-						case 2:
+						case PETWindowingMode_MAXIMUM:
 							endlevel = _startMax - ([theEvent deltaY]) * WWAdapter ;
 							startlevel = _startMin + ([theEvent deltaX]) * WWAdapter ;
 							
@@ -1119,8 +1119,8 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 				}
 				else
 				{
-					blendingWl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
-					blendingWw =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+					blendingWl = (_startWL - (long) ([theEvent deltaY])*WWAdapter);
+					blendingWw = (_startWW + (long) ([theEvent deltaX])*WWAdapter);
 				}
 				
 				if( blendingWw < 0.1) blendingWw = 0.1;
@@ -1142,24 +1142,24 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 				{
 					switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 					{
-						case 0:
-							wl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
-							ww =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+						case PETWindowingMode_CLASSIC:
+							wl = (_startWL - (long) ([theEvent deltaY])*WWAdapter);
+							ww = (_startWW + (long) ([theEvent deltaX])*WWAdapter);
 							
 							if( ww < 0.1) ww = 0.1;
 							break;
 							
-						case 1:
+						case PETWindowingMode_FIXED_MIN:
 							endlevel = _startMax + (-[theEvent deltaY]) * WWAdapter ;
 							
-							wl =  (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+							wl = (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
 							ww = endlevel - _startMin;
 							
 							if( ww < 0.1) ww = 0.1;
 							if( wl - ww/2 < 0) wl = ww/2;
 							break;
 							
-						case 2:
+						case PETWindowingMode_MAXIMUM:
 							endlevel = _startMax - ([theEvent deltaY]) * WWAdapter ;
 							startlevel = _startMin + ([theEvent deltaX]) * WWAdapter ;
 							

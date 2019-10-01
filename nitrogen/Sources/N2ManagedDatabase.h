@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface N2ManagedDatabase : NSObject {
 	@protected
     NSString* _sqlFilePath;

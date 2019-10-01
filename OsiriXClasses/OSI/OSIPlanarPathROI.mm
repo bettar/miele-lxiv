@@ -293,7 +293,11 @@
 	return [NSSet setWithObject:_osiriXROI];
 }
 
-- (void)drawRect:(NSRect)rect inSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
+- (void)drawRect:(NSRect)rect
+          inSlab:(OSISlab)slab
+    inCGLContext:(CGLContextObj)cgl_ctx
+     pixelFormat:(CGLPixelFormatObj)pixelFormat
+dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
 {
 	double dicomToPixGLTransform[16];
 	N3Vector endpoint;

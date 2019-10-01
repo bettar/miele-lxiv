@@ -179,7 +179,6 @@ typedef NS_ENUM(NSUInteger, EngineType) {
 
 #define NUM_VR_LABELS   5
 
-////////////////////////////////////////////////////////////////////////////////
 #pragma mark - VRView
 
 @interface VRView : vtkMieleView

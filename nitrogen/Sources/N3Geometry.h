@@ -21,7 +21,7 @@
 #ifndef _N3GEOMETRY_H_
 #define _N3GEOMETRY_H_
 
-#include <QuartzCore/CATransform3D.h>
+//#include <QuartzCore/CATransform3D.h>
 
 #ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
@@ -198,7 +198,6 @@ CFIndex findRealQuadraticRoots(CGFloat a, CGFloat b, CGFloat c, CGFloat *root1, 
 CFIndex findRealCubicRoots(CGFloat a, CGFloat b, CGFloat c, CGFloat d, CGFloat *root1, CGFloat *root2, CGFloat *root3); // returns the number of roots set 
 
 CF_EXTERN_C_END
-
  
 #ifdef __OBJC__
 

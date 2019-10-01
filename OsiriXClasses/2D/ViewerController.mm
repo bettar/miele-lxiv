@@ -14597,7 +14597,10 @@ long				x, y;
 {
 	DCMPix *curPix = [[self pixList] objectAtIndex:[imageView curImage]];
 
-	ROI *theNewROI = [[[ROI alloc] initWithType:tLayerROI :[curPix pixelSpacingX] :[curPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: curPix]] autorelease];
+	ROI *theNewROI = [[[ROI alloc] initWithType: tLayerROI
+                                               : [curPix pixelSpacingX]
+                                               : [curPix pixelSpacingY]
+                                               : [DCMPix originCorrectedAccordingToOrientation: curPix]] autorelease];
 	[theNewROI setLayerPixelSpacingX:layerPixelSpacingX];
 	[theNewROI setLayerPixelSpacingY:layerPixelSpacingY];
 	[theNewROI setLayerReferenceFilePath:path];
@@ -16291,7 +16294,8 @@ long				x, y;
 	return rois;
 }
 
-- (ROI*) isoContourROI: (ROI*) a numberOfPoints: (int) nof
+- (ROI*) isoContourROI: (ROI*) a
+        numberOfPoints: (int) nof
 {
 #ifndef OSIRIX_LIGHT
 	if ([a type] == tCPolygon || [a type] == tOPolygon || [a type] == tPencil)
@@ -16299,17 +16303,16 @@ long				x, y;
 		[a setPoints: [ROI resamplePoints: [a splinePoints] number: nof]];
 		return a;
 	}
-	else if ([a type] == tPlain)
+
+    if ([a type] == tPlain)
 	{
 		a = [self convertBrushROItoPolygon: a numPoints: nof];
 		[a setPoints: [ROI resamplePoints: [a splinePoints] number: nof]];
 		return a;
 	}
-	else
-        return nil;
-#else
-	return nil;
 #endif
+
+    return nil;
 }
 
 - (ROI*) roiMorphingBetween:(ROI*) a
@@ -16849,7 +16852,7 @@ long				x, y;
 {
 	ROI* newROI = nil;
 	
-	#ifndef OSIRIX_LIGHT
+#ifndef OSIRIX_LIGHT
 	if ([selectedROI type] == tPlain)
 	{
 		// Convert it to Brush
@@ -16858,17 +16861,20 @@ long				x, y;
         newROI.pix = selectedROI.pix;
         newROI.curView = imageView;
         
-		NSArray	*points = [ITKSegmentation3D extractContour: [selectedROI textureBuffer] width: [selectedROI textureWidth] height: [selectedROI textureHeight] numPoints: numPoints];
+		NSArray	*points = [ITKSegmentation3D extractContour: [selectedROI textureBuffer]
+                                                      width: [selectedROI textureWidth]
+                                                     height: [selectedROI textureHeight]
+                                                  numPoints: numPoints];
 		
-		int		i;
 		NSMutableArray	*pts = [NSMutableArray array];
 		
-		for (i = 0 ; i < [points count] ; i++)
+		for (int i = 0 ; i < [points count] ; i++)
 		{
-			[[points objectAtIndex: i] move: [selectedROI textureUpLeftCornerX] :[selectedROI textureUpLeftCornerY]];
+			[[points objectAtIndex: i] move: [selectedROI textureUpLeftCornerX]
+                                           : [selectedROI textureUpLeftCornerY]];
 		}
 		
-		for (i = 0 ; i < numPoints ; i++)
+		for (int i = 0 ; i < numPoints ; i++)
 		{
 			float x = (float) (i * [points count]) / (float) numPoints;
 			int xint = (int) x;
@@ -16890,7 +16896,7 @@ long				x, y;
 		
 		[newROI setPoints: pts];
 	}
-	#endif
+#endif
 	
 	return newROI;
 }

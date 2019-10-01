@@ -616,7 +616,8 @@ public:
                                  pt2[1] * (newFrame.size.height / beforeFrame.size.height),
                                  0);
 			}
-			rect = vtkCellArray::New();
+
+            rect = vtkCellArray::New();
 			rect->InsertNextCell( pts->GetNumberOfPoints()+1);
 			for (int i = 0; i < pts->GetNumberOfPoints(); i++)
                 rect->InsertCellPoint( i);
@@ -2898,7 +2899,10 @@ public:
         
         if (Oval2DPix)
         {
-            ROI *circle = [[ROI alloc] initWithType: tOval :1 :1 :NSMakePoint(0,0)];
+            ROI *circle = [[ROI alloc] initWithType: tOval
+                                                   : 1
+                                                   : 1
+                                                   : NSMakePoint(0,0)];
             
             NSPoint center = Oval2DCenter;
             float radius = Oval2DRadius;
@@ -3457,7 +3461,7 @@ public:
 				{
 					switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 					{
-						case 0:
+						case PETWindowingMode_CLASSIC:
 							blendingWl = (_startWL - (long) ([theEvent deltaY])*WWAdapter);
 							blendingWw = (_startWW + (long) ([theEvent deltaX])*WWAdapter);
 							
@@ -3466,7 +3470,7 @@ public:
                             
                             break;
 						
-						case 1:
+						case PETWindowingMode_FIXED_MIN:
 							endlevel = _startMax + (-[theEvent deltaY]) * WWAdapter ;
 							
 							blendingWl = (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
@@ -3480,7 +3484,7 @@ public:
                             
                             break;
 						
-						case 2:
+						case PETWindowingMode_MAXIMUM:
 							endlevel = _startMax - ([theEvent deltaY]) * WWAdapter ;
 							startlevel = _startMin + ([theEvent deltaX]) * WWAdapter ;
 							
@@ -3524,7 +3528,7 @@ public:
 					{
 						switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 						{
-							case 0:
+							case PETWindowingMode_CLASSIC:
 								wl = (_startWL - (long) ([theEvent deltaY])*WWAdapter);
 								ww = (_startWW + (long) ([theEvent deltaX])*WWAdapter);
 								
@@ -3533,7 +3537,7 @@ public:
                                 
                                 break;
 							
-							case 1:
+							case PETWindowingMode_FIXED_MIN:
 								endlevel = _startMax + (-[theEvent deltaY]) * WWAdapter ;
 								
 								wl = (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
@@ -3547,7 +3551,7 @@ public:
                                 
                                 break;
 							
-							case 2:
+							case PETWindowingMode_MAXIMUM:
 								endlevel = _startMax - ([theEvent deltaY]) * WWAdapter ;
 								startlevel = _startMin + ([theEvent deltaX]) * WWAdapter ;
 								
@@ -4898,10 +4902,10 @@ public:
 	}
 	
 	for (i = 0 ; i < stackMax ; i++)
-		[ROIList addObject: [[[ROI alloc] initWithType:tCPolygon
-                                                      :[fObject pixelSpacingX]*factor
-                                                      :[fObject pixelSpacingY]*factor
-                                                      :[DCMPix originCorrectedAccordingToOrientation: fObject]] autorelease]];
+		[ROIList addObject: [[[ROI alloc] initWithType: tCPolygon
+                                                      : [fObject pixelSpacingX]*factor
+                                                      : [fObject pixelSpacingY]*factor
+                                                      : [DCMPix originCorrectedAccordingToOrientation: fObject]] autorelease]];
     
     // Clip the polygons to the crop box?
     NSValue *minClip = [NSValue valueWithPoint: NSMakePoint( 0, 0)];

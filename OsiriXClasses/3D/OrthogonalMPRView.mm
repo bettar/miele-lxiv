@@ -753,11 +753,11 @@
 		{
 			if([addedROI type]==t2DPoint)
 			{
-				ROI *new2DPointROI = [[[ROI alloc] initWithType:t2DPoint
-                                                               :[[controller originalView] pixelSpacingX]
-                                                               :[[controller originalView] pixelSpacingY]
-                                                               :NSMakePoint([[controller originalView] origin].x,
-                                                                            [[controller originalView] origin].y)] autorelease];
+				ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint
+                                                               : [[controller originalView] pixelSpacingX]
+                                                               : [[controller originalView] pixelSpacingY]
+                                                               : NSMakePoint([[controller originalView] origin].x,
+                                                                             [[controller originalView] origin].y)] autorelease];
 
 				NSRect irect;
 				if([[controller xReslicedView] isEqualTo:sender])
@@ -862,7 +862,10 @@
 				return;
 			}
 
-			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[[controller originalView] pixelSpacingX] :[[controller originalView] pixelSpacingY] :NSMakePoint( [[controller originalView] origin].x, [[controller originalView] origin].y)] autorelease];
+			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint
+                                                            :[[controller originalView] pixelSpacingX]
+                                                           : [[controller originalView] pixelSpacingY]
+                                                           : NSMakePoint( [[controller originalView] origin].x, [[controller originalView] origin].y)] autorelease];
 
 			// remove the parent ROI on original view. (will be replaced by the new one)
 			for(int i=0; i<[[[controller originalView] dcmRoiList] count]; i++)
@@ -1156,19 +1159,19 @@
 		{
 			float startlevel;
 			float endlevel;
+            float eWW = 5;
+            float eWL = 5;
 			
-			float eWW = 5, eWL = 5;
-			
-            switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+            switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
             {
-                case 0:
+                case PETWindowingMode_CLASSIC:
                     eWL = startWL + (current.y -  start.y)*WWAdapter;
                     eWW = startWW + (current.x -  start.x)*WWAdapter;
                     
                     if( eWW < 0.1) eWW = 0.1;
                     break;
                     
-                case 1:
+                case PETWindowingMode_FIXED_MIN:
                     endlevel = startMax + (current.y -  start.y) * WWAdapter ;
                     
                     eWL = (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
@@ -1178,7 +1181,7 @@
                     if( eWL - eWW/2 < 0) eWL = eWW/2;
                     break;
                     
-                case 2:
+                case PETWindowingMode_MAXIMUM:
                     endlevel = startMax + (current.y -  start.y) * WWAdapter ;
                     startlevel = startMin + (current.x -  start.x) * WWAdapter ;
                     
@@ -1203,7 +1206,7 @@
 		curWW = [curDCM ww];
 		curWL = [curDCM wl];
 		
-		if( [self is2DViewer] == YES)
+		if ( [self is2DViewer] == YES)
 			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
 		
 		// change Window level
@@ -1211,7 +1214,7 @@
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeWLWWNotification object: curDCM userInfo:nil];
 		
-		if( [curDCM SUVConverted] == NO)
+		if ( [curDCM SUVConverted] == NO)
 		{
 			//set value for Series Object Presentation State
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];

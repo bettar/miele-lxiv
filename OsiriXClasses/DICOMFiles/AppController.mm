@@ -3958,7 +3958,8 @@ static BOOL initialized = NO;
 //        }
 //    }
     
-	NSUInteger size = 32, size2 = size*size;
+    NSUInteger size = 32;
+    NSUInteger size2 = size*size;
 	
 	NSWindow* win = [[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,size,size)
                                                 styleMask:NSWindowStyleMaskTitled

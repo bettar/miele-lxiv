@@ -59,12 +59,13 @@ static NSRecursiveLock *drawLock = nil;
 //		if( drawLock == nil) drawLock = [[NSRecursiveLock alloc] init];
 		
 	}
-	return self;
+
+    return self;
 }
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-	if( [notification object] == [self window])
+	if ([notification object] == [self window])
 	{
 		[[self window] setAcceptsMouseMovedEvents: NO];
 		

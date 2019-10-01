@@ -733,7 +733,6 @@
 			}
 		}
 	}
-
 }
 
 - (NSArray *)tokenField:(NSTokenField *)tokenField readFromPasteboard:(NSPasteboard *)pboard

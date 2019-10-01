@@ -36,8 +36,6 @@
 #include "vtkInteractorStyleTrackballCamera.h"
 #undef id
 
-
-
 @implementation VTKStereoSRView
 
 -(id)initWithFrame:(NSRect)frame: (SRView*) aSRView;
@@ -50,14 +48,13 @@
 		superSRView = aSRView;
 		[self addTrackingArea: cursorTracking];
 
-
 	//	aRenderer = [self renderer];
 	//	cursor = nil;
 	//	currentTool = t3DRotate;
 	//	[self setCursorForView: currentTool];
-	
 	}
-	return self;
+
+    return self;
 }
 
 - (void)windowWillClose:(NSNotification *)notification

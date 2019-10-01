@@ -2492,7 +2492,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		if (sliceNumber>=0 && sliceNumber<[[viewer2D pixList] count])
 		{
 			// Create the new 2D Point ROI
-			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[firstDCMPix pixelSpacingX] :[firstDCMPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: firstDCMPix]] autorelease];
+			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint
+                                                           : [firstDCMPix pixelSpacingX]
+                                                           : [firstDCMPix pixelSpacingY]
+                                                           : [DCMPix originCorrectedAccordingToOrientation: firstDCMPix]] autorelease];
             
             if (rgb.red != 0 && rgb.green != 1 && rgb.blue != 2)
                 new2DPointROI.rgbcolor = rgb;
