@@ -414,13 +414,17 @@ static float deg2rad = M_PI/180.0;
 		[window disableUpdatesUntilFlush];
 }
 
+// There are 3 possible layouts that can be selected by changing "MPR2DViewsPosition" in the defaults
+// Short of editing the plist file, is there some way of selecting a layout in the GUI ?
+//
+// GitHub issue #22: with the following code commented in the window becomes impossible to resize
 -(void) applyViewsPosition
 {
-    NSRect r;
+#if 0
     NSScreen *s = [viewer2D get3DViewerScreen: viewer2D];
 	
     BOOL portrait;
-    if( [s frame].size.height > [s frame].size.width)
+    if ([s frame].size.height > [s frame].size.width)
         portrait = YES;
     else
         portrait = NO;
@@ -435,11 +439,11 @@ static float deg2rad = M_PI/180.0;
     [verticalSplit adjustSubviews];
     [horizontalSplit adjustSubviews];
     
+    NSRect r;
     switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"MPR2DViewsPosition"])
     {
         case 0:
-            if( portrait)
-            {
+            if (portrait) {
                 [horizontalSplit setVertical: YES];
                 [verticalSplit setVertical: YES];
                 [verticalSplit adjustSubviews];
@@ -448,17 +452,12 @@ static float deg2rad = M_PI/180.0;
                 [horizontalSplit setVertical: YES];
                 [verticalSplit setVertical: NO];
             }
-            else
-            {
+            else {
                 [horizontalSplit setVertical: NO];
                 [verticalSplit setVertical: YES];
             }
-            
-            
-            //
-            
-            if( portrait)
-            {
+
+            if (portrait) {
                 r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
                 r.size.height = [[self window] frame].size.height/2;
                 [[[verticalSplit subviews] objectAtIndex: 0] setFrame: r];
@@ -479,8 +478,7 @@ static float deg2rad = M_PI/180.0;
                 
                 [horizontalSplit adjustSubviews];
             }
-            else
-            {
+            else {
                 r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
                 r.size.width = [[self window] frame].size.width/2;
                 [[[verticalSplit subviews] objectAtIndex: 0] setFrame: r];
@@ -501,8 +499,7 @@ static float deg2rad = M_PI/180.0;
                 
                 [horizontalSplit adjustSubviews];
             }
-            
-        break;
+            break;
             
         case 2:
             [horizontalSplit setVertical: YES];
@@ -527,10 +524,9 @@ static float deg2rad = M_PI/180.0;
             r.size.width = [[self window] frame].size.width/3;
             [[[horizontalSplit subviews] objectAtIndex: 1] setFrame: r];
             [horizontalSplit adjustSubviews];
-        break;
+            break;
             
         case 1:
-            
             if( portrait)
             {
                 [horizontalSplit setVertical: YES];
@@ -566,10 +562,11 @@ static float deg2rad = M_PI/180.0;
             r.size.height = [[self window] frame].size.height/3;
             [[[horizontalSplit subviews] objectAtIndex: 1] setFrame: r];
             [horizontalSplit adjustSubviews];
-        break;
+            break;
     }
     
     NSEnableScreenUpdates();
+#endif
 }
 
 -(void) awakeFromNib
