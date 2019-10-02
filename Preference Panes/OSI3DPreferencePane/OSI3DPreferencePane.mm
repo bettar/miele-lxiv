@@ -19,6 +19,7 @@
 =========================================================================*/
 
 #import "options.h"
+#import "mieleTypes.h"
 
 #import "OSI3DPreferencePane.h"
 
@@ -38,38 +39,44 @@
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
         
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath: @"values.MAPPERMODEVR" options:NSKeyValueObservingOptionNew context:NULL];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
+                                                                  forKeyPath:@"values.MAPPERMODEVR"
+                                                                     options:NSKeyValueObservingOptionNew
+                                                                     context:NULL];
 	}
 	
 	return self;
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+-(void)observeValueForKeyPath:(NSString*)keyPath
+                     ofObject:(id)object
+                       change:(NSDictionary*)change
+                      context:(void*)context
 {
-	if (object == [NSUserDefaultsController sharedUserDefaultsController])
+	if (object != [NSUserDefaultsController sharedUserDefaultsController])
+        return;
+
+    if (![keyPath isEqualToString: @"values.MAPPERMODEVR"])
+        return;
+
+    if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == ENGINE_CPU)
+        return;
+
+#ifndef OSIRIX_LIGHT
+    long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[mainWindow screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
+    
+    //vram /= 1024*1024;
+    
+    if (vramMB <= 512)
     {
-		if ([keyPath isEqualToString: @"values.MAPPERMODEVR"])
-        {
-            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"MAPPERMODEVR"])
-            {
-    #ifndef OSIRIX_LIGHT
-                long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[mainWindow screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
-                
-                //vram /= 1024*1024;
-                
-                if (vramMB <= 512)
-                {
-                    NSRunCriticalAlertPanel(NSLocalizedString(@"GPU Rendering", nil),
-                                            NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil),
-                                            NSLocalizedString( @"OK", nil),
-                                            nil,
-                                            nil,
-                                            vramMB);
-                }
-    #endif
-            }
-        }
+        NSRunCriticalAlertPanel(NSLocalizedString(@"GPU Rendering", nil),
+                                NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil),
+                                NSLocalizedString( @"OK", nil),
+                                nil,
+                                nil,
+                                vramMB);
     }
+#endif
 }
 
 - (void) dealloc

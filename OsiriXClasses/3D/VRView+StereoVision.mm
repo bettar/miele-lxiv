@@ -21,11 +21,9 @@
 // PURPOSE.
 // =========================================================================
 
-#ifdef _STEREO_VISION_
-
 #import "VRView+StereoVision.h"
 
-#import "VRView.h"
+#ifdef _STEREO_VISION_
 #import "DCMCursor.h"
 #import "AppController.h"
 #import "DCMPix.h"
@@ -112,9 +110,11 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 	VRView* mipv = (VRView*) clientdata;
 	[mipv setNeedsDisplay:YES];
 }
+#endif //_STEREO_VISION_
 
 @implementation VRView (StereoVision)
 
+#ifdef _STEREO_VISION_
 // Same Function as before, but added flag for stereo-vision
 -(id)initWithFrame:(NSRect)frame
 {
@@ -717,7 +717,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 	return 1;
 	
 }
-
+#endif // _STEREO_VISION_
 
 -(IBAction) invertedSides :(id) sender
 {
@@ -740,6 +740,8 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 	
 	[self setNeedsDisplay:YES];
 }
+
+#ifdef _STEREO_VISION_
 
 #pragma mark - User Commands
 
@@ -1631,7 +1633,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 	if( best)
 	{
 		// SWITCH TO RAY CASTING IF WE USE BOTH ENGINES
-		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 2)
+		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == ENGINE_BOTH)
 		{
 			double a[6];
 			
@@ -2337,6 +2339,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 	if(StereoVisionOn)
 		[rightView renderer]->AddActor(actor);
 }
+#endif // _STEREO_VISION_
 
 @end
-#endif
+

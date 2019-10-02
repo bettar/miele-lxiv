@@ -33,8 +33,8 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <IOKit/IOKitLib.h>
 
-#import "Reports.h" // for ReportType
-
+#import "Reports.h"     // for ReportType
+#import "mieleTypes.h"  // for ENGINE_CPU
 #import "url.h"
 
 //static BOOL isHcugeCh = NO, isUnigeCh = NO, testIsHugDone = NO, testIsUniDone = NO;
@@ -1074,7 +1074,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"14.0" forKey: @"FONTSIZE"];
 	[defaultValues setObject: @(REPORT_TYPE_PAGES) forKey: @"REPORTSMODE"];
 	[defaultValues setObject: URL_MIELE_WEB_PAGE@"/internet.dcm" forKey: @"LASTURL"];
-	[defaultValues setObject: @"0" forKey: @"MAPPERMODEVR"];
+	[defaultValues setObject: @(ENGINE_CPU) forKey: @"MAPPERMODEVR"];
 	[defaultValues setObject: @"1" forKey: @"STARTCOUNT"];
 	[defaultValues setObject: @"1" forKey: @"editingLevel"];
 	[defaultValues setObject: @"1" forKey: @"publishDICOMBonjour"];

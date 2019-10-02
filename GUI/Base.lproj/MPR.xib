@@ -91,6 +91,7 @@
             <connections>
                 <outlet property="delegate" destination="-2" id="411"/>
             </connections>
+            <point key="canvasLocation" x="952" y="386"/>
         </window>
         <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1157" userLabel="tbViewsPosition">
             <rect key="frame" x="0.0" y="0.0" width="123" height="44"/>

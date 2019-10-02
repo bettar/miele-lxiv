@@ -2987,7 +2987,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	// path 1 : /OUR_DATA_LOCATION/CLUTs/
 	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
 	[path appendString: CLUTDATABASE];
-	// path 2 : /resources_bundle_path/CLUTs/
+
+    // path 2 : /resources_bundle_path/CLUTs/
 	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
 	[bundlePath appendString: CLUTDATABASE];
 
@@ -3336,7 +3337,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	// path 1 : /OsirirX Data/CLUTs/
 	NSMutableString *path1 = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
 	[path1 appendString:PRESETS_DIRECTORY];
-	// path 2 : /resources_bundle_path/CLUTs/
+
+    // path 2 : /resources_bundle_path/CLUTs/
 	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
 	[bundlePath appendString:PRESETS_DIRECTORY];
 
@@ -3386,7 +3388,8 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	// path 1 : /OsirirX Data/CLUTs/
 	NSMutableString *path1 = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
 	[path1 appendString:PRESETS_DIRECTORY];
-	// path 2 : /resources_bundle_path/CLUTs/
+
+    // path 2 : /resources_bundle_path/CLUTs/
 	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
 	[bundlePath appendString:PRESETS_DIRECTORY];
 
@@ -3442,7 +3445,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	for (NSUInteger i=0; i<[groups count]; i++)
 		[presetsGroupPopUpButton addItemWithTitle:[groups objectAtIndex:i]];
 
-	if ([presetsGroupPopUpButton numberOfItems]<1)
+	if ([presetsGroupPopUpButton numberOfItems] < 1)
 	{
 		[presetsGroupPopUpButton addItemWithTitle:NSLocalizedString(@"No Groups", nil)];
 		[presetsGroupPopUpButton setEnabled:NO];
@@ -3509,7 +3512,6 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 				float iwl = [[preset objectForKey:@"wl"] floatValue];
 				float iww = [[preset objectForKey:@"ww"] floatValue];
 				[self setWLWW:iwl :iww];
-
 			}
 			else
 			{
@@ -3627,25 +3629,28 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 
 - (void)displayPresetsForSelectedGroup;
 {
-	if ([presetsGroupPopUpButton numberOfItems]<1)
+#ifdef DEBUG_ISSUE_45
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+#endif
+	if ([presetsGroupPopUpButton numberOfItems] < 1)
         return;
     
 	NSArray *settingsList = [self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]];
 	
 	[numberOfPresetInGroupTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Number of Presets: %d", nil), [settingsList count]]];
-	
-	int i, n;
-	
+
 	// fill the thumbnails
-	n = 0;
+	int n = 0;
+    int i;
 	for (i=0; i<[presetPreviewArray count] && n<[settingsList count]; i++)
 	{
 		n = presetPageNumber*[presetPreviewArray count] + i;
-		if (n<[settingsList count])
+		if (n < [settingsList count])
 		{
+            // Example: "1. High Contrast"
 			[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[NSString stringWithFormat:@"%d. %@", n+1,[[settingsList objectAtIndex:n] objectForKey:@"name"]]];
+
 			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:NO];
-			
 			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setVtkCamera: [view vtkCamera]];
 			
 //			double a[ 6];
@@ -3661,16 +3666,18 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	
 	// the others will be black
 	
-	if (n>=[settingsList count]) i--;
+	if (n >= [settingsList count])
+        i--;
 	
-	while (i<[presetPreviewArray count])
+	while (i < [presetPreviewArray count])
 	{
 		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:@""];
 		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:YES];
 		i++;
 	}
 	
-	if ([presetPreviewArray count]) [(VRPresetPreview*)[presetPreviewArray objectAtIndex:0] setSelected];
+	if ([presetPreviewArray count])
+        [(VRPresetPreview*)[presetPreviewArray objectAtIndex:0] setSelected];
 }
 
 - (void)load3DSettingsDictionary:(NSDictionary*)preset forPreview:(VRPresetPreview*)preview;
@@ -3680,11 +3687,9 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	BOOL advancedCLUT = [[preset objectForKey:@"advancedCLUT"] boolValue];
 	if (!advancedCLUT)
 	{
-		NSDictionary *aCLUT;
 		NSArray *array;
 		unsigned char red[256], green[256], blue[256];
-		
-		aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey:aClutName];
+		NSDictionary *aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey:aClutName];
 		if (aCLUT)
 		{
 			array = [aCLUT objectForKey:@"Red"];

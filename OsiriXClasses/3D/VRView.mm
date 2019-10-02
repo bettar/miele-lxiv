@@ -824,9 +824,10 @@ public:
 	[self setNeedsDisplay:YES];
 }
 
-- (void) setEngine: (int) newEngine
+- (void) setEngine: (EngineType) newEngine
 {
-	[self setEngine: newEngine showWait: YES];
+	[self setEngine: newEngine
+           showWait: YES];
 }
 
 - (void) setLodDisplayed: (float) newValue
@@ -843,12 +844,12 @@ public:
         if (vramMB >= 2000)
         {
             [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"VRDefaultViewSize"];     // full screen
-            [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];          // gpu
+            [[NSUserDefaults standardUserDefaults] setInteger: ENGINE_GPU_OPEN_GL forKey: @"MAPPERMODEVR"];
         }
         else
         {
             [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"VRDefaultViewSize"];     // square
-            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];          // cpu
+            [[NSUserDefaults standardUserDefaults] setInteger: ENGINE_CPU forKey: @"MAPPERMODEVR"];          // cpu
         }
         
         [[NSUserDefaults standardUserDefaults] setInteger: vramMB forKey: @"VRAMAmount"];
@@ -957,7 +958,7 @@ public:
 	}
 }
 
-- (void) setEngine: (long) newEngine
+- (void) setEngine: (EngineType) newEngine
           showWait: (BOOL) showWait
 {
     if (newEngine == ENGINE_GPU_OPEN_GL)
@@ -993,9 +994,11 @@ public:
 	
     switch (engine)
     {
+        default:
         case ENGINE_CPU:
             volume->SetMapper( volumeMapper);
             break;
+
         case ENGINE_GPU_OPEN_GL:
             volume->SetMapper( textureMapper);
             break;
@@ -2223,13 +2226,12 @@ public:
 	}
     
     if (volume && volume->GetMapper() == nil)
-        self.engine = [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"];
+        self.engine = (EngineType)[[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"];
 }
 
 -(NSMutableDictionary*) get3DStateDictionary
 {
-	double	temp[ 3];
-	float	ambient, diffuse, specular, specularpower;
+	float ambient, diffuse, specular, specularpower;
 	
 	if (aCamera == nil)
         return nil;
@@ -2240,6 +2242,7 @@ public:
 	[dict setObject:[NSNumber numberWithFloat:ww] forKey:@"WW"];
 	[dict setObject:[NSNumber numberWithBool:[firstObject SUVConverted]] forKey:@"SUVConverted"];
 	
+    double temp[ 3];
 	aCamera->GetPosition( temp);
 	[dict setObject:[NSArray arrayWithObjects:
                      [NSNumber numberWithFloat:temp[0]],
@@ -5749,8 +5752,8 @@ public:
 
 -(void) setBlendingFactor:(float) a
 {
-	long	i, blendMode;
-	float   val, ii;
+	long blendMode;
+	float val, ii;
 	
 	if (fullDepthMode)
         return;
@@ -5769,7 +5772,7 @@ public:
 		{
 			a *= 2;
 			
-			for (i=0; i < 256; i++)
+			for (int i=0; i < 256; i++)
 			{
 				ii = i;
 				val = (a * ii) / 256.;
@@ -5787,23 +5790,26 @@ public:
 		{
 			a /= 3;
 			
-			for (i=0; i < 256; i++)
+			for (int i=0; i < 256; i++)
 			{
 				ii = i;
 				val = (a * ii) / 256.;
 				val -= 8.;
 				
-				if (val > 255) val = 255;
-				if (val < 0) val = 0;
+				if (val > 255)
+                    val = 255;
+
+				if (val < 0)
+                    val = 0;
 				
 				alpha[ i] = val / 255.;
 			}
 		}
-		blendingOpacityTransferFunction->BuildFunctionFromTable(blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2),
+
+        blendingOpacityTransferFunction->BuildFunctionFromTable(blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2),
                                                                 blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2),
                                                                 255,
                                                                 (double*) &alpha);
-		
 		[self setNeedsDisplay: YES];
 	}
 }
@@ -5913,8 +5919,13 @@ public:
     [self setNeedsDisplay:YES];
 }
 
--(void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
+-(void) setCLUT: (unsigned char*) r
+               : (unsigned char*) g
+               : (unsigned char*) b
 {
+#ifdef DEBUG_ISSUE_45
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+#endif
 	if (fullDepthMode)
         return;
     
@@ -7454,7 +7465,7 @@ public:
 		
 		tempOpacity->Delete();
 		
-		fullDepthMode = 1;
+		fullDepthMode = TRUE;
 	}
 	
 	if (blendingVolumeMapper)
@@ -7488,7 +7499,7 @@ public:
 		volumeProperty->SetScalarOpacity( opacityTransferFunction);
 		volumeMapper->PerVolumeInitialization( aRenderer, volume);
 		
-		fullDepthMode = 0;
+		fullDepthMode = FALSE;
 	}
 	
 	if (blendingVolumeMapper)
@@ -8423,7 +8434,8 @@ public:
             if (textX)
 				textX->GetTextProperty()->SetColor(0,0,0);
 		}
-		[backgroundColor setColor: [NSColor colorWithDeviceRed:[color redComponent]
+
+        [backgroundColor setColor: [NSColor colorWithDeviceRed:[color redComponent]
                                                          green:[color greenComponent]
                                                           blue:[color blueComponent]
                                                          alpha:1.0]];
@@ -9594,7 +9606,6 @@ public:
 
 - (void)setMapper:(vtkVolumeMapper*) mapper;  // TODO @@@
 {
-    NSLog(@"%s %d, mapper class: %s", __FUNCTION__, __LINE__, typeid(mapper).name());
     if (mapper && mapper != volumeMapper)
     {
         if (volumeMapper)

@@ -1495,6 +1495,7 @@
 		433F9A7F1A1B18A500E52C6C /* vtkMieleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkMieleView.h; sourceTree = "<group>"; };
 		433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OsiriXFixedPointVolumeRayCastMapper.cxx; sourceTree = "<group>"; };
 		433F9A881A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OsiriXFixedPointVolumeRayCastMapper.h; sourceTree = "<group>"; };
+		43475BF02344C55300BEE02C /* mieleTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mieleTypes.h; sourceTree = "<group>"; };
 		434930EC225512EC00C30B21 /* Unit Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Unit Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		434930EE225512EC00C30B21 /* miele_lxivTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = miele_lxivTests.mm; sourceTree = "<group>"; };
 		434930F0225512EC00C30B21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -3201,6 +3202,7 @@
 				43E27D261AF32929007B92CA /* tmp_locations.h */,
 				4307C62B1A2091900083877C /* url.h */,
 				434B46151A19F2A3008CF8CF /* options.h */,
+				43475BF02344C55300BEE02C /* mieleTypes.h */,
 			);
 			name = "Other Sources";
 			sourceTree = SOURCE_ROOT;

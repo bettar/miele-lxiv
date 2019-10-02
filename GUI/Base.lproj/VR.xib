@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14868" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14868"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -153,6 +153,7 @@
                     </connections>
                 </matrix>
             </subviews>
+            <point key="canvasLocation" x="140" y="154"/>
         </customView>
         <window title="3D Reconstruction" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" animationBehavior="default" id="144" userLabel="Window" customClass="OSIWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
@@ -206,6 +207,7 @@
                     </customView>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="140" y="-139"/>
         </window>
         <window title="Setup Geometry" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="2363">
             <windowStyleMask key="styleMask" titled="YES"/>
@@ -552,6 +554,7 @@ DQ
                     </popUpButtonCell>
                 </popUpButton>
             </subviews>
+            <point key="canvasLocation" x="140" y="155"/>
         </customView>
         <customView id="209" userLabel="WLWW">
             <rect key="frame" x="0.0" y="0.0" width="145" height="52"/>

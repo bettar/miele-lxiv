@@ -18,9 +18,11 @@
  PURPOSE.
  =========================================================================*/
 
-#ifdef _STEREO_VISION_
 
 #import "VRController+StereoVision.h"
+
+#ifdef _STEREO_VISION_
+
 #import "VRView+StereoVision.h"
 
 #import "AppController.h"
@@ -78,9 +80,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 static NSString*	PresetsPanelToolbarItemIdentifier = @"3DPresetsPanel.tif";
 static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
+#endif // _STEREO_VISION_
 
 @implementation  VRController (StereoVision)
 
+#ifdef _STEREO_VISION_
 - (void)windowDidResize:(NSNotification *)notification
 {
 	if ([view StereoVisionOn])
@@ -141,9 +145,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         }
     }
 }
+#endif // _STEREO_VISION_
 
 - (IBAction) ApplyGeometrieSettings: (id) sender
 {
+#ifdef _STEREO_VISION_
     [VRGeometrieSettingsWindow orderOut:sender];
 	[NSApp endSheet:VRGeometrieSettingsWindow returnCode:[sender tag]];
 	
@@ -165,8 +171,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		
 		[view setNewGeometry: height: distance: eyeDist];	
 	}
+#endif // _STEREO_VISION_
 }
 
+#ifdef _STEREO_VISION_
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
@@ -599,6 +607,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 											nil];
 }
 // end addition by P. Thevenaz on June 11, 2010}
+#endif // _STEREO_VISION_
 
 @end
-#endif // _STEREO_VISION_

@@ -21,9 +21,11 @@
 // PURPOSE.
 // =========================================================================
 
-#ifdef _STEREO_VISION_
 #import <Cocoa/Cocoa.h>
 #import "VRView.h"
+
+#ifdef _STEREO_VISION_
+
 #import <AppKit/AppKit.h>
 #import "DCMPix.h"
 
@@ -177,13 +179,22 @@ typedef char* vtkMyCallbackVR;*/
 - (void) initStereoLeftRight;
 - (void) disableStereoModeLeftRight;
 - (void) adjustWindowContent: (NSSize) proposedFrameSize;
-- (IBAction) SwitchStereoMode :(id) sender;
 - (void) setNewViewAngle: (double) viewAngle;
-- (IBAction) invertedSides :(id) sender;
 - (short) LeftRightMovieScreen;
 - (void) setDisplayStereo3DPoints: (vtkRenderer*) theRenderer: (BOOL) on;
 - (void) setNewGeometry: (double) screenHeight: (double) screenDistance: (double) eyeDistance;
 
+- (IBAction) SwitchStereoMode :(id) sender;
+- (IBAction) invertedSides :(id) sender;
+
 @end
 
-#endif
+#else // _STEREO_VISION_
+
+@interface VRView ( StereoVision )
+
+- (IBAction) SwitchStereoMode :(id) sender;
+- (IBAction) invertedSides :(id) sender;
+
+@end
+#endif // _STEREO_VISION_

@@ -565,7 +565,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
     return vrController.view.engine;
 }
 
-- (void) setEngine: (int) newEngine
+- (void) setEngine: (EngineType) newEngine
 {
 	vrController.view.engine = newEngine;
 }
