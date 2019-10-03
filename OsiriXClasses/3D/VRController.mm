@@ -892,7 +892,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 #if 0 // @@@
         [shadingsPresetsController setWindowController: self];      
 #else // Horos
-		[shadingsPresetsController addObserver:self forKeyPath:@"selectedObjects" options:0 context:VRController.class];
+		[shadingsPresetsController addObserver:self
+                                    forKeyPath:@"selectedObjects"
+                                       options:0
+                                       context:VRController.class];
 #endif
         [self setupToolbar];
     }
@@ -1216,7 +1219,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 -(void) dealloc
 {
 #if 1 // Horos
-[shadingsPresetsController removeObserver:self forKeyPath:@"selectedObjects" context:VRController.class];
+    [shadingsPresetsController removeObserver:self
+                                   forKeyPath:@"selectedObjects"
+                                      context:VRController.class];
 #endif
 	[style release];
 	

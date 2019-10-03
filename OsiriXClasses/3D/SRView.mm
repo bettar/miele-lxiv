@@ -19,6 +19,7 @@
 =========================================================================*/
 
 #import "options.h"
+#import "mieleTypes.h"
 
 #import "SRView.h"
 #import "SRController.h"
@@ -142,13 +143,18 @@ typedef struct _xyzArray
 	windowFrame.size.width = [[[self window] contentView] frame].size.width;
 	windowFrame.size.height = [[[self window] contentView] frame].size.height - 10;
 	
-	switch ([[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
+	switch ([[NSUserDefaults standardUserDefaults] integerForKey:EXPORTMATRIXFOR3D_KEY])
 	{
-		case 0:
+		case EXPORT_SIZE_CURRENT:
             break;
 		
-		case 1: [self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]];	break;
-		case 2: [self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]];	break;
+		case EXPORT_SIZE_512:
+            [self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]];
+            break;
+
+        case EXPORT_SIZE_768:
+            [self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]];
+            break;
 	}
 	
 	[self display];

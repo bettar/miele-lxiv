@@ -5454,19 +5454,19 @@ static BOOL initialized = NO;
 				float ratio = (float) columnsPerScreen / (float) rows;
 			
 				if (ratio > ratioValue)
-					rows ++;
+					rows++;
 				else 
-					columnsPerScreen ++;
+					columnsPerScreen++;
 			}
 		}
         
         int intViewerCountPerScreen = ceilf( viewerCountPerScreen);
         
         if (rows * columnsPerScreen > intViewerCountPerScreen && rows*(columnsPerScreen-1) == intViewerCountPerScreen)
-            columnsPerScreen --;
+            columnsPerScreen--;
 
         if (rows * columnsPerScreen > intViewerCountPerScreen && columnsPerScreen*(rows-1) == intViewerCountPerScreen)
-            rows --;
+            rows--;
         
         columns = columnsPerScreen * numberOfMonitors;
 	}
@@ -5582,19 +5582,19 @@ static BOOL initialized = NO;
                                 float ratio = (float) columnsForThisScreen / (float) rowsForThisScreen;
                                 
                                 if (ratio > ratioValue)
-                                    rowsForThisScreen ++;
+                                    rowsForThisScreen++;
                                 else 
-                                    columnsForThisScreen ++;
+                                    columnsForThisScreen++;
                             }
                         }
                         
                         int intViewerCountPerScreen = ceilf( viewersForThisScreen.count);
                         
                         if (rowsForThisScreen * columnsForThisScreen > intViewerCountPerScreen && rowsForThisScreen*(columnsForThisScreen-1) == intViewerCountPerScreen)
-                            columnsForThisScreen --;
+                            columnsForThisScreen--;
                         
                         if (rowsForThisScreen * columnsForThisScreen > intViewerCountPerScreen && columnsForThisScreen*(rowsForThisScreen-1) == intViewerCountPerScreen)
-                            rowsForThisScreen --;
+                            rowsForThisScreen--;
                         
                         columns = columnsForThisScreen * numberOfMonitors;
                     }

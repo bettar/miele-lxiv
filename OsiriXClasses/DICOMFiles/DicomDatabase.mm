@@ -18,6 +18,8 @@
  PURPOSE.
  =========================================================================*/
 
+#import "mieleTypes.h"
+
 #import "DicomDatabase.h"
 #import "DicomDatabase+Clean.h"
 #import "NSString+N2.h"
@@ -2952,7 +2954,7 @@ static BOOL protectionAgainstReentry = NO;
 -(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI
 {
     return [self importFilesFromIncomingDir: showGUI
-                listenerCompressionSettings: [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"]];
+                listenerCompressionSettings: [[NSUserDefaults standardUserDefaults] integerForKey: ListenerCompressionSettings_KEY]];
 }
 
 -(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI

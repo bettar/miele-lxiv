@@ -19,6 +19,7 @@
 =========================================================================*/
 
 #import "options.h"
+#import "mieleTypes.h"
 
 #import "ROIVolumeView.h"
 #import "DCMPix.h"
@@ -367,13 +368,17 @@
     NSString *error = 0L;
     
     NSMutableArray **ptsPtr = nil;
-    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2)
+    if ( [[NSUserDefaults standardUserDefaults] integerForKey:UseDelaunayFor3DRoi_KEY] != ROI_VOLUME_ISO_CONTOUR)
         ptsPtr = &ptsArray;
     
-    float volume = [vc computeVolume: roi points: ptsPtr generateMissingROIs: YES generatedROIs: generatedROIs computeData: statistics error: &error];
+    float volume = [vc computeVolume: roi
+                              points: ptsPtr
+                 generateMissingROIs: YES
+                       generatedROIs: generatedROIs
+                         computeData: statistics
+                               error: &error];
     
-    if( error || volume == 0) {
-        
+    if (error || volume == 0) {
         if( error == nil)
             error = NSLocalizedString( @"Not possible to compute a volume!", nil);
         
@@ -387,22 +392,24 @@
     }
     
     vtkPolyData *profile = nil;
-    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2)
+    if ( [[NSUserDefaults standardUserDefaults] integerForKey:UseDelaunayFor3DRoi_KEY] != ROI_VOLUME_ISO_CONTOUR)
     {
         vtkPoints *points = vtkPoints::New();
         long i = 0;
-        for( NSArray *pt3D in ptsArray)
-            points->InsertPoint( i++, [[pt3D objectAtIndex: 0] floatValue]*factor, [[pt3D objectAtIndex: 1] floatValue]*factor, [[pt3D objectAtIndex: 2] floatValue]*factor);
+        for (NSArray *pt3D in ptsArray)
+            points->InsertPoint(i++,
+                                [[pt3D objectAtIndex: 0] floatValue]*factor,
+                                [[pt3D objectAtIndex: 1] floatValue]*factor,
+                                [[pt3D objectAtIndex: 2] floatValue]*factor);
         
         profile = vtkPolyData::New();
         profile->SetPoints( points);
         points->Delete();
     }
     
-    switch ( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"])
+    switch ( [[NSUserDefaults standardUserDefaults] integerForKey: UseDelaunayFor3DRoi_KEY])
     {
-        // IsoContour
-        case 2:
+        case ROI_VOLUME_ISO_CONTOUR:
         {
             NSData *vD = nil;
             NSMutableArray *copyPixList = nil;
@@ -483,7 +490,7 @@
             vtkPolyDataNormals *isoNormals = vtkPolyDataNormals::New();
             isoNormals->SetInputData( previousOutput);
             isoNormals->SetFeatureAngle( 120);
-	    isoNormals->Update();
+            isoNormals->Update();
             
             vtkPolyDataMapper *isoMapper = vtkPolyDataMapper::New();
             isoMapper->SetInputConnection( isoNormals->GetOutputPort());
@@ -504,8 +511,7 @@
         }
             break;
             
-            // Delaunay
-        case 1:
+        case ROI_VOLUME_DELAUNAY:
         {
             vtkDelaunay3D *delaunayTriangulator = vtkDelaunay3D::New();
             delaunayTriangulator->SetInputData( profile);
@@ -530,8 +536,7 @@
         }
             break;
             
-            // PowerCrust
-        case 0:
+        case ROI_VOLUME_POWER_CRUST:
         {
             vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
             power->SetInputData( profile);
@@ -562,7 +567,7 @@
             break;
     }
     
-    if( profile)
+    if (profile)
         profile->Delete();
     
     //Delete the generated ROIs - There was no generated ROIs previously
@@ -613,10 +618,10 @@
             }
             roiVolumeActor->SetMapper( mapper);
             
-            if( mapper)
+            if ( mapper)
                 mapper->Delete();
             
-            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] == 2)
+            if ( [[NSUserDefaults standardUserDefaults] integerForKey: UseDelaunayFor3DRoi_KEY] == ROI_VOLUME_ISO_CONTOUR)
             {
                 ROIVolumeController *wo = self.window.windowController;
                 DCMPix *o = [wo.viewer.pixList objectAtIndex: 0];
@@ -656,7 +661,7 @@
 //                ballActor = nil;
 //            }
 //            
-//            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] != 2)
+//            if( [[NSUserDefaults standardUserDefaults] integerForKey: UseDelaunayFor3DRoi_KEY] != ROI_VOLUME_ISO_CONTOUR)
 //            {
 //                vtkPolyData *profile = nil;
 //                
@@ -770,9 +775,9 @@
         {
             printf( "***** C++ exception in %s\r", __PRETTY_FUNCTION__);
             
-            if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2) // Iso Contour
+            if( [[NSUserDefaults standardUserDefaults] integerForKey:UseDelaunayFor3DRoi_KEY] != ROI_VOLUME_ISO_CONTOUR)
             {
-                [[NSUserDefaults standardUserDefaults] setInteger: 2 forKey:@"UseDelaunayFor3DRoi"];
+                [[NSUserDefaults standardUserDefaults] setInteger:ROI_VOLUME_ISO_CONTOUR forKey:UseDelaunayFor3DRoi_KEY];
                 [self renderVolume];
             }
         }
@@ -781,9 +786,9 @@
     {
         N2LogExceptionWithStackTrace(e);
         
-        if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2) // Iso Contour
+        if( [[NSUserDefaults standardUserDefaults] integerForKey:UseDelaunayFor3DRoi_KEY] != ROI_VOLUME_ISO_CONTOUR)
         {
-            [[NSUserDefaults standardUserDefaults] setInteger: 2 forKey:@"UseDelaunayFor3DRoi"];
+            [[NSUserDefaults standardUserDefaults] setInteger:ROI_VOLUME_ISO_CONTOUR forKey:UseDelaunayFor3DRoi_KEY];
             [self renderVolume];
         }
     }

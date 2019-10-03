@@ -134,7 +134,7 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 		int bufferHeight = [aROI textureHeight];
 		
 		structuringElementRadius *= 2;
-		structuringElementRadius ++;
+		structuringElementRadius++;
 		
 		if( kernelErode == nil) [self computeKernelErode: structuringElementRadius];
 		

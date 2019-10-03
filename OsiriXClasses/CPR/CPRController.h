@@ -25,43 +25,37 @@
 #import "VRView.h"
 #import "FlyAssistant.h"
 
-enum _ViewsPosition {
+typedef NS_ENUM(NSInteger, CPRLayoutType) {
     NormalPosition = 0,
     HorizontalPosition = 1,
     VerticalPosition = 2
 };
-typedef NSInteger ViewsPosition;
 
-enum _CPRType {
+typedef NS_ENUM(NSInteger, CPRType) {
     CPRStraightenedType = 0,
     CPRStretchedType = 1
 };
-typedef NSInteger CPRType;
 
-enum _CPRExportImageFormat {
+typedef NS_ENUM(NSInteger, CPRExportImageFormat) {
     CPR8BitRGBExportImageFormat = 0,
-    CPR16BitExportImageFormat = 1,
+    CPR16BitExportImageFormat = 1
 };
-typedef NSInteger CPRExportImageFormat;
 
-enum _CPRExportSequenceType {
+typedef NS_ENUM(NSInteger, CPRExportSequenceType) {
     CPRCurrentOnlyExportSequenceType = 0,
-    CPRSeriesExportSequenceType = 1,
+    CPRSeriesExportSequenceType = 1
 };
-typedef NSInteger CPRExportSequenceType;
 
-enum _CPRExportSeriesType {
+typedef NS_ENUM(NSInteger, CPRExportSeriesType) {
     CPRRotationExportSeriesType = 0,
     CPRSlabExportSeriesType = 1,
-	CPRTransverseViewsExportSeriesType = 2
+    CPRTransverseViewsExportSeriesType = 2
 };
-typedef NSInteger CPRExportSeriesType;
 
-enum _CPRExportRotationSpan {
+typedef NS_ENUM(NSInteger, CPRExportRotationSpan) {
     CPR180ExportRotationSpan = 0,
-    CPR360ExportRotationSpan = 1,
+    CPR360ExportRotationSpan = 1
 };
-typedef NSInteger CPRExportRotationSpan;
 
 @class CPRMPRDCMView;
 @class CPRView;
@@ -95,7 +89,7 @@ typedef NSInteger CPRExportRotationSpan;
     double straightenedCPRAngle; // this is in degrees, the CPRView uses radians
     IBOutlet NSView *tbCPRType, *tbViewsPosition, *tbCPRPathMode;
     CPRType cprType;
-    ViewsPosition viewsPosition;
+    CPRLayoutType viewsPosition;
     
     CPRVolumeData *cprVolumeData;   
     CPRCurvedPath *curvedPath;
@@ -209,7 +203,7 @@ typedef NSInteger CPRExportRotationSpan;
 @property (retain) NSColor *curvedPathColor;
 @property (nonatomic) double straightenedCPRAngle;
 @property (nonatomic) CPRType cprType;
-@property (nonatomic) ViewsPosition viewsPosition;
+@property (nonatomic) CPRLayoutType viewsPosition;
 @property (nonatomic, readonly) CPRView *cprView;
 
 //@property (nonatomic) BOOL assistantPathMode;3

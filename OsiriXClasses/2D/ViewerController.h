@@ -24,6 +24,7 @@
 #import <AppKit/AppKit.h>
 #import "ROI.h"
 #import "ROI3DSettingsWindow.h"
+#import "mieleTypes.h"
 
 @class DCMView;
 @class OpacityTransferView;
@@ -107,7 +108,8 @@ enum
 	IBOutlet NSView         *orientationView;
 	IBOutlet NSMatrix		*orientationMatrix;
 	
-	short					currentOrientationTool, originalOrientation;
+    OrientationToolType		currentOrientationTool;
+    OrientationToolType     originalOrientation;
 	
     IBOutlet NSSlider       *slider, *speedSlider;
 	IBOutlet NSButton		*loopButton;
@@ -128,7 +130,7 @@ enum
     BOOL OpacityPopupSet, clutPopupSet, convPopupSet, wlwwPopupSet, clutDICOMFileMenuAdded;
     IBOutlet NSPopUpButton  *seriesPopupMenu;
     IBOutlet NSPopUpButton  *windowsTilingMenu;
-    NSMenuItem               *seriesPopupContextualMenu;
+    NSMenuItem              *seriesPopupContextualMenu;
     BOOL                    needsToBuildSeriesPopupMenu, needsToBuildSeriesMatrix;
 	
 	IBOutlet NSView			*propagateSettingsView;
@@ -362,7 +364,8 @@ enum
 }
 @property(retain) NSCalendarDate *injectionDateTime;
 @property(readonly) NSSlider *slider;
-@property(readonly) short currentOrientationTool, originalOrientation;
+@property(readonly) OrientationToolType currentOrientationTool;
+@property(readonly) OrientationToolType originalOrientation;
 @property(readonly) NSTimer	*timer;
 @property(readonly) NSButton *keyImageCheck;
 @property(readonly) NSSlider *speedSlider;
@@ -875,7 +878,7 @@ enum
 - (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 - (IBAction) setOrientationTool:(id) sender;
-- (BOOL) setOrientation: (int) newOrientationTool;
+- (BOOL) setOrientation: (OrientationToolType) newOrientationTool;
 - (void) setWindowTitle:(id) sender;
 - (IBAction) printSlider:(id) sender;
 - (void) setConv:(float*) matrix :(short) size :(float) norm;

@@ -19,6 +19,7 @@
 =========================================================================*/
 
 #include "options.h"
+#import "mieleTypes.h"
 
 #import "NSImage+N2.h"
 #import "DefaultsOsiriX.h"
@@ -384,7 +385,8 @@ enum
 
 @implementation ViewerController
 
-@synthesize currentOrientationTool, originalOrientation, speedSlider, speedText, toolbarPanel, previewMatrix, previewMatrixScrollView;
+@synthesize currentOrientationTool, originalOrientation;
+@synthesize speedSlider, speedText, toolbarPanel, previewMatrix, previewMatrixScrollView;
 @synthesize timer, keyImageCheck, injectionDateTime, blendedWindow, slider;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
 @synthesize flagListPODComparatives, windowsStateName, titledGantry;
@@ -2357,7 +2359,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
-- (BOOL) setOrientation: (int) newOrientationTool
+- (BOOL) setOrientation: (OrientationToolType) newOrientationTool
 {
     BOOL succeed = YES;
     
@@ -2387,7 +2389,6 @@ static volatile int numberOfThreadsForRelisce = 0;
                 return NO;
             }
         }
-        
 		
 		// To stop any attempt to reload the data...
 		postprocessed = YES;
@@ -2402,7 +2403,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if (blendingController)
 			[self ActivateBlending: nil];
 		
-		NSLog( @"Orientation : current: %d new: %d", currentOrientationTool, newOrientationTool);
+        NSLog( @"Orientation : current: %ld new: %ld", (long)currentOrientationTool, (long)newOrientationTool);
 		
         // Copy 2D Point & 3D Ball ROIs
         NSMutableArray *roisToCopy = [NSMutableArray array];
@@ -2424,99 +2425,98 @@ static volatile int numberOfThreadsForRelisce = 0;
         
 		switch (currentOrientationTool)
 		{
-			case 0:
-			{
+			case ORIENTATION_AXIAL:
 				switch (newOrientationTool)
 				{
-					case 0:
+					case ORIENTATION_AXIAL:
 						[imageView setIndex: [pixList[curMovieIndex] count]/2];
 						[imageView sendSyncMessage:0];
 						[self adjustSlider];
-					break;
+                        break;
 					
-					case 1:
+					case ORIENTATION_CORONAL:
 						[self checkEverythingLoaded];
 						succeed = [self processReslice: 0 :newViewer];
-					break;
+                        break;
 					
-					case 2:
+					case ORIENTATION_SAGITTAL:
 						[self checkEverythingLoaded];
 						succeed = [self processReslice: 1 :newViewer];
-					break;
+                        break;
+                        
+                    default:
+                        break;
 				}
-			}
-			break;
-
-			case 1:	// coronal
-			{
+                break;
+			
+            case ORIENTATION_CORONAL:
 				switch (newOrientationTool)
 				{
-					case 0:
+					case ORIENTATION_AXIAL:
 						[self checkEverythingLoaded];
 						succeed = [self processReslice: 0 :newViewer];
 						
 						if (succeed)
 							[self vertFlipDataSet: self];
-					break;
+                        break;
 					
-					case 1:
+					case ORIENTATION_CORONAL:
 						[imageView setIndex: [pixList[curMovieIndex] count]/2];
 						[imageView sendSyncMessage:0];
 						[self adjustSlider];
-					break;
+                        break;
 					
-					case 2:
+					case ORIENTATION_SAGITTAL:
 						[self checkEverythingLoaded];
 						succeed = [self processReslice: 1 :newViewer];
 						
 						if (succeed)
 							[self rotateDataSet: kRotate90DegreesClockwise];
-					break;
+                        break;
+                        
+                    default:
+                        break;
 				}
-			}
-			break;
-
-			case 2:	// sagi
-			{
+                break;
+			
+            case ORIENTATION_SAGITTAL:
 				switch (newOrientationTool)
 				{
-					case 0:
+					case ORIENTATION_AXIAL:
 						[self checkEverythingLoaded];
 						succeed = [self processReslice: 0 :newViewer];
-						
-						if (succeed)
-						{
+						if (succeed) {
 							[self rotateDataSet: kRotate90DegreesClockwise];
 							[self horzFlipDataSet: self];
 						}
-					break;
+                        break;
 					
-					case 1:
+					case ORIENTATION_CORONAL:
 						[self checkEverythingLoaded];
 						succeed = [self processReslice: 1 :newViewer];
 						
-						if (succeed)
-						{
+						if (succeed) {
 							[self rotateDataSet: kRotate90DegreesClockwise];
 							[self horzFlipDataSet: self];
 						}
-					break;
+                        break;
 					
-					case 2:
+					case ORIENTATION_SAGITTAL:
 						[imageView setIndex: [pixList[curMovieIndex] count]/2];
 						[imageView sendSyncMessage:0];
 						[self adjustSlider];
-					break;
+                        break;
+                        
+                    default:
+                        break;
 				}
-			}
-			break;
+                break;
+
+            default:
+                break;
 		}
 		
-		if (succeed == NO)
-		{
-            
-		}
-		else
+		if (succeed)
 		{
 			currentOrientationTool = newOrientationTool;
             [self setPostprocessed: YES];
@@ -2534,7 +2534,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             
             [imageView setIndex: [imageView curImage]];
 		}
-		if (newViewer == NO)
+
+        if (newViewer == NO)
 			[orientationMatrix selectCellWithTag: currentOrientationTool];
 
 		float   iwl, iww;
@@ -2568,17 +2569,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (IBAction) setOrientationTool:(id) sender
 {
-    int n = [[sender selectedCell] tag];
-    
-    
+    OrientationToolType n = (OrientationToolType)[[sender selectedCell] tag];
+
     if ([self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: YES] == NO)
     {
         if ([self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: NO])
         {
             if (NSRunAlertPanel(NSLocalizedString(@"Data Error", nil),
                                 NSLocalizedString(@"Warning! Slice interval/thickness is varying, it can create distortion in 3D.", nil),
-                                NSLocalizedString( @"Cancel", nil),
-                                NSLocalizedString( @"Continue", nil),
+                                NSLocalizedString(@"Cancel", nil),
+                                NSLocalizedString(@"Continue", nil),
                                 nil
                                 ) == NSAlertDefaultReturn)
                 return;
@@ -6562,7 +6562,7 @@ static ViewerController *draggedController = nil;
 	{
 		if (maxMovieIndex > 1)
 		{
-			curMovieIndex --;
+			curMovieIndex--;
 			if (curMovieIndex < 0)
                 curMovieIndex = maxMovieIndex-1;
 			
@@ -9021,7 +9021,8 @@ static int avoidReentryRefreshDatabase = 0;
                 
 				[self checkView: subCtrlView :NO];
 				
-				if (currentOrientationTool != originalOrientation && originalOrientation != -1)
+				if (currentOrientationTool != originalOrientation &&
+                    originalOrientation != ORIENTATION_UNDEFINED)
 				{
 					[imageView setXFlipped: NO];
 					[imageView setYFlipped: NO];
@@ -9589,7 +9590,7 @@ static int avoidReentryRefreshDatabase = 0;
     if (windowWillClose)
         return;
     
-	originalOrientation = -1;
+	originalOrientation = ORIENTATION_UNDEFINED;
 	
     @synchronized( loadingThread)
     {
@@ -11464,7 +11465,7 @@ static int avoidReentryRefreshDatabase = 0;
             else
                 orientationVector = eSagittalNeg;
             
-            currentOrientationTool = 2;
+            currentOrientationTool = ORIENTATION_SAGITTAL;
         }
         
         if (fabs( vectors[7]) > fabs(vectors[6]) &&
@@ -11480,7 +11481,7 @@ static int avoidReentryRefreshDatabase = 0;
             else
                 orientationVector = eCoronalNeg;
             
-            currentOrientationTool = 1;
+            currentOrientationTool = ORIENTATION_CORONAL;
         }
         
         if (fabs( vectors[8]) > fabs(vectors[6]) &&
@@ -11496,10 +11497,10 @@ static int avoidReentryRefreshDatabase = 0;
             else
                 orientationVector = eAxialNeg;
             
-            currentOrientationTool = 0;
+            currentOrientationTool = ORIENTATION_AXIAL;
         }
         
-        if (originalOrientation == -1)
+        if (originalOrientation == ORIENTATION_UNDEFINED)
             originalOrientation = currentOrientationTool;
     }
     
@@ -11545,7 +11546,7 @@ static int avoidReentryRefreshDatabase = 0;
             
             if (interval != 0.0)
             {
-                if (currentOrientationTool >= 0)
+                if (currentOrientationTool != ORIENTATION_UNDEFINED)
                     [orientationMatrix selectCellWithTag: currentOrientationTool];
                 
                 if (interval != 0)
@@ -22282,7 +22283,7 @@ static BOOL viewerControllerPlaying = NO;
     retainedToolbarItems = [[NSMutableArray alloc] initWithCapacity: 0];
     
     resampleRatio = 1.0;
-    currentOrientationTool = -1;
+    currentOrientationTool = ORIENTATION_UNDEFINED;
     
     [imageView setDrawing: NO];
     
@@ -22472,7 +22473,7 @@ static BOOL viewerControllerPlaying = NO;
 	
 //    [[NSUserDefaults standardUserDefaults] addObserver: self forKeyPath: @"SeriesListVisible" options:NSKeyValueObservingOptionNew context:nil];
     
-	originalOrientation = -1;
+	originalOrientation = ORIENTATION_UNDEFINED;
 	[orientationMatrix setEnabled: NO];
 }
 
@@ -23335,14 +23336,10 @@ static BOOL viewerControllerPlaying = NO;
 
     viewer = [self openMPRViewer];
     [self place3DViewerWindow:viewer];
-    [viewer showWindow:self];
-    [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
-#if 1 // Horos
     dispatch_async(dispatch_get_main_queue(), ^(){
         [viewer showWindow:self];
-        [viewer showWindow:self];
+        [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
     });
-#endif
 }
 
 - (CPRController *)openCPRViewer

@@ -19,6 +19,7 @@
  =========================================================================*/
 
 #include "options.h"
+#import "mieleTypes.h"
 
 #import "ToolbarPanel.h"
 #import "DicomDatabase.h"
@@ -7542,8 +7543,9 @@ static NSConditionLock *threadLock = nil;
             {
                 distantStudies = NO;
                 
-                int copy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
-                [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"ListenerCompressionSettings"]; //No time for decompression....
+                ListenerCompressionSettingsType copy = (ListenerCompressionSettingsType)[[NSUserDefaults standardUserDefaults] integerForKey: ListenerCompressionSettings_KEY];
+                // No time for decompression. Temporarily alter the settings
+                [[NSUserDefaults standardUserDefaults] setInteger: LISTENER_COMPRESSION_DONT_MODIFY forKey: ListenerCompressionSettings_KEY];
                 
                 for (int i = 0; i < comparatives.count; i++)
                 {
@@ -7560,7 +7562,7 @@ static NSConditionLock *threadLock = nil;
                         NSArray *studyArray = nil;
                         @try
                         {
-                            // We need to receive the 'messages' for the new db objects from the background thread
+                            // We need to receive the 'messages' for the new DB objects from the background thread
                             [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.5]];
                             
                             studyArray = [self.database.managedObjectContext executeFetchRequest: r error: nil];
@@ -7574,7 +7576,8 @@ static NSConditionLock *threadLock = nil;
                     }
                 }
                 
-                [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: @"ListenerCompressionSettings"];
+                // Restore setting
+                [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: ListenerCompressionSettings_KEY];
                 
                 if (distantStudies && w == nil)
                 {
@@ -7834,8 +7837,10 @@ static NSConditionLock *threadLock = nil;
                             
                             if (distantStudy)
                             {
-                                int copy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
-                                [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"ListenerCompressionSettings"]; //No time for decompression....
+                                int copy = [[NSUserDefaults standardUserDefaults] integerForKey: ListenerCompressionSettings_KEY];
+                                                
+                                // No time for decompression. Temporarily alter the settings
+                                [[NSUserDefaults standardUserDefaults] setInteger:LISTENER_COMPRESSION_DONT_MODIFY forKey: ListenerCompressionSettings_KEY];
                                 
                                 [QueryController retrieveStudies: [NSArray arrayWithObject: distantStudy] showErrors: NO checkForPreviousAutoRetrieve: YES];
                                 
@@ -7864,7 +7869,8 @@ static NSConditionLock *threadLock = nil;
                                 }
                                 while (([studiesArray count] == 0 || lastNumberOfImages != currentNumberOfImages) && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
                                 
-                                [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: @"ListenerCompressionSettings"];
+                                // Restore setting
+                                [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: ListenerCompressionSettings_KEY];
                             }
 #endif
                         }
@@ -12031,12 +12037,14 @@ constrainSplitPosition:(CGFloat)proposedPosition
             [comparativeRetrieveQueue addObject: study];
         }
         
-        int copy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
-        [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"ListenerCompressionSettings"]; //No time for decompression....
-        
-        #ifndef OSIRIX_LIGHT
+        int copy = [[NSUserDefaults standardUserDefaults] integerForKey: ListenerCompressionSettings_KEY];
+
+        // No time for decompression. Temporarily alter the settings
+        [[NSUserDefaults standardUserDefaults] setInteger:LISTENER_COMPRESSION_DONT_MODIFY forKey: ListenerCompressionSettings_KEY];
+
+#ifndef OSIRIX_LIGHT
         [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO checkForPreviousAutoRetrieve: NO];
-        #endif
+#endif
         
         DicomDatabase *idb = [[DicomDatabase activeLocalDatabase] independentDatabase];
         
@@ -12046,7 +12054,8 @@ constrainSplitPosition:(CGFloat)proposedPosition
         if ([idb waitForCompressThread])
             [idb importFilesFromIncomingDir];
         
-        [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: @"ListenerCompressionSettings"];
+        // Restore setting
+        [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: ListenerCompressionSettings_KEY];
         
         @synchronized( comparativeRetrieveQueue)
         {

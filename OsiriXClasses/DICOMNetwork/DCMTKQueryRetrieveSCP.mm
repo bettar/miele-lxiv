@@ -289,19 +289,19 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 	
 	options.writeTransferSyntax_ = EXS_Unknown;
 	
-//	switch ( [[NSUserDefaults standardUserDefaults] integerForKey:@"ListenerCompressionSettings"]) //It's not a good idea, because it's a single process... no multi-threads
+//	switch ( [[NSUserDefaults standardUserDefaults] integerForKey:ListenerCompressionSettings_KEY]) //It's not a good idea, because it's a single process... no multi-threads
 //	{
-//		case 0:
+//		case LISTENER_COMPRESSION_DONT_MODIFY:
 //			options.writeTransferSyntax_ = EXS_Unknown;	//write with same syntax as it came in
-//		break;
+//		    break;
 //			
-//		case 1:
-//			options.writeTransferSyntax_ = EXS_LittleEndianExplicit; //decompress
-//		break;
+//		case LISTENER_COMPRESSION_DECOMPRESS:
+//			options.writeTransferSyntax_ = EXS_LittleEndianExplicit;
+//		    break;
 //			
-//		case 2:
-//			options.writeTransferSyntax_ = EXS_JPEG2000;	// compress
-//		break;
+//		case LISTENER_COMPRESSION_COMPRESS:
+//			options.writeTransferSyntax_ = EXS_JPEG2000;
+//		    break;
 //	}
 	
 	//remove group lengths

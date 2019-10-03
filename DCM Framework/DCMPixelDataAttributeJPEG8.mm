@@ -471,13 +471,13 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 					{
 						case 0:
 							theCInfo.jpeg_color_space = JCS_RGB;
-						break;
+                            break;
 						case 1:
 							theCInfo.jpeg_color_space = JCS_YCbCr;
-						break;
+                            break;
 						default:
 							theCInfo.jpeg_color_space = JCS_YCbCr; /* assume it's YCbCr */
-						break;
+                            break;
 					}
 				}
 				else

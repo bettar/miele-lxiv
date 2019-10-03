@@ -414,13 +414,9 @@ static float deg2rad = M_PI/180.0;
 		[window disableUpdatesUntilFlush];
 }
 
-// There are 3 possible layouts that can be selected by changing "MPR2DViewsPosition" in the defaults
-// Short of editing the plist file, is there some way of selecting a layout in the GUI ?
-//
-// GitHub issue #22: with the following code commented in the window becomes impossible to resize
+// There are 3 possible layouts that can be selected from the toolbar item "Views"
 -(void) applyViewsPosition
 {
-#if 0
     NSScreen *s = [viewer2D get3DViewerScreen: viewer2D];
 	
     BOOL portrait;
@@ -429,20 +425,26 @@ static float deg2rad = M_PI/180.0;
     else
         portrait = NO;
     
-    NSDisableScreenUpdates();
+    //NSDisableScreenUpdates();
     
+#if 0
+    // GitHub issue #22: with the following code commented in the window becomes impossible to resize
     [verticalSplit setTranslatesAutoresizingMaskIntoConstraints: YES];
     [horizontalSplit setTranslatesAutoresizingMaskIntoConstraints: YES];
+#endif
     
     [horizontalSplit setVertical: NO];
     [verticalSplit setVertical: NO];
     [verticalSplit adjustSubviews];
     [horizontalSplit adjustSubviews];
     
+    CGFloat width = [[self window] frame].size.width;
+    CGFloat height = [[self window] frame].size.height;
     NSRect r;
-    switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"MPR2DViewsPosition"])
+
+    switch( [[NSUserDefaults standardUserDefaults] integerForKey:MPR2DViewsPosition_KEY])
     {
-        case 0:
+        case MPR_LAYOUT_2_1:
             if (portrait) {
                 [horizontalSplit setVertical: YES];
                 [verticalSplit setVertical: YES];
@@ -459,114 +461,79 @@ static float deg2rad = M_PI/180.0;
 
             if (portrait) {
                 r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
-                r.size.height = [[self window] frame].size.height/2;
+                r.size.height = height/2;
                 [[[verticalSplit subviews] objectAtIndex: 0] setFrame: r];
                 
                 r = [[[verticalSplit subviews] objectAtIndex: 1] frame];
-                r.size.height = [[self window] frame].size.height/2;
+                r.size.height = height/2;
                 [[[verticalSplit subviews] objectAtIndex: 1] setFrame: r];
                 
                 [verticalSplit adjustSubviews];
                 
+                ///
+                
                 r = [[[horizontalSplit subviews] objectAtIndex: 0] frame];
-                r.size.width = [[self window] frame].size.width/2;
+                r.size.width = width/2;
                 [[[horizontalSplit subviews] objectAtIndex: 0] setFrame: r];
                 
                 r = [[[horizontalSplit subviews] objectAtIndex: 1] frame];
-                r.size.width = [[self window] frame].size.width/2;
+                r.size.width = width/2;
                 [[[horizontalSplit subviews] objectAtIndex: 1] setFrame: r];
                 
                 [horizontalSplit adjustSubviews];
             }
             else {
                 r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
-                r.size.width = [[self window] frame].size.width/2;
+                r.size.width = width/2;
                 [[[verticalSplit subviews] objectAtIndex: 0] setFrame: r];
                 
                 r = [[[verticalSplit subviews] objectAtIndex: 1] frame];
-                r.size.width = [[self window] frame].size.width/2;
+                r.size.width = width/2;
                 [[[verticalSplit subviews] objectAtIndex: 1] setFrame: r];
                 
                 [verticalSplit adjustSubviews];
+                
+                ///
             
                 r = [[[horizontalSplit subviews] objectAtIndex: 0] frame];
-                r.size.height = [[self window] frame].size.height/2;
+                r.size.height = height/2;
                 [[[horizontalSplit subviews] objectAtIndex: 0] setFrame: r];
                 
                 r = [[[horizontalSplit subviews] objectAtIndex: 1] frame];
-                r.size.height = [[self window] frame].size.height/2;
+                r.size.height = height/2;
                 [[[horizontalSplit subviews] objectAtIndex: 1] setFrame: r];
                 
                 [horizontalSplit adjustSubviews];
             }
             break;
             
-        case 2:
-            [horizontalSplit setVertical: YES];
-            [verticalSplit setVertical: YES];
-            
-            r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
-            r.size.width = 2*[[self window] frame].size.width/3;
-            [[[verticalSplit subviews] objectAtIndex: 0] setFrame: r];
-            
-            r = [[[verticalSplit subviews] objectAtIndex: 1] frame];
-            r.size.width = [[self window] frame].size.width/3;
-            [[[verticalSplit subviews] objectAtIndex: 1] setFrame: r];
-            [verticalSplit adjustSubviews];
-            
-            //
-            
-            r = [[[horizontalSplit subviews] objectAtIndex: 0] frame];
-            r.size.width = [[self window] frame].size.width/3;
-            [[[horizontalSplit subviews] objectAtIndex: 0] setFrame: r];
-            
-            r = [[[horizontalSplit subviews] objectAtIndex: 1] frame];
-            r.size.width = [[self window] frame].size.width/3;
-            [[[horizontalSplit subviews] objectAtIndex: 1] setFrame: r];
-            [horizontalSplit adjustSubviews];
-            break;
-            
-        case 1:
-            if( portrait)
+        case MPR_LAYOUT_VERTICAL_STACK:
+            if (portrait)
             {
                 [horizontalSplit setVertical: YES];
                 [verticalSplit setVertical: YES];
                 [verticalSplit adjustSubviews];
                 [horizontalSplit adjustSubviews];
-                
-                [horizontalSplit setVertical: NO];
-                [verticalSplit setVertical: NO];
             }
-            else
-            {
-                [horizontalSplit setVertical: NO];
-                [verticalSplit setVertical: NO];
-            }
+
+            [horizontalSplit setVertical: NO];
+            [verticalSplit setVertical: NO];
+
+            [verticalSplit setPosition:2*height/3 ofDividerAtIndex:0];
+            [horizontalSplit setPosition:height/3 ofDividerAtIndex:0];
+            break;
             
-            r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
-            r.size.height = 2*[[self window] frame].size.height/3;
-            [[[verticalSplit subviews] objectAtIndex: 0] setFrame: r];
+        case MPR_LAYOUT_HORIZONTAL_STACK:
+            [horizontalSplit setVertical: YES];
+            [verticalSplit setVertical: YES];
             
-            r = [[[verticalSplit subviews] objectAtIndex: 1] frame];
-            r.size.height = [[self window] frame].size.height/3;
-            [[[verticalSplit subviews] objectAtIndex: 1] setFrame: r];
-            [verticalSplit adjustSubviews];
-            
-            //
-            
-            r = [[[horizontalSplit subviews] objectAtIndex: 0] frame];
-            r.size.height = [[self window] frame].size.height/3;
-            [[[horizontalSplit subviews] objectAtIndex: 0] setFrame: r];
-            
-            r = [[[horizontalSplit subviews] objectAtIndex: 1] frame];
-            r.size.height = [[self window] frame].size.height/3;
-            [[[horizontalSplit subviews] objectAtIndex: 1] setFrame: r];
-            [horizontalSplit adjustSubviews];
+            [verticalSplit setPosition:2*width/3 ofDividerAtIndex:0];
+            [horizontalSplit setPosition:width/3 ofDividerAtIndex:0];
+
             break;
     }
     
-    NSEnableScreenUpdates();
-#endif
+    //NSEnableScreenUpdates();
 }
 
 -(void) awakeFromNib
@@ -2005,7 +1972,7 @@ static float deg2rad = M_PI/180.0;
 	if( [keyPath isEqualToString: @"values.exportDCMIncludeAllViews"])
 	{
 		self.dcmFormat = 0; // Screen capture
-		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey:@"EXPORTMATRIXFOR3D"];
+		[[NSUserDefaults standardUserDefaults] setInteger:EXPORT_SIZE_CURRENT forKey:EXPORTMATRIXFOR3D_KEY];
 	}
     
     if( [keyPath isEqualToString: @"values.MPR2DViewsPosition"])
@@ -2077,10 +2044,15 @@ static float deg2rad = M_PI/180.0;
 		
 		int resizeImage = 0;
 		
-		switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
+		switch( [[NSUserDefaults standardUserDefaults] integerForKey:EXPORTMATRIXFOR3D_KEY])
 		{
-			case 1: resizeImage = 512; break;
-			case 2: resizeImage = 768; break;
+			case EXPORT_SIZE_512:
+                resizeImage = 512;
+                break;
+
+			case EXPORT_SIZE_768:
+                resizeImage = 768;
+                break;
 		}
 		
 		NSMutableArray *views = nil, *viewsRect = nil;
@@ -2448,15 +2420,15 @@ static float deg2rad = M_PI/180.0;
 
 - (void) exportDICOMFile:(id) sender
 {
-	if( [quicktimeWindow isVisible])
+	if ( [quicktimeWindow isVisible])
 		return;
-	if( [dcmWindow isVisible])
+	if ( [dcmWindow isVisible])
 		return;
 	
 	curExportView = [self selectedView];
 	
     NSWindow *sheet;
-	if( quicktimeExportMode)
+	if ( quicktimeExportMode)
         sheet = quicktimeWindow;
 	else
         sheet = dcmWindow;
@@ -2467,11 +2439,11 @@ static float deg2rad = M_PI/180.0;
        didEndSelector:nil
           contextInfo:(void*) nil];
 	
-	if( [self selectedView] != mprView1) mprView1.displayCrossLines = YES;
-	if( [self selectedView] != mprView2) mprView2.displayCrossLines = YES;
-	if( [self selectedView] != mprView3) mprView3.displayCrossLines = YES;
+	if ( [self selectedView] != mprView1) mprView1.displayCrossLines = YES;
+	if ( [self selectedView] != mprView2) mprView2.displayCrossLines = YES;
+	if ( [self selectedView] != mprView3) mprView3.displayCrossLines = YES;
 	
-	if( clippingRangeThickness <= 3)
+	if ( clippingRangeThickness <= 3)
 	{
 		self.dcmInterval = [self getClippingRangeThicknessInMm] * 5.;
 		self.dcmSameIntervalAndThickness = NO;
@@ -2481,29 +2453,29 @@ static float deg2rad = M_PI/180.0;
 	
 	self.dcmQuality = 1;
 	
-	if( clippingRangeMode == 0) // VR
+	if ( clippingRangeMode == 0) // VR
 		self.dcmFormat = 0; //SC in 8-bit
 	else
 		self.dcmFormat = 1; // full depth
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"])
+	if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"])
 	{
 		self.dcmFormat = 0; // screen cature
-		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey:@"EXPORTMATRIXFOR3D"]; // Current size
+		[[NSUserDefaults standardUserDefaults] setInteger:EXPORT_SIZE_CURRENT forKey:EXPORTMATRIXFOR3D_KEY];
 	}
 	
-	if( [[[self selectedView] curRoiList] count] > 0)
+	if ( [[[self selectedView] curRoiList] count] > 0)
 		self.dcmFormat = 0; //SC in 8-bit
 	
 	self.dcmMode = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastMPRdcmExportMode"];
 	
-	if( quicktimeExportMode)
+	if ( quicktimeExportMode)
 	{
 		if( self.dcmMode == 1) // Current Image is not supported for Quicktime Export
 			self.dcmMode = 0;
 	}
 	
-	if( [self getMovieDataAvailable] == NO && self.dcmMode == 2)
+	if ( [self getMovieDataAvailable] == NO && self.dcmMode == 2)
 		self.dcmMode = 0;
 }
 
@@ -3299,7 +3271,7 @@ static float deg2rad = M_PI/180.0;
     if( thisTime - lastMovieTime > 1.0 / self.movieRate)
     {
         val = self.curMovieIndex;
-        val ++;
+        val++;
         
 		if( val < 0) val = 0;
 		if( val > self.maxMovieIndex) val = 0;

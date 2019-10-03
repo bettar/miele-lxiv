@@ -8235,7 +8235,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		if (blendingView && [note object] != blendingView)
 			[blendingView sync: [NSNotification notificationWithName: OsirixSyncNotification object: self userInfo: [self syncMessage: 0]]];
 			
-		avoidRecursiveSync --;
+		avoidRecursiveSync--;
         
 //        if (avoidRecursiveSync == 0)
 //            [self displayIfNeeded];
@@ -12137,7 +12137,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				
 				if (intersect == NO)
 				{
-					curRect.origin.x --;
+					curRect.origin.x--;
 					if (curRect.origin.x <= unionRect.origin.x)
                         intersect = YES;
 				}

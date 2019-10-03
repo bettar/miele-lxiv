@@ -2643,7 +2643,7 @@ return YES;
     if (thisTime - lastMovieTime > 1.0 / [movieRateSlider floatValue])
     {
         val = curMovieIndex;
-        val ++;
+        val++;
         
 		if (val < 0) val = 0;
 		if (val >= maxMovieIndex) val = 0;

@@ -5634,7 +5634,6 @@ simplex *extend_simplices(simplex *s) {
     return ns;
 }
 
-
 simplex *search(simplex *root) {
     /* return a simplex s that corresponds to a facet of the 
      * current hull, and sees(p, s) */
@@ -5646,12 +5645,16 @@ simplex *search(simplex *root) {
     int i;
     long tms = 0;
 
-    if (!st) st = (simplex **)malloc((ss+MAXDIM+1)*sizeof(simplex*));
+    if (!st)
+        st = (simplex **)malloc((ss+MAXDIM+1)*sizeof(simplex*));
+
     push(root->peak.simp);
     root->visit = pnum;
     if (!sees(p,root))
-        for (i=0,sn=root->neigh;i<cdim;i++,sn++) push(sn->simp);
-    while (tms) 
+        for (i=0,sn=root->neigh;i<cdim;i++,sn++)
+            push(sn->simp);
+
+    while (tms)
     {
         if(tms>ss) 
         {
@@ -5667,10 +5670,13 @@ simplex *search(simplex *root) {
         if (!sees(p,s))
             continue;
         
-        if (!s->peak.vert) return s;
+        if (!s->peak.vert)
+            return s;
+
         for (i=0, sn=s->neigh; i<cdim; i++,sn++)
             push(sn->simp);
     }
+
     return NULL;
 }
 
@@ -5686,12 +5692,12 @@ point get_another_site(void) {
     }
     /*  check_triang(); */
     pnext = (*get_site)();
-    if (!pnext) return NULL;
+    if (!pnext)
+        return NULL;
+
     pnum = site_num(pnext)+2;
     return pnext;
 }
-
-
 
 void buildhull (simplex *root) {
 

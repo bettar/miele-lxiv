@@ -363,7 +363,7 @@
 	short           val;
     
 	val = curMovieIndex;
-	val ++;
+	val++;
 	
 	if( val < 0) val = 1;
 	if( val > flyThru.numberOfFrames) val = 1;

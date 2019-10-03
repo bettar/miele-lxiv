@@ -802,7 +802,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey:@"points3DcolorBlue"];
 	[defaultValues setObject:@"1" forKey:@"points3DcolorAlpha"];
 	[defaultValues setObject:@"1" forKey:@"MagneticWindows"];
-	[defaultValues setObject:@"0" forKey:@"MPR2DViewsPosition"];
+	[defaultValues setObject:@(MPR_LAYOUT_2_1) forKey:MPR2DViewsPosition_KEY];
 	
 	[defaultValues setObject:@"1" forKey:@"StoreThumbnailsInDB"];
 	[defaultValues setObject:@"1" forKey:@"DisplayDICOMOverlays"];
@@ -810,7 +810,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"/~Documents/FolderToBurn" forKey:@"SupplementaryBurnPath"];
     
 	NSMutableArray *presets = [NSMutableArray array];
-	NSDictionary	*shading;
+	NSDictionary *shading;
 	
 	shading = [NSMutableDictionary dictionary];
 	[shading setValue: @"Default" forKey: @"name"];
@@ -845,7 +845,7 @@ static NSHost *currentHost = nil;
 	[presets addObject: shading];
 	
 	[defaultValues setObject:presets forKey:@"shadingsPresets"];
-	[defaultValues setObject:@"2" forKey:@"UseDelaunayFor3DRoi"];
+	[defaultValues setObject:@(ROI_VOLUME_ISO_CONTOUR) forKey:UseDelaunayFor3DRoi_KEY];
 	[defaultValues setObject:@"1" forKey:@"EJECTCDDVD"];
 	[defaultValues setObject:@"1" forKey:@"automaticWorkspaceLoad"];
 	[defaultValues setObject:@"1" forKey:@"automaticWorkspaceSave"];
@@ -863,7 +863,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"100" forKey:@"PETWLWWTO"];
 	[defaultValues setObject:@"0" forKey:@"PETWLWWFROMSUV"];
 	[defaultValues setObject:@"6" forKey:@"PETWLWWTOSUV"];
-	[defaultValues setObject:@"0" forKey:@"EXPORTMATRIXFOR3D"];
+	[defaultValues setObject:@(EXPORT_SIZE_CURRENT) forKey:EXPORTMATRIXFOR3D_KEY];
 	[defaultValues setObject:@"0" forKey:@"ROITEXTNAMEONLY"];
 	[defaultValues setObject:@"0" forKey:@"DEFAULTLEFTTOOL"];	// WL TOOL
 	[defaultValues setObject:@"2" forKey:@"DEFAULTRIGHTTOOL"];	// ZOOM TOOL
@@ -1301,7 +1301,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"0" forKey: @"useSeriesDescription"];
 	[defaultValues setObject: @"1" forKey: @"combineProjectionSeries"];
 	[defaultValues setObject: @"1" forKey: @"combineProjectionSeriesMode"];
-	[defaultValues setObject: @"0" forKey: @"ListenerCompressionSettings"];
+	[defaultValues setObject: @(LISTENER_COMPRESSION_DONT_MODIFY) forKey:ListenerCompressionSettings_KEY];
 	[defaultValues setObject: @"localizer,scout,survey,locator,tracker" forKey: @"NOLOCALIZER_Strings"];
 	
 	//hot key prefs

@@ -1304,7 +1304,7 @@ extern "C"
 	[toDate setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"toDate"] doubleValue]]];
 	[searchBirth setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"searchBirth"] doubleValue]]];
 	
-	switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
+	switch ([PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
 	{
 		case 0:		[searchFieldName selectText: self];				break;
 		case 1:		[searchFieldID selectText: self];				break;
@@ -5334,7 +5334,7 @@ extern "C"
 
 - (int) dicomEcho:(NSDictionary*) aServer
 {
-	return [QueryController echoServer:aServer];  // BOOL too int ?
+	return [QueryController echoServer:aServer];  // BOOL to int ?
 }
 
 - (IBAction) verify:(id)sender

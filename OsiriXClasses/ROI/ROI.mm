@@ -5897,7 +5897,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                             int bufferHeight = newHeight;
                                             
                                             margin *= 2;
-                                            margin ++;
+                                            margin++;
                                             
                                             {
                                                 unsigned char *kernelDilate = (unsigned char*) calloc( margin*margin, sizeof(unsigned char));

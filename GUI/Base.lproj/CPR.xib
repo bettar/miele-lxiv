@@ -1439,6 +1439,7 @@ Gw
                 <constraint firstItem="847" firstAttribute="baseline" secondItem="849" secondAttribute="firstBaseline" id="zRv-RE-HNe"/>
                 <constraint firstAttribute="trailing" secondItem="844" secondAttribute="trailing" constant="3" id="zWg-ye-f93"/>
             </constraints>
+            <point key="canvasLocation" x="142" y="-503"/>
         </customView>
         <customView id="856" userLabel="tbBlending">
             <rect key="frame" x="0.0" y="0.0" width="132" height="45"/>
@@ -1521,6 +1522,7 @@ Gw
                 <constraint firstItem="860" firstAttribute="top" secondItem="856" secondAttribute="top" constant="20" symbolic="YES" id="ms8-du-fkl"/>
                 <constraint firstItem="859" firstAttribute="top" secondItem="857" secondAttribute="bottom" constant="3" id="pzH-Ho-ey3"/>
             </constraints>
+            <point key="canvasLocation" x="645" y="-163"/>
         </customView>
         <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1105" userLabel="tb Sync Zoom">
             <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
@@ -1637,6 +1639,7 @@ Gw
                 <constraint firstAttribute="trailing" secondItem="1425" secondAttribute="trailing" constant="2" id="tDw-BR-TwX"/>
                 <constraint firstItem="1425" firstAttribute="leading" secondItem="1403" secondAttribute="leading" constant="2" id="y77-QE-QiN"/>
             </constraints>
+            <point key="canvasLocation" x="645" y="-273"/>
         </box>
         <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1449" userLabel="tbHighRes">
             <rect key="frame" x="0.0" y="0.0" width="83" height="44"/>
@@ -1673,6 +1676,7 @@ Gw
                     </matrix>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="646" y="-50"/>
         </box>
         <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1440" userLabel="tbCPRPathMode">
             <rect key="frame" x="0.0" y="0.0" width="122" height="44"/>
@@ -1750,6 +1754,7 @@ Gw
                 <constraint firstItem="1436" firstAttribute="centerX" secondItem="1430" secondAttribute="centerX" id="qXi-VK-gcP"/>
                 <constraint firstItem="1436" firstAttribute="top" secondItem="1430" secondAttribute="top" constant="7" id="zF0-fx-h17"/>
             </constraints>
+            <point key="canvasLocation" x="840" y="-144"/>
         </box>
         <box autoresizesSubviews="NO" wantsLayer="YES" borderType="none" title="Box" titlePosition="noTitle" id="1465" userLabel="tbPathAssistant">
             <rect key="frame" x="0.0" y="0.0" width="214" height="53"/>

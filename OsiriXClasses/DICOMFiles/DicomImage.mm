@@ -93,12 +93,13 @@ static inline unsigned char intToChar( int c)
 
 void* sopInstanceUIDEncode( NSString *sopuid)
 {
-	unsigned int	i, x;
-	unsigned char	*r = (unsigned char *)malloc( 1024);
+    unsigned int i;
+	unsigned int x;
+	unsigned char *r = (unsigned char *)malloc( 1024);
 	
-    if( r)
+    if (r)
     {
-        for( i = 0, x = 0; i < [sopuid length];)
+        for (i = 0, x = 0; i < [sopuid length];)
         {
             unsigned char c1, c2;
             
@@ -121,10 +122,11 @@ void* sopInstanceUIDEncode( NSString *sopuid)
 
 NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 {
-	unsigned int	i, x;
-	char			str[ 1024];
+    unsigned int i;
+    unsigned int x = 0;
+	char str[ 1024];
 	
-	for( i = 0, x = 0; i < length; i++)
+	for (i = 0, x = 0; i < length; i++)
 	{
 		unsigned char c1, c2;
 		
@@ -142,6 +144,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return [NSString stringWithCString:str encoding: NSASCIIStringEncoding];
 }
 
+#pragma mark -
+
 @implementation NSData (OsiriX)
 
 - (BOOL) isEqualToSopInstanceUID:(NSData*) sopInstanceUID
@@ -156,11 +160,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	
 	const UInt8* bytes = (const UInt8*) [self bytes];
 	if( bytes[length-1] == 0)
-		length --;
+		length--;
 	
 	const UInt8* sopInstanceUIDBytes = (const UInt8*) [sopInstanceUID bytes];
 	if (sopInstanceUIDBytes[sopInstanceUIDLength-1] == 0)
-		sopInstanceUIDLength --;
+		sopInstanceUIDLength--;
 	
 	if (length == sopInstanceUIDLength)
 	{
@@ -171,6 +175,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return NO;
 }
 @end
+
+#pragma mark -
 
 @implementation Dicom_Image
 
@@ -222,7 +228,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 + (NSData*) sopInstanceUIDEncodeString:(NSString*) s
 {
 	int length = [s length];
-	length ++;
+	length++;
 	length /= 2;
 	
 	return [NSData dataWithBytesNoCopy: sopInstanceUIDEncode( s) length: length freeWhenDone: YES];

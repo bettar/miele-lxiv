@@ -19,6 +19,7 @@
  =========================================================================*/
 
 #import "options.h"
+#import "mieleTypes.h"
 
 #import "ROIVolume.h"
 #import "Notifications.h"
@@ -125,7 +126,7 @@
     
     vtkMapper *map = [ROIVolumeView generateMapperForRoi: roiList.lastObject viewerController: viewer factor: factor statistics: nil];
     
-    if( map)
+    if (map)
     {
         roiVolumeActor->SetMapper(map);
         roiVolumeActor->GetProperty()->FrontfaceCullingOn();
@@ -133,7 +134,7 @@
 
         map->Delete();
         
-        if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] == 2)
+        if ( [[NSUserDefaults standardUserDefaults] integerForKey: UseDelaunayFor3DRoi_KEY] == ROI_VOLUME_ISO_CONTOUR)
         {
             DCMPix *o = [viewer.pixList objectAtIndex: 0];
             
