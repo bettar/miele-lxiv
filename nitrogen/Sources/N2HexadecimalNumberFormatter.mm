@@ -20,10 +20,10 @@
 
 #import "N2HexadecimalNumberFormatter.h"
 
-
 @implementation N2HexadecimalNumberFormatter
 
--(NSString*)stringForObjectValue:(NSNumber*)number {
+-(NSString*)stringForObjectValue:(NSNumber*)number
+{
     if (![number isKindOfClass:[NSNumber class]])
         return NULL;
 	
@@ -32,7 +32,8 @@
     return [NSString stringWithFormat:format, [number intValue]];
 }
 
--(BOOL)getObjectValue:(id*)outNumber forString:(NSString*)string errorDescription:(NSString**)outError {
+-(BOOL)getObjectValue:(id*)outNumber forString:(NSString*)string errorDescription:(NSString**)outError
+{
 	NSScanner* scanner = [NSScanner scannerWithString:string];
 
 	unsigned int value;
@@ -53,4 +54,3 @@
 }
 
 @end
-

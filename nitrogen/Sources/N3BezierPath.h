@@ -35,6 +35,8 @@ enum _N3BezierPathElement {
 };
 typedef NSInteger N3BezierPathElement;
 
+#pragma mark -
+
 @interface N3BezierPath : NSObject <NSCopying, NSMutableCopying, NSCoding, NSFastEnumeration> // fast enumeration returns NSValues of the endpoints
 {
     N3MutableBezierCoreRef _bezierCore;
@@ -102,6 +104,7 @@ typedef NSInteger N3BezierPathElement;
 
 @end
 
+#pragma mark -
 
 @interface N3MutableBezierPath : N3BezierPath
 {
@@ -121,6 +124,3 @@ typedef NSInteger N3BezierPathElement;
 - (void)setVectorsForElementAtIndex:(NSInteger)index control1:(N3Vector)control1 control2:(N3Vector)control2 endpoint:(N3Vector)endpoint;
 
 @end
-
-
-

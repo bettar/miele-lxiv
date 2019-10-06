@@ -132,6 +132,8 @@
 
 @end
 
+#pragma mark -
+
 CF_EXTERN_C_BEGIN
 
 NSString* valuesKeyPath(NSString* key) {
@@ -139,6 +141,8 @@ NSString* valuesKeyPath(NSString* key) {
 }
 
 CF_EXTERN_C_END
+
+#pragma mark -
 
 @implementation NSObject (N2ValuesBinding)
 
@@ -169,4 +173,3 @@ CF_EXTERN_C_END
 }
 
 @end
-

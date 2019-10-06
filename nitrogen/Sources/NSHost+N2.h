@@ -26,4 +26,3 @@
 +(NSHost*)hostWithAddressOrName:(NSString*)str;
 
 @end
-

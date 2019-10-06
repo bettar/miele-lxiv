@@ -22,8 +22,8 @@
 #import "N2View.h"
 #import "N2Operators.h"
 
-
 @implementation N2Resizer
+
 @synthesize observed = _observed, affected = _affected;
 
 -(id)initByObservingView:(NSView*)observed affecting:(NSView*)affected {

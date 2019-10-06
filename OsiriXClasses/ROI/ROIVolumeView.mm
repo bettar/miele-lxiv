@@ -575,7 +575,7 @@
     {
         NSInteger index = [vc imageIndexOfROI: c];
         
-        if( index >= 0)
+        if (index >= 0)
         {
             [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: c userInfo: nil];
             [[vc.roiList objectAtIndex: index] removeObject: c];

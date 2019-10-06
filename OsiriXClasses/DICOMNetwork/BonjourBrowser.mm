@@ -192,13 +192,13 @@ static BonjourBrowser *currentBrowser = nil;
 
 - (void) buildLocalPathsList
 {
-	int			i;
-	NSArray		*dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
-	NSString	*defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
+	NSArray *dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
+	NSString *defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
 	
-	if( dbArray == nil) dbArray = [NSArray array];
+	if ( dbArray == nil)
+        dbArray = [NSArray array];
 	
-	for( i = 0; i < [services count]; i++)
+	for (int i = 0; i < [services count]; i++)
 	{
 		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"localPath"])
 		{
@@ -207,7 +207,7 @@ static BonjourBrowser *currentBrowser = nil;
 		}
 	}
 	
-	for( i = 0; i < [dbArray count]; i++)
+	for (int i = 0; i < [dbArray count]; i++)
 	{
 		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [dbArray objectAtIndex: i]];
 		
@@ -219,8 +219,6 @@ static BonjourBrowser *currentBrowser = nil;
 		}
 	}
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 - (void) updateFixedList: (NSNotification*) note
 {

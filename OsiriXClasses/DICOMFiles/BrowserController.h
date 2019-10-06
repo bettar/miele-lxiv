@@ -431,8 +431,8 @@ extern NSString * const SeriesViewer_DragType;
 - (void) setTableViewRowHeight;
 - (void) addAlbumsFile: (NSString*) file;
 - (void) sendFilesToCurrentBonjourDB: (NSArray*) files __deprecated;
-- (NSString*) getDatabaseFolderFor: (NSString*) path __deprecated;
-- (NSString*) getDatabaseIndexFileFor: (NSString*) path __deprecated;
+//- (NSString*) getDatabaseFolderFor: (NSString*) path __deprecated;
+//- (NSString*) getDatabaseIndexFileFor: (NSString*) path __deprecated;
 - (IBAction) copyToDBFolder: (id) sender;
 - (IBAction)customize:(id)sender;
 - (IBAction)showhide:(id)sender;
@@ -473,6 +473,7 @@ extern NSString * const SeriesViewer_DragType;
 //- (IBAction) smartAlbumHelpButton:(id) sender;
 - (IBAction) regenerateAutoComments:(id) sender;
 - (DCMPix *)previewPix:(int)i;
+
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray __deprecated;
 - (void) addFilesAndFolderToDatabase:(NSArray*) filenames __deprecated;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles __deprecated;

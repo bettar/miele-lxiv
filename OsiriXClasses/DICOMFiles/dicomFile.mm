@@ -785,12 +785,11 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 -(short) getImageFile
 {
-	NSString	*extension = [[filePath pathExtension] lowercaseString];
+	NSString *extension = [[filePath pathExtension] lowercaseString];
 	
 	NoOfFrames = 1;
 	
-	
-	if( [extension isEqualToString:@"tiff"] ||
+	if ([extension isEqualToString:@"tiff"] ||
 		[extension isEqualToString:@"tif"] ||
 		[extension isEqualToString:@"stk"] ||
 		[extension isEqualToString:@"png"] ||
@@ -801,15 +800,15 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 		[extension isEqualToString:@"pct"] ||
 		[extension isEqualToString:@"gif"])
 		{
-			NSImage		*otherImage = [[NSImage alloc] initWithContentsOfFile:filePath];
-			if( otherImage || [extension isEqualToString:@"tiff"] || [extension isEqualToString:@"tif"])
+			NSImage *otherImage = [[NSImage alloc] initWithContentsOfFile:filePath];
+			if (otherImage || [extension isEqualToString:@"tiff"] || [extension isEqualToString:@"tif"])
 			{
 				// Try to identify a 2 digit number in the last part of the file.
-				char				strNo[ 5];
-				NSString			*tempString = [[filePath lastPathComponent] stringByDeletingPathExtension];
+				char strNo[ 5];
+				NSString *tempString = [[filePath lastPathComponent] stringByDeletingPathExtension];
 				
-				#ifndef STATIC_DICOM_LIB
-				#ifndef OSIRIX_LIGHT
+#ifndef STATIC_DICOM_LIB
+#ifndef OSIRIX_LIGHT
 				if( [extension isEqualToString:@"tiff"] ||
 					[extension isEqualToString:@"stk"] ||
 					[extension isEqualToString:@"tif"])
@@ -844,8 +843,8 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 					}
 				}
 				else
-				#endif
-				#endif
+#endif
+#endif
 				{
                     @autoreleasepool
                     {
@@ -860,22 +859,28 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
                     }
 				}
 				
-				if( [tempString length] >= 4) strNo[ 0] = [tempString characterAtIndex: [tempString length] -4];	else strNo[ 0]= 0;
-				if( [tempString length] >= 3) strNo[ 1] = [tempString characterAtIndex: [tempString length] -3];	else strNo[ 1]= 0;
-				if( [tempString length] >= 2) strNo[ 2] = [tempString characterAtIndex: [tempString length] -2];	else strNo[ 2]= 0;
-				if( [tempString length] >= 1) strNo[ 3] = [tempString characterAtIndex: [tempString length] -1];	else strNo[ 3]= 0;
-				strNo[ 4] = 0;
+				if( [tempString length] >= 4) strNo[ 0] = [tempString characterAtIndex: [tempString length] -4]; else strNo[ 0]= 0;
+				if( [tempString length] >= 3) strNo[ 1] = [tempString characterAtIndex: [tempString length] -3]; else strNo[ 1]= 0;
+				if( [tempString length] >= 2) strNo[ 2] = [tempString characterAtIndex: [tempString length] -2]; else strNo[ 2]= 0;
+				if( [tempString length] >= 1) strNo[ 3] = [tempString characterAtIndex: [tempString length] -1]; else strNo[ 3]= 0;
+
+                strNo[ 4] = 0;
 				
-				if( strNo[ 0] >= '0' && strNo[ 0] <= '9' && strNo[ 1] >= '0' && strNo[ 1] <= '9' && strNo[ 2] >= '0' && strNo[ 2] <= '9'  && strNo[ 3] >= '0' && strNo[ 3] <= '9')
+				if (strNo[ 0] >= '0' && strNo[ 0] <= '9' &&
+                    strNo[ 1] >= '0' && strNo[ 1] <= '9' &&
+                    strNo[ 2] >= '0' && strNo[ 2] <= '9' &&
+                    strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
 					imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
 					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 4] stringByAppendingString:[NSString stringWithCString: (char*) strNo encoding: NSISOLatin1StringEncoding]]];
 					self.serieID = [tempString substringToIndex: [tempString length] - 4];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 4]];
 				}
-				else if( strNo[ 1] >= '0' && strNo[ 1] <= '9' && strNo[ 2] >= '0' && strNo[ 2] <= '9' && strNo[ 3] >= '0' && strNo[ 3] <= '9')
+				else if (strNo[ 1] >= '0' && strNo[ 1] <= '9' &&
+                         strNo[ 2] >= '0' && strNo[ 2] <= '9' &&
+                         strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
-					// We HAVE a number with 3 digit at the end of the file!! Make a serie of it!
+					// We HAVE a number with 3 digits at the end of the file. Make a serie of it
 					
 					strNo[0] = strNo[ 1];
 					strNo[1] = strNo[ 2];
@@ -887,9 +892,10 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 					self.serieID = [tempString substringToIndex: [tempString length] - 3];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 3]];
 				}
-				else if( strNo[ 2] >= '0' && strNo[ 2] <= '9' && strNo[ 3] >= '0' && strNo[ 3] <= '9')
+				else if (strNo[ 2] >= '0' && strNo[ 2] <= '9' &&
+                         strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
-					// We HAVE a number with 2 digit at the end of the file!! Make a serie of it!
+					// We HAVE a number with 2 digits at the end of the file. Make a serie of it
 					strNo[0] = strNo[ 2];
 					strNo[1] = strNo[ 3];
 					strNo[2] = 0;
@@ -899,9 +905,9 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 					self.serieID = [tempString substringToIndex: [tempString length] - 2];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 2]];
 				}
-				else if( strNo[ 3] >= '0' && strNo[ 3] <= '9')
+				else if (strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
-					// We HAVE a number with 1 digit at the end of the file!! Make a serie of it!
+					// We HAVE a number with 1 digit at the end of the file. Make a serie of it
 					strNo[0] = strNo[ 3];
 					strNo[1] = 0;
 					
@@ -923,22 +929,25 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 				study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				Modality = [[NSString alloc] initWithString:extension];
 				date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
-                if( date == nil) date = [[NSDate date] retain];
-				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+                if( date == nil)
+                    date = [[NSDate date] retain];
+
+                serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				fileType = [@"IMAGE" retain];
 				
-				if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
+				if (NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
 					self.serieID = [NSString stringWithFormat:@"%@-%@-%@", self.serieID, imageID, [filePath lastPathComponent]];
 				
 				NoOfSeries = 1;
 				
-				if( [extension isEqualToString:@"pdf"])
+				if ([extension isEqualToString:@"pdf"])
 				{
 					NSPDFImageRep *pdfRepresentation = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: filePath]];
 					
 					NoOfFrames = [pdfRepresentation pageCount];
 					
-					if( NoOfFrames > 50) NoOfFrames = 50;   // Limit number of pages
+					if (NoOfFrames > 50)
+                        NoOfFrames = 50;   // Limit number of pages
 				}
 				
 				[dicomElements setObject:studyID forKey:@"studyID"];

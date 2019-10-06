@@ -468,7 +468,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	
 }
 
-#pragma mark-
+#pragma mark -
 
 - (BOOL) is2DViewer
 {

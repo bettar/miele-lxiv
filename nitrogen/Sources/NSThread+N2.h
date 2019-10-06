@@ -18,7 +18,6 @@
  PURPOSE.
  =========================================================================*/
 
-
 #import <Cocoa/Cocoa.h>
 
 @interface NSThread (N2)
@@ -66,4 +65,3 @@ extern NSString* const NSThreadSubthreadsAwareProgressKey;
 -(CGFloat)subthreadsAwareProgress;
 
 @end
-

@@ -37,6 +37,8 @@
 
 @end
 
+#pragma mark -
+
 @interface N2ConnectionWithDelegateHandler : N2Connection {
 	NSInvocation* _invocation;
 }

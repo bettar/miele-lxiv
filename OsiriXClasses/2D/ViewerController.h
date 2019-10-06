@@ -1031,10 +1031,9 @@ enum
 /** Set horizontal flip for current ImageView */
 - (void)setXFlipped:(BOOL) v;
 
-
 // Opening 3D Viewers
-#pragma mark-
-#pragma mark 3D Viewers
+#pragma mark - 3D Viewers
+
 /** Returns the OrthogonalMPRViewer for this ViewerController; creating one if necessary */
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer;
 

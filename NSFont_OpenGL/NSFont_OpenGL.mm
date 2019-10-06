@@ -46,7 +46,7 @@
 + (void) doOpenGLLog:(NSString *)format, ...;
 @end
 
-#pragma mark
+#pragma mark -
 
 @implementation NSFont (withay_OpenGL)
 

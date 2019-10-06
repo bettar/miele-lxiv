@@ -1128,10 +1128,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int rad, char blackIndex)
 {
-	int		x,y;
-	int		xsqr;
-	int		inw = rad*2;
-	int		radsqr = (inw*inw)/4;
+	int	x,y;
+	int	xsqr;
+	int	inw = rad*2;
+	int	radsqr = (inw*inw)/4;
 	
 	if (cx < 0 || cx >= width)
         return;
@@ -1198,17 +1198,25 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			{
 				int xx, yy;
 				
-				xx = rad+x+cx;	yy = rad+y+cy;
-				if (xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = blackIndex;
+				xx = rad+x+cx;
+                yy = rad+y+cy;
+				if (xx >= 0 && xx < width && yy >= 0 && yy < height)
+                    buf[ xx + yy*width] = blackIndex;
 				
-				xx = rad-x+cx;	yy = rad+y+cy;
-				if (xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = blackIndex;
+				xx = rad-x+cx;
+                yy = rad+y+cy;
+				if (xx >= 0 && xx < width && yy >= 0 && yy < height)
+                    buf[ xx + yy*width] = blackIndex;
 				
-				xx = rad+x+cx;	yy = rad-y+cy;
-				if (xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = blackIndex;
+				xx = rad+x+cx;
+                yy = rad-y+cy;
+				if (xx >= 0 && xx < width && yy >= 0 && yy < height)
+                    buf[ xx + yy*width] = blackIndex;
 				
-				xx = rad-x+cx;	yy = rad-y+cy;
-				if (xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = blackIndex;
+				xx = rad-x+cx;
+                yy = rad-y+cy;
+				if (xx >= 0 && xx < width && yy >= 0 && yy < height)
+                    buf[ xx + yy*width] = blackIndex;
 			}
 		}
 	}
@@ -1226,12 +1234,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //}
 
 #pragma mark -
+
 @interface PixThread : NSObject
 {
 }
 @end
 
-#pragma mark - PixThread
+#pragma mark -
 
 @implementation PixThread
 
@@ -5604,7 +5613,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         VOILUTApplied = YES;
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) reloadAnnotations
 {
@@ -7335,7 +7344,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     }
 }
 
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"					
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 - (void) CheckLoadIn
 {
 	BOOL USECUSTOMTIFF = NO;
@@ -10430,7 +10440,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		needToCompute8bitRepresentation = YES;
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) kill8bitsImage
 {

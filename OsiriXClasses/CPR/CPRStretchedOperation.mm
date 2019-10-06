@@ -40,6 +40,8 @@ static NSOperationQueue *_stretchedOperationFillQueue = nil;
 
 @end
 
+#pragma mark -
+
 @implementation CPRStretchedOperation
 
 @dynamic request;

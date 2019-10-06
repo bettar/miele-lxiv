@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface NSUserDefaultsController (N2)
 
 -(NSString*)stringForKey:(NSString*)defaultName;
@@ -43,14 +42,17 @@
 -(void)setDouble:(double)d forKey:(NSString*)defaultName;
 -(void)setBool:(BOOL)flag forKey:(NSString*)defaultName;
 
-
 @end
+
+#pragma mark -
 
 CF_EXTERN_C_BEGIN
 // we often need to compose the string constants declared earlier in this file with a values key path - these functions/methods make that easier
 extern NSString* valuesKeyPath(NSString* key);
 CF_EXTERN_C_END
 		
+#pragma mark -
+
 @interface NSObject (N2ValuesBinding)
 
 -(id)valueForValuesKey:(NSString*)keyPath;
@@ -60,4 +62,3 @@ CF_EXTERN_C_END
 -(void)removeObserver:(NSObject*)observer forValuesKey:(NSString*)key;
 
 @end;
-

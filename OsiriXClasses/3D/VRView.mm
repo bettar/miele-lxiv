@@ -161,7 +161,7 @@ public:
     }
 };
 
-# pragma mark - VRViewOperation
+# pragma mark -
 
 @interface VRViewOperation: NSOperation
 {
@@ -174,7 +174,7 @@ public:
 
 @end
 
-#pragma mark
+#pragma mark -
 
 @implementation VRViewOperation
 

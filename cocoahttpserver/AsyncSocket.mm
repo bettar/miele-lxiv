@@ -217,6 +217,8 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 - (NSInteger)searchForTermAfterPreBuffering:(NSUInteger)numBytes;
 @end
 
+#pragma mark -
+
 @implementation AsyncReadPacket
 
 - (id)initWithData:(NSMutableData *)d
@@ -620,6 +622,8 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 - (id)initWithData:(NSData *)d timeout:(NSTimeInterval)t tag:(long)i;
 @end
 
+#pragma mark -
+
 @implementation AsyncWritePacket
 
 - (id)initWithData:(NSData *)d timeout:(NSTimeInterval)t tag:(long)i
@@ -655,6 +659,8 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 }
 - (id)initWithTLSSettings:(NSDictionary *)settings;
 @end
+
+#pragma mark -
 
 @implementation AsyncSpecialPacket
 

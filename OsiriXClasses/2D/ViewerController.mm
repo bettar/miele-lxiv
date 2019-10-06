@@ -16904,11 +16904,9 @@ long				x, y;
 
 -(int) imageIndexOfROI:(ROI*) c
 {
-	int x, i;
-	
-	for (x = 0; x < [pixList[ curMovieIndex] count]; x++)
+	for (int x = 0; x < [pixList[ curMovieIndex] count]; x++)
 	{
-		for (i = 0; i < [[roiList[ curMovieIndex] objectAtIndex: x] count]; i++)
+		for (int i = 0; i < [[roiList[ curMovieIndex] objectAtIndex: x] count]; i++)
 		{
 			ROI *curROI = [[roiList[ curMovieIndex] objectAtIndex: x] objectAtIndex:i];
 			if (curROI == c)
@@ -16960,8 +16958,6 @@ long				x, y;
 	
 	NSArray *selectedROIs = [self roiApplyWindow: self];
 	
-	int tag;
-	
     [imageView delete3DROIsAliases];
     
 	for (ROI *selectedROI in selectedROIs)
@@ -16970,51 +16966,23 @@ long				x, y;
 		
 		if (index >= 0)
 		{
-            ROI	*newROI = nil;
-            
-			if ([selectedROI type] == tPlain)
-                tag = 1;
-			else
-                tag = 0;
-			
-			switch( tag)
-			{
-				case 1:
-				{
-					newROI = [self convertBrushROItoPolygon: selectedROI numPoints:100];
-					if (newROI)
-					{
-						// Add the new ROI
-                        newROI.pix = imageView.curDCM;
-						newROI.curView = selectedROI.curView;
-						[[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
-						[newROI setROIMode: ROI_selected];
-						[newROI setName: selectedROI.name];
-						[newROI setComments: selectedROI.comments];
-					}
-				}
-				break;
-				
-				case 0:
-				{
-                    {
-                        newROI = [selectedROI getBrushROI];
-                        if (newROI)
-                        {
-                            // Add the new ROI
-                            newROI.pix = imageView.curDCM;
-                            newROI.curView = selectedROI.curView;
-                            [[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
-                            [newROI setROIMode: ROI_selected];
-                            [newROI setName: selectedROI.name];
-                            [newROI setComments: selectedROI.comments];
-                        }
-                    }
-				}
-				break;
-			}
-			
-			// Remove the old ROI
+            ROI *newROI;
+            if ([selectedROI type] == tPlain)
+                newROI = [self convertBrushROItoPolygon: selectedROI numPoints:100];
+            else
+                newROI = [selectedROI getBrushROI];
+
+            // Add the new ROI
+            if (newROI) {
+                newROI.pix = imageView.curDCM;
+                newROI.curView = selectedROI.curView;
+                [newROI setROIMode: ROI_selected];
+                [newROI setName: selectedROI.name];
+                [newROI setComments: selectedROI.comments];
+                [[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
+            }
+
+            // Remove the old ROI
             if (selectedROI)
                 [ROI deleteROI: selectedROI];
 		}

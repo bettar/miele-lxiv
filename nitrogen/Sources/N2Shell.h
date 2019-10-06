@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface N2Shell : NSObject
 
 +(NSString*)execute:(NSString*)path;

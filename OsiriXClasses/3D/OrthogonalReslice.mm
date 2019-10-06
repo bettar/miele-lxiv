@@ -33,6 +33,8 @@
 
 @end
 
+#pragma mark -
+
 @implementation ResliceOperation
 
 - (id) initWithDict:(NSDictionary *) d

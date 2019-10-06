@@ -203,8 +203,6 @@
 
 - (void) mainViewDidLoad
 {
-
-
 //	[[scrollView verticalScroller] setFloatValue: 0]; 
 ////	[[scrollView verticalScroller] setFloatValue:0.0 knobProportion:0.0]; //// now with bindings
 //	[scrollView setVerticalScroller: [scrollView verticalScroller]];
@@ -219,9 +217,9 @@
 //	[displayAllStudies setState:[defaults boolForKey:@"KeepStudiesOfSamePatientTogether"]];
 	
 	long locationValue = [defaults integerForKey:@"DEFAULT_DATABASELOCATION"];
-	
 	[locationMatrix selectCellWithTag:locationValue];
-	[locationPathField setURL: [NSURL fileURLWithPath: [defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]]];
+
+    [locationPathField setURL: [NSURL fileURLWithPath: [defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]]];
 	
 //	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
 ////	[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:@"COPYDATABASEMODE"]];
@@ -229,14 +227,23 @@
 //	[multipleScreensMatrix selectCellWithTag:[defaults integerForKey:@"MULTIPLESCREENSDATABASE"]];
 	[seriesOrderMatrix selectCellWithTag:[defaults integerForKey:@"SERIESORDER"]];
 	
-	
 	// COMMENTS
-	self.currentCommentsAutoFill = 0;
-    
-    if ([[[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"] isEqualToString: @"comment"]) self.currentCommentsField = 1;
-    if ([[[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"] isEqualToString: @"comment2"]) self.currentCommentsField = 2;
-    if ([[[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"] isEqualToString: @"comment3"]) self.currentCommentsField = 3;
-    if ([[[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"] isEqualToString: @"comment4"]) self.currentCommentsField = 4;
+    {
+        self.currentCommentsAutoFill = 0;
+        NSString *s = [[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"];
+
+        if ([s isEqualToString: @"comment"])
+            self.currentCommentsField = 1;
+
+        if ([s isEqualToString: @"comment2"])
+            self.currentCommentsField = 2;
+
+        if ([s isEqualToString: @"comment3"])
+            self.currentCommentsField = 3;
+
+        if ([s isEqualToString: @"comment4"])
+            self.currentCommentsField = 4;
+    }
 	
 	// REPORTS
 	[self buildPluginsMenu];
@@ -519,7 +526,7 @@
 			location = [location stringByDeletingLastPathComponent];
 		}
 		
-		if ( [[location lastPathComponent] isEqualToString:@"DATABASE"] &&
+		if ([[location lastPathComponent] isEqualToString:@"DATABASE"] &&
             [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:OUR_DATA_LOCATION])
 		{
 			NSLog( @"%@", [location lastPathComponent]);
@@ -528,14 +535,14 @@
 		
 		[locationPathField setURL: [NSURL fileURLWithPath: location]];
 		[[NSUserDefaults standardUserDefaults] setObject:location forKey:@"DEFAULT_DATABASELOCATIONURL"];
-		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
+		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"]; // User selected
 		[locationMatrix selectCellWithTag:1];
 	}	
 	else 
 	{
 		[locationPathField setURL: 0L];
 		[[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
-		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DEFAULT_DATABASELOCATION"];
+		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DEFAULT_DATABASELOCATION"]; // Documents directory
 		[locationMatrix selectCellWithTag:0];
 	}
 	

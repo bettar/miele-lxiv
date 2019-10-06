@@ -66,6 +66,8 @@ static BOOL arePlanesParallel( float *Pn1, float *Pn2)
 
 static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
+#pragma mark -
+
 @interface CPRMPRDCMView ()
 
 - (void)drawCurvedPathInGL;
@@ -80,6 +82,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 - (void)sendWillEditDisplayInfo;
 - (void)sendDidEditDisplayInfo;
 @end
+
+#pragma mark -
 
 @implementation CPRMPRDCMView
 
@@ -2266,9 +2270,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     [super mouseExited:theEvent];
 }
 
-
-#pragma mark-
-
 - (void)sendWillEditCurvedPath
 {
 	if (editingCurvedPathCount == 0) {
@@ -2632,11 +2633,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 - (void)drawOSIROIs
 {
-    double pixToSubdrawRectOpenGLTransform[16];
-    CGLContextObj cgl_ctx;
-    OSIROI *roi;
-    
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
     
@@ -2644,15 +2641,19 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         return;
     }
     
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
 
+    OSIROI *roi;
     for (roi in [[self ROIManager] ROIs]) {
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glMultMatrixd(pixToSubdrawRectOpenGLTransform);
                 
-        [roi drawSlab:OSISlabMake([self plane], 0) inCGLContext:cgl_ctx pixelFormat:(CGLPixelFormatObj)[[self pixelFormat] CGLPixelFormatObj]
-                                            dicomToPixTransform:N3AffineTransformInvert([self pixToDicomTransform])];
+        [roi drawSlab:OSISlabMake([self plane], 0)
+         inCGLContext:cgl_ctx
+          pixelFormat:(CGLPixelFormatObj)[[self pixelFormat] CGLPixelFormatObj]
+  dicomToPixTransform:N3AffineTransformInvert([self pixToDicomTransform])];
     
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
@@ -2666,9 +2667,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         OSIVolumeWindow *volumeWindow;
         environment = [OSIEnvironment sharedEnvironment];
         
-        if (environment == nil) {
+        if (environment == nil)
             return nil;
-        }
         
         volumeWindow = [environment volumeWindowForViewerController:[windowController viewer]];
         _ROIManager = [[OSIROIManager alloc] initWithVolumeWindow:volumeWindow coalesceROIs:YES];
@@ -2792,8 +2792,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 @end
 
-@implementation DCMView (CPRAdditions)
+#pragma mark -
 
+@implementation DCMView (CPRAdditions)
 
 - (N3AffineTransform)viewToPixTransform // converts coordinates in the NSView's space to coordinates on a DCMPix object in "Slice Coordinates"
 {

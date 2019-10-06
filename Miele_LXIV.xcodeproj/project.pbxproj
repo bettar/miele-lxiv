@@ -37,6 +37,7 @@
 		430D9F102199FB37006EA1B1 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */; };
 		43110BEB21679E5B00B0405B /* DCM.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4333FD721AB3082C00E82B49 /* DcmQueryRetrieveOsiriSCP.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4333FD711AB3082C00E82B49 /* DcmQueryRetrieveOsiriSCP.mm */; };
+		43384CD22347352C00662E7E /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
 		433C9DC82255F5FC00EBC6E9 /* miele_lxivTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 434930EE225512EC00C30B21 /* miele_lxivTests.mm */; };
 		433C9DCC2255F8B500EBC6E9 /* Point3D.mm in Sources */ = {isa = PBXBuildFile; fileRef = 183C864308563F3A000E6A68 /* Point3D.mm */; };
 		433C9DCD2255FA3200EBC6E9 /* UnitTestingBase.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98795DC16DBA51500926023 /* UnitTestingBase.mm */; };
@@ -250,7 +251,6 @@
 		59C447EA1451710F00D71580 /* NSArray+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447E71451710F00D71580 /* NSArray+N2.mm */; };
 		59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */; };
 		59D9471D125333640095680D /* SWFInit.as in Resources */ = {isa = PBXBuildFile; fileRef = 59D9471C125333640095680D /* SWFInit.as */; };
-		59DB26FB1450787E00E78E03 /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
 		59DB270014507ACA00E78E03 /* PrettyCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DB26FD14507ACA00E78E03 /* PrettyCell.mm */; };
 		59DB270614507ADF00E78E03 /* N2MutableUInteger.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DB270314507ADF00E78E03 /* N2MutableUInteger.mm */; };
 		59DB270C14507B1400E78E03 /* RemoteDicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DB270914507B1300E78E03 /* RemoteDicomDatabase.mm */; };
@@ -6712,7 +6712,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59DB26FB1450787E00E78E03 /* N2Debug.mm in Sources */,
 				434B46201A19F642008CF8CF /* OPJSupport.cpp in Sources */,
 				AB7250620ADE705C00A212A0 /* Decompress.mm in Sources */,
 				434B47A51A1A1951008CF8CF /* kdu_OsiriX_NO_Support.cpp in Sources */,
@@ -6724,6 +6723,7 @@
 				59BDEF45117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */,
 				59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */,
 				CEFFFE2A1286897200D69BB8 /* djdec2k.cc in Sources */,
+				43384CD22347352C00662E7E /* N2Debug.mm in Sources */,
 				CEFFFE3D12868F5400D69BB8 /* djdijp2k.cc in Sources */,
 				CEFF01001286F7A700D69BB8 /* djenc2k.cc in Sources */,
 				CEFF01471286FB2000D69BB8 /* djeijg2k.cc in Sources */,

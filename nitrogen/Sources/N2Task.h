@@ -32,9 +32,9 @@
 	id _standardError, _standardInput, _standardOutput;
 }
 
-@property(retain) NSArray* arguments;
+//@property(retain) NSArray* arguments;
 @property(retain) NSString* currentDirectoryPath;
-@property(retain) NSDictionary* environment;
+//@property(retain) NSDictionary* environment;
 @property(retain) NSString* launchPath;
 @property(retain) id standardError;
 @property(retain) id standardInput;
@@ -42,7 +42,6 @@
 
 @property(readonly) NSTimeInterval launchTime;
 @property(assign) uid_t uid;
-
 
 //-(void)setEnv:(NSString*)name to:(NSString*)value;
 

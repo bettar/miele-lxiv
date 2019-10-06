@@ -26,7 +26,8 @@
     return [[[self alloc] initWithLockedObject:lockedObject] autorelease];
 }
 
-- (id)initWithLockedObject:(id)lockedObject {
+- (id)initWithLockedObject:(id)lockedObject
+{
     if ((self = [super init])) {
         _lockedObject = [lockedObject retain];
         [_lockedObject lock];

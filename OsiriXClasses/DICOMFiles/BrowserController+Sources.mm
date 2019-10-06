@@ -73,13 +73,17 @@
 
 @end
 
+#pragma mark -
+
 @interface DefaultLocalDatabaseNodeIdentifier : LocalDatabaseNodeIdentifier
 
 +(DefaultLocalDatabaseNodeIdentifier*)identifier;
 
 @end
 
-/*@interface BonjourDataNodeIdentifier : DataNodeIdentifier
+/*
+#pragma mark -
+@interface BonjourDataNodeIdentifier : DataNodeIdentifier
 {
 	NSNetService* _service;
 }
@@ -88,7 +92,10 @@
 
 -(NSInteger)port;
 
-@end*/
+@end
+ */
+
+#pragma mark -
 
 @interface MountedDatabaseNodeIdentifier : LocalDatabaseNodeIdentifier
 {
@@ -113,8 +120,18 @@ enum {
 
 @end
 
+#pragma mark -
+
 @interface UnavaliableDataNodeException : NSException
 @end
+
+
+#pragma mark -
+
+@implementation UnavaliableDataNodeException
+@end
+
+#pragma mark -
 
 @implementation BrowserController (Sources)
 
@@ -363,9 +380,11 @@ enum {
         else
         {
             NSLog(@"BrowserController+Sources.mm:%d setDatabaseFromSourceIdentifier", __LINE__);
-            [UnavaliableDataNodeException raise:NSGenericException format:@"%@", NSLocalizedString(@"This is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil)];
+            [UnavaliableDataNodeException raise:NSGenericException
+                                         format:@"%@", NSLocalizedString(@"This is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil)];
         }
-    } @catch (UnavaliableDataNodeException* e)
+    }
+    @catch (UnavaliableDataNodeException* e)
     {
         NSBeginAlertSheet(NSLocalizedString(@"Sources", nil), nil, nil, nil, self.window, NSApp, @selector(endSheet:), nil, nil, @"%@", [e reason]);
         [self selectCurrentDatabaseSource];
@@ -380,13 +399,18 @@ enum {
         [self performSelectorOnMainThread: @selector( redrawSources) withObject: nil waitUntilDone: NO];
 }
 
--(int)findDBPath:(NSString*)path dbFolder:(NSString*)DBFolderLocation { // __deprecated
+-(int)findDBPath:(NSString*)path dbFolder:(NSString*)DBFolderLocation __deprecated
+{
 	NSInteger i = [self rowForSourceIdentifier:[LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:path]];
-	if (i < 0) i = [self rowForSourceIdentifier:[LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:DBFolderLocation]];
-	return i;
+	if (i < 0)
+        i = [self rowForSourceIdentifier:[LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:DBFolderLocation]];
+
+    return i;
 }
 
 @end
+
+#pragma mark -
 
 @implementation BrowserSourcesHelper
 
@@ -1214,6 +1238,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 @end
 
+#pragma mark -
+
 @implementation DefaultLocalDatabaseNodeIdentifier
 
 +(DefaultLocalDatabaseNodeIdentifier*)identifier
@@ -1247,6 +1273,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 @end
 
+#pragma mark -
 
 @implementation MountedDatabaseNodeIdentifier
 
@@ -1375,11 +1402,15 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(DicomDatabase*)database
 {
 	if (!_detected)
-        [UnavaliableDataNodeException raise:NSGenericException format:@"%@", NSLocalizedString(@"This disk is being processed. It is currently not available.", nil)];
+        [UnavaliableDataNodeException raise:NSGenericException
+                                     format:@"%@", NSLocalizedString(@"This disk is being processed. It is currently not available.", nil)];
     return _database;
 }
 
-+(id)mountedDatabaseNodeIdentifierWithPath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary type:(NSInteger)type
++(id)mountedDatabaseNodeIdentifierWithPath:(NSString*)devicePath
+                               description:(NSString*)description
+                                dictionary:(NSDictionary*)dictionary
+                                      type:(NSInteger)type
 {
 	BOOL scan = YES;
 	NSString* path = [[NSFileManager defaultManager] tmpFilePathInTmp];
@@ -1482,9 +1513,4 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 }
 
 @end
-
-@implementation UnavaliableDataNodeException
-@end
-
-
 

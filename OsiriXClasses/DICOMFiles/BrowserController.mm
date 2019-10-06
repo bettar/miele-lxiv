@@ -683,7 +683,8 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-#pragma deprecated (addFilesToDatabase:)
+#pragma mark - Deprecated
+
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -693,7 +694,6 @@ static NSConditionLock *threadLock = nil;
     return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray]];
 }
 
-#pragma deprecated (addFilesToDatabase::)
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray :(BOOL)onlyDICOM // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -703,7 +703,6 @@ static NSConditionLock *threadLock = nil;
 	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
 
-#pragma deprecated (addFilesToDatabase:onlyDICOM:produceAddedFiles:)
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -716,7 +715,6 @@ static NSConditionLock *threadLock = nil;
                                             rereadExistingItems:NO]];
 }
 
-#pragma deprecated (addFilesToDatabase:onlyDICOM:produceAddedFiles:parseExistingObject:)
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -729,17 +727,6 @@ static NSConditionLock *threadLock = nil;
                                             rereadExistingItems:parseExistingObject]];
 }
 
-#pragma deprecated (checkForExistingReport:dbFolder:)
-- (void) checkForExistingReport: (NSManagedObject*) study dbFolder: (NSString*) dbFolder
-{
-    N2LogStackTrace( @"****** deprecated function");
-	DicomDatabase* db = [DicomDatabase databaseForContext:study.managedObjectContext];
-	[db checkForExistingReportForStudy:study];
-}
-
-#pragma mark-
-
-#pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -751,7 +738,6 @@ static NSConditionLock *threadLock = nil;
 	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
-#pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder generatedByOsiriX:(BOOL)generatedByOsiriX // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -763,7 +749,6 @@ static NSConditionLock *threadLock = nil;
 	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject generatedByOsiriX:generatedByOsiriX]];
 }
 
-#pragma deprecated
 +(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX mountedVolume: (BOOL) mountedVolume // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -775,7 +760,6 @@ static NSConditionLock *threadLock = nil;
 	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject generatedByOsiriX:generatedByOsiriX]];
 }
 
-#pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -786,7 +770,6 @@ static NSConditionLock *threadLock = nil;
 	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
-#pragma deprecated
 -(NSArray*)subAddFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM produceAddedFiles:(BOOL)produceAddedFiles parseExistingObject:(BOOL)parseExistingObject context:(NSManagedObjectContext*)context dbFolder:(NSString*)dbFolder // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -796,7 +779,6 @@ static NSConditionLock *threadLock = nil;
 	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
-#pragma deprecated
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM safeRebuild:(BOOL)safeRebuild produceAddedFiles:(BOOL)produceAddedFiles { // __deprecated // notice: the "safeRebuild" seemed to be already ignored before the DicomDatabase transition
 
     N2LogStackTrace( @"****** deprecated function");
@@ -806,7 +788,6 @@ static NSConditionLock *threadLock = nil;
     return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
 
-#pragma deprecated
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM produceAddedFiles:(BOOL)produceAddedFiles parseExistingObject:(BOOL)parseExistingObject context:(NSManagedObjectContext*)context dbFolder:(NSString*)dbFolder // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -816,8 +797,14 @@ static NSConditionLock *threadLock = nil;
     return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
-#pragma mark-
+#pragma mark -
 
+- (void) checkForExistingReport: (NSManagedObject*) study dbFolder: (NSString*) dbFolder
+{
+    N2LogStackTrace( @"****** deprecated function");
+    DicomDatabase* db = [DicomDatabase databaseForContext:study.managedObjectContext];
+    [db checkForExistingReportForStudy:study];
+}
 
 + (void) asyncWADOXMLDownloadURL:(NSURL*) url
 {
@@ -1401,7 +1388,7 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (NSTimeInterval) databaseLastModification // __deprecated
+- (NSTimeInterval) databaseLastModification __deprecated
 {
 	return _database.timeOfLastModification;
 }
@@ -1411,7 +1398,7 @@ static NSConditionLock *threadLock = nil;
 	_database.timeOfLastModification = t;
 }
 
-- (NSManagedObjectModel*)managedObjectModel // __deprecated
+- (NSManagedObjectModel*)managedObjectModel __deprecated
 {
     return self.database.managedObjectModel;
 }
@@ -1430,9 +1417,7 @@ static NSConditionLock *threadLock = nil;
 	[self refreshAlbums];
 }
 
-// ------------------
-
-- (NSManagedObjectContext*)localManagedObjectContextIndependentContext:(BOOL)independentContext // __deprecated
+- (NSManagedObjectContext*)localManagedObjectContextIndependentContext:(BOOL)independentContext __deprecated
 {
 	return [[DicomDatabase activeLocalDatabase] independentContext:independentContext];
 }
@@ -1442,31 +1427,29 @@ static NSConditionLock *threadLock = nil;
 	return [self localManagedObjectContextIndependentContext:NO];
 }
 
-// ------------------
 
 - (NSManagedObjectContext*)defaultManagerObjectContext // __deprecated
 {
 	return [self defaultManagerObjectContextIndependentContext:NO];
 }
 
-- (NSManagedObjectContext*)defaultManagerObjectContextIndependentContext:(BOOL)independentContext // __deprecated
+- (NSManagedObjectContext*)defaultManagerObjectContextIndependentContext:(BOOL)independentContext __deprecated
 {
 	return [[DicomDatabase defaultDatabase] independentContext:independentContext];
 }
 
-// ------------------
 
 - (NSManagedObjectContext*)managedObjectContext // __deprecated
 {
 	return [self managedObjectContextIndependentContext:NO];
 }
 
-- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext // __deprecated
+- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext __deprecated
 {
 	return [self managedObjectContextIndependentContext:independentContext path:_database.baseDirPath]; 
 }
 
-- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext path:(NSString*)path // __deprecated
+- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext path:(NSString*)path __deprecated
 {
 	if (!path)
 		return nil;
@@ -1479,14 +1462,10 @@ static NSConditionLock *threadLock = nil;
 	return [[DicomDatabase existingDatabaseAtPath:path] independentContext:independentContext];
 }
 
-// ------------------
-
 - (void) addDICOMDIR:(NSString*) dicomdir :(NSMutableArray*) files
 {
 	DicomDirParser *parsed = [[DicomDirParser alloc] init: dicomdir];
-	
 	[parsed parseArray: files];
-	
 	[parsed release];
 }
 
@@ -1494,7 +1473,7 @@ static NSConditionLock *threadLock = nil;
 {
 	NSMutableArray	*localFiles = [NSMutableArray array];
 	
-	// FIRST DOWNLOAD FILES TO LOCAL DATABASE
+    // First download files to local database
 	
 	for (NSURL *url in URLs)
 	{
@@ -1508,7 +1487,7 @@ static NSConditionLock *threadLock = nil;
 		}
 	}
 	
-	// THEN, LOAD THEM
+	// Then, load them
 	[self addFilesAndFolderToDatabase: localFiles];
 	
 	return localFiles;
@@ -1870,12 +1849,12 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
--(void)openDatabaseIn:(NSString*)a Bonjour:(BOOL)isBonjour // __deprecated
+-(void)openDatabaseIn:(NSString*)a Bonjour:(BOOL)isBonjour __deprecated
 {
 	[self openDatabaseIn:a Bonjour:isBonjour refresh:NO];
 }
 
--(void)openDatabaseIn:(NSString*)a Bonjour:(BOOL)isBonjour refresh:(BOOL)refresh // __deprecated
+-(void)openDatabaseIn:(NSString*)a Bonjour:(BOOL)isBonjour refresh:(BOOL)refresh __deprecated
 {
 	if (isBonjour)
         [NSException raise:NSGenericException format:@"TODO do something smart :P"]; // TODO: hmmm
@@ -1884,8 +1863,8 @@ static NSConditionLock *threadLock = nil;
 	[self setDatabase:db];
 }
 
-#pragma deprecated (openDatabaseInBonjour:)
--(void)openDatabaseInBonjour:(NSString*)path { // deprecated 
+-(void)openDatabaseInBonjour:(NSString*)path __deprecated
+{
 	[self openDatabaseIn:path Bonjour:YES refresh:YES];
 }
 
@@ -1963,83 +1942,77 @@ static NSConditionLock *threadLock = nil;
         [self.window setRepresentedFilename: _database? _database.baseDirPath : @""];
 }
 
-- (NSString*)getDatabaseFolderFor: (NSString*)path // __deprecated
+#if 0
+- (NSString*)getDatabaseFolderFor: (NSString*)path __deprecated
 {
-	BOOL isDirectory;
-	
-	if ([[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
-	{
-		if (isDirectory == NO)
-		{
-			// It is a SQL file
-			
-			if ([[path pathExtension] isEqualToString:@"sql"] == NO) NSLog( @"**** No SQL extension ???");
-			
-			NSString	*db = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
-			
-			if (db == nil)
-			{
-				NSString	*p = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DATABASE.noindex"];
-				
-				if ([[NSFileManager defaultManager] fileExistsAtPath: p])
-				{
-					db = [[path stringByDeletingLastPathComponent] stringByDeletingLastPathComponent]; 
-				}
-				else
-				{
-					db = [self.documentsDirectory stringByDeletingLastPathComponent];
-				}
-			}
-			
-			return db;
-		}
-		else
-		{
-			return path;
-		}
-	}
-	
-	return nil;
-}
-
-- (NSString*)getDatabaseIndexFileFor: (NSString*)path {  // __deprecated
 	BOOL isDirectory;
 	
 	if ([[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
 	{
 		if (isDirectory)
-		{
-			// Default SQL file
-			NSString	*index = [[path stringByAppendingPathComponent:OUR_DATA_LOCATION] stringByAppendingPathComponent:@"Database.sql"];
-			
-			if ([[NSFileManager defaultManager] fileExistsAtPath: index])
-			{
-				return index;
-			}
-			
-			return nil;
-		}
-		else
-		{
-			return path;
-		}
+            return path;
+
+        // It is a SQL file
+        
+        if ([[path pathExtension] isEqualToString:@"sql"] == NO)
+            NSLog( @"**** No SQL extension ???");
+        
+        NSString *db = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
+        
+        if (db == nil)
+        {
+            NSString *p = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DATABASE.noindex"];
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath: p])
+            {
+                db = [[path stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+            }
+            else
+            {
+                db = [self.documentsDirectory stringByDeletingLastPathComponent];
+            }
+        }
+        
+        return db;
 	}
 	
 	return nil;
 }
 
--(BOOL)isBonjour:(NSManagedObjectContext*)c // __deprecated
+- (NSString*)getDatabaseIndexFileFor: (NSString*)path __deprecated
+{
+	BOOL isDirectory;
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
+	{
+		if (isDirectory)
+            return path;
+
+        // Default SQL file
+        NSString *index = [[path stringByAppendingPathComponent:OUR_DATA_LOCATION] stringByAppendingPathComponent:@"Database.sql"];
+
+        if ([[NSFileManager defaultManager] fileExistsAtPath: index])
+        {
+            return index;
+        }
+	}
+	
+	return nil;
+}
+#endif
+
+-(BOOL)isBonjour:(NSManagedObjectContext*)c __deprecated
 {
 	DicomDatabase* db = [DicomDatabase databaseForContext:c];
 	return ![db isLocal];
 }
 
--(void)loadDatabase:(NSString*)path // __deprecated
+-(void)loadDatabase:(NSString*)path __deprecated
 {
 	[self setDatabase:[DicomDatabase databaseAtPath:path]];
 }
 
--(long)saveDatabase:(NSString*)path context:(NSManagedObjectContext*)context // __deprecated
+-(long)saveDatabase:(NSString*)path context:(NSManagedObjectContext*)context __deprecated
 {
 	NSError* err = nil;
 	DicomDatabase* database = [DicomDatabase databaseForContext:context];
@@ -2047,14 +2020,12 @@ static NSConditionLock *threadLock = nil;
 	return [err code];
 }
 
-// TODO: #pragma we know saveDatabase:context: is deprecated
--(long)saveDatabase // __deprecated
+-(long)saveDatabase __deprecated
 {
 	return [self saveDatabase:nil context:self.database.managedObjectContext];
 }
 
-// TODO: #pragma we know saveDatabase:context: is deprecated
--(long)saveDatabase:(NSString*)path // __deprecated
+-(long)saveDatabase:(NSString*)path __deprecated
 {
 	return [self saveDatabase:path context:self.database.managedObjectContext];
 }
@@ -2596,12 +2567,12 @@ static NSConditionLock *threadLock = nil;
 	NSBeginInformationalAlertSheet(nil, nil, NSLocalizedString(@"Cancel", nil), nil, self.window, self, @selector(_rebuildSqlSheetDidEnd:returnCode:contextInfo:), nil, nil, NSLocalizedString(@"Are you sure you want to rebuild this database's SQL index? This operation can take several minutes.", nil));
 }
 
-- (void) autoCleanDatabaseDate: (id)sender // __deprecated
+- (void) autoCleanDatabaseDate: (id)sender __deprecated
 {
 	[_database cleanOldStuff];
 }
 
-+ (BOOL) isHardDiskFull // __deprecated
++ (BOOL) isHardDiskFull __deprecated
 {
 	return [[DicomDatabase activeLocalDatabase] isFileSystemFreeSizeLimitReached];
 }
@@ -2616,14 +2587,14 @@ static NSConditionLock *threadLock = nil;
                                 message);
 }
 
-- (void) autoCleanDatabaseFreeSpace: (id)sender // __deprecated
+- (void) autoCleanDatabaseFreeSpace: (id)sender __deprecated
 {
 	[_database initiateCleanUnlessAlreadyCleaning];
 }
 
 #pragma mark - Web Portal Database // deprecated, use WebPortal.defaultWebPortal
 
--(long)saveUserDatabase // __deprecated
+-(long)saveUserDatabase __deprecated
 {
 #ifndef OSIRIX_LIGHT
 	[[[WebPortal defaultWebPortal] database] save:NULL];
@@ -2631,7 +2602,7 @@ static NSConditionLock *threadLock = nil;
 	return 0;
 }
 
--(NSManagedObjectModel*)userManagedObjectModel // __deprecated
+-(NSManagedObjectModel*)userManagedObjectModel __deprecated
 {
 #ifndef OSIRIX_LIGHT
 	return [[[WebPortal defaultWebPortal] database] managedObjectModel];
@@ -2640,7 +2611,7 @@ static NSConditionLock *threadLock = nil;
 #endif
 }
 
--(NSManagedObjectContext*)userManagedObjectContext // __deprecated
+-(NSManagedObjectContext*)userManagedObjectContext __deprecated
 {
 #ifndef OSIRIX_LIGHT
 	return [[[WebPortal defaultWebPortal] database] managedObjectContext];
@@ -2649,7 +2620,7 @@ static NSConditionLock *threadLock = nil;
 #endif
 }
 
--(WebPortalUser*)userWithName:(NSString*)name // __deprecated
+-(WebPortalUser*)userWithName:(NSString*)name __deprecated
 {
 #ifndef OSIRIX_LIGHT
 	return [[[WebPortal defaultWebPortal] database] userWithName:name];
@@ -8498,7 +8469,11 @@ static NSConditionLock *threadLock = nil;
 	return NO;
 }
 
-- (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements { // __deprecated
+- (int) findObject:(NSString*) request
+             table:(NSString*) table
+           execute: (NSString*) execute
+          elements:(NSString**) elements  __deprecated
+{
 	if (elements)
 		*elements = nil;
 			
@@ -8506,11 +8481,10 @@ static NSConditionLock *threadLock = nil;
 	if (!table) return -33;
 	if (!execute) return -34;
 	
-	NSError				*error = nil;
-	
-	NSManagedObject			*element = nil;
-	NSArray					*array = nil;
-	NSManagedObjectContext	*context = self.database.managedObjectContext;
+	NSError *error = nil;
+	NSManagedObject *element = nil;
+	NSArray *array = nil;
+	NSManagedObjectContext *context = self.database.managedObjectContext;
 	
 	[self checkIncoming: self];
 	// We cannot call checkIncomingNow, because we currently have the lock for context, and IF a separate checkIncoming thread has started, he is currently waiting for the context lock, and we will wait for the checkIncomingLock...
@@ -14182,7 +14156,7 @@ static NSArray*	openSubSeriesArray = nil;
                             nil);
 }
 
-+ (long) computeDATABASEINDEXforDatabase:(NSString*)path // __deprecated
++ (long) computeDATABASEINDEXforDatabase:(NSString*)path __deprecated
 {
 	return [[DicomDatabase databaseAtPath:path] computeDataFileIndex];
 }
@@ -14382,22 +14356,22 @@ static NSArray*	openSubSeriesArray = nil;
 	return s;
 }
 
-- (NSDateFormatter*)DateOfBirthFormat // __deprecated
+- (NSDateFormatter*)DateOfBirthFormat __deprecated
 {
 	return  [NSUserDefaults dateFormatter];
 }
 
-+ (NSString*)DateOfBirthFormat:(NSDate*)d // __deprecated
++ (NSString*)DateOfBirthFormat:(NSDate*)d __deprecated
 {
 	return  [[NSUserDefaults dateFormatter] stringFromDate:d];
 }
 
-- (NSDateFormatter*)DateTimeFormat // __deprecated
+- (NSDateFormatter*)DateTimeFormat __deprecated
 {
 	return [NSUserDefaults dateTimeFormatter];
 }
 
-+ (NSString*)DateTimeFormat:(NSDate*)d // __deprecated
++ (NSString*)DateTimeFormat:(NSDate*)d __deprecated
 {
 	return [[NSUserDefaults dateTimeFormatter] stringFromDate:d];
 }
@@ -15719,7 +15693,7 @@ static NSArray*	openSubSeriesArray = nil;
 
 #pragma mark - DICOM Network & Files functions
 
-- (void) resetListenerTimer // __deprecated
+- (void) resetListenerTimer __deprecated
 {
 	[DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
 }
@@ -15973,7 +15947,7 @@ static NSArray*	openSubSeriesArray = nil;
 	[deleteQueue unlock];
 }
 
-+ (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory // __deprecated
++ (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory __deprecated
 {
     @try {
         return [DicomDatabase _findDicomdirIn:[startDirectory stringsByAppendingPaths:[[[NSFileManager defaultManager] enumeratorAtPath:startDirectory filesOnly:YES] allObjects]]];
@@ -16212,26 +16186,23 @@ static NSArray*	openSubSeriesArray = nil;
 //#endif
 //}
 
-#pragma deprecated (pathResolved:)
-- (NSString*) pathResolved:(NSString*) inPath
+- (NSString*) pathResolved:(NSString*) inPath __deprecated
 {
 	return [[NSFileManager defaultManager] destinationOfAliasAtPath:inPath];
 }
 
-#pragma deprecated (isAliasPath:)
-- (BOOL) isAliasPath:(NSString *)inPath
+- (BOOL) isAliasPath:(NSString *)inPath __deprecated
 {
 	return [[NSFileManager defaultManager] destinationOfAliasAtPath:inPath] != nil;
 }
 
-#pragma deprecated (resolveAliasPath:)
-- (NSString*) resolveAliasPath:(NSString*)inPath
+- (NSString*) resolveAliasPath:(NSString*)inPath __deprecated
 {
 	NSString* resolved = [[NSFileManager defaultManager] destinationOfAliasAtPath:inPath];
 	return resolved ? resolved : inPath;
 }
 
-- (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path // __deprecated
+- (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path __deprecated
 {
 	NSString *folder = path;
 	
@@ -16271,7 +16242,8 @@ static NSArray*	openSubSeriesArray = nil;
 		if ([self pathResolved: path])
 			folder = [self pathResolved: path];
 	}
-	return folder;
+
+    return folder;
 }
 
 - (IBAction)revealInFinder: (id)sender
@@ -16369,28 +16341,27 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 #ifndef OSIRIX_LIGHT
 
-#pragma deprecated(decompressDICOMJPEGinINCOMING:)
-- (void)decompressDICOMJPEGinINCOMING:(NSArray*)array // __deprecated
+- (void)decompressDICOMJPEGinINCOMING:(NSArray*)array __deprecated
 {
 	[self decompressDICOMList:array to:_database.incomingDirPath];
 }
 
-- (void)decompressDICOMJPEG:(NSArray*)array // __deprecated
+- (void)decompressDICOMJPEG:(NSArray*)array __deprecated
 {
 	[self decompressDICOMList:array to:nil];
 }
 
-- (void)compressDICOMJPEGinINCOMING:(NSArray*)array // __deprecated
+- (void)compressDICOMJPEGinINCOMING:(NSArray*)array __deprecated
 {
 	[self compressDICOMWithJPEG:array to:_database.incomingDirPath];
 }
 
-- (void)compressDICOMJPEG:(NSArray*)array // __deprecated
+- (void)compressDICOMJPEG:(NSArray*)array __deprecated
 {
 	[self compressDICOMWithJPEG:array];
 }
 
-- (void)decompressArrayOfFiles:(NSArray*)array work:(NSNumber*)work // __deprecated
+- (void)decompressArrayOfFiles:(NSArray*)array work:(NSNumber*)work __deprecated
 {
 	switch ([work charValue])
     {
@@ -16483,18 +16454,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 #endif
 
-- (void)checkIncomingThread: (id)sender // __deprecated
+- (void)checkIncomingThread: (id)sender __deprecated
 {
 	[[DicomDatabase activeLocalDatabase] importFilesFromIncomingDir];
 }
 
-- (void) checkIncomingNow: (id) sender // __deprecated
+- (void) checkIncomingNow: (id) sender __deprecated
 {
 //	if (DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	[[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 }
 
-- (void)checkIncoming: (id)sender // __deprecated
+- (void)checkIncoming: (id)sender __deprecated
 {
 //	if (DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	[[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
@@ -18990,7 +18961,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 //	}
 //}
 
-- (void) checkReportsDICOMSRConsistency // __deprecated
+- (void) checkReportsDICOMSRConsistency __deprecated
 {
 	[_database checkReportsConsistencyWithDICOMSR];
 }
@@ -20569,7 +20540,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 #pragma mark - Bonjour
 
-- (void)setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key // __deprecated
+- (void)setBonjourDatabaseValue:(NSManagedObject*) obj
+                          value:(id) value
+                         forKey:(NSString*) key __deprecated
 {
 	[(RemoteDicomDatabase*)_database object:obj setValue:value forKey:key];
 }
@@ -20611,7 +20584,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[_sourcesTableView reloadData];
 }
 
-- (void) switchToDefaultDBIfNeeded // __deprecated
+- (void) switchToDefaultDBIfNeeded __deprecated
 {
 	NSString *defaultPath = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
 	
@@ -20619,7 +20592,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[self resetToLocalDatabase];
 }
 
-- (void)openDatabasePath: (NSString*)path // __deprecated
+- (void)openDatabasePath: (NSString*)path __deprecated
 {
 	NSThread* thread = [NSThread currentThread];
 	[thread setName:NSLocalizedString(@"Opening database...", nil)];
@@ -20648,7 +20621,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 
 
-- (NSString*) localDatabasePath { // deprecated
+- (NSString*) localDatabasePath  __deprecated
+{
 	return [[DicomDatabase activeLocalDatabase] sqlFilePath];
 }
 
@@ -20705,8 +20679,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return isNetworkLogsActive;
 }
 
-#pragma deprecated (setFixedDocumentsDirectory)
-- (NSString *)setFixedDocumentsDirectory // __deprecated
+- (NSString *)setFixedDocumentsDirectory __deprecated
 {
 	NSLog(@"%s IS NOT AVAILABLE ANYMORE, moved to DicomDatabase.. This message should never appear!", __PRETTY_FUNCTION__);
 	return nil;
@@ -20748,45 +20721,53 @@ static volatile int numberOfThreadsForJPEG = 0;
 //	return fixedDocumentsDirectory;
 }
 
-- (NSString *) localDocumentsDirectory // __deprecated
+- (NSString *) localDocumentsDirectory __deprecated
 {
 	return [[DicomDatabase activeLocalDatabase] baseDirPath];
 }
 
-- (NSString *) fixedDocumentsDirectory // __deprecated
+- (NSString *) fixedDocumentsDirectory __deprecated
 {
 	return [[DicomDatabase activeLocalDatabase] baseDirPath];
 }
 
-- (const char *) cfixedDocumentsDirectory // __deprecated
-{ return [[DicomDatabase activeLocalDatabase] baseDirPathC]; }
+- (const char *) cfixedDocumentsDirectory __deprecated
+{
+    return [[DicomDatabase activeLocalDatabase] baseDirPathC];
+}
 
-- (const char *) cfixedIncomingDirectory // __deprecated
-{ return [[DicomDatabase activeLocalDatabase] incomingDirPathC]; }
+- (const char *) cfixedIncomingDirectory __deprecated
+{
+    return [[DicomDatabase activeLocalDatabase] incomingDirPathC];
+}
 
-- (const char *) cfixedTempNoIndexDirectory // __deprecated
-{ return [[DicomDatabase activeLocalDatabase] tempDirPathC]; }
+- (const char *) cfixedTempNoIndexDirectory __deprecated
+{
+    return [[DicomDatabase activeLocalDatabase] tempDirPathC];
+}
 
-- (const char *) cfixedIncomingNoIndexDirectory // __deprecated
-{ return [[DicomDatabase activeLocalDatabase] incomingDirPathC]; }
+- (const char *) cfixedIncomingNoIndexDirectory __deprecated
+{
+    return [[DicomDatabase activeLocalDatabase] incomingDirPathC];
+}
 
-- (NSString*)INCOMINGPATH // __deprecated
+- (NSString*)INCOMINGPATH __deprecated
 {
 	return [_database incomingDirPath];
 }
 
-+ (NSString *) defaultDocumentsDirectory // __deprecated
++ (NSString *) defaultDocumentsDirectory __deprecated
 {
 //	NSString *dir = documentsDirectory();
 	return [[DicomDatabase defaultDatabase] baseDirPath];
 }
 
-- (NSString*) TEMPPATH // __deprecated
+- (NSString*) TEMPPATH __deprecated
 {
 	return [_database tempDirPath];
 }
 
-- (NSString*)documentsDirectory // __deprecated
+- (NSString*)documentsDirectory __deprecated
 {
 	return [_database baseDirPath];
 }

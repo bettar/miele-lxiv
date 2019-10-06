@@ -228,12 +228,13 @@
      pixelFormat:(CGLPixelFormatObj)pixelFormat
 dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
-	double dicomToPixGLTransform[16];
 	N3Vector endpoint;
     N3BezierPath *flattenedPath;
     NSColor *deviceStrokeColor = [self.strokeColor colorUsingColorSpaceName:NSDeviceRGBColorSpace];
     
-    if (self.strokeThickness != 0 && self.strokeColor != nil) {
+    if (self.strokeThickness != 0 && self.strokeColor != nil)
+    {
+        double dicomToPixGLTransform[16];
         N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
         
         glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
@@ -244,9 +245,12 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
         glLineWidth(self.strokeThickness);
-        glColor4f((float)[deviceStrokeColor redComponent], (float)[deviceStrokeColor greenComponent], (float)[deviceStrokeColor blueComponent], (float)[deviceStrokeColor alphaComponent]);
+        glColor4f((float)[deviceStrokeColor redComponent],
+                  (float)[deviceStrokeColor greenComponent],
+                  (float)[deviceStrokeColor blueComponent],
+                  (float)[deviceStrokeColor alphaComponent]);
 
-        N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
+        N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);  // redundant ?
         
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();

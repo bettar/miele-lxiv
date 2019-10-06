@@ -64,6 +64,8 @@
 	-(CGImageRef)createRGBImageFromBufferData;
 @end
 
+#pragma mark -
+
 @implementation OpenGLScreenReader (PrivateMethods)
 
 /*
@@ -144,6 +146,8 @@
 }
 
 @end
+
+#pragma mark -
 
 @implementation OpenGLScreenReader
 

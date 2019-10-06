@@ -2007,8 +2007,7 @@ return YES;
     [OrthogonalMPRViewer syncSeriesAction:sender :self] ;
 }
 
-#pragma mark-
-
+#pragma mark -
 
 - (float*) syncOriginPosition
 {
@@ -2025,7 +2024,7 @@ return YES;
     [OrthogonalMPRViewer posChangeNotification:self :notification];
 }
 
-#pragma mark-
+#pragma mark -
 
 + (SyncSeriesScope) syncSeriesScope{
     return globalSyncSeriesScope;
@@ -2048,7 +2047,7 @@ return YES;
     [viewer setSyncSeriesBehavior: SyncSeriesBehaviorAbsolutePosWithSameStudy];
 }
 
-#pragma mark-
+#pragma mark -
 
 + (void) syncSeriesScopeAction:(id) sender :(id)viewer
 {
@@ -2088,7 +2087,7 @@ return YES;
     [OrthogonalMPRViewer updateSyncSeriesProperties:viewer :newState :globalSyncSeriesScope :newBehavior ];
 }
 
-#pragma mark-
+#pragma mark -
 
 + (void) updateSyncSeriesState:(id)viewer :(SyncSeriesState) newState
 {
@@ -2192,7 +2191,7 @@ return YES;
     [[NSNotificationCenter defaultCenter] postNotificationName: OsirixOrthoMPRPosChangeNotification object:viewer  userInfo: userInfo];
 }
 
-#pragma mark-
+#pragma mark -
 
 + (void) syncSeriesNotification:(id)viewer :(NSNotification*)notification
 {
@@ -2280,7 +2279,7 @@ return YES;
     [[viewer controller] moveToRelativePosition:[userInfo valueForKey:@"positionChange"]];
 }
 
-#pragma mark-
+#pragma mark -
 
 + (void) synchronizeViewer:(id)currentViewer {
     
@@ -2480,7 +2479,7 @@ return YES;
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 + (void) initSyncSeriesToolbarItem:(id)viewer :(NSToolbarItem*) toolbarItem
 {
@@ -2558,7 +2557,7 @@ return YES;
     return activateSyncSeriesToolbarItem;
 }
 
-#pragma mark-
+#pragma mark -
 
 + (NSMutableArray*) MPRViewersWithout:(id) currentViewer
 {

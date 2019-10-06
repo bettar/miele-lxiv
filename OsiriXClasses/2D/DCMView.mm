@@ -849,8 +849,7 @@ void checkOGLVersion()
 //    return shaderProgram;
 //}
 
-////////////////////////////////////////////////////////////////////////////////
-#pragma mark - class DCMExportPlugin
+#pragma mark -
 
 @implementation DCMExportPlugin
 - (void) finalize:(DCMObject*) dcmDst withSourceObject:(DCMObject*) dcmObject
@@ -864,8 +863,7 @@ void checkOGLVersion()
 }
 @end
 
-////////////////////////////////////////////////////////////////////////////////
-#pragma mark - DCMView Private
+#pragma mark -
 
 @interface DCMView ()
 {
@@ -875,8 +873,7 @@ void checkOGLVersion()
 - (void) drawKeyViewBox;
 @end
 
-////////////////////////////////////////////////////////////////////////////////
-#pragma mark - class DCMView
+#pragma mark -
 
 @implementation DCMView
 
@@ -10785,7 +10782,6 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         {
             for (NSUInteger x = 0; x < numberOfSamples; ++x, v += numberOfChannels)
                 glVertex2d(1./numberOfSamples*x, h*(0.5+i)+(*v/mm/2)*h);
-
         }
         glEnd();
     }
@@ -11629,7 +11625,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			
 			glScalef( 2.0f / (xFlipped ? -(drawingFrameRect.size.width)  : drawingFrameRect.size.width),
 					 -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height),
-					 1.0f); // scale to port per pixel scale
+					  1.0f); // scale to port per pixel scale
 			glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 			
 			/* binding lensTexture */
@@ -15490,7 +15486,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         return pixelMouseValue * curDCM.patientsWeight * 1000.0f / (curDCM.radionuclideTotalDoseCorrected * [curDCM decayFactor]);
 }
 
-+ (void)setPluginOverridesMouse: (BOOL)override { // is deprecated in @interface
++ (void)setPluginOverridesMouse: (BOOL)override DEPRECATED_ATTRIBUTE
+{
 	pluginOverridesMouse = override;
 }
 

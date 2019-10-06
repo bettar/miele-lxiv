@@ -63,6 +63,8 @@
 - (NSString *)hexdump;
 @end
 
+#pragma mark -
+
 @interface SSCrypto : NSObject
 {
     NSData *symmetricKey;

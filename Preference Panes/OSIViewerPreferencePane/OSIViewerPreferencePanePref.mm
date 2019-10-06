@@ -96,4 +96,5 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
 {
 	return [AppController sharedAppController];
 }
+
 @end

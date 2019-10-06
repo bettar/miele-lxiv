@@ -1065,11 +1065,13 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"3" forKey:@"COPYDATABASEMODE"];
 	[defaultValues setObject:@"7" forKey:@"LOGCLEANINGDAYS"];
 	[defaultValues setObject:@"1" forKey:@"AUTOMATIC FUSE"];
-	[defaultValues setObject:@"0" forKey:@"DEFAULT_DATABASELOCATION"];
+
+    [defaultValues setObject:@"0" forKey:@"DEFAULT_DATABASELOCATION"]; // Documents directory
 	[defaultValues setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
-	[defaultValues setObject: @"0" forKey: @"DATABASELOCATION"];
-	[defaultValues setObject: @"" forKey: @"DATABASELOCATIONURL"];
-	[defaultValues setObject: @"Geneva" forKey: @"FONTNAME"];
+	[defaultValues setObject:@"0" forKey: @"DATABASELOCATION"];
+	[defaultValues setObject:@"" forKey: @"DATABASELOCATIONURL"];
+
+    [defaultValues setObject: @"Geneva" forKey: @"FONTNAME"];
 	[defaultValues setObject: @"1" forKey: @"DICOMSENDALLOWED"];
 	[defaultValues setObject: @"14.0" forKey: @"FONTSIZE"];
 	[defaultValues setObject: @(REPORT_TYPE_PAGES) forKey: @"REPORTSMODE"];

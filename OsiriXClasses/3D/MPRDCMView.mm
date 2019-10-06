@@ -2028,21 +2028,17 @@ unsigned int minimumStep;
 
 - (void)drawOSIROIs
 {
-    double pixToSubdrawRectOpenGLTransform[16];
-    CGLContextObj cgl_ctx;
-    OSIROI *roi;
-    
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
     
-    if ([self ROIManager] == nil) {
+    if ([self ROIManager] == nil)
         return;
-    }
     
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
     
-    for (roi in [[self ROIManager] ROIs]) {
+    for (OSIROI *roi in [[self ROIManager] ROIs]) {
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glMultMatrixd(pixToSubdrawRectOpenGLTransform);

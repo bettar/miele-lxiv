@@ -1074,7 +1074,7 @@ SecPolicySearchCreate:
 	}
 }
 
-#pragma mark-
+#pragma mark -
 
 // Returns a reference to the preferred identity for DICOM TLS, or NULL if none was found.
 // Call the CFRelease function to release this object when you are finished with it.

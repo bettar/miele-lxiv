@@ -52,6 +52,8 @@ extern NSString* N2StepsNotificationStep;
 
 @end
 
+#pragma mark -
+
 @interface NSObject (N2StepsDelegate)
 
 -(void)steps:(N2Steps*)steps willBeginStep:(N2Step*)step;

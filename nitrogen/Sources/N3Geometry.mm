@@ -1151,6 +1151,8 @@ N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixf(float *f) // f better b
     return transform;
 }
 
+#pragma mark -
+
 @implementation NSValue (N3GeometryAdditions)
 
 + (NSValue *)valueWithN3Vector:(N3Vector)vector
@@ -1207,6 +1209,8 @@ N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixf(float *f) // f better b
 }
 
 @end
+
+#pragma mark -
 
 @implementation NSCoder (N3GeometryAdditions)
 
@@ -1297,13 +1301,3 @@ N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixf(float *f) // f better b
 
 
 @end
-
-
-
-
-
-
-
-
-
-

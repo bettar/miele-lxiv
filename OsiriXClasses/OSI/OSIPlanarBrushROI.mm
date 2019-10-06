@@ -24,6 +24,7 @@
 #import "CPRGenerator.h"
 #import "CPRGeneratorRequest.h"
 #import "CPRVolumeData.h"
+//#include <OpenGL/CGLMacro.h>
 
 @interface OSIPlanarBrushROI ()
 
@@ -140,14 +141,12 @@
      pixelFormat:(CGLPixelFormatObj)pixelFormat
 dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
 {
-	double dicomToPixGLTransform[16];
-	
 	if (OSISlabContainsPlane(slab, _plane) == NO)
 		return; // this ROI does not live on this slice
-    
+ 
+    double dicomToPixGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
-	
-    
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(dicomToPixGLTransform);

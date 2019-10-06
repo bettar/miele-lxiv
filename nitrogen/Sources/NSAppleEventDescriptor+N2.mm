@@ -183,6 +183,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation NSObject (Scripting)
 
@@ -192,9 +193,13 @@
 
 @end
 
+#pragma mark -
 
 @interface NSDictionary (Scripting)
-@end 
+@end
+
+#pragma mark -
+
 @implementation NSDictionary (Scripting)
 
 +(id)scriptingRecordWithDescriptor:(NSAppleEventDescriptor*)descriptor {

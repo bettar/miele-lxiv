@@ -38,6 +38,7 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
 
 @end
 
+#pragma mark -
 
 @implementation CPRObliqueSliceOperation
 

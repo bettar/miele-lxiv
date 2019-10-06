@@ -117,7 +117,7 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(const char*)incomingDirPathC;
 -(const char*)tempDirPathC;
 
--(NSUInteger)computeDataFileIndex; // this method should be private, but is declared because called from deprecated api
+-(NSUInteger)computeDataFileIndex; // this method should be private, but is declared because called from deprecated API
 -(NSString*)uniquePathForNewDataFileWithExtension:(NSString*)ext;
 
 #pragma mark - Albums
@@ -165,7 +165,7 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 #pragma mark - Other
 
 -(BOOL)rebuildAllowed;
-// some of these methods should be private, but is declared because called from deprecated api
+// some of these methods should be private, but is declared because called from deprecated API
 -(void)rebuild;
 -(void)rebuild:(BOOL)complete;
 -(void)checkForExistingReportForStudy:(NSManagedObject*)study;

@@ -663,9 +663,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[authView buttonPressed:NULL];
 }
 
-// ------
-
--(void)reopenDatabase {
+-(void)reopenDatabase
+{
 	[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
     
 	[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];

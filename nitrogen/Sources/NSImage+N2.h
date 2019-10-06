@@ -39,6 +39,8 @@
 
 @end
 
+#pragma mark -
+
 @interface N2Image : NSImage {
 	NSRect _portion;
 	NSSize _inchSize;

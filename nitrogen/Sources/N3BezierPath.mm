@@ -33,6 +33,8 @@
 
 @end
 
+#pragma mark -
+
 @implementation _N3BezierCoreSteward
 
 - (id)initWithN3BezierCore:(N3BezierCoreRef)bezierCore
@@ -57,7 +59,7 @@
 				  
 @end
 
-
+#pragma mark -
 
 @implementation N3BezierPath
 
@@ -649,8 +651,9 @@
     return N3BezierCoreSignedAreaUsingNormal(_bezierCore, normal);
 }
 
-
 @end
+
+#pragma mark -
 
 @interface N3MutableBezierPath ()
 
@@ -658,6 +661,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation N3MutableBezierPath
 
@@ -743,20 +747,3 @@
 }
 
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

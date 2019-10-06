@@ -37,8 +37,8 @@
  @mainpage A strict JSON parser and generator for Objective-C
 
  JSON (JavaScript Object Notation) is a lightweight data-interchange
- format. This framework provides two apis for parsing and generating
- JSON. One standard object-based and a higher level api consisting of
+ format. This framework provides two APIs for parsing and generating
+ JSON. One standard object-based and a higher level API consisting of
  categories added to existing Objective-C classes.
 
  Learn more on the http://code.google.com/p/json-framework project site.

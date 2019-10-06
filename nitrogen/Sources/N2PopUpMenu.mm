@@ -25,6 +25,8 @@
 
 @end
 
+#pragma mark -
+
 @interface N2PopUpMatrix : NSMatrix {
     CGFloat _itemHeight, _minItemWidth;
     NSInteger _highlightedCellRow;
@@ -39,6 +41,8 @@
 
 @end
 
+#pragma mark -
+
 @interface N2PopUpMatrixCell : NSCell {
     NSInteger _tag;
 }
@@ -46,6 +50,8 @@
 @property NSInteger tag;
 
 @end
+
+#pragma mark -
 
 @interface N2PopUpScrollView : NSControl {
     NSTimer* _timer;
@@ -62,9 +68,13 @@
 
 @end
 
+#pragma mark -
+
 @interface N2PopUpMenuWindow : NSWindow
 
 @end
+
+#pragma mark -
 
 @interface N2PopUpMenuWindowController : NSWindowController<NSWindowDelegate, NSTextFieldDelegate> {
     N2PopUpMenuWindowView* _bgView;
@@ -89,6 +99,8 @@
 
 @end
 
+#pragma mark -
+
 @implementation N2PopUpMenu
 
 + (NSWindow*)popUpContextMenu:(NSMenu*)menu withEvent:(NSEvent*)event forView:(NSView*)view withFont:(NSFont*)font {
@@ -100,6 +112,8 @@
 }
 
 @end
+
+#pragma mark -
 
 @implementation N2PopUpMenuWindowController
 
@@ -655,6 +669,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
 @end
 
+#pragma mark -
 
 @implementation N2PopUpMatrixCell
 
@@ -697,6 +712,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
 @end
 
+#pragma mark -
 
 @implementation N2PopUpMatrix
 
@@ -933,6 +949,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
 @end
 
+#pragma mark -
 
 @implementation N2PopUpScrollView
 
@@ -1009,6 +1026,8 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
 @end
 
+#pragma mark -
+
 @implementation N2PopUpMenuWindow
 
 - (BOOL)canBecomeKeyWindow {
@@ -1022,6 +1041,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
 @end
 
+#pragma mark -
 
 @implementation N2PopUpMenuWindowView
 

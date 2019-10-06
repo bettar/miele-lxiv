@@ -45,6 +45,8 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 
 @end
 
+#pragma mark -
+
 @interface _SMTPConnector : NSConnection<NSStreamDelegate> {
     // setup
     SMTPClient* _client;
@@ -85,11 +87,15 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 
 @end
 
+#pragma mark -
+
 @interface NSDictionary (SMTP)
 
 -(id)SMTP_objectForKey:(id)key ofClass:(Class)cl;    
 
 @end
+
+#pragma mark -
 
 @implementation SMTPClient
 
@@ -216,6 +222,8 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 
 @end
 
+#pragma mark -
+
 @interface NSString (SMTP)
 
 //-(NSData*)UTF7Data;
@@ -225,6 +233,8 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
                            separator:(unichar*)separator;
 
 @end
+
+#pragma mark -
 
 @interface _SMTPConnector ()
 
@@ -251,6 +261,8 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 -(void)reset;
 
 @end
+
+#pragma mark -
 
 @implementation _SMTPConnector
 
@@ -814,6 +826,8 @@ enum SMTPSubstatuses {
 
 @end
 
+#pragma mark -
+
 @implementation NSString (SMTP)
 
 -(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator {
@@ -832,6 +846,8 @@ enum SMTPSubstatuses {
 
 @end
 
+#pragma mark -
+
 @implementation NSDictionary (SMTP)
 
 -(id)SMTP_objectForKey:(id)key ofClass:(Class)cl {
@@ -843,15 +859,3 @@ enum SMTPSubstatuses {
 }
 
 @end
-
-
-
-
-
-
-
-
-
-
-
-

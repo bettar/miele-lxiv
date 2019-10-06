@@ -323,7 +323,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSNumber*) inDatabaseFolder
 {
@@ -360,7 +360,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 -(void)_updateMetaData_size {
 	DicomFile* df = [[DicomFile alloc] init:[self completePath]];
@@ -408,7 +408,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSNumber*) width
 {
@@ -449,7 +449,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSNumber*) numberOfFrames
 {
@@ -486,7 +486,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSNumber*) numberOfSeries
 {
@@ -533,8 +533,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     [self.series setNumberOfImages: nil];
 }
 
-#pragma mark-
-
+//#pragma mark -
+//
 //- (NSNumber*) mountedVolume
 //{
 //	if( mountedVolume) return mountedVolume;
@@ -563,7 +563,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 //	[self didChangeValueForKey:@"storedMountedVolume"];
 //}
 
-#pragma mark-
+#pragma mark -
 
 - (void) dcmodifyThread: (NSDictionary*) dict
 {
@@ -747,7 +747,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSString*) extension
 {
@@ -783,7 +783,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSString*) modality
 {
@@ -820,7 +820,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSString*) fileType
 {
@@ -857,7 +857,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) setValue:(id)value forUndefinedKey:(NSString *)key
 {

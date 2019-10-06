@@ -82,13 +82,16 @@ NSString* const CurrentDatabaseVersion = @"2.6";
 
 @end
 
+#pragma mark -
+
 @implementation DicomDatabase
 
 +(void)initializeDicomDatabaseClass {
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:[DicomDatabase class]];
 }
 
-+(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
++(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+{
 	if (context == [DicomDatabase class]) {
 		if ([keyPath isEqualToString:valuesKeyPath(OsirixCanActivateDefaultDatabaseOnlyDefaultsKey)]) {
 			if ([NSUserDefaults canActivateOnlyDefaultDatabase])
@@ -101,7 +104,8 @@ static NSString* const SqlFileName = @"Database.sql";
 NSString* const OsirixDataDirName = OUR_DATA_LOCATION;
 NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen Captures", nil);
 
-+(NSString*)baseDirPathForPath:(NSString*)path {
++(NSString*)baseDirPathForPath:(NSString*)path
+{
 	// were we given a path inside a OsirixDataDirName dir?
 	NSArray* pathParts = path.pathComponents;
 	for (int i = (long)pathParts.count-1; i >= 0; --i)
@@ -120,7 +124,7 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 +(NSString*)baseDirPathForMode:(int)mode path:(NSString*)path
 {
 	switch (mode) {
-		case 0:
+		case 0:  // Documents directory
 			path = [NSFileManager.defaultManager findSystemFolderOfType:kDocumentsFolderType forDomain:kOnAppropriateDisk];
 #ifdef MACAPPSTORE
         {
@@ -131,9 +135,11 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
         }
 #endif
 			break;
-		case 1:
+
+        case 1: // User selected
 			break;
-		default:
+
+        default:
 			path = nil;
 			break;
 	}
@@ -158,7 +164,8 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 	return path;
 }
 
-+(NSString*)defaultBaseDirPath {
++(NSString*)defaultBaseDirPath
+{
 	NSString* path = nil;
 	@try {
 		path = [self baseDirPathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"]
@@ -166,8 +173,8 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 
         if (!path || ![[NSFileManager defaultManager] fileExistsAtPath:path])	// STILL NOT AVAILABLE?? Use the default folder.. and reset this strange URL..
         {
-			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
-			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
+			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];  // Documents directory
+			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"]; // Documents directory
 
             path = [self baseDirPathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"]
                                        path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
@@ -180,7 +187,7 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 	return path;
 }
 
-#pragma Factory
+#pragma - Factory
 
 static DicomDatabase* defaultDatabase = nil;
 
@@ -4240,7 +4247,8 @@ static BOOL protectionAgainstReentry = NO;
 	}
 }
 
--(void)checkForExistingReportForStudy:(DicomStudy*)study {
+-(void)checkForExistingReportForStudy:(DicomStudy*)study
+{
 #ifndef OSIRIX_LIGHT
 	@try { // is there a report?
 		NSArray* filenames = [NSArray arrayWithObjects: [Reports getUniqueFilename:study], [Reports getOldUniqueFilename:study], NULL];

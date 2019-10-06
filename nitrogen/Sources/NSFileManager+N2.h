@@ -21,7 +21,6 @@
 #import <Cocoa/Cocoa.h>
 #import "N2DirectoryEnumerator.h"
 
-
 @interface NSFileManager (N2)
 
 -(void) moveItemAtPathToTrash: (NSString*) path;

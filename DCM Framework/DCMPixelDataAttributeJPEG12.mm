@@ -609,5 +609,4 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 //	return jpegData;
 //}
 
-
 @end

@@ -122,5 +122,4 @@
 	return [[object attributeValueWithName:@"GraphicFilled"] isEqualToString:@"Y"];
 }
 
-
 @end

@@ -206,6 +206,8 @@ NSString *NSStringFromN3Vector(N3Vector vector);
 NSString *NSStringFromN3Line(N3Line line);
 NSString *NSStringFromN3Plane(N3Plane plane);
 
+#pragma mark -
+
 /** NSValue support. **/
 
 @interface NSValue (N3GeometryAdditions)
@@ -224,6 +226,8 @@ NSString *NSStringFromN3Plane(N3Plane plane);
 
 @end
 
+#pragma mark -
+
 /** NSCoder support. **/
 
 @interface NSCoder (N3GeometryAdditions)
@@ -240,10 +244,6 @@ NSString *NSStringFromN3Plane(N3Plane plane);
 
 @end
 
-
 #endif /* __OBJC__ */
 
 #endif	/* _N3GEOMETRY_H_ */
-
-
-

@@ -299,13 +299,13 @@
      pixelFormat:(CGLPixelFormatObj)pixelFormat
 dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
 {
-	double dicomToPixGLTransform[16];
 	N3Vector endpoint;
     N3BezierPath *flattenedPath;
 	
 	if (OSISlabContainsPlane(slab, _plane) == NO)
 		return; // this ROI does not live on this slice
 
+    double dicomToPixGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
 	
     flattenedPath = [_bezierPath bezierPathByFlattening:N3BezierDefaultFlatness/5.0];

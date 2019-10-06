@@ -59,9 +59,9 @@
 - (IBAction)setAutoComments:(id) sender;
 - (IBAction)regenerateAutoComments:(id) sender;
 - (IBAction)setReportMode:(id) sender;
-- (IBAction) resetDate:(id) sender;
-- (IBAction) resetDateOfBirth:(id) sender;
-- (IBAction) setDICOMFieldMenu: (id) sender;
+- (IBAction)resetDate:(id) sender;
+- (IBAction)resetDateOfBirth:(id) sender;
+- (IBAction)setDICOMFieldMenu: (id) sender;
 - (BOOL)useSeriesDescription;
 - (void)setUseSeriesDescription:(BOOL)value;
 - (BOOL)splitMultiEchoMR;

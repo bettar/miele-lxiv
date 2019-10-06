@@ -363,25 +363,27 @@ static float deg2rad = M_PI/180.0;
 		BOOL highlightLine = NO;
 		glColor4f (0.5f, 0.5f, 0.5f, 1.0f);
 		
-		if(t == [[self viewer] curMovieIndex])
+		if (t == [[self viewer] curMovieIndex])
 			highlightLine = YES;
 		else
 		{
 			// associated Viewers	
 			for (ViewerController *v in associatedViewers)
 			{
-				if(t == [v curMovieIndex]) highlightLine = YES;
+				if (t == [v curMovieIndex])
+                    highlightLine = YES;
 			}
 		}
 		
-		if([[self viewer] isPlaying4D]) highlightLine = YES;
+		if ([[self viewer] isPlaying4D])
+            highlightLine = YES;
 		
 		BOOL highlightThumbnail = NO;
 		NSMutableArray *pixList = [[self viewer] pixList:t];
 		
 		BOOL flippedData = [[[self viewer] imageView] flippedData];
 		
-		for(int z=0; z<[pixList count]; z++)
+		for (int z=0; z<[pixList count]; z++)
 		{
 			highlightThumbnail = highlightLine || (z == [[self viewer] imageIndex]);
 			
@@ -393,7 +395,7 @@ static float deg2rad = M_PI/180.0;
 			upperLeft = NSMakePoint(z*scaledThumbnailWidth-viewBounds.origin.x, t*scaledThumbnailHeight+viewBounds.origin.y+viewSize.height-viewFrame.size.height);
 			thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, scaledThumbnailWidth, scaledThumbnailHeight);
 			
-			if(NSIntersectsRect(thumbRect, viewFrame))
+			if (NSIntersectsRect(thumbRect, viewFrame))
 			{
 				int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
 				
@@ -461,7 +463,7 @@ static float deg2rad = M_PI/180.0;
 			}
 			else
 			{
-				if(i<[thumbnailsTextureArray count])
+				if (i<[thumbnailsTextureArray count])
 				{
 					if([[thumbnailsTextureArray objectAtIndex:i] intValue] >= 0)
 					{
@@ -473,22 +475,23 @@ static float deg2rad = M_PI/180.0;
 				else
 					[thumbnailsTextureArray addObject:[NSNumber numberWithInt:-1]];
 			}
-			i++;
+
+            i++;
 		}
 	}
 	
 	glDisable(GL_TEXTURE_RECTANGLE_EXT);
 	
-	if([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] > annotNone)
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] > annotNone)
 	{
-		for(int t=0; t<[[self viewer] maxMovieIndex]; t++)
+		for (int t=0; t<[[self viewer] maxMovieIndex]; t++)
 		{
 			NSMutableArray *pixList = [[self viewer] pixList:t];
 			NSMutableArray *roiList = [[self viewer] roiList:t];
 			
 			BOOL flippedData = [[[self viewer] imageView] flippedData];
 					
-			for(int z=0; z<[pixList count]; z++)
+			for (int z=0; z<[pixList count]; z++)
 			{
 				int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
 				DCMPix *pix = [pixList objectAtIndex:correctedZ];
@@ -504,15 +507,17 @@ static float deg2rad = M_PI/180.0;
 				glTranslatef(scaledThumbnailWidth/2.0, scaledThumbnailHeight/2.0, 0.0);
 				glRotatef (-rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
 				
-				if([pix pixelRatio]!=1.0) glScalef( 1.0, [pix pixelRatio], 1.0);
+				if ([pix pixelRatio]!=1.0)
+                    glScalef( 1.0, [pix pixelRatio], 1.0);
 
                 float f = self.window.backingScaleFactor;
                 
-				for( ROI *r in rois)
+				for (
+                     ROI *r in rois)
 				{
 					glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 					
-					if([r type]!=tText)
+					if ([r type]!=tText)
 					{
 						[r drawROIWithScaleValue:f/(zoomFactor*sizeFactor) offsetX:offset.x/f+pix.pwidth/2.0 offsetY:offset.y/(f*[pix pixelRatio])+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0 prepareTextualData: NO];
 					}
@@ -520,15 +525,15 @@ static float deg2rad = M_PI/180.0;
 				
 				glDisable(GL_SCISSOR_TEST);
 				
-				if([pix pixelRatio]!=1.0) glScalef(1.0, 1.0/[pix pixelRatio], 1.0);
-				glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
+				if([pix pixelRatio]!=1.0)
+                    glScalef(1.0, 1.0/[pix pixelRatio], 1.0);
+
+                glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
 				glTranslatef(-scaledThumbnailWidth/2.0, -scaledThumbnailHeight/2.0, 0.0);
 				glTranslatef(-upperLeft.x, -(upperLeft.y), 0.0);
 			}
 		}
 	}
-
-	
 
 	// draw selection
 	glEnable(GL_LINE_SMOOTH);
@@ -543,7 +548,7 @@ static float deg2rad = M_PI/180.0;
 		upperLeft.x = z*scaledThumbnailWidth-viewBounds.origin.x;
 		thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, scaledThumbnailWidth, scaledThumbnailHeight);
 		
-		if(NSIntersectsRect(thumbRect, viewFrame))
+		if (NSIntersectsRect(thumbRect, viewFrame))
 		{
 			glScissor( upperLeft.x, viewSize.height - (upperLeft.y+scaledThumbnailHeight), scaledThumbnailWidth, scaledThumbnailHeight);
 			glEnable(GL_SCISSOR_TEST);

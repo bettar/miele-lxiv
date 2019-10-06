@@ -176,9 +176,13 @@
 	{
 		glBlendFunc(GL_DST_ALPHA, GL_ZERO);
 		
-		glTranslatef([self frame].size.width/2.0f, [self frame].size.height/2.0f, 0.0f); // translate the origin to the center
+        {
+        GLfloat x = [self frame].size.width/2.0f;
+        GLfloat y = [self frame].size.height/2.0f;
+		glTranslatef(x, y, 0.0f); // translate the origin to the center
 		glRotatef(textureRotation, 0.0f, 0.0f, 1.0f);
-		glTranslatef(-([self frame].size.width)/2.0f, -([self frame].size.height)/2.0f, 0.0f); // translate the origin to upper left corner
+		glTranslatef(-x, -y, 0.0f); // translate the origin to upper left corner
+        }
 		
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, textureWidth*4);
 		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
@@ -210,9 +214,13 @@
 		
 		glDisable(GL_TEXTURE_RECTANGLE_EXT);
 		
-		glTranslatef([self frame].size.width/2.0f, [self frame].size.height/2.0f, 0.0f); // translate the origin to the center
+        {
+        GLfloat x = [self frame].size.width / 2.0f;
+        GLfloat y = [self frame].size.height / 2.0f;
+		glTranslatef( x, y, 0.0f); // translate the origin to the center
 		glRotatef(-textureRotation, 0.0f, 0.0f, 1.0f);
-		glTranslatef(-([self frame].size.width)/2.0f, -([self frame].size.height)/2.0f, 0.0f); // translate the origin to upper left corner		
+		glTranslatef(-x, -y, 0.0f); // translate the origin to upper left corner
+        }
 	}
 	
 	glBlendEquation(GL_FUNC_ADD);

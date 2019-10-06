@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface N2WSDL : NSObject {
 	NSMutableArray* _types;
 	NSMutableArray* _messages;

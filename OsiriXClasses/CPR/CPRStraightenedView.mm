@@ -1479,21 +1479,19 @@ extern int splitPosition[ 3];
 
 - (void)_drawVerticalLines:(NSArray *)verticalLines
 {
-	NSNumber *indexNumber;
-	N3Vector lineStart;
-	N3Vector lineEnd;
-    double pixToSubdrawRectOpenGLTransform[16];
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if( cgl_ctx == nil)
+    if (cgl_ctx == nil)
         return;
     
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
-	for (indexNumber in verticalLines) {
-		lineStart = N3VectorMake([indexNumber doubleValue], 0, 0);
-        lineEnd = N3VectorMake([indexNumber doubleValue], curDCM.pheight, 0);
+	for (NSNumber *indexNumber in verticalLines) {
+		N3Vector lineStart = N3VectorMake([indexNumber doubleValue], 0, 0);
+        N3Vector lineEnd = N3VectorMake([indexNumber doubleValue], curDCM.pheight, 0);
         glBegin(GL_LINE_STRIP);
         {
             glVertex2d(lineStart.x, lineStart.y);
@@ -1501,25 +1499,24 @@ extern int splitPosition[ 3];
         }
         glEnd();
 	}
+
     glPopMatrix();
 }
 
 - (void)_drawPlaneRuns:(NSArray*)planeRuns
 {
-	CGFloat pixelsPerMm;
-	N3Vector planePointVector;
 	_CPRStraightenedViewPlaneRun *planeRun;
-    double pixToSubdrawRectOpenGLTransform[16];
-    CGFloat pheight_2;
     
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	if( cgl_ctx == nil)
+	if (cgl_ctx == nil)
         return;
     
-	pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
-    pheight_2 = (CGFloat)curDCM.pheight/2.0;
+	CGFloat pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
+    CGFloat pheight_2 = (CGFloat)curDCM.pheight/2.0;
     
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
@@ -1528,14 +1525,15 @@ extern int splitPosition[ 3];
         {
             for (NSInteger i = 0; i < planeRun.range.length; i++)
             {
-                planePointVector = N3VectorMake(planeRun.range.location + i,
-                                                ([[planeRun.distances objectAtIndex:i] doubleValue] * pixelsPerMm) + pheight_2,
-                                                0);
+                N3Vector planePointVector = N3VectorMake(planeRun.range.location + i,
+                                                         ([[planeRun.distances objectAtIndex:i] doubleValue] * pixelsPerMm) + pheight_2,
+                                                         0);
                 glVertex2d(planePointVector.x, planePointVector.y);
             }
         }
 		glEnd();
 	}
+
     glPopMatrix();
 }
 

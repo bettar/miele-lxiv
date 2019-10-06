@@ -18,9 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-
 #import <Cocoa/Cocoa.h>
-
 
 @interface NSMutableString (N2)
 

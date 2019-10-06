@@ -345,30 +345,25 @@
 /** Returns YES if the tag string is a needed attribute */
 - (BOOL)isNeededAttribute:(char *)tagString;
 
-//deprecated methods
-/** Deprecated */
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality;
+#pragma mark - deprecated methods
 
-/** Deprecated */
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts  asDICOM3:(BOOL)flag;
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality __deprecated;
 
-/** Deprecated */
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts  asDICOM3:(BOOL)flag __deprecated;
+
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container 
 			withTransferSyntax:(DCMTransferSyntax *)ts 
 			quality:(int)quality 
 			asDICOM3:(BOOL)flag
-			strippingGroupLengthLength:(BOOL)stripGroupLength;
+			strippingGroupLengthLength:(BOOL)stripGroupLength __deprecated;
 			
-/** Deprecated */
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality asDICOM3:(BOOL)flag;
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality asDICOM3:(BOOL)flag __deprecated;
 
-/** Deprecated */
-- (BOOL)writeToFile:(NSString *)path withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality atomically:(BOOL)flag;
+- (BOOL)writeToFile:(NSString *)path withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality atomically:(BOOL)flag __deprecated;
 
-/** Deprecated */
-- (BOOL)writeToURL:(NSURL *)aURL withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality atomically:(BOOL)flag;
+- (BOOL)writeToURL:(NSURL *)aURL withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality atomically:(BOOL)flag __deprecated;
 
-//sequences
+#pragma mark - sequences
 /** return a sequence as an NSArray */
 - (NSArray *)referencedSeriesSequence;
 

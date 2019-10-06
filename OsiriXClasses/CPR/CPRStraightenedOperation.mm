@@ -40,6 +40,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
 
 @end
 
+#pragma mark -
 
 @implementation CPRStraightenedOperation
 

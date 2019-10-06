@@ -75,6 +75,8 @@
 
 @end
 
+#pragma mark -
+
 @interface HTTPConnection (AsynchronousHTTPResponse)
 - (void)responseHasAvailableData;
 @end

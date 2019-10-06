@@ -519,10 +519,10 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 	
 	NSLog( @"SEND - decompress: %@", [[NSString stringWithUTF8String: fname] lastPathComponent]);
 
-	#ifndef OSIRIX_LIGHT
+#ifndef OSIRIX_LIGHT
 	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"]; // deprecated
     
-	if( useDCMTKForJP2K == NO &&
+	if (useDCMTKForJP2K == NO &&
        (filexfer.getXfer() == EXS_JPEG2000LosslessOnly ||
         filexfer.getXfer() == EXS_JPEG2000))
 	{
@@ -540,7 +540,7 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 		[dcmObject release];
 	}
 	else
-	#endif
+#endif
 	{
         try
         {

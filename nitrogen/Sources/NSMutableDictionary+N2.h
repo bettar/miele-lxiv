@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface NSMutableDictionary (N2)
 
 -(void)removeObject:(id)obj;

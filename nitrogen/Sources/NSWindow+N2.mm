@@ -21,13 +21,14 @@
 #import "NSWindow+N2.h"
 #import "N2Operators.h"
 
-
 @interface NSWindow (ActuallyInCocoa)
 
 -(void)setMovable:(BOOL)flag;
 //-(void)_setUsesLightBottomGradient:(BOOL)flag;
 
 @end
+
+#pragma mark -
 
 @implementation NSWindow (N2)
 

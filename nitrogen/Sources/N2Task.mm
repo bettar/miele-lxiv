@@ -20,8 +20,8 @@
 
 #import "N2Task.h"
 
-
 @implementation N2Task
+
 @synthesize launchTime = _launchTime, uid = _uid;
 
 static void sigchld(int signum) {
@@ -213,14 +213,14 @@ static int getfd(id object, BOOL read, int def) { // http://www.quantum-step.com
 	_currentDirectoryPath = [currentDirectoryPath retain];
 }
 
--(NSDictionary*)environment {
-	return _environment;
-}
+//-(NSDictionary*)environment {
+//	return _environment;
+//}
 
--(void)setEnvironment:(NSDictionary*)environment {
-	[_environment release];
-	_environment = [environment retain];
-}
+//-(void)setEnvironment:(NSDictionary*)environment {
+//	[_environment release];
+//	_environment = [environment retain];
+//}
 
 -(NSString*)launchPath {
 	return _launchPath;
@@ -263,4 +263,3 @@ static int getfd(id object, BOOL read, int def) { // http://www.quantum-step.com
 }
 
 @end
-

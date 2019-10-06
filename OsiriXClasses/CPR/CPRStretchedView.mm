@@ -50,9 +50,13 @@ extern int splitPosition[ 3];
 
 @end
 
+#pragma mark -
+
 @interface N3BezierPath (CPRStretchedViewPlaneRunAdditions)
 - (id)initWithCPRStretchedViewPlaneRun:(_CPRStretchedViewPlaneRun *)planeRun heightPixelsPerMm:(CGFloat)pixelsPerMm;
 @end
+
+#pragma mark -
 
 @implementation _CPRStretchedViewPlaneRun
 
@@ -76,6 +80,7 @@ extern int splitPosition[ 3];
 
 @end
 
+#pragma mark -
 
 @interface CPRStretchedView ()
 
@@ -133,6 +138,8 @@ extern int splitPosition[ 3];
 - (void)_osirixUpdateVolumeDataNotification:(NSNotification *)notification;
 
 @end
+
+#pragma mark -
 
 @implementation CPRStretchedView
 
@@ -452,7 +459,6 @@ extern int splitPosition[ 3];
 
 - (void)subDrawRect:(NSRect)rect
 {
-    double pixToSubdrawRectOpenGLTransform[16];
     N3Vector endpoint;
     N3BezierPath *centerline;
     NSString *planeName;
@@ -462,7 +468,7 @@ extern int splitPosition[ 3];
     CGFloat relativePosition;
 
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if( cgl_ctx == nil)
+    if (cgl_ctx == nil)
         return;
     
 	glEnable(GL_BLEND);
@@ -477,11 +483,13 @@ extern int splitPosition[ 3];
     centerline = [self centerlinePath];
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
 
-    
+    double pixToSubdrawRectOpenGLTransform[16];
+    N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-    N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
-    glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
+    glMultMatrixd(pixToSubdrawRectOpenGLTransform);
+
     // draw the centerline.
     
     glColor3f(0, 1, 0);
@@ -494,7 +502,6 @@ extern int splitPosition[ 3];
         }
     }
     glEnd();
-    
     
     glColor4d(0.0, 1.0, 0.0, 0.8);
     
@@ -1631,21 +1638,19 @@ extern int splitPosition[ 3];
 
 - (void)_drawVerticalLines:(NSArray *)verticalLines
 {
-	NSNumber *indexNumber;
-	N3Vector lineStart;
-	N3Vector lineEnd;
-    double pixToSubdrawRectOpenGLTransform[16];
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if( cgl_ctx == nil)
         return;
-    
+
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
-	for (indexNumber in verticalLines) {
-		lineStart = N3VectorMake([indexNumber doubleValue], 0, 0);
-        lineEnd = N3VectorMake([indexNumber doubleValue], curDCM.pheight, 0);
+	for (NSNumber *indexNumber in verticalLines) {
+		N3Vector lineStart = N3VectorMake([indexNumber doubleValue], 0, 0);
+        N3Vector lineEnd = N3VectorMake([indexNumber doubleValue], curDCM.pheight, 0);
         glBegin(GL_LINE_STRIP);
         {
             glVertex2d(lineStart.x, lineStart.y);
@@ -1653,6 +1658,7 @@ extern int splitPosition[ 3];
         }
         glEnd();
 	}
+
     glPopMatrix();
 }
 
@@ -1663,13 +1669,11 @@ extern int splitPosition[ 3];
     N3Vector centerlineVector;
 	N3Vector lineStart;
 	N3Vector lineEnd;
-    double pixToSubdrawRectOpenGLTransform[16];
-	CGLContextObj cgl_ctx;
-    
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    	
-    if( cgl_ctx == nil)
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (cgl_ctx == nil)
         return;
     
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -1692,24 +1696,24 @@ extern int splitPosition[ 3];
 
 - (void)_drawPlaneRuns:(NSArray*)planeRuns
 {
-	CGFloat pixelsPerMm;
 	N3Vector planePointVector;
 	_CPRStretchedViewPlaneRun *planeRun;
-    double pixToSubdrawRectOpenGLTransform[16];
     CGFloat pheight_2;
     
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-  	if( cgl_ctx == nil)
+  	if (cgl_ctx == nil)
         return;
     
     if ([curDCM pixelSpacingX] == 0)
         return;
     
-    pixelsPerMm = 1.0/[curDCM pixelSpacingX];
+    CGFloat pixelsPerMm = 1.0/[curDCM pixelSpacingX];
 
     pheight_2 = (CGFloat)curDCM.pheight/2.0;
     
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
@@ -2512,6 +2516,8 @@ extern int splitPosition[ 3];
 }
 
 @end
+
+#pragma mark -
 
 @implementation N3BezierPath (CPRStretchedViewPlaneRunAdditions)
 

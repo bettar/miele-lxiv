@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface NSTextView (N2)
 
 +(NSTextView*)labelWithText:(NSString*)string;

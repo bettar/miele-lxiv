@@ -1118,8 +1118,7 @@ static NSDate *lastWarningDate = nil;
 }
 #endif
 
-////////////////////////////////////////////////////////////////////////////////
-#pragma mark-
+#pragma mark -
 
 //-(IBAction) osirix64bit:(id)sender
 //{
@@ -1167,9 +1166,7 @@ static NSDate *lastWarningDate = nil;
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_WEB_PAGE@"/ConformanceStatementMiele.pdf"]];
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-#pragma mark-
+#pragma mark -
 
 - (void) waitForPID: (NSNumber*) pidNumber
 {
@@ -2209,7 +2206,7 @@ static NSDate *lastWarningDate = nil;
 	[[DCMNetServiceDelegate sharedNetServiceDelegate] setPublisher: BonjourDICOMService];
 }
 
-#pragma mark-
+#pragma mark -
 
 -(void) restartSTORESCP
 {
@@ -3213,8 +3210,8 @@ static BOOL initialized = NO;
                             dataBasePath = [DicomDatabase baseDirPathForMode: [[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
                         }
                         @catch (NSException *e) {
-                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
-                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
+                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];  // Documents directory
+                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"]; // Documents directory
                         }
                     }
                 }
@@ -4476,10 +4473,8 @@ static BOOL initialized = NO;
 	//			[xaCLUTFilter writeToFile:[[[oPanel filenames] objectAtIndex:0] stringByAppendingPathExtension:@"plist"] atomically:YES];
 	//			}
 	//	}
-	
-////////////////////////////////////////////////////////////////////////////////
 
-#pragma mark-
+#pragma mark -
 
 + (BOOL) isFDACleared
 {
@@ -4623,8 +4618,7 @@ static BOOL initialized = NO;
 //        NSRunAlertPanel( NSLocalizedString( @"No connection available", nil), @"%@", NSLocalizedString( @"OK", nil), nil, nil, reason);
 //}
 
-////////////////////////////////////////////////////////////////////////////////
-#pragma mark-
+#pragma mark -
 
 - (IBAction) about: (id) sender
 {
@@ -4915,7 +4909,7 @@ static BOOL initialized = NO;
 	return NSMakePoint( i + [w frame].origin.x + [w frame].size.width/2, i + [w frame].origin.y + [w frame].size.height/2);
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) addStudyToRecentStudiesMenu: (NSManagedObjectID*) studyID
 {
@@ -5002,7 +4996,7 @@ static BOOL initialized = NO;
     [recentStudies removeObjectsInArray: studiesToRemove];
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) initTilingWindows
 {

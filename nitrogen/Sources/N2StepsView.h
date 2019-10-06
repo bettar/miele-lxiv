@@ -18,7 +18,6 @@
      PURPOSE.
 =========================================================================*/
 
-
 #import "N2View.h"
 @class N2Steps, N2Step, N2StepView, N2ColumnLayout;
 

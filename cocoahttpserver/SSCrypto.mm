@@ -201,10 +201,14 @@
 
 @end
 
+#pragma mark -
+
 @interface SSCrypto (PrivateAPI)
 - (void)setupOpenSSL;
 - (void)cleanupOpenSSL;
 @end
+
+#pragma mark -
 
 // SSCrypto object
 @implementation SSCrypto

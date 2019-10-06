@@ -301,10 +301,12 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
         return;
     }
     
-    double pixToSubdrawRectOpenGLTransform[16];
     N3Plane plane;
     DCMView *dcmView = (DCMView *)[notification object];
+
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([dcmView pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+
     CGLPixelFormatObj pixelFormatObj = (CGLPixelFormatObj)[[dcmView pixelFormat] CGLPixelFormatObj];
 	N3AffineTransform pixToDicomTransform = [[dcmView curDCM] pixToDicomTransform];
     N3AffineTransform dicomToPixTransform;
@@ -546,10 +548,11 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 	}
 
     N3AffineTransform dicomToPixTransform;
-    double pixToSubdrawRectOpenGLTransform[16];
     N3Plane plane;
 
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([dcmView pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+
     CGLPixelFormatObj pixelFormatObj = (CGLPixelFormatObj)[[dcmView pixelFormat] CGLPixelFormatObj];
 	N3AffineTransform pixToDicomTransform = [[dcmView curDCM] pixToDicomTransform];
 	if (N3AffineTransformDeterminant(pixToDicomTransform) != 0.0) {

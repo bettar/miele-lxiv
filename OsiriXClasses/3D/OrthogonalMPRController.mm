@@ -665,7 +665,7 @@
 	[yReslicedView setCrossPosition: yReslicedCrossPositionX : yReslicedCrossPositionY];
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) notifyPositionChange
 {
@@ -723,7 +723,7 @@
     [xReslicedView setCrossPosition:sliceCoord[0] :sliceCoord[1] withNotification:FALSE];
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) toggleDisplayResliceAxes: (id) sender
 {

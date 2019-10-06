@@ -419,7 +419,7 @@
 	{
 		glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT); // GL_COLOR_BUFFER_BIT for glBlendFunc, GL_ENABLE_BIT for glEnable / glDisable
 		
-		glDisable (GL_DEPTH_TEST); // ensure text is not remove by depth buffer test.
+		glDisable (GL_DEPTH_TEST); // ensure text is not removed by depth buffer test.
 		glEnable (GL_BLEND); // for text fading
 		glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // ditto
 		glEnable (GL_TEXTURE_RECTANGLE_EXT);	

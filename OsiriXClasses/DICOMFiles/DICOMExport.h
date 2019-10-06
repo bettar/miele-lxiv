@@ -106,7 +106,7 @@ typedef char* DcmFileFormat;
 - (void) setOffset: (int) o;
 
 // Set Pixel Data from a NSImage
-- (long) setPixelNSImage:	(NSImage*) iimage;
+- (long) setPixelNSImage: (NSImage*) iimage;
 
 // Write the image data
 - (NSString*) writeDCMFile: (NSString*) dstPath;

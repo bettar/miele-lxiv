@@ -35,7 +35,6 @@
 
 #import <Foundation/Foundation.h>
 
-
 /**
  @brief Adds JSON generation to Foundation classes
  
@@ -71,4 +70,3 @@
 - (NSString *)JSONRepresentation;
 
 @end
-

@@ -20,7 +20,6 @@
 
 #import "N2MutableUInteger.h"
 
-
 @implementation N2MutableUInteger
 
 @synthesize unsignedIntegerValue = _value;
@@ -44,7 +43,8 @@
 }
 
 -(void)decrement {
-	if (_value) --_value;
+	if (_value)
+        --_value;
 }
 
 -(NSString*)description {
