@@ -1208,8 +1208,12 @@ extern int splitPosition[ 3];
     for (NSUInteger i = 0; i < self.curvedVolumeData.pixelsDeep; i++)
 	{
 		[self.curvedVolumeData aquireInlineBuffer:&inlineBuffer];
-        newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.curvedVolumeData.pixelsWide*self.curvedVolumeData.pixelsHigh) :32
-                                             :self.curvedVolumeData.pixelsWide :self.curvedVolumeData.pixelsHigh :self.curvedVolumeData.pixelSpacingX :self.curvedVolumeData.pixelSpacingY
+        newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.curvedVolumeData.pixelsWide*self.curvedVolumeData.pixelsHigh)
+                                             :32
+                                             :self.curvedVolumeData.pixelsWide
+                                             :self.curvedVolumeData.pixelsHigh
+                                             :self.curvedVolumeData.pixelSpacingX
+                                             :self.curvedVolumeData.pixelSpacingY
                                              :0.0 :0.0 :0.0 :NO];
 
 		[newPix setImageObjectID: [[[self windowController] originalPix] imageObjectID]];
@@ -1243,7 +1247,7 @@ extern int splitPosition[ 3];
 		}
 		
 		NSArray *roiArray = [NSUnarchiver unarchiveObjectWithData: previousROIs];
-		for( ROI *r in roiArray)
+		for (ROI *r in roiArray)
 		{
 			r.pix = curDCM;
 			[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY) :NO :NO];

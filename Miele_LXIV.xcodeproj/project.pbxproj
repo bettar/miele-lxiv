@@ -5590,7 +5590,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE902EA3181C034E00CC4B88 /* pages2pages09.applescript in Resources */,
 				CE0C4792183139C400D4C50E /* pages092pdf.applescript in Resources */,
 				596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */,
 				43A02C5B219D883100E788B6 /* Plot.xib in Resources */,
@@ -5598,6 +5597,7 @@
 				ABBB63A80635874E00D9531F /* dicom.dic in Resources */,
 				ABBB64AD063587B200D9531F /* 2DBlending.tif in Resources */,
 				43A02C9A219D889700E788B6 /* CustomIntervalPanel.xib in Resources */,
+				CE902EA3181C034E00CC4B88 /* pages2pages09.applescript in Resources */,
 				ABBB64AE063587B200D9531F /* 3D.tif in Resources */,
 				ABBB64B2063587B200D9531F /* Axial.tif in Resources */,
 				43013227219D9D0F00A82781 /* InfoPlist.strings in Resources */,

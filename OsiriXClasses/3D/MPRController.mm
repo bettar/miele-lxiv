@@ -529,7 +529,6 @@ static float deg2rad = M_PI/180.0;
             
             [verticalSplit setPosition:2*width/3 ofDividerAtIndex:0];
             [horizontalSplit setPosition:width/3 ofDividerAtIndex:0];
-
             break;
     }
     
@@ -549,7 +548,10 @@ static float deg2rad = M_PI/180.0;
 																 options: NSKeyValueObservingOptionNew
 																 context: NULL];
     
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver: self forKeyPath: @"values.MPR2DViewsPosition" options: NSKeyValueObservingOptionNew context: NULL];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver: self
+                                                              forKeyPath: @"values.MPR2DViewsPosition"
+                                                                 options: NSKeyValueObservingOptionNew
+                                                                 context: NULL];
 }
 
 - (void) dealloc

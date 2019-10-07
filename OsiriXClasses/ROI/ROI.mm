@@ -757,8 +757,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 - (ROI*) getBrushROIwithMinimum: (float) minimum maximum : (float) maximum dcmPix: (DCMPix*) inPix
 {
-    NSSize s = NSMakeSize(0, 0);
-    NSPoint o = NSMakePoint(0, 0);
+    NSSize s = NSZeroSize;
+    NSPoint o = NSZeroPoint;
     
     unsigned char* texture = [self getMapSize: &s origin: &o minimum: minimum maximum: maximum dcmPix: inPix];
     
@@ -4045,7 +4045,7 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
         if (type == tTAGT && points.count == 2)
         {
             NSPoint pt, p1 = [[points objectAtIndex: 0] point], p2 = [[points objectAtIndex: 1] point];
-            MyPoint *mypt = nil;
+            //MyPoint *mypt = nil;
             
             float blend = 0.3;
             pt.x = p1.x + blend * (p2.x - p1.x);
@@ -4216,7 +4216,7 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 	if (minX > maxX) return YES;	// means the ROI is empty;
 	if (minY > maxY) return YES;	// means the ROI is empty;
 	
-	#define CUTOFF 8
+#define CUTOFF 8
 	
 //	NSLog( @"%d %d %d %d", minX, maxX, minY, maxY);
 //	NSLog( @"%d %d %d %d", 0, textureWidth, 0, textureHeight);
@@ -4265,34 +4265,34 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
         if (textureWidth != oldTextureWidth || textureHeight != oldTextureHeight || offsetTextureY != 0 || offsetTextureX != 0)
         {
             unsigned char *newTextureBuffer = (unsigned char *)calloc( (1+textureWidth)*(1+textureHeight), sizeof(unsigned char));
-		if (newTextureBuffer == nil)
-		{
-			textureWidth = oldTextureWidth;
-			textureHeight = oldTextureHeight;
-			return NO;
-		}
-		
-		int minTextureWidth = textureWidth > oldTextureWidth ? oldTextureWidth : textureWidth;
-		int minTextureHeight = textureHeight > oldTextureHeight ? oldTextureHeight : textureHeight;
-		for (int y = 0 ; y < minTextureHeight ; y++)
-		{
-			if (y + offsetTextureY < oldTextureHeight)
-				memcpy( newTextureBuffer + (y * textureWidth), textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth, textureWidth);
-		}
-		
-		if (newTextureBuffer != textureBuffer)
-		{
-			free( textureBuffer);
-			textureBuffer = newTextureBuffer;
-		}
-		
-		textureUpLeftCornerX += offsetTextureX;
-		textureUpLeftCornerY += offsetTextureY;
-		textureDownRightCornerX = textureUpLeftCornerX + textureWidth-1;
-		textureDownRightCornerY = textureUpLeftCornerY + textureHeight-1;
-        
-        	[self textureBufferHasChanged];
-	}
+            if (newTextureBuffer == nil)
+            {
+                textureWidth = oldTextureWidth;
+                textureHeight = oldTextureHeight;
+                return NO;
+            }
+            
+            int minTextureWidth = textureWidth > oldTextureWidth ? oldTextureWidth : textureWidth;
+            int minTextureHeight = textureHeight > oldTextureHeight ? oldTextureHeight : textureHeight;
+            for (int y = 0 ; y < minTextureHeight ; y++)
+            {
+                if (y + offsetTextureY < oldTextureHeight)
+                    memcpy( newTextureBuffer + (y * textureWidth), textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth, textureWidth);
+            }
+            
+            if (newTextureBuffer != textureBuffer)
+            {
+                free( textureBuffer);
+                textureBuffer = newTextureBuffer;
+            }
+            
+            textureUpLeftCornerX += offsetTextureX;
+            textureUpLeftCornerY += offsetTextureY;
+            textureDownRightCornerX = textureUpLeftCornerX + textureWidth-1;
+            textureDownRightCornerY = textureUpLeftCornerY + textureHeight-1;
+            
+            [self textureBufferHasChanged];
+        }
 	}
 	
 	return NO;	// means the ROI is NOT empty;
@@ -5298,7 +5298,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
     if (hidden)
     {
-        drawRect = NSMakeRect(0, 0, 0, 0);
+        drawRect = NSZeroRect;
         return;
     }
     
@@ -5311,13 +5311,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
         textualBoxLine7.length == 0 &&
         textualBoxLine8.length == 0)
 	{
-		drawRect = NSMakeRect(0, 0, 0, 0);
+		drawRect = NSZeroRect;
 		return;
 	}
 	
 	if (!displayTextualData)
 	{
-		drawRect = NSMakeRect(0, 0, 0, 0);
+		drawRect = NSZeroRect;
 		return;
 	}
 
@@ -5471,7 +5471,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	}
 	else
 	{
-		drawRect = NSMakeRect(0, 0, 0, 0);
+		drawRect = NSZeroRect;
 	}
 }
 
@@ -9091,12 +9091,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	}
 	
 	NSPoint p1, p2, p3, p4;
-	p1 = NSMakePoint(0.0, 0.0);
+	p1 = NSZeroPoint;
 	p2 = NSMakePoint(imageWidth*scaleFactorX, 0.0);
 	p3 = NSMakePoint(imageWidth*scaleFactorX, imageHeight*scaleFactorY);
 	p4 = NSMakePoint(0.0, imageHeight*scaleFactorY);
 
-	NSArray *pts = [NSArray arrayWithObjects:[MyPoint point:p1], [MyPoint point:p2], [MyPoint point:p3], [MyPoint point:p4], nil];
+	NSArray *pts = [NSArray arrayWithObjects:[MyPoint point:p1],
+                                             [MyPoint point:p2],
+                                             [MyPoint point:p3],
+                                             [MyPoint point:p4],
+                                             nil];
 	[points setArray:pts];
 
 	[self generateEncodedLayerImage];

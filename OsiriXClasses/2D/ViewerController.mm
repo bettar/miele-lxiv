@@ -1880,7 +1880,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				if (directionm == 0)		// X - RESLICE
 				{
-					DCMPix	*curPix = [newPixList lastObject];
+					DCMPix *curPix = [newPixList lastObject];
 					
 					int count = [pixList[ j] count];
 					int pwidth = [[pixList[ j] objectAtIndex: 0] pwidth];
@@ -2082,9 +2082,23 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	int o = 0;
 	
-	if (fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))	o = 0;
-	if (fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))	o = 1;
-	if (fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))	o = 2;
+	if (fabs( vectors[6]) > fabs(vectors[7]) &&
+        fabs( vectors[6]) > fabs(vectors[8]))
+    {
+        o = 0;  // ORIENTATION_AXIAL ?
+    }
+
+    if (fabs( vectors[7]) > fabs(vectors[6]) &&
+        fabs( vectors[7]) > fabs(vectors[8]))
+    {
+        o = 1; // ORIENTATION_CORONAL ?
+    }
+
+    if (fabs( vectors[8]) > fabs(vectors[6]) &&
+        fabs( vectors[8]) > fabs(vectors[7]))
+    {
+        o = 2; // ORIENTATION_SAGITTAL ?
+    }
 	
 	return o;
 }
@@ -3184,9 +3198,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return win;
 }
 
-+ (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
++ (ViewerController *) newWindow:(NSMutableArray*)f
+                                :(NSMutableArray*)d
+                                :(NSData*) v
 {
-	return [ViewerController newWindow:f :d : v frame: NSMakeRect(0, 0, 0, 0)];
+	return [ViewerController newWindow: f
+                                      : d
+                                      : v
+                                 frame: NSZeroRect];
 }
 
 - (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
@@ -5805,8 +5824,8 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if (name == nil)
                             name = @"";
                         
-                        NSString *stateText = @"";
-                        NSString *comment = @"";
+                        //NSString *stateText = @"";
+                        //NSString *comment = @"";
                         NSString *modality = queryStudy.modality;
                         if (modality == nil)
                             modality = @"OT";
@@ -6075,7 +6094,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         {
             firstBuildMatrix = YES;
             showSelected = YES;
-            [[previewMatrixScrollView contentView] scrollToPoint: NSMakePoint(0, 0)];
+            [[previewMatrixScrollView contentView] scrollToPoint: NSZeroPoint];
             [previewMatrixScrollView reflectScrolledClipView: [previewMatrixScrollView contentView]];
         }
         
@@ -10393,8 +10412,8 @@ static int avoidReentryRefreshDatabase = 0;
 		
 		if ([originalPixlist count] > 1)
 		{
-			DCMPix	*firstObject = [originalPixlist objectAtIndex:0];
-			DCMPix	*secondObject = [originalPixlist objectAtIndex:1];
+			DCMPix *firstObject = [originalPixlist objectAtIndex:0];
+			DCMPix *secondObject = [originalPixlist objectAtIndex:1];
 			
 			[firstObject orientation: vectors];
 			[secondObject orientation: vectorsB];
@@ -11032,9 +11051,7 @@ static int avoidReentryRefreshDatabase = 0;
 
 -(IBAction) ConvertToRGBMenu:(id) sender
 {
-	long	x, i;
-	float	cwl, cww;
-	
+	float cwl, cww;
 	[imageView getWLWW:&cwl :&cww];
 	
 	if ([[pixList[ curMovieIndex] objectAtIndex: 0] isRGB] == YES)
@@ -11047,9 +11064,9 @@ static int avoidReentryRefreshDatabase = 0;
 	}
 	else
 	{
-		for (x = 0; x < maxMovieIndex; x++)
+		for (int x = 0; x < maxMovieIndex; x++)
 		{
-			for (i = 0; i < [pixList[ x] count]; i++)
+			for (int i = 0; i < [pixList[ x] count]; i++)
 				if ([[pixList[ x] objectAtIndex: i] isRGB] == NO)
 					[[pixList[ x] objectAtIndex: i] ConvertToRGB: [sender tag] :cwl :cww];
 		}
@@ -11062,8 +11079,6 @@ static int avoidReentryRefreshDatabase = 0;
 
 -(IBAction) ConvertToBWMenu:(id) sender
 {
-	long x, i;
-	
 	if ([[pixList[ curMovieIndex] objectAtIndex: 0] isRGB] == NO)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"BW", nil),
@@ -11074,9 +11089,9 @@ static int avoidReentryRefreshDatabase = 0;
 	}
 	else
 	{
-		for (x = 0; x < maxMovieIndex; x++)
+		for (int x = 0; x < maxMovieIndex; x++)
 		{
-			for (i = 0; i < [pixList[ x] count]; i++)
+			for (int i = 0; i < [pixList[ x] count]; i++)
 				if ([[pixList[ x] objectAtIndex: i] isRGB] == YES)
 					[[pixList[ x] objectAtIndex: i] ConvertToBW: [sender tag]];
 		}
@@ -13600,37 +13615,38 @@ long				x, y;
 		[self clear8bitRepresentations];
 		
 		if ([[[PluginManager fusionPlugins] objectAtIndex: returnCode] isEqualToString: @"Subtraction Angio-CT"])
-			[self blendWithViewer:blendedWindow blendingType: 9]; // LL filter
+			[self blendWithViewer:blendedWindow blendingType: BLENDING_LL_FILTER];
 		else
 			[self executeFilterFromString: [[PluginManager fusionPlugins] objectAtIndex: returnCode]];
 	}
 	else if (returnCode > 0)
 	{
 		[self clear8bitRepresentations];
-		[self blendWithViewer:blendedWindow blendingType: returnCode];
+		[self blendWithViewer:blendedWindow blendingType: (BlendingType)returnCode];
 	}
 	
 	[blendedWindow release];
 	blendedWindow = nil;
 }
 
-- (void)blendWithViewer:(ViewerController *)bc blendingType:(int)blendingType
+- (void)blendWithViewer:(ViewerController *)bc
+           blendingType:(BlendingType)blendingType
 {
 	_blendingType = blendingType;
 	
 	long i;
-	switch(blendingType)
+	switch (blendingType)
 	{
-		case -1:	// PLUG-INS METHOD
+		case BLENDING_PLUGINS_METHOD:
 			//[self executeFilter:sender];
-		break;
+            break;
 		
-		case 1:		// Image fusion
+		case BLENDING_IMAGE_FUSION:
 			[self ActivateBlending: bc];
-		break;
+            break;
 		
-		case 2:
-		{	// Image subtraction
+		case BLENDING_IMAGE_SUBTRACTION:
+		{
 			NSUInteger modifierFlags = [[[NSApplication sharedApplication] currentEvent] modifierFlags];
 			
 			if ((modifierFlags & NSEventModifierFlagControl) != 0)
@@ -13661,9 +13677,9 @@ long				x, y;
 				}
  			}
 		}
-		break;
+            break;
 		
-		case 3:		// Image multiplication
+		case BLENDING_IMAGE_MULTIPLICATION:
 			for (i = 0; i < [pixList[ curMovieIndex] count]; i++)
 			{
 				[imageView setIndex:i];
@@ -13672,11 +13688,11 @@ long				x, y;
 				
 				[imageView multiply: [bc imageView]];
 			}
-		break;
+            break;
 		
-		case 4:		// RGB Composition
-		case 5:
-		case 6:
+		case BLENDING_RGB_COMPOSITION_1:
+		case BLENDING_RGB_COMPOSITION_2:
+		case BLENDING_RGB_COMPOSITION_3:
 			{
 				for (i = 0; i < [pixList[ curMovieIndex] count]; i++)   // Convert all images to RGB images if necessary
 				{
@@ -13691,8 +13707,8 @@ long				x, y;
 					
 					if ([srcPix isRGB])   // Only works if srcImage is BW
 					{
-						unsigned char*  srcPtr = (unsigned char*) [srcPix fImage];
-						unsigned char*  dstPtr = (unsigned char*) [dstPix fImage];
+						unsigned char* srcPtr = (unsigned char*) [srcPix fImage];
+						unsigned char* dstPtr = (unsigned char*) [dstPix fImage];
 						
 						long size = [srcPix pheight] * [srcPix pwidth]*4;
 						long temp;
@@ -13711,7 +13727,7 @@ long				x, y;
 					{
 						// Convert srcImage to 8 bits
 						
-						vImage_Buffer		srcf, dst8;
+						vImage_Buffer srcf, dst8;
 						
 						srcf.height = [srcPix pheight];
 						srcf.width = [srcPix pwidth];
@@ -13738,20 +13754,20 @@ long				x, y;
 						
 						switch(blendingType)
 						{
-							case 4:	
+							case BLENDING_RGB_COMPOSITION_1:
 								while (size-- > 0)
 									dstPtr[ size*4 + 1] = srcPtr[ size];
-							break;
+                                break;
 							
-							case 5:
+							case BLENDING_RGB_COMPOSITION_2:
 								while (size-- > 0)
 									dstPtr[ size*4 + 2] = srcPtr[ size];
-							break;
+                                break;
 							
-							case 6:
+							case BLENDING_RGB_COMPOSITION_3:
 								while (size-- > 0)
 									dstPtr[ size*4 + 3] = srcPtr[ size];
-							break;
+                                break;
 						}
 					}
 					
@@ -13761,28 +13777,27 @@ long				x, y;
 					[imageView setNeedsDisplay:YES];
 				}
 			}
-		break;
+            break;
 		
-		#ifndef OSIRIX_LIGHT
-		case 7:		// 2D Registration
+#ifndef OSIRIX_LIGHT
+		case BLENDING_2D_REGISTRATION:
 			[self computeRegistrationWithMovingViewer: bc];
-		break;
+            break;
 		
-		case 11:
+		case BLENDING_RESAMPLE_RESCALE:
 			[self resampleSeries: bc rescale: YES];
-		break;
+            break;
             
-        case 12:
+        case BLENDING_RESAMPLE_NO_RESCALE:
             [self resampleSeries: bc rescale: NO];
-        break;
-		#endif
+            break;
+#endif
 		
-		case 8:		// 3D Registration
-		
-		break;
+		case BLENDING_3D_REGISTRATION:
+            break;
 		
 //		#ifndef OSIRIX_LIGHT
-//		case 9: // LL
+//		case BLENDING_LL_FILTER:
 //		{
 //			[self checkEverythingLoaded];
 //			[bc checkEverythingLoaded];
@@ -13796,7 +13811,7 @@ long				x, y;
 //		break;
 //		#endif
 		
-		case 10:	// Copy ROIs
+		case BLENDING_COPY_ROIS:
 		{
 			WaitRendering *splash = [[WaitRendering alloc] init: NSLocalizedString( @"Copy ROIs between series...", nil)];
 			[splash showWindow:self];
@@ -13804,9 +13819,8 @@ long				x, y;
             [self.window makeKeyAndOrderFront: self];
             
 			int curIndex = [[self imageView] curImage];
-			NSArray	*bcRoiList = nil;
-			
-            NSMutableArray *copiedBalls = [NSMutableArray array];
+			//NSArray *bcRoiList = nil;
+            //NSMutableArray *copiedBalls = [NSMutableArray array];
             
 			for (int x = 0; x < [[self pixList] count]; x++)
 			{
@@ -13821,7 +13835,9 @@ long				x, y;
                     //Correct the origin only if the orientation is the same
                     copyROI.pix = imageView.curDCM;
                     
-                    [copyROI setOriginAndSpacing: imageView.curDCM.pixelSpacingX :imageView.curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: imageView.curDCM]];
+                    [copyROI setOriginAndSpacing: imageView.curDCM.pixelSpacingX
+                                                : imageView.curDCM.pixelSpacingY
+                                                : [DCMPix originCorrectedAccordingToOrientation: imageView.curDCM]];
                     curROI.curView = imageView;
                     
                     [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: copyROI];
@@ -13835,7 +13851,7 @@ long				x, y;
 			[splash close];
 			[splash autorelease];
 		}
-		break;
+            break;
 		
 		default:
 			NSRunCriticalAlertPanel(NSLocalizedString(@"OsiriX Light",nil),
@@ -13843,7 +13859,7 @@ long				x, y;
                                     NSLocalizedString(@"OK",nil),
                                     nil,
                                     nil);
-		break;
+            break;
 	}
 }
 
@@ -16710,10 +16726,9 @@ long				x, y;
 	}
 	
 	if (!found)
-	{
 		PaletteController *palette = [[PaletteController alloc] initWithViewer: self];
-	}
-//	else [self setROIToolTag: tPlain];
+//	else
+//      [self setROIToolTag: tPlain];
 }
 
 - (NSRecursiveLock*) roiLock { return roiLock;}
@@ -16796,7 +16811,7 @@ long				x, y;
 		// do the morpho function...
 		ITKBrushROIFilter *filter = [[[ITKBrushROIFilter alloc] init] autorelease];
 
-		WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...",nil)];
+		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...",nil)];
 		[wait showWindow:self];
 		if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
 		{
@@ -17990,7 +18005,8 @@ long				x, y;
     return [self resampleSeries: movingViewer rescale: YES];
 }
 
-- (ViewerController*) resampleSeries:(ViewerController*) movingViewer rescale: (BOOL) rescale
+- (ViewerController*) resampleSeries:(ViewerController*) movingViewer
+                             rescale: (BOOL) rescale
 {
     [movingViewer displayWarningIfGantryTitled];
     [self displayWarningIfGantryTitled];
@@ -18110,7 +18126,9 @@ long				x, y;
 		
 		ITKTransform * transform = [[ITKTransform alloc] initWithViewer:movingViewer];
 		
-		newViewer = [transform computeAffineTransformWithParameters: matrix resampleOnViewer: self rescale: rescale];
+		newViewer = [transform computeAffineTransformWithParameters: matrix
+                                                   resampleOnViewer: self
+                                                            rescale: rescale];
 		
 		[imageView sendSyncMessage: 0];
 		[self adjustSlider];
@@ -19340,7 +19358,8 @@ static BOOL viewerControllerPlaying = NO;
 
 - (void) restoreWindowsAfterPrint
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] && NSIsEmptyRect( windowFrameToRestore) == NO)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] &&
+        NSIsEmptyRect( windowFrameToRestore) == NO)
     {
         int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
         [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
@@ -19363,11 +19382,6 @@ static BOOL viewerControllerPlaying = NO;
                 success:(BOOL)success
                 contextInfo:(void*)info
 {
-    if (success)
-	{
-	
-    }
-	
     NSString *tmpFolder = [NSTemporaryDirectory() stringByAppendingPathComponent:@"print"];
 	[[NSFileManager defaultManager] removeItemAtPath: tmpFolder error:nil];
     [self restoreWindowsAfterPrint];
@@ -19412,7 +19426,7 @@ static BOOL viewerControllerPlaying = NO;
 		if ([[printSettings cellWithTag: 0] state]) [settings setObject: @"YES" forKey: @"patientInfo"];
 		if ([[printSettings cellWithTag: 1] state]) [settings setObject: @"YES" forKey: @"studyInfo"];
         
-		//--------------------------Background color---------------------------------
+		//--------------------------Background color----------------------------
         
         [settings setObject: @"YES" forKey: @"backgroundColor"];
 		if ([[printSettings cellWithTag: 3] state])
@@ -19434,10 +19448,9 @@ static BOOL viewerControllerPlaying = NO;
 		//--------------------------Interval ---------------------------------
 		[settings setObject: [NSNumber numberWithInt: [printInterval intValue]] forKey: @"interval"];
 
-
 		[[NSUserDefaults standardUserDefaults] setObject: settings forKey: @"previousPrintSettings"];
 		
-		//--------------------------endpoints of the series to be printed---------------------------------
+		//--------------------------endpoints of the series to be printed-------
 		int from;
 		int to;
 		int interval;
@@ -19484,7 +19497,7 @@ static BOOL viewerControllerPlaying = NO;
 			break;
 		}
 		
-		//--------------------------Preparation images in /tmp/print---------------------------------
+		//--------------------------Preparation images in /tmp/print------------
 		
 		NSMutableArray *files = [NSMutableArray array];
         NSString *tmpFolder = [NSTemporaryDirectory() stringByAppendingPathComponent:@"print"];
@@ -19502,7 +19515,7 @@ static BOOL viewerControllerPlaying = NO;
 		
 		int currentImageIndex = [self imageIndex];
 		
-		/////// ****************
+		///
 		
 		float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
 		float scaleFactor = 1.0;
@@ -19523,7 +19536,7 @@ static BOOL viewerControllerPlaying = NO;
 		NSPoint o = [[[self window] screen] visibleFrame].origin;
 		o.y += [[[self window] screen] visibleFrame].size.height;
 		
-		/////// ****************
+		///
 		
 		[OSIWindowController setDontEnterMagneticFunctions: YES];
 		[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
@@ -19574,9 +19587,9 @@ static BOOL viewerControllerPlaying = NO;
 				
 				BOOL windowSizeChanged = NO;
 				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"] &&
-                    [self scaleValue] < 1.0)
+                    [imageView scaleValue] < 1.0)
 				{
-					scaleFactor = 1. / [self scaleValue];
+					scaleFactor = 1. / [imageView scaleValue];
 					
 					int MAXWindowSize = [[NSUserDefaults standardUserDefaults] integerForKey: @"MAXWindowSize"];
 					
@@ -24287,68 +24300,6 @@ static BOOL viewerControllerPlaying = NO;
 - (Dicom_Image *)currentImage
 {
 	return imageView.imageObj;
-}
-
-#pragma mark - Convenience methods for accessing values in the current imageView
-
--(float)curWW
-{
-	return [imageView curWW];
-}
-
--(float)curWL
-{
-	return [imageView curWL];
-}
-
-- (void)setWL:(float)cwl  WW:(float)cww
-{
-	[imageView setWLWW:cwl :cww];
-}
-
-- (BOOL)xFlipped
-{
-    return [imageView xFlipped];
-}
-	
-- (BOOL)yFlipped
-{
-	return [imageView yFlipped];
-}
-
-- (float)rotation
-{
-	return [imageView rotation];
-}
-
-- (void)setRotation:(float)rotation
-{
-	[imageView setRotation:rotation];
-}
-
-- (void)setOrigin:(NSPoint) o
-{
-	[imageView setOrigin:o];
-}
-
-- (float)scaleValue
-{
-	return [imageView scaleValue];
-}
-
-- (void)setScaleValue:(float)scaleValue
-{
-	[imageView setScaleValue:scaleValue];
-}
-
-- (void)setYFlipped:(BOOL) v
-{
-	[imageView setYFlipped:(BOOL) v];
-}
-
-- (void)setXFlipped:(BOOL) v
-{
-	[imageView setXFlipped:(BOOL) v];
 }
 
 - (SeriesView *) seriesView

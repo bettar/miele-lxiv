@@ -218,16 +218,15 @@
 
 - (void) distanceTransformWithThreshold: (id) sender
 {
-	
-	if(	!distmap )
+	if (!distmap)
 		return; /// @todo Allocate it
 
     [self thresholdImage];
-    CFAbsoluteTime time = CFAbsoluteTimeGetCurrent ();
+    CFAbsoluteTime time = CFAbsoluteTimeGetCurrent();
 	int its=0;	
 	
 //need OSX 10.6 sdk
-    /** Multithreaded distance transform.
+/** Multithreaded distance transform.
 
      \todo {Improve the structuring element.
      For the forward pass:
@@ -243,8 +242,9 @@
                 for (x = -max(y,z); x <= 1; ++x)
      \endcode
      }
-     */
-	__block int changedpoints=1;
+*/
+
+    __block int changedpoints=1;
 	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 	
 	while (changedpoints>0) {

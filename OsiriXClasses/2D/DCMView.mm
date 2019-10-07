@@ -91,8 +91,8 @@
 
 #ifndef NDEBUG
 #import "PreviewView.h"  // @@@
-static bool OglVersionChecked41 = true;
-static int seq = 0;
+//static bool OglVersionChecked41 = true;
+//static int seq = 0;
 const char *stringCRSpaces = "\n                                                ";
 #endif
 
@@ -891,8 +891,11 @@ void checkOGLVersion()
 @synthesize curImage;
 @synthesize theMatrix = matrix;
 @synthesize suppressLabels = suppress_labels;
-@synthesize scaleValue, rotation;
+
+@synthesize scaleValue;
+@synthesize rotation;
 @synthesize origin;
+
 @synthesize curDCM;
 @synthesize dcmExportPlugin;
 @synthesize mouseXPos, mouseYPos;
@@ -904,7 +907,6 @@ void checkOGLVersion()
 @synthesize cursor;
 @synthesize eraserFlag;
 @synthesize drawing;
-//@synthesize volumicSeries;
 @synthesize isKeyView, mouseDragging;
 @synthesize annotationType;
 
@@ -1353,7 +1355,7 @@ void checkOGLVersion()
 	if ([blendingView yFlipped]) oo.y = -oo.y;
 
     oo = [DCMPix rotatePoint: oo
-                 aroundPoint: NSMakePoint(0, 0)
+                 aroundPoint: NSZeroPoint
                        angle: -[blendingView rotation]*deg2rad];
 
 	NSPoint cc = [self origin];
@@ -1364,7 +1366,7 @@ void checkOGLVersion()
 	if ([self yFlipped]) cc.y = - cc.y;
 
     cc = [DCMPix rotatePoint: cc
-                 aroundPoint: NSMakePoint(0, 0)
+                 aroundPoint: NSZeroPoint
                        angle: -[self rotation]*deg2rad];
 
 	oo.x -= cc.x;
@@ -1376,7 +1378,7 @@ void checkOGLVersion()
     if (newPix.shutterEnabled)
     {
         newPix.shutterEnabled = NO;
-        newPix.shutterRect = NSMakeRect(0, 0, 0, 0);
+        newPix.shutterRect = NSZeroRect;
     }
     
 	return newPix;
@@ -1575,7 +1577,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         {
             // M_PI defined in cmath.h
             float alpha = i * 2 * M_PI /circleRes;
-            glVertex2f( pt.x + repulsorRadius*cos(alpha)*scaleValue, pt.y + repulsorRadius*sin(alpha)*scaleValue);//*curDCM.pixelSpacingY/curDCM.pixelSpacingX
+            glVertex2f(pt.x + repulsorRadius*cos(alpha)*scaleValue,
+                       pt.y + repulsorRadius*sin(alpha)*scaleValue);//*curDCM.pixelSpacingY/curDCM.pixelSpacingX
         }
     }
 	glEnd();
@@ -2558,8 +2561,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
     if (fabs( s - self.scaleValue) < 0.02)
         return YES;
-    else
-        return NO;
+
+    return NO;
 }
 
 - (float) scaleToFitForDCMPix: (DCMPix*) d
@@ -3368,8 +3371,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		{
 			[[self windowController] addToUndoQueue:@"roi"];
 			
-			// NE PAS OUBLIER DE CHANGER EGALEMENT LE CUT !
-			NSTimeInterval groupID = 0;
+			// Don't forget to change the cut !
+			//NSTimeInterval groupID = 0;
             NSMutableArray *roisToDelete = [NSMutableArray array];
 			[drawLock lock];
 			
@@ -3613,14 +3616,14 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			
 			if (currentTool == tNext)
 			{
-				short   inc, previmage;
+				short inc;
 				
 				if (yMove)
                     val = yMove/labs(yMove);
 				else
                     val = xMove/labs(xMove);
 				
-				previmage = curImage;
+				short previmage = curImage;
 				
 				if (val < 0)
 				{
@@ -4031,8 +4034,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                          ROISelectorStartPoint.y-1,
                                          fabs(ROISelectorEndPoint.x-ROISelectorStartPoint.x)+2,
                                          fabs(ROISelectorEndPoint.y-ROISelectorStartPoint.y)+2);
-				ROISelectorStartPoint = NSMakePoint(0.0, 0.0);
-				ROISelectorEndPoint = NSMakePoint(0.0, 0.0);
+				ROISelectorStartPoint = NSZeroPoint;
+				ROISelectorEndPoint = NSZeroPoint;
 				[self drawRect:rect];
 			}
 		}
@@ -5229,7 +5232,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 						}
 					}
 					
-					NSMutableArray *points;
+					//NSMutableArray *points;
 					for (ROI *r in roiArray)
 					{
 						if (r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle && r.type != tTAGT)

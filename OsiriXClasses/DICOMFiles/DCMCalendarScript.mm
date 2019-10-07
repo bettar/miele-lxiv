@@ -24,7 +24,7 @@
 
 - (id)initWithCalendar:(NSString *)calendar{
 	if (self = [super init]) {
-		NSString *rootScript = [[[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"iCal script" ofType:@"applescript"]] autorelease];
+		NSString *rootScript = [[[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"iCal script" ofType:@"applescript"]] autorelease];  // TODO: .scpt
 		NSString *script = [NSString stringWithFormat:@"set the source_calendar to \"%@\"\n%@", calendar, rootScript];
 		compiledScript = [[NSAppleScript alloc] initWithSource:script];
 		

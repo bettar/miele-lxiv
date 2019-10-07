@@ -300,32 +300,22 @@
 
 	if (originalOldValues)
 	{
-		// scale
 		[originalView setScaleValue:originalScaleValue];
-//		NSLog(@"originalScaleValue : %f", originalScaleValue);
-		// rotation
 		[originalView setRotation:originalRotation];
-		// origin
 		[originalView setOrigin:originalOrigin];
 	}
 		
 	if (xOldValues)
 	{
-		// scale
 		[xReslicedView setScaleValue:xScaleValue];
-		// rotation
 		[xReslicedView setRotation:xRotation];
-		// origin
 		[xReslicedView setOrigin:xOrigin];
 	}
 	
 	if (yOldValues)
 	{
-		// scale
 		[yReslicedView setScaleValue:yScaleValue];
-		// rotation
 		[yReslicedView setRotation:yRotation];
-		// origin
 		[yReslicedView setOrigin:yOrigin];
 	}
 

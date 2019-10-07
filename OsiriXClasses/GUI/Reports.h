@@ -40,7 +40,7 @@ typedef NS_ENUM(NSUInteger, ReportType) {
 + (NSString*) getUniqueFilename:(id) study;
 + (NSString*) getOldUniqueFilename:(NSManagedObject*) study;
 
-- (BOOL)createNewReport:(NSManagedObject*)study destination:(NSString*)path type:(int)type;
+- (BOOL)createNewReport:(NSManagedObject*)study destination:(NSString*)path type:(ReportType)type;
 
 +(NSString*)databaseWordTemplatesDirPath;
 +(NSString*)resolvedDatabaseWordTemplatesDirPath;

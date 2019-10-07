@@ -669,23 +669,29 @@ enum SMTPSubstatuses {
 							[self _auth];
 					return;
 			}
-		} break;
-		case StatusSTARTTLS: {
+		}
+            break;
+
+        case StatusSTARTTLS: {
 			if (code == 220) {
 				[self startTLS];
 				[self _ehlo];
 				return;
 			}
-		} break;
-		case StatusAUTH: {
+		}
+            break;
+
+        case StatusAUTH: {
 			switch (self.smtpSubstatus) {
 				case PlainAUTH:
 					switch (code) {
 						case 235:
 							[self _mail];
 							return;
-					} break;
-				case LoginAUTH:
+					}
+                    break;
+
+                case LoginAUTH:
 					switch (code) {
 						case 334:
 							message = [[[NSString alloc] initWithData:[NSData dataWithBase64:message] encoding:NSUTF8StringEncoding] autorelease];
@@ -699,8 +705,10 @@ enum SMTPSubstatuses {
 						case 235:
 							[self _mail];
 							return;
-					} break;
-				case CramMD5AUTH:
+					}
+                    break;
+
+                case CramMD5AUTH:
 					switch (code) {
 						case 334: {
 							message = [[[NSString alloc] initWithData:[NSData dataWithBase64:message] encoding:NSUTF8StringEncoding] autorelease];
@@ -711,11 +719,13 @@ enum SMTPSubstatuses {
 						case 235:
 							[self _mail];
 							return;
-					} break;
-                    
+					}
+                    break;
 			}
-		} break;
-		case StatusMAIL: {
+		}
+            break;
+
+        case StatusMAIL: {
 			switch (code) {
 				case 250:
 					for (NSArray* ito in self.to) {
@@ -728,8 +738,10 @@ enum SMTPSubstatuses {
 					self.smtpStatus = StatusRCPT;
 					return;
 			}
-		} break;
-		case StatusRCPT: {
+		}
+            break;
+
+        case StatusRCPT: {
 			switch (code) {
 				case 250: {
 					self.rcptToCount -= 1;
@@ -740,8 +752,10 @@ enum SMTPSubstatuses {
 					return;
 				}
 			}
-		} break;
-		case StatusDATA: {
+		}
+            break;
+
+        case StatusDATA: {
 			switch (code) {
 				case 0: // disconnection
 				case 250:
@@ -751,7 +765,8 @@ enum SMTPSubstatuses {
 					if (code == 0)
 						[self reset];
 					return;
-				case 354:
+
+                case 354:
 					if (self.fromDescription)
 						[self writeLine:[NSString stringWithFormat:@"From: =?UTF-8?B?%@?= <%@>", [[self.fromDescription dataUsingEncoding:NSUTF8StringEncoding] base64], self.from]];
 					else
@@ -779,21 +794,22 @@ enum SMTPSubstatuses {
                             [self writeLine:[NSString stringWithFormat:@"%@: %@", key, [self.headers objectForKey:key]]];
                     
 					[self writeLine:@""];
-                    
                     [self writeLine:[[self.message dataUsingEncoding:NSUTF8StringEncoding] base64]];
-					
 					[self writeLine:@"."];
                     
 					return;
 			}
-		} break;
-		case StatusQUIT: {
+		}
+            break;
+
+        case StatusQUIT:
 			switch (code) {
 				case 0: // disconnection
 				case 221:
 					return;
 			}
-		} break;
+
+            break;
 	}
 	
 	[NSException raise:NSGenericException format:@"Don't know how to act with status %d, code %d", (int) self.smtpStatus, (int) code];
@@ -807,7 +823,9 @@ enum SMTPSubstatuses {
 	NSString* temp = nil;
 	unichar separator = 0;
 	
-	[line splitStringAtCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@" -"] intoChunks:&temp:&message separator:&separator];
+	[line splitStringAtCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@" -"]
+                             intoChunks:&temp:&message
+                              separator:&separator];
 	code = [temp integerValue];
 	
 	if (code)
@@ -816,7 +834,8 @@ enum SMTPSubstatuses {
         [NSException raise:NSGenericException format:@"Couldn't parse line"];
 }
 
--(void)_dataTimeoutCallback:(NSTimer*)timer {
+-(void)_dataTimeoutCallback:(NSTimer*)timer
+{
 	if (self.client.tlsMode) {
         [self startTLS];
     }

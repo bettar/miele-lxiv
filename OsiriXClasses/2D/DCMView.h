@@ -148,8 +148,10 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
     NSSize          scaleStart, scaleInit;
     
 	double			resizeTotal;
-    float           scaleValue, startScaleValue;
-    float           rotation, rotationStart;
+    float           scaleValue;
+    float           startScaleValue;
+    float           rotation;
+    float           rotationStart;
     NSPoint			origin;
 	short			crossMove;
     
@@ -337,8 +339,11 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 @property(readonly) short curImage;
 @property(retain) NSMatrix *theMatrix;
 @property(readonly) BOOL suppressLabels;
-@property(nonatomic) float scaleValue, rotation;
+
+@property(nonatomic) float scaleValue;
+@property(nonatomic) float rotation;
 @property(nonatomic) NSPoint origin;
+
 @property(readonly) double pixelSpacing, pixelSpacingX, pixelSpacingY;
 @property(readonly) DCMPix *curDCM;
 @property(retain) DCMExportPlugin *dcmExportPlugin;

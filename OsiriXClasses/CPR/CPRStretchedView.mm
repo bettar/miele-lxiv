@@ -850,8 +850,12 @@ extern int splitPosition[ 3];
     for (NSUInteger i = 0; i < self.curvedVolumeData.pixelsDeep; i++)
 	{
 		[self.curvedVolumeData aquireInlineBuffer:&inlineBuffer];
-        newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.curvedVolumeData.pixelsWide*self.curvedVolumeData.pixelsHigh) :32
-                                             :self.curvedVolumeData.pixelsWide :self.curvedVolumeData.pixelsHigh :self.curvedVolumeData.pixelSpacingX :self.curvedVolumeData.pixelSpacingY
+        newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.curvedVolumeData.pixelsWide*self.curvedVolumeData.pixelsHigh)
+                                             :32
+                                             :self.curvedVolumeData.pixelsWide
+                                             :self.curvedVolumeData.pixelsHigh
+                                             :self.curvedVolumeData.pixelSpacingX
+                                             :self.curvedVolumeData.pixelSpacingY
                                              :0.0 :0.0 :0.0 :NO];
         
 		[newPix setImageObjectID: [[[self windowController] originalPix] imageObjectID]];
@@ -863,7 +867,7 @@ extern int splitPosition[ 3];
         [newPix release];
     }
 	
-	if( [pixArray count])
+	if ([pixArray count])
 	{
         [self _clearAllPlanes];
         [self _clearTransversePlanes];

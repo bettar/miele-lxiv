@@ -96,10 +96,11 @@
 - (void) setCurrentTool:(ToolMode) newTool;
 - (int) currentTool;
 
-- (void) saveViewsFrame;
 - (void) saveScaleValue;
-- (void) displayResliceAxes: (long) boo;
 - (void) restoreScaleValue;
+- (void) setScaleValue:(float) x;
+- (void) saveViewsFrame;
+- (void) displayResliceAxes: (long) boo;
 - (void) restoreViewsFrame;
 - (void) toggleDisplayResliceAxes: (id) sender;
 - (void) resetImage;
@@ -107,7 +108,6 @@
 - (NSMutableArray*) originalDCMPixList;
 - (void) scaleToFit : (id) destination;
 - (void) scaleToFit;
-- (void) setScaleValue:(float) x;
 - (void) fullWindowView: (id) sender;
 - (void) saveCrossPositions;
 - (void) restoreCrossPositions;

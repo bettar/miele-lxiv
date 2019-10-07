@@ -2616,7 +2616,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition spline:(BOOL) spline;
 {
-    return [self fillROI: roi newVal: newVal minValue: minValue maxValue: maxValue outside: outside orientationStack:orientationStack stackNo: stackNo restore: restore addition: addition spline: spline clipMin: NSMakePoint(0, 0) clipMax: NSMakePoint(0, 0)];
+    return [self fillROI: roi newVal: newVal minValue: minValue maxValue: maxValue outside: outside orientationStack:orientationStack stackNo: stackNo restore: restore addition: addition spline: spline clipMin: NSZeroPoint clipMax: NSZeroPoint];
 }
 
 - (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition spline:(BOOL) spline clipMin: (NSPoint) clipMin clipMax: (NSPoint) clipMax;
@@ -11003,9 +11003,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     NSArray *content = [annot objectForKey:@"fullContent"];
                     NSMutableArray *contentOUT = [NSMutableArray array];
                     
-                    BOOL contentForLine = NO;
+                    //BOOL contentForLine = NO;
                     
-                    for ( int f=0; f<[content count]; f++)
+                    for (int f=0; f<[content count]; f++)
                     {
                         @try
                         {

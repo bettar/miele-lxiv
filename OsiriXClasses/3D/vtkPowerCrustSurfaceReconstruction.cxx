@@ -11805,17 +11805,15 @@ void vtkPowerCrustSurfaceReconstruction::Execute()
 
 void vtkPowerCrustSurfaceReconstruction::ComputeInputUpdateExtents(vtkDataObject *output)
 {
-  int piece, numPieces, ghostLevels;
-  
   if (this->GetInput() == NULL) {
     vtkErrorMacro("No Input");
     return;
   }
     
 #if 0 // TODO: update it to the new VTK 7.1.1
-  piece = output->GetUpdatePiece();
-  numPieces = output->GetUpdateNumberOfPieces();
-  ghostLevels = output->GetUpdateGhostLevel();
+  int piece = output->GetUpdatePiece();
+  int numPieces = output->GetUpdateNumberOfPieces();
+  int ghostLevels = output->GetUpdateGhostLevel();
   
   if (numPieces > 1)
     ++ghostLevels;

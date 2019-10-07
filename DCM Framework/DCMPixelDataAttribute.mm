@@ -326,9 +326,9 @@ void info_callback(const char *msg, void *a) {
 //	NSLog( @"%s", msg);
 }
 
-static inline int int_ceildivpow2(int a, int b) {
-	return (a + (1 << b) - 1) >> b;
-}
+//static inline int int_ceildivpow2(int a, int b) {
+//	return (a + (1 << b) - 1) >> b;
+//}
 
 //void* dcm_read_JPEG2000_file (char *inputdata, size_t inputlength, size_t *outputLength, int *width, int *height, int *samplePerPixel)
 //{
@@ -1152,8 +1152,7 @@ static inline int int_ceildivpow2(int a, int b) {
 	
     long decompressedLength = 0;
     
-    NSUInteger processors = 0;
-    
+//    NSUInteger processors = 0;
 //    if( [jpegData length] > 512*1024)
 //        processors = [[NSProcessInfo processInfo] processorCount] /2;
     
@@ -1308,8 +1307,8 @@ static inline int int_ceildivpow2(int a, int b) {
 - (NSData *)convertJPEGLSToHost:(NSData *)jpegData
 {
     NSMutableData *pixelData = nil;
-    NSUInteger processors = 0;
-    
+
+//    NSUInteger processors = 0;
 //    if( [jpegData length] > 512*1024)
 //        processors = [[NSProcessInfo processInfo] processorCount] /2;
     
@@ -1509,10 +1508,10 @@ static inline int int_ceildivpow2(int a, int b) {
         
         int processors = 0;
         
-        if( _rows*_columns > 256*1024) // 512 * 512
+        if (_rows*_columns > 256*1024) // 512 * 512
             processors = [[NSProcessInfo processInfo] processorCount]/2;
         
-        if( processors > 8)
+        if (processors > 8)
             processors = 8;
         
         void *outBuffer = kdu_compressJPEG2K( (void*) [data bytes], _samplesPerPixel, _rows, _columns, precision, false, rate, &compressedLength, processors);
@@ -2464,7 +2463,8 @@ static inline int int_ceildivpow2(int a, int b) {
 			//NSLog(@"Segmented LUT");
 			if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
 			{
-                long length, xxindex;
+                long length;
+                long xxindex;
 				
 				shortRed = (unsigned short*) malloc( 65535L * sizeof( unsigned short));
 				shortGreen = (unsigned short*) malloc( 65535L * sizeof( unsigned short));

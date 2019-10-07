@@ -125,8 +125,8 @@ static float deg2rad = M_PI/180.0;
         [self setWantsBestResolutionOpenGLSurface:YES]; // Retina https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
         
 		userAction = idle;
-		translation = NSMakePoint(0, 0);
-		offset = NSMakePoint(0, 0);
+		translation = NSZeroPoint;
+		offset = NSZeroPoint;
 		sizeFactor = 1.0;
 		zoomFactor = 1.0;
 		
@@ -813,7 +813,9 @@ static float deg2rad = M_PI/180.0;
 	translation.x = start.x - stop.x;
 	translation.y = start.y - stop.y;
 
-	translation = [self rotatePoint:translation aroundPoint:NSMakePoint(0, 0) angle:rotationAngle];
+	translation = [self rotatePoint:translation
+                        aroundPoint:NSZeroPoint
+                              angle:rotationAngle];
 
 	offset.x += translation.x*zoomFactor*sizeFactor;
 	offset.y += translation.y*zoomFactor*sizeFactor;
@@ -1326,7 +1328,7 @@ static float deg2rad = M_PI/180.0;
 	{
 		zoomFactor = 1.0;
 		rotationAngle = 0.0;
-		offset = NSMakePoint(0, 0);
+		offset = NSZeroPoint;
 	}
 	
 	[self setNeedsDisplay:YES];

@@ -84,7 +84,6 @@ static float deg2rad = M_PI / 180.0;
 @synthesize exportSeriesType;
 @synthesize exportRotationSpan;
 @synthesize exportReverseSliceOrder;
-//@synthesize exportSlabThinknessSameAsSlabThickness;
 @synthesize exportSlabThickness, exportNumberOfRotationFrames;
 @synthesize exportSliceIntervalSameAsVolumeSliceInterval;
 @synthesize exportSliceInterval, exportTransverseSliceInterval;

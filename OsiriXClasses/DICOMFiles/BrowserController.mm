@@ -332,6 +332,7 @@ static volatile BOOL waitForRunningProcess = NO;
             [comparativeTable setRowHeight: 16];
         else
             [comparativeTable setRowHeight: 29];
+
         [_activityTableView setRowHeight: 38];
         [oMatrix setCellSize: NSMakeSize( 105, 113)];
     }
@@ -345,6 +346,7 @@ static volatile BOOL waitForRunningProcess = NO;
             [comparativeTable setRowHeight: 21];
         else
             [comparativeTable setRowHeight: 43];
+
         [_activityTableView setRowHeight: 48];
         [oMatrix setCellSize: NSMakeSize( 105 * 1.3, 113 * 1.3)];
     }
@@ -492,9 +494,11 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
 @synthesize databaseOutline, albumTable, comparativePatientUID, distantStudyMessage;
-@synthesize bonjourSourcesBox, timeIntervalType, smartAlbumDistantName, selectedAlbumName;
+@synthesize bonjourSourcesBox;
+@synthesize smartAlbumDistantName, selectedAlbumName;
 @synthesize bonjourBrowser, pathToEncryptedFile, comparativeStudies, distantTimeIntervalStart, distantTimeIntervalEnd;
-@synthesize searchString = _searchString, fetchPredicate = _fetchPredicate, distantSearchType, distantSearchString;
+@synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
+@synthesize distantSearchString;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize pluginManagerController, modalityFilter;
 
@@ -1918,7 +1922,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void)showEntireDatabase
 {
-	self.timeIntervalType = 0;
+	self.timeIntervalType = TIME_INTERVAL_NONE;
 	self.modalityFilter = nil;
     
 	[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
@@ -2092,7 +2096,7 @@ static NSConditionLock *threadLock = nil;
         if (studyIndex != NSNotFound)
             rowIndex = [databaseOutline rowForItem: [outlineViewArray objectAtIndex: studyIndex]];
         
-        if (studyIndex == NSNotFound && (albumTable.selectedRow > 0 || self.searchString.length > 0 || self.timeIntervalType != 0))
+        if (studyIndex == NSNotFound && (albumTable.selectedRow > 0 || self.searchString.length > 0 || self.timeIntervalType != TIME_INTERVAL_NONE))
         {
             if ([study isKindOfClass: [DicomStudy class]]) // It's a local study: we HAVE to find it ! Select the entire DB
             {
@@ -2639,8 +2643,11 @@ static NSConditionLock *threadLock = nil;
 
 - (IBAction)setSearchType: (id)sender
 {
-	if (searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+	if (searchType == SEARCH_TYPE_PATIENT_NAME &&
+        [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+    {
 		[searchField setTextColor: [NSColor windowBackgroundColor]];
+    }
 	else
 		[searchField setTextColor: [NSColor textColor]];
 
@@ -2651,13 +2658,13 @@ static NSConditionLock *threadLock = nil;
     
 	[[[sender menu] itemWithTag: [sender tag]] setState: NSOnState];
 	[toolbarSearchItem setLabel: [NSString stringWithFormat: NSLocalizedString(@"Search by %@", nil), [sender title]]];
-	searchType = [sender tag];
+	searchType = (browserSearchTags)[sender tag];
     
-	//create new Filter Predicate when changing searchType ans set searchString to nil;
+	// Create new Filter Predicate when changing searchType and set searchString to nil
 	[self setSearchString:nil];
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
     
-    if (_searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
+    if (_searchString.length > 2 || (_searchString.length >= 2 && searchType == SEARCH_TYPE_MODALITY))
     {
         @synchronized( self)
         {
@@ -2706,40 +2713,40 @@ static NSConditionLock *threadLock = nil;
 
 - (void) computeTimeInterval
 {
-	switch( self.timeIntervalType)
+	switch (self.timeIntervalType)
 	{
-		case 0:	// None
+		case TIME_INTERVAL_NONE:
 			[timeIntervalStart release];		timeIntervalStart = nil;
 			[timeIntervalEnd release];			timeIntervalEnd = nil;
 			break;
 			
-		case 1:	// 1 hour
+		case TIME_INTERVAL_1_HOUR:
 			[timeIntervalStart release];		timeIntervalStart = [[NSDate dateWithTimeIntervalSinceNow: -60*60] retain];
 			[timeIntervalEnd release];			timeIntervalEnd = nil;
 			break;
 			
-		case 2:	// 6 hours
+		case TIME_INTERVAL_6_HOURS:
 			[timeIntervalStart release];		timeIntervalStart = [[NSDate dateWithTimeIntervalSinceNow: -60*60*6] retain];
 			[timeIntervalEnd release];			timeIntervalEnd = nil;
 			break;
 			
-		case 3:	// 12 hours
+		case TIME_INTERVAL_12_HOURS:
 			[timeIntervalStart release];		timeIntervalStart = [[NSDate dateWithTimeIntervalSinceNow: -60*60*12] retain];
 			[timeIntervalEnd release];			timeIntervalEnd = nil;
 			break;
 			
-		case 7:	// 24 hours
+		case TIME_INTERVAL_24_HOURS:
 			[timeIntervalStart release];		timeIntervalStart = [[NSDate dateWithTimeIntervalSinceNow: -60*60*24] retain];
 			[timeIntervalEnd release];			timeIntervalEnd = nil;
 			break;
 			
-		case 8:	// 48 hours
+		case TIME_INTERVAL_48_HOURS:
 			[timeIntervalStart release];		timeIntervalStart = [[NSDate dateWithTimeIntervalSinceNow: -60*60*48] retain];
 			[timeIntervalEnd release];			timeIntervalEnd = nil;
 			break;
 			
-		case 4:	{ // Today
-			
+		case TIME_INTERVAL_TODAY:
+        {
 			NSCalendarDate *now = [NSCalendarDate calendarDate];
 			NSCalendarDate *start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
 			
@@ -2748,9 +2755,8 @@ static NSConditionLock *threadLock = nil;
 		}
 			break;
 			
-		case 5:
-		{	// One week
-			
+		case TIME_INTERVAL_LAST_7_DAYS:
+		{
 			NSCalendarDate *now		= [NSCalendarDate calendarDate];
 			NSCalendarDate *oneWeek = [now dateByAddingYears:0 months:0 days:-7 hours:0 minutes:0 seconds:0];
 			
@@ -2759,8 +2765,8 @@ static NSConditionLock *threadLock = nil;
 		}
 			break;
 			
-		case 6:	{ // One month
-			
+		case TIME_INTERVAL_1_MONTH:
+        {
 			NSCalendarDate *now		= [NSCalendarDate calendarDate];
 			NSCalendarDate *oneWeek = [now dateByAddingYears:0 months:-1 days:0 hours:0 minutes:0 seconds:0];
 			
@@ -2769,7 +2775,7 @@ static NSConditionLock *threadLock = nil;
 		}
 			break;
 			
-		case 100:	// Custom
+		case TIME_INTERVAL_CUSTOM:
             [timeIntervalStart release];
             [timeIntervalEnd release];
 			timeIntervalStart = [[CustomIntervalPanel sharedCustomIntervalPanel].fromDate copy];
@@ -2797,8 +2803,10 @@ static NSConditionLock *threadLock = nil;
                                                     nil]];
         }
     }
-    else if (_searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
+    else if (_searchString.length > 2 || (_searchString.length >= 2 && searchType == SEARCH_TYPE_MODALITY))
+    {
         [self setSearchString: _searchString];
+    }
     else
     {
         @synchronized( self)
@@ -2813,10 +2821,10 @@ static NSConditionLock *threadLock = nil;
 - (void) setTimeIntervalType: (int) t
 {
     [self willChangeValueForKey: @"timeIntervalType"];
-	timeIntervalType = t;
+	_timeIntervalType = t;
     [self didChangeValueForKey: @"timeIntervalType"];
 	
-	if (t == 100)
+	if (t == TIME_INTERVAL_CUSTOM)
         [[[CustomIntervalPanel sharedCustomIntervalPanel] window] makeKeyAndOrderFront: self];
 	
     [self computeTimeInterval];
@@ -4262,7 +4270,7 @@ static NSConditionLock *threadLock = nil;
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     int selectedAlbumIndex = [[dict objectForKey: @"selectedAlbumIndex"] intValue];
-    int curSearchType = [[dict objectForKey: @"searchType"] intValue];
+    browserSearchTags curSearchType = (browserSearchTags)[[dict objectForKey: @"searchType"] intValue];
     NSString *curSearchString = [dict objectForKey: @"searchString"];
     
     [NSThread currentThread].name = NSLocalizedString( @"Search For Search Field...", nil);
@@ -4271,7 +4279,7 @@ static NSConditionLock *threadLock = nil;
     {
         NSLog( @"Search For %@: %@", [BrowserController stringForSearchType: curSearchType], curSearchString);
         
-        if ([curSearchString length] > 2 || (_searchString.length >= 2 && searchType == 5))
+        if ([curSearchString length] > 2 || (_searchString.length >= 2 && searchType == SEARCH_TYPE_MODALITY))
         {
             if (!searchForComparativeStudiesLock)
                 searchForComparativeStudiesLock = [NSRecursiveLock new];
@@ -8031,13 +8039,15 @@ static NSConditionLock *threadLock = nil;
                             [v setImageIndex: index];
                             
                             if ([[[v imageView] curDCM] SUVConverted])
-                                [v setWL: wl*[v factorPET2SUV] WW: ww*[v factorPET2SUV]];
+                                [[v imageView] setWLWW: wl*[v factorPET2SUV]
+                                                      : ww*[v factorPET2SUV]];
                             else
-                                [v setWL: wl WW: ww];
+                                [[v imageView] setWLWW: wl
+                                                      : ww];
                             
-                            [v setScaleValue: scale];
-                            [v setRotation: rotation];
-                            [v setOrigin: NSMakePoint( x, y)];
+                            [[v imageView] setScaleValue: scale];
+                            [[v imageView] setRotation: rotation];
+                            [[v imageView] setOrigin: NSMakePoint( x, y)];
                             
                             if ([[dict valueForKey: @"SyncButtonBehaviorIsBetweenStudies"] boolValue])
                             {
@@ -12136,7 +12146,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
                 
                 // Clear the time interval
                 if ([[[CustomIntervalPanel sharedCustomIntervalPanel] window] isVisible] == NO)
-                    [self setTimeIntervalType: 0];
+                    [self setTimeIntervalType: TIME_INTERVAL_NONE];
                 
                 [self setModalityFilter: nil];
             }
@@ -13692,7 +13702,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 					for (ViewerController *v in viewers)
 					{
 						[[v imageView] scaleToFit];
-						[[v imageView] setOriginX:0 Y:0];
+						[[v imageView] setOrigin:NSZeroPoint];
 						
 						if ([[v window] isKeyWindow])
                             kV = v;
@@ -14240,8 +14250,8 @@ static NSArray*	openSubSeriesArray = nil;
 		previousNoOfFiles = 0;
 		previousItem = nil;
 		
-		searchType = 7;
-		self.timeIntervalType = 0;
+		searchType = SEARCH_TYPE_ALL_FIELDS;
+		_timeIntervalType = TIME_INTERVAL_NONE;
 		
 		outlineViewArray = [[NSArray array] retain];
 		browserWindow = self;
@@ -14292,11 +14302,20 @@ static NSArray*	openSubSeriesArray = nil;
         [NSTimer scheduledTimerWithTimeInterval: 1 target:self selector:@selector(refreshComparativeStudiesIfNeeded:) userInfo:self repeats:YES];
         
 		loadPreviewIndex = 0;
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:OsirixReportModeChangedNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alternateButtonPressed:) name:OsirixAlternateButtonPressedNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(updateReportToolbarIcon:)
+                                                     name:OsirixReportModeChangedNotification
+                                                   object:nil];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(alternateButtonPressed:)
+                                                     name:OsirixAlternateButtonPressedNotification
+                                                   object:nil];
 	}
-	return self;
+
+    return self;
 }
+
 - (void) setDBDate
 {
 	[TimeFormat release];
@@ -14572,7 +14591,7 @@ static NSArray*	openSubSeriesArray = nil;
         
     //    NSLog( @"%@", [[NSFontManager sharedFontManager] availableFonts]);
         
-        NSRect r = NSMakeRect(0, 0, 0, 0);
+        NSRect r = NSZeroRect;
         
         r = NSRectFromString( [[NSUserDefaults standardUserDefaults] stringForKey: @"DBWindowFrame"]);
         //NSLog(@"%s %d DBWindowFrame:%@", __FUNCTION__, __LINE__, NSStringFromRect(r));
@@ -19168,7 +19187,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSIndexSet *index = [databaseOutline selectedRowIndexes];
 	NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
-	int reportsMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue];
+	ReportType reportsMode = (ReportType)[[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue];
 	
     if ([item isKindOfClass:[DicomSeries class]])
         item = [item valueForKey:@"study"];
@@ -19211,9 +19230,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				if (plugin)
 				{
 //					[checkBonjourUpToDateThreadLock lock];
-					
-                    
-                    
+
 					@try 
 					{
 						NSLog(@"generate report with plugin");
@@ -19245,9 +19262,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			else
 			// *********************************************
-			// REPORTS GENERATED AND HANDLED BY OSIRIX
+			// REPORTS GENERATED AND HANDLED BY Miele-LXIV
 			// *********************************************
-			{
+            {
 //				[checkBonjourUpToDateThreadLock lock];
 				
 				@try
@@ -19325,7 +19342,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						
 						if (reportsMode != REPORT_TYPE_PLUGIN)
 						{
-							Reports	*report = [[Reports alloc] init];
+							Reports	*report = [Reports new];
 							if ([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])
                                 [report setTemplateName:[[sender selectedItem] title]];
 							
@@ -19365,8 +19382,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 	}
 	
-	[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixReportModeChangedNotification object: nil userInfo: nil];
+	[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixReportModeChangedNotification
+                                                        object: nil
+                                                      userInfo: nil];
 }
 #endif
 
@@ -19399,7 +19419,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			reportToolbarItemType = 3;
             break;
 	}
-	return [NSImage imageNamed:iconName];
+
+    return [NSImage imageNamed:iconName];
 }
 
 - (void)updateReportToolbarIcon: (NSNotification *)note
@@ -19429,12 +19450,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-
 - (void)setToolbarReportIconForItem: (NSToolbarItem *)item
 {
 	@try
 	{
-		#ifndef OSIRIX_LIGHT
+#ifndef OSIRIX_LIGHT
 		NSMutableArray* templatesArray = nil;
         switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
             case REPORT_TYPE_PAGES:
@@ -19481,6 +19501,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					icon = [[NSWorkspace sharedWorkspace] iconForFileType:@"download"]; // Safari document
 				else if ([[NSFileManager defaultManager] fileExistsAtPath:studySelected.reportURL])
 					icon = [[NSWorkspace sharedWorkspace] iconForFile:studySelected.reportURL];
+
                 if (icon)
                     reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate]; // To force the update
 			}
@@ -19490,9 +19511,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 			[item setImage:icon];
 		}
-		#else
+#else
 		[item setImage:[NSImage imageNamed:@"Report.icns"]];
-		#endif
+#endif
 	}
 	@catch (NSException * e)
 	{
@@ -19503,7 +19524,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)reportToolbarItemWillPopUp: (NSNotification *)notif
 {
-	#ifndef OSIRIX_LIGHT
+#ifndef OSIRIX_LIGHT
 	if ([[notif object] isEqualTo:reportTemplatesListPopUpButton])
 	{
 		[reportTemplatesListPopUpButton removeAllItems];
@@ -19520,7 +19541,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
         [reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
 	}
-	#endif
+#endif
 }
 
 #pragma mark - Toolbar functions
@@ -20799,7 +20820,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)setSearchString: (NSString *)searchString
 {
-    if (searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+    if (searchType == SEARCH_TYPE_PATIENT_NAME && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
         [searchField setTextColor: [NSColor textBackgroundColor]];
     else
         [searchField setTextColor: [NSColor textColor]];
@@ -20817,7 +20838,7 @@ static volatile int numberOfThreadsForJPEG = 0;
     [self outlineViewRefresh];
     [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
     
-    if (_searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
+    if (_searchString.length > 2 || (_searchString.length >= 2 && searchType == SEARCH_TYPE_MODALITY))
     {
         @synchronized( self)
         {
@@ -20893,59 +20914,58 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if ([_searchString length] > 0)
 	{
-		switch(searchType) 
+		switch (searchType)
 		{
-		case 7:			// All fields 
+		case SEARCH_TYPE_ALL_FIELDS:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: All fields = %@", nil), _searchString];
 			break;
 			
-		case 0:			// Patient Name
+		case SEARCH_TYPE_PATIENT_NAME:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Patient's name = %@", nil), _searchString];
 			break;
 			
-		case 1:			// Patient ID
+		case SEARCH_TYPE_PATIENT_ID:
 			description = [[NSString alloc] initWithFormat:@" / Search: Patient's ID = %@", _searchString];
 			break;
 			
-		case 2:			// Study/Series ID
+		case SEARCH_TYPE_STUDY_SERIES_ID:
 			description = [[NSString alloc] initWithFormat:@" / Search: Study's ID = %@", _searchString];
 			break;
 			
-		case 3:			// Comments
+		case SEARCH_TYPE_COMMENT:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Comments = %@", nil), _searchString];
 			break;
 			
-		case 4:			// Study Description
+		case SEARCH_TYPE_STUDY_DESCRIPTION:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Study Description = %@", nil), _searchString];
 			break;
 			
-		case 5:			// Modality
+		case SEARCH_TYPE_MODALITY:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Modality = %@", nil), _searchString];
 			break;
 			
-		case 6:			// Accession Number 
+		case SEARCH_TYPE_ACCESSION_NUMBER:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Accession Number = %@", nil), _searchString];
 			break;
 		
-		case 8:			// Comments
+		case SEARCH_TYPE_COMMENT2:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Comments 2 = %@", nil), _searchString];
 			break;
 			
-		case 9:			// Comments
+		case SEARCH_TYPE_COMMENT3:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Comments 3 = %@", nil), _searchString];
 			break;
 			
-		case 10:			// Comments
+		case SEARCH_TYPE_COMMENT4:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Comments 4 = %@", nil), _searchString];
 			break;
 			
-		case 100:		
-			// Advanced
+		case SEARCH_TYPE_ADVANCED:
 			break;
 		}
-		
 	}
-	return [description autorelease];
+
+    return [description autorelease];
 }
 
 - (NSPredicate*) patientsnamePredicate: (NSString*) s
@@ -21015,60 +21035,61 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		switch (searchType)
 		{
-			case 7:			// All Fields
+			case SEARCH_TYPE_ALL_FIELDS:
 				s = _searchString;
 				
 				if ([s length] >= 3)
 					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@) OR (performingPhysician CONTAINS[cd] %@) OR (referringPhysician CONTAINS[cd] %@) OR (institutionName CONTAINS[cd] %@)", s, s, s, s, s, s, s, s, s, s, s, s, s];
                 else if ([s length] >= 1)
                     predicate = [self patientsnamePredicate: _searchString];
-			break;
+                break;
 			
-			case 0:			// Patient Name
+			case SEARCH_TYPE_PATIENT_NAME:
                 predicate = [self patientsnamePredicate: _searchString];
-			break;
+                break;
 			
-			case 1:			// Patient ID
+			case SEARCH_TYPE_PATIENT_ID:
 				predicate = [NSPredicate predicateWithFormat: @"patientID CONTAINS[cd] %@", _searchString];
-			break;
+                break;
 			
-			case 2:			// Study/Series ID
+			case SEARCH_TYPE_STUDY_SERIES_ID:
 				predicate = [NSPredicate predicateWithFormat: @"id CONTAINS[cd] %@", _searchString];
-			break;
+                break;
 			
-			case 3:			// Comments
+			case SEARCH_TYPE_COMMENT:
 				predicate = [NSPredicate predicateWithFormat: @"comment CONTAINS[cd] %@", _searchString];
-			break;
-			
-			case 4:			// Study Description
+                break;
+                
+            case SEARCH_TYPE_COMMENT2:
+                predicate = [NSPredicate predicateWithFormat: @"comment2 CONTAINS[cd] %@", _searchString];
+                break;
+            
+            case SEARCH_TYPE_COMMENT3:
+                predicate = [NSPredicate predicateWithFormat: @"comment3 CONTAINS[cd] %@", _searchString];
+                break;
+            
+            case SEARCH_TYPE_COMMENT4:
+                predicate = [NSPredicate predicateWithFormat: @"comment4 CONTAINS[cd] %@", _searchString];
+                break;
+
+			case SEARCH_TYPE_STUDY_DESCRIPTION:
 				predicate = [NSPredicate predicateWithFormat: @"studyName CONTAINS[cd] %@", _searchString];
-			break;
+                break;
 			
-			case 5:			// Modality
+			case SEARCH_TYPE_MODALITY:
 				predicate = [NSPredicate predicateWithFormat: @"modality CONTAINS[cd] %@", _searchString];
-			break;
+                break;
 			
-			case 6:			// Accession Number 
+			case SEARCH_TYPE_ACCESSION_NUMBER:
 				predicate = [NSPredicate predicateWithFormat: @"accessionNumber CONTAINS[cd] %@", _searchString];
-			break;
+                break;
 			
-			case 8:			// Comments
-				predicate = [NSPredicate predicateWithFormat: @"comment2 CONTAINS[cd] %@", _searchString];
-			break;
-			
-			case 9:			// Comments
-				predicate = [NSPredicate predicateWithFormat: @"comment3 CONTAINS[cd] %@", _searchString];
-			break;
-			
-			case 10:			// Comments
-				predicate = [NSPredicate predicateWithFormat: @"comment4 CONTAINS[cd] %@", _searchString];
-			break;
-			
-			case 100:		// Advanced
-			break;
+			case SEARCH_TYPE_ADVANCED:
+                break;
 		}
 	}
-	return predicate;
+
+    return predicate;
 }
 
 - (NSArray *) databaseSelection

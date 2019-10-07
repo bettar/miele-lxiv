@@ -100,7 +100,7 @@ PURPOSE.
 {
 	@try {
 	
-	NSSize dragOffset = NSMakeSize(0.0, 0.0);
+	NSSize dragOffset = NSZeroSize;
     
 	NSPoint event_location = [event locationInWindow];
 	NSPoint local_point = [self convertPoint:event_location fromView:nil];
@@ -302,7 +302,7 @@ PURPOSE.
 		[pboard setPropertyList:[NSArray arrayWithObject:jpgPath] forType:NSFilenamesPboardType];
 		[self dragImage:thumbnail
 					 at:local_point
-				 offset:NSMakeSize(0.0, 0.0)
+				 offset:NSZeroSize
 				  event:event
 			 pasteboard:pboard
 				 source:self

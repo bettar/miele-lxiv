@@ -112,7 +112,7 @@
 	if ([view isKindOfClass:[NSTextView class]])
 		return NSMakeRect(-3,0, -6,0);
 	// TO DO: others, specially buttons
-	return NSMakeRect(0, 0, 0, 0);
+	return NSZeroRect;
 }
 
 -(void)recalculate:(N2View*)view {

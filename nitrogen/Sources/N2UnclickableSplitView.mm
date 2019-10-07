@@ -22,8 +22,6 @@
 
 @implementation N2UnclickableSplitView
 
-//@synthesize otherSplitView = _otherSplitView;
-
 - (void)mouseDown:(NSEvent *)theEvent {
 }
 

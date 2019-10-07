@@ -155,11 +155,11 @@
 
 - (void) reslice: (long) x :(long) y :(OrthogonalMPRView*) sender
 {
-	float originalScaleValue, xScaleValue, yScaleValue, originalRotation, xRotation, yRotation, blendingFactor;
+	float originalScaleValue, xScaleValue, yScaleValue, blendingFactor;
 
-	originalRotation = 0;
-	xRotation = 0;
-	yRotation = 0;
+	float originalRotation = 0;
+	float xRotation = 0;
+	float yRotation = 0;
 	
 	NSPoint originalOrigin, xOrigin, yOrigin;
 	
@@ -199,7 +199,7 @@
 		blendingFactor = [yReslicedView blendingFactor];
 	}
 	
-	if(!isBlending)
+	if (!isBlending)
 	{
 		[super reslice: x: y: sender];
 	}
@@ -234,28 +234,24 @@
 		[yReslicedView setCrossPositionY:[[[viewer CTController] yReslicedView] crossPositionY]];
 	}
 
-	if(xOldValues)
+	if (xOldValues)
 	{
-		// scale
 		[xReslicedView setScaleValue:xScaleValue];
-		// rotation
 		[xReslicedView setRotation:xRotation];
-		// origin
 		[xReslicedView setOrigin:xOrigin];
+
 		// horizontally flipped
 		[xReslicedView setXFlipped:xFlippedX];
 		// vertically flipped
 		[xReslicedView setYFlipped:xFlippedY];
 	}
 
-	if(yOldValues)
+	if (yOldValues)
 	{
-		// scale
 		[yReslicedView setScaleValue:yScaleValue];
-		// rotation
 		[yReslicedView setRotation:yRotation];
-		// origin
 		[yReslicedView setOrigin:yOrigin];
+
 		// horizontally flipped
 		[yReslicedView setXFlipped:yFlippedX];
 		// vertically flipped
@@ -263,15 +259,13 @@
 
 	}
 	
-	if(originalOldValues) 
+	if (originalOldValues)
 	{
-		// scale
 		[originalView setScaleValue:originalScaleValue];
-		// rotation
 		[originalView setRotation:originalRotation];
-		// origin
 		[originalView setOrigin:originalOrigin];
-		// horizontally flipped
+
+        // horizontally flipped
 		[originalView setXFlipped:originalFlippedX];
 		// vertically flipped
 		[originalView setYFlipped:originalFlippedY];

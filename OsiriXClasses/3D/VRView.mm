@@ -212,7 +212,6 @@ public:
 
 #ifdef _STEREO_VISION_
 @synthesize StereoVisionOn;
-//@synthesize currentTool;
 #endif
 
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
@@ -9262,7 +9261,7 @@ public:
 	_dragInProgress = YES;
 	
 	NSEvent *event = (NSEvent *)[theTimer userInfo];
-	NSSize dragOffset = NSMakeSize(0.0, 0.0);
+	NSSize dragOffset = NSZeroSize;
     NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
 	NSMutableArray *pbTypes = [NSMutableArray array];
 	// The image we will drag 

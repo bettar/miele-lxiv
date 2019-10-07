@@ -97,7 +97,7 @@ static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #endif
 
 static int inc = 0;
-static int debugLevel = 0;
+//static int debugLevel = 0;
 //static int wadoUnique = 0;	//wadoUniqueThreadID = 0;
 
 typedef struct {

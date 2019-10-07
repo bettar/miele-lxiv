@@ -63,11 +63,11 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 			switch( [[theRecord objectForKey:@"test"] intValue])
 			{
 				case -1:
-					[aCell setTextColor: [NSColor orangeColor]];
+					[aCell setTextColor: [NSColor systemOrangeColor]];
                     break;
 				
 				case -2:
-					[aCell setTextColor: [NSColor redColor]];
+					[aCell setTextColor: [NSColor systemRedColor]];
                     break;
 				
 				case 0:

@@ -62,7 +62,8 @@
 	NSArray *point = [[object attributeWithName:@"AnchorPoint"] values];
 	if ([point count] == 2)
 		return NSMakePoint([[point objectAtIndex:0] floatValue],[[point objectAtIndex:1] floatValue]);
-	return NSMakePoint(0.0, 0.0);
+
+    return NSZeroPoint;
 }
 
 - (BOOL)anchorPointVisibiltyForGraphicsObject:(DCMObject *)object{
@@ -74,18 +75,21 @@
 }
 
 //BoundingBox
-- (NSPoint)boundingBoxTopLeftHandCornerForObject:(DCMObject *)object{
+- (NSPoint)boundingBoxTopLeftHandCornerForObject:(DCMObject *)object
+{
 	NSArray *point = [[object attributeWithName:@"BoundingBoxTopLeftHandCorner"] values];
 	if ([point count] == 2)
 		return NSMakePoint([[point objectAtIndex:0] floatValue],[[point objectAtIndex:1] floatValue]);
-	return NSMakePoint(0.0, 0.0);
+
+    return NSZeroPoint;
 }
 
 - (NSPoint)boundingBoxBottomRightHandCornerForObject:(DCMObject *)object{
 	NSArray *point = [[object attributeWithName:@"BoundingBoxBottomRightHandCorner"] values];
 	if ([point count] == 2)
 		return NSMakePoint([[point objectAtIndex:0] floatValue],[[point objectAtIndex:1] floatValue]);
-	return NSMakePoint(0.0, 0.0);
+
+    return NSZeroPoint;
 }
 
 - (NSString *)boundingBoxTextHorizontalJustificationForObject:(DCMObject *)object{

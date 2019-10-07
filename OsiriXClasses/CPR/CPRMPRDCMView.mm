@@ -243,7 +243,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 - (void) checkForFrame
 {
 	NSRect frame = [self convertRectToBacking: [self frame]];
-	NSPoint o = [self convertPoint: NSMakePoint(0, 0) toView:0L];
+	NSPoint o = [self convertPoint: NSZeroPoint toView:0L];
 	frame.origin = o;
 	
 	if (NSEqualRects( frame, [vrView frame]) == NO)

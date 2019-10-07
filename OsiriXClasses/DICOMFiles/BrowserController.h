@@ -23,7 +23,35 @@
 #include "dcmtk/dcmnet/dcompat.h"    /* compatibility routines */
 #import <Accelerate/Accelerate.h>
 
-////////////////////////////////////////////////////////////////////////////////
+// They need to match tags in MainMenu.xib TimeInterval
+enum browserTimeIntervalTags {
+    TIME_INTERVAL_NONE = 0,
+    TIME_INTERVAL_1_HOUR = 1,
+    TIME_INTERVAL_6_HOURS = 2,
+    TIME_INTERVAL_12_HOURS = 3,
+    TIME_INTERVAL_TODAY = 4,
+    TIME_INTERVAL_LAST_7_DAYS = 5,  // 1 week
+    TIME_INTERVAL_1_MONTH = 6,
+    TIME_INTERVAL_24_HOURS = 7,
+    TIME_INTERVAL_48_HOURS = 8,
+    TIME_INTERVAL_CUSTOM = 100
+};
+
+// They need to match tags in XIB
+enum browserSearchTags {
+    SEARCH_TYPE_PATIENT_NAME = 0,
+    SEARCH_TYPE_PATIENT_ID = 1,
+    SEARCH_TYPE_STUDY_SERIES_ID = 2,
+    SEARCH_TYPE_COMMENT = 3,
+    SEARCH_TYPE_STUDY_DESCRIPTION = 4,
+    SEARCH_TYPE_MODALITY = 5,
+    SEARCH_TYPE_ACCESSION_NUMBER = 6,
+    SEARCH_TYPE_ALL_FIELDS = 7,
+    SEARCH_TYPE_COMMENT2 = 8,
+    SEARCH_TYPE_COMMENT3 = 9,
+    SEARCH_TYPE_COMMENT4 = 10,
+    SEARCH_TYPE_ADVANCED = 100
+};
 
 @class DicomDatabase;
 
@@ -46,6 +74,7 @@ extern NSString * const O2Album_DragType;
 extern NSString * const DatabaseXID_DragType;
 extern NSString * const SeriesViewer_DragType;
 
+#pragma mark -
 
 @interface NSString (BrowserController)
 -(NSMutableString*)filenameString;
@@ -154,7 +183,7 @@ extern NSString * const SeriesViewer_DragType;
 	IBOutlet NSMatrix				*rebuildType;
 	IBOutlet NSTextField			*estimatedTime, *noOfFilesToRebuild, *warning;
 	
-    int								timeIntervalType;
+//    int								timeIntervalType;
     NSDate							*timeIntervalStart, *timeIntervalEnd;
     IBOutlet NSView					*timeIntervalView;
 
@@ -166,7 +195,7 @@ extern NSString * const SeriesViewer_DragType;
 	IBOutlet NSSearchField			*searchField;
     IBOutlet NSButton               *searchInEntireDBResult;
 	NSToolbarItem					*toolbarSearchItem;
-	int								searchType;
+	browserSearchTags				searchType;
 	
 	IBOutlet NSMenu					*imageTileMenu;
 	IBOutlet NSWindow				*urlWindow, *CDpasswordWindow, *ZIPpasswordWindow;
@@ -272,7 +301,7 @@ extern NSString * const SeriesViewer_DragType;
     
     NSDate *distantTimeIntervalStart, *distantTimeIntervalEnd;
     NSString *distantSearchString;
-    int distantSearchType;
+//    browserSearchTags distantSearchType;
     int distantEntireDBResultCount, localEntireDBResultCount;
     
     BOOL autoretrievingPACSOnDemandSmartAlbum;
@@ -305,7 +334,7 @@ extern NSString * const SeriesViewer_DragType;
 @property (nonatomic) NSTimeInterval databaseLastModification __deprecated;
 @property(readonly) NSMutableDictionary *databaseIndexDictionary;
 @property(readonly) PluginManagerController *pluginManagerController;
-@property int distantSearchType;
+@property browserSearchTags distantSearchType;
 
 +(void)initializeBrowserControllerClass;
 + (unsigned int)_currentModifierFlags;

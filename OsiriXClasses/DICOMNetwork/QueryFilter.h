@@ -20,32 +20,54 @@
 
 #import <Foundation/Foundation.h>
 
-enum searchTypes {searchContains = 0, searchStartsWith, searchEndsWith, searchExactMatch};
-enum dateSearchTypes {searchToday = 4, searchYesterday, searchBefore, searchAfter, searchWithin, searchExactDate};
-enum dateWithinSearch {searchWithinToday = 10, searchWithinLast2Days, searchWithinLastWeek, searchWithinLast2Weeks, searchWithinLastMonth,searchWithinLast2Months, searchWithinLast3Months, searchWithinLastYear};
+// See also querySearchTags in QueryController
+enum querySearchTypes {
+    searchContains = 0,
+    searchStartsWith = 1,
+    searchEndsWith = 2,
+    searchExactMatch = 3,
+    
+    // dateSearchTypes
+    searchToday = 4,
+    searchYesterday = 5,
+    searchBefore = 6,
+    searchAfter = 7,
+    searchWithin = 8,
+    searchExactDate = 9,
+    
+    // dateWithinSearch
+    searchWithinToday = 10,
+    searchWithinLast2Days,
+    searchWithinLastWeek,
+    searchWithinLast2Weeks,
+    searchWithinLastMonth,
+    searchWithinLast2Months,
+    searchWithinLast3Months,
+    searchWithinLastYear
+    };
+
 enum modalities {osiCR = 0,osiCT,osiDX,osiES,osiMG,osiMR,osiNM,osiOT,osiPT,osiRF,osiSC,osiUS,osiXA};
 enum studyState {empty = 0, unread, reviewed, dictated, validated, printed, distributed, archived};
-
 
 /** \brief Query Filter */
 @interface QueryFilter : NSObject {
 	id _key;
 	id _object;
-	int _searchType;
-
+	querySearchTypes _searchType;
 }
+
 + (id)queryFilter;
-+ (id)queryFilterWithObject:(id)object ofSearchType:(int)searchType forKey:(id)key;
-- (id) initWithObject:(id)object ofSearchType:(int)searchType forKey:(id)key;
++ (id)queryFilterWithObject:(id)object ofSearchType:(querySearchTypes)searchType forKey:(id)key;
+- (id)initWithObject:(id)object ofSearchType:(querySearchTypes)searchType forKey:(id)key;
 
 - (id) key;
 - (id) object;
-- (int) searchType;
+- (querySearchTypes) searchType;
 - (NSString *)filteredValue;
 
 - (void)setKey:(id)key;
 - (void)setObject:(id)object;
-- (void)setSearchType:(int)searchType;
+- (void)setSearchType:(querySearchTypes)searchType;
 
 - (NSString *)withinDateString;
 

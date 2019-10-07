@@ -211,13 +211,15 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
     return fVolumePtr;
 }
 
-+ (float*) reorient2Dimage: (double*) theParameters firstObject: (DCMPix*) firstObject firstObjectOriginal: (DCMPix*) firstObjectOriginal length: (long*) length
++ (float*) reorient2Dimage: (double*) theParameters
+               firstObject: (DCMPix*) firstObject
+       firstObjectOriginal: (DCMPix*) firstObjectOriginal
+                    length: (long*) length
 {
 	float *p = nil;
 	int size = [firstObjectOriginal pwidth] * [firstObjectOriginal pheight];
 	
 	float *tempPtr = (float*) malloc( size * 2 * sizeof( float));
-	
 	if (tempPtr)
 	{
 		memcpy( tempPtr, [firstObjectOriginal fImage], size * sizeof( float));
@@ -239,12 +241,17 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	return p;
 }
 
-- (ViewerController*) computeAffineTransformWithParameters: (double*)theParameters resampleOnViewer:(ViewerController*)referenceViewer
+- (ViewerController*) computeAffineTransformWithParameters: (double*)theParameters
+                                          resampleOnViewer: (ViewerController*)referenceViewer
 {
-    return [self computeAffineTransformWithParameters: theParameters resampleOnViewer: referenceViewer rescale: [[NSUserDefaults standardUserDefaults] boolForKey: @"RescaleDuring3DResampling"]];
+    return [self computeAffineTransformWithParameters: theParameters
+                                     resampleOnViewer: referenceViewer
+                                              rescale: [[NSUserDefaults standardUserDefaults] boolForKey: @"RescaleDuring3DResampling"]];
 }
 
-- (ViewerController*) computeAffineTransformWithParameters: (double*)theParameters resampleOnViewer:(ViewerController*)referenceViewer rescale: (BOOL) rescale
+- (ViewerController*) computeAffineTransformWithParameters: (double*)theParameters
+                                          resampleOnViewer: (ViewerController*)referenceViewer
+                                                   rescale: (BOOL) rescale
 {
 	DCMPix *firstObject = [[referenceViewer pixList] objectAtIndex: 0];
 	DCMPix *firstObjectOriginal = [[originalViewer pixList] objectAtIndex: 0];
@@ -259,20 +266,25 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
                                                     itkImage: (ITK*) itkImage
                                                      rescale: rescale];
 
-    ViewerController *v = [self createNewViewerWithBuffer:resultBuff length: length resampleOnViewer:referenceViewer rescale: rescale];
+    ViewerController *v = [self createNewViewerWithBuffer: resultBuff
+                                                   length: length
+                                         resampleOnViewer: referenceViewer
+                                                  rescale: rescale];
     
     return v;
 }
 
-- (ViewerController*) createNewViewerWithBuffer:(float*)fVolumePtr length: (long) length resampleOnViewer:(ViewerController*)referenceViewer
+- (ViewerController*) createNewViewerWithBuffer: (float*)fVolumePtr
+                                         length: (long) length
+                               resampleOnViewer: (ViewerController*)referenceViewer
 {
     return [self createNewViewerWithBuffer: fVolumePtr length: length resampleOnViewer: referenceViewer rescale: YES];
 }
 
-- (ViewerController*) createNewViewerWithBuffer:(float*) fVolumePtr
-                                         length:(long) length
-                               resampleOnViewer:(ViewerController*)referenceViewer
-                                        rescale:(BOOL) rescale
+- (ViewerController*) createNewViewerWithBuffer: (float*) fVolumePtr
+                                         length: (long) length
+                               resampleOnViewer: (ViewerController*)referenceViewer
+                                        rescale: (BOOL) rescale
 {
 	long				i;
 	ViewerController	*new2DViewer = nil;

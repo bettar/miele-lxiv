@@ -28,6 +28,8 @@
 #import "DicomDatabase.h"
 #import "N2Debug.h"
 
+static NSString *templatePrefix = @"OsiriX ";
+
 // if you want check point log info, define CHECK to the next line, uncommented:
 #define CHECK NSLog(@"Applescript result code = %d", ok);
 
@@ -180,11 +182,11 @@
     return nil;
 }
 
-- (BOOL) createNewReport:(NSManagedObject*) study destination:(NSString*) path type:(int) type
+- (BOOL) createNewReport:(NSManagedObject*) study destination:(NSString*) path type:(ReportType) type
 {
 	NSString *uniqueFilename = [Reports getUniqueFilename: study];
 	
-	switch( type)
+	switch (type)
 	{
 		case REPORT_TYPE_MS_WORD:
 		{
@@ -301,12 +303,12 @@
             break;
 		
 		case REPORT_TYPE_PAGES:
-		{
+            {
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"pages"];
 			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
 			
 			[self createNewPagesReportForStudy:study toDestinationPath:destinationFile];
-		}
+            }
             break;
 		
 		case REPORT_TYPE_LIBRE_OFFICE:
@@ -357,7 +359,8 @@
         NSLog(@"Error: AppleScript execution failed: %@", errs);
 }
 
-+(id)_runAppleScript:(NSString*)source withArguments:(NSArray*)args
++(id)_runAppleScript:(NSString*)source
+       withArguments:(NSArray*)args
 {
     NSDictionary* errs = nil;
     
@@ -675,8 +678,10 @@
 //	NSLog(@"%@", source);
     
     @try {
-        [[self class] _runAppleScript:source withArguments:[NSArray arrayWithObjects: sourceData, destinationFile, templatePath, nil]];
-    } @catch( NSException* e) {
+        [[self class] _runAppleScript:source
+                        withArguments:[NSArray arrayWithObjects: sourceData, destinationFile, templatePath, nil]];
+    }
+    @catch( NSException* e) {
         NSLog( @"Exception: %@", e.reason);
         return NO;
     }
@@ -717,7 +722,7 @@
     NSLog(@"OO Report creation. unzip -d succeeded.");
 #endif
 
-    // read the xml file and find & replace templated string with patient's datas
+    // Read the XML file, then find and replace templated string with patient's data
 	NSString *indexFilePath = [NSString stringWithFormat:@"%@/OOOsiriX/content.xml", [aPath stringByDeletingLastPathComponent]];
 	NSError *xmlError = nil;
 	NSStringEncoding xmlFileEncoding = NSUTF8StringEncoding;
@@ -725,7 +730,7 @@
 	
 	[self searchAndReplaceFieldsFromStudy:aStudy inString:xmlContentString];
 	
-	if(![xmlContentString writeToFile:indexFilePath atomically:YES encoding:xmlFileEncoding error:&xmlError])
+	if (![xmlContentString writeToFile:indexFilePath atomically:YES encoding:xmlFileEncoding error:&xmlError])
 		return NO;
 	
 	// zip back the index.xml file
@@ -754,14 +759,13 @@
 	[aStudy setValue:aPath forKey:@"reportURL"];
 	
 	// open the modified .odt file
-	if( [[NSWorkspace sharedWorkspace] openFile:aPath withApplication: @"LibreOffice" andDeactivate: YES] == NO)
+	if ([[NSWorkspace sharedWorkspace] openFile:aPath withApplication: @"LibreOffice" andDeactivate: YES] == NO)
     {
-        if( [[NSWorkspace sharedWorkspace] openFile:aPath withApplication: @"OpenOffice" andDeactivate: YES] == NO)
+        if ([[NSWorkspace sharedWorkspace] openFile:aPath withApplication: @"OpenOffice" andDeactivate: YES] == NO)
             [[NSWorkspace sharedWorkspace] openFile:aPath withApplication: nil andDeactivate: YES];
 	}
     [NSThread sleepForTimeInterval: 1];
-	
-	// end
+
 	return YES;
 }
 
@@ -769,11 +773,11 @@
 
 static BOOL Pages5orHigher = FALSE;
 
-+(NSString*)databasePagesTemplatesDirPath {
-    
++(NSString*)databasePagesTemplatesDirPath
+{
     NSString *path = BrowserController.currentBrowser.database.baseDirPath;
     
-    if( path == nil)
+    if (path == nil)
         path = DicomDatabase.defaultBaseDirPath;
     
     return [path stringByAppendingPathComponent:@"PAGES TEMPLATES"];
@@ -813,9 +817,10 @@ static BOOL Pages5orHigher = FALSE;
     
     // Pages 09 (4.0) or 2013 (5.0) ??
     NSString *appPath = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iWork.Pages"];
-    if( appPath.length)
+    if (appPath.length > 0)
     {
         // Example: 0700 for version 5.6.2
+        // Example: 1110 for version 8.2
         NSString *version = [[[NSBundle bundleWithPath: appPath] infoDictionary] objectForKey:@"DTXcode"];
         if (version.integerValue >= 500)
             Pages5orHigher = YES;
@@ -827,19 +832,24 @@ static BOOL Pages5orHigher = FALSE;
 - (void) decompressPagesFileIfNecessary: (NSString*) aPath
 {
 #ifndef NDEBUG
-    NSLog(@"%s:%d path:%@", __FUNCTION__, __LINE__, aPath);
+    NSLog(@"%s:%d path:\n\t%@", __FUNCTION__, __LINE__, aPath);
 #endif
 
     BOOL isDirectory = NO;
-    if( [[NSFileManager defaultManager] fileExistsAtPath: aPath isDirectory: &isDirectory] && isDirectory == NO)
+    if ([[NSFileManager defaultManager] fileExistsAtPath: aPath isDirectory: &isDirectory] && isDirectory == NO)
     {
 #define UNZIPPEDNAME @"unzipped"
         
-        // decompress .pages file
+        // Decompress .pages file because they actually are zip files (starting with "PK")
         NSTask *unzip = [[[NSTask alloc] init] autorelease];
         [unzip setLaunchPath:@"/usr/bin/unzip"];
         [unzip setCurrentDirectoryPath:aPath.stringByDeletingLastPathComponent];
-        [unzip setArguments:[NSArray arrayWithObjects: @"-qq", @"-o", @"-d", UNZIPPEDNAME, aPath, nil]];
+        [unzip setArguments:[NSArray arrayWithObjects:
+                             @"-qq",    // quiet
+                             @"-o",     // overwrite existing files without prompting
+                             @"-d", UNZIPPEDNAME, // An optional directory to which to extract files
+                             aPath,
+                             nil]];
         [unzip launch];
         
         while( [unzip isRunning])
@@ -871,7 +881,7 @@ static BOOL Pages5orHigher = FALSE;
     NSString* templatePath = [[self class] pathForPagesTemplate: templateName];
 
 #ifndef NDEBUG
-    NSLog(@"%s:%d templatePath:%@", __FUNCTION__, __LINE__, templatePath);
+    //NSLog(@"%s:%d copy templatePath:\n\t%@ to\n\t%@", __FUNCTION__, __LINE__, templatePath, aPath);
 #endif
     if (templatePath) {
         [[NSFileManager defaultManager] copyItemAtPath: templatePath
@@ -896,35 +906,70 @@ static BOOL Pages5orHigher = FALSE;
                                 nil);
         return NO;
 	}
-    
-#ifndef NDEBUG
-    NSLog(@"%s:%d aPath:%@", __FUNCTION__, __LINE__, aPath);
-#endif
+
     [self decompressPagesFileIfNecessary: aPath];
     
-	// read the xml file and find & replace templated string with patient's datas
-	NSString *indexFilePath = [aPath stringByAppendingPathComponent:@"index.xml"];
-    if( [[NSFileManager defaultManager] fileExistsAtPath:indexFilePath] == NO)
-    {
-#if 1
-        NSString* path = [[NSBundle mainBundle] pathForResource:@"pages2pages09" ofType:@"applescript"];
-#ifndef NDEBUG
-        NSLog(@"%s:%d path:%@", __FUNCTION__, __LINE__, path);
-#endif
-        [[self class] _runAppleScript: [NSString stringWithContentsOfFile: path encoding:NSUTF8StringEncoding error:nil] withArguments:[NSArray arrayWithObjects: templatePath, [templatePath stringByAppendingString: @"09.pages"], nil]];
-        NSLog( @"-- Try to convert to Pages 09: %@", templateName);
-#endif
+	// Read the xml file, then find and replace templated string with patient's data
+    NSString *indexFilePath = [aPath stringByAppendingPathComponent:@"index.xml"];
 
+#ifndef MACAPPSTORE
+    if ([[NSFileManager defaultManager] fileExistsAtPath:indexFilePath] == NO)
+    {
+        // Old pages format don't have index.xml try to convert it with AppleScript
+        // Problem: "Not authorized to send Apple events to Pages."
+
+        // TODO: why is that the .applescript (text) files in the project become .scpt (binary) files in the bundle ?
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"pages2pages09" ofType:@"scpt"];
+  #ifndef NDEBUG
+        //NSLog(@"%s:%d, conversion script exists:%@, at path:\n\t%@", __FUNCTION__, __LINE__, [[NSFileManager defaultManager] fileExistsAtPath:path] ? @"Y" : @"N", path);
+  #endif
+        if (path.length > 0) {
+            //NSLog(@"Try to convert template <%@> to Pages 09 format", templateName);
+            @try
+            {
+                NSDictionary* errs = nil;
+                NSArray *args = [NSArray arrayWithObjects:
+                                 templatePath,  // input file
+                                 [templatePath stringByAppendingString: @"09.pages"], // output file
+                                 nil];
+#if 0  // .applescript (text)
+                NSError *error = nil;
+                NSString *source = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+                if (error)
+                    NSLog(@"%s:%d %@", __FUNCTION__, __LINE__, error.localizedDescription);
+
+                NSAppleScript* script = [[[NSAppleScript alloc] initWithSource:source] autorelease];
+#else // .scpt (binary)
+                NSAppleScript* script = [[NSAppleScript alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path] error:&errs];
+                if (errs)
+                    NSLog(@"%s:%d %@", __FUNCTION__, __LINE__, errs);
+#endif
+                id r = [script runWithArguments:args error:&errs];  // N2 category
+                //NSLog(@"%s:%d %@", __FUNCTION__, __LINE__, r);
+                if (errs)
+                    NSLog(@"%s:%d %@", __FUNCTION__, __LINE__, errs); // Not authorized to send Apple events to Pages
+            }
+            @catch (NSException *e)
+            {
+                NSLog(@"Error running AppleScript: %@", e);
+            }
+        }
+
+        // Retry with a template ending in "09.pages"
         if( [[NSFileManager defaultManager] fileExistsAtPath: [templatePath stringByAppendingString: @"09.pages"]])
         {
             [[NSFileManager defaultManager] removeItemAtPath: templatePath error: nil];
             [[NSFileManager defaultManager] moveItemAtPath: [templatePath stringByAppendingString: @"09.pages"] toPath:templatePath error: nil];
             [[NSFileManager defaultManager] removeItemAtPath: aPath error: nil];
-            [[NSFileManager defaultManager] copyItemAtPath: templatePath toPath:aPath byReplacingExisting:YES error: nil];
+            [[NSFileManager defaultManager] copyItemAtPath: templatePath
+                                                    toPath: aPath
+                                       byReplacingExisting: YES
+                                                     error: nil];
             
             [self decompressPagesFileIfNecessary: aPath];
         }
-        
+#endif // MACAPPSTORE
+
         if( [[NSFileManager defaultManager] fileExistsAtPath:indexFilePath] == NO)
         {
             NSRunCriticalAlertPanel(NSLocalizedString( @"Pages", nil),
@@ -963,7 +1008,7 @@ static BOOL Pages5orHigher = FALSE;
         templateName = [[Reports pagesTemplatesList] objectAtIndex: 0];
     }
     
-    if( [Reports Pages5orHigher])
+    if ([Reports Pages5orHigher])
     {
         NSString *templateDirectory = [self databasePagesTemplatesDirPath];
         NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
@@ -982,11 +1027,18 @@ static BOOL Pages5orHigher = FALSE;
     else
     {
         NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-        NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", bundleName, nil];
+        NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:
+                                               NSHomeDirectory(),
+                                               @"Library",
+                                               @"Application Support",
+                                               @"iWork",
+                                               @"Pages",
+                                               @"Templates",
+                                               bundleName,
+                                               nil];
         NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
         NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
         
-//        NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
         id file;
         while (file = [directoryEnumerator nextObject])
         {
@@ -1003,17 +1055,27 @@ static BOOL Pages5orHigher = FALSE;
 
 + (void) copyPages4templatesToPages5: (NSString*) newDirectory
 {
-    NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
+    NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+    //NSString *appSupportDir = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
+    NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:
+                                           NSHomeDirectory(),
+                                           @"Library",
+                                           @"Application Support",// TODO: use appSupportDir
+                                           @"iWork",
+                                           @"Pages",
+                                           @"Templates",
+                                           bundleName,
+                                           nil];
     NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
     NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
-    
-//    NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
+
     id file;
     while ((file = [directoryEnumerator nextObject]))
     {
         [directoryEnumerator skipDescendents];
-        NSRange rangeOfOsiriX = [file rangeOfString:@"OsiriX "];
-        if( rangeOfOsiriX.location==0 && rangeOfOsiriX.length==7)
+        NSRange rangeOfOsiriX = [file rangeOfString:templatePrefix];
+        if (rangeOfOsiriX.location == 0 &&
+            rangeOfOsiriX.length == templatePrefix.length)
         {
             NSString *fromPath = [templateDirectory stringByAppendingPathComponent: file];
             NSString *toPath = [newDirectory stringByAppendingPathComponent: file];
@@ -1027,50 +1089,58 @@ static BOOL Pages5orHigher = FALSE;
 
 + (NSMutableArray*)pagesTemplatesList;
 {
-    if( [Reports Pages5orHigher])
+    NSMutableArray *templatesArray = [NSMutableArray array];
+
+    if ([Reports Pages5orHigher])
     {
         NSString *templateDirectory = [self databasePagesTemplatesDirPath];
         
         static BOOL firstTime = YES;
-        if( firstTime)
+        if (firstTime)
         {
             firstTime = NO;
             [Reports copyPages4templatesToPages5: templateDirectory];
         }
         
         NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
-        NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
         NSString *file;
         while ((file = [directoryEnumerator nextObject]))
         {
             [directoryEnumerator skipDescendents];
-            if( [file.pathExtension isEqualToString: @"pages"])
+            if ([file.pathExtension isEqualToString: @"pages"])
                 [templatesArray addObject: file];
         }
-        
-        return templatesArray;
     }
-    else
-    {
-        NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
+    else {    // System is running Pages 4 or older
+        NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+        //NSString *appSupportDir = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
+        NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:
+                                               NSHomeDirectory(),
+                                               @"Library",
+                                               @"Application Support", // TODO: use appSupportDir
+                                               @"iWork",
+                                               @"Pages",
+                                               @"Templates",
+                                               bundleName,
+                                               nil];
         NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
         NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
         
-        NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
         id file;
         while ((file = [directoryEnumerator nextObject]))
         {
             [directoryEnumerator skipDescendents];
-            NSRange rangeOfOsiriX = [file rangeOfString:@"OsiriX "];
-            if(rangeOfOsiriX.location==0 && rangeOfOsiriX.length==7)
+            NSRange rangeOfOsiriX = [file rangeOfString:templatePrefix];
+            if (rangeOfOsiriX.location == 0 &&
+                rangeOfOsiriX.length == templatePrefix.length)
             {
                 // this is a template for us (we should maybe verify that it is a valid Pages template... but what ever...)
-                [templatesArray addObject:[file substringFromIndex:7]];
+                [templatesArray addObject:[file substringFromIndex:templatePrefix.length]];
             }
         }
-        
-        return templatesArray;
     }
+
+    return templatesArray;
 }
 
 - (NSMutableString *)templateName;

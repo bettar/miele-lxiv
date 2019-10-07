@@ -247,16 +247,16 @@
     {
         NSString *path = nil;
         if ([Reports Pages5orHigher])
-            path = [[NSBundle mainBundle] pathForResource:@"pages2pdf" ofType:@"applescript"];
+            path = [[NSBundle mainBundle] pathForResource:@"pages2pdf" ofType:@"applescript"];      // TODO: .scpt
         else
-            path = [[NSBundle mainBundle] pathForResource:@"pages092pdf" ofType:@"applescript"];
+            path = [[NSBundle mainBundle] pathForResource:@"pages092pdf" ofType:@"applescript"];    // TODO: .scpt
         
         [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
     }
     else if ([reportPath.pathExtension.lowercaseString isEqualToString:@"doc"] ||
              [reportPath.pathExtension.lowercaseString isEqualToString:@"docx"])
     {
-        NSString* path = [[NSBundle mainBundle] pathForResource:@"word2pdf" ofType:@"applescript"];
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"word2pdf" ofType:@"applescript"]; // TODO: .scpt
         [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
     }
     else

@@ -127,7 +127,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 		
 		printing = [[NSLock alloc] init];
         
-        windowFrameToRestore = NSMakeRect(0, 0, 0, 0);
+        windowFrameToRestore = NSZeroRect;
         scaleFitToRestore = m_CurrentViewer.imageView.isScaledFit;
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])

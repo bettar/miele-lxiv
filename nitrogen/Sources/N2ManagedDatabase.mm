@@ -638,12 +638,14 @@ static int gTotalN2ManagedObjectContext = 0;
     [self.managedObjectContext lock];
     @try {
         return [self.managedObjectContext executeFetchRequest:req error:error];
-    } @catch (NSException* e) {
+    }
+    @catch (NSException* e) {
         if (error && !*error)
             *error = [NSError errorWithDomain:N2ErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObject:e.reason forKey:NSLocalizedDescriptionKey]];
         else
             N2LogException(e);
-    } @finally {
+    }
+    @finally {
         [self.managedObjectContext unlock];
     }
     

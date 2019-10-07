@@ -180,7 +180,8 @@ unsigned int minimumStep;
 - (void) checkForFrame
 {
 	NSRect frame = [self convertRectToBacking: [self frame]];
-	NSPoint o = [self convertPoint: NSMakePoint(0, 0) toView:0L];
+	NSPoint o = [self convertPoint: NSZeroPoint
+                            toView: 0L];
 	frame.origin = o;
 	
 	if (NSEqualRects( frame, [vrView frame]) == NO)
@@ -330,9 +331,7 @@ unsigned int minimumStep;
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
     if ([item action] == @selector(scaleToFit:))
-    {
         return NO;
-    }
     
     return YES;
 }
@@ -351,10 +350,10 @@ unsigned int minimumStep;
 		return;
 	
 	long h, w;
-	float previousWW, previousWL;
 	BOOL isRGB;
 	BOOL previousOriginInPlane = NO;
 	
+    float previousWW, previousWL;
 	[self getWLWW: &previousWL :&previousWW];
 	
 	Camera *currentCamera = [vrView cameraWithThumbnail: NO];
@@ -535,7 +534,7 @@ unsigned int minimumStep;
 				
 				NSPoint rotationCenter = NSMakePoint( [pix pwidth]/2., [pix pheight]/2.);
 				
-				for( ROI* r in curRoiList)
+				for (ROI* r in curRoiList)
 				{
 					if (rotationPlane)
 					{

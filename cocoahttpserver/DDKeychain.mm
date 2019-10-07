@@ -676,8 +676,8 @@ SecPolicySearchCreate:
     NSMutableArray * found = [NSMutableArray array];
     
     for (CFIndex i = 0; i < CFArrayGetCount((CFArrayRef)arrayRef); i++) {
-        NSDictionary * attr = (__bridge NSDictionary *)(CFArrayGetValueAtIndex((CFArrayRef)arrayRef, i));
-        NSString * label = (NSString *)[attr objectForKey:(id)kSecAttrLabel];
+        NSDictionary *attr = (__bridge NSDictionary *)(CFArrayGetValueAtIndex((CFArrayRef)arrayRef, i));
+        NSString *label = (NSString *)[attr objectForKey:(id)kSecAttrLabel];
         
         NSDictionary *valRef;
         NSDictionary *keyUsage;

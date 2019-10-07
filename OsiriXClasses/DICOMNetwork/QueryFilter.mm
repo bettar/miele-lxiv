@@ -25,15 +25,15 @@
 
 + (id)queryFilter
 {
-	return [[[QueryFilter alloc] initWithObject:nil ofSearchType:0 forKey:nil] autorelease];
+	return [[[QueryFilter alloc] initWithObject:nil ofSearchType:searchContains forKey:nil] autorelease];
 }
 
-+ (id)queryFilterWithObject:(id)object ofSearchType:(int)searchType forKey:(id)key
++ (id)queryFilterWithObject:(id)object ofSearchType:(querySearchTypes)searchType forKey:(id)key
 {
 	return [[[QueryFilter alloc] initWithObject:object ofSearchType:searchType forKey:key] autorelease];
 }
 
-- (id) initWithObject:(id)object ofSearchType:(int)searchType  forKey:(id)key
+- (id) initWithObject:(id)object ofSearchType:(querySearchTypes)searchType  forKey:(id)key
 {
 	//NSLog(@"object: %@", [object description]);
 	if (self = [super init])
@@ -53,22 +53,22 @@
 	[super dealloc];
 }
 
-////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 
 - (id) key{
 	return _key;
 }
+
 - (id) object{
 	return _object;
 }
-- (int) searchType{
+
+- (querySearchTypes) searchType
+{
 	return _searchType;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
-
 
 - (void)setKey:(id)key
 {
@@ -87,48 +87,47 @@
 	_object = [object retain];
 }
 	
-- (void)setSearchType:(int)searchType{
+- (void)setSearchType:(querySearchTypes)searchType
+{
 	_searchType = searchType;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
-
 
 - (NSString *)filteredValue
 {
 	switch (_searchType)
 	{
-        case 0:
+        case searchContains:
             return [NSString stringWithFormat:@"*%@*", _object];
-        break;	//contains
+            break;	//contains
             
-        case 1:
+        case searchStartsWith:
             return [NSString stringWithFormat:@"%@*", _object];
-        break;  //searchStartsWith
+            break;
             
-        case 2:
+        case searchEndsWith:
             return [NSString stringWithFormat:@"*%@", _object];
-        break;  //searchEndsWith
+            break;
             
-        case 3: //searchExactMatch
+        case searchExactMatch:
             if ([_object isKindOfClass:[NSDate class]]) //need to convert dates to strings
                 return [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil];	
             else
                 return _object;
-        break;
+            break;
         
         case searchToday:
             return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil];  //today
-        break;
+            break;
         
         case searchYesterday:
             return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil];  //Yesterday
-        break;
+            break;
         
         case searchBefore:
             return [NSString stringWithFormat:@"-%@", [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]]; //before
-        break;
+            break;
         
         case searchAfter:
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DICOMQueryAllowFutureQuery"])
@@ -139,15 +138,15 @@
             {
                 return [NSString stringWithFormat:@"%@-%@", [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil], [[DCMCalendarDate date] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]]; //after
             }
-        break;
+            break;
         
         case searchWithin:
-            return [self withinDateString]; //within
-        break;
+            return [self withinDateString];
+            break;
         
         case searchExactDate: 
             return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil];
-        break;
+            break;
 	}
 	
 	return nil;
@@ -164,26 +163,40 @@
 	switch ([_object intValue])
     {
         default:
-        case searchWithinToday: return today; //today
-		break;
-        case searchWithinLast2Days: startDate = [endDate dateByAddingYears:0 months:0 days:-1 hours:0 minutes:0 seconds:0 ];
-		  //last 2 days
-		break;
-        case searchWithinLastWeek: startDate = [endDate dateByAddingYears:0 months:0 days:-7 hours:0 minutes:0 seconds:0 ];
-		break;
-        case searchWithinLast2Weeks: startDate = [endDate dateByAddingYears:0 months:0 days:-14 hours:0 minutes:0 seconds:0 ];
-		break;
-        case searchWithinLastMonth: startDate = [endDate dateByAddingYears:0 months:-1 days:0 hours:0 minutes:0 seconds:0 ];
-		break;
-        case searchWithinLast2Months: startDate = [endDate dateByAddingYears:0 months:-2 days:0 hours:0 minutes:0 seconds:0 ];
-		break;
-        case searchWithinLast3Months: startDate = [endDate dateByAddingYears:0 months:-3 days:0 hours:0 minutes:0 seconds:0 ];
-		break;
-        case searchWithinLastYear: startDate = [endDate dateByAddingYears:-1 months:0 days:0 hours:0 minutes:0 seconds:0 ];
-		break;
+        case searchWithinToday:
+            return today;
+            break;
+
+        case searchWithinLast2Days:
+            startDate = [endDate dateByAddingYears:0 months:0 days:-1 hours:0 minutes:0 seconds:0];
+            break;
+
+        case searchWithinLastWeek:
+            startDate = [endDate dateByAddingYears:0 months:0 days:-7 hours:0 minutes:0 seconds:0];
+            break;
+
+        case searchWithinLast2Weeks:
+            startDate = [endDate dateByAddingYears:0 months:0 days:-14 hours:0 minutes:0 seconds:0];
+            break;
+
+        case searchWithinLastMonth:
+            startDate = [endDate dateByAddingYears:0 months:-1 days:0 hours:0 minutes:0 seconds:0];
+            break;
+
+        case searchWithinLast2Months:
+            startDate = [endDate dateByAddingYears:0 months:-2 days:0 hours:0 minutes:0 seconds:0];
+            break;
+
+        case searchWithinLast3Months:
+            startDate = [endDate dateByAddingYears:0 months:-3 days:0 hours:0 minutes:0 seconds:0];
+            break;
+
+        case searchWithinLastYear:
+            startDate = [endDate dateByAddingYears:-1 months:0 days:0 hours:0 minutes:0 seconds:0];
+            break;
 	}
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DICOMQueryAllowFutureQuery"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"DICOMQueryAllowFutureQuery"])
     {
         dateRange = [NSString stringWithFormat:@"%@-", [[DCMCalendarDate dicomDateWithDate:startDate] dateString]];
     }
@@ -191,8 +204,8 @@
     {
         dateRange = [NSString stringWithFormat:@"%@-%@", [[DCMCalendarDate dicomDateWithDate:startDate] dateString], [[DCMCalendarDate date] dateString]];
     }
-	return dateRange;
+
+    return dateRange;
 }
 	
-
 @end

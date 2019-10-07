@@ -576,7 +576,7 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
     NSInteger stampCount = N3VectorDistance(fromMaskVector, toMaskVector) + 1;
     OSIROIMask *mask = [OSIROIMask ROIMask];
 
-    const CGFloat sphereSize = 2;
+    //const CGFloat sphereSize = 2;
     for (NSInteger i = 0; i < stampCount; i++) {
         N3Vector brushPosition = N3VectorRound(N3VectorLerp(fromMaskVector, toMaskVector, (CGFloat)i/(CGFloat)stampCount));
         OSIROIMask *brushMask = [sphereMask ROIMaskByTranslatingByX:brushPosition.x - (width-1)/2 Y:brushPosition.y - (height-1)/2 Z:brushPosition.z - (depth-1)/2];

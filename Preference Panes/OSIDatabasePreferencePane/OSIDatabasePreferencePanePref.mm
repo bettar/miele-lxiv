@@ -310,9 +310,9 @@
 	
 	int indexOfPluginsLabel = [reportsMode indexOfItemWithTitle:@"Plugins"];
 	int indexOfPluginLabel = [reportsMode indexOfItemWithTitle:@"Plugin"];
-	int indexOfLabel = (indexOfPluginsLabel>indexOfPluginLabel)?indexOfPluginsLabel:indexOfPluginLabel;
+	int indexOfLabel = (indexOfPluginsLabel>indexOfPluginLabel) ? indexOfPluginsLabel : indexOfPluginLabel;
 	
-	indexOfLabel = (indexOfLabel<=0)? 10000 : indexOfLabel ;
+	indexOfLabel = (indexOfLabel<=0) ? 10000 : indexOfLabel;
 	
 	if ([reportsMode indexOfSelectedItem] >= indexOfLabel) // in this case it is a plugin
 	{

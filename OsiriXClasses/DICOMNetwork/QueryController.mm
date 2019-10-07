@@ -4290,7 +4290,11 @@ extern "C"
 	}
 }
 
-+ (void) getDateAndTimeQueryFilterWithTag: (int) tag fromDate:(NSDate*) from toDate:(NSDate*) to date: (QueryFilter**) dateQueryFilter time: (QueryFilter**) timeQueryFilter
++ (void) getDateAndTimeQueryFilterWithTag: (int) tag
+                                 fromDate: (NSDate*) from
+                                   toDate: (NSDate*) to
+                                     date: (QueryFilter**) dateQueryFilter
+                                     time: (QueryFilter**) timeQueryFilter
 {
     *dateQueryFilter = nil;
 	*timeQueryFilter = nil;
@@ -4314,7 +4318,7 @@ extern "C"
 	{
 		DCMCalendarDate *date = nil;
 		
-		int searchType = searchAfter;
+		querySearchTypes searchType = searchAfter;
 		NSString *between = nil;
 		
 		switch( tag)

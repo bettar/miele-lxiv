@@ -730,7 +730,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
         _minItemWidth = 120;
         _highlightedCellRow = NSNotFound;
         self.cellClass = [N2PopUpMatrixCell class];
-        self.intercellSpacing = NSMakeSize(0,0);
+        self.intercellSpacing = NSZeroSize;
         [self setDrawsBackground:NO];
     }
     

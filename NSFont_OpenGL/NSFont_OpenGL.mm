@@ -83,12 +83,12 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 		fontOpenGLInitialized = YES;
 	}
 	
-	switch( fontType)
+	switch (fontType)
 	{
 		case 0:
 			if (imageArray)
 			{
-				for(int i = 0; i < MAXCOUNT; i++)
+				for (int i = 0; i < MAXCOUNT; i++)
 				{
 					if( charPtrArray[ i]) free( charPtrArray[ i]);
 					charPtrArray[ i] = 0L;
@@ -111,9 +111,9 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 				[imageArrayScale2 release];
 				imageArrayScale2 = nil;
 			}
-		break;
+            break;
 		
-		case 1:
+		case 1:  // unused ?
 			if (imageArrayPreview)
 			{
 				for (int i = 0; i < MAXCOUNT; i++)
@@ -141,7 +141,7 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 				[imageArrayPreviewScale2 release];
 				imageArrayPreviewScale2 = nil;
 			}
-		break;
+            break;
 		
 		case 2:
 			if ( imageArrayROI)
@@ -170,7 +170,7 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 				[imageArrayROIScale2 release];
 				imageArrayROIScale2 = nil;
 			}
-		break;
+            break;
 	}
 }
 

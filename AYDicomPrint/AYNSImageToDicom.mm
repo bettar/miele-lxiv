@@ -220,7 +220,7 @@ extern BOOL FULL32BITPIPELINE;
     NSMutableArray *dicomFilePathList = [NSMutableArray array];
 	int currentImageIndex = [[currentViewer imageView] curImage];
 	
-	/////// ****************
+	///
 	
 	float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
 	float scaleFactor = 1.0;
@@ -236,37 +236,38 @@ extern BOOL FULL32BITPIPELINE;
 	int rows = [[options valueForKey: @"rows"] intValue];
 	
 	float inc = (1 + ((columns - 1) * 0.35));
-	if( inc > 2.0) inc = 2.0;
+	if (inc > 2.0)
+        inc = 2.0;
 	
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
 	
 	NSPoint o = [[[currentViewer window] screen] visibleFrame].origin;
 	o.y += [[[currentViewer window] screen] visibleFrame].size.height;
 	
-	/////// ****************
+	///
 	
 	[OSIWindowController setDontEnterMagneticFunctions: YES];
 	[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
 	
 	int previousRows = [[currentViewer seriesView] imageRows], previousColumns = [[currentViewer seriesView] imageColumns];
 	
-	if( previousRows != 1 || previousColumns != 1)
+	if (previousRows != 1 || previousColumns != 1)
 		[currentViewer setImageRows: 1 columns: 1];
 	
 	BOOL copyFULL32BITPIPELINE = FULL32BITPIPELINE;
 	
     FULL32BITPIPELINE = NO;
     
-	for(NSNumber *imageIndex in fileList)
+	for (NSNumber *imageIndex in fileList)
 	{
-		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		
 		[currentViewer setImageIndex: [imageIndex intValue]];
 		
 		BOOL windowSizeChanged = NO;
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"] && [currentViewer scaleValue] < 1.0)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"] && [[currentViewer imageView] scaleValue] < 1.0)
 		{
-			scaleFactor = 1. / [currentViewer scaleValue];
+			scaleFactor = 1. / [[currentViewer imageView] scaleValue];
 			
 			int MAXWindowSize = [[NSUserDefaults standardUserDefaults] integerForKey: @"MAXWindowSize"];
 			
@@ -313,7 +314,7 @@ extern BOOL FULL32BITPIPELINE;
 	
 	FULL32BITPIPELINE = copyFULL32BITPIPELINE;
 	
-	/////// ****************
+	///
 	
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"allowSmartCropping"];
 	

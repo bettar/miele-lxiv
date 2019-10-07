@@ -55,7 +55,7 @@
 {
 	@try
     {
-        NSSize dragOffset = NSMakeSize(0.0, 0.0);
+        NSSize dragOffset = NSZeroSize;
         
         NSPoint event_location = [event locationInWindow];
         NSPoint local_point = [self convertPoint:event_location fromView:nil];
@@ -63,7 +63,7 @@
         local_point.x -= 35;
         local_point.y += 35;
         
-        if( [self selectedCell])
+        if ([self selectedCell])
         {
             NSImage	*firstCell = [[self selectedCell] image];
             
@@ -135,7 +135,7 @@
             screen = s;
     }
     
-    NSRect usefulRect = NSMakeRect(0, 0, 0, 0);
+    NSRect usefulRect = NSZeroRect;
     
     if (screen)
         usefulRect = [AppController usefullRectForScreen: screen];
@@ -147,7 +147,8 @@
     {
         ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[[self selectedCell] representedObject] object] :nil :YES keyImagesOnly: NO];
         [newViewer setHighLighted: 1.0];
-        if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
             [NSApp sendAction: @selector(tileWindows:) to:nil from: self];
         else
             [[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];

@@ -100,7 +100,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	
 	viewer = v;
 	resultsViewer = nil;
-	startingPoint = NSMakePoint(0, 0);
+	startingPoint = NSZeroPoint;
 	
 	algorithms = [NSArray arrayWithObjects:	NSLocalizedString( @"Threshold (interval)", nil),
 											NSLocalizedString( @"Threshold (lower/upper bounds)", nil),

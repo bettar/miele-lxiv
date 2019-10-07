@@ -446,7 +446,7 @@
 - (void) subDrawRect:(NSRect)aRect
 {	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if( cgl_ctx == nil)
+    if (cgl_ctx == nil)
         return;
     
 	if (displayResliceAxes)
@@ -863,9 +863,9 @@
 			}
 
 			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint
-                                                            :[[controller originalView] pixelSpacingX]
+                                                           : [[controller originalView] pixelSpacingX]
                                                            : [[controller originalView] pixelSpacingY]
-                                                           : NSMakePoint( [[controller originalView] origin].x, [[controller originalView] origin].y)] autorelease];
+                                                           : NSMakePoint([[controller originalView] origin].x, [[controller originalView] origin].y)] autorelease];
 
 			// remove the parent ROI on original view. (will be replaced by the new one)
 			for(int i=0; i<[[[controller originalView] dcmRoiList] count]; i++)

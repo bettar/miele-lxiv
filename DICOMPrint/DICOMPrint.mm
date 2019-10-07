@@ -14,7 +14,6 @@
 
 #include "AYDcmPrintSCU.h"
 
-////////////////////////////////////////////////////////////////////////////////
 //    argv[ 1] : logPath
 //    argv[ 2] : baseName
 //    argv[ 3] : jsonPath
@@ -45,7 +44,7 @@ int main(int argc, const char *argv[])
                                                              options:NSJSONReadingMutableContainers
                                                                error:&error];
 
-    ////////////////////////////////////////////////////////////////////////////
+    ///
     NSString *host = [jsonDict valueForKeyPath:@"association.host"];
     NSString *portString = [jsonDict valueForKeyPath:@"association.port"];
     NSString *aeTitle = [jsonDict valueForKeyPath:@"association.aetitle_receiver"];

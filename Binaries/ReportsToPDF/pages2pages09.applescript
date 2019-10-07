@@ -1,4 +1,5 @@
 on run argv
+    log "hello from AS"
 	set inFilePathUnix to (item 1 of argv)
 	set outFilePathUnix to (item 2 of argv)
 	set inFilePath to POSIX file inFilePathUnix
@@ -27,7 +28,7 @@ on run argv
 		
 		open inFilePath
 		
-		export front document to outFilePath as Classic
+		export front document to outFilePath as Pages 09
 		
 		if not fileWasOpen then
 			close document 1
