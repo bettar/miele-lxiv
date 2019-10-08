@@ -705,11 +705,11 @@ static NSDate *lastWarningDate = nil;
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, recentStudiesMenu, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
 @synthesize bonjourPublisher = _bonjourPublisher;
 
-+(BOOL) hasMacOSX_AfterMojave
++(BOOL) hasMacOSX_AfterCatalina
 {
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
     if ((version.majorVersion > 10) ||
-        (version.majorVersion == 10 && version.minorVersion > 14))
+        (version.majorVersion == 10 && version.minorVersion > 15))  // MAC_OS_X_VERSION_10_15
     {
         return YES;
     }
@@ -4339,7 +4339,7 @@ static BOOL initialized = NO;
         }
     }
     
-    if ([AppController hasMacOSX_AfterMojave])
+    if ([AppController hasMacOSX_AfterCatalina])
     {
 #ifdef WITH_OS_VALIDATION
         NSAlert *alert = [[NSAlert new] autorelease];

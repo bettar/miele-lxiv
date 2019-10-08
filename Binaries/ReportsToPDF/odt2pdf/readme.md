@@ -2,11 +2,12 @@ We did this on mac OS X 10.14
 
 1. You need **LibreOffice SDK** to build this tool. Download it at <http://www.libreoffice.org/download>
 
-	[LibreOffice 6.1.2 MacOS x86-64 sdk](https://donate.libreoffice.org/home/dl/SDK/6.1.2/4773/LibreOffice_6.1.2_MacOS_x86-64_sdk.dmg)
+	- [LibreOffice 6.3.2 MacOS x86-64 sdk](https://donate.libreoffice.org/home/dl/SDK/6.3.2/3970/LibreOffice_6.3.2_MacOS_x86-64_sdk.dmg)
+
 - Copy the LibreOffice SDK dir to somewhere safe, for example `~/Downloads/LibreOffice6.1_SDK`
 - Change to that directory.
 
-		$ cd ~/Downloads/LibreOffice6.1_SDK
+		$ cd ~/Downloads/LibreOffice6.3_SDK
 - Enter the LibreOffice SDK environment by using the setsdkenv_unix script.
 
 		$ sh setsdkenv_unix
@@ -26,7 +27,7 @@ We did this on mac OS X 10.14
 * sed = /usr/bin
 * C++ Compiler = /usr/bin
 * Java = /usr
-* SDK Output directory = ~/Documents/LibreOffice6.1_SDK
+* SDK Output directory = ~/Documents/LibreOffice6.3_SDK
 * Auto deployment = YES
 * 
 ************************************************************************
@@ -35,7 +36,7 @@ We did this on mac OS X 10.14
 FYI, this results in an environment with added settings:
 
 <pre>
-CLASSPATH=/Applications/LibreOffice.app/Contents/Resources/java/juh.jar:/Applications/LibreOffice.app/Contents/Resources/java/jurt.jar:/Applications/LibreOffice.app/Contents/Resources/java/ridl.jar:/Applications/LibreOffice.app/Contents/Resources/java/unoloader.jar:/Applications/LibreOffice.app/Contents/Resources/java/unoil.jar:OFFICE_HOME=/Applications/LibreOffice.appOFFICE_PROGRAM_PATH=/Applications/LibreOffice.app/Contents/MacOSOO_SDK_CAT_HOME=/binOO_SDK_CPP_HOME=/usr/binOO_SDK_HOME=/Users/lxiv/Downloads/LibreOffice6.1_SDKOO_SDK_JAVA_HOME=/usrOO_SDK_MAKE_HOME=/usr/binOO_SDK_NAME=LibreOffice6.1_SDKOO_SDK_OUT=/Users/lxiv/Documents/LibreOffice6.1_SDK/LibreOffice6.1_SDKOO_SDK_SED_HOME=/usr/binOO_SDK_URE_BIN_DIR=/Applications/LibreOffice.app/Contents/MacOSOO_SDK_URE_JAVA_DIR=/Applications/LibreOffice.app/Contents/Resources/javaOO_SDK_URE_LIB_DIR=/Applications/LibreOffice.app/Contents/FrameworksOO_SDK_ZIP_HOME=/usr/binPATH=/usr/bin:/usr/bin:/bin:/usr/bin:/usr/bin:/usr/bin:~/Downloads/LibreOffice6.1_SDK/bin:~/Documents/LibreOffice6.1_SDK/LibreOffice6.1_SDK/MACOSXexample.out/bin:/Applications/LibreOffice.app/Contents/MacOS:/Applications/LibreOffice.app/Contents/MacOSSDK_AUTO_DEPLOYMENT=YES
+CLASSPATH=/Applications/LibreOffice.app/Contents/Resources/java/juh.jar:/Applications/LibreOffice.app/Contents/Resources/java/jurt.jar:/Applications/LibreOffice.app/Contents/Resources/java/ridl.jar:/Applications/LibreOffice.app/Contents/Resources/java/unoloader.jar:/Applications/LibreOffice.app/Contents/Resources/java/unoil.jar:OFFICE_HOME=/Applications/LibreOffice.appOFFICE_PROGRAM_PATH=/Applications/LibreOffice.app/Contents/MacOSOO_SDK_CAT_HOME=/binOO_SDK_CPP_HOME=/usr/binOO_SDK_HOME=/Users/lxiv/Downloads/LibreOffice6.1_SDKOO_SDK_JAVA_HOME=/usrOO_SDK_MAKE_HOME=/usr/binOO_SDK_NAME=LibreOffice6.3_SDKOO_SDK_SED_HOME=/usr/binOO_SDK_URE_BIN_DIR=/Applications/LibreOffice.app/Contents/MacOSOO_SDK_URE_JAVA_DIR=/Applications/LibreOffice.app/Contents/Resources/javaOO_SDK_URE_LIB_DIR=/Applications/LibreOffice.app/Contents/FrameworksOO_SDK_ZIP_HOME=/usr/binPATH=/usr/bin:/usr/bin:/bin:/usr/bin:/usr/bin:/usr/bin:~/Downloads/LibreOffice6.3_SDK/bin:~/Documents/LibreOffice6.3_SDK/LibreOffice6.3_SDK/MACOSXexample.out/bin:/Applications/LibreOffice.app/Contents/MacOS:/Applications/LibreOffice.app/Contents/MacOSSDK_AUTO_DEPLOYMENT=YES
 UNO_PATH=/Applications/LibreOffice.app/Contents/MacOS</pre>
 
 ---
@@ -46,6 +47,7 @@ UNO_PATH=/Applications/LibreOffice.app/Contents/MacOS</pre>
 	(Don't just do this)
 
 		$ cd path/to/odt2pdf
+		$ touch odt2pdf.cxx
 		$ make
 
 	- On macOS 10.14 it gives an error: `dyld: Library not loaded: @__VIA_LIBRARY_PATH__/libunoidllo.dylib`
@@ -59,7 +61,7 @@ UNO_PATH=/Applications/LibreOffice.app/Contents/MacOS</pre>
 
 	(Do this every time)
 
-			$ SHELL=~/fakebin/bash ~/Downloads/LibreOffice6.1_SDK/setsdkenv_unix
+			$ SHELL=~/fakebin/bash ~/Downloads/LibreOffice6.3_SDK/setsdkenv_unix
 			$ cd path/to/odt2pdf
 			$ ~/fakebin/make SHELL="$SHELL"
 

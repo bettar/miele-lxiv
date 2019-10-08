@@ -1,5 +1,4 @@
 on run argv
-    log "hello from AS"
 	set inFilePathUnix to (item 1 of argv)
 	set outFilePathUnix to (item 2 of argv)
 	set inFilePath to POSIX file inFilePathUnix

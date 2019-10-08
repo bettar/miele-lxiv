@@ -34,7 +34,7 @@ typedef NS_ENUM(NSUInteger, ReportType) {
 /** \brief reports */
 @interface Reports : NSObject
 {
-	NSMutableString *templateName;
+	//NSMutableString *_templateName;
 }
 
 + (NSString*) getUniqueFilename:(id) study;
@@ -50,7 +50,7 @@ typedef NS_ENUM(NSUInteger, ReportType) {
 - (BOOL) createNewOpenDocumentReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
 + (NSMutableArray*)pagesTemplatesList;
 + (NSMutableArray*)wordTemplatesList;
-- (NSMutableString *)templateName;
+//- (NSMutableString *)templateName;
 - (void)setTemplateName:(NSString *)aName;
 + (BOOL) Pages5orHigher;
 + (void)checkForPagesTemplate;

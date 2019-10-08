@@ -207,7 +207,7 @@ static DicomDatabase* defaultDatabase = nil;
                     [w showWindow:self];
                 }
                 
-                [[NSFileManager defaultManager] removeItemAtPath: databaseDir  error: nil];
+                [[NSFileManager defaultManager] removeItemAtPath: databaseDir error: nil];
                 [[NSFileManager defaultManager] createDirectoryAtPath: databaseDir
                                           withIntermediateDirectories: NO
                                                            attributes: nil
@@ -479,18 +479,23 @@ static DicomDatabase* activeLocalDatabase = nil;
                                                        error:NULL];
             
             // report templates
-#ifndef MACAPPSTORE
+#if 1 //ndef MACAPPSTORE
 #ifndef OSIRIX_LIGHT
-            for (NSString* rfn in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
-                NSString* rfp = [self.baseDirPath stringByAppendingPathComponent:rfn];
-                if (rfp && ![NSFileManager.defaultManager fileExistsAtPath:rfp]) {
-                    [NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfn] toPath:rfp error:NULL];
-                    [NSFileManager.defaultManager applyFileModeOfParentToItemAtPath:rfp];
+            NSString *templatesPath = [self.baseDirPath stringByAppendingPathComponent:@"TEMPLATES"];
+            for (NSString* rfName in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
+                NSString *rfPath = [templatesPath stringByAppendingPathComponent:rfName];
+                if (rfPath && ![NSFileManager.defaultManager fileExistsAtPath:rfPath])
+                {
+                    [NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfName]
+                                                          toPath:rfPath
+                                                           error:NULL];
+
+                    [NSFileManager.defaultManager applyFileModeOfParentToItemAtPath:rfPath];
                 }
             }
             
             [Reports checkForPagesTemplate];
-            [Reports checkForWordTemplates];
+            [Reports checkForWordTemplates]; // copy ReportTemplate.doc from bundle into place
 #endif
 #endif
 
@@ -838,7 +843,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 }
 
 -(NSString*)htmlTemplatesDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"HTML_TEMPLATES"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"TEMPLATES/HTML"]];
 }
 
 -(NSString*)modelVersionFilePath {
@@ -4358,8 +4363,8 @@ static BOOL protectionAgainstReentry = NO;
 	[_importFilesFromIncomingDirLock unlock];
 }
 
--(void)checkForHtmlTemplates {
-	// directory
+-(void)checkForHtmlTemplates
+{
 	NSString* htmlTemplatesDirectory = [self htmlTemplatesDirPath];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: htmlTemplatesDirectory
@@ -4367,30 +4372,25 @@ static BOOL protectionAgainstReentry = NO;
                                                    attributes: nil
                                                         error: nil];
 	
-	// HTML templates
 	NSString *templateFile;
 	
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
-//	NSLog( @"%@", templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
 		[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"]
                                                 toPath:templateFile
                                                  error:nil];
 	
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
-//	NSLog( @"%@", templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
 		[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"]
                                                 toPath:templateFile
                                                  error:nil];
 	
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"];
-//	NSLog( @"%@", templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
 		[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"]
                                                 toPath:templateFile
                                                  error:nil];
-	
 	// HTML-extra directory
 	NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingPathComponent:@"html-extra/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
@@ -4398,14 +4398,12 @@ static BOOL protectionAgainstReentry = NO;
                                   withIntermediateDirectories: YES
                                                    attributes: nil
                                                         error: nil];
-	
 	// CSS file
 	NSString *cssFile = [htmlExtraDirectory stringByAppendingPathComponent:@"style.css"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
 		[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStyle.css"]
                                                 toPath:cssFile
                                                  error:nil];
-	
 }
 
 @end
