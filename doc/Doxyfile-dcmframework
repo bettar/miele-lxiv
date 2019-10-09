@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "DCM Framework"
-PROJECT_NUMBER         = 6.2
+PROJECT_NUMBER         = 7.4
 PROJECT_BRIEF          = Used by Miele-LXIV
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       = "./Doxygen/DCM-Framework"
