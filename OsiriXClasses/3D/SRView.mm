@@ -2877,7 +2877,7 @@ typedef struct _xyzArray
 - (IBAction)changeColor:(id)sender
 {
     NSLog(@"%s (IBAction)", __FUNCTION__);
-    if ([backgroundColor isActive])
+    //if ([backgroundColor isActive])
 	{
         NSLog(@"%s (IBAction)", __FUNCTION__);
 		NSColor *color= [[(NSColorPanel*)sender color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace];

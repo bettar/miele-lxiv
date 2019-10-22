@@ -2082,15 +2082,16 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([convolutionView frame]), NSHeight([convolutionView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([convolutionView frame]), NSHeight([convolutionView frame]))];
     }
-	else if ([itemIdent isEqualToString: BackgroundColorViewToolbarItemIdentifier]) {
-	// Set up the standard properties 
-	[toolbarItem setLabel: NSLocalizedString(@"Background", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Background", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Background Color", nil)];
-	
-	[toolbarItem setView: BackgroundColorView];
-	[toolbarItem setMinSize:NSMakeSize(NSWidth([BackgroundColorView frame]), NSHeight([BackgroundColorView frame]))];
-	[toolbarItem setMaxSize:NSMakeSize(NSWidth([BackgroundColorView frame]), NSHeight([BackgroundColorView frame]))];
+	else if ([itemIdent isEqualToString: BackgroundColorViewToolbarItemIdentifier])
+    {
+        // Set up the standard properties
+        [toolbarItem setLabel: NSLocalizedString(@"Background", nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Background", nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Background Color", nil)];
+        
+        [toolbarItem setView: BackgroundColorView];
+        [toolbarItem setMinSize:NSMakeSize(NSWidth([BackgroundColorView frame]), NSHeight([BackgroundColorView frame]))];
+        [toolbarItem setMaxSize:NSMakeSize(NSWidth([BackgroundColorView frame]), NSHeight([BackgroundColorView frame]))];
     }
 	else if ([itemIdent isEqualToString: ScissorStateToolbarItemIdentifier]) {
 	// Set up the standard properties 
@@ -2234,8 +2235,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 												ExportToolbarItemIdentifier,
 												FlyThruToolbarItemIdentifier,
 												nil];
-	else
-		return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
+
+    return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
 												ModeToolbarItemIdentifier,
 												WLWWToolbarItemIdentifier,
 												LODToolbarItemIdentifier,
@@ -2255,42 +2256,41 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 {
 	if ([style isEqualToString:@"standard"])
 	{
-		NSMutableArray * a = [NSMutableArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
-											NSToolbarFlexibleSpaceItemIdentifier,
-											NSToolbarSpaceItemIdentifier,
-											NSToolbarSeparatorItemIdentifier,
-											WLWWToolbarItemIdentifier,
-											CLUTEditorsViewToolbarItemIdentifier,
-											PresetsPanelToolbarItemIdentifier,
-											LODToolbarItemIdentifier,
-											CaptureToolbarItemIdentifier,
-											CroppingToolbarItemIdentifier,
-											OrientationToolbarItemIdentifier,
-											ShadingToolbarItemIdentifier,
-											PerspectiveToolbarItemIdentifier,
-											OrientationsViewToolbarItemIdentifier,
-											ToolsToolbarItemIdentifier,
-											ModeToolbarItemIdentifier,
-											BlendingToolbarItemIdentifier,
-											MovieToolbarItemIdentifier,
-											StereoIdentifier,
-											QTExportToolbarItemIdentifier,
-											PhotosToolbarItemIdentifier,
-//											QTExportVRToolbarItemIdentifier,
-											MailToolbarItemIdentifier,
-											ResetToolbarItemIdentifier,
-											RevertToolbarItemIdentifier,
-											ExportToolbarItemIdentifier,
-											FlyThruToolbarItemIdentifier,
-											ScissorStateToolbarItemIdentifier,
-											ROIManagerToolbarItemIdentifier,
-											ConvolutionViewToolbarItemIdentifier,
-											BackgroundColorViewToolbarItemIdentifier,
-											ClippingRangeViewToolbarItemIdentifier,
-                                            EngineToolbarItemIdentifier,
-											nil];
-		
-        
+		NSMutableArray * a = [NSMutableArray arrayWithObjects:
+                              NSToolbarCustomizeToolbarItemIdentifier,
+                              NSToolbarFlexibleSpaceItemIdentifier,
+                              NSToolbarSpaceItemIdentifier,
+                              NSToolbarSeparatorItemIdentifier,
+                              WLWWToolbarItemIdentifier,
+                              CLUTEditorsViewToolbarItemIdentifier,
+                              PresetsPanelToolbarItemIdentifier,
+                              LODToolbarItemIdentifier,
+                              CaptureToolbarItemIdentifier,
+                              CroppingToolbarItemIdentifier,
+                              OrientationToolbarItemIdentifier,
+                              ShadingToolbarItemIdentifier,
+                              PerspectiveToolbarItemIdentifier,
+                              OrientationsViewToolbarItemIdentifier,
+                              ToolsToolbarItemIdentifier,
+                              ModeToolbarItemIdentifier,
+                              BlendingToolbarItemIdentifier,
+                              MovieToolbarItemIdentifier,
+                              StereoIdentifier,
+                              QTExportToolbarItemIdentifier,
+                              PhotosToolbarItemIdentifier,
+//							  QTExportVRToolbarItemIdentifier,
+                              MailToolbarItemIdentifier,
+                              ResetToolbarItemIdentifier,
+                              RevertToolbarItemIdentifier,
+                              ExportToolbarItemIdentifier,
+                              FlyThruToolbarItemIdentifier,
+                              ScissorStateToolbarItemIdentifier,
+                              ROIManagerToolbarItemIdentifier,
+                              ConvolutionViewToolbarItemIdentifier,
+                              BackgroundColorViewToolbarItemIdentifier,
+                              ClippingRangeViewToolbarItemIdentifier,
+                              EngineToolbarItemIdentifier,
+                              nil];
         
         for (id key in [PluginManager installedPlugins])
         {
@@ -2298,10 +2298,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
                 [a addObjectsFromArray: [[[PluginManager installedPlugins] objectForKey:key] toolbarAllowedIdentifiersForVRViewer: self]];
         }
         
-		return a;
+		return [a copy];
 	}
-	else
-		return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
+
+    return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,

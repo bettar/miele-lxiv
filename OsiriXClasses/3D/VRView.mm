@@ -8442,9 +8442,9 @@ public:
 	}
 }
 
-- (void)changeColor:(id)sender
+- (IBAction)changeColor:(id)sender
 {
-	if ([backgroundColor isActive])
+	//if ([backgroundColor isActive])
 		[self changeColorWith: [[(NSColorPanel*)sender color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace]];
 }
 
