@@ -568,97 +568,99 @@ public:
                       before: (NSRect) beforeFrame
                      rescale: (BOOL) rescale
 {
-	if (Line2DData)
-	{
-		vtkPoints *pts = Line2DData->GetPoints();
+	if (!Line2DData)
+        return;
+    
+    vtkPoints *pts = Line2DData->GetPoints();
 
-		if (pts->GetNumberOfPoints() == 2)
-		{
-			double pt1[ 3];
-			pts->GetPoint( 0, pt1);
-			
-			double pt2[ 3];
-			pts->GetPoint( 1, pt2);
-			
-			pts = vtkPoints::New();
-			vtkCellArray *rect = vtkCellArray::New();
+    if (pts->GetNumberOfPoints() == 2)
+    {
+        double pt1[ 3];
+        pts->GetPoint( 0, pt1);
+        
+        double pt2[ 3];
+        pts->GetPoint( 1, pt2);
+        
+        pts = vtkPoints::New();
+        vtkCellArray *rect = vtkCellArray::New();
+        
+        Line2DData->SetPoints( pts);
+        pts->Delete();
+        
+        Line2DData->SetLines( rect);
+        rect->Delete();
+        
+        pts = Line2DData->GetPoints();
+        
+        if (rescale == NO)
+        {
+            pts->InsertPoint(pts->GetNumberOfPoints(),
+                             pt1[0] + (newFrame.size.width - beforeFrame.size.width)/2,
+                             pt1[1] + (newFrame.size.height - beforeFrame.size.height)/2,
+                             0);
             
-			Line2DData->SetPoints( pts);
-            pts->Delete();
+            pts->InsertPoint(pts->GetNumberOfPoints(),
+                             pt2[0] + (newFrame.size.width - beforeFrame.size.width)/2,
+                             pt2[1] + (newFrame.size.height - beforeFrame.size.height)/2,
+                             0);
+        }
+        else
+        {
+            pts->InsertPoint(pts->GetNumberOfPoints(),
+                             pt1[0] * (newFrame.size.width/beforeFrame.size.width),
+                             pt1[1] * (newFrame.size.height / beforeFrame.size.height),
+                             0);
             
-			Line2DData->SetLines( rect);
-            rect->Delete();
-			
-			pts = Line2DData->GetPoints();
-			
-			if (rescale == NO)
-			{
-				pts->InsertPoint(pts->GetNumberOfPoints(),
-                                 pt1[0] + (newFrame.size.width - beforeFrame.size.width)/2,
-                                 pt1[1] + (newFrame.size.height - beforeFrame.size.height)/2,
-                                 0);
-                
-				pts->InsertPoint(pts->GetNumberOfPoints(),
-                                 pt2[0] + (newFrame.size.width - beforeFrame.size.width)/2,
-                                 pt2[1] + (newFrame.size.height - beforeFrame.size.height)/2,
-                                 0);
-			}
-			else
-			{
-				pts->InsertPoint(pts->GetNumberOfPoints(),
-                                 pt1[0] * (newFrame.size.width/beforeFrame.size.width),
-                                 pt1[1] * (newFrame.size.height / beforeFrame.size.height),
-                                 0);
-                
-				pts->InsertPoint(pts->GetNumberOfPoints(),
-                                 pt2[0] * (newFrame.size.width/beforeFrame.size.width),
-                                 pt2[1] * (newFrame.size.height / beforeFrame.size.height),
-                                 0);
-			}
+            pts->InsertPoint(pts->GetNumberOfPoints(),
+                             pt2[0] * (newFrame.size.width/beforeFrame.size.width),
+                             pt2[1] * (newFrame.size.height / beforeFrame.size.height),
+                             0);
+        }
 
-            rect = vtkCellArray::New();
-			rect->InsertNextCell( pts->GetNumberOfPoints()+1);
-			for (int i = 0; i < pts->GetNumberOfPoints(); i++)
-                rect->InsertCellPoint( i);
-            
-			rect->InsertCellPoint( 0);
-			
-			Line2DData->SetVerts( rect);
-			Line2DData->SetLines( rect);
-            rect->Delete();
-			
-			Line2DData->SetPoints( pts);
-			
-			// Move the text
-			
-			pts->GetPoint( 0, pt1);
-			pts->GetPoint( 1, pt2);
-			
-			Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
-			if (pt1[ 0] > pt2[ 0])
-                Line2DText->GetPositionCoordinate()->SetValue( pt1[0] + 3, pt1[ 1]);
-			else
-                Line2DText->GetPositionCoordinate()->SetValue( pt2[0], pt2[ 1]);
-		}
-		else
-		{
-			// Delete
-			pts = vtkPoints::New();
-			vtkCellArray *rect = vtkCellArray::New();
-            
-			Line2DData->SetPoints( pts);
-            pts->Delete();
-            
-			Line2DData->SetLines( rect);
-            rect->Delete();
-		}
-	}
+        rect = vtkCellArray::New();
+        rect->InsertNextCell( pts->GetNumberOfPoints()+1);
+        for (int i = 0; i < pts->GetNumberOfPoints(); i++)
+            rect->InsertCellPoint( i);
+        
+        rect->InsertCellPoint( 0);
+        
+        Line2DData->SetVerts( rect);
+        Line2DData->SetLines( rect);
+        rect->Delete();
+        
+        Line2DData->SetPoints( pts);
+        
+        // Move the text
+        
+        pts->GetPoint( 0, pt1);
+        pts->GetPoint( 1, pt2);
+        
+        Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
+        if (pt1[ 0] > pt2[ 0])
+            Line2DText->GetPositionCoordinate()->SetValue( pt1[0] + 3, pt1[ 1]);
+        else
+            Line2DText->GetPositionCoordinate()->SetValue( pt2[0], pt2[ 1]);
+    }
+    else
+    {
+        // Delete
+        pts = vtkPoints::New();
+        vtkCellArray *rect = vtkCellArray::New();
+        
+        Line2DData->SetPoints( pts);
+        pts->Delete();
+        
+        Line2DData->SetLines( rect);
+        rect->Delete();
+    }
 }
 
 - (void) setFrame: (NSRect) r rescaleLine: (BOOL) rescale
 {
 	if ([[controller style] isEqualToString:@"noNib"] == NO)
-		[self adaptLine2DToResize: r before: [self frame] rescale: rescale];
+		[self adaptLine2DToResize: r
+                           before: [self frame]
+                          rescale: rescale];
 	
 	[super setFrame: r];
 }
@@ -842,13 +844,13 @@ public:
     {
         if (vramMB >= 2000)
         {
-            [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"VRDefaultViewSize"];     // full screen
+            [[NSUserDefaults standardUserDefaults] setInteger: VR_VIEW_SIZE_FULL_SCREEN forKey: VRDefaultViewSize_KEY];
             [[NSUserDefaults standardUserDefaults] setInteger: ENGINE_GPU_OPEN_GL forKey: @"MAPPERMODEVR"];
         }
         else
         {
-            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"VRDefaultViewSize"];     // square
-            [[NSUserDefaults standardUserDefaults] setInteger: ENGINE_CPU forKey: @"MAPPERMODEVR"];          // cpu
+            [[NSUserDefaults standardUserDefaults] setInteger: VR_VIEW_SIZE_SQUARE_FULL_SCREEN forKey: VRDefaultViewSize_KEY];
+            [[NSUserDefaults standardUserDefaults] setInteger: ENGINE_CPU forKey: @"MAPPERMODEVR"];
         }
         
         [[NSUserDefaults standardUserDefaults] setInteger: vramMB forKey: @"VRAMAmount"];
@@ -1273,12 +1275,16 @@ public:
             break;
 		
 		case EXPORT_SIZE_512:
-            [self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame] rescaleLine: YES];
+            [self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]
+               rescaleLine: YES];
+
             [self display];
             break;
             
 		case EXPORT_SIZE_768:
-            [self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame] rescaleLine: YES];
+            [self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]
+               rescaleLine: YES];
+
             [self display];
             break;
 	}
@@ -1976,7 +1982,8 @@ public:
 
 -(instancetype)initWithFrame:(NSRect)frame
 {
-    if ( self = [super initWithFrame:frame])
+    self = [super initWithFrame:frame];
+    if (self)
     {
 		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect]
                                                                        options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow)
@@ -3193,25 +3200,28 @@ public:
 
 -(void) squareView:(id) sender
 {
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 1)
+    VRDefaultViewSizeType viewType= (VRDefaultViewSizeType)[[NSUserDefaults standardUserDefaults] integerForKey:VRDefaultViewSize_KEY];
+
+	NSRect selfFrame = [[[self window] contentView] frame];
+	selfFrame.size.height -= 30;  // leave some space to display 'pixelInformation'
+	
+    if (viewType == VR_VIEW_SIZE_FULL_SCREEN) {
+        [self setFrame: selfFrame];
+        [[self window] display];
         return;
-	
-	NSRect  selfFrame = [[[self window] contentView] frame];
-	
-	selfFrame.size.height -= 30;
-	
-	NSRect	newFrame = selfFrame;
-	NSRect	beforeFrame = selfFrame;
+    }
+    
+	NSRect newFrame = selfFrame;
+	NSRect beforeFrame = selfFrame;
 	
 	int border = selfFrame.size.height-1;
 	
 	if (border > selfFrame.size.width)
         border = selfFrame.size.width;
 	
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 2)
+	if (viewType == VR_VIEW_SIZE_512x512)
         border = 512;
-    
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 3)
+	else if (viewType == VR_VIEW_SIZE_768x768)
         border = 768;
 	
 	newFrame.size.width = (int)border;

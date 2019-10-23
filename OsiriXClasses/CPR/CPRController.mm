@@ -402,7 +402,13 @@ static float deg2rad = M_PI / 180.0;
 			self.blendingMode = 0;
 		}
 		        
-		hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer2D :viewer style:@"noNib" mode:@"MIP"];
+		hiddenVRController = [[VRController alloc] initWithPix:pix
+                                                              :files
+                                                              :volume
+                                                              :fusedViewer2D
+                                                              :viewer
+                                                         style:@"noNib"
+                                                          mode:@"MIP"];
 		[hiddenVRController retain];
 		
 		// To avoid the "invalid drawable" message

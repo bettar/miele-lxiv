@@ -1376,7 +1376,7 @@ Gw
                             <action selector="endDCMExportSettings:" target="146" id="799"/>
                         </connections>
                     </button>
-                    <button ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1007">
+                    <button verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1007">
                         <rect key="frame" x="18" y="18" width="276" height="18"/>
                         <buttonCell key="cell" type="check" title="After export, send them to a DICOM Node" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="1010">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1386,8 +1386,8 @@ Gw
                             <binding destination="818" name="value" keyPath="values.afterExportSendToDICOMNode" id="1012"/>
                         </connections>
                     </button>
-                    <button ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1008">
-                        <rect key="frame" x="18" y="42" width="178" height="18"/>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="1008">
+                        <rect key="frame" x="18" y="42" width="178" height="20"/>
                         <buttonCell key="cell" type="check" title="Mark them as Key Images" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="1009">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -1542,7 +1542,7 @@ Gw
                     <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="765">
                         <rect key="frame" x="94" y="230" width="228" height="21"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="228" id="GJc-be-4Xa"/>
+                            <constraint firstAttribute="width" constant="228" id="IQh-V2-Agb"/>
                         </constraints>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="3D SR" drawsBackground="YES" id="986">
                             <font key="font" metaFont="system"/>
@@ -1607,6 +1607,7 @@ Gw
                     <constraint firstItem="766" firstAttribute="leading" secondItem="763" secondAttribute="leading" constant="10" id="LgS-ez-OIW"/>
                     <constraint firstItem="766" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="763" secondAttribute="leading" constant="10" id="M62-kD-R6j"/>
                     <constraint firstItem="813" firstAttribute="leading" secondItem="812" secondAttribute="trailing" constant="4" id="SQN-Rf-Cge"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="767" secondAttribute="trailing" constant="20" symbolic="YES" id="Suh-gK-Roa"/>
                     <constraint firstItem="766" firstAttribute="baseline" secondItem="765" secondAttribute="baseline" id="T1p-TD-85O"/>
                     <constraint firstItem="764" firstAttribute="leading" secondItem="788" secondAttribute="trailing" constant="16" id="WzT-ub-hvD"/>
                     <constraint firstItem="813" firstAttribute="baseline" secondItem="812" secondAttribute="baseline" id="Y2H-3F-0AK"/>
@@ -1625,6 +1626,7 @@ Gw
                     <constraint firstItem="768" firstAttribute="leading" secondItem="1008" secondAttribute="leading" id="z1y-aE-ggg"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="-477" y="346"/>
         </window>
         <customView id="803" userLabel="Orientation">
             <rect key="frame" x="0.0" y="0.0" width="164" height="44"/>

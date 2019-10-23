@@ -284,7 +284,7 @@ Gw
                                     <rect key="frame" x="223" y="78" width="39" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="in mm" id="2381">
-                                        <font key="font" metaFont="message" size="11"/>
+                                        <font key="font" metaFont="label" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -320,7 +320,7 @@ Gw
                                     <rect key="frame" x="223" y="46" width="39" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="in mm" id="2382">
-                                        <font key="font" metaFont="message" size="11"/>
+                                        <font key="font" metaFont="label" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -365,7 +365,7 @@ Gw
                                     <rect key="frame" x="223" y="15" width="39" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="in mm" id="2378">
-                                        <font key="font" metaFont="message" size="11"/>
+                                        <font key="font" metaFont="label" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -469,7 +469,7 @@ DQ
                         <rect key="frame" x="25" y="20" width="282" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="To remove a preset from the menu: simply select it while holding down the shift key." id="2021">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -650,7 +650,7 @@ DQ
                     <size key="intercellSpacing" width="-2" height="0.0"/>
                     <buttonCell key="prototype" type="bevel" bezelStyle="regularSquare" image="bonesRemoval" imagePosition="above" alignment="center" borderStyle="border" toolTip="Click on a bone to remove it" tag="21" imageScaling="proportionallyUpOrDown" inset="2" id="2463">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="menu" size="10"/>
+                        <font key="font" metaFont="system" size="10"/>
                         <connections>
                             <action selector="setDefaultTool:" target="-2" id="2464"/>
                         </connections>
@@ -659,7 +659,7 @@ DQ
                         <column>
                             <buttonCell type="bevel" title="Levels" bezelStyle="regularSquare" image="WLWW" imagePosition="only" alignment="center" borderStyle="border" toolTip="Window Level (Option + click)" imageScaling="proportionallyUpOrDown" inset="2" id="852">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                                 <connections>
                                     <action selector="setDefaultTool:" target="-2" id="863"/>
                                 </connections>
@@ -668,7 +668,7 @@ DQ
                         <column>
                             <buttonCell type="bevel" title="Move" bezelStyle="regularSquare" image="Move" imagePosition="only" alignment="center" borderStyle="border" toolTip="Move (Apple + click)" tag="1" imageScaling="proportionallyUpOrDown" inset="2" id="853">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                                 <connections>
                                     <action selector="setDefaultTool:" target="-2" id="865"/>
                                 </connections>
@@ -677,7 +677,7 @@ DQ
                         <column>
                             <buttonCell type="bevel" title="Zoom" bezelStyle="regularSquare" image="Zoom" imagePosition="only" alignment="center" borderStyle="border" toolTip="Zoom (Right button or shift + click)" tag="2" imageScaling="proportionallyUpOrDown" inset="2" id="854">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                                 <connections>
                                     <action selector="setDefaultTool:" target="-2" id="867"/>
                                 </connections>
@@ -686,7 +686,7 @@ DQ
                         <column>
                             <buttonCell type="bevel" title="Rotate" bezelStyle="regularSquare" image="Rotate" imagePosition="only" alignment="center" borderStyle="border" toolTip="Rotate (Apple + Option + click)" tag="3" imageScaling="proportionallyUpOrDown" inset="2" id="855">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                                 <connections>
                                     <action selector="setDefaultTool:" target="-2" id="869"/>
                                 </connections>
@@ -695,7 +695,7 @@ DQ
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="3DRotate" imagePosition="only" alignment="center" state="on" borderStyle="border" toolTip="Rotate around the focal point" tag="7" imageScaling="proportionallyUpOrDown" inset="2" id="856">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                                 <connections>
                                     <action selector="setDefaultTool:" target="-2" id="871"/>
                                 </connections>
@@ -704,7 +704,7 @@ DQ
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="3DRotateCamera" imagePosition="only" alignment="center" borderStyle="border" toolTip="Rotate the camera" tag="18" imageScaling="proportionallyUpOrDown" inset="2" id="857">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                                 <connections>
                                     <action selector="setDefaultTool:" target="-2" id="873"/>
                                 </connections>
@@ -713,7 +713,7 @@ DQ
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="Length" imagePosition="only" alignment="center" borderStyle="border" toolTip="Measurement" tag="5" imageScaling="proportionallyUpOrDown" inset="2" id="858">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                                 <connections>
                                     <action selector="setDefaultTool:" target="-2" id="875"/>
                                 </connections>
@@ -722,7 +722,7 @@ DQ
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="Point" imagePosition="only" alignment="center" borderStyle="border" toolTip="3D Point" tag="16" imageScaling="proportionallyUpOrDown" inset="2" id="859">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                                 <connections>
                                     <action selector="setDefaultTool:" target="-2" id="876"/>
                                 </connections>
@@ -731,7 +731,7 @@ DQ
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="Oval" imagePosition="only" alignment="center" borderStyle="border" toolTip="Oval ROI" tag="9" imageScaling="proportionallyUpOrDown" inset="2" id="860">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                                 <connections>
                                     <action selector="setDefaultTool:" target="-2" id="877"/>
                                 </connections>
@@ -740,7 +740,7 @@ DQ
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="3DCut" imagePosition="only" alignment="center" borderStyle="border" toolTip="Sculpt: Delete, Return or Tab key" tag="17" imageScaling="proportionallyUpOrDown" inset="2" id="861">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                                 <connections>
                                     <action selector="setDefaultTool:" target="-2" id="878"/>
                                 </connections>
@@ -749,7 +749,7 @@ DQ
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="bonesRemoval" imagePosition="only" alignment="center" borderStyle="border" toolTip="Click on a bone to remove it" tag="21" imageScaling="proportionallyUpOrDown" inset="2" id="2456">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                                 <connections>
                                     <action selector="setDefaultTool:" target="-2" id="2465"/>
                                 </connections>
@@ -768,7 +768,7 @@ DQ
                     <rect key="frame" x="82" y="20" width="37" height="13"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Coarse" id="2035">
-                        <font key="font" metaFont="menu" size="10"/>
+                        <font key="font" metaFont="system" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -787,7 +787,7 @@ DQ
                     <rect key="frame" x="-2" y="20" width="24" height="13"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Fine" id="2033">
-                        <font key="font" metaFont="menu" size="10"/>
+                        <font key="font" metaFont="system" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -908,7 +908,7 @@ Gw
                         <rect key="frame" x="23" y="9" width="518" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="2044">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <string key="title">To remove a Color Look Up Table from the menu: select it by holding down the shift key.
 To edit a Color Look Up Table from the menu: select it while holding down the alt/option key.</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -927,7 +927,7 @@ To edit a Color Look Up Table from the menu: select it while holding down the al
                     <rect key="frame" x="-3" y="20" width="64" height="13"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Percentage:" id="2047">
-                        <font key="font" metaFont="menu" size="10"/>
+                        <font key="font" metaFont="system" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -946,7 +946,7 @@ To edit a Color Look Up Table from the menu: select it while holding down the al
                     <rect key="frame" x="63" y="20" width="34" height="13"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="-" id="2045">
-                        <font key="font" metaFont="menu" size="10"/>
+                        <font key="font" metaFont="system" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -1046,7 +1046,7 @@ DQ
                         <rect key="frame" x="18" y="10" width="544" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="2055">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <string key="title">To remove an Opacity Table from the menu: select it while holding down the shift key.
 To modify an Opacity Table from the menu: select it while holding down the alt/option key.</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2175,31 +2175,31 @@ DQ
                     <size key="intercellSpacing" width="-1" height="-1"/>
                     <buttonCell key="prototype" type="square" bezelStyle="shadowlessSquare" image="AxialSmall" imagePosition="only" alignment="center" borderStyle="border" tag="-1" inset="2" id="2191">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="menu" size="10"/>
+                        <font key="font" metaFont="system" size="10"/>
                     </buttonCell>
                     <cells>
                         <column>
                             <buttonCell type="square" bezelStyle="shadowlessSquare" image="AxialSmall" imagePosition="only" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="903">
                                 <behavior key="behavior" lightByContents="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                             </buttonCell>
                         </column>
                         <column>
                             <buttonCell type="square" bezelStyle="shadowlessSquare" image="CorSmall" imagePosition="only" alignment="center" borderStyle="border" tag="1" imageScaling="proportionallyUpOrDown" inset="2" id="904">
                                 <behavior key="behavior" lightByContents="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                             </buttonCell>
                         </column>
                         <column>
                             <buttonCell type="square" bezelStyle="shadowlessSquare" image="SagSmall" imagePosition="only" alignment="center" borderStyle="border" tag="2" imageScaling="proportionallyUpOrDown" inset="2" id="905">
                                 <behavior key="behavior" lightByContents="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                             </buttonCell>
                         </column>
                         <column>
                             <buttonCell type="square" bezelStyle="shadowlessSquare" image="SagSmallOpposite" imagePosition="only" alignment="center" borderStyle="border" tag="3" imageScaling="proportionallyUpOrDown" inset="2" id="906">
                                 <behavior key="behavior" lightByContents="YES"/>
-                                <font key="font" metaFont="menu" size="10"/>
+                                <font key="font" metaFont="system" size="10"/>
                             </buttonCell>
                         </column>
                     </cells>
@@ -2422,7 +2422,7 @@ Gw
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" title="+" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" id="2122">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                         </buttonCell>
                         <connections>
                             <action selector="add:" target="1089" id="1250"/>
@@ -2433,7 +2433,7 @@ Gw
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="square" title="-" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" id="2123">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                         </buttonCell>
                         <connections>
                             <action selector="remove:" target="1089" id="1106"/>
@@ -2923,7 +2923,7 @@ Gw
                         <rect key="frame" x="10" y="341" width="120" height="13"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label Font Text" id="2155">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2932,7 +2932,7 @@ Gw
                         <rect key="frame" x="138" y="341" width="120" height="13"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label Font Text" id="2156">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2941,7 +2941,7 @@ Gw
                         <rect key="frame" x="266" y="341" width="120" height="13"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label Font Text" id="2157">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2950,7 +2950,7 @@ Gw
                         <rect key="frame" x="10" y="192" width="120" height="13"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label Font Text" id="2158">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2959,7 +2959,7 @@ Gw
                         <rect key="frame" x="138" y="192" width="120" height="13"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label Font Text" id="2159">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2968,7 +2968,7 @@ Gw
                         <rect key="frame" x="266" y="192" width="120" height="13"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label Font Text" id="2160">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2977,7 +2977,7 @@ Gw
                         <rect key="frame" x="10" y="43" width="120" height="13"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label Font Text" id="2161">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2986,7 +2986,7 @@ Gw
                         <rect key="frame" x="138" y="43" width="120" height="13"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label Font Text" id="2162">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2995,7 +2995,7 @@ Gw
                         <rect key="frame" x="266" y="43" width="120" height="13"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label Font Text" id="2163">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -3005,7 +3005,7 @@ Gw
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="HUDLeftArrowButtonNeutral" imagePosition="only" alignment="center" alternateImage="HUDLeftArrowButtonPressed" inset="2" id="2164">
                             <behavior key="behavior" lightByContents="YES"/>
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                         </buttonCell>
                         <connections>
                             <action selector="previousPresetPage:" target="-2" id="1522"/>
@@ -3026,7 +3026,7 @@ Gw
                         <rect key="frame" x="35" y="490" width="327" height="13"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label Font Text" id="2167">
-                            <font key="font" metaFont="menu" size="10"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -3321,7 +3321,7 @@ DQ
                             <nil key="negativeInfinitySymbol"/>
                             <nil key="positiveInfinitySymbol"/>
                         </numberFormatter>
-                        <font key="font" metaFont="menu" size="10"/>
+                        <font key="font" metaFont="system" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -3333,7 +3333,7 @@ DQ
                     <rect key="frame" x="191" y="14" width="30" height="13"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Thick" id="2276">
-                        <font key="font" metaFont="menu" size="10"/>
+                        <font key="font" metaFont="system" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -3353,7 +3353,7 @@ DQ
                     <rect key="frame" x="23" y="14" width="26" height="13"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Thin" id="2274">
-                        <font key="font" metaFont="menu" size="10"/>
+                        <font key="font" metaFont="system" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>

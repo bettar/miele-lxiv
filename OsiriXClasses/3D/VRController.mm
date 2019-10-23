@@ -410,7 +410,13 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
                            :(ViewerController*) bC
                            :(ViewerController*) vC
 {
-	return [self initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:@"standard" mode:@"VR"];
+	return [self initWithPix:(NSMutableArray*) pix
+                            :(NSArray*) f
+                            :(NSData*) vData
+                            :(ViewerController*) bC
+                            :(ViewerController*) vC
+                       style:@"standard"
+                        mode:@"VR"];
 }
 
 - (void) computeMinMax
@@ -497,9 +503,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
                       style:(NSString*) m
                        mode:(NSString*) renderingMode
 {
-    unsigned long   i;
-	BOOL			testInterval = YES;
-	DCMPix			*firstObject = [pix objectAtIndex: 0];
+    unsigned long i;
+	BOOL testInterval = YES;
+	DCMPix *firstObject = [pix objectAtIndex: 0];
 
 #if 1
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -1295,7 +1301,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void)windowDidResize:(NSNotification *)aNotification
 {
-	if ([style isEqualToString:@"panel"] == NO) [view squareView: self];
+	if (![style isEqualToString:@"panel"])
+        [view squareView: self];
 }
 
 - (void)windowWillClose:(NSNotification *)notification
@@ -2876,7 +2883,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 {
 	[super showWindow: sender];
 	
-	if ([style isEqualToString:@"panel"] == NO)
+	if (![style isEqualToString:@"panel"])
 		[view squareView: self];
 }
 

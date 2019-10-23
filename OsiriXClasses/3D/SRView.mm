@@ -3654,9 +3654,9 @@ typedef struct _xyzArray
 
 -(void) squareView:(id) sender
 {
-    NSLog(@"%s %d VRDefaultViewSize:%d", __FUNCTION__, __LINE__, (int) [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"]);
-	
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 1)
+    VRDefaultViewSizeType viewType= (VRDefaultViewSizeType)[[NSUserDefaults standardUserDefaults] integerForKey:VRDefaultViewSize_KEY];
+
+	if (viewType == VR_VIEW_SIZE_FULL_SCREEN)
         return;
 	
 	NSRect newFrame = [self frame];
@@ -3667,10 +3667,9 @@ typedef struct _xyzArray
 	if (border > [self frame].size.width)
         border = [self frame].size.width;
 	
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 2)
+	if (viewType == VR_VIEW_SIZE_512x512)
         border = 512;
-    
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 3)
+	else if (viewType == VR_VIEW_SIZE_768x768)
         border = 768;
 	
 	newFrame.size.width = border;

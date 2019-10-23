@@ -72,4 +72,13 @@ typedef NS_ENUM(NSInteger, BlendingType) {
     BLENDING_RESAMPLE_NO_RESCALE = 12
 };
 
+#define VRDefaultViewSize_KEY     @"VRDefaultViewSize"
+// See also tags in Preferences, 3D
+typedef NS_ENUM(NSInteger, VRDefaultViewSizeType) {
+    VR_VIEW_SIZE_SQUARE_FULL_SCREEN = 0, // default
+    VR_VIEW_SIZE_FULL_SCREEN = 1,
+    VR_VIEW_SIZE_512x512 = 2,
+    VR_VIEW_SIZE_768x768 = 3
+};
+
 #endif /* mieleTypes_h */

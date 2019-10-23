@@ -1089,7 +1089,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"Miele-LXIV" forKey: @"ALBUMNAME"];
 	[defaultValues setObject: @"1" forKey: @"DisplayCrossReferenceLines"];
 	[defaultValues setObject: @"0" forKey: @"AlwaysScaleToFit"];
-	[defaultValues setObject:@"0" forKey: @"VRDefaultViewSize"];
+	[defaultValues setObject:@(VR_VIEW_SIZE_SQUARE_FULL_SCREEN) forKey: VRDefaultViewSize_KEY];
 	[defaultValues setObject:@"0" forKey: @"RunListenerOnlyIfActive"];
 	[defaultValues setObject:@"0" forKey: @"UseShutter"];
 	[defaultValues setObject:@"1" forKey: @"UseVOILUT"];
