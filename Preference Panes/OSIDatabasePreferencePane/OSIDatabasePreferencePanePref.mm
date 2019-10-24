@@ -212,7 +212,7 @@
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	
 	//setup GUI
-////	[copyDatabaseOnOffButton setState:[defaults boolForKey:@"COPYDATABASE"]]; //// now with bindings
+//  //[copyDatabaseOnOffButton setState:[defaults boolForKey:@"COPYDATABASE"]]; //// now with bindings
 	
 //	[displayAllStudies setState:[defaults boolForKey:@"KeepStudiesOfSamePatientTogether"]];
 	
@@ -222,7 +222,7 @@
     [locationPathField setURL: [NSURL fileURLWithPath: [defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]]];
 	
 //	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
-////	[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:@"COPYDATABASEMODE"]];
+//  //[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:COPYDATABASEMODE_KEY]];
 //	[localizerOnOffButton setState:[defaults boolForKey:@"NOLOCALIZER"]]; 
 //	[multipleScreensMatrix selectCellWithTag:[defaults integerForKey:@"MULTIPLESCREENSDATABASE"]];
 	[seriesOrderMatrix selectCellWithTag:[defaults integerForKey:@"SERIESORDER"]];

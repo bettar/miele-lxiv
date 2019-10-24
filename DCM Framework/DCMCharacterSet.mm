@@ -208,7 +208,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
                 else
                 {
                     currentEncoding = [DCMCharacterSet encodingForDICOMCharacterSet: key];
-#ifdef DEBUG
+#ifndef NDEBUG
                     BOOL found = NO;
                     for (int j = 0; j < NUM_ENCODINGS; j++)
                         if (currentEncoding == encodings[j]) {

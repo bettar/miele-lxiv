@@ -2219,14 +2219,14 @@ static NSConditionLock *threadLock = nil;
 	if ([filesInput count] == 0)
         return;
 	
-	BOOL COPYDATABASE = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"];
-	int COPYDATABASEMODE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASEMODE"];
+	BOOL shouldCopyDb = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"];
+	CopyDBModeType copyDbMode = (CopyDBModeType)[[NSUserDefaults standardUserDefaults] integerForKey: COPYDATABASEMODE_KEY];
 	
 	if ([options objectForKey: @"COPYDATABASE"])
-		COPYDATABASE = [[options objectForKey: @"COPYDATABASE"] boolValue];
+		shouldCopyDb = [[options objectForKey: @"COPYDATABASE"] boolValue];
 		
-	if ([options objectForKey: @"COPYDATABASEMODE"])
-		COPYDATABASEMODE = [[options objectForKey: @"COPYDATABASEMODE"] integerValue];
+	if ([options objectForKey: COPYDATABASEMODE_KEY])
+		copyDbMode = (CopyDBModeType)[[options objectForKey: COPYDATABASEMODE_KEY] integerValue];
 	
 //	if (DICOMDIRCDMODE)
 //		COPYDATABASE = NO;
@@ -2244,36 +2244,36 @@ static NSConditionLock *threadLock = nil;
 	
 	BOOL copyFiles = NO;
 	
-	if (COPYDATABASE && [newFilesToCopyList count])
+	if (shouldCopyDb && [newFilesToCopyList count])
 	{
 		copyFiles = YES;
 		
-		switch (COPYDATABASEMODE)
+		switch (copyDbMode)
 		{
-			case always:
+			case COPY_DB_ALWAYS:
 				break;
 				
-			case notMainDrive:
+			case COPY_DB_NOT_MAIN_DRIVE:
                 {
                     NSArray *pathFilesComponent = [[filesInput objectAtIndex:0] pathComponents];
                     
                     if ([[[pathFilesComponent objectAtIndex: 1] uppercaseString] isEqualToString:@"VOLUMES"])
-                        NSLog(@"not the main drive!");
+                        NSLog(@"%s not the main drive!", __FUNCTION__);
                     else
                         copyFiles = NO;
                 }
                 break;
 				
-			case cdOnly:
+			case COPY_DB_CD_ONLY:
                 {
-                    NSLog( @"%@", [filesInput objectAtIndex:0]);
+                    NSLog(@"%s %@", __FUNCTION__, [filesInput objectAtIndex:0]);
                     
                     if ([BrowserController isItCD: [filesInput objectAtIndex:0]] == NO)
                         copyFiles = NO;
                 }
                 break;
 				
-			case ask:
+			case COPY_DB_ASK_USER:
 				switch (NSRunInformationalAlertPanel(
 													 NSLocalizedString(@"OsiriX Database", nil),
 													 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?", nil),
@@ -7354,11 +7354,11 @@ static NSConditionLock *threadLock = nil;
 - (void) databaseOpenStudy:(DicomStudy*) currentStudy withProtocol:(NSDictionary*) currentHangingProtocol
 {
     BOOL restoreNOAutotiling = NO;
-    int WINDOWSIZEVIEWERCopy = 0;
+    WindowSizeViewerType WINDOWSIZEVIEWERCopy = WINDOW_SIZE_FULL_SCREEN;
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] != YES)
     {
         restoreNOAutotiling = YES;
-        WINDOWSIZEVIEWERCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"WINDOWSIZEVIEWER"];
+        WINDOWSIZEVIEWERCopy = (WindowSizeViewerType)[[NSUserDefaults standardUserDefaults] integerForKey: WINDOWSIZEVIEWER_KEY];
         [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"AUTOTILING"];
     }
 
@@ -7380,9 +7380,9 @@ static NSConditionLock *threadLock = nil;
         if ([currentHangingProtocol valueForKey: @"Sync"])
         {
             if ([[currentHangingProtocol valueForKey: @"Sync"] boolValue])
-                [DCMView setSyncro: syncroLOC];
+                [DCMView setSyncro: SYNCHRO_POSITION_ABS];
             else
-                [DCMView setSyncro: syncroOFF];
+                [DCMView setSyncro: SYNCHRO_OFF];
         }
         
         if ([currentHangingProtocol valueForKey: @"Propagate"])
@@ -7709,7 +7709,7 @@ static NSConditionLock *threadLock = nil;
     if (restoreNOAutotiling)
     {
         [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"AUTOTILING"];
-        [[NSUserDefaults standardUserDefaults] setInteger: WINDOWSIZEVIEWERCopy forKey: @"WINDOWSIZEVIEWER"];
+        [[NSUserDefaults standardUserDefaults] setInteger: WINDOWSIZEVIEWERCopy forKey: WINDOWSIZEVIEWER_KEY];
     }
 }
 
@@ -7937,9 +7937,9 @@ static NSConditionLock *threadLock = nil;
                     if (syncSettings)
                     {
                         if ([syncSettings boolValue])
-                            [DCMView setSyncro: syncroLOC];
+                            [DCMView setSyncro: SYNCHRO_POSITION_ABS];
                         else
-                            [DCMView setSyncro: syncroOFF];
+                            [DCMView setSyncro: SYNCHRO_OFF];
                     }
                     
                     if (propagateSettings)
@@ -15655,7 +15655,7 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else if ([menuItem action] == @selector(annotMenu:))
 	{
-		if ([menuItem tag] == [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"])
+		if ([menuItem tag] == [[NSUserDefaults standardUserDefaults] integerForKey:ANNOTATIONS_KEY])
             [menuItem setState: NSOnState];
 		else
             [menuItem setState: NSOffState];
@@ -18539,10 +18539,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	switch (aspc.end)
 	{
 		case AnonymizationSavePanelSaveAs:
-		{
 			[Anonymization anonymizeFiles:imagePaths dicomImages: imageObjs toPath:aspc.outputDir withTags:aspc.anonymizationViewController.tagsValues];
-		}
-		break;
+            break;
 		
 		case AnonymizationSavePanelAdd:
 		case AnonymizationSavePanelReplace:
@@ -18554,19 +18552,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if (aspc.end == AnonymizationSavePanelReplace)
 				[self delItem:self]; // this assumes the selection hasn't changed since the user clicked the Anonymize button
 			
-			BOOL COPYDATABASE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASE"];
-			int COPYDATABASEMODE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASEMODE"];
+			BOOL copyDbOriginal = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASE"];
+			CopyDBModeType copyDbModeOriginal = (CopyDBModeType)[[NSUserDefaults standardUserDefaults] integerForKey: COPYDATABASEMODE_KEY];
 	
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"COPYDATABASE"];
-			[[NSUserDefaults standardUserDefaults] setInteger: always forKey: @"COPYDATABASEMODE"];
+			[[NSUserDefaults standardUserDefaults] setInteger: COPY_DB_ALWAYS forKey: COPYDATABASEMODE_KEY];
 
-			// add new files
+			// Add new files
 			[self addFilesAndFolderToDatabase:anonymizedFiles.allValues];
 			
-			[[NSUserDefaults standardUserDefaults] setBool: COPYDATABASE forKey: @"COPYDATABASE"];
-			[[NSUserDefaults standardUserDefaults] setInteger: COPYDATABASEMODE forKey: @"COPYDATABASEMODE"];
+			[[NSUserDefaults standardUserDefaults] setBool: copyDbOriginal forKey: @"COPYDATABASE"];
+			[[NSUserDefaults standardUserDefaults] setInteger: copyDbModeOriginal forKey: COPYDATABASEMODE_KEY];
 		}
-		break;
+            break;
 	}
 }
 

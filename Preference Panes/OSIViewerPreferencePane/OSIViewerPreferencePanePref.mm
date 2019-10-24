@@ -67,7 +67,7 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
     if( [keyPath isEqualToString: @"values.AUTOTILING"])
     {
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-            [[NSUserDefaults standardUserDefaults] setInteger:0 forKey: @"WINDOWSIZEVIEWER"];
+            [[NSUserDefaults standardUserDefaults] setInteger:WINDOW_SIZE_FULL_SCREEN forKey: WINDOWSIZEVIEWER_KEY];
     }
     
     if( [keyPath isEqualToString: @"values.UseFloatingThumbnailsList"])

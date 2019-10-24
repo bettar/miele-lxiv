@@ -561,7 +561,7 @@
 		glDisable(GL_BLEND);
 	}
 	
-	if (annotationType != annotNone && stringID == nil)
+	if (annotationType != ANNOTATIONS_NONE && stringID == nil)
 	{
 		glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 		glScalef ( 2.0f / (xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width),

@@ -1182,9 +1182,9 @@ return YES;
                 
                 [dict setObject: [[NSUserDefaults standardUserDefaults] objectForKey:@"COPYSETTINGS"] forKey:@"propagateSettings"];
                 
-                if ([DCMView syncro] == syncroLOC)
+                if ([DCMView syncro] == SYNCHRO_POSITION_ABS)
                     [dict setObject: @YES forKey:@"syncSettings"];
-                else if ([DCMView syncro] == syncroOFF)
+                else if ([DCMView syncro] == SYNCHRO_OFF)
                     [dict setObject: @NO forKey:@"syncSettings"];
                 
                 if (SyncButtonBehaviorIsBetweenStudies)
@@ -3068,7 +3068,7 @@ static volatile int numberOfThreadsForRelisce = 0;
             if (maxMovieIndex > 1)
                 [c addObject: [NSString stringWithFormat: NSLocalizedString( @"4D (%d/%d)", nil), curMovieIndex+1, maxMovieIndex]];
             
-			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
+			if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] == ANNOTATIONS_FULL)
 			{
                 if (curImage.series.study.name.length)
                     [c addObject: curImage.series.study.name];
@@ -4400,7 +4400,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if ([dcmStudy.name isEqualToString: study.name] || [dcmStudy.dateOfBirth isEqualToDate: study.dateOfBirth])
                             patName = @"";
                             
-                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] != ANNOTATIONS_FULL)
                             patName = @"";
                         
                         NSImage *number = [[[NSImage alloc] initWithSize: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)] autorelease];
@@ -4479,7 +4479,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if ([queryStudy.name isEqualToString:study.name] || [queryStudy.dateOfBirth isEqualToDate:study.dateOfBirth])
                             patName = @"";
                         
-                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] != ANNOTATIONS_FULL)
                             patName = @"";
                         
                         NSMutableArray* components = [NSMutableArray array];
@@ -5746,7 +5746,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if ([dcmStudy.name isEqualToString: study.name] || [dcmStudy.dateOfBirth isEqualToDate: study.dateOfBirth])
                             patName = @"";
                         
-                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] != ANNOTATIONS_FULL)
                             patName = @"";
                         
                         NSMutableArray* components = [NSMutableArray array];
@@ -5838,7 +5838,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if ([queryStudy.name isEqualToString: study.name] || [queryStudy.dateOfBirth isEqualToDate: study.dateOfBirth])
                             patName = @"";
                         
-                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] != ANNOTATIONS_FULL)
                             patName = @"";
                         
                         NSString *action = nil;
@@ -8054,9 +8054,9 @@ return YES;
                             postprocessed = YES;
                         }
                         
-                        #ifdef DEBUG
+#ifndef NDEBUG
                         NSLog( @"----- isDataVolumic : try to correct, by removing image");
-                        #endif
+#endif
                         
                         volumicData = YES;
                     }
@@ -9584,12 +9584,23 @@ static int avoidReentryRefreshDatabase = 0;
     
 	[[self window] setFrame:screenRect display:YES];
 	
-	switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"WINDOWSIZEVIEWER"])
+	switch ([[NSUserDefaults standardUserDefaults] integerForKey: WINDOWSIZEVIEWER_KEY])
 	{
-		case 0:	[self setWindowFrame:screenRect showWindow: NO]; break;
-		case 1:	[imageView resizeWindowToScale: 1.0]; break;
-		case 2:	[imageView resizeWindowToScale: 1.5]; break;
-		case 3:	[imageView resizeWindowToScale: 2.0]; break;
+		case WINDOW_SIZE_FULL_SCREEN:
+            [self setWindowFrame:screenRect showWindow: NO];
+            break;
+
+        case WINDOW_SIZE_100_RES:
+            [imageView resizeWindowToScale: 1.0];
+            break;
+
+        case WINDOW_SIZE_150_RES:
+            [imageView resizeWindowToScale: 1.5];
+            break;
+
+        case WINDOW_SIZE_200_RES:
+            [imageView resizeWindowToScale: 2.0];
+            break;
 	}
     
     for (ViewerController *v in [ViewerController getDisplayed2DViewers])
@@ -17508,7 +17519,7 @@ long				x, y;
 	}
 	else
 	{
-		if ([imageView syncro] != syncroOFF)
+		if ([imageView syncro] != SYNCHRO_OFF)
 		{
 			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
 		}
@@ -17553,15 +17564,15 @@ long				x, y;
 	}
 	else
 	{
-		if ([imageView syncro] == syncroOFF)
+		if ([imageView syncro] == SYNCHRO_OFF)
 		{
 			if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSEventModifierFlagOption)
-				[imageView setSyncro: syncroREL];
+				[imageView setSyncro: SYNCHRO_ID_REL];
 			else
-				[imageView setSyncro: syncroLOC];
+				[imageView setSyncro: SYNCHRO_POSITION_ABS];
 		}
 		else
-            [imageView setSyncro: syncroOFF];
+            [imageView setSyncro: SYNCHRO_OFF];
 		
 		[imageView becomeMainWindow];
 	}
@@ -17613,12 +17624,12 @@ long				x, y;
 
 - (IBAction) reSyncOrigin:(id) sender
 {
-	float	o[ 3];
-	int		x, i;
+	float o[ 3];
+	int x, i;
 	
 	if (blendingController)
 	{
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == NO || [imageView syncro] != syncroLOC)
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == NO || [imageView syncro] != SYNCHRO_POSITION_ABS)
 		{
 			float zDiff = [[[blendingController imageView] curDCM] sliceLocation] - [[imageView curDCM] sliceLocation];
 		
@@ -17671,7 +17682,7 @@ long				x, y;
 			}
 			
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"COPYSETTINGS"];
-			[imageView setSyncro: syncroLOC];
+			[imageView setSyncro: SYNCHRO_POSITION_ABS];
 			[imageView sendSyncMessage: 0];
 			[self propagateSettings];
 		}
@@ -20199,7 +20210,8 @@ static BOOL viewerControllerPlaying = NO;
 - (NSDictionary*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers
 {
 	NSArray *viewers = [ViewerController getDisplayed2DViewers];
-	long annotCopy,clutBarsCopy;
+    long annotCopy;
+    ClutBarsType clutBarsCopy;
 	BOOL modalityAsSource = NO;
 	long width, height, spp, bpp, i, x;
 	float cwl, cww;
@@ -20209,14 +20221,14 @@ static BOOL viewerControllerPlaying = NO;
 	
 	if (screenCapture || allViewers)
 	{
-        annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
-        clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
+        annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY];
+        clutBarsCopy = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey: CLUTBARS_KEY];
         
-        if (imageView.annotationType > annotGraphics)
+        if (imageView.annotationType > ANNOTATIONS_GRAPHICS)
         {
             NSString *studyInstanceUID = imageView.studyObj.studyInstanceUID;
             NSString *patientUID = imageView.studyObj.patientUID;
-            int annotationsType  = annotGraphics;
+            int annotations = ANNOTATIONS_GRAPHICS;
             
             if (allViewers)
             {
@@ -20225,22 +20237,22 @@ static BOOL viewerControllerPlaying = NO;
                 {
                     if ([v.studyObj.studyInstanceUID isEqualToString: studyInstanceUID] == NO)
                     {
-                        if (annotationsType < annotBase)
-                            annotationsType = annotBase;
+                        if (annotations < ANNOTATIONS_BASE)
+                            annotations = ANNOTATIONS_BASE;
                     }
                     
                     if ([v.studyObj.patientUID isEqualToString: patientUID] == NO)
                     {
-                        if (annotationsType < annotFull)
-                            annotationsType = annotFull;
+                        if (annotations < ANNOTATIONS_FULL)
+                            annotations = ANNOTATIONS_FULL;
                     }
                 }
             }
             
             if ([[NSUserDefaults standardUserDefaults] boolForKey: @"keepCLUTBarsForSecondaryCapture"])
-                [DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotationsType];
+                [DCMView setCLUTBARS: clutBarsCopy withAnnotations: annotations];
             else
-                [DCMView setCLUTBARS: barHide ANNOTATIONS: annotationsType];
+                [DCMView setCLUTBARS: CLUT_BAR_HIDE withAnnotations: annotations];
         }
 	}
 	
@@ -20429,7 +20441,7 @@ static BOOL viewerControllerPlaying = NO;
         NSLog( @"No Data");
 	
 	if (screenCapture || allViewers)
-		[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotCopy];
+		[DCMView setCLUTBARS: clutBarsCopy withAnnotations: annotCopy];
 	
 	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil];
 }
@@ -20455,13 +20467,14 @@ static BOOL viewerControllerPlaying = NO;
 {
 	NSMutableArray *producedFiles = [NSMutableArray array];
 	
-	if (exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
+	if (!exportDCM)
+        exportDCM = [[DICOMExport alloc] init];
     
     [exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
     
     [exportDCM setSeriesDescription: seriesName];
 	
-	NSLog( @"export start");
+	NSLog(@"%s export start", __FUNCTION__);
 	
 	NSString *savedSeriesName = [dcmSeriesName stringValue];
 	
@@ -20485,7 +20498,7 @@ static BOOL viewerControllerPlaying = NO;
 		[pool release];
 	}
 	
-	NSLog( @"export end");
+	NSLog(@"%s export end", __FUNCTION__);
 
 	if ([producedFiles count])
 	{

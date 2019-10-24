@@ -50,6 +50,7 @@
 #import "DefaultsOsiriX.h"
 #import "NSString+N2.h"
 #import "WaitRendering.h"
+#import "mieleTypes.h"
 
 /*
 #include <IOKit/IOKitLib.h>
@@ -438,11 +439,27 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		_nsbDicom = [[NSNetServiceBrowser alloc] init];
 		[_nsbDicom setDelegate:self];
 		[_nsbDicom searchForServicesOfType:@"_dicom._tcp." inDomain:@""];
-		// mounted devices
-		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidMountNotification object:nil];
-		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidUnmountNotification object:nil];
-        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidRenameVolumeNotification object:nil];
-		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeWillUnmountNotification:) name:NSWorkspaceWillUnmountNotification object:nil];
+
+        // mounted devices
+		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                               selector:@selector(_observeVolumeNotification:)
+                                                                   name:NSWorkspaceDidMountNotification
+                                                                 object:nil];
+
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                               selector:@selector(_observeVolumeNotification:)
+                                                                   name:NSWorkspaceDidUnmountNotification
+                                                                 object:nil];
+
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                               selector:@selector(_observeVolumeNotification:)
+                                                                   name:NSWorkspaceDidRenameVolumeNotification
+                                                                 object:nil];
+
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                               selector:@selector(_observeVolumeWillUnmountNotification:)
+                                                                   name:NSWorkspaceWillUnmountNotification
+                                                                 object:nil];
         
         // Is there a DICOMDIR at the same level of OsiriX ?
         NSString *appFolder = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
@@ -458,24 +475,28 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         {
             NSString *dicomdir = [NSString stringWithContentsOfFile: [appFolder stringByAppendingPathComponent: @"DICOMDIRPATH"] encoding: NSUTF8StringEncoding error:nil];
             
-            if( [[NSFileManager defaultManager] fileExistsAtPath: dicomdir])
-            @try {
-                [_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath: dicomdir.stringByDeletingLastPathComponent description:dicomdir.stringByDeletingLastPathComponent.lastPathComponent dictionary:nil type:MountTypeGeneric]];
-            } @catch (NSException* e) {
-                N2LogExceptionWithStackTrace(e);
+            if ([[NSFileManager defaultManager] fileExistsAtPath: dicomdir]) {
+                @try {
+                    [_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath: dicomdir.stringByDeletingLastPathComponent description:dicomdir.stringByDeletingLastPathComponent.lastPathComponent dictionary:nil type:MountTypeGeneric]];
+                }
+                @catch (NSException* e) {
+                    N2LogExceptionWithStackTrace(e);
+                }
             }
         }
         else
         {
-            int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"MOUNT"];
+            CDMountModeType mode = (CDMountModeType)[[NSUserDefaults standardUserDefaults] integerForKey: CD_MOUNT_KEY];
 #ifdef OSIRIX_LIGHT
-            mode = 0; //display the source
+            mode = CD_MODE_SHOW_AS_SEPARATE_SOURCE;
 #endif
             
-            if( mode != 2)
+            if (mode != CD_MODE_IGNORE)
             {
-                for (NSString* path in [[NSWorkspace sharedWorkspace] mountedRemovableMedia])
+                for (NSString* path in [[NSWorkspace sharedWorkspace] mountedRemovableMedia]) {
+                    //NSLog(@"%s %d, path: %@", __FUNCTION__, __LINE__, path);
                     [self _analyzeVolumeAtPath:path];
+                }
             }
         }
 	}
@@ -1082,12 +1103,16 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)_observeVolumeNotification:(NSNotification*)notification
 {
-    int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"MOUNT"];
+#ifndef NDEBUG
+    NSLog(@"%s %d %@\n%@", __FUNCTION__, __LINE__, notification.name, notification);
+#endif
+
+    CDMountModeType mode = (CDMountModeType)[[NSUserDefaults standardUserDefaults] integerForKey: CD_MOUNT_KEY];
 #ifdef OSIRIX_LIGHT
-    mode = 0; //display the source
+    mode = CD_MODE_SHOW_AS_SEPARATE_SOURCE;
 #endif
     
-    if( mode == 2)
+    if (mode == CD_MODE_IGNORE)
         return;
     
 	NSString* path = [[notification.userInfo objectForKey: NSWorkspaceVolumeURLKey] path];
@@ -1100,7 +1125,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		[self _analyzeVolumeAtPath:[[notification.userInfo objectForKey: NSWorkspaceVolumeURLKey] path]];
 	}
     
-    if( [notification.name isEqualToString:NSWorkspaceDidRenameVolumeNotification])
+    if ([notification.name isEqualToString:NSWorkspaceDidRenameVolumeNotification])
     {
         path = [[[notification userInfo] objectForKey: NSWorkspaceVolumeOldURLKey] path];
     }
@@ -1360,15 +1385,16 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         
         BOOL selectSource = NO;
         
-        NSInteger mode = [NSUserDefaults.standardUserDefaults integerForKey:@"MOUNT"];
+        CDMountModeType mode = (CDMountModeType)[NSUserDefaults.standardUserDefaults integerForKey:CD_MOUNT_KEY];
         BOOL autoSelectSourceCDDVD = [[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"];
         
 #ifdef OSIRIX_LIGHT
-        mode = 0; //display the source
+        mode = CD_MODE_SHOW_AS_SEPARATE_SOURCE;
         autoSelectSourceCDDVD = YES;
 #endif
         
-        if (mode == -1 || [[NSApp currentEvent] modifierFlags] & NSEventModifierFlagCommand) //The user clicked on the dialog box
+        if (mode == CD_MODE_ASK_USER ||
+            [[NSApp currentEvent] modifierFlags] & NSEventModifierFlagCommand) //The user clicked on the dialog box
         {
             if( autoselect)
                 selectSource = YES;
@@ -1376,7 +1402,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		else if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
             selectSource = YES;
         
-        if( selectSource)
+        if (selectSource)
 			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSourceIdentifier:) withObject:self waitUntilDone:NO modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
         else
             [[BrowserController currentBrowser] redrawSources];

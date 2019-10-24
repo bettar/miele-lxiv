@@ -367,8 +367,9 @@ enum {
     [self reset];
 }
 
--(void)stream:(NSStream*)stream handleEvent:(NSStreamEvent)event {
-	//#ifdef DEBUG
+-(void)stream:(NSStream*)stream handleEvent:(NSStreamEvent)event
+{
+	//#ifndef NDEBUG
 //    	NSString* NSEventName[] = {@"NSStreamEventNone", @"NSStreamEventOpenCompleted", @"NSStreamEventHasBytesAvailable", @"NSStreamEventHasSpaceAvailable", @"NSStreamEventErrorOccurred", @"NSStreamEventEndEncountered"};
 //    	NSLog(@"%@ stream:handleEvent:%@", NSEventName[(int)log2(event)+1], [stream className]);
 	//#endif

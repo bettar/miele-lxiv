@@ -1481,18 +1481,18 @@ return YES;
 {
 	DCMPix *curPix = [[self keyView] curDCM];
 
-	int		annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
-			clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-	long	width, height, spp, bpp;
-	float	cwl, cww;
-	float	o[ 9];
-	float	imOrigin[ 3], imSpacing[ 2];
-	int		offset;
-	BOOL	isSigned;
+    int annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY];
+    ClutBarsType clutBarsCopy = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey: CLUTBARS_KEY];
+	long width, height, spp, bpp;
+	float cwl, cww;
+	float o[ 9];
+	float imOrigin[ 3], imSpacing[ 2];
+	int offset;
+	BOOL isSigned;
 	NSString *f = nil;
 	
-	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
-	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: ANNOTATIONS_GRAPHICS forKey: ANNOTATIONS_KEY];
+	[[NSUserDefaults standardUserDefaults] setInteger: CLUT_BAR_HIDE forKey: CLUTBARS_KEY];
 	[DCMView setDefaults];
 	
 	unsigned char *data = nil;
@@ -1610,8 +1610,8 @@ return YES;
 		
 		free( data);
 	}
-	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
-	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: ANNOTATIONS_KEY];
+	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: CLUTBARS_KEY];
 	[DCMView setDefaults];
 	
 	if (f)

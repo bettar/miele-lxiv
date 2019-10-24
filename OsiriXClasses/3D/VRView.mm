@@ -111,7 +111,15 @@ typedef struct _xyzArray
 	short z;
 } xyzArray;
 
-extern int intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoint, float* resultPt );
+typedef NS_ENUM(NSInteger, StackOrientationType) {
+    STACK_ORIENTATION_X = 0,
+    STACK_ORIENTATION_Y = 1,
+    STACK_ORIENTATION_Z = 2
+};
+
+extern Intersection3DType intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoint, float* resultPt );
+
+#pragma mark -
 
 class vtkMyCallbackVR : public vtkCommand
 {
@@ -4836,14 +4844,18 @@ public:
 
 - (void) deleteRegion:(int) c :(NSArray*) pxList :(BOOL) blendedSeries
 {
-	long			tt, stackMax, stackOrientation, i;
-	vtkPoints		*roiPts = ROI3DData->GetPoints();
-	NSMutableArray	*ROIList = [NSMutableArray array];
-	double			xyz[ 3], cameraProj[ 3], cameraProjObj[ 3];
-	float			vector[ 9];
-	DCMPix			*fObject = [pxList objectAtIndex: 0];
+    long tt;
+    long stackMax;
+    StackOrientationType stackOrientation;
+	vtkPoints *roiPts = ROI3DData->GetPoints();
+	NSMutableArray *ROIList = [NSMutableArray array];
+    double xyz[ 3];
+    double cameraProj[ 3];
+    double cameraProjObj[ 3];
+	float vector[ 9];
+	DCMPix *fObject = [pxList objectAtIndex: 0];
 
-	NSLog(@"Scissor Start");
+	NSLog(@"%s Scissor Start", __FUNCTION__);
 //	[[[self window] windowController] prepareUndo];
 	[controller prepareUndo];
 	
@@ -4887,33 +4899,38 @@ public:
 	cameraProjObj[ 2] = cameraProj[ 0] * vector[ 6] +
                         cameraProj[ 1] * vector[ 7] +
                         cameraProj[ 2] * vector[ 8];
-				
+    	
 	if (fabs(cameraProjObj[ 0]) > fabs(cameraProjObj[ 1]) &&
         fabs(cameraProjObj[ 0]) > fabs(cameraProjObj[ 2]))
 	{
-		NSLog(@"X Stack");
-		stackOrientation = 0;
+		stackOrientation = STACK_ORIENTATION_X;
 	}
 	else if (fabs(cameraProjObj[ 1]) > fabs(cameraProjObj[ 0]) &&
              fabs(cameraProjObj[ 1]) > fabs(cameraProjObj[ 2]))
 	{
-		NSLog(@"Y Stack");
-		stackOrientation = 1;
+		stackOrientation = STACK_ORIENTATION_Y;
 	}
 	else
 	{
-		NSLog(@"Z Stack");
-		stackOrientation = 2;
+		stackOrientation = STACK_ORIENTATION_Z;
 	}
 	
 	switch (stackOrientation)
 	{
-		case 0:	stackMax = [fObject pwidth];	break;
-		case 1:	stackMax = [fObject pheight];	break;
-		case 2:	stackMax = [pxList count];		break;
+		case STACK_ORIENTATION_X:
+            stackMax = [fObject pwidth];
+            break;
+            
+		case STACK_ORIENTATION_Y:
+            stackMax = [fObject pheight];
+            break;
+            
+		case STACK_ORIENTATION_Z:
+            stackMax = [pxList count];
+            break;
 	}
 	
-	for (i = 0 ; i < stackMax ; i++)
+	for (long i = 0 ; i < stackMax ; i++)
 		[ROIList addObject: [[[ROI alloc] initWithType: tCPolygon
                                                       : [fObject pixelSpacingX]*factor
                                                       : [fObject pixelSpacingY]*factor
@@ -4970,19 +4987,19 @@ public:
         
         switch (stackOrientation)
         {
-            case 0:
+            case STACK_ORIENTATION_X:
                 minClip = [NSValue valueWithPoint: NSMakePoint( floor(a[ 2]), floor( a[ 4]))];
                 maxClip = [NSValue valueWithPoint: NSMakePoint( ceil(a[ 3]), ceil( a[ 5]))];
                 zClip = NSMakePoint( floor( a[ 0]), ceil( a[ 1]));
                 break;
                 
-            case 1:
+            case STACK_ORIENTATION_Y:
                 minClip = [NSValue valueWithPoint: NSMakePoint( floor(a[ 0]), floor( a[ 4]))];
                 maxClip = [NSValue valueWithPoint: NSMakePoint( ceil(a[ 1]), ceil( a[ 5]))];
                 zClip = NSMakePoint( floor( a[ 2]), ceil( a[ 3]));
                 break;
                 
-            case 2:
+            case STACK_ORIENTATION_Z:
                 minClip = [NSValue valueWithPoint: NSMakePoint( floor(a[ 0]), floor( a[ 2]))];
                 maxClip = [NSValue valueWithPoint: NSMakePoint( ceil(a[ 1]), ceil( a[ 3]))];
                 zClip = NSMakePoint( floor( a[ 4]), ceil( a[ 5]));
@@ -4992,10 +5009,10 @@ public:
     
 	for (tt = 0; tt < roiPts->GetNumberOfPoints(); tt++)
 	{
-		float	point1[ 3], point2[ 3];
-		long	x;
-		
-		double	point2D[ 3], *pp;
+        float point1[ 3];
+        float point2[ 3];
+        double point2D[ 3];
+        double *pp;
 		
 		roiPts->GetPoint( tt, point2D);
 		aRenderer->SetDisplayPoint( point2D[ 0], point2D[ 1], 0);
@@ -5051,12 +5068,12 @@ public:
 		}
 		
 		// Intersection between this line and planes in Z direction
-		for (x = 0; x < stackMax; x++)
+		for (long x = 0; x < stackMax; x++)
 		{
-			float	planeVector[ 3];
-			float	point[ 3];
-			float	resultPt[ 3];
-			double	vPos[ 3];
+			float planeVector[ 3];
+			float point[ 3];
+			float resultPt[ 3];
+			double vPos[ 3];
 			
 			if (blendedSeries)
                 blendingVolume->GetPosition( vPos);
@@ -5080,7 +5097,7 @@ public:
 			
 			switch (stackOrientation)
 			{
-				case 0:
+				case STACK_ORIENTATION_X:
 					point[ 0] = x * [fObject pixelSpacingX];
 					point[ 1] = 0;
 					point[ 2] = 0;
@@ -5090,7 +5107,7 @@ public:
 					planeVector[ 2] = vector[ 2];
                     break;
 				
-				case 1:
+				case STACK_ORIENTATION_Y:
 					point[ 0] = 0;
 					point[ 1] = x * [fObject pixelSpacingY];
 					point[ 2] = 0;
@@ -5100,7 +5117,7 @@ public:
 					planeVector[ 2] = vector[ 5];
                     break;
 				
-				case 2:
+				case STACK_ORIENTATION_Z:
 					point[ 0] = 0;
 					point[ 1] = 0;
 			//		point[ 2] = x * fabs( [fObject sliceInterval]);
@@ -5118,11 +5135,11 @@ public:
 			
 			Transform->TransformPoint(point,point);
 			
-			if ( intersect3D_SegmentPlane( point2, point1, planeVector, point, resultPt ) != NO_INTERSECT_3D)
+			if (intersect3D_SegmentPlane( point2, point1, planeVector, point, resultPt ) != INTERSECT_3D_NONE)
 			{
-				float	tempPoint3D[ 3];
-				long	ptInt[ 3];
-				long	roiID;
+				float tempPoint3D[ 3];
+				long ptInt[ 3];
+				long roiID;
 				// Convert this 3D point to 2D point projected in the plane
 				
 				Transform->Inverse();
@@ -5146,26 +5163,29 @@ public:
 				
                 switch (stackOrientation)
                 {
-                    case 0:	
+                    case STACK_ORIENTATION_X:
                         roiID = ptInt[0];
                         
                         if (roiID >= zClip.x && roiID < zClip.y)
                             [[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[1], ptInt[2])]];
-                    break;
+
+                        break;
                     
-                    case 1:
+                    case STACK_ORIENTATION_Y:
                         roiID = ptInt[1];
                         
                         if (roiID >= zClip.x && roiID < zClip.y)
                             [[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[2])]];
-                    break;
+
+                        break;
                     
-                    case 2:
+                    case STACK_ORIENTATION_Z:
                         roiID = ptInt[2];
                         
                         if (roiID >= zClip.x && roiID < zClip.y)
                             [[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[1])]];
-                    break;
+
+                        break;
                 }
 			}
 		}
@@ -5173,8 +5193,8 @@ public:
     
     Transform->Delete();
 	
-	BOOL	addition = NO;
-	float	newVal = 0;
+	BOOL addition = NO;
+	float newVal = 0.0f;
 	
 	if (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
 	{
@@ -5203,7 +5223,7 @@ public:
     dontRenderVolumeRenderingOsiriX = true;
     aRenderer->SetDraw( 0);
     
-	for ( int m = 0; m < [[controller viewer2D] maxMovieIndex] ; m++)
+	for (int m = 0; m < [[controller viewer2D] maxMovieIndex] ; m++)
 	{
 		[controller setMovieFrame: m];
 		
@@ -5213,7 +5233,7 @@ public:
         
         NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
         
-        for ( i = 0; i < stackMax; i++ )
+        for (long i = 0; i < stackMax; i++ )
         {
             VRViewOperation *op = [[[VRViewOperation alloc] initWithController: controller
                                                                        objects: [NSArray arrayWithObjects:
@@ -8656,20 +8676,21 @@ public:
 						+ cameraViewPlaneNormal[1] * o[7]
 						+ cameraViewPlaneNormal[2] * o[8];
 	
-	long stackOrientation, stackMax;
+    StackOrientationType stackOrientation;
+    long stackMax;
 	if (fabs(cameraProjObj[0]) > fabs(cameraProjObj[1]) && fabs(cameraProjObj[0]) > fabs(cameraProjObj[2]))
 	{
-		stackOrientation = 0; //NSLog(@"X Stack");
+		stackOrientation = STACK_ORIENTATION_X;
 		stackMax = [firstObject pwidth];
 	}
 	else if (fabs(cameraProjObj[1]) > fabs(cameraProjObj[0]) && fabs(cameraProjObj[1]) > fabs(cameraProjObj[2]))
 	{
-		stackOrientation = 1; //NSLog(@"Y Stack");
+		stackOrientation = STACK_ORIENTATION_Y;
 		stackMax = [firstObject pheight];
 	}
 	else
 	{
-		stackOrientation = 2; //NSLog(@"Z Stack");
+		stackOrientation = STACK_ORIENTATION_Z;
 		stackMax = [curPixList count];
 	}
 	
@@ -8681,12 +8702,13 @@ public:
 	}
 	
 	// the two points defining the line going through the volume
-	float	point1[3], point2[3];
+    float point1[3];
 	point1[0] = cameraPosition[0];
 	point1[1] = cameraPosition[1];
 	point1[2] = cameraPosition[2];
 	
 	// Go beyond the object...
+    float point2[3];
 	point2[0] = cameraPosition[0] + (worldPointClicked[0] - cameraPosition[0])*5000.;
 	point2[1] = cameraPosition[1] + (worldPointClicked[1] - cameraPosition[1])*5000.;
 	point2[2] = cameraPosition[2] + (worldPointClicked[2] - cameraPosition[2])*5000.;
@@ -8702,7 +8724,7 @@ public:
 	
 	switch (stackOrientation)
 	{
-		case 0:
+		case STACK_ORIENTATION_X:
 			if (point1[0] - point2[0] < 0)
                 direction = YES;
 			else
@@ -8710,7 +8732,7 @@ public:
             
             break;
 		
-		case 1:
+		case STACK_ORIENTATION_Y:
 			if (point1[1] - point2[1] < 0)
                 direction = YES;
 			else
@@ -8718,7 +8740,7 @@ public:
             
             break;
 		
-		case 2:
+		case STACK_ORIENTATION_Z:
 			if (point1[2] - point2[2] < 0)
                 direction = YES;
 			else
@@ -8727,7 +8749,7 @@ public:
             break;
 	}
 	
-	long p, n;
+	long n;
 	BOOL pointFound = NO;
 	float opacitySum = 0.0;
 	float maxValue = -FLT_MAX;
@@ -8738,14 +8760,15 @@ public:
 	if (textureMapper)
         blendMode = textureMapper->GetBlendMode();
 				
-	for (p = 0; p < stackMax; p++)
+	for (long p = 0; p < stackMax; p++)
 	{
-		n = (direction)? p : (stackMax-1)-p;
+		n = (direction) ? p : (stackMax-1)-p;
 		
-		float currentPoint[3], planeVector[3];
+        float currentPoint[3];
+        float planeVector[3];
 		switch (stackOrientation)
 		{
-			case 0:
+			case STACK_ORIENTATION_X:
 				currentPoint[0] = n * [firstObject pixelSpacingX];
 				currentPoint[1] = 0;
 				currentPoint[2] = 0;
@@ -8753,9 +8776,9 @@ public:
 				planeVector[0] = o[0];
 				planeVector[1] = o[1];
 				planeVector[2] = o[2];
-			break;
+                break;
 			
-			case 1:
+			case STACK_ORIENTATION_Y:
 				currentPoint[0] = 0;
 				currentPoint[1] = n * [firstObject pixelSpacingY];
 				currentPoint[2] = 0;
@@ -8763,9 +8786,9 @@ public:
 				planeVector[0] = o[3];
 				planeVector[1] = o[4];
 				planeVector[2] = o[5];
-			break;
+                break;
 			
-			case 2:
+			case STACK_ORIENTATION_Z:
 				currentPoint[0] = 0;
 				currentPoint[1] = 0;
 				currentPoint[2] = n * [firstObject sliceInterval];
@@ -8773,7 +8796,7 @@ public:
 				planeVector[0] = o[6];
 				planeVector[1] = o[7];
 				planeVector[2] = o[8];
-			break;
+                break;
 		}
 			
 		currentPoint[0] += volumePosition[0];
@@ -8784,7 +8807,7 @@ public:
 		
 		float resultPt[3];
 			
-		if (intersect3D_SegmentPlane(point2, point1, planeVector, currentPoint, resultPt) != NO_INTERSECT_3D)
+		if (intersect3D_SegmentPlane(point2, point1, planeVector, currentPoint, resultPt) != INTERSECT_3D_NONE)
 		{
 			// Convert this 3D point to 2D point projected in the plane
 			float tempPoint3D[3];

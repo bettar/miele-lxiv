@@ -1905,7 +1905,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
   //  DcmRLEEncoderRegistration::cleanup();
 #endif
 
-//#ifdef DEBUG
+//#ifndef NDEBUG
 //    dcmDataDict.clear();  /* useful for debugging with dmalloc */
 //#endif
 

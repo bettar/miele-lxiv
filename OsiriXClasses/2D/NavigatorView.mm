@@ -482,7 +482,7 @@ static float deg2rad = M_PI/180.0;
 	
 	glDisable(GL_TEXTURE_RECTANGLE_EXT);
 	
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] > annotNone)
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] > ANNOTATIONS_NONE)
 	{
 		for (int t=0; t<[[self viewer] maxMovieIndex]; t++)
 		{

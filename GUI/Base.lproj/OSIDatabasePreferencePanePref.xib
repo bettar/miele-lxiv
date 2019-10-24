@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15400" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15400"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -39,41 +39,41 @@
                     <box horizontalCompressionResistancePriority="1000" title="File Management" translatesAutoresizingMaskIntoConstraints="NO" id="107">
                         <rect key="frame" x="14" y="744" width="860" height="171"/>
                         <view key="contentView" id="vDi-Aq-FOL">
-                            <rect key="frame" x="3" y="3" width="854" height="150"/>
+                            <rect key="frame" x="3" y="3" width="854" height="151"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="104">
-                                    <rect key="frame" x="12" y="45" width="163" height="18"/>
+                                    <rect key="frame" x="12" y="46" width="163" height="18"/>
                                     <buttonCell key="cell" type="check" title="Copy files to Data folder if:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="755">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="label" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.COPYDATABASE" id="905"/>
                                     </connections>
                                 </button>
                                 <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="105">
-                                    <rect key="frame" x="217" y="6" width="186" height="54"/>
+                                    <rect key="frame" x="217" y="7" width="186" height="54"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="186" height="18"/>
                                     <size key="intercellSpacing" width="2" height="0.0"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="788">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="label" size="11"/>
                                     </buttonCell>
                                     <cells>
                                         <column>
                                             <buttonCell type="radio" title="Always" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="601">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="label" size="11"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="If files aren't located on the HD" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="896">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="label" size="11"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="Ask the user" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="3" inset="2" id="898">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="label" size="11"/>
                                             </buttonCell>
                                         </column>
                                     </cells>
@@ -83,31 +83,31 @@
                                     </connections>
                                 </matrix>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="103">
-                                    <rect key="frame" x="15" y="131" width="146" height="14"/>
+                                    <rect key="frame" x="15" y="132" width="146" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Default Database Location:" id="754">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="label" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="110">
-                                    <rect key="frame" x="175" y="108" width="101" height="38"/>
+                                    <rect key="frame" x="175" y="109" width="101" height="38"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="101" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="789">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="label" size="11"/>
                                     </buttonCell>
                                     <cells>
                                         <column>
                                             <buttonCell type="radio" title="Recommended" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" toolTip="Default Location is your home Documents folder." inset="2" id="99">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="label" size="11"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="Other:" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" toolTip="Put Data folder where you want." tag="1" inset="2" id="101">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="label" size="11"/>
                                             </buttonCell>
                                         </column>
                                     </cells>
@@ -116,39 +116,39 @@
                                     </connections>
                                 </matrix>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="348">
-                                    <rect key="frame" x="287" y="102" width="59" height="27"/>
+                                    <rect key="frame" x="287" y="103" width="59" height="27"/>
                                     <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="756">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="label" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <action selector="setLocationURL:" target="-2" id="349"/>
                                     </connections>
                                 </button>
                                 <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="626">
-                                    <rect key="frame" x="12" y="81" width="371" height="18"/>
+                                    <rect key="frame" x="12" y="82" width="371" height="18"/>
                                     <buttonCell key="cell" type="check" title="Import DICOM file format only (ignore JPEG, TIFF, LSM, Analyze...)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="757">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="label" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.onlyDICOM" id="629"/>
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="829">
-                                    <rect key="frame" x="12" y="63" width="427" height="18"/>
+                                    <rect key="frame" x="12" y="64" width="427" height="18"/>
                                     <buttonCell key="cell" type="check" title="Validate files before importing files from CD/DVD or external files (crash test)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="830">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="label" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.validateFilesBeforeImporting" id="832"/>
                                     </connections>
                                 </button>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="642">
-                                    <rect key="frame" x="349" y="132" width="175" height="14"/>
+                                    <rect key="frame" x="349" y="133" width="175" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="(Current user Documents folder)" id="759">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="label" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                         <connections>
@@ -157,12 +157,12 @@
                                     </textFieldCell>
                                 </textField>
                                 <pathControl focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="810">
-                                    <rect key="frame" x="351" y="106" width="211" height="20"/>
+                                    <rect key="frame" x="351" y="107" width="211" height="20"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="211" id="mFN-kM-b4h"/>
                                     </constraints>
                                     <pathCell key="cell" controlSize="small" selectable="YES" enabled="NO" focusRingType="none" alignment="left" id="811">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="label" size="11"/>
                                         <url key="url" string="file://localhost/Applications/"/>
                                     </pathCell>
                                 </pathControl>
@@ -191,15 +191,15 @@
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box horizontalHuggingPriority="249" horizontalCompressionResistancePriority="1000" title="Database Display" translatesAutoresizingMaskIntoConstraints="NO" id="145">
-                        <rect key="frame" x="14" y="532" width="477" height="208"/>
+                        <rect key="frame" x="14" y="533" width="477" height="207"/>
                         <view key="contentView" id="LkB-TO-Sym">
                             <rect key="frame" x="3" y="3" width="471" height="187"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="613">
-                                    <rect key="frame" x="15" y="165" width="113" height="14"/>
+                                    <rect key="frame" x="15" y="164" width="113" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Date &amp; Time Format:" id="761">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -210,7 +210,7 @@
                                         <constraint firstAttribute="width" constant="130" id="iid-ec-jO5"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="dd/bb/cc" drawsBackground="YES" id="762">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -219,19 +219,19 @@
                                     </connections>
                                 </textField>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="619">
-                                    <rect key="frame" x="266" y="157" width="56" height="27"/>
+                                    <rect key="frame" x="266" y="156" width="56" height="27"/>
                                     <buttonCell key="cell" type="push" title="Reset" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="763">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <action selector="resetDate:" target="-2" id="620"/>
                                     </connections>
                                 </button>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="621">
-                                    <rect key="frame" x="28" y="139" width="100" height="14"/>
+                                    <rect key="frame" x="28" y="138" width="100" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Date Only Format:" id="764">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -239,7 +239,7 @@
                                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="622">
                                     <rect key="frame" x="133" y="136" width="130" height="19"/>
                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="dd/bb/cc" drawsBackground="YES" id="765">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -248,10 +248,10 @@
                                     </connections>
                                 </textField>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="623">
-                                    <rect key="frame" x="266" y="131" width="56" height="27"/>
+                                    <rect key="frame" x="266" y="130" width="56" height="27"/>
                                     <buttonCell key="cell" type="push" title="Reset" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="766">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <action selector="resetDateOfBirth:" target="-2" id="625"/>
@@ -261,7 +261,7 @@
                                     <rect key="frame" x="8" y="65" width="237" height="18"/>
                                     <buttonCell key="cell" type="check" title="Always display all studies of each patient" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="767">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.KeepStudiesOfSamePatientTogether" id="632"/>
@@ -271,7 +271,7 @@
                                     <rect key="frame" x="8" y="45" width="361" height="18"/>
                                     <buttonCell key="cell" type="check" title="Display patient's names and descriptions with Capitalized Words" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="946">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.CapitalizedString" id="950"/>
@@ -281,7 +281,7 @@
                                     <rect key="frame" x="8" y="25" width="359" height="18"/>
                                     <buttonCell key="cell" type="check" title="Clear Search field (in the toolbar), when changing current album" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="952">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.clearSearchAndTimeIntervalWhenSelectingAlbum" id="954"/>
@@ -291,7 +291,7 @@
                                     <rect key="frame" x="8" y="5" width="226" height="18"/>
                                     <buttonCell key="cell" type="check" title="Display the History Drawer horizontally" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="pPT-1s-tm1">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.horizontalHistory" id="d5R-gC-bxH"/>
@@ -300,7 +300,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1011">
                                     <rect key="frame" x="52" y="90" width="76" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Patient's age:" id="1012">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -309,7 +309,7 @@
                                     <rect key="frame" x="130" y="85" width="156" height="22"/>
                                     <popUpButtonCell key="cell" type="push" title="Both, if different" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="2" imageScaling="proportionallyDown" inset="2" selectedItem="1018" id="1014">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <menu key="menu" title="OtherViews" id="1015">
                                             <items>
                                                 <menuItem title="Current Age" id="1016"/>
@@ -325,7 +325,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1036">
                                     <rect key="frame" x="72" y="114" width="56" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Font Size:" id="1043">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -334,7 +334,7 @@
                                     <rect key="frame" x="130" y="109" width="76" height="22"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="1038">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <menu key="menu" title="OtherViews" id="1039">
                                             <items>
                                                 <menuItem title="Small" tag="-1" id="1042"/>
@@ -384,7 +384,7 @@
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box horizontalCompressionResistancePriority="1000" title="Patient Unique Identifier" translatesAutoresizingMaskIntoConstraints="NO" id="955">
-                        <rect key="frame" x="493" y="532" width="381" height="208"/>
+                        <rect key="frame" x="493" y="533" width="381" height="207"/>
                         <view key="contentView" id="Pic-tL-IN3">
                             <rect key="frame" x="3" y="3" width="375" height="187"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -393,7 +393,7 @@
                                     <rect key="frame" x="23" y="141" width="73" height="18"/>
                                     <buttonCell key="cell" type="check" title="Patient ID" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="971">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="-2" name="value" keyPath="self.newUsePatientIDForUID" id="988"/>
@@ -403,7 +403,7 @@
                                     <rect key="frame" x="23" y="124" width="112" height="18"/>
                                     <buttonCell key="cell" type="check" title="Patient BirthDate" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="972">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="-2" name="value" keyPath="self.newUsePatientBirthDateForUID" id="990"/>
@@ -413,7 +413,7 @@
                                     <rect key="frame" x="23" y="107" width="101" height="18"/>
                                     <buttonCell key="cell" type="check" title="Patient's Name" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="973">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="-2" name="value" keyPath="self.newUsePatientNameForUID" id="992"/>
@@ -422,7 +422,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="978" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="981">
                                     <rect key="frame" x="14" y="163" width="236" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Use following fields to generate Patient UID:" id="982">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -430,7 +430,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="978" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="983">
                                     <rect key="frame" x="14" y="71" width="347" height="28"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" id="984">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <string key="title">Changing these settings will recompute all database patientUIDs.
 It can require several minutes on large database.</string>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -456,7 +456,7 @@ It can require several minutes on large database.</string>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box horizontalCompressionResistancePriority="1000" title="Database Auto-Cleaning" translatesAutoresizingMaskIntoConstraints="NO" id="262">
-                        <rect key="frame" x="14" y="97" width="860" height="238"/>
+                        <rect key="frame" x="14" y="99" width="860" height="237"/>
                         <view key="contentView" id="6d8-Am-AT0">
                             <rect key="frame" x="3" y="3" width="854" height="217"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -465,7 +465,7 @@ It can require several minutes on large database.</string>
                                     <rect key="frame" x="12" y="195" width="207" height="18"/>
                                     <buttonCell key="cell" type="check" title="Delete studies at these conditions:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="768">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <action selector="databaseCleaning:" target="-2" id="314"/>
@@ -484,15 +484,15 @@ It can require several minutes on large database.</string>
                                         <column>
                                             <buttonCell type="check" title="Acquisition date is older than :" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="495">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                             </buttonCell>
                                             <buttonCell type="check" title="Not opened during last:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="496">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                             </buttonCell>
                                             <buttonCell type="check" title="Only if 'comments' field:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="497">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                             </buttonCell>
                                         </column>
                                     </cells>
@@ -504,7 +504,7 @@ It can require several minutes on large database.</string>
                                     <rect key="frame" x="440" y="192" width="109" height="22"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="769">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <menu key="menu" title="OtherViews" id="272">
                                             <items>
                                                 <menuItem title="One week" tag="7" id="274"/>
@@ -524,7 +524,7 @@ It can require several minutes on large database.</string>
                                     <rect key="frame" x="440" y="170" width="109" height="22"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="770">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <menu key="menu" title="OtherViews" id="289">
                                             <items>
                                                 <menuItem title="One week" tag="7" id="291"/>
@@ -544,7 +544,7 @@ It can require several minutes on large database.</string>
                                     <rect key="frame" x="12" y="110" width="173" height="18"/>
                                     <buttonCell key="cell" type="check" title="If HD free space is less than:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="771">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.AUTOCLEANINGSPACE" id="916"/>
@@ -554,7 +554,7 @@ It can require several minutes on large database.</string>
                                     <rect key="frame" x="220" y="107" width="76" height="22"/>
                                     <popUpButtonCell key="cell" type="push" title="20 %" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="-20" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="890" id="772">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <menu key="menu" title="OtherViews" id="297">
                                             <items>
                                                 <menuItem title="20 MB" tag="20" id="299"/>
@@ -585,7 +585,7 @@ It can require several minutes on large database.</string>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="301">
                                     <rect key="frame" x="397" y="113" width="41" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="delete:" id="773">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -603,11 +603,11 @@ It can require several minutes on large database.</string>
                                         <column>
                                             <buttonCell type="radio" title="contains:" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="499">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="doesn't contain:" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="500">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                             </buttonCell>
                                         </column>
                                     </cells>
@@ -621,7 +621,7 @@ It can require several minutes on large database.</string>
                                         <constraint firstAttribute="width" constant="153" id="Suf-fU-COW"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="774">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -633,7 +633,7 @@ It can require several minutes on large database.</string>
                                     <rect key="frame" x="12" y="59" width="498" height="18"/>
                                     <buttonCell key="cell" type="check" title="If image files are linked files (not stored in the Database folder), also delete the original file" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="775">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <action selector="databaseCleaning:" target="-2" id="508"/>
@@ -643,7 +643,7 @@ It can require several minutes on large database.</string>
                                     <rect key="frame" x="12" y="41" width="426" height="18"/>
                                     <buttonCell key="cell" type="check" title="Don't delete a study, if there are comments (Comment Field of the Database)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="822">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.dontDeleteStudiesWithComments" id="824"/>
@@ -653,7 +653,7 @@ It can require several minutes on large database.</string>
                                     <rect key="frame" x="12" y="23" width="447" height="18"/>
                                     <buttonCell key="cell" type="check" title="Don't delete a study, if it is stored in an album (smart albums are not considered)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="ENc-og-Jds">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.dontDeleteStudiesIfInAlbum" id="yNV-s4-92K"/>
@@ -663,7 +663,7 @@ It can require several minutes on large database.</string>
                                     <rect key="frame" x="12" y="5" width="511" height="18"/>
                                     <buttonCell key="cell" type="check" title="Automatically delete the ENTIRE default database, at each startup: all studies will be deleted." bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="1033">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.eraseEntireDBAtStartup" id="1035"/>
@@ -672,7 +672,7 @@ It can require several minutes on large database.</string>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="509">
                                     <rect key="frame" x="5" y="169" width="216" height="22"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" id="776">
-                                        <font key="font" metaFont="miniSystem"/>
+                                        <font key="font" metaFont="label" size="9"/>
                                         <string key="title">If all checked conditions are true.
 If a study is in an album, it will NOT be deleted.</string>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -692,15 +692,15 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <column>
                                             <buttonCell type="radio" title="Least recently created" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="908">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="Least recently added" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" tag="2" inset="2" id="909">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="Least recently opened" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="910">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                             </buttonCell>
                                         </column>
                                     </cells>
@@ -747,29 +747,29 @@ If a study is in an album, it will NOT be deleted.</string>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" title="Sort Series by" translatesAutoresizingMaskIntoConstraints="NO" id="321">
-                        <rect key="frame" x="705" y="462" width="169" height="66"/>
+                        <rect key="frame" x="705" y="462" width="169" height="67"/>
                         <view key="contentView" id="zdz-Sg-I7F">
-                            <rect key="frame" x="3" y="3" width="163" height="45"/>
+                            <rect key="frame" x="3" y="3" width="163" height="47"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="323">
-                                    <rect key="frame" x="11" y="5" width="125" height="38"/>
+                                    <rect key="frame" x="11" y="5" width="125" height="40"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="125" height="18"/>
+                                    <size key="cellSize" width="125" height="19"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="mini" inset="2" id="794">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="miniSystem"/>
+                                        <font key="font" metaFont="label" size="9"/>
                                     </buttonCell>
                                     <cells>
                                         <column>
                                             <buttonCell type="radio" title="Series ID" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="510">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="miniSystem"/>
+                                                <font key="font" metaFont="label" size="9"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="Series Acquisition Time" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="511">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="miniSystem"/>
+                                                <font key="font" metaFont="label" size="9"/>
                                             </buttonCell>
                                         </column>
                                     </cells>
@@ -787,7 +787,7 @@ If a study is in an album, it will NOT be deleted.</string>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box horizontalCompressionResistancePriority="1000" title="Sort Images by" translatesAutoresizingMaskIntoConstraints="NO" id="847">
-                        <rect key="frame" x="705" y="339" width="169" height="119"/>
+                        <rect key="frame" x="705" y="340" width="169" height="118"/>
                         <view key="contentView" id="IO0-Ol-azP">
                             <rect key="frame" x="3" y="3" width="163" height="98"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -799,29 +799,29 @@ If a study is in an album, it will NOT be deleted.</string>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="mini" inset="2" id="851">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="miniSystem"/>
+                                        <font key="font" metaFont="label" size="9"/>
                                     </buttonCell>
                                     <cells>
                                         <column>
                                             <buttonCell type="radio" title="Instance Number" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" inset="2" id="849">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="miniSystem"/>
+                                                <font key="font" metaFont="label" size="9"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="Ascending Slice Location" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="850">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="miniSystem"/>
+                                                <font key="font" metaFont="label" size="9"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="Descending Slice Location" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="-1" inset="2" id="853">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="miniSystem"/>
+                                                <font key="font" metaFont="label" size="9"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="Ascending Date" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="883">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="miniSystem"/>
+                                                <font key="font" metaFont="label" size="9"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="Descending Date" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="-2" inset="2" id="884">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="miniSystem"/>
+                                                <font key="font" metaFont="label" size="9"/>
                                             </buttonCell>
                                         </column>
                                     </cells>
@@ -840,16 +840,16 @@ If a study is in an album, it will NOT be deleted.</string>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box horizontalCompressionResistancePriority="1000" title="Comments &amp; Status fields" translatesAutoresizingMaskIntoConstraints="NO" id="350">
-                        <rect key="frame" x="14" y="339" width="272" height="189"/>
+                        <rect key="frame" x="14" y="340" width="272" height="189"/>
                         <view key="contentView" id="inJ-ex-qje">
-                            <rect key="frame" x="3" y="3" width="266" height="168"/>
+                            <rect key="frame" x="3" y="3" width="266" height="169"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="355">
-                                    <rect key="frame" x="8" y="102" width="135" height="18"/>
+                                    <rect key="frame" x="8" y="103" width="135" height="18"/>
                                     <buttonCell key="cell" type="check" title="DICOM Field(s) to fill:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="777">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <action selector="setAutoComments:" target="-2" id="377"/>
@@ -860,7 +860,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                     <rect key="frame" x="59" y="7" width="53" height="18"/>
                                     <buttonCell key="cell" type="check" title="Study" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1021">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.COMMENTSAUTOFILLStudyLevel" id="1030"/>
@@ -870,7 +870,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                     <rect key="frame" x="137" y="7" width="55" height="18"/>
                                     <buttonCell key="cell" type="check" title="Series" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1025">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.COMMENTSAUTOFILLSeriesLevel" id="1031"/>
@@ -879,7 +879,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="356">
                                     <rect key="frame" x="24" y="54" width="40" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Group:" id="778">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -887,7 +887,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1028">
                                     <rect key="frame" x="19" y="9" width="35" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Level:" id="1029">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -895,18 +895,18 @@ If a study is in an album, it will NOT be deleted.</string>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="357">
                                     <rect key="frame" x="146" y="54" width="50" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Element:" id="779">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="358">
-                                    <rect key="frame" x="69" y="51" width="54" height="19"/>
+                                    <rect key="frame" x="69" y="52" width="54" height="19"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="54" id="kcQ-qO-jmH"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="0x0000" drawsBackground="YES" id="780">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -915,9 +915,9 @@ If a study is in an album, it will NOT be deleted.</string>
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="359">
-                                    <rect key="frame" x="200" y="51" width="56" height="19"/>
+                                    <rect key="frame" x="200" y="52" width="56" height="19"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="781">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -929,7 +929,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                     <rect key="frame" x="19" y="23" width="119" height="22"/>
                                     <popUpButtonCell key="cell" type="push" title="DICOM Fields" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" pullsDown="YES" selectedItem="803" id="801">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <menu key="menu" title="OtherViews" id="802">
                                             <items>
                                                 <menuItem title="DICOM Fields" state="on" hidden="YES" id="803"/>
@@ -946,7 +946,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                     <rect key="frame" x="140" y="22" width="121" height="27"/>
                                     <buttonCell key="cell" type="push" title="Regenerate" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="817">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <action selector="regenerateAutoComments:" target="-2" id="820"/>
@@ -954,30 +954,30 @@ If a study is in an album, it will NOT be deleted.</string>
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="855">
-                                    <rect key="frame" x="8" y="143" width="190" height="18"/>
+                                    <rect key="frame" x="8" y="144" width="190" height="18"/>
                                     <buttonCell key="cell" type="check" title="Store them in DICOM files fields" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="856">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.savedCommentsAndStatusInDICOMFiles" id="857"/>
                                     </connections>
                                 </button>
                                 <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="875">
-                                    <rect key="frame" x="8" y="122" width="203" height="19"/>
+                                    <rect key="frame" x="8" y="123" width="203" height="19"/>
                                     <buttonCell key="cell" type="check" title="Load them from DICOM files fields" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="876">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.CommentsFromDICOMFiles" id="879"/>
                                     </connections>
                                 </button>
                                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="933">
-                                    <rect key="frame" x="19" y="75" width="119" height="22"/>
+                                    <rect key="frame" x="19" y="76" width="119" height="22"/>
                                     <popUpButtonCell key="cell" type="push" title="DICOM Field 1 :" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="936" id="934">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <menu key="menu" title="OtherViews" id="935">
                                             <items>
                                                 <menuItem title="DICOM Field 1 :" state="on" id="936">
@@ -994,13 +994,13 @@ If a study is in an album, it will NOT be deleted.</string>
                                     </connections>
                                 </popUpButton>
                                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1002">
-                                    <rect key="frame" x="147" y="99" width="112" height="22"/>
+                                    <rect key="frame" x="147" y="100" width="112" height="22"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="106" id="Hvw-xm-Fwp"/>
                                     </constraints>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingMiddle" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="1003">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <menu key="menu" title="OtherViews" id="1004">
                                             <items>
                                                 <menuItem title="Comments" tag="1" id="1008">
@@ -1062,71 +1062,71 @@ If a study is in an album, it will NOT be deleted.</string>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box horizontalCompressionResistancePriority="1000" title="Series Parsing" translatesAutoresizingMaskIntoConstraints="NO" id="369">
-                        <rect key="frame" x="290" y="339" width="411" height="189"/>
+                        <rect key="frame" x="290" y="340" width="411" height="189"/>
                         <view key="contentView" id="vmD-4M-e0T">
-                            <rect key="frame" x="3" y="3" width="405" height="168"/>
+                            <rect key="frame" x="3" y="3" width="405" height="169"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="371">
-                                    <rect key="frame" x="9" y="143" width="128" height="18"/>
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="371">
+                                    <rect key="frame" x="9" y="144" width="128" height="18"/>
                                     <buttonCell key="cell" type="check" title="Split Multi-echo MR" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="782">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="-2" name="value" keyPath="splitMultiEchoMR" id="373"/>
                                     </connections>
                                 </button>
-                                <button horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="372">
-                                    <rect key="frame" x="9" y="106" width="169" height="18"/>
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="372">
+                                    <rect key="frame" x="9" y="107" width="169" height="18"/>
                                     <buttonCell key="cell" type="check" title="For CR, DR, DX, MG and RF:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="783">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.combineProjectionSeries" id="612"/>
                                     </connections>
                                 </button>
-                                <button horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="525">
-                                    <rect key="frame" x="171" y="144" width="142" height="18"/>
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="525">
+                                    <rect key="frame" x="171" y="145" width="142" height="18"/>
                                     <buttonCell key="cell" type="check" title="Use Series Description" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="784">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="-2" name="value" keyPath="useSeriesDescription" id="528"/>
                                     </connections>
                                 </button>
-                                <button toolTip="Using the 0018,0022 (ScanOptions) field" horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="547">
-                                    <rect key="frame" x="9" y="126" width="126" height="18"/>
+                                <button toolTip="Using the 0018,0022 (ScanOptions) field" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="547">
+                                    <rect key="frame" x="9" y="127" width="126" height="18"/>
                                     <buttonCell key="cell" type="check" title="Split 4D Cardiac CT" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="785">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.SEPARATECARDIAC4D" id="550"/>
                                     </connections>
                                 </button>
-                                <matrix verticalHuggingPriority="246" ambiguous="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="605">
-                                    <rect key="frame" x="194" y="106" width="140" height="18"/>
+                                <matrix verticalHuggingPriority="246" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="605">
+                                    <rect key="frame" x="194" y="107" width="140" height="18"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="69" height="18"/>
                                     <size key="intercellSpacing" width="2" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="795">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="cellTitle"/>
+                                        <font key="font" metaFont="label" size="12"/>
                                     </buttonCell>
                                     <cells>
                                         <column>
                                             <buttonCell type="radio" title="Combine" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="609">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                             </buttonCell>
                                         </column>
                                         <column>
                                             <buttonCell type="radio" title="Split" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="610">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                             </buttonCell>
                                         </column>
                                     </cells>
@@ -1135,39 +1135,39 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="selectedTag" keyPath="values.combineProjectionSeriesMode" id="611"/>
                                     </connections>
                                 </matrix>
-                                <button horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="796">
-                                    <rect key="frame" x="171" y="127" width="161" height="18"/>
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="796">
+                                    <rect key="frame" x="171" y="128" width="161" height="18"/>
                                     <buttonCell key="cell" type="check" title="For US : one series per file" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="797">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.oneFileOnSeriesForUS" id="799"/>
                                     </connections>
                                 </button>
-                                <button horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="813">
-                                    <rect key="frame" x="9" y="86" width="273" height="18"/>
+                                <button horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="813">
+                                    <rect key="frame" x="9" y="87" width="273" height="18"/>
                                     <buttonCell key="cell" type="check" title="Gather localizer images with Series Description:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="814">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.NOLOCALIZER" id="815"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="858">
-                                    <rect key="frame" x="9" y="41" width="182" height="14"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="858">
+                                    <rect key="frame" x="9" y="42" width="182" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="List of SOP Class UIDs displayed: " id="859">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <popUpButton verticalHuggingPriority="750" verticalCompressionResistancePriority="751" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="868">
-                                    <rect key="frame" x="189" y="36" width="70" height="22"/>
+                                <popUpButton verticalHuggingPriority="750" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="868">
+                                    <rect key="frame" x="189" y="37" width="70" height="22"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="869">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <menu key="menu" title="OtherViews" id="870">
                                             <items>
                                                 <menuItem title="Item 1" id="871"/>
@@ -1180,10 +1180,10 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="-2" name="contentValues" keyPath="ListOfMediaSOPClassUID" id="874"/>
                                     </connections>
                                 </popUpButton>
-                                <textField verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" ambiguous="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="880">
-                                    <rect key="frame" x="29" y="65" width="322" height="19"/>
+                                <textField verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="880">
+                                    <rect key="frame" x="29" y="66" width="322" height="19"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="localizer, scout" drawsBackground="YES" id="881">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -1191,19 +1191,19 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="value" keyPath="values.NOLOCALIZER_Strings" id="882"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="923">
-                                    <rect key="frame" x="9" y="18" width="166" height="14"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="923">
+                                    <rect key="frame" x="9" y="19" width="166" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="List of SOP Class UIDs stored: " id="930">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <popUpButton verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="924">
-                                    <rect key="frame" x="189" y="12" width="70" height="22"/>
+                                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="924">
+                                    <rect key="frame" x="189" y="13" width="70" height="22"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="925">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <menu key="menu" title="OtherViews" id="926">
                                             <items>
                                                 <menuItem title="Item 1" id="927"/>
@@ -1250,16 +1250,16 @@ If a study is in an album, it will NOT be deleted.</string>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box horizontalCompressionResistancePriority="1000" title="Reports" translatesAutoresizingMaskIntoConstraints="NO" id="381">
-                        <rect key="frame" x="14" y="16" width="860" height="77"/>
+                        <rect key="frame" x="14" y="16" width="860" height="79"/>
                         <view key="contentView" id="QF0-LS-aGX">
-                            <rect key="frame" x="3" y="3" width="854" height="56"/>
+                            <rect key="frame" x="3" y="3" width="854" height="59"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="535">
-                                    <rect key="frame" x="227" y="27" width="152" height="22"/>
+                                    <rect key="frame" x="227" y="30" width="152" height="22"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="786">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <menu key="menu" title="OtherViews" id="536">
                                             <items>
                                                 <menuItem title="Pages (.pages)" tag="2" id="537"/>
@@ -1278,18 +1278,18 @@ If a study is in an album, it will NOT be deleted.</string>
                                     </connections>
                                 </popUpButton>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="991" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="545">
-                                    <rect key="frame" x="110" y="32" width="115" height="14"/>
+                                    <rect key="frame" x="110" y="35" width="115" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Create reports using:" id="787">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <button horizontalCompressionResistancePriority="991" translatesAutoresizingMaskIntoConstraints="NO" id="919">
-                                    <rect key="frame" x="15" y="7" width="497" height="18"/>
+                                    <rect key="frame" x="15" y="10" width="497" height="18"/>
                                     <buttonCell key="cell" type="check" title="Automatically create a DICOM PDF file of the report, when status is changed to &quot;validated&quot;" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="920">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="548" name="value" keyPath="values.generateDICOMPDFWhenValidated" id="922"/>
@@ -1341,6 +1341,7 @@ If a study is in an album, it will NOT be deleted.</string>
                     <constraint firstItem="350" firstAttribute="baseline" secondItem="369" secondAttribute="baseline" id="zWI-hC-TUz"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="142" y="148"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="548" userLabel="Shared Defaults"/>
     </objects>

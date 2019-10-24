@@ -30,7 +30,7 @@
 
 #pragma mark -
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #define DLog NSLog
 #else
 #define DLog(args...) { if ([N2Debug isActive]) NSLog(args); }

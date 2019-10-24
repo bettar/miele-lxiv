@@ -1275,7 +1275,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
             NSArray* rois = roisImage? [NSUnarchiver unarchiveObjectWithData:[SRAnnotation roiFromDICOM:[roisImage completePath]]] : nil;
             
             DCMView* view = [[DCMView alloc] initWithFrame:frame imageRows:self.height.intValue imageColumns:self.width.intValue];
-            view.annotationType = annotGraphics;
+            view.annotationType = ANNOTATIONS_GRAPHICS;
             [view setPixels:[NSMutableArray arrayWithObject:pix] files:[NSMutableArray arrayWithObject:self] rois:(rois? [NSMutableArray arrayWithObject:rois] : nil) firstImage:0 level:'i' reset:YES];
             [win.contentView addSubview:view];
             

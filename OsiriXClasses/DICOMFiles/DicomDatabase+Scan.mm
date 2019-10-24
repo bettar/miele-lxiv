@@ -22,6 +22,7 @@
 #import "NSThread+N2.h"
 #import "NSDate+N2.h"
 #import "dcmtk/dcmdata/dcdicdir.h"
+#import "dcmtk/dcmdata/dcdeftag.h"
 #import "NSString+N2.h"
 #import "NSFileManager+N2.h"
 #import "DicomImage.h"
@@ -36,8 +37,7 @@
 #import "N2Stuff.h"
 #import "DICOMToNSString.h"
 #import "DicomDirParser.h"
-
-#include "dcmtk/dcmdata/dcdeftag.h"
+#import "mieleTypes.h"
 
 #define NUM_ENCODINGS        10
 
@@ -673,16 +673,21 @@ static NSString* _dcmElementKey(DcmElement* element) {
         if (!dicomImages.count)
             return NO;
         
-        NSInteger mode = [NSUserDefaults.standardUserDefaults integerForKey:@"MOUNT"];
+        CDMountModeType mode = (CDMountModeType)[NSUserDefaults.standardUserDefaults integerForKey:CD_MOUNT_KEY];
         
 #ifdef OSIRIX_LIGHT
-        mode = 0; //display the source
+        mode = CD_MODE_SHOW_AS_SEPARATE_SOURCE;
 #endif
         
-        if (mode == -1 || [[NSApp currentEvent] modifierFlags] & NSEventModifierFlagCommand)
-            [self performSelectorOnMainThread:@selector(_askUserDiscDataCopyOrBrowse:) withObject:[NSArray arrayWithObjects: path, [NSNumber numberWithInteger:dicomImages.count], [NSValue valueWithPointer:&mode], nil] waitUntilDone:YES];
+        if (mode == CD_MODE_ASK_USER ||
+            [[NSApp currentEvent] modifierFlags] & NSEventModifierFlagCommand)
+        {
+            [self performSelectorOnMainThread:@selector(_askUserDiscDataCopyOrBrowse:)
+                                   withObject:[NSArray arrayWithObjects: path, [NSNumber numberWithInteger:dicomImages.count], [NSValue valueWithPointer:&mode], nil]
+                                waitUntilDone:YES];
+        }
         
-        if (mode == 1)
+        if (mode == CD_MODE_COPY_TO_DB)
         {
             // copy into database on mount
             
@@ -777,20 +782,24 @@ static NSString* _dcmElementKey(DcmElement* element) {
                 N2LogException( e);
             }
             
-            for (NSInteger i = 0; i < dicomSeries.count; ++i)
+            for (NSInteger i = 0; i < dicomSeries.count; ++i) {
                 @try {
                     thread.progress = 1.0*i/dicomSeries.count;
                     [[dicomSeries objectAtIndex:i] thumbnail];
-                } @catch (NSException* e) {
+                }
+                @catch (NSException* e) {
                     N2LogExceptionWithStackTrace(e);
                 }
+            }
         }
         
-        if (mode == 2) // ignore
+        if (mode == CD_MODE_IGNORE)
             return NO;
-    } @catch (NSException* e) {
+    }
+    @catch (NSException* e) {
         @throw;
-    } @finally {
+    }
+    @finally {
         [thread exitOperation];
     }
     

@@ -106,16 +106,19 @@ const char *stringCRSpaces = "\n                                                
 #define BS 10.
 //#define new_loupe
 
-short syncro = syncroLOC;
+SynchroType syncro = SYNCHRO_POSITION_ABS;
 
 static double deg2rad = M_PI / 180.0;
 static unsigned char *PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
-static BOOL NOINTERPOLATION = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
+static BOOL NOINTERPOLATION = NO;
+static BOOL SOFTWAREINTERPOLATION = NO;
+static BOOL IndependentCRWLWW;
+static BOOL pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
 
 BOOL FULL32BITPIPELINE = NO;
 BOOL gDontListenToSyncMessage = NO;
 BOOL OVERFLOWLINES = NO;
-int CLUTBARS;
+ClutBarsType CLUTBARS;
 int MAXNUMBEROF32BITVIEWERS = 4;
 int SOFTWAREINTERPOLATION_MAX;
 static BOOL DISPLAYCROSSREFERENCELINES = YES;
@@ -128,13 +131,6 @@ static NSMutableArray *globalStringTextureCache = nil;
 NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
 NSString *pasteBoardOsiriXPlugin = @"OsiriXPluginDataType";
 NSString *OsirixPluginPboardUTI = @"com.opensource.osirix.plugin.uti";
-
-// intersect3D_SegmentPlane(): intersect a segment and a plane
-//    Input:  S = a segment, and Pn = a plane = {Point V0; Vector n;}
-//    Output: *I0 = the intersect point (when it exists)
-//    Return: 0 = disjoint (no intersection)
-//            1 = intersection in the unique point *I0
-//            2 = the segment lies in the plane
 
 #define SMALL_NUM  0.00000001 // anything that avoids division overflow
 #define DOT(v1,v2) (v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2])
@@ -153,7 +149,13 @@ int checkExtension(const char* ext);
 
 #pragma mark -
 
-int intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoint, float* resultPt )
+// intersect3D_SegmentPlane(): intersect a segment and a plane
+//    Input:  S = a segment, and Pn = a plane = {Point V0; Vector n;}
+//    Output: *I0 = the intersect point (when it exists)
+//    Return: 0 = disjoint (no intersection)
+//            1 = intersection in the unique point *I0
+//            2 = the segment lies in the plane
+Intersection3DType intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoint, float* resultPt )
 {
     float u[ 3];
 	float w[ 3];
@@ -171,9 +173,9 @@ int intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoin
 	
     if (fabs(D) < SMALL_NUM) {          // segment is parallel to plane
         if (N == 0)                     // segment lies in plane
-            return 0;
+            return INTERSECT_3D_NONE;
         else
-            return NO_INTERSECT_3D;
+            return INTERSECT_3D_NONE;
     }
 	
     // they are not parallel
@@ -181,7 +183,7 @@ int intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoin
 	
     float sI = N / D;
     if (sI < 0 || sI > 1)
-        return NO_INTERSECT_3D;
+        return INTERSECT_3D_NONE;
 	
     resultPt[ 0] = P0[ 0] + sI * u[ 0];		// compute segment intersect point
 	resultPt[ 1] = P0[ 1] + sI * u[ 1];
@@ -882,7 +884,7 @@ void checkOGLVersion()
 @synthesize rectArray, studyColorR, studyColorG, studyColorB, studyDateIndex;
 @synthesize flippedData, whiteBackground, timeIntervalForDrag;
 @synthesize dcmPixList, dcmFilesList, dcmRoiList;
-@synthesize syncSeriesIndex;
+//@synthesize syncSeriesIndex;
 @synthesize syncRelativeDiff;
 @synthesize blendingMode, blendingView, blendingFactor;
 @synthesize xFlipped, yFlipped;
@@ -1073,10 +1075,10 @@ void checkOGLVersion()
 	DISPLAYCROSSREFERENCELINES = [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayCrossReferenceLines"];
 	
 	IndependentCRWLWW = [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"];
-	CLUTBARS = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
+	CLUTBARS = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey: CLUTBARS_KEY];
 	
 //	int previousANNOTATIONS = ANNOTATIONS;
-//	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+//	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY];
 //	
 //	BOOL reload = NO;
 //	
@@ -1102,7 +1104,7 @@ void checkOGLVersion()
 //	}
 }
 
-+(void) setCLUTBARS:(int) c ANNOTATIONS:(int) a
++(void) setCLUTBARS:(ClutBarsType) c withAnnotations:(int) a
 {
 	CLUTBARS = c;
     
@@ -1834,7 +1836,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	else if ([item action] == @selector(annotMenu:))
 	{
 		valid = YES;
-		if ([item tag] == [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"])
+		if ([item tag] == [[NSUserDefaults standardUserDefaults] integerForKey:ANNOTATIONS_KEY])
             [item setState: NSOnState];
 		else
             [item setState: NSOffState];
@@ -1842,7 +1844,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	else if ([item action] == @selector(barMenu:))
 	{
 		valid = YES;
-		if ([item tag] == [[NSUserDefaults standardUserDefaults] integerForKey:@"CLUTBARS"])
+		if ([item tag] == [[NSUserDefaults standardUserDefaults] integerForKey:CLUTBARS_KEY])
             [item setState: NSOnState];
 		else
             [item setState: NSOffState];
@@ -1954,9 +1956,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 - (IBAction) roiLoadFromXMLFiles: (NSArray*) filenames
 {
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] == ANNOTATIONS_NONE)
 	{
-		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+		[[NSUserDefaults standardUserDefaults] setInteger: ANNOTATIONS_GRAPHICS forKey: ANNOTATIONS_KEY];
 		[DCMView setDefaults];
 	}
 	
@@ -2203,12 +2205,17 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	self.xFlipped = !xFlipped;
 }
 
-- (void) DrawNSStringGL:(NSString*)str :(GLuint)fontL :(long)x :(long)y rightAlignment:(BOOL)right useStringTexture:(BOOL)stringTex
+- (void) DrawNSStringGL:(NSString*)str
+                       :(GLuint)fontL
+                       :(long)x
+                       :(long)y
+         rightAlignment:(BOOL)right
+       useStringTexture:(BOOL)stringTex
 {
 	if (right)
-		[self DrawNSStringGL:str :fontL :x :y align:DCMViewTextAlignRight useStringTexture:stringTex];
+		[self DrawNSStringGL:str :fontL :x :y align:DCMVVIEW_TEXT_ALIGN_RIGHT useStringTexture:stringTex];
 	else
-		[self DrawNSStringGL:str :fontL :x :y align:DCMViewTextAlignLeft useStringTexture:stringTex];
+		[self DrawNSStringGL:str :fontL :x :y align:DCMVVIEW_TEXT_ALIGN_LEFT useStringTexture:stringTex];
 }
 
 + (void) purgeStringTextureCache
@@ -2272,9 +2279,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			[stringTex release];
 		}
 		
-		if (align==DCMViewTextAlignRight)
+		if (align==DCMVVIEW_TEXT_ALIGN_RIGHT)
             x -= [stringTex texSize].width;
-		else if (align==DCMViewTextAlignCenter)
+		else if (align==DCMVVIEW_TEXT_ALIGN_CENTER)
             x -= [stringTex texSize].width/2.0;
 		else
             x -= 5 * self.window.backingScaleFactor;
@@ -2314,7 +2321,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	else
 	{
 		char *cstrOut = (char*) [str UTF8String];
-		if (align==DCMViewTextAlignRight)
+		if (align==DCMVVIEW_TEXT_ALIGN_RIGHT)
 		{
 			if (fontL == labelFontListGL)
                 x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize] + 2*self.window.backingScaleFactor;
@@ -2323,7 +2330,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			else
                 x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize] + 2;
 		}
-		else if (align==DCMViewTextAlignCenter)
+		else if (align==DCMVVIEW_TEXT_ALIGN_CENTER)
 		{
 			if (fontL == labelFontListGL)
                 x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize]/2.0 + 2*self.window.backingScaleFactor;
@@ -2392,7 +2399,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                        : fontL
                        : x
                        : y
-                  align: right ? DCMViewTextAlignRight : DCMViewTextAlignLeft
+                  align: right ? DCMVVIEW_TEXT_ALIGN_RIGHT : DCMVVIEW_TEXT_ALIGN_LEFT
        useStringTexture: stringTex];
 }
 
@@ -2811,7 +2818,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
     @try
     {
-        [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"ANNOTATIONS"];
+        [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:ANNOTATIONS_KEY];
         [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"LabelFONTNAME"];
         [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"LabelFONTSIZE"];
     }
@@ -3526,29 +3533,29 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		else if (c == 9)	// Tab key
 		{
 			int a = annotationType + 1;
-			if (a > annotFull)
-                a = 0;
+			if (a > ANNOTATIONS_FULL)
+                a = ANNOTATIONS_NONE;
 			
 //			switch (a)
 //			{
-//				case annotNone:
+//				case ANNOTATIONS_NONE:
 //					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Turn Off Annotations", nil) name:@"result"];
 //				break;
 //				
-//				case annotGraphics:
+//				case ANNOTATIONS_GRAPHICS:
 //					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Graphic Only", nil) name:@"result"];
 //				break;
 //				
-//				case annotBase:
+//				case ANNOTATIONS_BASE:
 //					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Full without names", nil) name:@"result"];
 //				break;
 //				
-//				case annotFull:
+//				case ANNOTATIONS_FULL:
 //					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Full", nil) name:@"result"];
 //				break;
 //			}
 			
-			[[NSUserDefaults standardUserDefaults] setInteger: a forKey: @"ANNOTATIONS"];
+			[[NSUserDefaults standardUserDefaults] setInteger: a forKey: ANNOTATIONS_KEY];
 			[DCMView setDefaults];
             annotationType = a;
 //            ANNOTATIONS = a;
@@ -5340,9 +5347,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 					tempPt = [self ConvertFromNSView2GL:tempPt];
 					
-					if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+					if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] == ANNOTATIONS_NONE)
 					{
-						[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+						[[NSUserDefaults standardUserDefaults] setInteger: ANNOTATIONS_GRAPHICS forKey: ANNOTATIONS_KEY];
 						[DCMView setDefaults];
 					}
 					
@@ -7538,11 +7545,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c1 pixelCenter: YES];
 	[oPix convertPixX: [oPix pwidth] pixY: 0 toDICOMCoords: c2 pixelCenter: YES];
 	
-	int x = 0, v;
+	int x = 0;
 	
-	v = intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r);
+	Intersection3DType v = intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r);
 	if (x < 2 &&
-        v != NO_INTERSECT_3D)
+        v != INTERSECT_3D_NONE)
 	{
 		order[ x] = v;
 		[curDCM convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
@@ -7555,7 +7562,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	v = intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r);
 	if (x < 2 &&
-        v != NO_INTERSECT_3D)
+        v != INTERSECT_3D_NONE)
 	{
 		order[ x] = v;
 		[curDCM convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
@@ -7570,7 +7577,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	v = intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r);
 	if (x < 2 &&
-        v != NO_INTERSECT_3D)
+        v != INTERSECT_3D_NONE)
 	{
 		order[ x] = v;
 		[curDCM convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
@@ -7585,7 +7592,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	v = intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r);
 	if (x < 2 &&
-        v != NO_INTERSECT_3D)
+        v != INTERSECT_3D_NONE)
 	{
 		order[ x] = v;
 		[curDCM convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
@@ -7632,10 +7639,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	BOOL changed = NO;
     
     // Copy to test for change
-    float csliceFromTo[ 2][ 3], csliceFromToS[ 2][ 3], csliceFromToE[ 2][ 3], csliceFromTo2[ 2][ 3], csliceFromToThickness;
+    float csliceFromTo[ 2][ 3];
+    float csliceFromToS[ 2][ 3];
+    float csliceFromToE[ 2][ 3];
+    float csliceFromTo2[ 2][ 3];
 	float csliceVector[ 3];
     
-    csliceFromToThickness = sliceFromToThickness;
+    float csliceFromToThickness = sliceFromToThickness;
     for (int y = 0; y < 3; y++)
     {
         for (int x = 0; x < 2; x++)
@@ -7791,7 +7801,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     return areDCMPixParallel;
 }
 
--(void) sync:(NSNotification*)note
+- (void) sync:(NSNotification*)note
 {
     if (gDontListenToSyncMessage)
         return;
@@ -7890,7 +7900,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			if (same3DReferenceWorld ||
                 registeredViewer ||
                 [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] == NO ||
-                syncSeriesIndex != -1)  // We received a message from the keyWindow -> display the slice cut to our window!
+                self.syncSeriesIndex != -1)  // We received a message from the keyWindow -> display the slice cut to our window!
 			{
 				if (same3DReferenceWorld || registeredViewer)
 				{
@@ -7926,11 +7936,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                         }
                     }
 				}
-				
-				// Absolute Vodka
-				if (syncro == syncroABS &&
+
+				if (syncro == SYNCHRO_ID_ABS &&
                     point3D == NO &&
-                    syncSeriesIndex == -1)
+                    self.syncSeriesIndex == -1)
 				{
 					if (flippedData)
                         newImage = (long)[dcmPixList count] -1 -pos;
@@ -7944,10 +7953,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                         newImage = 0;
 				}
                 
-                // Absolute Ratio
-				if (syncro == syncroRatio &&
+				if (syncro == SYNCHRO_ID_ABS_RATIO &&
                     point3D == NO &&
-                    syncSeriesIndex == -1)
+                    self.syncSeriesIndex == -1)
 				{
                     float ratio = (float) pos / (float) [[otherView dcmPixList] count];
 
@@ -7965,8 +7973,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                         newImage = 0;
 				}
 				
-				// Based on Location
-				if ((syncro == syncroLOC && point3D == NO) || syncSeriesIndex != -1)
+				if ((syncro == SYNCHRO_POSITION_ABS && point3D == NO) || self.syncSeriesIndex != -1)
 				{
                     BOOL selfVolumic = self.volumicData;
                     BOOL otherVolumic = otherView.volumicData;
@@ -7976,8 +7983,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     {
                         if (self.areDCMPixParallel)
                         {
-                            if (fabs( [(DCMPix*)[dcmPixList objectAtIndex: dcmPixList.count-2] sliceLocation] - [(DCMPix*)[dcmPixList objectAtIndex: 1] sliceLocation]) > 10) // 10 = 1 cm
+                            if (fabs([(DCMPix*)[dcmPixList objectAtIndex: dcmPixList.count-2] sliceLocation] -
+                                     [(DCMPix*)[dcmPixList objectAtIndex: 1] sliceLocation]) > 10) // 10 = 1 cm
+                            {
                                 selfVolumic = YES;
+                            }
                         }
                     }
                     
@@ -7986,21 +7996,25 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     {
                         if (otherView.areDCMPixParallel)
                         {
-                            if (fabs( [(DCMPix*)[otherView.dcmPixList objectAtIndex: otherView.dcmPixList.count-2] sliceLocation] - [(DCMPix*)[otherView.dcmPixList objectAtIndex: 1] sliceLocation]) > 10) // 10 = 1 cm
+                            if (fabs([(DCMPix*)[otherView.dcmPixList objectAtIndex: otherView.dcmPixList.count-2] sliceLocation] -
+                                     [(DCMPix*)[otherView.dcmPixList objectAtIndex: 1] sliceLocation]) > 10) // 10 = 1 cm
+                            {
                                 otherVolumic = YES;
+                            }
                         }
                     }
                     
 					if (selfVolumic && otherVolumic)
 					{
-                        float orientA[9], orientB[9];
+                        float orientA[9];
+                        float orientB[9];
                         
                         [[self.dcmPixList objectAtIndex: self.dcmPixList.count/2] orientation: orientA];
                         [[otherView.dcmPixList objectAtIndex: otherView.dcmPixList.count/2] orientation: orientB];
                    
                         float planeTolerance = [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE-Sync"]; //We don't need to be very strict :
                         
-                        if (syncSeriesIndex != -1) // Manual Sync !
+                        if (self.syncSeriesIndex != -1) // Manual Sync !
                             planeTolerance = 0.78; // 0.78 is about 45 degrees
                         
 						if ([DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < planeTolerance)
@@ -8016,7 +8030,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 								
 								if ([[self windowController] isEverythingLoaded] &&
                                     [[otherView windowController] isEverythingLoaded] &&
-                                    (syncSeriesIndex == -1 || [otherView syncSeriesIndex] == -1))
+                                    (self.syncSeriesIndex == -1 || [otherView syncSeriesIndex] == -1))
 								{
 									float centerPix[ 3];
 									[oPix convertPixX: oPix.pwidth/2
@@ -8051,7 +8065,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 											// Manual sync
 											if (same3DReferenceWorld == NO)
 											{						
-												if ([otherView syncSeriesIndex] != -1 && syncSeriesIndex != -1)
+												if ([otherView syncSeriesIndex] != -1 && self.syncSeriesIndex != -1)
 												{
 													slicePosition -= (syncRelativeDiff - otherView.syncRelativeDiff);
 													fdiff = slicePosition - loc;
@@ -8117,7 +8131,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					}
 					else if (selfVolumic == 0 && otherVolumic == 0)	// For example time or functional series
 					{
-                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"DefaultModeForNonVolumicSeries"] == syncroRatio)
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: DEFAULT_MODE_FOR_NON_VOLUMIC_SERIES_KEY] == SYNCHRO_ID_ABS_RATIO)
                         {
                             float ratio = (float) pos / (float) [[otherView dcmPixList] count];
                             int ratioPos = round( ratio * (float) [dcmPixList count]);
@@ -8127,7 +8141,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                             else
                                 newImage = ratioPos;
                         }
-                        else if ([[NSUserDefaults standardUserDefaults] integerForKey: @"DefaultModeForNonVolumicSeries"] == syncroABS)
+                        else if ([[NSUserDefaults standardUserDefaults] integerForKey: DEFAULT_MODE_FOR_NON_VOLUMIC_SERIES_KEY] == SYNCHRO_ID_ABS)
                         {
                             if (flippedData)
                                 newImage = (long)[dcmPixList count] -1 -pos;
@@ -8143,8 +8157,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					}
 				}
                 
-				 // Relative
-				 if (syncro == syncroREL && point3D == NO && syncSeriesIndex == -1)
+				 if (syncro == SYNCHRO_ID_REL &&
+                     point3D == NO &&
+                     self.syncSeriesIndex == -1)
 				 {
 					if (flippedData)
                         newImage -= diff;
@@ -8300,7 +8315,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:@"ANNOTATIONS"])
+    if ([keyPath isEqualToString:ANNOTATIONS_KEY])
     {
         int newValue = [[change objectForKey:NSKeyValueChangeNewKey] intValue];
         if (newValue != annotationType)
@@ -8322,7 +8337,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 -(void) barMenu:(id) sender
 {
-	[[NSUserDefaults standardUserDefaults] setInteger: [sender tag] forKey: @"CLUTBARS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: [sender tag] forKey: CLUTBARS_KEY];
 
     NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
@@ -8333,7 +8348,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 {
 	short chosenLine = [sender tag];
 	
-	[[NSUserDefaults standardUserDefaults] setInteger: chosenLine forKey: @"ANNOTATIONS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: chosenLine forKey: ANNOTATIONS_KEY];
 	[DCMView setDefaults];
 	
     NSNotificationCenter *nc;
@@ -8344,20 +8359,20 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		[v setWindowTitle: self];
 }
 
--(void) syncronize:(id) sender
+-(IBAction) syncronize:(id) sender
 {
-	[self setSyncro: [sender tag]];
+	[self setSyncro: (SynchroType)[sender tag]];
 }
 
-- (short)syncro { return syncro; }
-+ (short)syncro { return syncro; }
+- (SynchroType)syncro { return syncro; }
++ (SynchroType)syncro { return syncro; }
 
-+ (void)setSyncro:(short) s
++ (void)setSyncro:(SynchroType) s
 {
 	syncro = s;
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: nil];
 }
-- (void)setSyncro:(short) s
+- (void)setSyncro:(SynchroType) s
 {
 	syncro = s;
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: nil];
@@ -9189,7 +9204,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                             : fontListGL
                             : size.origin.x + size.size.width/2
                             : yPosition
-                       align: DCMViewTextAlignCenter
+                       align: DCMVVIEW_TEXT_ALIGN_CENTER
             useStringTexture: YES];
         
         yPosition += stringSize.height + 3;
@@ -9212,7 +9227,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                 : fontListGL
                                 : size.origin.x + size.size.width/2
                                 : yPosition
-                           align: DCMViewTextAlignCenter
+                           align: DCMVVIEW_TEXT_ALIGN_CENTER
                 useStringTexture: YES];
             
             yPosition += stringSize.height + 3;
@@ -9225,7 +9240,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                             : fontListGL
                             : size.origin.x + size.size.width/2
                             : yPosition
-                       align: DCMViewTextAlignCenter
+                       align: DCMVVIEW_TEXT_ALIGN_CENTER
             useStringTexture: YES];
         
         yPosition += stringSize.height + 3;
@@ -9364,7 +9379,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             size.origin = NSMakePoint( 0, 0);
 	if (annotations == 4)
         [[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawTextInfoNotification object: self];
-	else if (annotations > annotGraphics)
+	else if (annotations > ANNOTATIONS_GRAPHICS)
 	{
 		NSMutableString *tempString, *tempString2, *tempString3, *tempString4;
 		long yRaster = 1, xRaster;
@@ -9418,14 +9433,14 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + size.size.width/2] forKey:@"LowerMiddle"];
 
 		NSMutableDictionary *align = [NSMutableDictionary dictionary];
-		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignLeft] forKey:@"TopLeft"];
-		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignLeft] forKey:@"MiddleLeft"];
-		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignLeft] forKey:@"LowerLeft"];
-		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignRight] forKey:@"TopRight"];
-		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignRight] forKey:@"MiddleRight"];
-		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignRight] forKey:@"LowerRight"];
-		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignCenter] forKey:@"TopMiddle"];
-		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignCenter] forKey:@"LowerMiddle"];
+		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_LEFT] forKey:@"TopLeft"];
+		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_LEFT] forKey:@"MiddleLeft"];
+		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_LEFT] forKey:@"LowerLeft"];
+		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_RIGHT] forKey:@"TopRight"];
+		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_RIGHT] forKey:@"MiddleRight"];
+		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_RIGHT] forKey:@"LowerRight"];
+		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_CENTER] forKey:@"TopMiddle"];
+		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_CENTER] forKey:@"LowerMiddle"];
 
 		NSMutableDictionary *yRasterInit = [NSMutableDictionary dictionary];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + _stringSize.height+2*sf] forKey:@"TopLeft"];
@@ -9904,7 +9919,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 #pragma mark - PatientName
 						else if ([a isEqualToString: @"PatientName"])
 						{
-							if (annotFull == annotationType && self.studyObj.name)
+							if (ANNOTATIONS_FULL == annotationType && self.studyObj.name)
 								[tempString appendString: self.studyObj.name];
 						}
 						else if (fullText)
@@ -10398,7 +10413,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
              -2.0f / (drawingFrameRect.size.height),
               1.0f); // scale to port per pixel scale
 
-    if (clutBars == barOrigin || clutBars == barBoth)
+    if (clutBars == CLUT_BAR_ORIGIN || clutBars == CLUT_BAR_BOTH)
     {
         float heighthalf = drawingFrameRect.size.height/2 - 1;
         float widthhalf  = drawingFrameRect.size.width/2 - 1;
@@ -10460,17 +10475,17 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             tempString = [NSString stringWithFormat: @"%0.0f", curWL + curWW/2];
             [self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - 120*sf rightAlignment: YES useStringTexture: NO];
         }
-    } //clutBars == barOrigin || clutBars == barBoth
+    } //clutBars == CLUT_BAR_ORIGIN || clutBars == CLUT_BAR_BOTH
     
     if (blendingView)
     {
-        if (clutBars == barFused || clutBars == barBoth)
+        if (clutBars == CLUT_BAR_FUSED || clutBars == CLUT_BAR_BOTH)
         {
-            unsigned char	*bred = nil, *bgreen = nil, *bblue = nil;
-            float			heighthalf = drawingFrameRect.size.height/2 - 1;
-            float			widthhalf = drawingFrameRect.size.width/2 - 1;
-            float			bwl, bww;
-            NSString		*tempString = nil;
+            unsigned char *bred = nil, *bgreen = nil, *bblue = nil;
+            float heighthalf = drawingFrameRect.size.height/2 - 1;
+            float widthhalf = drawingFrameRect.size.width/2 - 1;
+            float bwl, bww;
+            NSString *tempString = nil;
             
             if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
             {
@@ -11041,7 +11056,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //				iChatTheatreSharedViewLabelPosition.x = drawingFrameRect.size.width/2.0;
 //				iChatTheatreSharedViewLabelPosition.y = topLeft.y;
 //
-//				[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
+//				[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMVVIEW_TEXT_ALIGN_CENTER useStringTexture:YES];
 //			}
 //			#endif
 
@@ -11049,12 +11064,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			// DRAW CLUT BARS ********
 			
 			if (is2DViewer == YES &&
-                annotations != annotNone) // && ctx!=_alternateContext)
+                annotations != ANNOTATIONS_NONE) // && ctx!=_alternateContext)
 			{
                 [self drawClutBar];
 			}
 			
-			if (annotations != annotNone)
+			if (annotations != ANNOTATIONS_NONE)
 			{
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
@@ -11414,7 +11429,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				
 				glColor3f (0.0f, 1.0f, 0.0f);
 				
-				 if (annotations >= annotBase)
+				 if (annotations >= ANNOTATIONS_BASE)
 				 {
                      [self drawRuler];
                  }
@@ -13067,13 +13082,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	float o[ 9], imOrigin[ 3], imSpacing[ 2];
 	long width, height, spp, bpp;
 	
-	long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
-	long clutBarsCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
+	long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY];
+	ClutBarsType clutBarsCopy = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey: CLUTBARS_KEY];
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"keepCLUTBarsForSecondaryCapture"])
-		[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotGraphics];
+		[DCMView setCLUTBARS: clutBarsCopy withAnnotations: ANNOTATIONS_GRAPHICS];
 	else
-		[DCMView setCLUTBARS: barHide ANNOTATIONS: annotGraphics];
+		[DCMView setCLUTBARS: CLUT_BAR_HIDE withAnnotations: ANNOTATIONS_GRAPHICS];
 	
 	unsigned char *data = nil;
     int offset = 0;
@@ -13239,7 +13254,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		free( data);
 	}
 	
-	[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotCopy];
+	[DCMView setCLUTBARS: clutBarsCopy withAnnotations: annotCopy];
 	
 	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil];
 }
@@ -14913,7 +14928,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		_imageColumns = columns;
 		isKeyView = NO;
         timeIntervalForDrag = 1.0;
-        annotationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
+        annotationType = [[NSUserDefaults standardUserDefaults] integerForKey:ANNOTATIONS_KEY];
         
 		[self setAutoresizingMask:NSViewMinXMargin];
 		
@@ -14948,7 +14963,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     firstDisplay = [NSDate timeIntervalSinceReferenceDate];
     
     yearOld = nil;
-    syncSeriesIndex = -1;
+    _syncSeriesIndex = -1;
     mouseXPos = mouseYPos = 0;
     pixelMouseValue = 0;
     curDCM = nil;
@@ -14973,10 +14988,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     suppress_labels = NO;
     previousViewSize = frameRect.size;
     
-    annotationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
+    annotationType = [[NSUserDefaults standardUserDefaults] integerForKey:ANNOTATIONS_KEY];
     
     [[NSUserDefaults standardUserDefaults] addObserver:self
-                                            forKeyPath:@"ANNOTATIONS"
+                                            forKeyPath:ANNOTATIONS_KEY
                                                options:NSKeyValueObservingOptionNew
                                                context:nil];
     

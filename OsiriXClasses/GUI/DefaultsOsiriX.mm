@@ -921,7 +921,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"CFINDCommentsAndStatusSupport"];
     [defaultValues setObject:@"1" forKey:@"restorePasswordWebServer"];
     [defaultValues setObject:@"comment" forKey:@"commentFieldForAutoFill"];
-    [defaultValues setObject:[NSString stringWithFormat:@"%d", syncroRatio] forKey:@"DefaultModeForNonVolumicSeries"];
+    [defaultValues setObject:@(SYNCHRO_ID_ABS_RATIO) forKey:DEFAULT_MODE_FOR_NON_VOLUMIC_SERIES_KEY];
 	[defaultValues setObject:@"2" forKey:@"drawerState"]; // NSDrawerOpenState
 	if ([[NSProcessInfo processInfo] processorCount] >= 4)
 		[defaultValues setObject:@"2.0" forKey:@"superSampling"];
@@ -1001,19 +1001,19 @@ static NSHost *currentHost = nil;
     [defaultValues setObject: @"0" forKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"];
 	[defaultValues setObject: @"1" forKey: @"SingleProcessMultiThreadedListener"];
 	[defaultValues setObject: @"0" forKey: @"AUTHENTICATION"];
-	[defaultValues setObject: @"1" forKey: @"Check4Updates"];
-	[defaultValues setObject: @"-1" forKey:@"MOUNT"];
+	[defaultValues setObject: @YES forKey: @"Check4Updates"];
+	[defaultValues setObject: @(CD_MODE_ASK_USER) forKey:CD_MOUNT_KEY];
 	[defaultValues setObject: @"1" forKey:@"CDDVDEjectAfterAutoCopy"];
 //	[defaultValues setObject: @"1" forKey:@"UNMOUNT"];
 	[defaultValues setObject: @"1" forKey: @"UseDICOMDIRFileCD"];
 	[defaultValues setObject: @"1" forKey: @"SAVEROIS"];
 	[defaultValues setObject: @"1" forKey: @"NOLOCALIZER"];
-	[defaultValues setObject: @"0" forKey: @"TRANSITIONEFFECT"];
-	[defaultValues setObject: @"0" forKey:@"NOINTERPOLATION"];
-    [defaultValues setObject: @"0" forKey:@"MultipleAssociationsRetrieve"];
-    [defaultValues setObject: @"3" forKey:@"NoOfMultipleAssociationsRetrieve"];
-	[defaultValues setObject: @"0" forKey: @"WINDOWSIZEVIEWER"];
-	[defaultValues setObject: @"1" forKey: @"UseOpenJpegForJPEG2000"];
+	[defaultValues setObject: @"0" forKey: @"TRANSITIONEFFECT"];  // unused ?
+	[defaultValues setObject: @NO  forKey: @"NOINTERPOLATION"];
+    [defaultValues setObject: @"0" forKey: @"MultipleAssociationsRetrieve"];
+    [defaultValues setObject: @"3" forKey: @"NoOfMultipleAssociationsRetrieve"];
+	[defaultValues setObject: @(WINDOW_SIZE_FULL_SCREEN) forKey: WINDOWSIZEVIEWER_KEY];
+	[defaultValues setObject: @YES forKey: @"UseOpenJpegForJPEG2000"];
 	//[defaultValues setObject: @"0" forKey: @"UseKDUForJPEG2000"];
 	[defaultValues setObject: @"0" forKey: @"KeepStudiesTogetherOnSameScreen"];
 	[defaultValues setObject: @"1" forKey: @"ShowErrorMessagesForAutorouting"];
@@ -1037,11 +1037,11 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"10" forKey:@"DICOMConnectionTimeout"];
 	[defaultValues setObject:@"1" forKey:@"NSWindowsSetFrameAnimate"];
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONTYPE"];
-	#ifndef OSIRIX_LIGHT
-	[defaultValues setObject: @"1" forKey: @"COPYDATABASE"];
-	#else
-	[defaultValues setObject: @"0" forKey: @"COPYDATABASE"];
-	#endif
+#ifndef OSIRIX_LIGHT
+	[defaultValues setObject: @YES forKey: @"COPYDATABASE"];
+#else
+	[defaultValues setObject: @NO forKey: @"COPYDATABASE"];
+#endif
 	[defaultValues setObject: @"0" forKey: @"SUVCONVERSION"];
 	[defaultValues setObject: @"1" forKey: @"NoImageTilingInFullscreen"];
 	[defaultValues setObject: @"0" forKey: @"AUTOCLEANINGCOMMENTS"];
@@ -1059,10 +1059,10 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"512" forKey:@"SOFTWAREINTERPOLATION_MAX"];
 	[defaultValues setObject:@"1" forKey:@"SOFTWAREINTERPOLATION"];
 	[defaultValues setObject:@"0" forKey:@"DATABASEINDEX"];
-	[defaultValues setObject: @"2" forKey: @"ANNOTATIONS"];
-	[defaultValues setObject: @"0" forKey :@"CLUTBARS"];
-	[defaultValues setObject: @"60" forKey: @"temporaryUserDuration"];
-	[defaultValues setObject:@"3" forKey:@"COPYDATABASEMODE"];
+	[defaultValues setObject:@(ANNOTATIONS_BASE) forKey: ANNOTATIONS_KEY];
+	[defaultValues setObject:@(CLUT_BAR_HIDE) forKey :CLUTBARS_KEY];
+	[defaultValues setObject:@"60" forKey: @"temporaryUserDuration"];
+	[defaultValues setObject:@(COPY_DB_ASK_USER) forKey:COPYDATABASEMODE_KEY];
 	[defaultValues setObject:@"7" forKey:@"LOGCLEANINGDAYS"];
 	[defaultValues setObject:@"1" forKey:@"AUTOMATIC FUSE"];
 

@@ -3963,8 +3963,8 @@ static BOOL initialized = NO;
                                                   backing:NSBackingStoreBuffered
                                                     defer:NO];
 	
-	long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
-	long clutBarsCopy = [[NSUserDefaults standardUserDefaults] integerForKey:@"CLUTBARS"];
+	int annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey:ANNOTATIONS_KEY];
+	ClutBarsType clutBarsCopy = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey:CLUTBARS_KEY];
 	BOOL noInterpolationCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
 	BOOL highQInterpolationCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"SOFTWAREINTERPOLATION"];
 	
@@ -3975,8 +3975,8 @@ static BOOL initialized = NO;
 	unsigned char gray_2[size2];
     unsigned char gray_1[size2];
     
-	[[NSUserDefaults standardUserDefaults] setInteger:annotNone forKey:@"ANNOTATIONS"];
-	[[NSUserDefaults standardUserDefaults] setInteger:barHide forKey:@"CLUTBARS"];
+	[[NSUserDefaults standardUserDefaults] setInteger:ANNOTATIONS_NONE forKey:ANNOTATIONS_KEY];
+	[[NSUserDefaults standardUserDefaults] setInteger:CLUT_BAR_HIDE forKey:CLUTBARS_KEY];
 	
 	// pix 1: no interpolation
     
@@ -4060,13 +4060,14 @@ static BOOL initialized = NO;
 	[win release];
 	[dcmPix release];
 	
-	
-	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey:@"ANNOTATIONS"];
-	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey:@"CLUTBARS"];
+	// Restore settings
+	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey:ANNOTATIONS_KEY];
+	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey:CLUTBARS_KEY];
 	[[NSUserDefaults standardUserDefaults] setBool: noInterpolationCopy forKey:@"NOINTERPOLATION"];
 	[[NSUserDefaults standardUserDefaults] setBool: highQInterpolationCopy forKey:@"SOFTWAREINTERPOLATION"];
 	
-	[DCMView setCLUTBARS:clutBarsCopy ANNOTATIONS:annotCopy];
+	[DCMView setCLUTBARS:clutBarsCopy
+         withAnnotations:annotCopy];
 	
 	// eval results
 	
@@ -4139,8 +4140,8 @@ static BOOL initialized = NO;
 	else
         [[NSUserDefaults standardUserDefaults] setInteger: [[NSTimeZone localTimeZone] secondsFromGMT] forKey: @"timeZone"];
 	
-    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"COPYDATABASEMODE"] intValue] == 1) // tag 1 "if on CD", disappeared after new CD/DVD import system
-        [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:@"COPYDATABASEMODE"];
+    if ([[[NSUserDefaults standardUserDefaults] valueForKey:COPYDATABASEMODE_KEY] intValue] == COPY_DB_CD_ONLY) // Fix up obsolete value
+        [[NSUserDefaults standardUserDefaults] setInteger:COPY_DB_NOT_MAIN_DRIVE forKey:COPYDATABASEMODE_KEY];
         
 //	NSLog(@"%s", __PRETTY_FUNCTION__, nil);
 	

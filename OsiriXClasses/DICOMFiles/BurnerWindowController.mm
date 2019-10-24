@@ -127,9 +127,20 @@
 		
 		[[self window] center];
 		
-        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidMountNotification object:nil];
-		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidUnmountNotification object:nil];
-        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidRenameVolumeNotification object:nil];
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                               selector:@selector(_observeVolumeNotification:)
+                                                                   name:NSWorkspaceDidMountNotification
+                                                                 object:nil];
+
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                               selector:@selector(_observeVolumeNotification:)
+                                                                   name:NSWorkspaceDidUnmountNotification
+                                                                 object:nil];
+
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                               selector:@selector(_observeVolumeNotification:)
+                                                                   name:NSWorkspaceDidRenameVolumeNotification
+                                                                 object:nil];
         
 		NSLog( @"Burner allocated");
 	}
@@ -138,13 +149,17 @@
 
 -(void)_observeVolumeNotification:(NSNotification*)notification
 {
+#ifndef NDEBUG
+    NSLog(@"%s %d %@\n%@", __FUNCTION__, __LINE__, notification.name, notification);
+#endif
+
     [self willChangeValueForKey: @"volumes"];
-    [self didChangeValueForKey:@"volumes"];
+    [self didChangeValueForKey: @"volumes"];
 }
 
 - (void)windowDidLoad
 {
-	NSLog(@"BurnViewer did load");
+	NSLog(@"%s", __FUNCTION__);
 	
 	[[self window] setDelegate:self];
 	[self setup:nil];
@@ -171,7 +186,7 @@
 	[anonymizationTags release];
     [files release];
     
-	NSLog(@"Burner dealloc");	
+	NSLog(@"%s", __FUNCTION__);
 	[super dealloc];
 }
 
@@ -197,7 +212,7 @@
     BOOL isDir;
 
     NSMutableArray *fileNames = [[[NSMutableArray alloc] init] autorelease];
-	//NSLog(@"Extract");
+	//NSLog(@"%s", __FUNCTION__);
     for (fname in filenames)
 	{ 
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -532,7 +547,7 @@
 
 - (void) saveOnVolume
 {
-    NSLog( @"Erase volume : %@", writeVolumePath);
+    NSLog(@"%s Erase volume : %@", __FUNCTION__, writeVolumePath);
     
     for( NSString *path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: writeVolumePath error: nil])
         [[NSFileManager defaultManager] removeItemAtPath: [writeVolumePath stringByAppendingPathComponent: path] error: nil];
@@ -709,7 +724,7 @@
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: [compressionMode selectedTag] forKey:@"Compression Mode for Burning"];
 	
-	NSLog(@"Burner windowWillClose");
+	NSLog(@"%s", __FUNCTION__);
 	
 	[[self window] setDelegate: nil];
 	
@@ -723,7 +738,7 @@
 
 - (BOOL)windowShouldClose:(id)sender
 {
-	NSLog(@"Burner windowShouldClose");
+	NSLog(@"%s", __FUNCTION__);
 	
 	if (isExtracting || isSettingUpBurn || burning)
 		return NO;
@@ -739,12 +754,9 @@
     [anonymizedFiles release];
     anonymizedFiles = nil;
     
-    NSLog(@"Burner windowShouldClose YES");
-    
     return YES;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 
 
@@ -769,7 +781,7 @@
 
 - (void)setup:(id)sender
 {
-	//NSLog(@"Set up burn");
+	//NSLog(@"%s", __FUNCTION__);
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	runBurnAnimation = NO;
 	[burnButton setEnabled:NO];

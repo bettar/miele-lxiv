@@ -537,15 +537,14 @@
 	{
 		DCMPix *curPix = [self curDCM];
 
-		long	annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
-				clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-		long	width, height, spp, bpp;
-		float	cwl, cww;
-		float	o[9];
+        long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY];
+        ClutBarsType clutBarsCopy = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey: CLUTBARS_KEY];
+		long width, height, spp, bpp;
+		float cwl, cww;
+		float o[9];
 		
-		
-		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
-		[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
+		[[NSUserDefaults standardUserDefaults] setInteger: ANNOTATIONS_GRAPHICS forKey: ANNOTATIONS_KEY];
+		[[NSUserDefaults standardUserDefaults] setInteger: CLUT_BAR_HIDE forKey: CLUTBARS_KEY];
 		[DCMView setDefaults];
 		
 		NSMutableArray *producedFiles = [NSMutableArray array];
@@ -592,8 +591,8 @@
 			free( data);
 		}
 				
-		[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
-		[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
+		[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: ANNOTATIONS_KEY];
+		[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: CLUTBARS_KEY];
 		[DCMView setDefaults];
 		
 		if ([producedFiles count])

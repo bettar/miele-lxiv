@@ -1405,7 +1405,7 @@ unsigned int minimumStep;
 
 - (int) mouseOnLines: (NSPoint) mouseLocation
 {
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] == ANNOTATIONS_NONE)
 		return 0;
 	
 	if (displayCrossLines == NO || frameZoomed)
@@ -1429,7 +1429,10 @@ unsigned int minimumStep;
 		
 		float f = curDCM.pixelSpacingX / LOD * self.window.backingScaleFactor;
 		
-		if (mouseLocation.x > r.x - BS * f && mouseLocation.x < r.x + BS* f && mouseLocation.y > r.y - BS* f && mouseLocation.y < r.y + BS* f)
+		if (mouseLocation.x > r.x - BS * f &&
+            mouseLocation.x < r.x + BS * f &&
+            mouseLocation.y > r.y - BS * f &&
+            mouseLocation.y < r.y + BS * f)
 		{
 			return 2;
 		}
@@ -1454,7 +1457,8 @@ unsigned int minimumStep;
                 distance2 /= curDCM.pixelSpacingX;
 			}
             
-			if (distance1 * scaleValue < 10*self.window.backingScaleFactor || distance2 * scaleValue < 10*self.window.backingScaleFactor)
+			if (distance1 * scaleValue < 10*self.window.backingScaleFactor ||
+                distance2 * scaleValue < 10*self.window.backingScaleFactor)
 			{
 				return 1;
 			}
@@ -1668,7 +1672,8 @@ unsigned int minimumStep;
 			rotateLines = YES;
 			
 			NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
-			mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
+			mouseLocation.x *= curDCM.pixelSpacingX;
+            mouseLocation.y *= curDCM.pixelSpacingY;
 			rotateLinesStartAngle = [self angleBetween: mouseLocation center: [self centerLines]] - angleMPR;
 			
 			[self mouseDragged: theEvent];
