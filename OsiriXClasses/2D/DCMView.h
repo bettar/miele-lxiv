@@ -77,10 +77,14 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 @class Dicom_Image, DicomSeries, DicomStudy;
 @class DCMObject;
 
+#pragma mark -
+
 @interface DCMExportPlugin: NSObject
 - (void) finalize:(DCMObject*) dcmDst withSourceObject:(DCMObject*) dcmObject;
 - (NSString*) seriesName;
 @end
+
+#pragma mark -
 
 /** \brief Image/Frame View for ViewerController */
 

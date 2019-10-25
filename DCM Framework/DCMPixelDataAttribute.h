@@ -23,7 +23,21 @@
 #import <Foundation/Foundation.h>
 #import <DCM/DCMAttribute.h>
 
-enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2, DCM_RGB, DCM_ARGB,  DCM_YBR_FULL_422, DCM_YBR_PARTIAL_422, DCM_YBR_FULL, DCM_YBR_RCT,  DCM_YBR_ICT, DCM_HSV, DCM_CMYK, DCM_PALETTE };
+//enum photometricmode{
+//    DCM_UNKNOWN_PHOTOMETRIC,
+//    DCM_MONOCHROME1,
+//    DCM_MONOCHROME2,
+//    DCM_RGB,
+//    DCM_ARGB,
+//    DCM_YBR_FULL_422,
+//    DCM_YBR_PARTIAL_422,
+//    DCM_YBR_FULL,
+//    DCM_YBR_RCT,
+//    DCM_YBR_ICT,
+//    DCM_HSV,
+//    DCM_CMYK,
+//    DCM_PALETTE
+//};
 
 @class DCMTransferSyntax;
 @class DCMObject;

@@ -1592,7 +1592,8 @@ void info_callback(const char *msg, void *a) {
 		DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
 		NSString *photometricInterpretation = [attr value];
 		
-		if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME2"])
+		if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] ||
+            [photometricInterpretation isEqualToString:@"MONOCHROME2"])
 		{
 		
 		}
@@ -1665,7 +1666,8 @@ void info_callback(const char *msg, void *a) {
 		}
 		
 		//int jasColorSpace = JAS_CLRSPC_UNKNOWN;
-		if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME2"])
+		if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] ||
+            [photometricInterpretation isEqualToString:@"MONOCHROME2"])
 		{
 			jas_image_setclrspc(image, JAS_CLRSPC_SGRAY);
 			jas_image_setcmpttype(image, 0,JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
@@ -1680,7 +1682,9 @@ void info_callback(const char *msg, void *a) {
 			jas_image_setcmpttype(image, 2,
 			  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
 		}
-		else if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"] || [photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"] || [photometricInterpretation isEqualToString:@"YBR_FULL"]) {
+		else if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"] ||
+                 [photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"] ||
+                 [photometricInterpretation isEqualToString:@"YBR_FULL"]) {
 			jas_image_setclrspc(image, JAS_CLRSPC_FAM_YCBCR);
 			jas_image_setcmpttype(image, 0,
 			  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_Y));
@@ -3295,7 +3299,7 @@ void info_callback(const char *msg, void *a) {
 			if ([_values count] > 1  && [(NSData *)[_values objectAtIndex:0] length] > 0) {
 				NSData *offsetData = [_values objectAtIndex:0];
 				unsigned long *offsets = (unsigned long *)[offsetData bytes];
-				int numberOfOffsets = [offsetData length]/4;
+				NSUInteger numberOfOffsets = [offsetData length]/4;
 				for (int i = 0; i < numberOfOffsets; i++)
 				{
 					if ( transferSyntax.isLittleEndian ) 
@@ -3308,7 +3312,6 @@ void info_callback(const char *msg, void *a) {
 			}
 			else 
 				[offsetTable addObject:[NSNumber numberWithLong:0L]];
-
 			
 			//most likely way to have data with one frame per data object.
 			NSMutableArray *values = [NSMutableArray arrayWithArray:_values];
@@ -3330,7 +3333,8 @@ void info_callback(const char *msg, void *a) {
 					int itemsLength = 0;
 					for ( NSData *aData in values )
 						itemsLength += [aData length];
-					currentLength = itemsLength - currentOffset;
+
+                    currentLength = itemsLength - currentOffset;
 				}
 				/*now we need to find the item that == the start of the offset
 					find which items contain the data.

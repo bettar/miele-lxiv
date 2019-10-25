@@ -14955,7 +14955,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     return self;
 }
 
-- (id)initWithFrameInternal:(NSRect)frameRect
+- (instancetype)initWithFrameInternal:(NSRect)frameRect
 {
     if (PETredTable == nil)
         [DCMView computePETBlendingCLUT];

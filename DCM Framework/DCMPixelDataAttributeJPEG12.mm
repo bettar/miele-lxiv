@@ -529,7 +529,7 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 //	NSString *photometricInterpretation = [attr value];
 //
 //	J_COLOR_SPACE jpegColorSpace = JCS_UNKNOWN;
-//	if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME1"])
+//	if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME2"])
 //		jpegColorSpace = JCS_GRAYSCALE;
 //	if ([photometricInterpretation isEqualToString:@"RGB"] || [photometricInterpretation isEqualToString:@"ARGB"])
 //		jpegColorSpace = JCS_RGB;

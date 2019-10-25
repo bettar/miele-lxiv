@@ -463,7 +463,8 @@ static int gTotalN2ManagedObjectContext = 0;
     return [self initWithPath:p context:c mainDatabase:nil];
 }
 
--(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c mainDatabase:(N2ManagedDatabase*)mainDbReference {
+-(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c mainDatabase:(N2ManagedDatabase*)mainDbReference
+{
 	self = [super init];
 	
 	self.sqlFilePath = p;
