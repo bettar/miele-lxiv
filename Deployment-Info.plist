@@ -7,8 +7,6 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>LSHandlerRank</key>
-			<string>Default</string>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>curvedPath</string>
@@ -27,10 +25,10 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
-		</dict>
-		<dict>
 			<key>LSHandlerRank</key>
 			<string>Default</string>
+		</dict>
+		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>osirixzip</string>
@@ -62,10 +60,10 @@
 			<string>Viewer</string>
 			<key>LSCanProvideIMVideoDataSource</key>
 			<string>Yes</string>
-		</dict>
-		<dict>
 			<key>LSHandlerRank</key>
 			<string>Default</string>
+		</dict>
+		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>sql</string>
@@ -84,10 +82,10 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
-		</dict>
-		<dict>
 			<key>LSHandlerRank</key>
 			<string>Default</string>
+		</dict>
+		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>roi</string>
@@ -106,10 +104,10 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
-		</dict>
-		<dict>
 			<key>LSHandlerRank</key>
 			<string>Default</string>
+		</dict>
+		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>rois_series</string>
@@ -128,10 +126,10 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
-		</dict>
-		<dict>
 			<key>LSHandlerRank</key>
 			<string>Default</string>
+		</dict>
+		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>lsm</string>
@@ -150,10 +148,10 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
-		</dict>
-		<dict>
 			<key>LSHandlerRank</key>
 			<string>Default</string>
+		</dict>
+		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>PIC</string>
@@ -172,10 +170,10 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
-		</dict>
-		<dict>
 			<key>LSHandlerRank</key>
 			<string>Default</string>
+		</dict>
+		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>mieleplugin</string>
@@ -186,6 +184,8 @@
 			<string>Miele-LXIV plugin</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSTypeIsPackage</key>
 			<true/>
 		</dict>
@@ -245,7 +245,7 @@
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
+	<string>Your account will be used for the built-in iChat sharing service. If you don't allow access, you cannot use the iChat functions.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2014-2019 bettar. All rights reserved.</string>
 	<key>NSMainNibFile</key>

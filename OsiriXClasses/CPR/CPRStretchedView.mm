@@ -436,7 +436,7 @@ extern int splitPosition[ 3];
     
     float ratio = 1;
     
-    if( self.pixelSpacingX != 0 && self.pixelSpacingY != 0)
+    if (self.pixelSpacingX != 0 && self.pixelSpacingY != 0)
         ratio = self.pixelSpacingX / self.pixelSpacingY;
     
     centeredRect.origin.y -= [self origin].y*ratio/scaleValue;

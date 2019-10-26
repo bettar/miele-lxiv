@@ -94,9 +94,6 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 	NSInteger		_imageColumns;
 	NSInteger		_tag;
 
-	BOOL			flippedData;
-    BOOL            whiteBackground;
-	
 	NSString		*yearOld;
 	
 	ROI				*curROI;
@@ -184,8 +181,7 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 	NSSize			previousViewSize;
 
 	float			contextualMenuInWindowPosX;
-	float			contextualMenuInWindowPosY;	
-
+	float			contextualMenuInWindowPosY;
 	
 	float			mouseXPos, mouseYPos;
     BOOL            mouseOnImage, mouseOnView, blendingMouseOnImage;
@@ -327,7 +323,9 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 @property NSRect drawingFrameRect;
 @property (retain) NSArray *cleanedOutDcmPixArray;
 @property (readonly) NSMutableArray *rectArray, *curRoiList;
-@property BOOL COPYSETTINGSINSERIES, flippedData, showDescriptionInLarge;
+@property BOOL COPYSETTINGSINSERIES;
+@property BOOL flippedData;
+@property BOOL showDescriptionInLarge;
 @property (nonatomic) BOOL whiteBackground;
 @property (retain) NSMutableArray *dcmPixList, *dcmRoiList;
 @property (readonly) NSArray *dcmFilesList;
@@ -438,14 +436,26 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 - (void) subtract:(DCMView*) bV;
 - (void) subtract:(DCMView*) bV absolute:(BOOL) abs;
 - (void) multiply:(DCMView*) bV;
-- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT textureWidth: (long*) tW textureHeight:(long*) tH resampledBaseAddr:(char**) rAddr resampledBaseAddrSize:(int*) rBAddrSize;
+
+- (GLuint *) loadTextureIn: (GLuint *) texture
+                  blending: (BOOL) blending
+                  colorBuf: (unsigned char**) colorBufPtr
+                  textureX: (long*) tX
+                  textureY: (long*) tY
+                  redTable: (unsigned char*) rT
+                greenTable: (unsigned char*) gT
+                 blueTable: (unsigned char*) bT
+              textureWidth: (long*) tW
+             textureHeight: (long*) tH
+         resampledBaseAddr: (char**) rAddr
+     resampledBaseAddrSize: (int*) rBAddrSize;
 
 // checks to see if tool is for ROIs.  maybe better name - (BOOL)isToolforROIs:(long)tool
 - (BOOL) roiTool:(long) tool;
 - (void) prepareToRelease;
 - (void) orientationCorrectedToView:(float*) correctedOrientation;
 //#ifndef OSIRIX_LIGHT
-- (N3AffineTransform)pixToSubDrawRectTransform; // converst points in DCMPix "Slice Coordinates" to coordinates that need to be passed to GL in subDrawRect
+- (N3AffineTransform)pixToSubDrawRectTransform; // Converts points in DCMPix "Slice Coordinates" to coordinates that need to be passed to GL in subDrawRect
 //#endif
 - (NSPoint) ConvertFromNSView2GL:(NSPoint) a;
 - (NSPoint) ConvertFromView2GL:(NSPoint) a;
@@ -471,7 +481,14 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 - (void) setIndex:(short) index;
 - (void) setIndexWithReset:(short) index :(BOOL)sizeToFit;
 - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset;
-- (void) setPixels: (NSMutableArray*) pixels files: (NSArray*) files rois: (NSMutableArray*) rois firstImage: (short) firstImage level: (char) level reset: (BOOL) reset;
+
+- (void) setPixels: (NSMutableArray*) pixels
+             files: (NSArray*) files
+              rois: (NSMutableArray*) rois
+        firstImage: (short) firstImage
+             level: (char) level
+             reset: (BOOL) reset;
+
 - (void) sendSyncMessage:(short) inc;
 - (void) loadTextures;
 - (void)loadTexturesCompute;
@@ -488,11 +505,23 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 - (void) roiSet;
 - (void) sync3DPosition;
 - (void) roiSet:(ROI*) aRoi __deprecated;
-- (void) colorTables:(unsigned char **) a :(unsigned char **) r :(unsigned char **)g :(unsigned char **) b;
-- (void) blendingColorTables:(unsigned char **) a :(unsigned char **) r :(unsigned char **)g :(unsigned char **) b;
+
+- (void) colorTables:(unsigned char **) a
+                    :(unsigned char **) r
+                    :(unsigned char **) g
+                    :(unsigned char **) b;
+
+- (void) blendingColorTables:(unsigned char **) a
+                            :(unsigned char **) r
+                            :(unsigned char **) g
+                            :(unsigned char **) b;
+
 - (void )changeFont:(id)sender;
 
-- (void) getCLUT:( unsigned char**) r : (unsigned char**) g : (unsigned char**) b;
+- (void) getCLUT:(unsigned char**) r
+                :(unsigned char**) g
+                :(unsigned char**) b;
+
 - (void) sync:(NSNotification*)note;
 
 - (instancetype)initWithFrame:(NSRect)frame
@@ -542,7 +571,12 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 - (void) stopROIEditing;
 - (void) deleteInvalidROIs;
 - (void) computeMagnifyLens:(NSPoint) p;
-- (void) makeTextureFromImage:(NSImage*)image forTexture:(GLuint*)texName buffer:(GLubyte*)buffer textureUnit:(GLuint)textureUnit;
+
+- (void) makeTextureFromImage:(NSImage*)image
+                   forTexture:(GLuint*)texName
+                       buffer:(GLubyte*)buffer
+                  textureUnit:(GLuint)textureUnit;
+
 - (void) stopROIEditingForce:(BOOL) force;
 - (void) subDrawRect: (NSRect)aRect;     // Subclassable, default does nothing.
 - (void) drawRectAnyway:(NSRect)aRect;   // Subclassable, default does nothing.
@@ -556,7 +590,12 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 - (void) deleteLens;
 - (void)getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv;
 - (NSMutableArray*) selectedROIs;
-- (void) computeSliceIntersection: (DCMPix*) oPix sliceFromTo: (float[2][3]) sft vector: (float*) vectorB origin: (float*) originB;
+
+- (void) computeSliceIntersection: (DCMPix*) oPix
+                      sliceFromTo: (float[2][3]) sft
+                           vector: (float*) vectorB
+                           origin: (float*) originB;
+
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx;
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx withShift: (double) shift;
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx withShift: (double) shift showPoint: (BOOL) showPoint;
@@ -564,6 +603,7 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift;
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift half:(BOOL) half;
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift half:(BOOL) half showPoint: (BOOL) showPoint;
+
 - (void) startDrag:(NSTimer*)theTimer;
 - (void)deleteMouseDownTimer;
 - (void) roiLoadFromFilesArray: (NSArray*) filenames;

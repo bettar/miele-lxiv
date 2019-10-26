@@ -882,7 +882,7 @@ void checkOGLVersion()
 @synthesize showDescriptionInLarge, curRoiList, cleanedOutDcmPixArray, mousePosUSRegion;
 @synthesize drawingFrameRect;
 @synthesize rectArray, studyColorR, studyColorG, studyColorB, studyDateIndex;
-@synthesize flippedData, whiteBackground, timeIntervalForDrag;
+@synthesize timeIntervalForDrag;
 @synthesize dcmPixList, dcmFilesList, dcmRoiList;
 //@synthesize syncSeriesIndex;
 @synthesize syncRelativeDiff;
@@ -2300,14 +2300,14 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_TEXTURE_RECTANGLE_EXT);
 
-            if (whiteBackground)
+            if (self.whiteBackground)
                 glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
             else
                 glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
             
             [stringTex drawWithBounds: NSMakeRect( xc+1, yc+1, [stringTex texSize].width, [stringTex texSize].height)];
             
-            if (whiteBackground)
+            if (self.whiteBackground)
                 glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
             else
                 glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
@@ -2354,7 +2354,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             }
             else
             {
-                if (whiteBackground)
+                if (self.whiteBackground)
                     glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
                 else
                     glColor4f (0.0, 0.0, 0.0, 1.0);
@@ -2370,7 +2370,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     glCallList (fontL+val);
             }
             
-            if (whiteBackground)
+            if (self.whiteBackground)
                 glColor4f (0.0, 0.0, 0.0, 1.0);
             else
                 glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
@@ -2777,7 +2777,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			dcmFilesList = [files retain];
 		}
 		
-		flippedData = NO;
+		self.flippedData = NO;
 		
 		if (dcmRoiList != rois)
 		{
@@ -3296,7 +3296,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     {
         int imIndex = curImage;
         
-        if (flippedData)
+        if (self.flippedData)
             imIndex = (long)[dcmPixList count]-1-imIndex;
         
         if (imIndex < 0)
@@ -3363,7 +3363,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     {
         short inc, previmage = curImage;
 		
-		if (flippedData)
+		if (self.flippedData)
 		{
 			if      (c == NSLeftArrowFunctionKey)  c = NSRightArrowFunctionKey;
 			else if (c == NSRightArrowFunctionKey) c = NSLeftArrowFunctionKey;
@@ -4806,7 +4806,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     {
         int maxVal;
         
-        if (flippedData)
+        if (self.flippedData)
             maxVal = curImage-(curDCM.stack-1)/2;
         else
             maxVal = curImage+(curDCM.stack-1)/2;
@@ -4842,7 +4842,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	else
         thickDCM = nil;
 
-	int pos = flippedData? (long)[dcmPixList count] -1 -curImage : curImage;
+	int pos = self.flippedData ? (long)[dcmPixList count] -1 -curImage : curImage;
 
 	NSMutableDictionary *instructions = [NSMutableDictionary dictionary];
 
@@ -5734,9 +5734,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	else
 		reverseScrollWheel = 1.0;
 	
-	if (flippedData) reverseScrollWheel *= -1.0;
+	if (self.flippedData)
+        reverseScrollWheel *= -1.0;
 	
-    if (dcmPixList )
+    if (dcmPixList)
 	{
         short inc = 0;
         
@@ -6479,7 +6480,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	{
         float reverseScrollWheel = 1.0;
         
-        if (flippedData)
+        if (self.flippedData)
             reverseScrollWheel *= -1.0;
         
 		previmage = curImage;
@@ -7274,7 +7275,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	thickSlabStacks = stacks;
 	
 	for (DCMPix *p in dcmPixList)
-		[p setFusion:mode :stacks :flippedData];
+		[p setFusion:mode :stacks :self.flippedData];
 	
 	if ([self is2DViewer])
 	{
@@ -7453,7 +7454,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	if (curDCM.stack > 1)
 	{
-		long maxVal = flippedData? curImage-(curDCM.stack-1) : curImage+curDCM.stack-1;
+		long maxVal = self.flippedData ? curImage-(curDCM.stack-1) : curImage+curDCM.stack-1;
 		if (maxVal < 0)
             maxVal = 0;
         
@@ -7465,9 +7466,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	else
         thickDCM = nil;
 	
-	int pos = flippedData ? (long)[dcmPixList count] -1 -curImage : curImage;
+	int pos = self.flippedData ? (long)[dcmPixList count] -1 -curImage : curImage;
 	
-	if (flippedData)
+	if (self.flippedData)
         inc = -inc;
 	
 	NSMutableDictionary *instructions = [NSMutableDictionary dictionary]; 
@@ -7941,7 +7942,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     point3D == NO &&
                     self.syncSeriesIndex == -1)
 				{
-					if (flippedData)
+					if (self.flippedData)
                         newImage = (long)[dcmPixList count] -1 -pos;
 					else
                         newImage = pos;
@@ -7961,7 +7962,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
                     int ratioPos = round( ratio * (float) [dcmPixList count]);
                     
-					if (flippedData)
+					if (self.flippedData)
                         newImage = (long)[dcmPixList count] -1 -ratioPos;
 					else
                         newImage = ratioPos;
@@ -8136,14 +8137,14 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                             float ratio = (float) pos / (float) [[otherView dcmPixList] count];
                             int ratioPos = round( ratio * (float) [dcmPixList count]);
                             
-                            if (flippedData)
+                            if (self.flippedData)
                                 newImage = (long)[dcmPixList count] -1 -ratioPos;
                             else
                                 newImage = ratioPos;
                         }
                         else if ([[NSUserDefaults standardUserDefaults] integerForKey: DEFAULT_MODE_FOR_NON_VOLUMIC_SERIES_KEY] == SYNCHRO_ID_ABS)
                         {
-                            if (flippedData)
+                            if (self.flippedData)
                                 newImage = (long)[dcmPixList count] -1 -pos;
                             else
                                 newImage = pos;
@@ -8161,7 +8162,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                      point3D == NO &&
                      self.syncSeriesIndex == -1)
 				 {
-					if (flippedData)
+					if (self.flippedData)
                         newImage -= diff;
 					else
                         newImage += diff;
@@ -9265,7 +9266,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	{
 		if (curDCM.stack > 1)
 		{
-			long maxVal = flippedData ? maxVal = curImage-curDCM.stack : curImage+curDCM.stack;
+			long maxVal = self.flippedData ? maxVal = curImage-curDCM.stack : curImage+curDCM.stack;
 			
 			if (maxVal < 0)
                 maxVal = curImage;
@@ -9280,7 +9281,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             
 			float pp;
 			
-			if (flippedData)
+			if (self.flippedData)
 				pp = ([(DCMPix*)[dcmPixList objectAtIndex: curImage] sliceLocation] + [(DCMPix*)[dcmPixList objectAtIndex: curImage - maxVal+1] sliceLocation])/2.;
 			else
 				pp = ([(DCMPix*)[dcmPixList objectAtIndex: curImage] sliceLocation] + [(DCMPix*)[dcmPixList objectAtIndex: curImage + maxVal-1] sliceLocation])/2.;
@@ -9675,7 +9676,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                     float v3 = zd;
 									float v[3] = { v1, v2, v3};
 									char stackOrientationStart[ 10], stackOrientationEnd[ 10];
-									if (flippedData == NO)
+									if (self.flippedData == NO)
 									{
 										[self getOrientationText: stackOrientationStart : v : YES];
 										[self getOrientationText: stackOrientationEnd : v : NO];
@@ -9690,7 +9691,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                         stackOrientationEnd[ 0] != 0)
 									{
 										float pos;										
-										if (flippedData)
+										if (self.flippedData)
                                             pos = (float) ([dcmPixList count] - curImage) / (float) [dcmPixList count];
 										else
                                             pos = (float) curImage / (float) [dcmPixList count];
@@ -9715,7 +9716,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 							{
 								long maxVal;
 								
-								if (flippedData)
+								if (self.flippedData)
                                     maxVal = curImage-curDCM.stack+1;
 								else
                                     maxVal = curImage+curDCM.stack;
@@ -9726,7 +9727,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 								if (maxVal > [dcmPixList count])
                                     maxVal = [dcmPixList count];
 								
-								if (flippedData)
+								if (self.flippedData)
                                 {
                                     [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld %@", @"No special characters for this string, only ASCII characters."),
                                      (long) [dcmPixList count] - curImage,
@@ -9745,7 +9746,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 							}
 							else if (fullText)
 							{
-								if (flippedData)
+								if (self.flippedData)
                                 {
                                     [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld %@", @"No special characters for this string, only ASCII characters."),
                                      (long) [dcmPixList count] - curImage,
@@ -9777,7 +9778,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 									if (curDCM.stack > 1) {
 										long maxVal;
 									
-										if (flippedData)
+										if (self.flippedData)
                                             maxVal = curImage-(curDCM.stack-1)/2;
 										else
                                             maxVal = curImage+(curDCM.stack-1)/2;
@@ -10007,8 +10008,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                                 NSLocalizedString(@"OK",nil),
                                                 nil,
                                                 nil,
-                                                    e,
-                                                    annot);
+                                                e,
+                                                annot);
 					
 						NSLog( @"draw custom annotation exception: %@\r\r%@", e, annot);
 						exceptionDisplayed = YES;
@@ -10021,7 +10022,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		xRaster = size.origin.x + size.size.width-2;
         if (fullText) {
             NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-			[self DrawNSStringGL: [NSString stringWithFormat:@"Made In %@", bundleName]
+			[self DrawNSStringGL: [NSString stringWithFormat:@"Made in %@", bundleName]
                                 : fontList
                                 : xRaster
                                 : yRaster
@@ -10080,7 +10081,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 - (void) setWhiteBackground:(BOOL)w
 {
-    whiteBackground = w;
+    self.whiteBackground = w;
 
 #ifdef WITH_RED_CAPTION
     [warningNotice release];
@@ -10902,7 +10903,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         // Set the viewport to cover entire window
 		glViewport (0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height);
 
-        if (whiteBackground)
+        if (self.whiteBackground)
             glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         else
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -11448,8 +11449,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			if (repulsorRadius != 0)
 			{
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+				glScalef (2.0f / drawingFrameRect.size.width,
+                         -2.0f / drawingFrameRect.size.height,
+                          1.0f); // scale to port per pixel scale
+				glTranslatef(-(drawingFrameRect.size.width) / 2.0f,
+                             -(drawingFrameRect.size.height) / 2.0f,
+                             0.0f); // translate center to upper left
 				
 				[self drawRepulsorToolArea];
 			}
@@ -14626,7 +14631,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 {
 	long x = curImage;//x = curImage before sliderAction
 
-	if (flippedData)
+	if (self.flippedData)
         curImage = (long)[dcmPixList count] -1 -[sender intValue];
     else
         curImage = [sender intValue];
@@ -14864,7 +14869,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	if (curImage < 0)
 	{
-		if (flippedData)
+		if (self.flippedData)
 		{
 			if (listType == 'i')
                 [self setIndex: (long)[dcmPixList count] -1 ];
@@ -14933,7 +14938,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		[self setAutoresizingMask:NSViewMinXMargin];
 		
 		noScale = NO;
-		flippedData = NO;
+		_flippedData = NO;
 		
 		//notifications
 		NSNotificationCenter *nc;
@@ -15289,7 +15294,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		int offset = [self tag] - [aView tag];
 		int prevCurImage = [self curImage];
 		
-		if (flippedData)
+		if (self.flippedData)
 			offset = -offset;
 		
 		curImage = [aView curImage] + offset;
@@ -15298,7 +15303,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		{
 			curImage = -1;
 			
-			if (flippedData == NO)
+			if (self.flippedData == NO)
 			{
 				if ([self is2DViewer])
 				{
@@ -15311,7 +15316,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		{
 			curImage = -1;
 			
-			if (flippedData)
+			if (self.flippedData)
 			{
 				if ([self is2DViewer])
 				{
@@ -16456,8 +16461,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	return is2DViewerValue;
 }
 
-#pragma mark -
-#pragma mark 12 bit
+#pragma mark - 12 bit
+
 - (void)setIsLUT12Bit:(BOOL)boo;
 {
 	for (DCMPix* pix in dcmPixList)

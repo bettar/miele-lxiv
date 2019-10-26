@@ -6209,6 +6209,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     short imageNb = frameNo;
     
 #pragma mark - pdf
+
     if ([SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
     {
         NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
@@ -6808,12 +6809,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         *ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
                         *ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
                     }
-
-#if 0 // ISSUE 48
-                    if (fPlanarConf == 0) {
-                        ptr = [self ConvertYbrToRgb:ptr :width :height :YBR_FULL :fPlanarConf ];
-                    }
-#endif
                 }
                 else
                 {

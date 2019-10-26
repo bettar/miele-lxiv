@@ -19664,7 +19664,7 @@ static BOOL viewerControllerPlaying = NO;
         imageView.whiteBackground = whiteBackground;
 		FULL32BITPIPELINE = copyFULL32BITPIPELINE;
 		
-		/////// ****************
+		//
 		
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"allowSmartCropping"];
 		

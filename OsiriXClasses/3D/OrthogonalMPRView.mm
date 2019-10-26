@@ -91,19 +91,20 @@
 	else
 		reverseScrollWheel = 1.0;
 	
-	if( flippedData) reverseScrollWheel *= -1.0;
+	if (self.flippedData)
+        reverseScrollWheel *= -1.0;
 	
-    if( dcmPixList)
+    if (dcmPixList)
 	{
 		[[self controller] saveCrossPositions];
 		float change;
 		
-		if( fabs( [theEvent deltaY]) > fabs( deltaX) && [theEvent deltaY] != 0)
+		if ( fabs( [theEvent deltaY]) > fabs( deltaX) && [theEvent deltaY] != 0)
 		{
 			
-			if( [theEvent modifierFlags]  & NSEventModifierFlagCommand)
+			if ( [theEvent modifierFlags]  & NSEventModifierFlagCommand)
 			{
-				if( blendingView)
+				if ( blendingView)
 				{
 					float change = [theEvent deltaY] / -0.2f;
 					blendingFactor += change;
@@ -301,7 +302,7 @@
     if( curDCM.stack > 1) {
         long stackImageIndex;
         
-        if(flippedData)
+        if (self.flippedData)
             stackImageIndex = curImage-(curDCM.stack-1)/2;
         else
             stackImageIndex = curImage+(curDCM.stack-1)/2;
