@@ -10081,7 +10081,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 - (void) setWhiteBackground:(BOOL)w
 {
-    self.whiteBackground = w;
+    _whiteBackground = w;
 
 #ifdef WITH_RED_CAPTION
     [warningNotice release];
