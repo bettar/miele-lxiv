@@ -1373,7 +1373,7 @@ return YES;
 - (void) exportJPEG:(id) sender
 {
 	BOOL all = NO;
-	int i;
+	//int i;
 	NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 	
 	long deltaX, deltaY, x, y, oldX, oldY, max;
@@ -1424,7 +1424,7 @@ return YES;
 				max = [[view curDCM] pheight];
 			}
 			
-			for( i = 0; i < max; i++)
+			for (int i = 0; i < max; i++)
 			{
 				NSDisableScreenUpdates();
 				[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
@@ -1481,18 +1481,18 @@ return YES;
 {
 	DCMPix *curPix = [[self keyView] curDCM];
 
-	int		annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
-			clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-	long	width, height, spp, bpp;
-	float	cwl, cww;
-	float	o[ 9];
-	float	imOrigin[ 3], imSpacing[ 2];
-	int		offset;
-	BOOL	isSigned;
+    int annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY];
+    ClutBarsType clutBarsCopy = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey: CLUTBARS_KEY];
+	long width, height, spp, bpp;
+	float cwl, cww;
+	float o[ 9];
+	float imOrigin[ 3], imSpacing[ 2];
+	int offset;
+	BOOL isSigned;
 	NSString *f = nil;
 	
-	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
-	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: ANNOTATIONS_GRAPHICS forKey: ANNOTATIONS_KEY];
+	[[NSUserDefaults standardUserDefaults] setInteger: CLUT_BAR_HIDE forKey: CLUTBARS_KEY];
 	[DCMView setDefaults];
 	
 	unsigned char *data = nil;
@@ -1610,8 +1610,8 @@ return YES;
 		
 		free( data);
 	}
-	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
-	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: ANNOTATIONS_KEY];
+	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: CLUTBARS_KEY];
 	[DCMView setDefaults];
 	
 	if (f)
@@ -2007,8 +2007,7 @@ return YES;
     [OrthogonalMPRViewer syncSeriesAction:sender :self] ;
 }
 
-#pragma mark-
-
+#pragma mark -
 
 - (float*) syncOriginPosition
 {
@@ -2025,7 +2024,7 @@ return YES;
     [OrthogonalMPRViewer posChangeNotification:self :notification];
 }
 
-#pragma mark-
+#pragma mark -
 
 + (SyncSeriesScope) syncSeriesScope{
     return globalSyncSeriesScope;
@@ -2048,7 +2047,7 @@ return YES;
     [viewer setSyncSeriesBehavior: SyncSeriesBehaviorAbsolutePosWithSameStudy];
 }
 
-#pragma mark-
+#pragma mark -
 
 + (void) syncSeriesScopeAction:(id) sender :(id)viewer
 {
@@ -2088,7 +2087,7 @@ return YES;
     [OrthogonalMPRViewer updateSyncSeriesProperties:viewer :newState :globalSyncSeriesScope :newBehavior ];
 }
 
-#pragma mark-
+#pragma mark -
 
 + (void) updateSyncSeriesState:(id)viewer :(SyncSeriesState) newState
 {
@@ -2192,7 +2191,7 @@ return YES;
     [[NSNotificationCenter defaultCenter] postNotificationName: OsirixOrthoMPRPosChangeNotification object:viewer  userInfo: userInfo];
 }
 
-#pragma mark-
+#pragma mark -
 
 + (void) syncSeriesNotification:(id)viewer :(NSNotification*)notification
 {
@@ -2280,7 +2279,7 @@ return YES;
     [[viewer controller] moveToRelativePosition:[userInfo valueForKey:@"positionChange"]];
 }
 
-#pragma mark-
+#pragma mark -
 
 + (void) synchronizeViewer:(id)currentViewer {
     
@@ -2480,7 +2479,7 @@ return YES;
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 + (void) initSyncSeriesToolbarItem:(id)viewer :(NSToolbarItem*) toolbarItem
 {
@@ -2558,7 +2557,7 @@ return YES;
     return activateSyncSeriesToolbarItem;
 }
 
-#pragma mark-
+#pragma mark -
 
 + (NSMutableArray*) MPRViewersWithout:(id) currentViewer
 {
@@ -2643,7 +2642,7 @@ return YES;
     if (thisTime - lastMovieTime > 1.0 / [movieRateSlider floatValue])
     {
         val = curMovieIndex;
-        val ++;
+        val++;
         
 		if (val < 0) val = 0;
 		if (val >= maxMovieIndex) val = 0;

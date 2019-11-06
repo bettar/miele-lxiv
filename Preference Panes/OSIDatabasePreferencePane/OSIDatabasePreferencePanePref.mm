@@ -203,8 +203,6 @@
 
 - (void) mainViewDidLoad
 {
-
-
 //	[[scrollView verticalScroller] setFloatValue: 0]; 
 ////	[[scrollView verticalScroller] setFloatValue:0.0 knobProportion:0.0]; //// now with bindings
 //	[scrollView setVerticalScroller: [scrollView verticalScroller]];
@@ -214,29 +212,38 @@
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	
 	//setup GUI
-////	[copyDatabaseOnOffButton setState:[defaults boolForKey:@"COPYDATABASE"]]; //// now with bindings
+//  //[copyDatabaseOnOffButton setState:[defaults boolForKey:@"COPYDATABASE"]]; //// now with bindings
 	
 //	[displayAllStudies setState:[defaults boolForKey:@"KeepStudiesOfSamePatientTogether"]];
 	
 	long locationValue = [defaults integerForKey:@"DEFAULT_DATABASELOCATION"];
-	
 	[locationMatrix selectCellWithTag:locationValue];
-	[locationPathField setURL: [NSURL fileURLWithPath: [defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]]];
+
+    [locationPathField setURL: [NSURL fileURLWithPath: [defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]]];
 	
 //	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
-////	[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:@"COPYDATABASEMODE"]];
+//  //[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:COPYDATABASEMODE_KEY]];
 //	[localizerOnOffButton setState:[defaults boolForKey:@"NOLOCALIZER"]]; 
 //	[multipleScreensMatrix selectCellWithTag:[defaults integerForKey:@"MULTIPLESCREENSDATABASE"]];
 	[seriesOrderMatrix selectCellWithTag:[defaults integerForKey:@"SERIESORDER"]];
 	
-	
 	// COMMENTS
-	self.currentCommentsAutoFill = 0;
-    
-    if ([[[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"] isEqualToString: @"comment"]) self.currentCommentsField = 1;
-    if ([[[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"] isEqualToString: @"comment2"]) self.currentCommentsField = 2;
-    if ([[[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"] isEqualToString: @"comment3"]) self.currentCommentsField = 3;
-    if ([[[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"] isEqualToString: @"comment4"]) self.currentCommentsField = 4;
+    {
+        self.currentCommentsAutoFill = 0;
+        NSString *s = [[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"];
+
+        if ([s isEqualToString: @"comment"])
+            self.currentCommentsField = 1;
+
+        if ([s isEqualToString: @"comment2"])
+            self.currentCommentsField = 2;
+
+        if ([s isEqualToString: @"comment3"])
+            self.currentCommentsField = 3;
+
+        if ([s isEqualToString: @"comment4"])
+            self.currentCommentsField = 4;
+    }
 	
 	// REPORTS
 	[self buildPluginsMenu];
@@ -303,9 +310,9 @@
 	
 	int indexOfPluginsLabel = [reportsMode indexOfItemWithTitle:@"Plugins"];
 	int indexOfPluginLabel = [reportsMode indexOfItemWithTitle:@"Plugin"];
-	int indexOfLabel = (indexOfPluginsLabel>indexOfPluginLabel)?indexOfPluginsLabel:indexOfPluginLabel;
+	int indexOfLabel = (indexOfPluginsLabel>indexOfPluginLabel) ? indexOfPluginsLabel : indexOfPluginLabel;
 	
-	indexOfLabel = (indexOfLabel<=0)? 10000 : indexOfLabel ;
+	indexOfLabel = (indexOfLabel<=0) ? 10000 : indexOfLabel;
 	
 	if ([reportsMode indexOfSelectedItem] >= indexOfLabel) // in this case it is a plugin
 	{
@@ -459,7 +466,8 @@
 	
 	if ([[sender selectedCell] tag] == 1)
 	{
-		if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isEqualToString:@""]) [self setLocationURL: self];
+		if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isEqualToString:@""])
+            [self setLocationURL: self];
 		
 		if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isEqualToString:@""] == NO)
 		{
@@ -518,7 +526,7 @@
 			location = [location stringByDeletingLastPathComponent];
 		}
 		
-		if ( [[location lastPathComponent] isEqualToString:@"DATABASE"] &&
+		if ([[location lastPathComponent] isEqualToString:@"DATABASE"] &&
             [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:OUR_DATA_LOCATION])
 		{
 			NSLog( @"%@", [location lastPathComponent]);
@@ -527,14 +535,14 @@
 		
 		[locationPathField setURL: [NSURL fileURLWithPath: location]];
 		[[NSUserDefaults standardUserDefaults] setObject:location forKey:@"DEFAULT_DATABASELOCATIONURL"];
-		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
+		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"]; // User selected
 		[locationMatrix selectCellWithTag:1];
 	}	
 	else 
 	{
 		[locationPathField setURL: 0L];
 		[[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
-		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DEFAULT_DATABASELOCATION"];
+		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DEFAULT_DATABASELOCATION"]; // Documents directory
 		[locationMatrix selectCellWithTag:0];
 	}
 	

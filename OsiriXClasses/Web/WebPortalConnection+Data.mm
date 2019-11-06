@@ -66,6 +66,7 @@
 #import "DCMTKQueryNode.h"
 
 #import "tmp_locations.h"
+#import "mieleTypes.h"
 
 // TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
 
@@ -377,7 +378,7 @@ ss
             NSMutableArray *newComponents = [NSMutableArray array];
             for (NSString *comp in components)
             {
-                if (![comp isEqualToString:@""])
+                if (comp.length > 0)
                     [newComponents addObject:comp];
             }
             
@@ -406,7 +407,7 @@ ss
             NSMutableArray *newComponents = [NSMutableArray array];
             for (NSString *comp in components)
             {
-                if (![comp isEqualToString:@""])
+                if (comp.length > 0)
                     [newComponents addObject:comp];
             }
             
@@ -428,7 +429,7 @@ ss
             NSMutableArray *newComponents = [NSMutableArray array];
             for (NSString *comp in components)
             {
-                if (![comp isEqualToString:@""])
+                if (comp.length > 0)
                     [newComponents addObject:comp];
             }
             
@@ -2918,7 +2919,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     
     Dicom_Image *dicomImage = [self objectWithXID:[parameters objectForKey:@"xid"]];
     
-    [DCMView setCLUTBARS: CLUTBARS ANNOTATIONS: annotGraphics];
+    [DCMView setCLUTBARS: CLUTBARS
+         withAnnotations: ANNOTATIONS_GRAPHICS];
     
     BOOL savedSmartCropping = [[NSUserDefaults standardUserDefaults] boolForKey: @"allowSmartCropping"];
     

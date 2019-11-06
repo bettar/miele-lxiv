@@ -20,11 +20,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-
-@interface N2ManagedDatabase : NSObject {
-	@protected
+@interface N2ManagedDatabase : NSObject
+{
+@protected
     NSString* _sqlFilePath;
-	@private
+
+@private
 	NSManagedObjectContext* _managedObjectContext;
     id _mainDatabase;
     volatile BOOL _isDeallocating;
@@ -94,16 +95,21 @@
 
 @end
 
+#pragma mark -
+
 @interface N2ManagedDatabase (Protected)
 
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath;
 
 @end
 
-@interface N2ManagedObjectContext : NSManagedObjectContext {
-    
+#pragma mark -
+
+@interface N2ManagedObjectContext : NSManagedObjectContext
+{
 	N2ManagedDatabase* _database;
 }
 
 @property(readonly) N2ManagedDatabase* database;
+
 @end

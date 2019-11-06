@@ -88,6 +88,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation NSImage (N2)
 

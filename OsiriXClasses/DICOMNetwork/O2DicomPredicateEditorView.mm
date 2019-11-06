@@ -1576,7 +1576,6 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     return [self stringValue];
 }
 
-
 @end
 
 

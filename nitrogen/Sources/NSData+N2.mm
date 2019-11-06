@@ -80,19 +80,22 @@ static const char base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijk
 		decodingTable = (char*)malloc(256);
 		if (decodingTable == NULL)
 			return nil;
-		memset(decodingTable, CHAR_MAX, 256);
-		NSUInteger i;
-		for (i = 0; i < 64; i++)
+
+        memset(decodingTable, CHAR_MAX, 256);
+
+		for (NSUInteger i = 0; i < 64; i++)
 			decodingTable[(short)base64EncodingTable[i]] = i;
 	}
 	
 	const char *characters = [base64 cStringUsingEncoding:NSASCIIStringEncoding];
 	if (characters == NULL)     //  Not an ASCII string!
 		return nil;
-	char *bytes = (char*)malloc((([base64 length] + 3) / 4) * 3);
+
+    char *bytes = (char*)malloc((([base64 length] + 3) / 4) * 3);
 	if (bytes == NULL)
 		return nil;
-	NSUInteger length = 0;
+
+    NSUInteger length = 0;
 	
 	NSUInteger i = 0;
 	while (YES)

@@ -25,6 +25,8 @@
 
 @end
 
+#pragma mark -
+
 @interface N2PopUpMatrix : NSMatrix {
     CGFloat _itemHeight, _minItemWidth;
     NSInteger _highlightedCellRow;
@@ -39,6 +41,8 @@
 
 @end
 
+#pragma mark -
+
 @interface N2PopUpMatrixCell : NSCell {
     NSInteger _tag;
 }
@@ -46,6 +50,8 @@
 @property NSInteger tag;
 
 @end
+
+#pragma mark -
 
 @interface N2PopUpScrollView : NSControl {
     NSTimer* _timer;
@@ -62,9 +68,13 @@
 
 @end
 
+#pragma mark -
+
 @interface N2PopUpMenuWindow : NSWindow
 
 @end
+
+#pragma mark -
 
 @interface N2PopUpMenuWindowController : NSWindowController<NSWindowDelegate, NSTextFieldDelegate> {
     N2PopUpMenuWindowView* _bgView;
@@ -89,6 +99,8 @@
 
 @end
 
+#pragma mark -
+
 @implementation N2PopUpMenu
 
 + (NSWindow*)popUpContextMenu:(NSMenu*)menu withEvent:(NSEvent*)event forView:(NSView*)view withFont:(NSFont*)font {
@@ -100,6 +112,8 @@
 }
 
 @end
+
+#pragma mark -
 
 @implementation N2PopUpMenuWindowController
 
@@ -553,13 +567,16 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     [self maybeDoCommandBySelector:command];
 }
 
-- (BOOL)control:(NSControl*)control textView:(NSTextView*)textView doCommandBySelector:(SEL)command {
+- (BOOL)control:(NSControl*)control textView:(NSTextView*)textView doCommandBySelector:(SEL)command
+{
     if (command == @selector(moveRight:) || command == @selector(moveLeft:))
         return NO;
+
     return [self maybeDoCommandBySelector:command];
 }
 
-- (void)insertText:(NSString*)str {
+- (void)insertText:(NSString*)str
+{
     _filterField.stringValue = str;
     
     if (!_filterField.superview) {
@@ -652,6 +669,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
 @end
 
+#pragma mark -
 
 @implementation N2PopUpMatrixCell
 
@@ -694,6 +712,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
 @end
 
+#pragma mark -
 
 @implementation N2PopUpMatrix
 
@@ -711,7 +730,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
         _minItemWidth = 120;
         _highlightedCellRow = NSNotFound;
         self.cellClass = [N2PopUpMatrixCell class];
-        self.intercellSpacing = NSMakeSize(0,0);
+        self.intercellSpacing = NSZeroSize;
         [self setDrawsBackground:NO];
     }
     
@@ -814,7 +833,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 }
 
 - (void)mouseExited:(NSEvent*)event {
-    [self mouseMoved:nil];
+    [self mouseMoved:event];
 }
 
 - (void)mouseDown:(NSEvent*)event {
@@ -930,6 +949,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
 @end
 
+#pragma mark -
 
 @implementation N2PopUpScrollView
 
@@ -973,7 +993,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 - (void)timerFire:(NSTimer*)timer {
     [self sendAction:self.action to:self.target];
     if (!self.superview)
-        [self mouseExited:nil];
+        [self mouseExited:[NSApp currentEvent]];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
@@ -1006,6 +1026,8 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
 @end
 
+#pragma mark -
+
 @implementation N2PopUpMenuWindow
 
 - (BOOL)canBecomeKeyWindow {
@@ -1019,6 +1041,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
 @end
 
+#pragma mark -
 
 @implementation N2PopUpMenuWindowView
 

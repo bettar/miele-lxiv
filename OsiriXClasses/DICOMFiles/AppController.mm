@@ -144,9 +144,17 @@ BOOL					USETOOLBARPANEL = NO;
 short					Altivec = 1;
 short                   Use_kdu_IfAvailable = 0;
 AppController			*appController = nil;
-DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil, *dcmtkQRSCPTLS = nil;
-NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil, *STORESCPTLS = nil;			// Papyrus is NOT thread-safe
-NSMutableArray			*accumulateAnimationsArray = nil, *recentStudies = nil;
+
+DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil;
+DCMTKQueryRetrieveSCP   *dcmtkQRSCPTLS = nil;
+
+NSRecursiveLock			*Papyrus_Lock = nil;            // Papyrus is NOT thread-safe
+NSRecursiveLock         *STORESCP_Lock = nil;
+NSRecursiveLock         *STORESCPTLS_Lock = nil;
+
+NSMutableArray			*accumulateAnimationsArray = nil;
+NSMutableArray          *recentStudies = nil;
+
 NSMutableDictionary     *recentStudiesAlbums = nil;
 BOOL					accumulateAnimations = NO;
 
@@ -697,11 +705,11 @@ static NSDate *lastWarningDate = nil;
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, recentStudiesMenu, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
 @synthesize bonjourPublisher = _bonjourPublisher;
 
-+(BOOL) hasMacOSX_AfterMojave
++(BOOL) hasMacOSX_AfterCatalina
 {
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
     if ((version.majorVersion > 10) ||
-        (version.majorVersion == 10 && version.minorVersion > 14))
+        (version.majorVersion == 10 && version.minorVersion > 15))  // MAC_OS_X_VERSION_10_15
     {
         return YES;
     }
@@ -941,19 +949,18 @@ static NSDate *lastWarningDate = nil;
 		if ([addresses count])
 		{
 			void * backtrace_frames[[addresses count]];
-			int i = 0;
+			int ii = 0;
 			for (NSNumber * address in addresses)
 			{
-				backtrace_frames[i] = (void *)[address unsignedLongValue];
-				i++;
+				backtrace_frames[ii] = (void *)[address unsignedLongValue];
+				ii++;
 			}
 			
 			char **frameStrings = backtrace_symbols(&backtrace_frames[0], [addresses count]);
 			
 			if (frameStrings != NULL)
 			{
-				int x;
-				for (x = 0; x < [addresses count]; x++)
+				for (int x = 0; x < [addresses count]; x++)
 				{
 					NSString *frame_description = [NSString stringWithUTF8String:frameStrings[ x]];
 					NSLog( @"------- %@", frame_description);
@@ -1111,8 +1118,7 @@ static NSDate *lastWarningDate = nil;
 }
 #endif
 
-////////////////////////////////////////////////////////////////////////////////
-#pragma mark-
+#pragma mark -
 
 //-(IBAction) osirix64bit:(id)sender
 //{
@@ -1160,9 +1166,7 @@ static NSDate *lastWarningDate = nil;
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_WEB_PAGE@"/ConformanceStatementMiele.pdf"]];
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-#pragma mark-
+#pragma mark -
 
 - (void) waitForPID: (NSNumber*) pidNumber
 {
@@ -2202,7 +2206,7 @@ static NSDate *lastWarningDate = nil;
 	[[DCMNetServiceDelegate sharedNetServiceDelegate] setPublisher: BonjourDICOMService];
 }
 
-#pragma mark-
+#pragma mark -
 
 -(void) restartSTORESCP
 {
@@ -2254,11 +2258,11 @@ static NSDate *lastWarningDate = nil;
 			
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"])
 			{
-				if ([STORESCP tryLock])
+				if ([STORESCP_Lock tryLock])
 				{
 					[NSThread detachNewThreadSelector: @selector(startSTORESCP:) toTarget: self withObject: self];
 					
-					[STORESCP unlock];
+					[STORESCP_Lock unlock];
 				}
 				else
                     NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Listener Error", nil),
@@ -2278,11 +2282,11 @@ static NSDate *lastWarningDate = nil;
 			NSString* path = [[DicomDatabase activeLocalDatabase] incomingDirPath];
 			[[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath:path];
 			
-			if ([STORESCPTLS tryLock])
+			if ([STORESCPTLS_Lock tryLock])
 			{
 				[NSThread detachNewThreadSelector: @selector(startSTORESCPTLS:) toTarget: self withObject: self];
 				
-				[STORESCPTLS unlock];
+				[STORESCPTLS_Lock unlock];
 			}
 			else
                 NSRunCriticalAlertPanel(NSLocalizedString( @"DICOM TLS Listener Error", nil),
@@ -2344,7 +2348,7 @@ static NSDate *lastWarningDate = nil;
 {
 	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
 #ifndef OSIRIX_LIGHT
-	[STORESCP lock];
+	[STORESCP_Lock lock];
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
     [NSThread currentThread].name = @"DICOM Store-SCP";
@@ -2376,7 +2380,7 @@ static NSDate *lastWarningDate = nil;
 	}
 	
 	[pool release];
-	[STORESCP unlock];
+	[STORESCP_Lock unlock];
 #endif
 }
 
@@ -2390,7 +2394,7 @@ static NSDate *lastWarningDate = nil;
     
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
 	{
-		[STORESCPTLS lock];
+		[STORESCPTLS_Lock lock];
 		
 		@try 
 		{
@@ -2413,7 +2417,7 @@ static NSDate *lastWarningDate = nil;
             N2LogExceptionWithStackTrace(e);
 		}
 		
-		[STORESCPTLS unlock];
+		[STORESCPTLS_Lock unlock];
 	}	
 	
 	[pool release];
@@ -2471,11 +2475,10 @@ static NSDate *lastWarningDate = nil;
 		
         if ([urlComponents count] == 2)
 		{
-            NSString *parameterString = @"";
-			parameterString = [[urlComponents lastObject] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+            NSString *parameterString = [[urlComponents lastObject] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
 		
 			NSMutableDictionary *urlParameters = [NSMutableDictionary dictionary];
-			if (![parameterString isEqualToString: @""])
+			if (parameterString.length > 0)
 			{
 				NSMutableString *parsedParameterString = [NSMutableString string];
 				for (int i = 0 ; i < parameterString.length; i++)
@@ -2913,9 +2916,9 @@ static BOOL firstCall = YES;
         
     //  NSLog(@"%@ -> %d", [[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"], [N2Debug isActive]);
         
-        PapyrusLock = [[NSRecursiveLock alloc] init];
-        STORESCP = [[NSRecursiveLock alloc] init];
-        STORESCPTLS = [[NSRecursiveLock alloc] init];
+        Papyrus_Lock = [NSRecursiveLock new];
+        STORESCP_Lock = [NSRecursiveLock new];
+        STORESCPTLS_Lock = [NSRecursiveLock new];
         
         [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
         
@@ -3030,12 +3033,13 @@ static BOOL initialized = NO;
                 NSArray *tiffLines = [tiffVersion componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
                 NSLog(@"%@", tiffLines[0]);
 
-                CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-                if (cgl_ctx) {
-                    const GLubyte * strVersion = glGetString (GL_VERSION); // get version string
-                    const GLubyte * strExtension = glGetString (GL_EXTENSIONS);	// get extension string
-                    NSLog(@"OpenGL version:%s, extension:%s", strVersion, strExtension);
-                }
+                // Too early here
+//                CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+//                if (cgl_ctx) {
+//                    const GLubyte * strVersion = glGetString (GL_VERSION); // get version string
+//                    const GLubyte * strExtension = glGetString (GL_EXTENSIONS);	// get extension string
+//                    NSLog(@"OpenGL version:%s, extension:%s", strVersion, strExtension);
+//                }
                 
                 NSMutableArray *components = [[[NSBundle mainBundle] localizations] mutableCopy];
                 if ([components containsObject:@"Base"])
@@ -3206,8 +3210,8 @@ static BOOL initialized = NO;
                             dataBasePath = [DicomDatabase baseDirPathForMode: [[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
                         }
                         @catch (NSException *e) {
-                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
-                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
+                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];  // Documents directory
+                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"]; // Documents directory
                         }
                     }
                 }
@@ -3838,6 +3842,16 @@ static BOOL initialized = NO;
         [[QueryController currentQueryController] showWindow: self];
     }
 #endif
+    
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (cgl_ctx) {
+        const GLubyte *strVersion = glGetString (GL_VERSION); // get version string
+        NSLog(@"OpenGL version: %s", strVersion);
+#if 0 //ndef NDEBUG
+        const GLubyte *strExtension = glGetString (GL_EXTENSIONS);    // get extension string
+        NSLog(@"OpenGL extension: %s", strExtension);
+#endif
+    }
 }
 
 - (void) checkForOsirixMimeType
@@ -3941,12 +3955,16 @@ static BOOL initialized = NO;
 //        }
 //    }
     
-	NSUInteger size = 32, size2 = size*size;
+    NSUInteger size = 32;
+    NSUInteger size2 = size*size;
 	
-	NSWindow* win = [[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,size,size) styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:NO];
+	NSWindow* win = [[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,size,size)
+                                                styleMask:NSWindowStyleMaskTitled
+                                                  backing:NSBackingStoreBuffered
+                                                    defer:NO];
 	
-	long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
-	long clutBarsCopy = [[NSUserDefaults standardUserDefaults] integerForKey:@"CLUTBARS"];
+	int annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey:ANNOTATIONS_KEY];
+	ClutBarsType clutBarsCopy = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey:CLUTBARS_KEY];
 	BOOL noInterpolationCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
 	BOOL highQInterpolationCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"SOFTWAREINTERPOLATION"];
 	
@@ -3957,8 +3975,8 @@ static BOOL initialized = NO;
 	unsigned char gray_2[size2];
     unsigned char gray_1[size2];
     
-	[[NSUserDefaults standardUserDefaults] setInteger:annotNone forKey:@"ANNOTATIONS"];
-	[[NSUserDefaults standardUserDefaults] setInteger:barHide forKey:@"CLUTBARS"];
+	[[NSUserDefaults standardUserDefaults] setInteger:ANNOTATIONS_NONE forKey:ANNOTATIONS_KEY];
+	[[NSUserDefaults standardUserDefaults] setInteger:CLUT_BAR_HIDE forKey:CLUTBARS_KEY];
 	
 	// pix 1: no interpolation
     
@@ -4042,20 +4060,22 @@ static BOOL initialized = NO;
 	[win release];
 	[dcmPix release];
 	
-	
-	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey:@"ANNOTATIONS"];
-	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey:@"CLUTBARS"];
+	// Restore settings
+	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey:ANNOTATIONS_KEY];
+	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey:CLUTBARS_KEY];
 	[[NSUserDefaults standardUserDefaults] setBool: noInterpolationCopy forKey:@"NOINTERPOLATION"];
 	[[NSUserDefaults standardUserDefaults] setBool: highQInterpolationCopy forKey:@"SOFTWAREINTERPOLATION"];
 	
-	[DCMView setCLUTBARS:clutBarsCopy ANNOTATIONS:annotCopy];
+	[DCMView setCLUTBARS:clutBarsCopy
+         withAnnotations:annotCopy];
 	
 	// eval results
 	
 	CGFloat delta = 0;
 	for (int i = 0; i < size2; ++i)
 		delta += fabsf((float)gray_1[i]-(float)gray_2[i]);
-	BOOL has32bitPipeline = delta > 1000; // we may want to raise this..
+
+    BOOL has32bitPipeline = delta > 1000.0F; // we may want to raise this..
 	
 	if (has32bitPipeline)
 	{
@@ -4120,8 +4140,8 @@ static BOOL initialized = NO;
 	else
         [[NSUserDefaults standardUserDefaults] setInteger: [[NSTimeZone localTimeZone] secondsFromGMT] forKey: @"timeZone"];
 	
-    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"COPYDATABASEMODE"] intValue] == 1) // tag 1 "if on CD", disappeared after new CD/DVD import system
-        [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:@"COPYDATABASEMODE"];
+    if ([[[NSUserDefaults standardUserDefaults] valueForKey:COPYDATABASEMODE_KEY] intValue] == COPY_DB_CD_ONLY) // Fix up obsolete value
+        [[NSUserDefaults standardUserDefaults] setInteger:COPY_DB_NOT_MAIN_DRIVE forKey:COPYDATABASEMODE_KEY];
         
 //	NSLog(@"%s", __PRETTY_FUNCTION__, nil);
 	
@@ -4320,7 +4340,7 @@ static BOOL initialized = NO;
         }
     }
     
-    if ([AppController hasMacOSX_AfterMojave])
+    if ([AppController hasMacOSX_AfterCatalina])
     {
 #ifdef WITH_OS_VALIDATION
         NSAlert *alert = [[NSAlert new] autorelease];
@@ -4454,10 +4474,8 @@ static BOOL initialized = NO;
 	//			[xaCLUTFilter writeToFile:[[[oPanel filenames] objectAtIndex:0] stringByAppendingPathExtension:@"plist"] atomically:YES];
 	//			}
 	//	}
-	
-////////////////////////////////////////////////////////////////////////////////
 
-#pragma mark-
+#pragma mark -
 
 + (BOOL) isFDACleared
 {
@@ -4601,8 +4619,7 @@ static BOOL initialized = NO;
 //        NSRunAlertPanel( NSLocalizedString( @"No connection available", nil), @"%@", NSLocalizedString( @"OK", nil), nil, nil, reason);
 //}
 
-////////////////////////////////////////////////////////////////////////////////
-#pragma mark-
+#pragma mark -
 
 - (IBAction) about: (id) sender
 {
@@ -4893,7 +4910,7 @@ static BOOL initialized = NO;
 	return NSMakePoint( i + [w frame].origin.x + [w frame].size.width/2, i + [w frame].origin.y + [w frame].size.height/2);
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) addStudyToRecentStudiesMenu: (NSManagedObjectID*) studyID
 {
@@ -4980,7 +4997,7 @@ static BOOL initialized = NO;
     [recentStudies removeObjectsInArray: studiesToRemove];
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) initTilingWindows
 {
@@ -5432,19 +5449,19 @@ static BOOL initialized = NO;
 				float ratio = (float) columnsPerScreen / (float) rows;
 			
 				if (ratio > ratioValue)
-					rows ++;
+					rows++;
 				else 
-					columnsPerScreen ++;
+					columnsPerScreen++;
 			}
 		}
         
         int intViewerCountPerScreen = ceilf( viewerCountPerScreen);
         
         if (rows * columnsPerScreen > intViewerCountPerScreen && rows*(columnsPerScreen-1) == intViewerCountPerScreen)
-            columnsPerScreen --;
+            columnsPerScreen--;
 
         if (rows * columnsPerScreen > intViewerCountPerScreen && columnsPerScreen*(rows-1) == intViewerCountPerScreen)
-            rows --;
+            rows--;
         
         columns = columnsPerScreen * numberOfMonitors;
 	}
@@ -5560,19 +5577,19 @@ static BOOL initialized = NO;
                                 float ratio = (float) columnsForThisScreen / (float) rowsForThisScreen;
                                 
                                 if (ratio > ratioValue)
-                                    rowsForThisScreen ++;
+                                    rowsForThisScreen++;
                                 else 
-                                    columnsForThisScreen ++;
+                                    columnsForThisScreen++;
                             }
                         }
                         
                         int intViewerCountPerScreen = ceilf( viewersForThisScreen.count);
                         
                         if (rowsForThisScreen * columnsForThisScreen > intViewerCountPerScreen && rowsForThisScreen*(columnsForThisScreen-1) == intViewerCountPerScreen)
-                            columnsForThisScreen --;
+                            columnsForThisScreen--;
                         
                         if (rowsForThisScreen * columnsForThisScreen > intViewerCountPerScreen && columnsForThisScreen*(rowsForThisScreen-1) == intViewerCountPerScreen)
-                            rowsForThisScreen --;
+                            rowsForThisScreen--;
                         
                         columns = columnsForThisScreen * numberOfMonitors;
                     }

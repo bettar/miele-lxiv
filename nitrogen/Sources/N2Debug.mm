@@ -18,7 +18,6 @@
  PURPOSE.
  =========================================================================*/
 
-
 #import "N2Debug.h"
 #import "NSException+N2.h"
 
@@ -35,6 +34,8 @@ static BOOL _active = NO;
 }
 
 @end
+
+#pragma mark -
 
 extern "C" {
 
@@ -77,7 +78,8 @@ extern void N2LogStackTrace(NSString* format, ...) {
 	
 	@try {
 		[NSException raise:NSGenericException format:@""];
-	} @catch (NSException* e) {
+	}
+    @catch (NSException* e) {
 		_N2LogExceptionVImpl(e, YES, "", format, args);
 	}
 

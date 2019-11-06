@@ -37,7 +37,7 @@
 	for( i = 0; i < UNDO_DATA_SIZE; i++)
         undodata[ i] = nil;
 	
-//	[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];	// texture mapping
+//	[[NSUserDefaults standardUserDefaults] setInteger: ENGINE_GPU_OPEN_GL forKey: @"MAPPERMODEVR"];	// texture mapping
 	
 	curMovieIndex = 0;
 	maxMovieIndex = 1;

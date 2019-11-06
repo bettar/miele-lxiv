@@ -33,6 +33,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation CPRVolumeData
 
@@ -590,13 +591,11 @@
 - (void)getOrientation:(float[6])orientation
 {
     double doubleOrientation[6];
-    NSInteger i;
     
     [self getOrientationDouble:doubleOrientation];
     
-    for (i = 0; i < 6; i++) {
+    for (NSInteger i = 0; i < 6; i++)
         orientation[i] = doubleOrientation[i];
-    }
 }
 
 - (void)getOrientationDouble:(double[6])orientation

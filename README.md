@@ -93,3 +93,8 @@ C-GET SCU/SCP and WADO support for dynamic IP transfers
 - OpenGL
 - LibTIFF
 - LibJPEG
+
+---
+## How to Build the Project
+
+As of March 2019 the most convenient way of configuring and building the application is by following the instructions from the README file of this project: <https://github.com/bettar/miele-lxiv-easy>

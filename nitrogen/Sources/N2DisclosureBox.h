@@ -35,12 +35,13 @@ extern NSString* N2DisclosureBoxDidCollapseNotification;
 }
 
 @property BOOL enabled;
-@property(readonly) N2DisclosureButtonCell* titleCell;
+//@property(readonly) N2DisclosureButtonCell* titleCell;
 
 -(id)initWithTitle:(NSString*)title content:(NSView*)view;
 -(void)toggle:(id)sender;
 -(void)expand:(id)sender;
 -(void)collapse:(id)sender;
 -(BOOL)isExpanded;
+-(NSArray*)additionalSubviews;
 
 @end

@@ -64,7 +64,7 @@
 + (id)tagWithName:(NSString *)name;
 
 /** Initialize a tag with the defined group and element.*/
-- (id)initWithGroup:(int)group element:(int)element;
+- (instancetype)initWithGroup:(int)group element:(int)element;
 
 /** Initialize a copy of a tag */
 - (id)initWithTag:(DCMAttributeTag *)tag;
@@ -72,14 +72,13 @@
 /** Create a tag  from a string representation of the element and tag\n
 * Format for the string is oxGGGGEEEE
 */
-- (id)initWithTagString:(NSString *)tagString;
+- (instancetype)initWithTagString:(NSString *)tagString;
 
 /** Initialize a tag with the human readable name
 * For Exmaple @"PatientsName.\n
 * See the name dictionary for the list of names
 */
 - (id)initWithName:(NSString *)name;
-
 
 /** Compare tags. Used for sorting */
 - (NSComparisonResult)compare:(DCMAttributeTag *)tag;

@@ -93,12 +93,13 @@ static inline unsigned char intToChar( int c)
 
 void* sopInstanceUIDEncode( NSString *sopuid)
 {
-	unsigned int	i, x;
-	unsigned char	*r = (unsigned char *)malloc( 1024);
+    unsigned int i;
+	unsigned int x;
+	unsigned char *r = (unsigned char *)malloc( 1024);
 	
-    if( r)
+    if (r)
     {
-        for( i = 0, x = 0; i < [sopuid length];)
+        for (i = 0, x = 0; i < [sopuid length];)
         {
             unsigned char c1, c2;
             
@@ -121,10 +122,11 @@ void* sopInstanceUIDEncode( NSString *sopuid)
 
 NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 {
-	unsigned int	i, x;
-	char			str[ 1024];
+    unsigned int i;
+    unsigned int x = 0;
+	char str[ 1024];
 	
-	for( i = 0, x = 0; i < length; i++)
+	for (i = 0, x = 0; i < length; i++)
 	{
 		unsigned char c1, c2;
 		
@@ -142,6 +144,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return [NSString stringWithCString:str encoding: NSASCIIStringEncoding];
 }
 
+#pragma mark -
+
 @implementation NSData (OsiriX)
 
 - (BOOL) isEqualToSopInstanceUID:(NSData*) sopInstanceUID
@@ -156,11 +160,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	
 	const UInt8* bytes = (const UInt8*) [self bytes];
 	if( bytes[length-1] == 0)
-		length --;
+		length--;
 	
 	const UInt8* sopInstanceUIDBytes = (const UInt8*) [sopInstanceUID bytes];
 	if (sopInstanceUIDBytes[sopInstanceUIDLength-1] == 0)
-		sopInstanceUIDLength --;
+		sopInstanceUIDLength--;
 	
 	if (length == sopInstanceUIDLength)
 	{
@@ -171,6 +175,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return NO;
 }
 @end
+
+#pragma mark -
 
 @implementation Dicom_Image
 
@@ -222,7 +228,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 + (NSData*) sopInstanceUIDEncodeString:(NSString*) s
 {
 	int length = [s length];
-	length ++;
+	length++;
 	length /= 2;
 	
 	return [NSData dataWithBytesNoCopy: sopInstanceUIDEncode( s) length: length freeWhenDone: YES];
@@ -317,7 +323,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSNumber*) inDatabaseFolder
 {
@@ -354,7 +360,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 -(void)_updateMetaData_size {
 	DicomFile* df = [[DicomFile alloc] init:[self completePath]];
@@ -402,7 +408,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSNumber*) width
 {
@@ -443,7 +449,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSNumber*) numberOfFrames
 {
@@ -480,7 +486,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSNumber*) numberOfSeries
 {
@@ -527,8 +533,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     [self.series setNumberOfImages: nil];
 }
 
-#pragma mark-
-
+//#pragma mark -
+//
 //- (NSNumber*) mountedVolume
 //{
 //	if( mountedVolume) return mountedVolume;
@@ -557,7 +563,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 //	[self didChangeValueForKey:@"storedMountedVolume"];
 //}
 
-#pragma mark-
+#pragma mark -
 
 - (void) dcmodifyThread: (NSDictionary*) dict
 {
@@ -741,7 +747,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSString*) extension
 {
@@ -750,8 +756,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
             return extension;
         
         NSString *f = [self primitiveValueForKey:@"storedExtension"];
-        
-        if( f == 0 || [f isEqualToString:@""]) f = @"dcm";
+        if (f.length == 0)
+            f = @"dcm";
 
         [extension release];
         extension = [f retain];
@@ -777,17 +783,18 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSString*) modality
 {
     @synchronized (self) {
-        if( modality)
+        if (modality)
             return modality;
         
         NSString *f = [self primitiveValueForKey:@"storedModality"];
         
-        if( f == 0 || [f isEqualToString:@""]) f = @"CT";
+        if (f.length == 0)
+            f = @"CT";
 
         [modality release];
         modality = [f retain];
@@ -813,17 +820,16 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (NSString*) fileType
 {
     @synchronized (self) {
-        if( fileType)
+        if (fileType)
             return fileType;
         
         NSString *f = [self primitiveValueForKey:@"storedFileType"];
-        
-        if( f == 0 || [f isEqualToString:@""])
+        if (f.length == 0)
             f = @"DICOM";
         
         [fileType release];
@@ -851,7 +857,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) setValue:(id)value forUndefinedKey:(NSString *)key
 {
@@ -1269,7 +1275,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
             NSArray* rois = roisImage? [NSUnarchiver unarchiveObjectWithData:[SRAnnotation roiFromDICOM:[roisImage completePath]]] : nil;
             
             DCMView* view = [[DCMView alloc] initWithFrame:frame imageRows:self.height.intValue imageColumns:self.width.intValue];
-            view.annotationType = annotGraphics;
+            view.annotationType = ANNOTATIONS_GRAPHICS;
             [view setPixels:[NSMutableArray arrayWithObject:pix] files:[NSMutableArray arrayWithObject:self] rois:(rois? [NSMutableArray arrayWithObject:rois] : nil) firstImage:0 level:'i' reset:YES];
             [win.contentView addSubview:view];
             

@@ -23,6 +23,8 @@
 #import "VRPresetPreview.h"
 #import "Notifications.h"
 
+extern int checkOpenGLErrors(int lineNo);
+
 @implementation VRPresetPreview
 
 -(id)initWithFrame:(NSRect)frame
@@ -65,11 +67,10 @@
 	}
 }
 
--(short) setPixSource:(NSMutableArray*) pix
+// Return error flag
+- (BOOL) setPixSource:(NSMutableArray*) pix
                      :(float*) volumeData
 {
-	short error = 0;
-    
 	[[self window] setAcceptsMouseMovedEvents: YES];
 	
     [pix retain];
@@ -369,7 +370,7 @@
 	volume = vtkVolume::New();
     volume->SetProperty( volumeProperty);
 	
-//	[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]];
+//	[self setEngine: (EngineType)[[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]];
 	
 	vtkMatrix4x4	*matrice = vtkMatrix4x4::New();
 	matrice->Element[0][0] = cosines[0];
@@ -616,10 +617,10 @@
 
 	[self setNeedsDisplay:YES];
 	
-    return error;
+    return false; // no error
 }
 
-- (void) setEngine: (int) newEngine
+- (void) setEngine: (EngineType) newEngine
 {
     engine = newEngine;
 	[self setEngine: engine showWait:NO];
@@ -656,14 +657,21 @@
 	return isEmpty;
 }
 
+#pragma mark -
+
 - (void) drawRect:(NSRect)aRect
 {
-	if (isEmpty)
-	{
-		[[NSColor blackColor] set];
-		NSRectFill(aRect);
-		[self changeColorWith:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
-	}
+#ifdef DEBUG_ISSUE_45
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+    checkOpenGLErrors(__LINE__);
+#endif
+
+// GitHub issue #45
+//    if (isEmpty) {
+//		[[NSColor blackColor] set];
+//		NSRectFill(aRect);
+//		[self changeColorWith:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+//	}
 
 	if (volumeMapper)
         volumeMapper->SetMinimumImageSampleDistance(LOD);

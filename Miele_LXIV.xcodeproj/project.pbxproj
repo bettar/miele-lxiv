@@ -37,6 +37,7 @@
 		430D9F102199FB37006EA1B1 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */; };
 		43110BEB21679E5B00B0405B /* DCM.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4333FD721AB3082C00E82B49 /* DcmQueryRetrieveOsiriSCP.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4333FD711AB3082C00E82B49 /* DcmQueryRetrieveOsiriSCP.mm */; };
+		43384CD22347352C00662E7E /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
 		433C9DC82255F5FC00EBC6E9 /* miele_lxivTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 434930EE225512EC00C30B21 /* miele_lxivTests.mm */; };
 		433C9DCC2255F8B500EBC6E9 /* Point3D.mm in Sources */ = {isa = PBXBuildFile; fileRef = 183C864308563F3A000E6A68 /* Point3D.mm */; };
 		433C9DCD2255FA3200EBC6E9 /* UnitTestingBase.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98795DC16DBA51500926023 /* UnitTestingBase.mm */; };
@@ -143,6 +144,7 @@
 		43A02CA9219D889700E788B6 /* Endoscopy.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43A02C8F219D889600E788B6 /* Endoscopy.xib */; };
 		43A02CAA219D889700E788B6 /* CPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43A02C91219D889700E788B6 /* CPR.xib */; };
 		43A02EE1219D9B5400E788B6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43A02EDF219D9B5300E788B6 /* Localizable.strings */; };
+		43A89425232F805700CED2CB /* dicomFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* dicomFile.mm */; };
 		43BF296D21662E1D0022CF3B /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43BF296C21662E1D0022CF3B /* main.mm */; };
 		43BF296E21662F100022CF3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43CC5BA5216511E200F1B1CA /* Assets.xcassets */; };
 		43CC5BA6216511E200F1B1CA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43CC5BA5216511E200F1B1CA /* Assets.xcassets */; };
@@ -249,7 +251,6 @@
 		59C447EA1451710F00D71580 /* NSArray+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447E71451710F00D71580 /* NSArray+N2.mm */; };
 		59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */; };
 		59D9471D125333640095680D /* SWFInit.as in Resources */ = {isa = PBXBuildFile; fileRef = 59D9471C125333640095680D /* SWFInit.as */; };
-		59DB26FB1450787E00E78E03 /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
 		59DB270014507ACA00E78E03 /* PrettyCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DB26FD14507ACA00E78E03 /* PrettyCell.mm */; };
 		59DB270614507ADF00E78E03 /* N2MutableUInteger.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DB270314507ADF00E78E03 /* N2MutableUInteger.mm */; };
 		59DB270C14507B1400E78E03 /* RemoteDicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DB270914507B1300E78E03 /* RemoteDicomDatabase.mm */; };
@@ -829,7 +830,6 @@
 		CE1335EA06B02DC000B7FC03 /* iChat.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1335E806B02DC000B7FC03 /* iChat.icns */; };
 		CE1366B50B41D0F200944876 /* mpeg2.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE1366B40B41D0F200944876 /* mpeg2.tif */; };
 		CE142E7F1119DA53000F4A8C /* DCMPix.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE0CB16F084A623C00C6385F /* DCMPix.mm */; };
-		CE142ED71119DE4F000F4A8C /* dicomFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* dicomFile.mm */; };
 		CE142ED81119DE4F000F4A8C /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
 		CE16066E0769EFE60036CAD3 /* VR Muscles-Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */; };
 		CE1C4EF20FDA6F4600185561 /* nameDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFEB763B0677FDA700F242F3 /* nameDictionary.plist */; };
@@ -1495,6 +1495,7 @@
 		433F9A7F1A1B18A500E52C6C /* vtkMieleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkMieleView.h; sourceTree = "<group>"; };
 		433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OsiriXFixedPointVolumeRayCastMapper.cxx; sourceTree = "<group>"; };
 		433F9A881A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OsiriXFixedPointVolumeRayCastMapper.h; sourceTree = "<group>"; };
+		43475BF02344C55300BEE02C /* mieleTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mieleTypes.h; sourceTree = "<group>"; };
 		434930EC225512EC00C30B21 /* Unit Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Unit Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		434930EE225512EC00C30B21 /* miele_lxivTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = miele_lxivTests.mm; sourceTree = "<group>"; };
 		434930F0225512EC00C30B21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -3201,6 +3202,7 @@
 				43E27D261AF32929007B92CA /* tmp_locations.h */,
 				4307C62B1A2091900083877C /* url.h */,
 				434B46151A19F2A3008CF8CF /* options.h */,
+				43475BF02344C55300BEE02C /* mieleTypes.h */,
 			);
 			name = "Other Sources";
 			sourceTree = SOURCE_ROOT;
@@ -5588,7 +5590,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE902EA3181C034E00CC4B88 /* pages2pages09.applescript in Resources */,
 				CE0C4792183139C400D4C50E /* pages092pdf.applescript in Resources */,
 				596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */,
 				43A02C5B219D883100E788B6 /* Plot.xib in Resources */,
@@ -5596,6 +5597,7 @@
 				ABBB63A80635874E00D9531F /* dicom.dic in Resources */,
 				ABBB64AD063587B200D9531F /* 2DBlending.tif in Resources */,
 				43A02C9A219D889700E788B6 /* CustomIntervalPanel.xib in Resources */,
+				CE902EA3181C034E00CC4B88 /* pages2pages09.applescript in Resources */,
 				ABBB64AE063587B200D9531F /* 3D.tif in Resources */,
 				ABBB64B2063587B200D9531F /* Axial.tif in Resources */,
 				43013227219D9D0F00A82781 /* InfoPlist.strings in Resources */,
@@ -6102,7 +6104,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources Disabled/\"\nexit 0";
+			shellScript = "mkdir -p \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources Disabled/\"\nexit 0\n";
 		};
 		AB0F3A3F1046BE51004129DD /* Copy Headers and Create Miele.h */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6710,18 +6712,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59DB26FB1450787E00E78E03 /* N2Debug.mm in Sources */,
 				434B46201A19F642008CF8CF /* OPJSupport.cpp in Sources */,
 				AB7250620ADE705C00A212A0 /* Decompress.mm in Sources */,
 				434B47A51A1A1951008CF8CF /* kdu_OsiriX_NO_Support.cpp in Sources */,
 				A98FFBEA0CA92B58000291C8 /* altivecFunctions.cpp in Sources */,
 				ABE59B850F494CA1004EBF28 /* DefaultsOsiriX.mm in Sources */,
 				CE142E7F1119DA53000F4A8C /* DCMPix.mm in Sources */,
-				CE142ED71119DE4F000F4A8C /* dicomFile.mm in Sources */,
+				43A89425232F805700CED2CB /* dicomFile.mm in Sources */,
 				CE142ED81119DE4F000F4A8C /* DicomFileDCMTKCategory.mm in Sources */,
 				59BDEF45117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */,
 				59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */,
 				CEFFFE2A1286897200D69BB8 /* djdec2k.cc in Sources */,
+				43384CD22347352C00662E7E /* N2Debug.mm in Sources */,
 				CEFFFE3D12868F5400D69BB8 /* djdijp2k.cc in Sources */,
 				CEFF01001286F7A700D69BB8 /* djenc2k.cc in Sources */,
 				CEFF01471286FB2000D69BB8 /* djeijg2k.cc in Sources */,
@@ -7996,7 +7998,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20190404;
+				CURRENT_PROJECT_VERSION = 20191026;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8089,6 +8091,7 @@
 					"$(SRCROOT)/Binaries/openssl/lib",
 					"$(SRCROOT)/Binaries/libiconv/lib",
 				);
+				MARKETING_VERSION = 7.5.52;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8164,7 +8167,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-4.13",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.0",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-8.2",
 				);
 				USE_HEADERMAP = NO;
@@ -8190,6 +8193,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
+				MARKETING_VERSION = 7.5.52;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8245,6 +8249,7 @@
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/Binaries/libjpeg/lib";
+				MARKETING_VERSION = 7.5.52;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8480,6 +8485,7 @@
 					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"$(SRCROOT)/Binaries/libtiff/lib",
 				);
+				MARKETING_VERSION = 7.5.52;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
 					"-std=gnu++14",
@@ -8526,7 +8532,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20190404;
+				CURRENT_PROJECT_VERSION = 20191026;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8619,6 +8625,7 @@
 					"$(SRCROOT)/Binaries/openssl/lib",
 					"$(SRCROOT)/Binaries/libiconv/lib",
 				);
+				MARKETING_VERSION = 7.5.52;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8695,7 +8702,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-4.13",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.0",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-8.2",
 				);
 				USE_HEADERMAP = NO;
@@ -8721,6 +8728,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
+				MARKETING_VERSION = 7.5.52;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8776,6 +8784,7 @@
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/Binaries/libjpeg/lib";
+				MARKETING_VERSION = 7.5.52;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9013,6 +9022,7 @@
 					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"$(SRCROOT)/Binaries/libtiff/lib",
 				);
+				MARKETING_VERSION = 7.5.52;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
 					"-std=gnu++14",
@@ -9055,6 +9065,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
+				MARKETING_VERSION = 7.5.52;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9107,6 +9118,7 @@
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/Binaries/libjpeg/lib";
+				MARKETING_VERSION = 7.5.52;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9237,6 +9249,7 @@
 					"$(SRCROOT)/Binaries/openssl/lib",
 					"$(SRCROOT)/Binaries/libiconv/lib",
 				);
+				MARKETING_VERSION = 7.5.52;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9311,7 +9324,7 @@
 				PRODUCT_NAME = "miele-lxiv";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-4.13",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.0",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-8.2",
 				);
 				USE_HEADERMAP = NO;
@@ -9342,7 +9355,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
-				CURRENT_PROJECT_VERSION = 20190404;
+				CURRENT_PROJECT_VERSION = 20191026;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -9404,6 +9417,7 @@
 					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"$(SRCROOT)/Binaries/libtiff/lib",
 				);
+				MARKETING_VERSION = 7.5.52;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
 					"-std=gnu++14",
@@ -9498,8 +9512,8 @@
 					DCM,
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
-					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.dylib",
-					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.dylib",
+					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
+					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
 					"-ltiff",
 					"-ljpeg",
 					"-lpng",

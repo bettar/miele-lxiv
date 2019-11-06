@@ -26,31 +26,37 @@
 
 - (void) changeGLFontNotification:(NSNotification*) note
 {
-	if( [note object] == self)
-	{
-		[[self openGLContext] makeCurrentContext];
-		
-		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-        if( cgl_ctx == nil)
-            return;
-        
-		if (fontListGL)
-			glDeleteLists (fontListGL, 150);
-        
-		fontListGL = glGenLists (150);
-		
-		[fontGL release];
-		fontGL = [[NSFont systemFontOfSize: 12] retain];
-		
-		[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :1 :self.window.backingScaleFactor];
-		stringSize = [self convertSizeToBacking: [DCMView sizeOfString:@"B" forFont:fontGL]];
-		
-		[DCMView purgeStringTextureCache];
-		[stringTextureCache release];
-		stringTextureCache = nil;
-		
-		[self setNeedsDisplay:YES];
-	}
+	if ( [note object] != self)
+        return;
+
+    [[self openGLContext] makeCurrentContext];
+    
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (cgl_ctx == nil)
+        return;
+    
+    if (fontListGL)
+        glDeleteLists (fontListGL, 150);
+    
+    fontListGL = glGenLists (150);
+    
+    [fontGL release];
+    fontGL = [[NSFont systemFontOfSize: 12] retain];
+    
+    [fontGL makeGLDisplayListFirst:' '
+                             count:150
+                              base:fontListGL
+                                  :fontListGLSize
+                                  :1
+                                  :self.window.backingScaleFactor];
+
+    stringSize = [self convertSizeToBacking: [DCMView sizeOfString:@"B" forFont:fontGL]];
+    
+    [DCMView purgeStringTextureCache];
+    [stringTextureCache release];
+    stringTextureCache = nil;
+    
+    [self setNeedsDisplay:YES];
 }
 
 - (BOOL)is2DViewer

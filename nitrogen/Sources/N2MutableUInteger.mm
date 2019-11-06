@@ -20,7 +20,6 @@
 
 #import "N2MutableUInteger.h"
 
-
 @implementation N2MutableUInteger
 
 @synthesize unsignedIntegerValue = _value;
@@ -29,8 +28,10 @@
 	return [[[[self class] alloc] initWithUInteger:value] autorelease];
 }
 
--(id)initWithUInteger:(NSUInteger)value {
-	if ((self = [super init])) {
+-(id)initWithUInteger:(NSUInteger)value
+{
+    self = [super init];
+	if (self) {
 		_value = value;
 	}
 	
@@ -42,7 +43,8 @@
 }
 
 -(void)decrement {
-	if (_value) --_value;
+	if (_value)
+        --_value;
 }
 
 -(NSString*)description {

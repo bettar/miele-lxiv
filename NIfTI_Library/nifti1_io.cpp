@@ -2487,7 +2487,7 @@ char * nifti_findimgname(const char* fname , int nifti_type)
 
    basename =  nifti_makebasename(fname);
    imgname = (char *)calloc(sizeof(char),strlen(basename)+8);
-   if( !imgname ){
+   if ( !imgname ) {
       fprintf(stderr,"** nifti_findimgname: failed to alloc imgname\n");
       free(basename);
       return NULL;
@@ -4414,7 +4414,8 @@ size_t nifti_read_buffer(znzFile fp, void* dataptr, size_t ntot,
     
     case NIFTI_TYPE_FLOAT32:
     case NIFTI_TYPE_COMPLEX64:{
-        register float *far = (float *)dataptr ; register int jj,nj ;
+        float *far = (float *)dataptr;
+        int jj,nj;
         nj = ntot / sizeof(float) ;
         for( jj=0 ; jj < nj ; jj++ )   /* count fixes 30 Nov 2004 [rickr] */
            if( !IS_GOOD_FLOAT(far[jj]) ){
@@ -4426,7 +4427,8 @@ size_t nifti_read_buffer(znzFile fp, void* dataptr, size_t ntot,
     
     case NIFTI_TYPE_FLOAT64:
     case NIFTI_TYPE_COMPLEX128:{
-        register double *far = (double *)dataptr ; register int jj,nj ;
+        double *far = (double *)dataptr;
+        int jj,nj;
         nj = ntot / sizeof(double) ;
         for( jj=0 ; jj < nj ; jj++ )   /* count fixes 30 Nov 2004 [rickr] */
            if( !IS_GOOD_FLOAT(far[jj]) ){

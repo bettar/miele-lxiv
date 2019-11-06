@@ -24,6 +24,7 @@
 #import <AppKit/AppKit.h>
 #import "ROI.h"
 #import "ROI3DSettingsWindow.h"
+#import "mieleTypes.h"
 
 @class DCMView;
 @class OpacityTransferView;
@@ -107,7 +108,8 @@ enum
 	IBOutlet NSView         *orientationView;
 	IBOutlet NSMatrix		*orientationMatrix;
 	
-	short					currentOrientationTool, originalOrientation;
+    OrientationToolType		currentOrientationTool;
+    OrientationToolType     originalOrientation;
 	
     IBOutlet NSSlider       *slider, *speedSlider;
 	IBOutlet NSButton		*loopButton;
@@ -128,7 +130,7 @@ enum
     BOOL OpacityPopupSet, clutPopupSet, convPopupSet, wlwwPopupSet, clutDICOMFileMenuAdded;
     IBOutlet NSPopUpButton  *seriesPopupMenu;
     IBOutlet NSPopUpButton  *windowsTilingMenu;
-    NSMenuItem               *seriesPopupContextualMenu;
+    NSMenuItem              *seriesPopupContextualMenu;
     BOOL                    needsToBuildSeriesPopupMenu, needsToBuildSeriesMatrix;
 	
 	IBOutlet NSView			*propagateSettingsView;
@@ -362,7 +364,8 @@ enum
 }
 @property(retain) NSCalendarDate *injectionDateTime;
 @property(readonly) NSSlider *slider;
-@property(readonly) short currentOrientationTool, originalOrientation;
+@property(readonly) OrientationToolType currentOrientationTool;
+@property(readonly) OrientationToolType originalOrientation;
 @property(readonly) NSTimer	*timer;
 @property(readonly) NSButton *keyImageCheck;
 @property(readonly) NSSlider *speedSlider;
@@ -619,7 +622,7 @@ enum
 - (IBAction) subCtrlNewMask:(id) sender;
 - (IBAction) subCtrlOffset:(id) sender;
 - (IBAction) subCtrlSliders:(id) sender;
-- (int) threeTestsFivePosibilities: (int) f;
+- (int) threeTestsFivePossibilities: (int) f;
 - (void) roiLoadFromSeries: (NSString*) filename;
 - (void) offsetMatrixSetting: (int) twentyFiveCodes;
 - (IBAction) mergeBrushROI: (id) sender;
@@ -709,7 +712,7 @@ enum
 - (IBAction) blendingSlider:(id) sender;
 - (IBAction) blendingMode:(id) sender;
 - (ViewerController*) blendingController;
-- (void)blendWithViewer:(ViewerController *)bc blendingType:(int)blendingType;
+- (void)blendWithViewer:(ViewerController *)bc blendingType:(BlendingType)blendingType;
 - (void)blendingSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 - (void)computeContextualMenu;
 - (void)computeContextualMenuForROI:(ROI*)roi;
@@ -875,7 +878,7 @@ enum
 - (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 - (IBAction) setOrientationTool:(id) sender;
-- (BOOL) setOrientation: (int) newOrientationTool;
+- (BOOL) setOrientation: (OrientationToolType) newOrientationTool;
 - (void) setWindowTitle:(id) sender;
 - (IBAction) printSlider:(id) sender;
 - (void) setConv:(float*) matrix :(short) size :(float) norm;
@@ -984,54 +987,13 @@ enum
 /**  return flag indicating whether only the key images are being displayed */
 - (BOOL)displayOnlyKeyImages;
 
-
 /** Returns whether the image at the index is a key image
 * @param index of image to check
 */
 - (BOOL)isKeyImage:(int)index;
 
-#pragma mark - Convenience methods for accessing values in the current imageView
+#pragma mark - Opening 3D Viewers
 
-/** Current ImageView window width */
--(float)curWW;
-
-/** Current ImageView window level */
--(float)curWL;
-
-/** Set window width and window level for current ImageView */
-- (void)setWL:(float)wl  WW:(float)ww;
-
-/** Current ImageView horizontal flip */
-- (BOOL)xFlipped;
-
-/** Current ImageView vertical flip */
-- (BOOL)yFlipped;
-
-/** Current ImageView rotation */
-- (float)rotation;
-
-/** Set rotation for current ImageView */
-- (void)setRotation:(float)rotation;
-
-/** Set origin for current ImageView */
-- (void)setOrigin:(NSPoint) o;
-
-/** Current ImageView zoom */
-- (float)scaleValue;
-
-/** Set zoom for current ImageView */
-- (void)setScaleValue:(float)scaleValue;
-
-/** Set vertical flip for current ImageView */
-- (void)setYFlipped:(BOOL) v;
-
-/** Set horizontal flip for current ImageView */
-- (void)setXFlipped:(BOOL) v;
-
-
-// Opening 3D Viewers
-#pragma mark-
-#pragma mark 3D Viewers
 /** Returns the OrthogonalMPRViewer for this ViewerController; creating one if necessary */
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer;
 

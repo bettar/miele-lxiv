@@ -20,7 +20,6 @@
 
 /* See DCMTK's storescu.cc */
 
-
 #include "url.h"
 
 #undef verify
@@ -99,6 +98,8 @@ END_EXTERN_C
 #import "SendController.h"
 
 #import "OpenGLScreenReader.h"
+
+#define NUM_ENCODINGS        10
 
 #define OFFIS_CONSOLE_APPLICATION "storescu"
 
@@ -518,10 +519,10 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 	
 	NSLog( @"SEND - decompress: %@", [[NSString stringWithUTF8String: fname] lastPathComponent]);
 
-	#ifndef OSIRIX_LIGHT
+#ifndef OSIRIX_LIGHT
 	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"]; // deprecated
     
-	if( useDCMTKForJP2K == NO &&
+	if (useDCMTKForJP2K == NO &&
        (filexfer.getXfer() == EXS_JPEG2000LosslessOnly ||
         filexfer.getXfer() == EXS_JPEG2000))
 	{
@@ -539,7 +540,7 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 		[dcmObject release];
 	}
 	else
-	#endif
+#endif
 	{
         try
         {
@@ -1043,7 +1044,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 		[_filesToSend removeDuplicatedStrings];
         
         NSMutableArray *toBeRemoved = [NSMutableArray array];
-        for( NSString *f in _filesToSend)
+        for (NSString *f in _filesToSend)
         {
             if( [[NSFileManager defaultManager] fileExistsAtPath: f] == NO)
             {
@@ -1065,33 +1066,32 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 			if (status.good())
 			{
 				const char *string = NULL;
-                const int NUM_ENCODINGS = 10;
-				NSStringEncoding encoding[ NUM_ENCODINGS];
-				for( int i = 0; i < NUM_ENCODINGS; i++)
-                    encoding[ i] = 0;
-				encoding[ 0] = NSISOLatin1StringEncoding;
+				NSStringEncoding myEncodings[NUM_ENCODINGS];
+                myEncodings[0] = NSISOLatin1StringEncoding;
+				for (int i = 1; i < NUM_ENCODINGS; i++)
+                    myEncodings[i] = NSUTF8StringEncoding;
 				
 				if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != nil)
 				{
 					NSArray	*c = [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"];
 
-					if( [c count] >= NUM_ENCODINGS)
+					if ([c count] >= NUM_ENCODINGS)
                         NSLog( @"Encoding number >= %d ???", NUM_ENCODINGS);
 
-					if( [c count] < NUM_ENCODINGS)
+					if ([c count] < NUM_ENCODINGS)
 					{
-						for( int i = 0; i < [c count]; i++)
-                            encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+						for (int i = 0; i < [c count]; i++)
+                            myEncodings[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
 					}
 				}
 
 				if (fileformat.getDataset()->findAndGetString(DCM_PatientName, string, OFFalse).good() && string != nil)
-					_patientName = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+					_patientName = [[DicomFile stringWithBytes: (char*) string encodings:myEncodings] retain];
 				else
                     _patientName = [@"Unnamed" retain];
 				
 				if (fileformat.getDataset()->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != nil)
-					_studyDescription = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+					_studyDescription = [[DicomFile stringWithBytes: (char*) string encodings:myEncodings] retain];
 				else
                     _studyDescription = [@"Unnamed" retain];
 			}
@@ -1905,7 +1905,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
   //  DcmRLEEncoderRegistration::cleanup();
 #endif
 
-//#ifdef DEBUG
+//#ifndef NDEBUG
 //    dcmDataDict.clear();  /* useful for debugging with dmalloc */
 //#endif
 

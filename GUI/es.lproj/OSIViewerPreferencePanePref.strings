@@ -107,7 +107,7 @@
 "413.title" = "Abrir PDF con la aplicación Vista previa";
 
 /* Class = "NSButtonCell"; title = "Show Magnifying Lens with 'shift' key"; ObjectID = "416"; */
-"416.title" = "Mostrar lente de aumento con la tecla'shift";
+"416.title" = "Mostrar lente de aumento con la tecla 'shift'";
 
 /* Class = "NSButtonCell"; title = "New ROIs are unnamed"; ObjectID = "419"; */
 "419.title" = "Los nuevos ROIs no tienen nombre";

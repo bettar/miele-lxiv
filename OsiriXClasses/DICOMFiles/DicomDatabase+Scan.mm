@@ -22,6 +22,7 @@
 #import "NSThread+N2.h"
 #import "NSDate+N2.h"
 #import "dcmtk/dcmdata/dcdicdir.h"
+#import "dcmtk/dcmdata/dcdeftag.h"
 #import "NSString+N2.h"
 #import "NSFileManager+N2.h"
 #import "DicomImage.h"
@@ -36,6 +37,9 @@
 #import "N2Stuff.h"
 #import "DICOMToNSString.h"
 #import "DicomDirParser.h"
+#import "mieleTypes.h"
+
+#define NUM_ENCODINGS        10
 
 @interface _DicomDatabaseScanDcmElement : NSObject {
 	DcmElement* _element;
@@ -123,53 +127,66 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	return _dcmElementKey(key.getGroup(), key.getElement());
 }
 
-+(NSImage*)_nsImageForElement:(DcmItem*)thumb {
++(NSImage*)_nsImageForElement:(DcmItem*)thumb
+{
     // ftp://medical.nema.org/medical/dicom/2011/11_03pu.pdf F.7 ICON IMAGE KEY DEFINITION
     
     // Pixel samples have a Value of either 1 or 8 for Bits Allocated (0028,0100) and Bits Stored (0028,0101)
     Uint16 bitsAllocated, bitsStored;
-    if (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0100), bitsAllocated).good()) return nil;
-    if (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0101), bitsStored).good()) return nil;
-    if (bitsAllocated != 1 && bitsAllocated != 8) return nil;
-    if (bitsStored != 1 && bitsStored != 8) return nil;
+    if (thumb->findAndGetUint16(DCM_BitsAllocated, bitsAllocated).bad())
+        return nil;
+
+    if (thumb->findAndGetUint16(DCM_BitsStored, bitsStored).bad())
+        return nil;
+
+    if (bitsAllocated != 1 && bitsAllocated != 8)
+        return nil;
+
+    if (bitsStored != 1 && bitsStored != 8)
+        return nil;
     
     Uint16 width, height;
-    if (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0010), height).good()) return nil; // Rows must be defined
-    if (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0011), width).good()) return nil; // Columns must be defined
+    if (thumb->findAndGetUint16(DCM_Rows, height).bad())
+        return nil;
+
+    if (thumb->findAndGetUint16(DCM_Columns, width).bad())
+        return nil;
     
     const Uint8* data = nil;
-    if (!thumb->findAndGetUint8Array(DcmTagKey(0x7fe0,0x0010), data).good()) return nil; // PixelRepresentation must be defined
+    if (thumb->findAndGetUint8Array(DCM_PixelData, data).bad())
+        return nil;
     
     NSBitmapImageRep* rep = nil;
-    if( data) {
-        // Photometric Interpretation (0028,0004) shall have a Value of either MONOCHROME 1, MONOCHROME 2 or PALETTE COLOR
-        OFString spi;
-        if (!thumb->findAndGetOFString(DcmTagKey(0x0028,0x0004), spi).good()) return nil;
-        
-        if (spi == "MONOCHROME1") {
-            rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:0 bitsPerPixel:bitsAllocated] autorelease];
-            unsigned char* bitmapData = rep.bitmapData;
-            // invert data
-            for (NSUInteger i = 0; i < width*height*bitsAllocated/8; ++i) {
-                if (bitsAllocated == 1)
-                    bitmapData[i] = data[i]^0xff;
-                else
-                    bitmapData[i] = 0xff-data[i];
-            }
-        } else
-        if (spi == "MONOCHROME2") {
-            rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:width*8/bitsAllocated bitsPerPixel:bitsAllocated] autorelease];
-            memcpy(rep.bitmapData, data, ceilf(1.0*width*height*bitsAllocated/8));
+    if (!data)
+        return nil;
+
+    // Photometric Interpretation (0028,0004) shall have a Value of either MONOCHROME 1, MONOCHROME 2 or PALETTE COLOR
+    OFString spi;
+    if (thumb->findAndGetOFString(DCM_PhotometricInterpretation, spi).bad())
+        return nil;
+    
+    if (spi == "MONOCHROME1") {
+        rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:0 bitsPerPixel:bitsAllocated] autorelease];
+        unsigned char* bitmapData = rep.bitmapData;
+        // invert data
+        for (NSUInteger i = 0; i < width*height*bitsAllocated/8; ++i) {
+            if (bitsAllocated == 1)
+                bitmapData[i] = data[i]^0xff;
+            else
+                bitmapData[i] = 0xff-data[i];
         }
-        else if (spi == "PALETTE COLOR") {
-            return nil; // TODO: this type of thumbnail should be read too...
-        } else
-            return nil;
+    }
+    else if (spi == "MONOCHROME2") {
+        rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:width*8/bitsAllocated bitsPerPixel:bitsAllocated] autorelease];
+        memcpy(rep.bitmapData, data, ceilf(1.0*width*height*bitsAllocated/8));
+    }
+    else if (spi == "PALETTE COLOR") {
+        return nil; // TODO: this type of thumbnail should be read too...
     }
     else
         return nil;
     
-    if( rep)
+    if (rep)
     {
         NSImage* im = [[[NSImage alloc] init] autorelease];
         [im addRepresentation:rep];
@@ -236,15 +253,19 @@ static NSString* _dcmElementKey(DcmElement* element) {
             
             [item conditionallySetObject:[[elements objectForKeyRemove: @"0008,0005"] stringValue] forKey:@"specificCharacterSet"];
             
-            NSStringEncoding encodings[ 10];
+            NSStringEncoding encodings[NUM_ENCODINGS];
             NSArray	*c = [[[elements objectForKeyRemove: @"0008,0005"] stringValue] componentsSeparatedByString:@"\\"];
             
-            if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+            if ([c count] >= NUM_ENCODINGS)
+                NSLog( @"Encoding number >= %d ???", NUM_ENCODINGS);
             
-            if( [c count] < 10)
+            if ([c count] < NUM_ENCODINGS)
             {
-                for( int i = 0; i < [c count]; i++) encodings[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-                for( int i = [c count]; i < 10; i++) encodings[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+                for (int i = 0; i < [c count]; i++)
+                    encodings[i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+
+                for (int i = [c count]; i < NUM_ENCODINGS; i++)
+                    encodings[i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
             }
             
             [item conditionallySetObject:[[elements objectForKeyRemove: @"0020,000D"] stringValue] forKey:@"studyID"];
@@ -652,16 +673,21 @@ static NSString* _dcmElementKey(DcmElement* element) {
         if (!dicomImages.count)
             return NO;
         
-        NSInteger mode = [NSUserDefaults.standardUserDefaults integerForKey:@"MOUNT"];
+        CDMountModeType mode = (CDMountModeType)[NSUserDefaults.standardUserDefaults integerForKey:CD_MOUNT_KEY];
         
 #ifdef OSIRIX_LIGHT
-        mode = 0; //display the source
+        mode = CD_MODE_SHOW_AS_SEPARATE_SOURCE;
 #endif
         
-        if (mode == -1 || [[NSApp currentEvent] modifierFlags] & NSEventModifierFlagCommand)
-            [self performSelectorOnMainThread:@selector(_askUserDiscDataCopyOrBrowse:) withObject:[NSArray arrayWithObjects: path, [NSNumber numberWithInteger:dicomImages.count], [NSValue valueWithPointer:&mode], nil] waitUntilDone:YES];
+        if (mode == CD_MODE_ASK_USER ||
+            [[NSApp currentEvent] modifierFlags] & NSEventModifierFlagCommand)
+        {
+            [self performSelectorOnMainThread:@selector(_askUserDiscDataCopyOrBrowse:)
+                                   withObject:[NSArray arrayWithObjects: path, [NSNumber numberWithInteger:dicomImages.count], [NSValue valueWithPointer:&mode], nil]
+                                waitUntilDone:YES];
+        }
         
-        if (mode == 1)
+        if (mode == CD_MODE_COPY_TO_DB)
         {
             // copy into database on mount
             
@@ -756,20 +782,24 @@ static NSString* _dcmElementKey(DcmElement* element) {
                 N2LogException( e);
             }
             
-            for (NSInteger i = 0; i < dicomSeries.count; ++i)
+            for (NSInteger i = 0; i < dicomSeries.count; ++i) {
                 @try {
                     thread.progress = 1.0*i/dicomSeries.count;
                     [[dicomSeries objectAtIndex:i] thumbnail];
-                } @catch (NSException* e) {
+                }
+                @catch (NSException* e) {
                     N2LogExceptionWithStackTrace(e);
                 }
+            }
         }
         
-        if (mode == 2) // ignore
+        if (mode == CD_MODE_IGNORE)
             return NO;
-    } @catch (NSException* e) {
+    }
+    @catch (NSException* e) {
         @throw;
-    } @finally {
+    }
+    @finally {
         [thread exitOperation];
     }
     

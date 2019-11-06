@@ -201,10 +201,14 @@
 
 @end
 
+#pragma mark -
+
 @interface SSCrypto (PrivateAPI)
 - (void)setupOpenSSL;
 - (void)cleanupOpenSSL;
 @end
+
+#pragma mark -
 
 // SSCrypto object
 @implementation SSCrypto
@@ -613,7 +617,7 @@
 		// (input_length + cipher_block_size) bytes unless the cipher block size is 1 in which
 		// case input_length bytes is sufficient.
 		
-		if(EVP_CIPHER_CTX_block_size(cCtx) > 1)
+		if (EVP_CIPHER_CTX_block_size(cCtx) > 1)
 			outbuf = (unsigned char *)calloc(inlen + EVP_CIPHER_CTX_block_size(cCtx), sizeof(unsigned char));
 		else
 			outbuf = (unsigned char *)calloc(inlen, sizeof(unsigned char));

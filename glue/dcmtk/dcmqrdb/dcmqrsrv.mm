@@ -250,7 +250,8 @@ static int numberOfActiveAssociations = 0;
 }
 @end
 
-////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+
 extern "C"
 {
 	void (*signal(int signum, void (*sighandler)(int)))(int);

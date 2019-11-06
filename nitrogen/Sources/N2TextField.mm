@@ -26,10 +26,10 @@
 
 @end
 
+#pragma mark -
 
 @implementation N2TextField
 
-//@synthesize invalidContentBackgroundColor;
 @synthesize formatIsOk;
 
 -(id)initWithFrame:(NSRect)frame {

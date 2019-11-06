@@ -37,6 +37,8 @@
 
 @end
 
+#pragma mark -
+
 @interface N2ConnectionWithDelegateHandler : N2Connection {
 	NSInvocation* _invocation;
 }
@@ -341,8 +343,9 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 -(void)connectionFinishedSendingData {
 }
 
--(void)stream:(NSStream*)stream handleEvent:(NSStreamEvent)event {
-	//#ifdef DEBUG
+-(void)stream:(NSStream*)stream handleEvent:(NSStreamEvent)event
+{
+	//#ifndef NDEBUG
 //	NSString* NSEventName[] = {@"NSStreamEventNone", @"NSStreamEventOpenCompleted", @"NSStreamEventHasBytesAvailable", @"NSStreamEventHasSpaceAvailable", @"NSStreamEventErrorOccurred", @"NSStreamEventEndEncountered"};
 //	NSLog(@"%@ stream:%@ handleEvent:%@", self, stream, NSEventName[(int)log2(event)+1]);
 	//#endif

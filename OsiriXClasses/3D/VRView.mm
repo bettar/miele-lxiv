@@ -111,7 +111,15 @@ typedef struct _xyzArray
 	short z;
 } xyzArray;
 
-extern int intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoint, float* resultPt );
+typedef NS_ENUM(NSInteger, StackOrientationType) {
+    STACK_ORIENTATION_X = 0,
+    STACK_ORIENTATION_Y = 1,
+    STACK_ORIENTATION_Z = 2
+};
+
+extern Intersection3DType intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoint, float* resultPt );
+
+#pragma mark -
 
 class vtkMyCallbackVR : public vtkCommand
 {
@@ -161,7 +169,7 @@ public:
     }
 };
 
-# pragma mark - VRViewOperation
+# pragma mark -
 
 @interface VRViewOperation: NSOperation
 {
@@ -174,7 +182,7 @@ public:
 
 @end
 
-#pragma mark
+#pragma mark -
 
 @implementation VRViewOperation
 
@@ -212,7 +220,6 @@ public:
 
 #ifdef _STEREO_VISION_
 @synthesize StereoVisionOn;
-//@synthesize currentTool;
 #endif
 
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
@@ -569,96 +576,99 @@ public:
                       before: (NSRect) beforeFrame
                      rescale: (BOOL) rescale
 {
-	if (Line2DData)
-	{
-		vtkPoints *pts = Line2DData->GetPoints();
+	if (!Line2DData)
+        return;
+    
+    vtkPoints *pts = Line2DData->GetPoints();
 
-		if (pts->GetNumberOfPoints() == 2)
-		{
-			double pt1[ 3];
-			pts->GetPoint( 0, pt1);
-			
-			double pt2[ 3];
-			pts->GetPoint( 1, pt2);
-			
-			pts = vtkPoints::New();
-			vtkCellArray *rect = vtkCellArray::New();
+    if (pts->GetNumberOfPoints() == 2)
+    {
+        double pt1[ 3];
+        pts->GetPoint( 0, pt1);
+        
+        double pt2[ 3];
+        pts->GetPoint( 1, pt2);
+        
+        pts = vtkPoints::New();
+        vtkCellArray *rect = vtkCellArray::New();
+        
+        Line2DData->SetPoints( pts);
+        pts->Delete();
+        
+        Line2DData->SetLines( rect);
+        rect->Delete();
+        
+        pts = Line2DData->GetPoints();
+        
+        if (rescale == NO)
+        {
+            pts->InsertPoint(pts->GetNumberOfPoints(),
+                             pt1[0] + (newFrame.size.width - beforeFrame.size.width)/2,
+                             pt1[1] + (newFrame.size.height - beforeFrame.size.height)/2,
+                             0);
             
-			Line2DData->SetPoints( pts);
-            pts->Delete();
+            pts->InsertPoint(pts->GetNumberOfPoints(),
+                             pt2[0] + (newFrame.size.width - beforeFrame.size.width)/2,
+                             pt2[1] + (newFrame.size.height - beforeFrame.size.height)/2,
+                             0);
+        }
+        else
+        {
+            pts->InsertPoint(pts->GetNumberOfPoints(),
+                             pt1[0] * (newFrame.size.width/beforeFrame.size.width),
+                             pt1[1] * (newFrame.size.height / beforeFrame.size.height),
+                             0);
             
-			Line2DData->SetLines( rect);
-            rect->Delete();
-			
-			pts = Line2DData->GetPoints();
-			
-			if (rescale == NO)
-			{
-				pts->InsertPoint(pts->GetNumberOfPoints(),
-                                 pt1[0] + (newFrame.size.width - beforeFrame.size.width)/2,
-                                 pt1[1] + (newFrame.size.height - beforeFrame.size.height)/2,
-                                 0);
-                
-				pts->InsertPoint(pts->GetNumberOfPoints(),
-                                 pt2[0] + (newFrame.size.width - beforeFrame.size.width)/2,
-                                 pt2[1] + (newFrame.size.height - beforeFrame.size.height)/2,
-                                 0);
-			}
-			else
-			{
-				pts->InsertPoint(pts->GetNumberOfPoints(),
-                                 pt1[0] * (newFrame.size.width/beforeFrame.size.width),
-                                 pt1[1] * (newFrame.size.height / beforeFrame.size.height),
-                                 0);
-                
-				pts->InsertPoint(pts->GetNumberOfPoints(),
-                                 pt2[0] * (newFrame.size.width/beforeFrame.size.width),
-                                 pt2[1] * (newFrame.size.height / beforeFrame.size.height),
-                                 0);
-			}
-			rect = vtkCellArray::New();
-			rect->InsertNextCell( pts->GetNumberOfPoints()+1);
-			for (int i = 0; i < pts->GetNumberOfPoints(); i++)
-                rect->InsertCellPoint( i);
-            
-			rect->InsertCellPoint( 0);
-			
-			Line2DData->SetVerts( rect);
-			Line2DData->SetLines( rect);
-            rect->Delete();
-			
-			Line2DData->SetPoints( pts);
-			
-			// Move the text
-			
-			pts->GetPoint( 0, pt1);
-			pts->GetPoint( 1, pt2);
-			
-			Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
-			if (pt1[ 0] > pt2[ 0])
-                Line2DText->GetPositionCoordinate()->SetValue( pt1[0] + 3, pt1[ 1]);
-			else
-                Line2DText->GetPositionCoordinate()->SetValue( pt2[0], pt2[ 1]);
-		}
-		else
-		{
-			// Delete
-			pts = vtkPoints::New();
-			vtkCellArray *rect = vtkCellArray::New();
-            
-			Line2DData->SetPoints( pts);
-            pts->Delete();
-            
-			Line2DData->SetLines( rect);
-            rect->Delete();
-		}
-	}
+            pts->InsertPoint(pts->GetNumberOfPoints(),
+                             pt2[0] * (newFrame.size.width/beforeFrame.size.width),
+                             pt2[1] * (newFrame.size.height / beforeFrame.size.height),
+                             0);
+        }
+
+        rect = vtkCellArray::New();
+        rect->InsertNextCell( pts->GetNumberOfPoints()+1);
+        for (int i = 0; i < pts->GetNumberOfPoints(); i++)
+            rect->InsertCellPoint( i);
+        
+        rect->InsertCellPoint( 0);
+        
+        Line2DData->SetVerts( rect);
+        Line2DData->SetLines( rect);
+        rect->Delete();
+        
+        Line2DData->SetPoints( pts);
+        
+        // Move the text
+        
+        pts->GetPoint( 0, pt1);
+        pts->GetPoint( 1, pt2);
+        
+        Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
+        if (pt1[ 0] > pt2[ 0])
+            Line2DText->GetPositionCoordinate()->SetValue( pt1[0] + 3, pt1[ 1]);
+        else
+            Line2DText->GetPositionCoordinate()->SetValue( pt2[0], pt2[ 1]);
+    }
+    else
+    {
+        // Delete
+        pts = vtkPoints::New();
+        vtkCellArray *rect = vtkCellArray::New();
+        
+        Line2DData->SetPoints( pts);
+        pts->Delete();
+        
+        Line2DData->SetLines( rect);
+        rect->Delete();
+    }
 }
 
 - (void) setFrame: (NSRect) r rescaleLine: (BOOL) rescale
 {
 	if ([[controller style] isEqualToString:@"noNib"] == NO)
-		[self adaptLine2DToResize: r before: [self frame] rescale: rescale];
+		[self adaptLine2DToResize: r
+                           before: [self frame]
+                          rescale: rescale];
 	
 	[super setFrame: r];
 }
@@ -823,9 +833,10 @@ public:
 	[self setNeedsDisplay:YES];
 }
 
-- (void) setEngine: (int) newEngine
+- (void) setEngine: (EngineType) newEngine
 {
-	[self setEngine: newEngine showWait: YES];
+	[self setEngine: newEngine
+           showWait: YES];
 }
 
 - (void) setLodDisplayed: (float) newValue
@@ -841,13 +852,13 @@ public:
     {
         if (vramMB >= 2000)
         {
-            [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"VRDefaultViewSize"];     // full screen
-            [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];          // gpu
+            [[NSUserDefaults standardUserDefaults] setInteger: VR_VIEW_SIZE_FULL_SCREEN forKey: VRDefaultViewSize_KEY];
+            [[NSUserDefaults standardUserDefaults] setInteger: ENGINE_GPU_OPEN_GL forKey: @"MAPPERMODEVR"];
         }
         else
         {
-            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"VRDefaultViewSize"];     // square
-            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];          // cpu
+            [[NSUserDefaults standardUserDefaults] setInteger: VR_VIEW_SIZE_SQUARE_FULL_SCREEN forKey: VRDefaultViewSize_KEY];
+            [[NSUserDefaults standardUserDefaults] setInteger: ENGINE_CPU forKey: @"MAPPERMODEVR"];
         }
         
         [[NSUserDefaults standardUserDefaults] setInteger: vramMB forKey: @"VRAMAmount"];
@@ -956,7 +967,7 @@ public:
 	}
 }
 
-- (void) setEngine: (long) newEngine
+- (void) setEngine: (EngineType) newEngine
           showWait: (BOOL) showWait
 {
     if (newEngine == ENGINE_GPU_OPEN_GL)
@@ -992,9 +1003,11 @@ public:
 	
     switch (engine)
     {
+        default:
         case ENGINE_CPU:
             volume->SetMapper( volumeMapper);
             break;
+
         case ENGINE_GPU_OPEN_GL:
             volume->SetMapper( textureMapper);
             break;
@@ -1264,18 +1277,22 @@ public:
 	windowFrame.size.width = [[[self window] contentView] frame].size.width;
 	windowFrame.size.height = [[[self window] contentView] frame].size.height - 10;
 	
-	switch ([[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
+	switch ([[NSUserDefaults standardUserDefaults] integerForKey:EXPORTMATRIXFOR3D_KEY])
 	{
-		case 0:
+		case EXPORT_SIZE_CURRENT:
             break;
 		
-		case 1:
-            [self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame] rescaleLine: YES];
+		case EXPORT_SIZE_512:
+            [self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]
+               rescaleLine: YES];
+
             [self display];
             break;
             
-		case 2:
-            [self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame] rescaleLine: YES];
+		case EXPORT_SIZE_768:
+            [self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]
+               rescaleLine: YES];
+
             [self display];
             break;
 	}
@@ -1973,7 +1990,8 @@ public:
 
 -(instancetype)initWithFrame:(NSRect)frame
 {
-    if ( self = [super initWithFrame:frame])
+    self = [super initWithFrame:frame];
+    if (self)
     {
 		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect]
                                                                        options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow)
@@ -2222,13 +2240,12 @@ public:
 	}
     
     if (volume && volume->GetMapper() == nil)
-        self.engine = [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"];
+        self.engine = (EngineType)[[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"];
 }
 
 -(NSMutableDictionary*) get3DStateDictionary
 {
-	double	temp[ 3];
-	float	ambient, diffuse, specular, specularpower;
+	float ambient, diffuse, specular, specularpower;
 	
 	if (aCamera == nil)
         return nil;
@@ -2239,6 +2256,7 @@ public:
 	[dict setObject:[NSNumber numberWithFloat:ww] forKey:@"WW"];
 	[dict setObject:[NSNumber numberWithBool:[firstObject SUVConverted]] forKey:@"SUVConverted"];
 	
+    double temp[ 3];
 	aCamera->GetPosition( temp);
 	[dict setObject:[NSArray arrayWithObjects:
                      [NSNumber numberWithFloat:temp[0]],
@@ -2898,7 +2916,10 @@ public:
         
         if (Oval2DPix)
         {
-            ROI *circle = [[ROI alloc] initWithType: tOval :1 :1 :NSMakePoint(0,0)];
+            ROI *circle = [[ROI alloc] initWithType: tOval
+                                                   : 1
+                                                   : 1
+                                                   : NSMakePoint(0,0)];
             
             NSPoint center = Oval2DCenter;
             float radius = Oval2DRadius;
@@ -3187,25 +3208,28 @@ public:
 
 -(void) squareView:(id) sender
 {
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 1)
+    VRDefaultViewSizeType viewType= (VRDefaultViewSizeType)[[NSUserDefaults standardUserDefaults] integerForKey:VRDefaultViewSize_KEY];
+
+	NSRect selfFrame = [[[self window] contentView] frame];
+	selfFrame.size.height -= 30;  // leave some space to display 'pixelInformation'
+	
+    if (viewType == VR_VIEW_SIZE_FULL_SCREEN) {
+        [self setFrame: selfFrame];
+        [[self window] display];
         return;
-	
-	NSRect  selfFrame = [[[self window] contentView] frame];
-	
-	selfFrame.size.height -= 30;
-	
-	NSRect	newFrame = selfFrame;
-	NSRect	beforeFrame = selfFrame;
+    }
+    
+	NSRect newFrame = selfFrame;
+	NSRect beforeFrame = selfFrame;
 	
 	int border = selfFrame.size.height-1;
 	
 	if (border > selfFrame.size.width)
         border = selfFrame.size.width;
 	
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 2)
+	if (viewType == VR_VIEW_SIZE_512x512)
         border = 512;
-    
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 3)
+	else if (viewType == VR_VIEW_SIZE_768x768)
         border = 768;
 	
 	newFrame.size.width = (int)border;
@@ -3457,7 +3481,7 @@ public:
 				{
 					switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 					{
-						case 0:
+						case PETWindowingMode_CLASSIC:
 							blendingWl = (_startWL - (long) ([theEvent deltaY])*WWAdapter);
 							blendingWw = (_startWW + (long) ([theEvent deltaX])*WWAdapter);
 							
@@ -3466,7 +3490,7 @@ public:
                             
                             break;
 						
-						case 1:
+						case PETWindowingMode_FIXED_MIN:
 							endlevel = _startMax + (-[theEvent deltaY]) * WWAdapter ;
 							
 							blendingWl = (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
@@ -3480,7 +3504,7 @@ public:
                             
                             break;
 						
-						case 2:
+						case PETWindowingMode_MAXIMUM:
 							endlevel = _startMax - ([theEvent deltaY]) * WWAdapter ;
 							startlevel = _startMin + ([theEvent deltaX]) * WWAdapter ;
 							
@@ -3524,7 +3548,7 @@ public:
 					{
 						switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 						{
-							case 0:
+							case PETWindowingMode_CLASSIC:
 								wl = (_startWL - (long) ([theEvent deltaY])*WWAdapter);
 								ww = (_startWW + (long) ([theEvent deltaX])*WWAdapter);
 								
@@ -3533,7 +3557,7 @@ public:
                                 
                                 break;
 							
-							case 1:
+							case PETWindowingMode_FIXED_MIN:
 								endlevel = _startMax + (-[theEvent deltaY]) * WWAdapter ;
 								
 								wl = (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
@@ -3547,7 +3571,7 @@ public:
                                 
                                 break;
 							
-							case 2:
+							case PETWindowingMode_MAXIMUM:
 								endlevel = _startMax - ([theEvent deltaY]) * WWAdapter ;
 								startlevel = _startMin + ([theEvent deltaX]) * WWAdapter ;
 								
@@ -4384,7 +4408,7 @@ public:
                                                        windowNumber:[theEvent windowNumber]
                                                             context:[theEvent context]
                                                          characters:@"p"
-                                        charactersIgnoringModifiers:nil
+                                        charactersIgnoringModifiers:@""
                                                           isARepeat:NO
                                                             keyCode:112];
   			if (blendingVolume)
@@ -4820,14 +4844,18 @@ public:
 
 - (void) deleteRegion:(int) c :(NSArray*) pxList :(BOOL) blendedSeries
 {
-	long			tt, stackMax, stackOrientation, i;
-	vtkPoints		*roiPts = ROI3DData->GetPoints();
-	NSMutableArray	*ROIList = [NSMutableArray array];
-	double			xyz[ 3], cameraProj[ 3], cameraProjObj[ 3];
-	float			vector[ 9];
-	DCMPix			*fObject = [pxList objectAtIndex: 0];
+    long tt;
+    long stackMax;
+    StackOrientationType stackOrientation;
+	vtkPoints *roiPts = ROI3DData->GetPoints();
+	NSMutableArray *ROIList = [NSMutableArray array];
+    double xyz[ 3];
+    double cameraProj[ 3];
+    double cameraProjObj[ 3];
+	float vector[ 9];
+	DCMPix *fObject = [pxList objectAtIndex: 0];
 
-	NSLog(@"Scissor Start");
+	NSLog(@"%s Scissor Start", __FUNCTION__);
 //	[[[self window] windowController] prepareUndo];
 	[controller prepareUndo];
 	
@@ -4871,37 +4899,42 @@ public:
 	cameraProjObj[ 2] = cameraProj[ 0] * vector[ 6] +
                         cameraProj[ 1] * vector[ 7] +
                         cameraProj[ 2] * vector[ 8];
-				
+    	
 	if (fabs(cameraProjObj[ 0]) > fabs(cameraProjObj[ 1]) &&
         fabs(cameraProjObj[ 0]) > fabs(cameraProjObj[ 2]))
 	{
-		NSLog(@"X Stack");
-		stackOrientation = 0;
+		stackOrientation = STACK_ORIENTATION_X;
 	}
 	else if (fabs(cameraProjObj[ 1]) > fabs(cameraProjObj[ 0]) &&
              fabs(cameraProjObj[ 1]) > fabs(cameraProjObj[ 2]))
 	{
-		NSLog(@"Y Stack");
-		stackOrientation = 1;
+		stackOrientation = STACK_ORIENTATION_Y;
 	}
 	else
 	{
-		NSLog(@"Z Stack");
-		stackOrientation = 2;
+		stackOrientation = STACK_ORIENTATION_Z;
 	}
 	
 	switch (stackOrientation)
 	{
-		case 0:	stackMax = [fObject pwidth];	break;
-		case 1:	stackMax = [fObject pheight];	break;
-		case 2:	stackMax = [pxList count];		break;
+		case STACK_ORIENTATION_X:
+            stackMax = [fObject pwidth];
+            break;
+            
+		case STACK_ORIENTATION_Y:
+            stackMax = [fObject pheight];
+            break;
+            
+		case STACK_ORIENTATION_Z:
+            stackMax = [pxList count];
+            break;
 	}
 	
-	for (i = 0 ; i < stackMax ; i++)
-		[ROIList addObject: [[[ROI alloc] initWithType:tCPolygon
-                                                      :[fObject pixelSpacingX]*factor
-                                                      :[fObject pixelSpacingY]*factor
-                                                      :[DCMPix originCorrectedAccordingToOrientation: fObject]] autorelease]];
+	for (long i = 0 ; i < stackMax ; i++)
+		[ROIList addObject: [[[ROI alloc] initWithType: tCPolygon
+                                                      : [fObject pixelSpacingX]*factor
+                                                      : [fObject pixelSpacingY]*factor
+                                                      : [DCMPix originCorrectedAccordingToOrientation: fObject]] autorelease]];
     
     // Clip the polygons to the crop box?
     NSValue *minClip = [NSValue valueWithPoint: NSMakePoint( 0, 0)];
@@ -4954,19 +4987,19 @@ public:
         
         switch (stackOrientation)
         {
-            case 0:
+            case STACK_ORIENTATION_X:
                 minClip = [NSValue valueWithPoint: NSMakePoint( floor(a[ 2]), floor( a[ 4]))];
                 maxClip = [NSValue valueWithPoint: NSMakePoint( ceil(a[ 3]), ceil( a[ 5]))];
                 zClip = NSMakePoint( floor( a[ 0]), ceil( a[ 1]));
                 break;
                 
-            case 1:
+            case STACK_ORIENTATION_Y:
                 minClip = [NSValue valueWithPoint: NSMakePoint( floor(a[ 0]), floor( a[ 4]))];
                 maxClip = [NSValue valueWithPoint: NSMakePoint( ceil(a[ 1]), ceil( a[ 5]))];
                 zClip = NSMakePoint( floor( a[ 2]), ceil( a[ 3]));
                 break;
                 
-            case 2:
+            case STACK_ORIENTATION_Z:
                 minClip = [NSValue valueWithPoint: NSMakePoint( floor(a[ 0]), floor( a[ 2]))];
                 maxClip = [NSValue valueWithPoint: NSMakePoint( ceil(a[ 1]), ceil( a[ 3]))];
                 zClip = NSMakePoint( floor( a[ 4]), ceil( a[ 5]));
@@ -4976,10 +5009,10 @@ public:
     
 	for (tt = 0; tt < roiPts->GetNumberOfPoints(); tt++)
 	{
-		float	point1[ 3], point2[ 3];
-		long	x;
-		
-		double	point2D[ 3], *pp;
+        float point1[ 3];
+        float point2[ 3];
+        double point2D[ 3];
+        double *pp;
 		
 		roiPts->GetPoint( tt, point2D);
 		aRenderer->SetDisplayPoint( point2D[ 0], point2D[ 1], 0);
@@ -5035,12 +5068,12 @@ public:
 		}
 		
 		// Intersection between this line and planes in Z direction
-		for (x = 0; x < stackMax; x++)
+		for (long x = 0; x < stackMax; x++)
 		{
-			float	planeVector[ 3];
-			float	point[ 3];
-			float	resultPt[ 3];
-			double	vPos[ 3];
+			float planeVector[ 3];
+			float point[ 3];
+			float resultPt[ 3];
+			double vPos[ 3];
 			
 			if (blendedSeries)
                 blendingVolume->GetPosition( vPos);
@@ -5064,7 +5097,7 @@ public:
 			
 			switch (stackOrientation)
 			{
-				case 0:
+				case STACK_ORIENTATION_X:
 					point[ 0] = x * [fObject pixelSpacingX];
 					point[ 1] = 0;
 					point[ 2] = 0;
@@ -5074,7 +5107,7 @@ public:
 					planeVector[ 2] = vector[ 2];
                     break;
 				
-				case 1:
+				case STACK_ORIENTATION_Y:
 					point[ 0] = 0;
 					point[ 1] = x * [fObject pixelSpacingY];
 					point[ 2] = 0;
@@ -5084,7 +5117,7 @@ public:
 					planeVector[ 2] = vector[ 5];
                     break;
 				
-				case 2:
+				case STACK_ORIENTATION_Z:
 					point[ 0] = 0;
 					point[ 1] = 0;
 			//		point[ 2] = x * fabs( [fObject sliceInterval]);
@@ -5102,11 +5135,11 @@ public:
 			
 			Transform->TransformPoint(point,point);
 			
-			if ( intersect3D_SegmentPlane( point2, point1, planeVector, point, resultPt ) != NO_INTERSECT_3D)
+			if (intersect3D_SegmentPlane( point2, point1, planeVector, point, resultPt ) != INTERSECT_3D_NONE)
 			{
-				float	tempPoint3D[ 3];
-				long	ptInt[ 3];
-				long	roiID;
+				float tempPoint3D[ 3];
+				long ptInt[ 3];
+				long roiID;
 				// Convert this 3D point to 2D point projected in the plane
 				
 				Transform->Inverse();
@@ -5130,26 +5163,29 @@ public:
 				
                 switch (stackOrientation)
                 {
-                    case 0:	
+                    case STACK_ORIENTATION_X:
                         roiID = ptInt[0];
                         
                         if (roiID >= zClip.x && roiID < zClip.y)
                             [[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[1], ptInt[2])]];
-                    break;
+
+                        break;
                     
-                    case 1:
+                    case STACK_ORIENTATION_Y:
                         roiID = ptInt[1];
                         
                         if (roiID >= zClip.x && roiID < zClip.y)
                             [[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[2])]];
-                    break;
+
+                        break;
                     
-                    case 2:
+                    case STACK_ORIENTATION_Z:
                         roiID = ptInt[2];
                         
                         if (roiID >= zClip.x && roiID < zClip.y)
                             [[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[1])]];
-                    break;
+
+                        break;
                 }
 			}
 		}
@@ -5157,8 +5193,8 @@ public:
     
     Transform->Delete();
 	
-	BOOL	addition = NO;
-	float	newVal = 0;
+	BOOL addition = NO;
+	float newVal = 0.0f;
 	
 	if (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
 	{
@@ -5187,7 +5223,7 @@ public:
     dontRenderVolumeRenderingOsiriX = true;
     aRenderer->SetDraw( 0);
     
-	for ( int m = 0; m < [[controller viewer2D] maxMovieIndex] ; m++)
+	for (int m = 0; m < [[controller viewer2D] maxMovieIndex] ; m++)
 	{
 		[controller setMovieFrame: m];
 		
@@ -5197,7 +5233,7 @@ public:
         
         NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
         
-        for ( i = 0; i < stackMax; i++ )
+        for (long i = 0; i < stackMax; i++ )
         {
             VRViewOperation *op = [[[VRViewOperation alloc] initWithController: controller
                                                                        objects: [NSArray arrayWithObjects:
@@ -5745,8 +5781,8 @@ public:
 
 -(void) setBlendingFactor:(float) a
 {
-	long	i, blendMode;
-	float   val, ii;
+	long blendMode;
+	float val, ii;
 	
 	if (fullDepthMode)
         return;
@@ -5765,7 +5801,7 @@ public:
 		{
 			a *= 2;
 			
-			for (i=0; i < 256; i++)
+			for (int i=0; i < 256; i++)
 			{
 				ii = i;
 				val = (a * ii) / 256.;
@@ -5783,23 +5819,26 @@ public:
 		{
 			a /= 3;
 			
-			for (i=0; i < 256; i++)
+			for (int i=0; i < 256; i++)
 			{
 				ii = i;
 				val = (a * ii) / 256.;
 				val -= 8.;
 				
-				if (val > 255) val = 255;
-				if (val < 0) val = 0;
+				if (val > 255)
+                    val = 255;
+
+				if (val < 0)
+                    val = 0;
 				
 				alpha[ i] = val / 255.;
 			}
 		}
-		blendingOpacityTransferFunction->BuildFunctionFromTable(blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2),
+
+        blendingOpacityTransferFunction->BuildFunctionFromTable(blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2),
                                                                 blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2),
                                                                 255,
                                                                 (double*) &alpha);
-		
 		[self setNeedsDisplay: YES];
 	}
 }
@@ -5909,8 +5948,13 @@ public:
     [self setNeedsDisplay:YES];
 }
 
--(void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
+-(void) setCLUT: (unsigned char*) r
+               : (unsigned char*) g
+               : (unsigned char*) b
 {
+#ifdef DEBUG_ISSUE_45
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+#endif
 	if (fullDepthMode)
         return;
     
@@ -7450,7 +7494,7 @@ public:
 		
 		tempOpacity->Delete();
 		
-		fullDepthMode = 1;
+		fullDepthMode = TRUE;
 	}
 	
 	if (blendingVolumeMapper)
@@ -7484,7 +7528,7 @@ public:
 		volumeProperty->SetScalarOpacity( opacityTransferFunction);
 		volumeMapper->PerVolumeInitialization( aRenderer, volume);
 		
-		fullDepthMode = 0;
+		fullDepthMode = FALSE;
 	}
 	
 	if (blendingVolumeMapper)
@@ -7764,8 +7808,6 @@ public:
 		}
 		else
 		{
-			int i;
-			
 			NSRect size = [self bounds];
 			
 			*width = (long) size.size.width;
@@ -7788,7 +7830,7 @@ public:
 					glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 #else
 					glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
-					i = *width * *height;
+					int i = *width * *height;
 					unsigned char	*t_argb = buf;
 					unsigned char	*t_rgb = buf;
 					while (i-- > 0)
@@ -7806,7 +7848,7 @@ public:
 					
 					if (tempBuf)
 					{
-						for (i = 0; i < *height/2; i++)
+						for (int i = 0; i < *height/2; i++)
 						{
 							memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
 							memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
@@ -7823,7 +7865,7 @@ public:
 				
 				if (TIFFRep)
 				{
-					for (i = 0; i < [TIFFRep pixelsHigh]; i++)
+					for (int i = 0; i < [TIFFRep pixelsHigh]; i++)
 					{
 						unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
 						unsigned char *dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + 2*3);
@@ -8421,7 +8463,8 @@ public:
             if (textX)
 				textX->GetTextProperty()->SetColor(0,0,0);
 		}
-		[backgroundColor setColor: [NSColor colorWithDeviceRed:[color redComponent]
+
+        [backgroundColor setColor: [NSColor colorWithDeviceRed:[color redComponent]
                                                          green:[color greenComponent]
                                                           blue:[color blueComponent]
                                                          alpha:1.0]];
@@ -8429,9 +8472,9 @@ public:
 	}
 }
 
-- (void)changeColor:(id)sender
+- (IBAction)changeColor:(id)sender
 {
-	if ([backgroundColor isActive])
+	//if ([backgroundColor isActive])
 		[self changeColorWith: [[(NSColorPanel*)sender color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace]];
 }
 
@@ -8633,20 +8676,21 @@ public:
 						+ cameraViewPlaneNormal[1] * o[7]
 						+ cameraViewPlaneNormal[2] * o[8];
 	
-	long stackOrientation, stackMax;
+    StackOrientationType stackOrientation;
+    long stackMax;
 	if (fabs(cameraProjObj[0]) > fabs(cameraProjObj[1]) && fabs(cameraProjObj[0]) > fabs(cameraProjObj[2]))
 	{
-		stackOrientation = 0; //NSLog(@"X Stack");
+		stackOrientation = STACK_ORIENTATION_X;
 		stackMax = [firstObject pwidth];
 	}
 	else if (fabs(cameraProjObj[1]) > fabs(cameraProjObj[0]) && fabs(cameraProjObj[1]) > fabs(cameraProjObj[2]))
 	{
-		stackOrientation = 1; //NSLog(@"Y Stack");
+		stackOrientation = STACK_ORIENTATION_Y;
 		stackMax = [firstObject pheight];
 	}
 	else
 	{
-		stackOrientation = 2; //NSLog(@"Z Stack");
+		stackOrientation = STACK_ORIENTATION_Z;
 		stackMax = [curPixList count];
 	}
 	
@@ -8658,12 +8702,13 @@ public:
 	}
 	
 	// the two points defining the line going through the volume
-	float	point1[3], point2[3];
+    float point1[3];
 	point1[0] = cameraPosition[0];
 	point1[1] = cameraPosition[1];
 	point1[2] = cameraPosition[2];
 	
 	// Go beyond the object...
+    float point2[3];
 	point2[0] = cameraPosition[0] + (worldPointClicked[0] - cameraPosition[0])*5000.;
 	point2[1] = cameraPosition[1] + (worldPointClicked[1] - cameraPosition[1])*5000.;
 	point2[2] = cameraPosition[2] + (worldPointClicked[2] - cameraPosition[2])*5000.;
@@ -8679,7 +8724,7 @@ public:
 	
 	switch (stackOrientation)
 	{
-		case 0:
+		case STACK_ORIENTATION_X:
 			if (point1[0] - point2[0] < 0)
                 direction = YES;
 			else
@@ -8687,7 +8732,7 @@ public:
             
             break;
 		
-		case 1:
+		case STACK_ORIENTATION_Y:
 			if (point1[1] - point2[1] < 0)
                 direction = YES;
 			else
@@ -8695,7 +8740,7 @@ public:
             
             break;
 		
-		case 2:
+		case STACK_ORIENTATION_Z:
 			if (point1[2] - point2[2] < 0)
                 direction = YES;
 			else
@@ -8704,7 +8749,7 @@ public:
             break;
 	}
 	
-	long p, n;
+	long n;
 	BOOL pointFound = NO;
 	float opacitySum = 0.0;
 	float maxValue = -FLT_MAX;
@@ -8715,14 +8760,15 @@ public:
 	if (textureMapper)
         blendMode = textureMapper->GetBlendMode();
 				
-	for (p = 0; p < stackMax; p++)
+	for (long p = 0; p < stackMax; p++)
 	{
-		n = (direction)? p : (stackMax-1)-p;
+		n = (direction) ? p : (stackMax-1)-p;
 		
-		float currentPoint[3], planeVector[3];
+        float currentPoint[3];
+        float planeVector[3];
 		switch (stackOrientation)
 		{
-			case 0:
+			case STACK_ORIENTATION_X:
 				currentPoint[0] = n * [firstObject pixelSpacingX];
 				currentPoint[1] = 0;
 				currentPoint[2] = 0;
@@ -8730,9 +8776,9 @@ public:
 				planeVector[0] = o[0];
 				planeVector[1] = o[1];
 				planeVector[2] = o[2];
-			break;
+                break;
 			
-			case 1:
+			case STACK_ORIENTATION_Y:
 				currentPoint[0] = 0;
 				currentPoint[1] = n * [firstObject pixelSpacingY];
 				currentPoint[2] = 0;
@@ -8740,9 +8786,9 @@ public:
 				planeVector[0] = o[3];
 				planeVector[1] = o[4];
 				planeVector[2] = o[5];
-			break;
+                break;
 			
-			case 2:
+			case STACK_ORIENTATION_Z:
 				currentPoint[0] = 0;
 				currentPoint[1] = 0;
 				currentPoint[2] = n * [firstObject sliceInterval];
@@ -8750,7 +8796,7 @@ public:
 				planeVector[0] = o[6];
 				planeVector[1] = o[7];
 				planeVector[2] = o[8];
-			break;
+                break;
 		}
 			
 		currentPoint[0] += volumePosition[0];
@@ -8761,7 +8807,7 @@ public:
 		
 		float resultPt[3];
 			
-		if (intersect3D_SegmentPlane(point2, point1, planeVector, currentPoint, resultPt) != NO_INTERSECT_3D)
+		if (intersect3D_SegmentPlane(point2, point1, planeVector, currentPoint, resultPt) != INTERSECT_3D_NONE)
 		{
 			// Convert this 3D point to 2D point projected in the plane
 			float tempPoint3D[3];
@@ -9248,7 +9294,7 @@ public:
 	_dragInProgress = YES;
 	
 	NSEvent *event = (NSEvent *)[theTimer userInfo];
-	NSSize dragOffset = NSMakeSize(0.0, 0.0);
+	NSSize dragOffset = NSZeroSize;
     NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
 	NSMutableArray *pbTypes = [NSMutableArray array];
 	// The image we will drag 
@@ -9592,7 +9638,6 @@ public:
 
 - (void)setMapper:(vtkVolumeMapper*) mapper;  // TODO @@@
 {
-    NSLog(@"%s %d, mapper class: %s", __FUNCTION__, __LINE__, typeid(mapper).name());
     if (mapper && mapper != volumeMapper)
     {
         if (volumeMapper)

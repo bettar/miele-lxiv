@@ -18,10 +18,11 @@
  PURPOSE.
  =========================================================================*/
 
-#ifdef _STEREO_VISION_
-
 #import <Cocoa/Cocoa.h>
 #import "VRController.h"
+
+#ifdef _STEREO_VISION_
+
 #import "DCMPix.h"
 #import "ColorTransferView.h"
 #import "ViewerController.h"
@@ -43,11 +44,10 @@
 @class VRPresetPreview;
 #import "ColorView.h"
 
+#endif // _STEREO_VISION_
 
 @interface VRController (StereoVision)
 
 - (IBAction) ApplyGeometrieSettings: (id) sender;
 
-
 @end
-#endif

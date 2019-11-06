@@ -676,8 +676,8 @@ SecPolicySearchCreate:
     NSMutableArray * found = [NSMutableArray array];
     
     for (CFIndex i = 0; i < CFArrayGetCount((CFArrayRef)arrayRef); i++) {
-        NSDictionary * attr = (__bridge NSDictionary *)(CFArrayGetValueAtIndex((CFArrayRef)arrayRef, i));
-        NSString * label = (NSString *)[attr objectForKey:(id)kSecAttrLabel];
+        NSDictionary *attr = (__bridge NSDictionary *)(CFArrayGetValueAtIndex((CFArrayRef)arrayRef, i));
+        NSString *label = (NSString *)[attr objectForKey:(id)kSecAttrLabel];
         
         NSDictionary *valRef;
         NSDictionary *keyUsage;
@@ -876,15 +876,14 @@ SecPolicySearchCreate:
 			BOOL equal = YES;
 			if(subject->numberOfRDNs==issuer->numberOfRDNs)
 			{
-				int i, j;
-				for (i=0; i<subject->numberOfRDNs; i++)
+				for (int i=0; i<subject->numberOfRDNs; i++)
 				{
 					CSSM_X509_RDN issuerRDN = issuer->RelativeDistinguishedName[i];
 					CSSM_X509_RDN subjectRDN = subject->RelativeDistinguishedName[i];
 										
-					if(issuerRDN.numberOfPairs==subjectRDN.numberOfPairs)
+					if (issuerRDN.numberOfPairs==subjectRDN.numberOfPairs)
 					{
-						for (j=0; j<subjectRDN.numberOfPairs; j++)
+						for (int j=0; j<subjectRDN.numberOfPairs; j++)
 						{
 							CSSM_X509_TYPE_VALUE_PAIR issuerVP = issuerRDN.AttributeTypeAndValue[j];
 							CSSM_X509_TYPE_VALUE_PAIR subjectVP = subjectRDN.AttributeTypeAndValue[j];
@@ -913,7 +912,7 @@ SecPolicySearchCreate:
 
 			CFRelease(certificateRef);
 			
-			if(equal)
+			if (equal)
 			{
 				// Self signed certificate
 				icon = [NSImage imageNamed:@"CertSmallRoot.tif"];
@@ -1075,7 +1074,7 @@ SecPolicySearchCreate:
 	}
 }
 
-#pragma mark-
+#pragma mark -
 
 // Returns a reference to the preferred identity for DICOM TLS, or NULL if none was found.
 // Call the CFRelease function to release this object when you are finished with it.

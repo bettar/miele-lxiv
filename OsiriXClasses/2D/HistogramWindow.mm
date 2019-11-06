@@ -70,23 +70,24 @@
 
 - (IBAction) changeBin: (id) sender
 {
-	long	i, dL, max = 0;
+	long dL, max = 0;
 	
-	for( i = 0; i < HISTOSIZE; i++) histoData[ i] = 0;
+	for (long i = 0; i < HISTOSIZE; i++)
+        histoData[ i] = 0;
 	
-	for( i = 0; i < dataSize; i++)
+	for (long i = 0; i < dataSize; i++)
 	{
 		dL = ((data[ i] - minValue) * HISTOSIZE) / (maxValue - minValue);
 		
-		if( dL < 0)
+		if (dL < 0)
             dL = 0;
         
-		if( dL > (HISTOSIZE-1))
+		if (dL > (HISTOSIZE-1))
             dL = (HISTOSIZE-1);
 		
-		histoData[ dL] ++;
+		histoData[ dL]++;
 		
-		if( histoData[ dL] > max)
+		if (histoData[ dL] > max)
             max = histoData[ dL];
 	}
 	
@@ -98,7 +99,6 @@
 	
 	[binText setIntValue: ([sender intValue] * (maxValue-minValue)) / HISTOSIZE];
 }
-
 
 - (id) initWithROI: (ROI*) iroi
 {

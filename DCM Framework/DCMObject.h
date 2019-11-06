@@ -164,7 +164,11 @@
 * @param characterSet The DCMCharacterSet used for decoding
 * @param decodePixelData Flag to decode contained pixelData
 */
-- (id)initWithDataContainer:(DCMDataContainer *)data lengthToRead:(int)lengthToRead byteOffset:(int  *)byteOffset characterSet:(DCMCharacterSet *)characterSet decodingPixelData:(BOOL)decodePixelData;
+- (id)initWithDataContainer:(DCMDataContainer *)data
+               lengthToRead:(long)lengthToRead
+                 byteOffset:(int *)byteOffset
+               characterSet:(DCMCharacterSet *)characterSet
+          decodingPixelData:(BOOL)decodePixelData;
 
 /** Empty initializer */
 - (id)init;
@@ -194,11 +198,17 @@
 
 /** Parse the dataset\n
 * Used when parsing the DICOM data. */
-- (int)readDataSet:(DCMDataContainer *)dicomData lengthToRead:(int)lengthToRead byteOffset:(int *)byteOffset;
+- (int)readDataSet:(DCMDataContainer *)dicomData
+      lengthToRead:(int)lengthToRead
+        byteOffset:(int *)byteOffset;
 
 /** Parse of Sequence attribute\n
 * Used when parsing the DICOM data. */
-- (int)readNewSequenceAttribute:(DCMAttribute *)attr dicomData:(DCMDataContainer *)dicomData byteOffset:(int *)byteOffset lengthToRead:(int)lengthToRead specificCharacterSet:(DCMCharacterSet *)specificCharacterSet;
+- (int)readNewSequenceAttribute:(DCMAttribute *)attr
+                      dicomData:(DCMDataContainer *)dicomData
+                     byteOffset:(int *)byteOffset
+                   lengthToRead:(int)lengthToRead
+           specificCharacterSet:(DCMCharacterSet *)specificCharacterSet;
 
 /** Create a DCMAttribute\n
 * Used when parsing the DICOM data. */
@@ -335,30 +345,25 @@
 /** Returns YES if the tag string is a needed attribute */
 - (BOOL)isNeededAttribute:(char *)tagString;
 
-//deprecated methods
-/** Deprecated */
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality;
+#pragma mark - deprecated methods
 
-/** Deprecated */
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts  asDICOM3:(BOOL)flag;
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality __deprecated;
 
-/** Deprecated */
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts  asDICOM3:(BOOL)flag __deprecated;
+
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container 
 			withTransferSyntax:(DCMTransferSyntax *)ts 
 			quality:(int)quality 
 			asDICOM3:(BOOL)flag
-			strippingGroupLengthLength:(BOOL)stripGroupLength;
+			strippingGroupLengthLength:(BOOL)stripGroupLength __deprecated;
 			
-/** Deprecated */
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality asDICOM3:(BOOL)flag;
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality asDICOM3:(BOOL)flag __deprecated;
 
-/** Deprecated */
-- (BOOL)writeToFile:(NSString *)path withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality atomically:(BOOL)flag;
+- (BOOL)writeToFile:(NSString *)path withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality atomically:(BOOL)flag __deprecated;
 
-/** Deprecated */
-- (BOOL)writeToURL:(NSURL *)aURL withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality atomically:(BOOL)flag;
+- (BOOL)writeToURL:(NSURL *)aURL withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality atomically:(BOOL)flag __deprecated;
 
-//sequences
+#pragma mark - sequences
 /** return a sequence as an NSArray */
 - (NSArray *)referencedSeriesSequence;
 

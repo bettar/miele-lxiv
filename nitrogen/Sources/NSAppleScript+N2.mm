@@ -25,7 +25,8 @@
 
 @implementation NSAppleScript (N2)
 
--(id)runWithArguments:(NSArray*)args error:(NSDictionary**)errs {
+-(id)runWithArguments:(NSArray*)args error:(NSDictionary**)errs
+{
     if (!args)
         args = [NSArray array];
     

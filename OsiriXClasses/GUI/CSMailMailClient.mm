@@ -29,8 +29,11 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 	if (quitApplicationAppleEventPtr)
 	{
 		OSStatus err = AESendMessage(quitApplicationAppleEventPtr, NULL, kAENoReply, kAEDefaultTimeout);
+        if (err != noErr)
+            NSLog(@"OSStatus: %i", (int) err);
 	}
-	[NSThread sleepForTimeInterval: seconds];
+
+    [NSThread sleepForTimeInterval: seconds];
 }
 
 @implementation CSMailMailClient

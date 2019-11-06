@@ -31,6 +31,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation CPRHorizontalFillOperation
 

@@ -18,7 +18,6 @@
  PURPOSE.
  =========================================================================*/
 
-
 #import "NSThread+N2.h"
 #import "N2Debug.h"
 //#import "NSException+N2.h"
@@ -30,6 +29,8 @@
 -(id)initWithBlock:(void(^)())block;
 
 @end
+
+#pragma mark -
 
 @implementation NSThread (N2)
 
@@ -436,4 +437,3 @@ NSString* const NSThreadProgressDetailsKey = @"progressDetails";
 }
 
 @end
-

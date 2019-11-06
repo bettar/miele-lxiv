@@ -372,6 +372,4 @@ jpeg16_nsdata_src (j_decompress_ptr cinfo, NSData *aData)
 	return rawData;
 }
 
-
-
 @end

@@ -40,6 +40,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
 
 @end
 
+#pragma mark -
 
 @implementation CPRStraightenedOperation
 
@@ -115,9 +116,6 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
     CGFloat fillDistance;
     CGFloat slabDistance;
     NSInteger numVectors;
-    NSInteger i;
-    NSInteger y;
-    NSInteger z;
     NSInteger pixelsWide;
     NSInteger pixelsHigh;
     NSInteger pixelsDeep;
@@ -198,7 +196,6 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                     numVectors++;
                 }
             }
-
                     
             memcpy(fillNormals, normals, sizeof(N3Vector) * pixelsWide);
             N3VectorScalarMultiplyVectors(_sampleSpacing, fillNormals, pixelsWide);
@@ -209,11 +206,11 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
             
             fillOperations = [NSMutableSet set];
             
-            for (z = 0; z < pixelsDeep; z++) {
-                for (y = 0; y < pixelsHigh; y += FILL_HEIGHT) {
+            for (NSInteger z = 0; z < pixelsDeep; z++) {
+                for (NSInteger y = 0; y < pixelsHigh; y += FILL_HEIGHT) {
                     fillDistance = (CGFloat)y - (CGFloat)(pixelsHigh - 1)/2.0; // the distance to go out from the centerline
                     slabDistance = (CGFloat)z - (CGFloat)(pixelsDeep - 1)/2.0; // the distance to go out from the centerline
-                    for (i = 0; i < pixelsWide; i++) {
+                    for (NSInteger i = 0; i < pixelsWide; i++) {
                         fillVectors[i] = N3VectorAdd(N3VectorAdd(vectors[i], N3VectorScalarMultiply(fillNormals[i], fillDistance)), N3VectorScalarMultiply(inSlabNormals[i], slabDistance));
                     }
                     

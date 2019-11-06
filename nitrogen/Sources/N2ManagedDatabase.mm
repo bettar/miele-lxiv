@@ -23,10 +23,14 @@
 #import "N2Debug.h"
 #import "NSFileManager+N2.h"
 #import "NSException+N2.h"
+#if !defined(NITROGEN_FW)
 #import "DCMTKQueryNode.h"
+#endif
 //#import "DicomDatabase.h" // for debug purposes, REMOVE
 
 static int gTotalN2ManagedObjectContext = 0;
+
+#pragma mark -
 
 @interface N2ManagedDatabase ()
 
@@ -36,6 +40,8 @@ static int gTotalN2ManagedObjectContext = 0;
 @end
 
 #define N2PersistentStoreCoordinator NSPersistentStoreCoordinator // for debug purposes, disable this #define and enable the commented N2PersistentStoreCoordinator implementation
+
+#pragma mark -
 
 @implementation N2ManagedObjectContext
 
@@ -181,6 +187,7 @@ static int gTotalN2ManagedObjectContext = 0;
 
 @end
 
+#pragma mark -
 
 @implementation N2ManagedDatabase
 #ifndef NDEBUG
@@ -456,7 +463,8 @@ static int gTotalN2ManagedObjectContext = 0;
     return [self initWithPath:p context:c mainDatabase:nil];
 }
 
--(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c mainDatabase:(N2ManagedDatabase*)mainDbReference {
+-(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c mainDatabase:(N2ManagedDatabase*)mainDbReference
+{
 	self = [super init];
 	
 	self.sqlFilePath = p;
@@ -533,26 +541,33 @@ static int gTotalN2ManagedObjectContext = 0;
     [self checkForCorrectContextThread];
 #endif
     [self.managedObjectContext lock];
+
     @try {
         if ([oid isKindOfClass:[NSManagedObjectID class]]) {
             // nothing, just avoid all other checks for performance
-        } else if ([oid isKindOfClass:[NSManagedObject class]]) {
+        }
+        else if ([oid isKindOfClass:[NSManagedObject class]]) {
             oid = [oid objectID];
         }
-#ifndef OSIRIX_LIGHT
+#if !defined(OSIRIX_LIGHT) && !defined(NITROGEN_FW)
         else if ([oid isKindOfClass:[DCMTKQueryNode class]]) {
             return oid;
         }
 #endif
         else if ([oid isKindOfClass:[NSURL class]]) {
             oid = [self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:oid];
-        } else if ([oid isKindOfClass:[NSString class]]) {
+        }
+        else if ([oid isKindOfClass:[NSString class]]) {
             oid = [self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:oid]];
-        } // else we're in trouble: oid is invalid, but let's give Core Data a chance to handle it anyway
+        }
+        // else we're in trouble: oid is invalid, but let's give Core Data a chance to handle it anyway
+
         return [self.managedObjectContext existingObjectWithID:oid error:NULL];
-    } @catch (...) {
+    }
+    @catch (...) {
         // nothing, just return nil
-    } @finally {
+    }
+    @finally {
         [self.managedObjectContext unlock];
     }
     
@@ -624,12 +639,14 @@ static int gTotalN2ManagedObjectContext = 0;
     [self.managedObjectContext lock];
     @try {
         return [self.managedObjectContext executeFetchRequest:req error:error];
-    } @catch (NSException* e) {
+    }
+    @catch (NSException* e) {
         if (error && !*error)
             *error = [NSError errorWithDomain:N2ErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObject:e.reason forKey:NSLocalizedDescriptionKey]];
         else
             N2LogException(e);
-    } @finally {
+    }
+    @finally {
         [self.managedObjectContext unlock];
     }
     
@@ -700,6 +717,5 @@ static int gTotalN2ManagedObjectContext = 0;
 	
 	return b;
 }
-
 
 @end

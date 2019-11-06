@@ -29,6 +29,8 @@ unichar ISO8601DefaultTimeSeparatorCharacter = DEFAULT_TIME_SEPARATOR;
 #define ISO_TIMEZONE_UTC_FORMAT @"Z"
 #define ISO_TIMEZONE_OFFSET_FORMAT @"%+02d%02d"
 
+#pragma mark -
+
 @interface ISO8601DateFormatter(UnparsingPrivate)
 
 - (NSString *) replaceColonsInString:(NSString *)timeFormat withTimeSeparator:(unichar)timeSep;
@@ -37,6 +39,8 @@ unichar ISO8601DefaultTimeSeparatorCharacter = DEFAULT_TIME_SEPARATOR;
 - (NSString *) weekDateStringForDate:(NSDate *)date timeZone:(NSTimeZone *)timeZone;
 
 @end
+
+#pragma mark -
 
 @implementation ISO8601DateFormatter
 
@@ -840,7 +844,7 @@ static double read_double(const unsigned char *str, const unsigned char **next)
 		if (((*str == ',') || (*str == '.'))) {
 			++str;
 
-			register double multiplier, multiplier_multiplier;
+            double multiplier, multiplier_multiplier;
 			multiplier = multiplier_multiplier = 0.1;
 
 			while(isdigit(*str)) {

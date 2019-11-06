@@ -43,6 +43,7 @@
 
 @interface SecondsToMinutesTransformer: NSValueTransformer {}
 @end
+
 @implementation SecondsToMinutesTransformer
 
 + (BOOL)allowsReverseTransformation {
@@ -62,6 +63,8 @@
     return [NSNumber numberWithInt: (number.integerValue * 60)];
 }
 @end
+
+#pragma mark -
 
 @implementation OSIWebSharingPreferencePanePref
 

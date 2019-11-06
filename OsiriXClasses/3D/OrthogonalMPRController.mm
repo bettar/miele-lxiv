@@ -300,32 +300,22 @@
 
 	if (originalOldValues)
 	{
-		// scale
 		[originalView setScaleValue:originalScaleValue];
-//		NSLog(@"originalScaleValue : %f", originalScaleValue);
-		// rotation
 		[originalView setRotation:originalRotation];
-		// origin
 		[originalView setOrigin:originalOrigin];
 	}
 		
 	if (xOldValues)
 	{
-		// scale
 		[xReslicedView setScaleValue:xScaleValue];
-		// rotation
 		[xReslicedView setRotation:xRotation];
-		// origin
 		[xReslicedView setOrigin:xOrigin];
 	}
 	
 	if (yOldValues)
 	{
-		// scale
 		[yReslicedView setScaleValue:yScaleValue];
-		// rotation
 		[yReslicedView setRotation:yRotation];
-		// origin
 		[yReslicedView setOrigin:yOrigin];
 	}
 
@@ -665,7 +655,7 @@
 	[yReslicedView setCrossPosition: yReslicedCrossPositionX : yReslicedCrossPositionY];
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) notifyPositionChange
 {
@@ -723,7 +713,7 @@
     [xReslicedView setCrossPosition:sliceCoord[0] :sliceCoord[1] withNotification:FALSE];
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) toggleDisplayResliceAxes: (id) sender
 {
@@ -975,18 +965,20 @@
     
     int imageWidth = [[[yReslicedView pixList] lastObject] pwidth];
     int imageHeight = [[[yReslicedView pixList] lastObject] pheight];
-    
-	int i, j;
-	for(i=0; i<[rois count]; i++)
+
+	for (int i=0; i<[rois count]; i++)
 	{
-		for(j=0; j<[[rois objectAtIndex:i] count]; j++)
+		for (int j=0; j<[[rois objectAtIndex:i] count]; j++)
 		{
 			ROI *aROI = [[rois objectAtIndex:i] objectAtIndex:j];
-			if([aROI type]==t2DPoint)
+			if ([aROI type]==t2DPoint)
 			{
-				if((long)([[[aROI points] objectAtIndex:0] x])==x)
+				if ((long)([[[aROI points] objectAtIndex:0] x])==x)
 				{
-					ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[yReslicedView pixelSpacingX] :[yReslicedView pixelSpacingY] :NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
+					ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint
+                                                                   : [yReslicedView pixelSpacingX]
+                                                                   : [yReslicedView pixelSpacingY]
+                                                                   : NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
 					NSRect irect;
 					irect.origin.x = [[[aROI points] objectAtIndex:0] y];
 					long sliceIndex = (sign>0)? (long)[[originalView dcmPixList] count]-1 -i : i; // i is slice number
@@ -1001,16 +993,19 @@
 				}
 			}
             
-            if( [aROI type] == tPlain)
+            if ( [aROI type] == tPlain)
             {
-                if( x >= aROI.textureUpLeftCornerX && x < aROI.textureDownRightCornerX)
+                if ( x >= aROI.textureUpLeftCornerX && x < aROI.textureDownRightCornerX)
                 {
-                    if( [plainDict objectForKey: [aROI name]] == nil)
+                    if ( [plainDict objectForKey: [aROI name]] == nil)
                     {
                         unsigned char *t = (unsigned char *)calloc( imageWidth * imageHeight, sizeof(unsigned char));                        
                         if (t)
                         {
-                            ROI *newROI = [[[ROI alloc] initWithType: tPlain :[yReslicedView pixelSpacingX] :[yReslicedView pixelSpacingY] :NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
+                            ROI *newROI = [[[ROI alloc] initWithType: tPlain
+                                                                    : [yReslicedView pixelSpacingX]
+                                                                    : [yReslicedView pixelSpacingY]
+                                                                    : NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
                             
                             newROI.name = [aROI name];
                             newROI.thickness = aROI.thickness;
@@ -1068,17 +1063,19 @@
     int imageWidth = [[[xReslicedView pixList] lastObject] pwidth];
     int imageHeight = [[[xReslicedView pixList] lastObject] pheight];
     
-	int i, j;
-	for(i=0; i<[rois count]; i++)
+	for (int i=0; i<[rois count]; i++)
 	{
-		for(j=0; j<[[rois objectAtIndex:i] count]; j++)
+		for (int j=0; j<[[rois objectAtIndex:i] count]; j++)
 		{
 			ROI *aROI = [[rois objectAtIndex:i] objectAtIndex:j];
-			if([aROI type]==t2DPoint)
+			if ([aROI type]==t2DPoint)
 			{
-				if((long)([[[aROI points] objectAtIndex:0] y])==y)
+				if ((long)([[[aROI points] objectAtIndex:0] y])==y)
 				{
-					ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[xReslicedView pixelSpacingX] :[xReslicedView pixelSpacingY] :NSMakePoint( [xReslicedView origin].x, [xReslicedView origin].y)] autorelease];
+					ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint
+                                                                   : [xReslicedView pixelSpacingX]
+                                                                   : [xReslicedView pixelSpacingY]
+                                                                   : NSMakePoint( [xReslicedView origin].x, [xReslicedView origin].y)] autorelease];
 					NSRect irect;
 					irect.origin.x = [[[aROI points] objectAtIndex:0] x];
 					long sliceIndex = (sign>0)? (long)[[originalView dcmPixList] count]-1 -i : i; // i is slice number
@@ -1093,16 +1090,20 @@
 				}
 			}
             
-            if( [aROI type] == tPlain)
+            if ([aROI type] == tPlain)
             {
-                if( y >= aROI.textureUpLeftCornerY && y < aROI.textureDownRightCornerY)
+                if (y >= aROI.textureUpLeftCornerY &&
+                    y <  aROI.textureDownRightCornerY)
                 {
-                    if( [plainDict objectForKey: [aROI name]] == nil)
+                    if ([plainDict objectForKey: [aROI name]] == nil)
                     {
                         unsigned char *t = (unsigned char *)calloc( imageWidth * imageHeight, sizeof(unsigned char));
                         if (t)
                         {
-                            ROI *newROI = [[[ROI alloc] initWithType: tPlain :[yReslicedView pixelSpacingX] :[yReslicedView pixelSpacingY] :NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
+                            ROI *newROI = [[[ROI alloc] initWithType: tPlain
+                                                                    : [yReslicedView pixelSpacingX]
+                                                                    : [yReslicedView pixelSpacingY]
+                                                                    : NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
                             
                             newROI.name = [aROI name];
                             newROI.thickness = aROI.thickness;

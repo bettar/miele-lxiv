@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface NSData (N2)
 
 +(NSData*)dataWithHex:(NSString*)hex;

@@ -29,6 +29,9 @@ static NSMatrix *gDateMatrix = nil;
 
 @interface ArrayToListTransformer: NSValueTransformer {}
 @end
+
+#pragma mark -
+
 @implementation ArrayToListTransformer
 
 + (BOOL)allowsReverseTransformation {
@@ -51,8 +54,13 @@ static NSMatrix *gDateMatrix = nil;
 }
 @end
 
+#pragma mark -
+
 @interface DateEnumTransformer: NSValueTransformer {}
 @end
+
+#pragma mark -
+
 @implementation DateEnumTransformer
 
 + (BOOL)allowsReverseTransformation {

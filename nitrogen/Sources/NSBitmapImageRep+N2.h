@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface NSBitmapImageRep (N2)
 
 -(void)setColor:(NSColor*)color __deprecated; // buggy in Retina...

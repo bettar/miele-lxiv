@@ -34,6 +34,8 @@
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 
+#import "mieleTypes.h"
+
 #define STAT_UPDATE					0.6f
 #define IMAGE_COUNT					1
 #define IMAGE_DEPTH					32
@@ -43,20 +45,27 @@
 extern NSString *pasteBoardOsiriX;
 extern NSString *pasteBoardOsiriXPlugin;
 extern NSString *OsirixPluginPboardUTI;
-extern int CLUTBARS, ANNOTATIONS, SOFTWAREINTERPOLATION_MAX;
+extern ClutBarsType CLUTBARS;
+extern int ANNOTATIONS;
+extern int SOFTWAREINTERPOLATION_MAX;
 //extern BOOL DISPLAYCROSSREFERENCELINES;
 
-enum { annotNone = 0, annotGraphics, annotBase, annotFull };
-enum { barHide = 0, barOrigin, barFused, barBoth };
-enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroRatio = 4};
-enum { NO_INTERSECT_3D = 0, INTERSECT_3D_ONE_POINT, INTERSECT_3D_SEGMENT_ON_PLANE };
-
-typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRight} DCMViewTextAlign;
+typedef NS_ENUM(NSUInteger, DCMViewTextAlign) {
+    DCMVVIEW_TEXT_ALIGN_LEFT,
+    DCMVVIEW_TEXT_ALIGN_CENTER,
+    DCMVVIEW_TEXT_ALIGN_RIGHT
+};
 
 typedef NS_ENUM(NSUInteger, MyScrollMode) {
     MY_SCROLL_MODE_UNDEFINED = 0,
     MY_SCROLL_MODE_VER = 1,
     MY_SCROLL_MODE_HOR = 2
+};
+
+typedef NS_ENUM(NSUInteger, PETWindowingMode) {
+    PETWindowingMode_CLASSIC = 0,   // X window width, Y window level
+    PETWindowingMode_FIXED_MIN = 1, // X nothing, Y maximum with specified minimum
+    PETWindowingMode_MAXIMUM = 2    // X minimum, Y maximum
 };
 
 @class GLString;
@@ -68,10 +77,14 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 @class Dicom_Image, DicomSeries, DicomStudy;
 @class DCMObject;
 
+#pragma mark -
+
 @interface DCMExportPlugin: NSObject
 - (void) finalize:(DCMObject*) dcmDst withSourceObject:(DCMObject*) dcmObject;
 - (NSString*) seriesName;
 @end
+
+#pragma mark -
 
 /** \brief Image/Frame View for ViewerController */
 
@@ -81,9 +94,6 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 	NSInteger		_imageColumns;
 	NSInteger		_tag;
 
-	BOOL			flippedData;
-    BOOL            whiteBackground;
-	
 	NSString		*yearOld;
 	
 	ROI				*curROI;
@@ -103,7 +113,7 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 	float			sliceVector[ 3];
 	float			slicePoint3D[ 3];
 	float			syncRelativeDiff;
-	long			syncSeriesIndex;
+	//long			syncSeriesIndex;
 	
 	float			mprVector[ 3], mprPoint[ 3];
     
@@ -142,8 +152,10 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
     NSSize          scaleStart, scaleInit;
     
 	double			resizeTotal;
-    float           scaleValue, startScaleValue;
-    float           rotation, rotationStart;
+    float           scaleValue;
+    float           startScaleValue;
+    float           rotation;
+    float           rotationStart;
     NSPoint			origin;
 	short			crossMove;
     
@@ -169,8 +181,7 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 	NSSize			previousViewSize;
 
 	float			contextualMenuInWindowPosX;
-	float			contextualMenuInWindowPosY;	
-
+	float			contextualMenuInWindowPosY;
 	
 	float			mouseXPos, mouseYPos;
     BOOL            mouseOnImage, mouseOnView, blendingMouseOnImage;
@@ -280,7 +291,7 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 	BOOL			COPYSETTINGSINSERIES;
 	BOOL			is2DViewerCached, is2DViewerValue;
 	
-	char*	lensTexture;
+	char *lensTexture;
 	int LENSSIZE;
 	float LENSRATIO;
 	BOOL cursorhidden;
@@ -305,58 +316,66 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
     int annotationType;
     
     NSArray *cleanedOutDcmPixArray;
-    
     NSTimeInterval firstDisplay;
-    
     NSString *mousePosUSRegion;
 }
 
 @property NSRect drawingFrameRect;
-@property(retain) NSArray *cleanedOutDcmPixArray;
-@property(readonly) NSMutableArray *rectArray, *curRoiList;
-@property BOOL COPYSETTINGSINSERIES, flippedData, showDescriptionInLarge;
-@property(nonatomic) BOOL whiteBackground;
-@property(retain) NSMutableArray *dcmPixList, *dcmRoiList;
-@property(readonly) NSArray *dcmFilesList;
+@property (retain) NSArray *cleanedOutDcmPixArray;
+@property (readonly) NSMutableArray *rectArray, *curRoiList;
+@property BOOL COPYSETTINGSINSERIES;
+@property BOOL flippedData;
+@property BOOL showDescriptionInLarge;
+@property (nonatomic) BOOL whiteBackground;
+@property (retain) NSMutableArray *dcmPixList, *dcmRoiList;
+@property (readonly) NSArray *dcmFilesList;
 @property long syncSeriesIndex;
-@property(nonatomic)float syncRelativeDiff, studyColorR, studyColorG, studyColorB;
-@property(nonatomic) long blendingMode;
-@property(nonatomic) NSUInteger studyDateIndex;
-@property(retain,setter=setBlending:) DCMView *blendingView;
-@property(readonly) float blendingFactor;
-@property(nonatomic) BOOL xFlipped, yFlipped;
-@property(retain) NSString *stringID, *mousePosUSRegion;
-@property(nonatomic) ToolMode currentTool;
-@property(setter=setRightTool:) ToolMode currentToolRight;
-@property(readonly) short curImage;
-@property(retain) NSMatrix *theMatrix;
-@property(readonly) BOOL suppressLabels;
-@property(nonatomic) float scaleValue, rotation;
-@property(nonatomic) NSPoint origin;
-@property(readonly) double pixelSpacing, pixelSpacingX, pixelSpacingY;
-@property(readonly) DCMPix *curDCM;
-@property(retain) DCMExportPlugin *dcmExportPlugin;
-@property(readonly) float mouseXPos, mouseYPos;
-@property(readonly) float contextualMenuInWindowPosX, contextualMenuInWindowPosY;
-@property(readonly) GLuint fontListGL;
-@property(readonly) NSFont *fontGL;
+@property (nonatomic)float syncRelativeDiff, studyColorR, studyColorG, studyColorB;
+@property (nonatomic) long blendingMode;
+@property (nonatomic) NSUInteger studyDateIndex;
+@property (retain,setter=setBlending:) DCMView *blendingView;
+@property (readonly) float blendingFactor;
+@property (nonatomic) BOOL xFlipped, yFlipped;
+@property (retain) NSString *stringID, *mousePosUSRegion;
+@property (nonatomic) ToolMode currentTool;
+@property (setter=setRightTool:) ToolMode currentToolRight;
+@property (readonly) short curImage;
+@property (retain) NSMatrix *theMatrix;
+@property (readonly) BOOL suppressLabels;
+
+@property (nonatomic) float scaleValue;
+@property (nonatomic) float rotation;
+@property (nonatomic) NSPoint origin;
+
+@property (readonly) double pixelSpacing, pixelSpacingX, pixelSpacingY;
+@property (readonly) DCMPix *curDCM;
+@property (retain) DCMExportPlugin *dcmExportPlugin;
+@property (readonly) float mouseXPos, mouseYPos;
+@property (readonly) float contextualMenuInWindowPosX, contextualMenuInWindowPosY;
+@property (readonly) GLuint fontListGL;
+@property (readonly) NSFont *fontGL;
 @property NSInteger tag;
-@property(readonly) float curWW, curWL;
+@property (readonly) float curWW, curWL;
 @property NSInteger rows, columns;
-@property(readonly) NSCursor *cursor;
+@property (readonly) NSCursor *cursor;
 @property BOOL eraserFlag;
 @property BOOL drawing;
 @property (readonly) BOOL volumicSeries;
 @property (nonatomic) NSTimeInterval timeIntervalForDrag;
-@property(readonly) BOOL isKeyView, mouseDragging;
+@property (readonly) BOOL isKeyView, mouseDragging;
 @property int annotationType;
-@property(readonly) int volumicData;
+@property (readonly) int volumicData;
+
+#pragma mark - Class methods
+
++ (SynchroType)syncro;
++ (void)setSyncro:(SynchroType) s;
 
 + (void) setDontListenToSyncMessage: (BOOL) v;
 + (BOOL) noPropagateSettingsInSeriesForModality: (Dicom_Image*) imageObj;
 + (void) purgeStringTextureCache;
 + (void) setDefaults;
-+ (void) setCLUTBARS:(int) c ANNOTATIONS:(int) a;
++ (void) setCLUTBARS:(ClutBarsType) c withAnnotations:(int) a;
 + (void)setPluginOverridesMouse: (BOOL)override DEPRECATED_ATTRIBUTE;
 + (void) computePETBlendingCLUT;
 + (NSString*) findWLWWPreset: (float) wl :(float) ww :(DCMPix*) pix;
@@ -369,8 +388,30 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 + (int) DistancePointLine: (NSPoint) Point :(NSPoint) startPoint :(NSPoint) endPoint :(float*) Distance;
 + (float) pbase_Plane: (float*) point :(float*) planeOrigin :(float*) planeVector :(float*) pointProjection;
 + (double) pbaseDouble_Plane: (double*) point :(double*) planeOrigin :(double*) planeVector :(double*) pointProjection;
-+ (short)syncro;
-+ (void)setSyncro:(short) s;
++ (unsigned char*) PETredTable;
++ (unsigned char*) PETgreenTable;
++ (unsigned char*) PETblueTable;
++ (NSDictionary*) hotKeyDictionary;
++ (NSDictionary*) hotKeyModifiersDictionary;
++ (NSArray*)cleanedOutDcmPixArray:(NSArray*)input; // filters the input array of DCMPix by returning only the pix with the most common ImageType in the input array
+
+#pragma mark - IBAction
+
+- (IBAction) syncronize:(id) sender;
+- (IBAction) flipVertical:(id) sender;
+- (IBAction) flipHorizontal:(id) sender;
+- (IBAction) sliderRGBFactor:(id) sender;
+- (IBAction) alwaysSyncMenu:(id) sender;
+- (IBAction) roiLoadFromXMLFiles: (NSArray*) filenames;
+- (IBAction)realSize:(id)sender;
+- (IBAction)scaleToFit:(id)sender;
+- (IBAction)actualSize:(id)sender;
+
+#pragma mark - Instance methods
+
+- (SynchroType)syncro;
+- (void)setSyncro:(SynchroType) s;
+
 - (BOOL) softwareInterpolation;
 - (void) applyImageTransformation __deprecated;
 - (void) loadOpenGLIdentityForDrawingFrame: (NSRect) r;
@@ -382,26 +423,39 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 - (unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
 
 - (unsigned char*) getRawPixelsWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allTiles:(BOOL) allTiles allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing;
+
 - (unsigned char*) getRawPixelsWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allTiles:(BOOL) allTiles allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing offset:(int*) offset isSigned:(BOOL*) isSigned;
+
 - (unsigned char*) getRawPixelsWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allTiles:(BOOL) allTiles allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing offset:(int*) offset isSigned:(BOOL*) isSigned views: (NSArray*) views viewsRect: (NSArray*) rects;
 
 - (unsigned char*) getRawPixelsViewWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing;
+
 - (unsigned char*) getRawPixelsViewWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing offset:(int*) offset isSigned:(BOOL*) isSigned;
 
 - (void) blendingPropagate;
 - (void) subtract:(DCMView*) bV;
 - (void) subtract:(DCMView*) bV absolute:(BOOL) abs;
 - (void) multiply:(DCMView*) bV;
-- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT textureWidth: (long*) tW textureHeight:(long*) tH resampledBaseAddr:(char**) rAddr resampledBaseAddrSize:(int*) rBAddrSize;
-- (short)syncro;
-- (void)setSyncro:(short) s;
+
+- (GLuint *) loadTextureIn: (GLuint *) texture
+                  blending: (BOOL) blending
+                  colorBuf: (unsigned char**) colorBufPtr
+                  textureX: (long*) tX
+                  textureY: (long*) tY
+                  redTable: (unsigned char*) rT
+                greenTable: (unsigned char*) gT
+                 blueTable: (unsigned char*) bT
+              textureWidth: (long*) tW
+             textureHeight: (long*) tH
+         resampledBaseAddr: (char**) rAddr
+     resampledBaseAddrSize: (int*) rBAddrSize;
 
 // checks to see if tool is for ROIs.  maybe better name - (BOOL)isToolforROIs:(long)tool
 - (BOOL) roiTool:(long) tool;
 - (void) prepareToRelease;
 - (void) orientationCorrectedToView:(float*) correctedOrientation;
 //#ifndef OSIRIX_LIGHT
-- (N3AffineTransform)pixToSubDrawRectTransform; // converst points in DCMPix "Slice Coordinates" to coordinates that need to be passed to GL in subDrawRect
+- (N3AffineTransform)pixToSubDrawRectTransform; // Converts points in DCMPix "Slice Coordinates" to coordinates that need to be passed to GL in subDrawRect
 //#endif
 - (NSPoint) ConvertFromNSView2GL:(NSPoint) a;
 - (NSPoint) ConvertFromView2GL:(NSPoint) a;
@@ -427,12 +481,17 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 - (void) setIndex:(short) index;
 - (void) setIndexWithReset:(short) index :(BOOL)sizeToFit;
 - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset;
-- (void) setPixels: (NSMutableArray*) pixels files: (NSArray*) files rois: (NSMutableArray*) rois firstImage: (short) firstImage level: (char) level reset: (BOOL) reset;
+
+- (void) setPixels: (NSMutableArray*) pixels
+             files: (NSArray*) files
+              rois: (NSMutableArray*) rois
+        firstImage: (short) firstImage
+             level: (char) level
+             reset: (BOOL) reset;
+
 - (void) sendSyncMessage:(short) inc;
 - (void) loadTextures;
 - (void)loadTexturesCompute;
-- (IBAction) flipVertical:(id) sender;
-- (IBAction) flipHorizontal:(id) sender;
 - (void) setFusion:(short) mode :(short) stacks;
 - (void) FindMinimumOpenGLCapabilities;
 - (NSPoint) rotatePoint:(NSPoint) a;
@@ -446,12 +505,23 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 - (void) roiSet;
 - (void) sync3DPosition;
 - (void) roiSet:(ROI*) aRoi __deprecated;
-- (void) colorTables:(unsigned char **) a :(unsigned char **) r :(unsigned char **)g :(unsigned char **) b;
-- (void) blendingColorTables:(unsigned char **) a :(unsigned char **) r :(unsigned char **)g :(unsigned char **) b;
+
+- (void) colorTables:(unsigned char **) a
+                    :(unsigned char **) r
+                    :(unsigned char **) g
+                    :(unsigned char **) b;
+
+- (void) blendingColorTables:(unsigned char **) a
+                            :(unsigned char **) r
+                            :(unsigned char **) g
+                            :(unsigned char **) b;
+
 - (void )changeFont:(id)sender;
-- (IBAction) sliderRGBFactor:(id) sender;
-- (IBAction) alwaysSyncMenu:(id) sender;
-- (void) getCLUT:( unsigned char**) r : (unsigned char**) g : (unsigned char**) b;
+
+- (void) getCLUT:(unsigned char**) r
+                :(unsigned char**) g
+                :(unsigned char**) b;
+
 - (void) sync:(NSNotification*)note;
 
 - (instancetype)initWithFrame:(NSRect)frame
@@ -459,7 +529,6 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
                  imageColumns:(int)columns;
 
 - (float)getSUV;
-- (IBAction) roiLoadFromXMLFiles: (NSArray*) filenames;
 - (BOOL)checkHasChanged;
 - (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY :(long) tW :(long) tH;
 
@@ -502,7 +571,12 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 - (void) stopROIEditing;
 - (void) deleteInvalidROIs;
 - (void) computeMagnifyLens:(NSPoint) p;
-- (void) makeTextureFromImage:(NSImage*)image forTexture:(GLuint*)texName buffer:(GLubyte*)buffer textureUnit:(GLuint)textureUnit;
+
+- (void) makeTextureFromImage:(NSImage*)image
+                   forTexture:(GLuint*)texName
+                       buffer:(GLubyte*)buffer
+                  textureUnit:(GLuint)textureUnit;
+
 - (void) stopROIEditingForce:(BOOL) force;
 - (void) subDrawRect: (NSRect)aRect;     // Subclassable, default does nothing.
 - (void) drawRectAnyway:(NSRect)aRect;   // Subclassable, default does nothing.
@@ -516,7 +590,12 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 - (void) deleteLens;
 - (void)getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv;
 - (NSMutableArray*) selectedROIs;
-- (void) computeSliceIntersection: (DCMPix*) oPix sliceFromTo: (float[2][3]) sft vector: (float*) vectorB origin: (float*) originB;
+
+- (void) computeSliceIntersection: (DCMPix*) oPix
+                      sliceFromTo: (float[2][3]) sft
+                           vector: (float*) vectorB
+                           origin: (float*) originB;
+
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx;
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx withShift: (double) shift;
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx withShift: (double) shift showPoint: (BOOL) showPoint;
@@ -524,23 +603,16 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift;
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift half:(BOOL) half;
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift half:(BOOL) half showPoint: (BOOL) showPoint;
-+ (unsigned char*) PETredTable;
-+ (unsigned char*) PETgreenTable;
-+ (unsigned char*) PETblueTable;
+
 - (void) startDrag:(NSTimer*)theTimer;
 - (void)deleteMouseDownTimer;
 - (void) roiLoadFromFilesArray: (NSArray*) filenames;
 - (id)windowController;
 - (BOOL)is2DViewer;
 - (NSPoint) positionWithoutRotation: (NSPoint) tPt;
-- (IBAction)realSize:(id)sender;
-- (IBAction)scaleToFit:(id)sender;
-- (IBAction)actualSize:(id)sender;
 - (void) drawOrientation:(NSRect) size;
 - (void) setCOPYSETTINGSINSERIESdirectly: (BOOL) b;
--(BOOL)actionForHotKey:(NSString *)hotKey;
-+(NSDictionary*) hotKeyDictionary;
-+(NSDictionary*) hotKeyModifiersDictionary;
+- (BOOL)actionForHotKey:(NSString *)hotKey;
 - (void) delete3DROIsAliases;
 //iChat
 // New Draw method to allow for IChat Theater
@@ -570,8 +642,6 @@ typedef NS_ENUM(NSUInteger, MyScrollMode) {
 //- (void)displayLoupe;
 //- (void)displayLoupeWithCenter:(NSPoint)center;
 //- (void)hideLoupe;
-
-+ (NSArray*)cleanedOutDcmPixArray:(NSArray*)input; // filters the input array of DCMPix by returning only the pix with the most common ImageType in the input array
 
 @end
 #endif

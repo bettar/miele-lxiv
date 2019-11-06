@@ -220,8 +220,11 @@
     {
         int result = 0;
         
-        if( [[NSFileManager defaultManager] fileExistsAtPath: @"/System/Library/Printers/Libraries/convert"]) // Not available anymore in 10.8
-            [N2Shell execute:@"/System/Library/Printers/Libraries/convert" arguments:[NSArray arrayWithObjects: @"-f", reportPath, @"-o", outPdfPath, nil] outStatus:&result];
+        if( [[NSFileManager defaultManager] fileExistsAtPath: @"/System/Library/Printers/Libraries/convert"]) { // Not available anymore in 10.8
+            [N2Shell execute:@"/System/Library/Printers/Libraries/convert"
+                   arguments:[NSArray arrayWithObjects: @"-f", reportPath, @"-o", outPdfPath, nil]
+                   outStatus:&result];
+        }
         else if( [[NSFileManager defaultManager] fileExistsAtPath: @"/usr/sbin/cupsfilter"])
         {
             [NSFileManager.defaultManager removeItemAtPath: outPdfPath error:nil];
@@ -244,16 +247,16 @@
     {
         NSString *path = nil;
         if ([Reports Pages5orHigher])
-            path = [[NSBundle mainBundle] pathForResource:@"pages2pdf" ofType:@"applescript"];
+            path = [[NSBundle mainBundle] pathForResource:@"pages2pdf" ofType:@"applescript"];      // TODO: .scpt
         else
-            path = [[NSBundle mainBundle] pathForResource:@"pages092pdf" ofType:@"applescript"];
+            path = [[NSBundle mainBundle] pathForResource:@"pages092pdf" ofType:@"applescript"];    // TODO: .scpt
         
         [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
     }
     else if ([reportPath.pathExtension.lowercaseString isEqualToString:@"doc"] ||
              [reportPath.pathExtension.lowercaseString isEqualToString:@"docx"])
     {
-        NSString* path = [[NSBundle mainBundle] pathForResource:@"word2pdf" ofType:@"applescript"];
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"word2pdf" ofType:@"applescript"]; // TODO: .scpt
         [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
     }
     else

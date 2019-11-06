@@ -21,6 +21,7 @@
 #import "DCMView.h"
 #import <AppKit/AppKit.h>
 #import "DCMPix.h"
+#import "mieleTypes.h"
 
 #ifdef __cplusplus
 #import "vtkMieleView.h"
@@ -171,15 +172,8 @@ typedef char* VTKStereoVRView;
 #define vtkMieleView    NSView
 #endif
 
-typedef NS_ENUM(NSUInteger, EngineType) {
-    ENGINE_CPU = 0,             // RAY CAST
-    ENGINE_GPU_OPEN_GL = 1,
-    ENGINE_BOTH = 2     // For Stereo, see also MAPPERMODEVR
-};
-
 #define NUM_VR_LABELS   5
 
-////////////////////////////////////////////////////////////////////////////////
 #pragma mark - VRView
 
 @interface VRView : vtkMieleView
@@ -188,8 +182,9 @@ typedef NS_ENUM(NSUInteger, EngineType) {
 	BOOL						isRotating, flyto;
 	int							incFlyTo;
 	
-    int                         engine;
-    
+    EngineType                  engine;
+    EngineType                  fullDepthEngineCopy;
+
 	float						flyToDestination[ 3];
 
 	int							projectionMode;
@@ -262,8 +257,8 @@ typedef NS_ENUM(NSUInteger, EngineType) {
 	float					LOD, lowResLODFactor, lodDisplayed;
 	float					cosines[ 9];
 	float					blendingcosines[ 9];
-	double					table[257][3];
-	double					alpha[ 257];
+	double					table[256][3];
+	double					alpha[256];
 
 	NSCursor				*cursor;
 	BOOL					cursorSet;
@@ -381,7 +376,7 @@ typedef NS_ENUM(NSUInteger, EngineType) {
 	BOOL			bestRenderingWasGenerated;
 	float superSampling;
 	BOOL dontResetImage, keep3DRotateCentered;
-	int fullDepthMode, fullDepthEngineCopy;
+    BOOL fullDepthMode;
 	
 #ifdef _STEREO_VISION_
 	NSWindow						*LeftFullScreenWindow; 
@@ -407,7 +402,7 @@ typedef NS_ENUM(NSUInteger, EngineType) {
 @property (nonatomic) double clippingRangeThickness;
 @property (nonatomic) float lowResLODFactor, lodDisplayed;
 @property long renderingMode;
-@property (nonatomic) int engine;
+@property (nonatomic) EngineType engine;
 @property (readonly) NSArray* currentOpacityArray;
 @property (retain) DICOMExport *exportDCM;
 @property (retain) NSString *dcmSeriesString;
@@ -429,7 +424,7 @@ typedef NS_ENUM(NSUInteger, EngineType) {
 - (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait display: (BOOL) display;
 - (void) endRenderImageWithBestQuality;
 - (void) resetAutorotate:(id) sender;
-- (void) setEngine: (long) engineID showWait:(BOOL) showWait;
+- (void) setEngine: (EngineType) engineID showWait:(BOOL) showWait;
 - (IBAction)changeColorWith:(NSColor*) color;
 - (IBAction)changeColor:(id)sender;
 - (NSColor*)backgroundColor;
@@ -491,7 +486,7 @@ typedef NS_ENUM(NSUInteger, EngineType) {
 - (void)activateShading:(BOOL)on;
 - (IBAction) switchShading:(id) sender;
 - (long) shading;
-- (void) setEngine: (int) engineID;
+- (void) setEngine: (EngineType) engineID;
 - (void) setProjectionMode: (int) mode;
 - (IBAction) resetImage:(id) sender;
 - (void) saView:(id) sender;

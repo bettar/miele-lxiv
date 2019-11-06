@@ -18,7 +18,10 @@
  PURPOSE.
  =========================================================================*/
 
+#import "mieleTypes.h"
+
 #import "DicomDatabase.h"
+#import "DicomDatabase+Clean.h"
 #import "NSString+N2.h"
 #import "Notifications.h"
 #import "DicomAlbum.h"
@@ -79,13 +82,16 @@ NSString* const CurrentDatabaseVersion = @"2.6";
 
 @end
 
+#pragma mark -
+
 @implementation DicomDatabase
 
 +(void)initializeDicomDatabaseClass {
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:[DicomDatabase class]];
 }
 
-+(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
++(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+{
 	if (context == [DicomDatabase class]) {
 		if ([keyPath isEqualToString:valuesKeyPath(OsirixCanActivateDefaultDatabaseOnlyDefaultsKey)]) {
 			if ([NSUserDefaults canActivateOnlyDefaultDatabase])
@@ -98,7 +104,8 @@ static NSString* const SqlFileName = @"Database.sql";
 NSString* const OsirixDataDirName = OUR_DATA_LOCATION;
 NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen Captures", nil);
 
-+(NSString*)baseDirPathForPath:(NSString*)path {
++(NSString*)baseDirPathForPath:(NSString*)path
+{
 	// were we given a path inside a OsirixDataDirName dir?
 	NSArray* pathParts = path.pathComponents;
 	for (int i = (long)pathParts.count-1; i >= 0; --i)
@@ -117,7 +124,7 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 +(NSString*)baseDirPathForMode:(int)mode path:(NSString*)path
 {
 	switch (mode) {
-		case 0:
+		case 0:  // Documents directory
 			path = [NSFileManager.defaultManager findSystemFolderOfType:kDocumentsFolderType forDomain:kOnAppropriateDisk];
 #ifdef MACAPPSTORE
         {
@@ -128,9 +135,11 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
         }
 #endif
 			break;
-		case 1:
+
+        case 1: // User selected
 			break;
-		default:
+
+        default:
 			path = nil;
 			break;
 	}
@@ -155,7 +164,8 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 	return path;
 }
 
-+(NSString*)defaultBaseDirPath {
++(NSString*)defaultBaseDirPath
+{
 	NSString* path = nil;
 	@try {
 		path = [self baseDirPathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"]
@@ -163,8 +173,8 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 
         if (!path || ![[NSFileManager defaultManager] fileExistsAtPath:path])	// STILL NOT AVAILABLE?? Use the default folder.. and reset this strange URL..
         {
-			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
-			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
+			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];  // Documents directory
+			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"]; // Documents directory
 
             path = [self baseDirPathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"]
                                        path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
@@ -177,7 +187,7 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 	return path;
 }
 
-#pragma Factory
+#pragma - Factory
 
 static DicomDatabase* defaultDatabase = nil;
 
@@ -197,7 +207,7 @@ static DicomDatabase* defaultDatabase = nil;
                     [w showWindow:self];
                 }
                 
-                [[NSFileManager defaultManager] removeItemAtPath: databaseDir  error: nil];
+                [[NSFileManager defaultManager] removeItemAtPath: databaseDir error: nil];
                 [[NSFileManager defaultManager] createDirectoryAtPath: databaseDir
                                           withIntermediateDirectories: NO
                                                            attributes: nil
@@ -469,18 +479,23 @@ static DicomDatabase* activeLocalDatabase = nil;
                                                        error:NULL];
             
             // report templates
-#ifndef MACAPPSTORE
+#if 1 //ndef MACAPPSTORE
 #ifndef OSIRIX_LIGHT
-            for (NSString* rfn in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
-                NSString* rfp = [self.baseDirPath stringByAppendingPathComponent:rfn];
-                if (rfp && ![NSFileManager.defaultManager fileExistsAtPath:rfp]) {
-                    [NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfn] toPath:rfp error:NULL];
-                    [NSFileManager.defaultManager applyFileModeOfParentToItemAtPath:rfp];
+            NSString *templatesPath = [self.baseDirPath stringByAppendingPathComponent:@"TEMPLATES"];
+            for (NSString* rfName in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
+                NSString *rfPath = [templatesPath stringByAppendingPathComponent:rfName];
+                if (rfPath && ![NSFileManager.defaultManager fileExistsAtPath:rfPath])
+                {
+                    [NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfName]
+                                                          toPath:rfPath
+                                                           error:NULL];
+
+                    [NSFileManager.defaultManager applyFileModeOfParentToItemAtPath:rfPath];
                 }
             }
             
             [Reports checkForPagesTemplate];
-            [Reports checkForWordTemplates];
+            [Reports checkForWordTemplates]; // copy ReportTemplate.doc from bundle into place
 #endif
 #endif
 
@@ -828,7 +843,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 }
 
 -(NSString*)htmlTemplatesDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"HTML_TEMPLATES"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"TEMPLATES/HTML"]];
 }
 
 -(NSString*)modelVersionFilePath {
@@ -2079,11 +2094,13 @@ static BOOL protectionAgainstReentry = NO;
                                 if ([[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
                                     study.modality = [curDict objectForKey: @"modality"];
                                 
-                                if ([study valueForKey: @"studyName"] == nil || [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] || [[study valueForKey: @"studyName"] isEqualToString: @""])
-                                    
+                                if ([study valueForKey: @"studyName"] == nil ||
+                                    [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] ||
+                                    [[study valueForKey: @"studyName"] isEqualToString: @""])
                                     study.studyName = [curDict objectForKey: @"studyDescription"];
-                                    if( study.studyName.length == 0 || [study.studyName isEqualToString: @"unnamed"])
-                                        study.studyName = [curDict objectForKey: @"seriesDescription"];
+
+                                if (study.studyName.length == 0 || [study.studyName isEqualToString: @"unnamed"])
+                                    study.studyName = [curDict objectForKey: @"seriesDescription"];
                             }
                             
                             if ([curDict objectForKey: @"studyDate"] && [[curDict objectForKey: @"studyDate"] isEqualToDate: defaultDate] == NO)
@@ -2723,10 +2740,7 @@ static BOOL protectionAgainstReentry = NO;
                         {
                             NSString *extension = [srcPath pathExtension];
                             
-                            if( [extension isEqualToString:@""])
-                                extension = @"dcm"; 
-                            
-                            if( [extension length] > 4 || [extension length] < 3)
+                            if ([extension length] == 0 || [extension length] > 4 || [extension length] < 3)
                                 extension = @"dcm";
                             
                             dstPath = [self uniquePathForNewDataFileWithExtension:extension];
@@ -2952,7 +2966,7 @@ static BOOL protectionAgainstReentry = NO;
 -(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI
 {
     return [self importFilesFromIncomingDir: showGUI
-                listenerCompressionSettings: [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"]];
+                listenerCompressionSettings: [[NSUserDefaults standardUserDefaults] integerForKey: ListenerCompressionSettings_KEY]];
 }
 
 -(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI
@@ -3495,8 +3509,14 @@ static BOOL protectionAgainstReentry = NO;
         {
             NSString *newBadge = (importCount? [[NSNumber numberWithInteger:importCount] stringValue] : nil);
             
-            if( [newBadge isEqualToString: [[NSApp dockTile] badgeLabel]] == NO)
-                [AppController.sharedAppController performSelectorOnMainThread:@selector(setBadgeLabel:) withObject: newBadge waitUntilDone:NO];
+            dispatch_async(dispatch_get_main_queue(), ^{
+              if ( [newBadge isEqualToString: [[NSApp dockTile] badgeLabel]] == NO)
+              {
+                  [AppController.sharedAppController performSelectorOnMainThread:@selector(setBadgeLabel:)
+                                                                      withObject:newBadge
+                                                                   waitUntilDone:NO];
+              }
+            });            
         }
 		
 	}
@@ -4232,7 +4252,8 @@ static BOOL protectionAgainstReentry = NO;
 	}
 }
 
--(void)checkForExistingReportForStudy:(DicomStudy*)study {
+-(void)checkForExistingReportForStudy:(DicomStudy*)study
+{
 #ifndef OSIRIX_LIGHT
 	@try { // is there a report?
 		NSArray* filenames = [NSArray arrayWithObjects: [Reports getUniqueFilename:study], [Reports getOldUniqueFilename:study], NULL];
@@ -4303,8 +4324,15 @@ static BOOL protectionAgainstReentry = NO;
 			
 			if ([theTask terminationStatus] == EXIT_SUCCESS) {
 				NSInteger tag = 0;
-				[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:self.sqlFilePath.stringByDeletingLastPathComponent destination:nil files:[NSArray arrayWithObject:self.sqlFilePath.lastPathComponent] tag:&tag];
-				[NSFileManager.defaultManager moveItemAtPath:repairedDBFinalFile toPath:self.sqlFilePath error:nil];
+
+                // TODO: Use -[NSWorkspace recycleURLs:completionHandler:] instead of NSWorkspaceRecycleOperation
+				[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation
+                                                             source:self.sqlFilePath.stringByDeletingLastPathComponent
+                                                        destination:@""
+                                                              files:[NSArray arrayWithObject:self.sqlFilePath.lastPathComponent]
+                                                                tag:&tag];
+
+                [NSFileManager.defaultManager moveItemAtPath:repairedDBFinalFile toPath:self.sqlFilePath error:nil];
 			}
 			
 			[theTask release];
@@ -4335,8 +4363,8 @@ static BOOL protectionAgainstReentry = NO;
 	[_importFilesFromIncomingDirLock unlock];
 }
 
--(void)checkForHtmlTemplates {
-	// directory
+-(void)checkForHtmlTemplates
+{
 	NSString* htmlTemplatesDirectory = [self htmlTemplatesDirPath];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: htmlTemplatesDirectory
@@ -4344,30 +4372,25 @@ static BOOL protectionAgainstReentry = NO;
                                                    attributes: nil
                                                         error: nil];
 	
-	// HTML templates
 	NSString *templateFile;
 	
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
-//	NSLog( @"%@", templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
 		[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"]
                                                 toPath:templateFile
                                                  error:nil];
 	
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
-//	NSLog( @"%@", templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
 		[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"]
                                                 toPath:templateFile
                                                  error:nil];
 	
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"];
-//	NSLog( @"%@", templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
 		[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"]
                                                 toPath:templateFile
                                                  error:nil];
-	
 	// HTML-extra directory
 	NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingPathComponent:@"html-extra/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
@@ -4375,14 +4398,12 @@ static BOOL protectionAgainstReentry = NO;
                                   withIntermediateDirectories: YES
                                                    attributes: nil
                                                         error: nil];
-	
 	// CSS file
 	NSString *cssFile = [htmlExtraDirectory stringByAppendingPathComponent:@"style.css"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
 		[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStyle.css"]
                                                 toPath:cssFile
                                                  error:nil];
-	
 }
 
 @end

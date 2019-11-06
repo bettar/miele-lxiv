@@ -49,7 +49,7 @@
 
 #import "tmp_locations.h"
 
-extern NSRecursiveLock *PapyrusLock;
+extern NSRecursiveLock *Papyrus_Lock;
 
 @implementation BrowserController (BrowserControllerDCMTKCategory)
 
@@ -201,7 +201,7 @@ static NSString *uniqueSync = @"uniqueSync";
 		NSData *data = [NSData dataWithContentsOfFile: tmpWADOFile];
 		[[NSFileManager defaultManager] removeItemAtPath: tmpWADOFile  error: nil];
 		
-        if( data == nil)
+        if (data == nil)
             data = [NSData dataWithContentsOfFile: file]; // Original file
         
 		return data;
@@ -210,24 +210,28 @@ static NSString *uniqueSync = @"uniqueSync";
 	return nil;
 }
 
--(BOOL)needToCompressFile:(NSString*)path { // __deprecated
+-(BOOL)needToCompressFile:(NSString*)path __deprecated
+{
 	return [DicomDatabase fileNeedsDecompression:path];
 }
 
-
--(BOOL)compressDICOMWithJPEG:(NSArray*)paths { // __deprecated
+-(BOOL)compressDICOMWithJPEG:(NSArray*)paths __deprecated
+{
 	return [_database compressFilesAtPaths:paths];
 }
 
--(BOOL)compressDICOMWithJPEG:(NSArray*)paths to:(NSString*)dest { // __deprecated
+-(BOOL)compressDICOMWithJPEG:(NSArray*)paths to:(NSString*)dest __deprecated
+{
 	return [_database compressFilesAtPaths:paths intoDirAtPath:dest];
 }
 
--(BOOL)decompressDICOMList:(NSArray*)files to:(NSString*)dest { // __deprecated
+-(BOOL)decompressDICOMList:(NSArray*)files to:(NSString*)dest __deprecated
+{
 	return [_database decompressFilesAtPaths:files intoDirAtPath:dest];
 }
 
--(BOOL)testFiles:(NSArray*)files {
+-(BOOL)testFiles:(NSArray*)files
+{
 	return [DicomDatabase testFiles:files];
 }
 

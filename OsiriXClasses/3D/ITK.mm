@@ -64,7 +64,7 @@
 		double spacing[ 3 ];
 		
 		// init Filter
-		//itk::MultiThreader::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]ors());
+		//itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]ors());
 		//importFilter = ImportFilterType3::New();
 		ImportFilterType3::SizeType size;
 		//ImportFilterType3::IndexType start;
@@ -166,7 +166,7 @@
                              data:(float *)data
               filterWillOwnBuffer:(BOOL)filterWillOwnBuffer
 {
-	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
+	itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
 
     importFilter = ImportFilterType3::New();
 //	importFilter->DebugOn();

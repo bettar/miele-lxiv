@@ -2147,7 +2147,6 @@ return YES;
 {
     NSSavePanel *panel = [NSSavePanel savePanel];
 	BOOL all = YES;
-	int i;
 	NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 	
 	long deltaX, deltaY, x, y, oldX, oldY, max;
@@ -2196,7 +2195,7 @@ return YES;
 				max = [[view curDCM] pheight];
 			}
 			
-			for (i = 0; i < max; i++)
+			for (int i = 0; i < max; i++)
 			{
 				[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
 				[modalitySplitView display];
@@ -2211,7 +2210,8 @@ return YES;
 
 				[bitmapData writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%d.jpg", i+1]] atomically:YES];
 			}
-			[view setCrossPosition:oldX+0.5 :oldY+0.5];
+
+            [view setCrossPosition:oldX+0.5 :oldY+0.5];
 			[view setNeedsDisplay:YES];
 
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) 
@@ -2254,17 +2254,17 @@ return YES;
 - (NSDictionary*) exportDICOMFileInt :(BOOL) screenCapture view:(DCMView*) curView
 {
 	DCMPix *curPix = [curView curDCM];
-	long	annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
-			clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-	long	width, height, spp, bpp;
-	float	cwl, cww;
-	float	o[ 9], imOrigin[ 3], imSpacing[ 2];
-	BOOL	isSigned;
-	int     offset;
+    long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY];
+    ClutBarsType clutBarsCopy = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey: CLUTBARS_KEY];
+	long width, height, spp, bpp;
+	float cwl, cww;
+	float o[ 9], imOrigin[ 3], imSpacing[ 2];
+	BOOL isSigned;
+	int offset;
 	NSString *f = nil;
 	
-	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
-	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: ANNOTATIONS_GRAPHICS forKey: ANNOTATIONS_KEY];
+	[[NSUserDefaults standardUserDefaults] setInteger: CLUT_BAR_HIDE forKey: CLUTBARS_KEY];
 	[DCMView setDefaults];
 	
 	unsigned char *data = nil;
@@ -2387,8 +2387,8 @@ return YES;
 		free( data);
 	}
 
-	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
-	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: ANNOTATIONS_KEY];
+	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: CLUTBARS_KEY];
 	[DCMView setDefaults];
 	
 	if (f)
@@ -2949,7 +2949,7 @@ return YES;
     if (thisTime - lastMovieTime > 1.0 / [movieRateSlider floatValue])
     {
         val = curMovieIndex;
-        val ++;
+        val++;
         
 		if (val < 0) val = 0;
 		if (val >= maxMovieIndex) val = 0;

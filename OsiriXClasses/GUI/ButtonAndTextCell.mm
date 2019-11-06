@@ -22,20 +22,29 @@
 
 @implementation ButtonAndTextCell
 
-- (id)initImageCell:(NSImage *)anImage{
-	if (self = [super initImageCell:anImage])
-		NSLog(@"initImageCell");
-	return self;
-}
+// NS_UNAVAILABLE: Use the designated initializer initTextCell:
+//- (instancetype)initImageCell:(NSImage *)anImage
+//{
+//    self = [super initImageCell:anImage];
+//    if (self)
+//        NSLog(@"initImageCell");
+//
+//    return self;
+//}
 
-- (id)initTextCell:(NSString *)aString{
-	if (self = [super initTextCell:aString])
+- (instancetype)initTextCell:(NSString *)aString
+{
+    self = [super initTextCell:aString];
+	if (self)
 		NSLog(@"initTextCell");
-	return self;
+
+    return self;
 }
 
-- (id)initWithCoder:(NSCoder *)decoder{
-	if (self = [super initWithCoder:decoder]) {
+- (instancetype)initWithCoder:(NSCoder *)decoder
+{
+    self = [super initWithCoder:decoder];
+	if (self) {
 
 		buttonCell = [[NSButtonCell alloc] initImageCell:nil];
 		[buttonCell setButtonType:NSSwitchButton];
@@ -48,9 +57,6 @@
 		[self setDrawsBackground:YES];
 		[self setControlSize:NSMiniControlSize];
 		[self setEditable:YES];
-		
-		
-		
 	}
 
 	return self;

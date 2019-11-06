@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface NSArray (N2)
 
 - (NSArray*)splitArrayIntoArraysOfMinSize:(NSUInteger)chunkSize maxArrays:(NSUInteger)maxArrays;
@@ -29,6 +28,7 @@
 
 @end
 
+#pragma mark -
 
 @interface NSMutableArray (N2)
 

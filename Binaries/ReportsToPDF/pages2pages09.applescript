@@ -27,7 +27,7 @@ on run argv
 		
 		open inFilePath
 		
-		export front document to outFilePath as Classic
+		export front document to outFilePath as Pages 09
 		
 		if not fileWasOpen then
 			close document 1

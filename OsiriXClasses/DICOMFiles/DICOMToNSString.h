@@ -28,5 +28,4 @@
 + (id) stringWithCString:(const char *)cString  DICOMEncoding:(NSString *)encoding;
 + (NSStringEncoding)encodingForDICOMCharacterSet:(NSString *)characterSet;
 
-
 @end

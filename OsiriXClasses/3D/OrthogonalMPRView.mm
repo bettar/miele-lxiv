@@ -91,19 +91,20 @@
 	else
 		reverseScrollWheel = 1.0;
 	
-	if( flippedData) reverseScrollWheel *= -1.0;
+	if (self.flippedData)
+        reverseScrollWheel *= -1.0;
 	
-    if( dcmPixList)
+    if (dcmPixList)
 	{
 		[[self controller] saveCrossPositions];
 		float change;
 		
-		if( fabs( [theEvent deltaY]) > fabs( deltaX) && [theEvent deltaY] != 0)
+		if ( fabs( [theEvent deltaY]) > fabs( deltaX) && [theEvent deltaY] != 0)
 		{
 			
-			if( [theEvent modifierFlags]  & NSEventModifierFlagCommand)
+			if ( [theEvent modifierFlags]  & NSEventModifierFlagCommand)
 			{
-				if( blendingView)
+				if ( blendingView)
 				{
 					float change = [theEvent deltaY] / -0.2f;
 					blendingFactor += change;
@@ -301,7 +302,7 @@
     if( curDCM.stack > 1) {
         long stackImageIndex;
         
-        if(flippedData)
+        if (self.flippedData)
             stackImageIndex = curImage-(curDCM.stack-1)/2;
         else
             stackImageIndex = curImage+(curDCM.stack-1)/2;
@@ -446,7 +447,7 @@
 - (void) subDrawRect:(NSRect)aRect
 {	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if( cgl_ctx == nil)
+    if (cgl_ctx == nil)
         return;
     
 	if (displayResliceAxes)
@@ -475,72 +476,85 @@
 		
 		glColor3f (0.0f, 1.0f, 0.0f);
 		glLineWidth(1.0 * self.window.backingScaleFactor);
-		glBegin(GL_LINES);
-		// vertical axis
-		glVertex2f(xCrossCenter,-4000);
-		glVertex2f(xCrossCenter,yCrossCenter -50.0/curDCM.pixelRatio);
-	
-		if (displayResliceAxes == 2)
-		{
-			glVertex2f(xCrossCenter,yCrossCenter -10.0/curDCM.pixelRatio);
-			glVertex2f(xCrossCenter,yCrossCenter +10.0/curDCM.pixelRatio);
-		}
-		
-		glColor3f (0.0f, 1.0f, 0.0f);
-		glVertex2f(xCrossCenter,yCrossCenter +50.0/curDCM.pixelRatio);
-		glVertex2f(xCrossCenter,4000);
-		
-		// horizontal axis
-		glVertex2f(-4000,yCrossCenter);
-		glVertex2f(xCrossCenter-50.0,yCrossCenter);
-	
-		if (displayResliceAxes == 2)
-		{
-			glVertex2f(xCrossCenter-10.0,yCrossCenter);
-			glVertex2f(xCrossCenter+10.0,yCrossCenter);
-		}
-		
-		glColor3f (0.0f, 1.0f, 0.0f);
-		glVertex2f(xCrossCenter+50.0,yCrossCenter);
-		glVertex2f(4000,yCrossCenter);
-		
-		float shift;
-		if (thickSlabX>0)
-		{
-			shift =  (float)thickSlabX / 2.0 * scaleValue;
-			glColor3f (0.0f, 0.0f, 1.0f);
-			glVertex2f(xCrossCenter-shift,-4000);
-			glVertex2f(xCrossCenter-shift,yCrossCenter -50.0/curDCM.pixelRatio);
-			
-			glVertex2f(xCrossCenter-shift,yCrossCenter +50.0/curDCM.pixelRatio);
-			glVertex2f(xCrossCenter-shift,4000);
-			
-			glVertex2f(xCrossCenter+shift,-4000);
-			glVertex2f(xCrossCenter+shift,yCrossCenter -50.0/curDCM.pixelRatio);
-			
-			glVertex2f(xCrossCenter+shift,yCrossCenter +50.0/curDCM.pixelRatio);
-			glVertex2f(xCrossCenter+shift,4000);
-		}
-		
-		if (thickSlabY>0)
-		{
-			shift =  (float)thickSlabY / 2.0 * scaleValue;
-			glColor3f (0.0f, 0.0f, 1.0f);
-			glVertex2f(-4000,yCrossCenter-shift);
-			glVertex2f(xCrossCenter-50.0,yCrossCenter-shift);
-			
-			glVertex2f(xCrossCenter+50.0,yCrossCenter-shift);
-			glVertex2f(4000,yCrossCenter-shift);
-			
-			
-			glVertex2f(-4000,yCrossCenter+shift);
-			glVertex2f(xCrossCenter-50.0,yCrossCenter+shift);
-			
-			glVertex2f(xCrossCenter+50.0,yCrossCenter+shift);
-			glVertex2f(4000,yCrossCenter+shift);
-		}
-		
-		glEnd();
+
+        // vertical axis
+        glBegin(GL_LINES);
+        {
+            glVertex2f(xCrossCenter,-4000);
+            glVertex2f(xCrossCenter,yCrossCenter -50.0/curDCM.pixelRatio);
+        
+            if (displayResliceAxes == 2)
+            {
+                glVertex2f(xCrossCenter,yCrossCenter -10.0/curDCM.pixelRatio);
+                glVertex2f(xCrossCenter,yCrossCenter +10.0/curDCM.pixelRatio);
+            }
+            
+            glColor3f (0.0f, 1.0f, 0.0f);
+            glVertex2f(xCrossCenter,yCrossCenter +50.0/curDCM.pixelRatio);
+            glVertex2f(xCrossCenter,4000);
+        }
+        glEnd();
+
+        // horizontal axis
+        glBegin(GL_LINES);
+        {
+            glVertex2f(-4000,yCrossCenter);
+            glVertex2f(xCrossCenter-50.0,yCrossCenter);
+        
+            if (displayResliceAxes == 2)
+            {
+                glVertex2f(xCrossCenter-10.0,yCrossCenter);
+                glVertex2f(xCrossCenter+10.0,yCrossCenter);
+            }
+            
+            glColor3f (0.0f, 1.0f, 0.0f);
+            glVertex2f(xCrossCenter+50.0,yCrossCenter);
+            glVertex2f(4000,yCrossCenter);
+        }
+        glEnd();
+
+        if (thickSlabX > 0)
+        {
+            glBegin(GL_LINES);
+            {
+                float shift = (float)thickSlabX / 2.0 * scaleValue;
+                glColor3f (0.0f, 0.0f, 1.0f);
+                glVertex2f(xCrossCenter-shift,-4000);
+                glVertex2f(xCrossCenter-shift,yCrossCenter -50.0/curDCM.pixelRatio);
+                
+                glVertex2f(xCrossCenter-shift,yCrossCenter +50.0/curDCM.pixelRatio);
+                glVertex2f(xCrossCenter-shift,4000);
+                
+                glVertex2f(xCrossCenter+shift,-4000);
+                glVertex2f(xCrossCenter+shift,yCrossCenter -50.0/curDCM.pixelRatio);
+                
+                glVertex2f(xCrossCenter+shift,yCrossCenter +50.0/curDCM.pixelRatio);
+                glVertex2f(xCrossCenter+shift,4000);
+            }
+            glEnd();
+        }
+
+        if (thickSlabY > 0)
+        {
+            glBegin(GL_LINES);
+            {
+                float shift = (float)thickSlabY / 2.0 * scaleValue;
+                glColor3f (0.0f, 0.0f, 1.0f);
+                glVertex2f(-4000,yCrossCenter-shift);
+                glVertex2f(xCrossCenter-50.0,yCrossCenter-shift);
+                
+                glVertex2f(xCrossCenter+50.0,yCrossCenter-shift);
+                glVertex2f(4000,yCrossCenter-shift);
+                
+                
+                glVertex2f(-4000,yCrossCenter+shift);
+                glVertex2f(xCrossCenter-50.0,yCrossCenter+shift);
+                
+                glVertex2f(xCrossCenter+50.0,yCrossCenter+shift);
+                glVertex2f(4000,yCrossCenter+shift);
+            }
+            glEnd();
+        }
 		
 		glDisable(GL_LINE_SMOOTH);
 		glDisable(GL_POLYGON_SMOOTH);
@@ -548,7 +562,7 @@
 		glDisable(GL_BLEND);
 	}
 	
-	if (annotationType != annotNone && stringID == nil)
+	if (annotationType != ANNOTATIONS_NONE && stringID == nil)
 	{
 		glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 		glScalef ( 2.0f / (xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width),
@@ -557,7 +571,7 @@
 		
 		// draw line around key View
 		
-		if( isKeyView && [[self windowController] FullScreenON] == FALSE)
+		if ( isKeyView && [[self windowController] FullScreenON] == FALSE)
 		{
 			float heighthalf = drawingFrameRect.size.height/2;
 			float widthhalf = drawingFrameRect.size.width/2;
@@ -566,10 +580,12 @@
 			glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
 			glLineWidth(8.0 * self.window.backingScaleFactor);
 			glBegin(GL_LINE_LOOP);
-			glVertex2f(  -widthhalf, -heighthalf);
-			glVertex2f(  -widthhalf, heighthalf);
-			glVertex2f(  widthhalf, heighthalf);
-			glVertex2f(  widthhalf, -heighthalf);
+            {
+                glVertex2f(  -widthhalf, -heighthalf);
+                glVertex2f(  -widthhalf, heighthalf);
+                glVertex2f(  widthhalf, heighthalf);
+                glVertex2f(  widthhalf, -heighthalf);
+            }
 			glEnd();
 			glLineWidth(1.0 * self.window.backingScaleFactor);
 		}
@@ -673,7 +689,7 @@
 	[self adjustScaleValue: savedScaleValue];
 }
 
-- (void)reshape{}
+//- (void)reshape{}
 
 - (void) setThickSlabXY : (long) newThickSlabX : (long) newThickSlabY
 {
@@ -738,11 +754,11 @@
 		{
 			if([addedROI type]==t2DPoint)
 			{
-				ROI *new2DPointROI = [[[ROI alloc] initWithType:t2DPoint
-                                                               :[[controller originalView] pixelSpacingX]
-                                                               :[[controller originalView] pixelSpacingY]
-                                                               :NSMakePoint([[controller originalView] origin].x,
-                                                                            [[controller originalView] origin].y)] autorelease];
+				ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint
+                                                               : [[controller originalView] pixelSpacingX]
+                                                               : [[controller originalView] pixelSpacingY]
+                                                               : NSMakePoint([[controller originalView] origin].x,
+                                                                             [[controller originalView] origin].y)] autorelease];
 
 				NSRect irect;
 				if([[controller xReslicedView] isEqualTo:sender])
@@ -847,7 +863,10 @@
 				return;
 			}
 
-			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[[controller originalView] pixelSpacingX] :[[controller originalView] pixelSpacingY] :NSMakePoint( [[controller originalView] origin].x, [[controller originalView] origin].y)] autorelease];
+			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint
+                                                           : [[controller originalView] pixelSpacingX]
+                                                           : [[controller originalView] pixelSpacingY]
+                                                           : NSMakePoint([[controller originalView] origin].x, [[controller originalView] origin].y)] autorelease];
 
 			// remove the parent ROI on original view. (will be replaced by the new one)
 			for(int i=0; i<[[[controller originalView] dcmRoiList] count]; i++)
@@ -1141,19 +1160,19 @@
 		{
 			float startlevel;
 			float endlevel;
+            float eWW = 5;
+            float eWL = 5;
 			
-			float eWW = 5, eWL = 5;
-			
-            switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+            switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
             {
-                case 0:
+                case PETWindowingMode_CLASSIC:
                     eWL = startWL + (current.y -  start.y)*WWAdapter;
                     eWW = startWW + (current.x -  start.x)*WWAdapter;
                     
                     if( eWW < 0.1) eWW = 0.1;
                     break;
                     
-                case 1:
+                case PETWindowingMode_FIXED_MIN:
                     endlevel = startMax + (current.y -  start.y) * WWAdapter ;
                     
                     eWL = (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
@@ -1163,7 +1182,7 @@
                     if( eWL - eWW/2 < 0) eWL = eWW/2;
                     break;
                     
-                case 2:
+                case PETWindowingMode_MAXIMUM:
                     endlevel = startMax + (current.y -  start.y) * WWAdapter ;
                     startlevel = startMin + (current.x -  start.x) * WWAdapter ;
                     
@@ -1188,7 +1207,7 @@
 		curWW = [curDCM ww];
 		curWL = [curDCM wl];
 		
-		if( [self is2DViewer] == YES)
+		if ( [self is2DViewer] == YES)
 			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
 		
 		// change Window level
@@ -1196,7 +1215,7 @@
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeWLWWNotification object: curDCM userInfo:nil];
 		
-		if( [curDCM SUVConverted] == NO)
+		if ( [curDCM SUVConverted] == NO)
 		{
 			//set value for Series Object Presentation State
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];

@@ -27,6 +27,6 @@
 
 @property(retain) NSImage* altImage;
 
--(id)initWithImage:(NSImage*)image altImage:(NSImage*)altImage;
+-(instancetype)initWithImage:(NSImage*)image altImage:(NSImage*)altImage;
 
 @end

@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface NSColor (N2)
 
 -(BOOL)isEqualToColor:(NSColor*)color;

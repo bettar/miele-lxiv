@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 #define N2NonNullString( a) a ? a : @""
 
 @interface NSString (N2)
@@ -54,11 +53,17 @@
 
 -(BOOL)isEmail;
 
--(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator;
+/// See @implementation NSString (SMTP)
+//-(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset
+//                          intoChunks:(NSString**)part1
+//                                    :(NSString**)part2
+//                           separator:(unichar*)separator;
 
 -(NSString*)md5;
 
 @end
+
+#pragma mark -
 
 @interface NSAttributedString (N2)
 

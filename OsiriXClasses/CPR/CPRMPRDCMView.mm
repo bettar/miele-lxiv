@@ -66,6 +66,8 @@ static BOOL arePlanesParallel( float *Pn1, float *Pn2)
 
 static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
+#pragma mark -
+
 @interface CPRMPRDCMView ()
 
 - (void)drawCurvedPathInGL;
@@ -80,6 +82,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 - (void)sendWillEditDisplayInfo;
 - (void)sendDidEditDisplayInfo;
 @end
+
+#pragma mark -
 
 @implementation CPRMPRDCMView
 
@@ -239,7 +243,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 - (void) checkForFrame
 {
 	NSRect frame = [self convertRectToBacking: [self frame]];
-	NSPoint o = [self convertPoint: NSMakePoint(0, 0) toView:0L];
+	NSPoint o = [self convertPoint: NSZeroPoint toView:0L];
 	frame.origin = o;
 	
 	if (NSEqualRects( frame, [vrView frame]) == NO)
@@ -804,26 +808,41 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	{
 		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_LOOP);
-        glVertex2f(  -widthhalf, -heighthalf);
-        glVertex2f(  -widthhalf, heighthalf);
-        glVertex2f(  widthhalf, heighthalf);
-        glVertex2f(  widthhalf, -heighthalf);
+        {
+            glVertex2f(  -widthhalf, -heighthalf);
+            glVertex2f(  -widthhalf, heighthalf);
+            glVertex2f(  widthhalf, heighthalf);
+            glVertex2f(  widthhalf, -heighthalf);
+        }
 		glEnd();
 	}
 	
 	glLineWidth(2.0 * self.window.backingScaleFactor);
 	glBegin(GL_POLYGON);
-    glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
-    glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
-    glVertex2f(widthhalf, -heighthalf);
-    glVertex2f(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
+    {
+        glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
+        glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
+        glVertex2f(widthhalf, -heighthalf);
+        glVertex2f(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
+    }
 	glEnd();
 	glLineWidth(1.0 * self.window.backingScaleFactor);
 	
-	if (displayCrossLines && frameZoomed == NO && windowController.displayMousePosition && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines
-       && !windowController.mprView1.moveCenter && !windowController.mprView2.moveCenter && !windowController.mprView3.moveCenter)
+	if (displayCrossLines &&
+        frameZoomed == NO &&
+        windowController.displayMousePosition &&
+        !windowController.mprView1.rotateLines &&
+        !windowController.mprView2.rotateLines &&
+        !windowController.mprView3.rotateLines &&
+        !windowController.mprView1.moveCenter &&
+        !windowController.mprView2.moveCenter &&
+        !windowController.mprView3.moveCenter)
 	{
-		// Mouse Position
+        float sc[ 3];
+        Point3D *pt = windowController.mousePosition;
+        float dc[ 3] = { pt.x, pt.y, pt.z};
+
+        // Mouse Position
 		if (viewID == windowController.mouseViewID)
 		{
 			DCMPix *pixA, *pixB;
@@ -853,62 +872,50 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			}
 			
 			[self colorForView:viewIDA];
-			Point3D *pt = windowController.mousePosition;
-			float sc[ 3], dc[ 3] = { pt.x, pt.y, pt.z}, location[ 3];
+            float location[ 3];
 			[pixA convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
 			sc[0] = sc[ 0] / pixA.pixelSpacingX;
 			sc[1] = sc[ 1] / pixA.pixelSpacingY;
 			[pixA convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
 			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
 			
+            sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+            sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+            sc[0] -= curDCM.pwidth * 0.5f;
+            sc[1] -= curDCM.pheight * 0.5f;
 			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
-			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-			sc[0] -= curDCM.pwidth * 0.5f;
-			sc[1] -= curDCM.pheight * 0.5f;
-			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            {
+                glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            }
 			glEnd();
             
-			
 			[self colorForView:viewIDB];
-			pt = windowController.mousePosition;
-			dc[0] = pt.x; dc[1] = pt.y; dc[2] = pt.z;
 			[pixB convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
 			sc[0] = sc[ 0] / pixB.pixelSpacingX;
 			sc[1] = sc[ 1] / pixB.pixelSpacingY;
 			[pixB convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
 			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
-			
-			glPointSize( 10 * self.window.backingScaleFactor);
-			glBegin( GL_POINTS);
-			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-			sc[0] -= curDCM.pwidth * 0.5f;
-			sc[1] -= curDCM.pheight * 0.5f;
-			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
-			glEnd();
-            
 		}
-		if (viewID != windowController.mouseViewID)
+        else // (viewID != windowController.mouseViewID)
 		{
 			[self colorForView: viewID];
-            //			[self colorForView: windowController.mouseViewID];
-			Point3D *pt = windowController.mousePosition;
-			float sc[ 3], dc[ 3] = { pt.x, pt.y, pt.z};
+            //[self colorForView: windowController.mouseViewID];
 			
-			[pix convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
-			
-			glPointSize( 10 * self.window.backingScaleFactor);
-			glBegin( GL_POINTS);
-			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-			sc[0] -= curDCM.pwidth * 0.5f;
-			sc[1] -= curDCM.pheight * 0.5f;
-			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
-			glEnd();
+            [pix convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
 		}
-	}
+
+        sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+        sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+        sc[0] -= curDCM.pwidth * 0.5f;
+        sc[1] -= curDCM.pheight * 0.5f;
+        glPointSize( 10 * self.window.backingScaleFactor);
+        glBegin( GL_POINTS);
+        {
+            glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+        }
+        glEnd();
+    }
 	
 	[self drawCurvedPathInGL];
     [self drawOSIROIs];
@@ -925,8 +932,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				glPointSize(8 * self.window.backingScaleFactor);
 				transform = N3AffineTransformConcat(N3AffineTransformInvert([self pixToDicomTransform]), [self pixToSubDrawRectTransform]);
 				cursorVector = N3VectorApplyTransform([displayInfo mouseVectorForPlane:planeName], transform);
-				glBegin(GL_POINTS);
-				glVertex2f(cursorVector.x, cursorVector.y);
+
+                glBegin(GL_POINTS);
+                {
+                    glVertex2f(cursorVector.x, cursorVector.y);
+                }
 				glEnd();
 			}
 		}
@@ -1116,10 +1126,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         if ([theEvent modifierFlags] & NSEventModifierFlagCommand) move = 1;
         
         if (c == NSDownArrowFunctionKey) { center.y -= move*slopeY; center.x += move*slopeX;}
-        if (c == NSUpArrowFunctionKey) { center.y += move*slopeY; center.x -= move*slopeX;}
+        if (c == NSUpArrowFunctionKey)   { center.y += move*slopeY; center.x -= move*slopeX;}
         
         if (c == NSRightArrowFunctionKey) { center.y -= move*slopeY; center.x += move*slopeX;}
-        if (c == NSLeftArrowFunctionKey) { center.y += move*slopeY; center.x -= move*slopeX;}
+        if (c == NSLeftArrowFunctionKey)  { center.y += move*slopeY; center.x -= move*slopeX;}
         
         [vrView setWindowCenter: [self convertPointToBacking: center]];
         [self updateViewMPR];
@@ -1136,129 +1146,129 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	else
 	{
         float scale = self.scaleValue;
-        
 		[super keyDown: theEvent];
-		
         self.scaleValue = scale;
-        
 		[windowController propagateWLWW: self];
 	}
 }
 
-#pragma mark-
-#pragma mark 3D ROI Point	
+#pragma mark - 3D ROI Point
 
 - (void) detect2DPointInThisSlice
 {
 	ViewerController *viewer2D = [windowController viewer];
-	
-	if (viewer2D)
-	{
-		// First delete all 2D Points in our pix
-		
-		NSMutableDictionary *ROIsStateSaved = [NSMutableDictionary dictionary];
-		
-		for( int i = (long)[curRoiList count] -1 ; i >= 0; i--)
-		{
-			ROI *r = [curRoiList objectAtIndex: i];
-			if ([r type] == t2DPoint)
-			{
-				if (r.parentROI)
-					[ROIsStateSaved setObject: [NSNumber numberWithInt: [r ROImode]] forKey: [NSValue valueWithPointer: r.parentROI]];
-				[curRoiList removeObjectAtIndex: i];
-			}
-		}
-		
-		NSArray *roiList = [viewer2D roiList: [windowController curMovieIndex]];
-		NSArray *pixList = [viewer2D pixList: [windowController curMovieIndex]];
-		
-		for( int i = 0; i < [roiList count]; i++)
-		{
-			NSArray *pts = [roiList objectAtIndex: i];
-			DCMPix *p = [pixList objectAtIndex: i];
-			
-			for( ROI *r in pts)
-			{
-				if ([r type] == t2DPoint)
-				{
-					float location[ 3];
-					
-					[p convertPixX: r.rect.origin.x pixY: r.rect.origin.y toDICOMCoords: location pixelCenter: YES];
-					
-					// Is this point in our plane?
-					
-					float	vectors[ 9], orig[ 3], locationTemp[ 3];
-					float	distance = 999999;
-					
-					orig[ 0] = [pix originX];
-					orig[ 1] = [pix originY];
-					orig[ 2] = [pix originZ];
-					
-					[pix orientation: vectors];
-					
-					distance = [DCMView pbase_Plane: location :orig :&(vectors[ 6]) :locationTemp];
-					
-					if (distance < pix.sliceThickness)
-					{
-						float sc[ 3];
-						
-						[pix convertDICOMCoords: location toSliceCoords: sc pixelCenter: YES];
-						
-						sc[ 0] = sc[ 0] / pix.pixelSpacingX;
-						sc[ 1] = sc[ 1] / pix.pixelSpacingY;
-						
-						ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :pix.pixelSpacingX :pix.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: pix]];
-						
-						[new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
-						
-						[new2DPointROI setParentROI: r];
-						[self roiSet: new2DPointROI];
-						[curRoiList addObject: new2DPointROI];
-						
-						int mode = [[ROIsStateSaved objectForKey: [NSValue valueWithPointer: r]] intValue];
-						if (mode)
-							[new2DPointROI setROIMode: (ROI_mode)mode];
-					}
-				}
-			}
-		}
-		
-		[self setNeedsDisplay: YES];
-	}
+	if (!viewer2D)
+        return;
+
+    // First delete all 2D Points in our pix
+    
+    NSMutableDictionary *ROIsStateSaved = [NSMutableDictionary dictionary];
+    
+    for ( int i = (long)[curRoiList count] -1 ; i >= 0; i--)
+    {
+        ROI *r = [curRoiList objectAtIndex: i];
+        if ([r type] == t2DPoint)
+        {
+            if (r.parentROI)
+                [ROIsStateSaved setObject: [NSNumber numberWithInt: [r ROImode]] forKey: [NSValue valueWithPointer: r.parentROI]];
+            [curRoiList removeObjectAtIndex: i];
+        }
+    }
+    
+    NSArray *roiList = [viewer2D roiList: [windowController curMovieIndex]];
+    NSArray *pixList = [viewer2D pixList: [windowController curMovieIndex]];
+    
+    for ( int i = 0; i < [roiList count]; i++)
+    {
+        NSArray *pts = [roiList objectAtIndex: i];
+        DCMPix *p = [pixList objectAtIndex: i];
+        
+        for ( ROI *r in pts)
+        {
+            if ([r type] == t2DPoint)
+            {
+                float location[ 3];
+                
+                [p convertPixX: r.rect.origin.x pixY: r.rect.origin.y toDICOMCoords: location pixelCenter: YES];
+                
+                // Is this point in our plane?
+                
+                float vectors[ 9], orig[ 3], locationTemp[ 3];
+                float distance = 999999;
+                
+                orig[ 0] = [pix originX];
+                orig[ 1] = [pix originY];
+                orig[ 2] = [pix originZ];
+                
+                [pix orientation: vectors];
+                
+                distance = [DCMView pbase_Plane: location :orig :&(vectors[ 6]) :locationTemp];
+                
+                if (distance < pix.sliceThickness)
+                {
+                    float sc[ 3];
+                    
+                    [pix convertDICOMCoords: location toSliceCoords: sc pixelCenter: YES];
+                    
+                    sc[ 0] = sc[ 0] / pix.pixelSpacingX;
+                    sc[ 1] = sc[ 1] / pix.pixelSpacingY;
+                    
+                    ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint
+                                                                  : pix.pixelSpacingX
+                                                                  : pix.pixelSpacingY
+                                                                  : [DCMPix originCorrectedAccordingToOrientation: pix]];
+                    
+                    [new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
+                    
+                    [new2DPointROI setParentROI: r];
+                    [self roiSet: new2DPointROI];
+                    [curRoiList addObject: new2DPointROI];
+                    
+                    int mode = [[ROIsStateSaved objectForKey: [NSValue valueWithPointer: r]] intValue];
+                    if (mode)
+                        [new2DPointROI setROIMode: (ROI_mode)mode];
+                }
+            }
+        }
+    }
+    
+    [self setNeedsDisplay: YES];
 }
 
 - (void) add2DPoint: (float*) r
 {
 	ViewerController *viewer2D = [windowController viewer];
-	
-	if (viewer2D)
-	{
-		DCMPix *p = [[viewer2D pixList] objectAtIndex: 0];
-		
-		float sc[ 3];
-		
-		[p convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
+	if (!viewer2D)
+        return;
+
+    DCMPix *p = [[viewer2D pixList] objectAtIndex: 0];
+    
+    float sc[ 3];
+    
+    [p convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
+    
+    sc[ 0] = sc[ 0] / p.pixelSpacingX;
+    sc[ 1] = sc[ 1] / p.pixelSpacingY;
+    sc[ 2] = sc[ 2] / p.sliceInterval;
+    
+    sc[ 2] = round( sc[ 2]);
+    
+    if (sc[ 2] >= 0 && sc[ 2] < [[viewer2D pixList] count])
+    {
+        // Create the new 2D Point ROI
+        ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint
+                                                       : p.pixelSpacingX
+                                                       : p.pixelSpacingY
+                                                       : [DCMPix originCorrectedAccordingToOrientation: p]] autorelease];
         
-		sc[ 0] = sc[ 0] / p.pixelSpacingX;
-		sc[ 1] = sc[ 1] / p.pixelSpacingY;
-		sc[ 2] = sc[ 2] / p.sliceInterval;
-		
-		sc[ 2] = round( sc[ 2]);
-		
-		if (sc[ 2] >= 0 && sc[ 2] < [[viewer2D pixList] count])
-		{
-			// Create the new 2D Point ROI
-			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :p.pixelSpacingX :p.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: p]] autorelease];
-			
-			[new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
-			
-			[[viewer2D imageView] roiSet:new2DPointROI];
-			[[[viewer2D roiList] objectAtIndex: sc[ 2]] addObject: new2DPointROI];
-			
-			// notify the change
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: new2DPointROI userInfo: nil];
-		}
-	}
+        [new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
+        
+        [[viewer2D imageView] roiSet:new2DPointROI];
+        [[[viewer2D roiList] objectAtIndex: sc[ 2]] addObject: new2DPointROI];
+        
+        // notify the change
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: new2DPointROI userInfo: nil];
+    }
 }
 
 -(void) roiChange:(NSNotification*)note
@@ -1355,7 +1365,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 - (int) mouseOnLines: (NSPoint) mouseLocation
 {
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] == ANNOTATIONS_NONE)
 		return 0;
 	
 	if (displayCrossLines == NO || frameZoomed)
@@ -1379,7 +1389,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		
 		float f = curDCM.pixelSpacingX / LOD * self.window.backingScaleFactor;
 		
-		if (mouseLocation.x > r.x - BS * f && mouseLocation.x < r.x + BS* f && mouseLocation.y > r.y - BS* f && mouseLocation.y < r.y + BS* f)
+		if (mouseLocation.x > r.x - BS * f &&
+            mouseLocation.x < r.x + BS * f &&
+            mouseLocation.y > r.y - BS * f &&
+            mouseLocation.y < r.y + BS * f)
 		{
 			return 2;
 		}
@@ -1404,7 +1417,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
                 distance2 /= curDCM.pixelSpacingX;
 			}
             
-			if (distance1 * scaleValue < 10*self.window.backingScaleFactor || distance2 * scaleValue < 10*self.window.backingScaleFactor)
+			if (distance1 * scaleValue < 10*self.window.backingScaleFactor ||
+                distance2 * scaleValue < 10*self.window.backingScaleFactor)
 			{
 				return 1;
 			}
@@ -1660,7 +1674,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			rotateLines = YES;
 			
 			NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
-			mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
+			mouseLocation.x *= curDCM.pixelSpacingX;
+            mouseLocation.y *= curDCM.pixelSpacingY;
 			rotateLinesStartAngle = [self angleBetween: mouseLocation center: [self centerLines]] - angleMPR;
 			
 			[self mouseDragged: theEvent];
@@ -2260,9 +2275,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     [super mouseExited:theEvent];
 }
 
-
-#pragma mark-
-
 - (void)sendWillEditCurvedPath
 {
 	if (editingCurvedPathCount == 0) {
@@ -2386,7 +2398,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
     numVectors = N3BezierCoreGetProjectedVectorInfo([flattenedBezierPath N3BezierCore], sampleSpacing, 0, projectionDirection, vectors, NULL, normals, NULL, numVectors);
 
-
     for (NSInteger i = 0; i < MIN(numVectors, MAX_VEC_SIZE); i++) {
         normals[i] = N3VectorApplyTransform(N3VectorAdd(vectors[i], N3VectorScalarMultiply(normals[i], 10)), transform);
         vectors[i] = N3VectorApplyTransform(vectors[i], transform);
@@ -2396,9 +2407,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         
 		glColor4d(1.0, 0.0, 1.0, 1.0);
         glBegin(GL_LINES);
-        glVertex2f(vectors[i].x, vectors[i].y);
-        glVertex2f(normals[i].x, normals[i].y);
-        glEnd();    
+        {
+            glVertex2f(vectors[i].x, vectors[i].y);
+            glVertex2f(normals[i].x, normals[i].y);
+        }
+        glEnd();
     }
     
 }
@@ -2416,7 +2429,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     N3MutableBezierPath *outlinePath;
     N3Vector vector;
     N3Vector cursorVector;
-    NSInteger i;
+
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
@@ -2470,20 +2483,22 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     
     glLineWidth(2.0 * self.window.backingScaleFactor);
     glBegin(GL_LINE_STRIP);
-    for (i = 0; i < [flattenedBezierPath elementCount]; i++) { // draw the line segments
-        [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
-        
-        if(ABS(vector.z) <= 0.5) {
-			glColor4d( pathRed, pathGreen, pathBlue, 1.0);
-		}
-        else if(ABS(vector.z) >= 1.0){
-			glColor4d( pathRed, pathGreen, pathBlue, 0.2);
-		}
-        else {
-            glColor4d( pathRed, pathGreen, pathBlue, ABS(vector.z)*-1.6 + 1.8);
+    {
+        for (NSInteger i = 0; i < [flattenedBezierPath elementCount]; i++) { // draw the line segments
+            [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
+            
+            if (ABS(vector.z) <= 0.5) {
+                glColor4d( pathRed, pathGreen, pathBlue, 1.0);
+            }
+            else if(ABS(vector.z) >= 1.0){
+                glColor4d( pathRed, pathGreen, pathBlue, 0.2);
+            }
+            else {
+                glColor4d( pathRed, pathGreen, pathBlue, ABS(vector.z)*-1.6 + 1.8);
+            }
+                    
+            glVertex2d(vector.x, vector.y);
         }
-		        
-        glVertex2d(vector.x, vector.y);
     }
     glEnd();
     
@@ -2501,16 +2516,17 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         [outlinePath applyAffineTransform:transform];
         glColor4d(0.0, 1.0, 0.0, 1.0); 
         glBegin(GL_LINE_STRIP);
-        for (i = 0; i < [outlinePath elementCount]; i++) {
-            if ([outlinePath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector] == N3LineToBezierPathElement) {
-                glVertex2d(vector.x, vector.y);
+        {
+            for (NSInteger i = 0; i < [outlinePath elementCount]; i++) {
+                if ([outlinePath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector] == N3LineToBezierPathElement) {
+                    glVertex2d(vector.x, vector.y);
+                }
+                else {
+                    glEnd();
+                    glBegin(GL_LINE_STRIP);
+                    glVertex2d(vector.x, vector.y);
+                }
             }
-            else {
-                glEnd();
-                glBegin(GL_LINE_STRIP);
-                glVertex2d(vector.x, vector.y);
-            }
-			
         }
         glEnd();
         [outlinePath release];
@@ -2529,12 +2545,13 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         [outlinePath applyAffineTransform:transform];
         glColor4d(0.0, 1.0, 0.0, 1.0); 
         glBegin(GL_LINE_STRIP);
-        for (i = 0; i < [outlinePath elementCount]; i++) {
+        for (NSInteger i = 0; i < [outlinePath elementCount]; i++) {
             if ([outlinePath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector] == N3LineToBezierPathElement) {
                 glVertex2d(vector.x, vector.y);
             }
             else {
                 glEnd();
+
                 glBegin(GL_LINE_STRIP);
                 glVertex2d(vector.x, vector.y);
             }
@@ -2546,19 +2563,19 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	}
 	
     
-	//    glColor4d(1.0, 0.0, 1.0, 1.0); // draw the normal lines
-	//    glBegin(GL_LINES);
-	//    for (i = 0; i < numVectors; i++) {
-	//        N3Vector start = N3VectorApplyTransform(N3VectorAdd(vectors[i], N3VectorScalarMultiply(normals[i], 10)), transform);
-	//        N3Vector end = N3VectorApplyTransform(N3VectorSubtract(vectors[i], N3VectorScalarMultiply(normals[i], 10)), transform);
-	//        glVertex2d(start.x, start.y);
-	//        glVertex2d(end.x, end.y);
-	//    }
-	//    glEnd();
+//    glColor4d(1.0, 0.0, 1.0, 1.0); // draw the normal lines
+//    glBegin(GL_LINES);
+//    for (i = 0; i < numVectors; i++) {
+//        N3Vector start = N3VectorApplyTransform(N3VectorAdd(vectors[i], N3VectorScalarMultiply(normals[i], 10)), transform);
+//        N3Vector end = N3VectorApplyTransform(N3VectorSubtract(vectors[i], N3VectorScalarMultiply(normals[i], 10)), transform);
+//        glVertex2d(start.x, start.y);
+//        glVertex2d(end.x, end.y);
+//    }
+//    glEnd();
     
     
     glColor4d(1.0, 0.0, 0.0, 1.0); // draw the ends of the line segements
-    for (i = 0; i < [transformedBezierPath elementCount]; i++) {
+    for (NSInteger i = 0; i < [transformedBezierPath elementCount]; i++) {
         [transformedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
 		
 		if (fabs( vector.z) <= 0.5)
@@ -2602,29 +2619,26 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		[self drawCircleAtPoint:NSPointFromN3Vector(cursorVector) pointSize:4];
 	}
 
-	//    glColor4d(1.0, 1.0, 0.0, 1.0); // draw the endpoints
-	//    for (i = 0; i < [flattenedBezierPath elementCount]; i++) {
-	//        [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
-	//        [self drawCircleAtPoint:NSMakePoint(vector.x, vector.y)];
-	//    }
-    
-	//    glColor4d(0.0, 1.0, 1.0, 1.0); // draw the control points
-	//    for (i = 0; i < [transformedBezierPath elementCount]; i++) {
-	//        if ([transformedBezierPath elementAtIndex:i control1:&control1 control2:&control2 endpoint:&vector] == N3CurveToBezierPathElement) {
-	//            [self drawCircleAtPoint:NSMakePoint(control1.x, control1.y)];
-	//            [self drawCircleAtPoint:NSMakePoint(control2.x, control2.y)];
-	//        }
-	//    }
+//    glColor4d(1.0, 1.0, 0.0, 1.0); // draw the endpoints
+//    for (i = 0; i < [flattenedBezierPath elementCount]; i++) {
+//        [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
+//        [self drawCircleAtPoint:NSMakePoint(vector.x, vector.y)];
+//    }
+
+//    glColor4d(0.0, 1.0, 1.0, 1.0); // draw the control points
+//    for (i = 0; i < [transformedBezierPath elementCount]; i++) {
+//        if ([transformedBezierPath elementAtIndex:i control1:&control1 control2:&control2 endpoint:&vector] == N3CurveToBezierPathElement) {
+//            [self drawCircleAtPoint:NSMakePoint(control1.x, control1.y)];
+//            [self drawCircleAtPoint:NSMakePoint(control2.x, control2.y)];
+//        }
+//    }
+
 //    [self _debugDrawDebugPoints];
 }
 
 - (void)drawOSIROIs
 {
-    double pixToSubdrawRectOpenGLTransform[16];
-    CGLContextObj cgl_ctx;
-    OSIROI *roi;
-    
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
     
@@ -2632,15 +2646,19 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         return;
     }
     
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
 
+    OSIROI *roi;
     for (roi in [[self ROIManager] ROIs]) {
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glMultMatrixd(pixToSubdrawRectOpenGLTransform);
                 
-        [roi drawSlab:OSISlabMake([self plane], 0) inCGLContext:cgl_ctx pixelFormat:(CGLPixelFormatObj)[[self pixelFormat] CGLPixelFormatObj]
-                                            dicomToPixTransform:N3AffineTransformInvert([self pixToDicomTransform])];
+        [roi drawSlab:OSISlabMake([self plane], 0)
+         inCGLContext:cgl_ctx
+          pixelFormat:(CGLPixelFormatObj)[[self pixelFormat] CGLPixelFormatObj]
+  dicomToPixTransform:N3AffineTransformInvert([self pixToDicomTransform])];
     
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
@@ -2654,9 +2672,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         OSIVolumeWindow *volumeWindow;
         environment = [OSIEnvironment sharedEnvironment];
         
-        if (environment == nil) {
+        if (environment == nil)
             return nil;
-        }
         
         volumeWindow = [environment volumeWindowForViewerController:[windowController viewer]];
         _ROIManager = [[OSIROIManager alloc] initWithVolumeWindow:volumeWindow coalesceROIs:YES];
@@ -2675,7 +2692,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     glPointSize( pointSize * self.window.backingScaleFactor);
     
     glBegin(GL_POINTS);
-    glVertex2f(point.x, point.y);
+    {
+        glVertex2f(point.x, point.y);
+    }
     glEnd();    
 }
 
@@ -2698,7 +2717,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     [pix orientationDouble:orientation];
     spacingX = pix.pixelSpacingX;
     spacingY = pix.pixelSpacingY;
-    //    spacingZ = pix.sliceInterval;
+//    spacingZ = pix.sliceInterval;
     
     pixToDicomTransform = N3AffineTransformIdentity;
     pixToDicomTransform.m41 = pix.originX;
@@ -2778,8 +2797,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 @end
 
-@implementation DCMView (CPRAdditions)
+#pragma mark -
 
+@implementation DCMView (CPRAdditions)
 
 - (N3AffineTransform)viewToPixTransform // converts coordinates in the NSView's space to coordinates on a DCMPix object in "Slice Coordinates"
 {

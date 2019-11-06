@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface N2Resizer : NSObject {
 	NSView* _observed;
 	NSView* _affected;

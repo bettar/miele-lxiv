@@ -60,7 +60,7 @@ extern "C"
 
 enum DCM_CompressionQuality {DCMLosslessQuality = 0, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
 
-NSLock					*PapyrusLock = 0L;
+NSRecursiveLock			*Papyrus_Lock = 0L;
 NSThread				*mainThread = 0L;
 BOOL					NEEDTOREBUILD = NO;
 NSMutableDictionary		*DATABASECOLUMNS = 0L;
@@ -810,7 +810,7 @@ int main(int argc, const char *argv[])
                 {
                     [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
                     
-                    if( [NSDate timeIntervalSinceReferenceDate] > timeout)
+                    if ([NSDate timeIntervalSinceReferenceDate] > timeout)
                         break;
                 }
                 

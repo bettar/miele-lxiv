@@ -18,9 +18,7 @@
  PURPOSE.
  =========================================================================*/
 
-
 #import <Cocoa/Cocoa.h>
-
 
 @interface NSObject (Scripting)
 
@@ -28,6 +26,7 @@
 
 @end
 
+#pragma mark -
 
 @interface NSAppleEventDescriptor (Scripting)
 

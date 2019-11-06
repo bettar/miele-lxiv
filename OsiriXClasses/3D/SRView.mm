@@ -19,6 +19,7 @@
 =========================================================================*/
 
 #import "options.h"
+#import "mieleTypes.h"
 
 #import "SRView.h"
 #import "SRController.h"
@@ -66,7 +67,7 @@
 #include "vtkRendererCollection.h"
 #endif
 
-static SRView	*snSRView = nil;
+//static SRView *snSRView = nil;
 
 typedef struct _xyzArray
 {
@@ -142,13 +143,18 @@ typedef struct _xyzArray
 	windowFrame.size.width = [[[self window] contentView] frame].size.width;
 	windowFrame.size.height = [[[self window] contentView] frame].size.height - 10;
 	
-	switch ([[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
+	switch ([[NSUserDefaults standardUserDefaults] integerForKey:EXPORTMATRIXFOR3D_KEY])
 	{
-		case 0:
+		case EXPORT_SIZE_CURRENT:
             break;
 		
-		case 1: [self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]];	break;
-		case 2: [self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]];	break;
+		case EXPORT_SIZE_512:
+            [self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]];
+            break;
+
+        case EXPORT_SIZE_768:
+            [self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]];
+            break;
 	}
 	
 	[self display];
@@ -1566,7 +1572,7 @@ typedef struct _xyzArray
                                                        windowNumber: [theEvent windowNumber]
                                                             context: [theEvent context]
                                                          characters: @"p"
-                                        charactersIgnoringModifiers: nil
+                                        charactersIgnoringModifiers: @""
                                                           isARepeat: NO
                                                             keyCode: 112];
 			[self keyDown:artificialPKeyDown];
@@ -2693,25 +2699,25 @@ typedef struct _xyzArray
 			
 			glReadBuffer(GL_FRONT);
 			
-			#if __BIG_ENDIAN__
-				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
-			#else
-				glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
-				i = *width * *height;
-				unsigned char *t_argb = buf;
-				unsigned char *t_rgb = buf;
-				while (i-- > 0)
-				{
-					*((int*) t_rgb) = *((int*) t_argb);
-					t_argb+=4;
-					t_rgb+=3;
-				}
-			#endif
+#if __BIG_ENDIAN__
+            glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+#else
+            glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
+            i = *width * *height;
+            unsigned char *t_argb = buf;
+            unsigned char *t_rgb = buf;
+            while (i-- > 0)
+            {
+                *((int*) t_rgb) = *((int*) t_argb);
+                t_argb+=4;
+                t_rgb+=3;
+            }
+#endif
 			
 			long rowBytes = *width**spp**bpp/8;
 			
 			{
-				unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
+				unsigned char *tempBuf = (unsigned char*) malloc( rowBytes);
 				
 				for (i = 0; i < *height/2; i++)
 				{
@@ -2871,7 +2877,7 @@ typedef struct _xyzArray
 - (IBAction)changeColor:(id)sender
 {
     NSLog(@"%s (IBAction)", __FUNCTION__);
-    if ([backgroundColor isActive])
+    //if ([backgroundColor isActive])
 	{
         NSLog(@"%s (IBAction)", __FUNCTION__);
 		NSColor *color= [[(NSColorPanel*)sender color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
@@ -3544,7 +3550,7 @@ typedef struct _xyzArray
         _dragInProgress = YES;
         
         NSEvent *event = (NSEvent *)[theTimer userInfo];
-        NSSize dragOffset = NSMakeSize(0.0, 0.0);
+        NSSize dragOffset = NSZeroSize;
         NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
         NSMutableArray *pbTypes = [NSMutableArray array];
         // The image we will drag 
@@ -3648,9 +3654,9 @@ typedef struct _xyzArray
 
 -(void) squareView:(id) sender
 {
-    NSLog(@"%s %d VRDefaultViewSize:%d", __FUNCTION__, __LINE__, (int) [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"]);
-	
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 1)
+    VRDefaultViewSizeType viewType= (VRDefaultViewSizeType)[[NSUserDefaults standardUserDefaults] integerForKey:VRDefaultViewSize_KEY];
+
+	if (viewType == VR_VIEW_SIZE_FULL_SCREEN)
         return;
 	
 	NSRect newFrame = [self frame];
@@ -3661,10 +3667,9 @@ typedef struct _xyzArray
 	if (border > [self frame].size.width)
         border = [self frame].size.width;
 	
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 2)
+	if (viewType == VR_VIEW_SIZE_512x512)
         border = 512;
-    
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 3)
+	else if (viewType == VR_VIEW_SIZE_768x768)
         border = 768;
 	
 	newFrame.size.width = border;

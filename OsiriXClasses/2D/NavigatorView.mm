@@ -125,8 +125,8 @@ static float deg2rad = M_PI/180.0;
         [self setWantsBestResolutionOpenGLSurface:YES]; // Retina https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
         
 		userAction = idle;
-		translation = NSMakePoint(0, 0);
-		offset = NSMakePoint(0, 0);
+		translation = NSZeroPoint;
+		offset = NSZeroPoint;
 		sizeFactor = 1.0;
 		zoomFactor = 1.0;
 		
@@ -363,25 +363,27 @@ static float deg2rad = M_PI/180.0;
 		BOOL highlightLine = NO;
 		glColor4f (0.5f, 0.5f, 0.5f, 1.0f);
 		
-		if(t == [[self viewer] curMovieIndex])
+		if (t == [[self viewer] curMovieIndex])
 			highlightLine = YES;
 		else
 		{
 			// associated Viewers	
 			for (ViewerController *v in associatedViewers)
 			{
-				if(t == [v curMovieIndex]) highlightLine = YES;
+				if (t == [v curMovieIndex])
+                    highlightLine = YES;
 			}
 		}
 		
-		if([[self viewer] isPlaying4D]) highlightLine = YES;
+		if ([[self viewer] isPlaying4D])
+            highlightLine = YES;
 		
 		BOOL highlightThumbnail = NO;
 		NSMutableArray *pixList = [[self viewer] pixList:t];
 		
 		BOOL flippedData = [[[self viewer] imageView] flippedData];
 		
-		for(int z=0; z<[pixList count]; z++)
+		for (int z=0; z<[pixList count]; z++)
 		{
 			highlightThumbnail = highlightLine || (z == [[self viewer] imageIndex]);
 			
@@ -393,7 +395,7 @@ static float deg2rad = M_PI/180.0;
 			upperLeft = NSMakePoint(z*scaledThumbnailWidth-viewBounds.origin.x, t*scaledThumbnailHeight+viewBounds.origin.y+viewSize.height-viewFrame.size.height);
 			thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, scaledThumbnailWidth, scaledThumbnailHeight);
 			
-			if(NSIntersectsRect(thumbRect, viewFrame))
+			if (NSIntersectsRect(thumbRect, viewFrame))
 			{
 				int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
 				
@@ -426,22 +428,24 @@ static float deg2rad = M_PI/180.0;
 							
 					glTranslatef(-offset.x/sizeFactor, -offset.y/sizeFactor, 0.0);
 							
+                    // draw texture
 					//if([pix pixelRatio]!=1.0) glScalef( 1.0, [pix pixelRatio], 1.0);
-						// draw texture
-						glBegin(GL_QUAD_STRIP);
-							glTexCoord2f(texUpperLeft.x, texUpperLeft.y);
-							glVertex2f(upperLeft.x, upperLeft.y);
-							
-							glTexCoord2f(texUpperRight.x, texUpperRight.y);
-							glVertex2f(upperLeft.x+scaledThumbnailWidth, upperLeft.y);
+                    glBegin(GL_QUAD_STRIP);
+                    {
+                        glTexCoord2f(texUpperLeft.x, texUpperLeft.y);
+                        glVertex2f(upperLeft.x, upperLeft.y);
+                        
+                        glTexCoord2f(texUpperRight.x, texUpperRight.y);
+                        glVertex2f(upperLeft.x+scaledThumbnailWidth, upperLeft.y);
 
-							
-							glTexCoord2f(texLowerLeft.x, texLowerLeft.y);
-							glVertex2f(upperLeft.x, upperLeft.y+scaledThumbnailHeight);
-						
-							glTexCoord2f(texLowerRight.x, texLowerRight.y);
-							glVertex2f(upperLeft.x+scaledThumbnailWidth, upperLeft.y+scaledThumbnailHeight);					
-						glEnd();
+                        
+                        glTexCoord2f(texLowerLeft.x, texLowerLeft.y);
+                        glVertex2f(upperLeft.x, upperLeft.y+scaledThumbnailHeight);
+                    
+                        glTexCoord2f(texLowerRight.x, texLowerRight.y);
+                        glVertex2f(upperLeft.x+scaledThumbnailWidth, upperLeft.y+scaledThumbnailHeight);
+                    }
+                    glEnd();
 						
 					glDisable(GL_SCISSOR_TEST);
 
@@ -459,7 +463,7 @@ static float deg2rad = M_PI/180.0;
 			}
 			else
 			{
-				if(i<[thumbnailsTextureArray count])
+				if (i<[thumbnailsTextureArray count])
 				{
 					if([[thumbnailsTextureArray objectAtIndex:i] intValue] >= 0)
 					{
@@ -471,22 +475,23 @@ static float deg2rad = M_PI/180.0;
 				else
 					[thumbnailsTextureArray addObject:[NSNumber numberWithInt:-1]];
 			}
-			i++;
+
+            i++;
 		}
 	}
 	
 	glDisable(GL_TEXTURE_RECTANGLE_EXT);
 	
-	if([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] > annotNone)
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] > ANNOTATIONS_NONE)
 	{
-		for(int t=0; t<[[self viewer] maxMovieIndex]; t++)
+		for (int t=0; t<[[self viewer] maxMovieIndex]; t++)
 		{
 			NSMutableArray *pixList = [[self viewer] pixList:t];
 			NSMutableArray *roiList = [[self viewer] roiList:t];
 			
 			BOOL flippedData = [[[self viewer] imageView] flippedData];
 					
-			for(int z=0; z<[pixList count]; z++)
+			for (int z=0; z<[pixList count]; z++)
 			{
 				int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
 				DCMPix *pix = [pixList objectAtIndex:correctedZ];
@@ -502,15 +507,17 @@ static float deg2rad = M_PI/180.0;
 				glTranslatef(scaledThumbnailWidth/2.0, scaledThumbnailHeight/2.0, 0.0);
 				glRotatef (-rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
 				
-				if([pix pixelRatio]!=1.0) glScalef( 1.0, [pix pixelRatio], 1.0);
+				if ([pix pixelRatio]!=1.0)
+                    glScalef( 1.0, [pix pixelRatio], 1.0);
 
                 float f = self.window.backingScaleFactor;
                 
-				for( ROI *r in rois)
+				for (
+                     ROI *r in rois)
 				{
 					glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 					
-					if([r type]!=tText)
+					if ([r type]!=tText)
 					{
 						[r drawROIWithScaleValue:f/(zoomFactor*sizeFactor) offsetX:offset.x/f+pix.pwidth/2.0 offsetY:offset.y/(f*[pix pixelRatio])+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0 prepareTextualData: NO];
 					}
@@ -518,15 +525,15 @@ static float deg2rad = M_PI/180.0;
 				
 				glDisable(GL_SCISSOR_TEST);
 				
-				if([pix pixelRatio]!=1.0) glScalef(1.0, 1.0/[pix pixelRatio], 1.0);
-				glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
+				if([pix pixelRatio]!=1.0)
+                    glScalef(1.0, 1.0/[pix pixelRatio], 1.0);
+
+                glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
 				glTranslatef(-scaledThumbnailWidth/2.0, -scaledThumbnailHeight/2.0, 0.0);
 				glTranslatef(-upperLeft.x, -(upperLeft.y), 0.0);
 			}
 		}
 	}
-
-	
 
 	// draw selection
 	glEnable(GL_LINE_SMOOTH);
@@ -541,7 +548,7 @@ static float deg2rad = M_PI/180.0;
 		upperLeft.x = z*scaledThumbnailWidth-viewBounds.origin.x;
 		thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, scaledThumbnailWidth, scaledThumbnailHeight);
 		
-		if(NSIntersectsRect(thumbRect, viewFrame))
+		if (NSIntersectsRect(thumbRect, viewFrame))
 		{
 			glScissor( upperLeft.x, viewSize.height - (upperLeft.y+scaledThumbnailHeight), scaledThumbnailWidth, scaledThumbnailHeight);
 			glEnable(GL_SCISSOR_TEST);
@@ -549,10 +556,12 @@ static float deg2rad = M_PI/180.0;
 			glLineWidth(6.0 * self.window.backingScaleFactor);
 			glColor3f(0.0f, 1.0f, 0.0f);
 			glBegin(GL_LINE_LOOP);
+            {
 				glVertex2f(upperLeft.x+1, upperLeft.y+1);
 				glVertex2f(upperLeft.x-1+scaledThumbnailWidth, upperLeft.y+1);
 				glVertex2f(upperLeft.x-1+scaledThumbnailWidth, upperLeft.y+scaledThumbnailHeight-1);
 				glVertex2f(upperLeft.x+1, upperLeft.y+scaledThumbnailHeight-1);
+            }
 			glEnd();
 			glDisable(GL_SCISSOR_TEST);
 			
@@ -570,7 +579,7 @@ static float deg2rad = M_PI/180.0;
 	upperLeft.x = z*scaledThumbnailWidth-viewBounds.origin.x;
 	thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, scaledThumbnailWidth, scaledThumbnailHeight);
 
-	if(NSIntersectsRect(thumbRect, viewFrame))
+	if (NSIntersectsRect(thumbRect, viewFrame))
 	{
 		glScissor( upperLeft.x, viewSize.height - (upperLeft.y+scaledThumbnailHeight), scaledThumbnailWidth, scaledThumbnailHeight);
 		glEnable(GL_SCISSOR_TEST);
@@ -578,13 +587,15 @@ static float deg2rad = M_PI/180.0;
 		glLineWidth(6.0 * self.window.backingScaleFactor);
 		glColor3f(1.0f, 0.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
+        {
 			glVertex2f(upperLeft.x+1, upperLeft.y+1);
 			glVertex2f(upperLeft.x-1+scaledThumbnailWidth, upperLeft.y+1);
 			glVertex2f(upperLeft.x-1+scaledThumbnailWidth, upperLeft.y+scaledThumbnailHeight-1);
 			glVertex2f(upperLeft.x+1, upperLeft.y+scaledThumbnailHeight-1);
+        }
 		glEnd();
+        
 		glDisable(GL_SCISSOR_TEST);
-		
 		glColor3f(0.0f, 0.0f, 0.0f);
 		glLineWidth(1.0 * self.window.backingScaleFactor);	
 	}
@@ -592,7 +603,7 @@ static float deg2rad = M_PI/180.0;
 	glDisable(GL_LINE_SMOOTH);
 	
 	// lateral scroll bar	
-	if(drawLeftLateralScrollBar && [self cansScrollLeft])
+	if (drawLeftLateralScrollBar && [self cansScrollLeft])
 	{
 		// draw the dark part
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -600,26 +611,30 @@ static float deg2rad = M_PI/180.0;
 		glEnable(GL_POLYGON_SMOOTH);
 		glColor4f(0.0f, 0.0f, 0.0f, 0.75f);
 		glBegin(GL_POLYGON);
+        {
 			glVertex2f(0.0, 0.0);
 			glVertex2f(lateralScrollBarSize, 0.0);
 			glVertex2f(lateralScrollBarSize, viewSize.height);
 			glVertex2f(0.0, viewSize.height);
+        }
 		glEnd();
 		
 		// draw the triangle
 		glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
 		glBegin(GL_POLYGON);
+        {
 			glVertex2f(lateralScrollBarSize-7.0, viewBounds.size.height/2.0-6.0);
 			glVertex2f(lateralScrollBarSize-7.0, viewBounds.size.height/2.0+6.0);
 			glVertex2f(3.0, viewBounds.size.height/2.0);
+        }
 		glEnd();
-		glColor3f(0.0f, 0.0f, 0.0f);
-		
+
+        glColor3f(0.0f, 0.0f, 0.0f);
 		glDisable(GL_BLEND);
 		glDisable(GL_POLYGON_SMOOTH);
 	}
 	
-	if(drawRightLateralScrollBar && [self cansScrollRight])
+	if (drawRightLateralScrollBar && [self cansScrollRight])
 	{
 		// draw the dark part
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -627,21 +642,25 @@ static float deg2rad = M_PI/180.0;
 		glEnable(GL_POLYGON_SMOOTH);
 		glColor4f(0.0f, 0.0f, 0.0f, 0.75f);
 		glBegin(GL_POLYGON);
+        {
 			glVertex2f(viewBounds.size.width-lateralScrollBarSize, 0.0);
 			glVertex2f(viewBounds.size.width, 0.0);
 			glVertex2f(viewBounds.size.width, viewSize.height);
 			glVertex2f(viewBounds.size.width-lateralScrollBarSize, viewSize.height);
+        }
 		glEnd();
 				
 		// draw the triangle
 		glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
 		glBegin(GL_POLYGON);
+        {
 			glVertex2f(viewBounds.size.width-lateralScrollBarSize+6.0, viewBounds.size.height/2.0-6.0);
 			glVertex2f(viewBounds.size.width-lateralScrollBarSize+6.0, viewBounds.size.height/2.0+6.0);
 			glVertex2f(viewBounds.size.width-4.0, viewBounds.size.height/2.0);
+        }
 		glEnd();
+        
 		glColor3f(0.0f, 0.0f, 0.0f);
-		
 		glDisable(GL_BLEND);
 		glDisable(GL_POLYGON_SMOOTH);
 	}
@@ -794,7 +813,9 @@ static float deg2rad = M_PI/180.0;
 	translation.x = start.x - stop.x;
 	translation.y = start.y - stop.y;
 
-	translation = [self rotatePoint:translation aroundPoint:NSMakePoint(0, 0) angle:rotationAngle];
+	translation = [self rotatePoint:translation
+                        aroundPoint:NSZeroPoint
+                              angle:rotationAngle];
 
 	offset.x += translation.x*zoomFactor*sizeFactor;
 	offset.y += translation.y*zoomFactor*sizeFactor;
@@ -1307,7 +1328,7 @@ static float deg2rad = M_PI/180.0;
 	{
 		zoomFactor = 1.0;
 		rotationAngle = 0.0;
-		offset = NSMakePoint(0, 0);
+		offset = NSZeroPoint;
 	}
 	
 	[self setNeedsDisplay:YES];

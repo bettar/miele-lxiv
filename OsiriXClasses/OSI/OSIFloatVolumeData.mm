@@ -53,23 +53,23 @@
 	return [super getLinearInterpolatedFloat:floatPtr atDicomVector:vector];
 }
 
-// returns true if the ROI mask is entirely with the float volume; 
+// Returns YES if the ROI mask is entirely within the float volume.
 - (BOOL)checkDebugROIMask:(OSIROIMask *)roiMask
 {
-    NSValue *maskRunValue;
+    //NSValue *maskRunValue;
     NSData *maskRunData;
     OSIROIMaskRun *maskRuns;
-    NSInteger i;
 
     maskRunData = [roiMask maskRunsData];
     maskRuns = (OSIROIMaskRun *)[maskRunData bytes];
 
-    for (i = 0; i < [roiMask maskRunCount]; i++) {
+    for (NSInteger i = 0; i < [roiMask maskRunCount]; i++) {
         if (maskRuns[i].depthIndex >= _pixelsDeep || maskRuns[i].heightIndex >= _pixelsHigh ||
             maskRuns[i].widthRange.location + maskRuns[i].widthRange.length >= _pixelsWide) {
             return NO;
         }
     }
+
     return YES;
 }
 

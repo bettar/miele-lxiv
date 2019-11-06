@@ -31,9 +31,12 @@
 	return self;
 }
 
-- (void)setTexture:(char*)texture withSize:(NSSize)textureSize bytesPerRow:(int)bytesPerRow rotation:(float)rotation;
+- (void)setTexture:(char*)texture
+          withSize:(NSSize)textureSize
+       bytesPerRow:(int)bytesPerRow
+          rotation:(float)rotation;
 {
-	NSRect frame = [[self window] frame];
+	//NSRect frame = [[self window] frame];
 	
 	[loupeView setTexture:texture withSize:textureSize bytesPerRow:bytesPerRow rotation:rotation];
 //	[loupeView setNeedsDisplay:YES];

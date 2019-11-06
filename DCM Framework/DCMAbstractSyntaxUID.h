@@ -162,16 +162,4 @@ htt://www.pixelmed.com
 + (NSString *)basicGrayscalePrintManagementMetaSOPClassUID;
 + (NSString *)basicColorPrintManagementMetaSOPClassUID;
 
-
-
-
-
-
-
-
-
-
-
-
-
 @end

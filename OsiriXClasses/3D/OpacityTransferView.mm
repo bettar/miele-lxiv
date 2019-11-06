@@ -231,23 +231,20 @@
     [[NSColor whiteColor] set];
     NSRectFill([self bounds]);   // Equiv to [[NSBezierPath bezierPathWithRect:[self bounds]] fill]
 
-	long		i;
-	NSRect		crect;
-	NSPoint		curPoint;
-	
+	NSRect crect;
+	NSPoint curPoint;
 	NSBezierPath *courbe = [NSBezierPath bezierPath];
 	
-	
-	for( i = 0; i < 256; i++)
+	for (int i = 0; i < 256; i++)
 	{
 		crect = NSMakeRect( i*2, 100, 2, 10);
 		[[NSColor colorWithCalibratedRed:red[i]/255. green:green[i]/255. blue:blue[i]/255. alpha:1.0] set];
 		NSRectFill( crect);
 	}
 	
-	[courbe moveToPoint: NSMakePoint(0, 0)];
+	[courbe moveToPoint: NSZeroPoint];
 	
-	for( i = 0; i < [points count]; i++)
+	for (int i = 0; i < [points count]; i++)
 	{
 		curPoint = NSPointFromString([points objectAtIndex: i]);
 		
@@ -255,15 +252,12 @@
 		curPoint.x *= 2.;
 		curPoint.y *= 100.;
 		
-		if( i == 0)
+		if (i == 0)
 		{
-			if( curPoint.x == 0)
-			{
+			if (curPoint.x == 0)
 				[courbe moveToPoint: curPoint];
-			//	NSLog(@"zero point");
-			}
 			else
-                [courbe moveToPoint: NSMakePoint(0, 0)];
+                [courbe moveToPoint: NSZeroPoint];
 		}
 		
 		[courbe lineToPoint: curPoint];

@@ -136,12 +136,14 @@
     return osirixROIs;
 }
 
-- (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
+- (void)drawSlab:(OSISlab)slab
+    inCGLContext:(CGLContextObj)cgl_ctx
+     pixelFormat:(CGLPixelFormatObj)pixelFormat
+dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
     OSIROIMaskRun maskRun;
     NSData *maskRunsData;
     N3Vector minCorner;
-    NSInteger i;
     NSInteger runsCount;
     const OSIROIMaskRun *maskRunsBytes;
     double widthIndex;
@@ -162,28 +164,29 @@
         minCorner = _cachedMinCorner;
     }
 
-
-    glLineWidth(3.0);    
-
+    glLineWidth(3.0);
     glColor4f(1, 0, 0, .4);
-    glBegin(GL_QUADS);
+
     runsCount = [maskRunsData length] / sizeof(OSIROIMaskRun);
     maskRunsBytes = (const OSIROIMaskRun *)[maskRunsData bytes];
-    for (i = 0; i < runsCount; i++) {
-        maskRun = maskRunsBytes[i];
-        widthIndex = (double)maskRun.widthRange.location + minCorner.x;
-        maxWidthIndex = widthIndex + (double)maskRun.widthRange.length;
-        heightIndex = (double)maskRun.heightIndex + minCorner.y;
-        depthIndex = maskRun.depthIndex;
 
-        glVertex3d(widthIndex, heightIndex, depthIndex);
-        glVertex3d(maxWidthIndex, heightIndex, depthIndex);
-        glVertex3d(maxWidthIndex, heightIndex + 1.0, depthIndex);
-        glVertex3d(widthIndex, heightIndex + 1.0, depthIndex);
+    glBegin(GL_QUADS);
+    {
+        for (NSInteger i = 0; i < runsCount; i++) {
+            maskRun = maskRunsBytes[i];
+            widthIndex = (double)maskRun.widthRange.location + minCorner.x;
+            maxWidthIndex = widthIndex + (double)maskRun.widthRange.length;
+            heightIndex = (double)maskRun.heightIndex + minCorner.y;
+            depthIndex = maskRun.depthIndex;
+
+            glVertex3d(widthIndex, heightIndex, depthIndex);
+            glVertex3d(maxWidthIndex, heightIndex, depthIndex);
+            glVertex3d(maxWidthIndex, heightIndex + 1.0, depthIndex);
+            glVertex3d(widthIndex, heightIndex + 1.0, depthIndex);
+        }
     }
     glEnd();
 }
-
 
 - (OSIFloatVolumeData *)coalescedROIMaskVolumeData
 {
@@ -195,9 +198,7 @@
     NSInteger width;
     NSInteger height;
     NSInteger depth;
-    NSInteger i;
     N3AffineTransform coalescedROIMaskVolumeTransform;
-    float *coalescedROIMaskVolumeBytes;
     float *bytesPtr;
     OSIROIMask *coalescedMask;
     OSIROIMaskRun maskRun;
@@ -234,8 +235,9 @@
         
         coalescedROIMaskVolumeTransform = N3AffineTransformConcat(self.volumeTransform, N3AffineTransformMakeTranslation(-minCorner.x, -minCorner.y, -minCorner.z));
         
-        coalescedROIMaskVolumeBytes = (float *)malloc(width * height * depth * sizeof(float));
-        memset(coalescedROIMaskVolumeBytes, 0, width * height * depth * sizeof(float));
+        float *coalescedROIMaskVolumeBytes = (float *)calloc(1, width * height * depth * sizeof(float));
+        assert(coalescedROIMaskVolumeBytes);
+
         _coalescedROIMaskVolumeData = [[OSIFloatVolumeData alloc] initWithFloatBytesNoCopy:coalescedROIMaskVolumeBytes pixelsWide:width pixelsHigh:height pixelsDeep:depth volumeTransform:coalescedROIMaskVolumeTransform outOfBoundsValue:0 freeWhenDone:YES];
         
         for (roi in _sourceROIs) {
@@ -245,13 +247,12 @@
             for (maskRunValue in [coalescedMask maskRuns]) {
                 maskRun = [maskRunValue OSIROIMaskRunValue];
                 
-                for (i = maskRun.widthRange.location; i < NSMaxRange(maskRun.widthRange); i++) {
+                for (NSInteger i = maskRun.widthRange.location; i < NSMaxRange(maskRun.widthRange); i++) {
                     bytesPtr = &(coalescedROIMaskVolumeBytes[maskRun.depthIndex * width * height + maskRun.heightIndex * width + i]);
                     *bytesPtr = MAX(*bytesPtr, maskRun.intensity);
                 }
             }
         }
-
     }
     
     return _coalescedROIMaskVolumeData;

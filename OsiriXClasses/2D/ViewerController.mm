@@ -19,6 +19,7 @@
 =========================================================================*/
 
 #include "options.h"
+#import "mieleTypes.h"
 
 #import "NSImage+N2.h"
 #import "DefaultsOsiriX.h"
@@ -384,7 +385,8 @@ enum
 
 @implementation ViewerController
 
-@synthesize currentOrientationTool, originalOrientation, speedSlider, speedText, toolbarPanel, previewMatrix, previewMatrixScrollView;
+@synthesize currentOrientationTool, originalOrientation;
+@synthesize speedSlider, speedText, toolbarPanel, previewMatrix, previewMatrixScrollView;
 @synthesize timer, keyImageCheck, injectionDateTime, blendedWindow, slider;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
 @synthesize flagListPODComparatives, windowsStateName, titledGantry;
@@ -1065,7 +1067,7 @@ return YES;
     
     if (saveWindowsStateWindow)
         [NSApp beginSheet: saveWindowsStateWindow
-           modalForWindow: nil
+           modalForWindow: self.window
             modalDelegate: self
            didEndSelector: nil
               contextInfo: nil];
@@ -1180,9 +1182,9 @@ return YES;
                 
                 [dict setObject: [[NSUserDefaults standardUserDefaults] objectForKey:@"COPYSETTINGS"] forKey:@"propagateSettings"];
                 
-                if ([DCMView syncro] == syncroLOC)
+                if ([DCMView syncro] == SYNCHRO_POSITION_ABS)
                     [dict setObject: @YES forKey:@"syncSettings"];
-                else if ([DCMView syncro] == syncroOFF)
+                else if ([DCMView syncro] == SYNCHRO_OFF)
                     [dict setObject: @NO forKey:@"syncSettings"];
                 
                 if (SyncButtonBehaviorIsBetweenStudies)
@@ -1878,7 +1880,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				if (directionm == 0)		// X - RESLICE
 				{
-					DCMPix	*curPix = [newPixList lastObject];
+					DCMPix *curPix = [newPixList lastObject];
 					
 					int count = [pixList[ j] count];
 					int pwidth = [[pixList[ j] objectAtIndex: 0] pwidth];
@@ -2080,9 +2082,23 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	int o = 0;
 	
-	if (fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))	o = 0;
-	if (fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))	o = 1;
-	if (fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))	o = 2;
+	if (fabs( vectors[6]) > fabs(vectors[7]) &&
+        fabs( vectors[6]) > fabs(vectors[8]))
+    {
+        o = 0;  // ORIENTATION_AXIAL ?
+    }
+
+    if (fabs( vectors[7]) > fabs(vectors[6]) &&
+        fabs( vectors[7]) > fabs(vectors[8]))
+    {
+        o = 1; // ORIENTATION_CORONAL ?
+    }
+
+    if (fabs( vectors[8]) > fabs(vectors[6]) &&
+        fabs( vectors[8]) > fabs(vectors[7]))
+    {
+        o = 2; // ORIENTATION_SAGITTAL ?
+    }
 	
 	return o;
 }
@@ -2357,7 +2373,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
-- (BOOL) setOrientation: (int) newOrientationTool
+- (BOOL) setOrientation: (OrientationToolType) newOrientationTool
 {
     BOOL succeed = YES;
     
@@ -2387,7 +2403,6 @@ static volatile int numberOfThreadsForRelisce = 0;
                 return NO;
             }
         }
-        
 		
 		// To stop any attempt to reload the data...
 		postprocessed = YES;
@@ -2402,7 +2417,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if (blendingController)
 			[self ActivateBlending: nil];
 		
-		NSLog( @"Orientation : current: %d new: %d", currentOrientationTool, newOrientationTool);
+        NSLog( @"Orientation : current: %ld new: %ld", (long)currentOrientationTool, (long)newOrientationTool);
 		
         // Copy 2D Point & 3D Ball ROIs
         NSMutableArray *roisToCopy = [NSMutableArray array];
@@ -2424,99 +2439,98 @@ static volatile int numberOfThreadsForRelisce = 0;
         
 		switch (currentOrientationTool)
 		{
-			case 0:
-			{
+			case ORIENTATION_AXIAL:
 				switch (newOrientationTool)
 				{
-					case 0:
+					case ORIENTATION_AXIAL:
 						[imageView setIndex: [pixList[curMovieIndex] count]/2];
 						[imageView sendSyncMessage:0];
 						[self adjustSlider];
-					break;
+                        break;
 					
-					case 1:
+					case ORIENTATION_CORONAL:
 						[self checkEverythingLoaded];
 						succeed = [self processReslice: 0 :newViewer];
-					break;
+                        break;
 					
-					case 2:
+					case ORIENTATION_SAGITTAL:
 						[self checkEverythingLoaded];
 						succeed = [self processReslice: 1 :newViewer];
-					break;
+                        break;
+                        
+                    default:
+                        break;
 				}
-			}
-			break;
-
-			case 1:	// coronal
-			{
+                break;
+			
+            case ORIENTATION_CORONAL:
 				switch (newOrientationTool)
 				{
-					case 0:
+					case ORIENTATION_AXIAL:
 						[self checkEverythingLoaded];
 						succeed = [self processReslice: 0 :newViewer];
 						
 						if (succeed)
 							[self vertFlipDataSet: self];
-					break;
+                        break;
 					
-					case 1:
+					case ORIENTATION_CORONAL:
 						[imageView setIndex: [pixList[curMovieIndex] count]/2];
 						[imageView sendSyncMessage:0];
 						[self adjustSlider];
-					break;
+                        break;
 					
-					case 2:
+					case ORIENTATION_SAGITTAL:
 						[self checkEverythingLoaded];
 						succeed = [self processReslice: 1 :newViewer];
 						
 						if (succeed)
 							[self rotateDataSet: kRotate90DegreesClockwise];
-					break;
+                        break;
+                        
+                    default:
+                        break;
 				}
-			}
-			break;
-
-			case 2:	// sagi
-			{
+                break;
+			
+            case ORIENTATION_SAGITTAL:
 				switch (newOrientationTool)
 				{
-					case 0:
+					case ORIENTATION_AXIAL:
 						[self checkEverythingLoaded];
 						succeed = [self processReslice: 0 :newViewer];
-						
-						if (succeed)
-						{
+						if (succeed) {
 							[self rotateDataSet: kRotate90DegreesClockwise];
 							[self horzFlipDataSet: self];
 						}
-					break;
+                        break;
 					
-					case 1:
+					case ORIENTATION_CORONAL:
 						[self checkEverythingLoaded];
 						succeed = [self processReslice: 1 :newViewer];
 						
-						if (succeed)
-						{
+						if (succeed) {
 							[self rotateDataSet: kRotate90DegreesClockwise];
 							[self horzFlipDataSet: self];
 						}
-					break;
+                        break;
 					
-					case 2:
+					case ORIENTATION_SAGITTAL:
 						[imageView setIndex: [pixList[curMovieIndex] count]/2];
 						[imageView sendSyncMessage:0];
 						[self adjustSlider];
-					break;
+                        break;
+                        
+                    default:
+                        break;
 				}
-			}
-			break;
+                break;
+
+            default:
+                break;
 		}
 		
-		if (succeed == NO)
-		{
-            
-		}
-		else
+		if (succeed)
 		{
 			currentOrientationTool = newOrientationTool;
             [self setPostprocessed: YES];
@@ -2534,7 +2548,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             
             [imageView setIndex: [imageView curImage]];
 		}
-		if (newViewer == NO)
+
+        if (newViewer == NO)
 			[orientationMatrix selectCellWithTag: currentOrientationTool];
 
 		float   iwl, iww;
@@ -2568,17 +2583,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (IBAction) setOrientationTool:(id) sender
 {
-    int n = [[sender selectedCell] tag];
-    
-    
+    OrientationToolType n = (OrientationToolType)[[sender selectedCell] tag];
+
     if ([self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: YES] == NO)
     {
         if ([self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: NO])
         {
             if (NSRunAlertPanel(NSLocalizedString(@"Data Error", nil),
                                 NSLocalizedString(@"Warning! Slice interval/thickness is varying, it can create distortion in 3D.", nil),
-                                NSLocalizedString( @"Cancel", nil),
-                                NSLocalizedString( @"Continue", nil),
+                                NSLocalizedString(@"Cancel", nil),
+                                NSLocalizedString(@"Continue", nil),
                                 nil
                                 ) == NSAlertDefaultReturn)
                 return;
@@ -3054,7 +3068,7 @@ static volatile int numberOfThreadsForRelisce = 0;
             if (maxMovieIndex > 1)
                 [c addObject: [NSString stringWithFormat: NSLocalizedString( @"4D (%d/%d)", nil), curMovieIndex+1, maxMovieIndex]];
             
-			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
+			if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] == ANNOTATIONS_FULL)
 			{
                 if (curImage.series.study.name.length)
                     [c addObject: curImage.series.study.name];
@@ -3184,9 +3198,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return win;
 }
 
-+ (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
++ (ViewerController *) newWindow:(NSMutableArray*)f
+                                :(NSMutableArray*)d
+                                :(NSData*) v
 {
-	return [ViewerController newWindow:f :d : v frame: NSMakeRect(0, 0, 0, 0)];
+	return [ViewerController newWindow: f
+                                      : d
+                                      : v
+                                 frame: NSZeroRect];
 }
 
 - (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
@@ -4381,7 +4400,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if ([dcmStudy.name isEqualToString: study.name] || [dcmStudy.dateOfBirth isEqualToDate: study.dateOfBirth])
                             patName = @"";
                             
-                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] != ANNOTATIONS_FULL)
                             patName = @"";
                         
                         NSImage *number = [[[NSImage alloc] initWithSize: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)] autorelease];
@@ -4460,7 +4479,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if ([queryStudy.name isEqualToString:study.name] || [queryStudy.dateOfBirth isEqualToDate:study.dateOfBirth])
                             patName = @"";
                         
-                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] != ANNOTATIONS_FULL)
                             patName = @"";
                         
                         NSMutableArray* components = [NSMutableArray array];
@@ -4596,7 +4615,8 @@ static volatile int numberOfThreadsForRelisce = 0;
         [v computeColor];
 }
 
-- (void) loadSelectedSeries: (id) series rightClick: (BOOL) rightClick
+- (void) loadSelectedSeries: (id) series
+                 rightClick: (BOOL) rightClick
 {
     if ([series isDistant])
     {
@@ -4645,7 +4665,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             else
                 [[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
             
-            for (int i = 0; i < [[NSScreen screens] count]; i++) [thumbnailsListPanel[ i] setThumbnailsView: nil viewer: nil];
+            for (int i = 0; i < [[NSScreen screens] count]; i++)
+                [thumbnailsListPanel[ i] setThumbnailsView: nil viewer: nil];
             
             [[self window] makeKeyAndOrderFront: self];
             [self refreshToolbar];
@@ -4720,10 +4741,13 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [self propagateSettings];
             }
         }
-		else
-			[self mouseMoved: nil];
+        else {
+            NSEvent *event = nil;
+			[self mouseMoved: event];
+        }
 	}
 }
+
 - (IBAction)seriesPopupSelect:(NSMenuItem *)sender
 {
     id series = [sender.representedObject object];
@@ -5722,7 +5746,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if ([dcmStudy.name isEqualToString: study.name] || [dcmStudy.dateOfBirth isEqualToDate: study.dateOfBirth])
                             patName = @"";
                         
-                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] != ANNOTATIONS_FULL)
                             patName = @"";
                         
                         NSMutableArray* components = [NSMutableArray array];
@@ -5800,8 +5824,8 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if (name == nil)
                             name = @"";
                         
-                        NSString *stateText = @"";
-                        NSString *comment = @"";
+                        //NSString *stateText = @"";
+                        //NSString *comment = @"";
                         NSString *modality = queryStudy.modality;
                         if (modality == nil)
                             modality = @"OT";
@@ -5814,7 +5838,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if ([queryStudy.name isEqualToString: study.name] || [queryStudy.dateOfBirth isEqualToDate: study.dateOfBirth])
                             patName = @"";
                         
-                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] != ANNOTATIONS_FULL)
                             patName = @"";
                         
                         NSString *action = nil;
@@ -6070,7 +6094,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         {
             firstBuildMatrix = YES;
             showSelected = YES;
-            [[previewMatrixScrollView contentView] scrollToPoint: NSMakePoint(0, 0)];
+            [[previewMatrixScrollView contentView] scrollToPoint: NSZeroPoint];
             [previewMatrixScrollView reflectScrolledClipView: [previewMatrixScrollView contentView]];
         }
         
@@ -6317,9 +6341,9 @@ static ViewerController *draggedController = nil;
 		if ([source respondsToSelector:@selector(performPluginDragOperation:destination:)])
 			return [source performPluginDragOperation:sender destination:self];
 	}
-    else if ([[paste availableTypeFromArray: [NSArray arrayWithObject: @"BrowserController.database.context.XIDs"]] isEqualToString: @"BrowserController.database.context.XIDs"])
+    else if ([[paste availableTypeFromArray: [NSArray arrayWithObject: DatabaseXID_DragType]] isEqualToString: DatabaseXID_DragType])
     {
-        NSArray* xids = [NSPropertyListSerialization propertyListFromData:[paste propertyListForType:@"BrowserController.database.context.XIDs"]
+        NSArray* xids = [NSPropertyListSerialization propertyListFromData:[paste propertyListForType:DatabaseXID_DragType]
                                                          mutabilityOption:NSPropertyListImmutable
                                                                    format:NULL
                                                          errorDescription:NULL];
@@ -6557,7 +6581,7 @@ static ViewerController *draggedController = nil;
 	{
 		if (maxMovieIndex > 1)
 		{
-			curMovieIndex --;
+			curMovieIndex--;
 			if (curMovieIndex < 0)
                 curMovieIndex = maxMovieIndex-1;
 			
@@ -8030,9 +8054,9 @@ return YES;
                             postprocessed = YES;
                         }
                         
-                        #ifdef DEBUG
+#ifndef NDEBUG
                         NSLog( @"----- isDataVolumic : try to correct, by removing image");
-                        #endif
+#endif
                         
                         volumicData = YES;
                     }
@@ -9016,7 +9040,8 @@ static int avoidReentryRefreshDatabase = 0;
                 
 				[self checkView: subCtrlView :NO];
 				
-				if (currentOrientationTool != originalOrientation && originalOrientation != -1)
+				if (currentOrientationTool != originalOrientation &&
+                    originalOrientation != ORIENTATION_UNDEFINED)
 				{
 					[imageView setXFlipped: NO];
 					[imageView setYFlipped: NO];
@@ -9183,10 +9208,10 @@ static int avoidReentryRefreshDatabase = 0;
 					
 					NSString *com = imageView.seriesObj.comment;
 					
-					if (com == nil || [com isEqualToString:@""])
+					if (com.length == 0)
 						com = imageView.studyObj.comment;
 					
-					if (com == nil || [com isEqualToString:@""])
+                    if (com.length == 0)
                         [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 					else
                         [CommentsField setTitle: com];
@@ -9202,7 +9227,6 @@ static int avoidReentryRefreshDatabase = 0;
 					{
 						[self showCurrentThumbnail:self];
 					}
-					
 					
 					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDisplayImagesOfSamePatient"])
 					{
@@ -9560,12 +9584,23 @@ static int avoidReentryRefreshDatabase = 0;
     
 	[[self window] setFrame:screenRect display:YES];
 	
-	switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"WINDOWSIZEVIEWER"])
+	switch ([[NSUserDefaults standardUserDefaults] integerForKey: WINDOWSIZEVIEWER_KEY])
 	{
-		case 0:	[self setWindowFrame:screenRect showWindow: NO]; break;
-		case 1:	[imageView resizeWindowToScale: 1.0]; break;
-		case 2:	[imageView resizeWindowToScale: 1.5]; break;
-		case 3:	[imageView resizeWindowToScale: 2.0]; break;
+		case WINDOW_SIZE_FULL_SCREEN:
+            [self setWindowFrame:screenRect showWindow: NO];
+            break;
+
+        case WINDOW_SIZE_100_RES:
+            [imageView resizeWindowToScale: 1.0];
+            break;
+
+        case WINDOW_SIZE_150_RES:
+            [imageView resizeWindowToScale: 1.5];
+            break;
+
+        case WINDOW_SIZE_200_RES:
+            [imageView resizeWindowToScale: 2.0];
+            break;
 	}
     
     for (ViewerController *v in [ViewerController getDisplayed2DViewers])
@@ -9585,7 +9620,7 @@ static int avoidReentryRefreshDatabase = 0;
     if (windowWillClose)
         return;
     
-	originalOrientation = -1;
+	originalOrientation = ORIENTATION_UNDEFINED;
 	
     @synchronized( loadingThread)
     {
@@ -10388,8 +10423,8 @@ static int avoidReentryRefreshDatabase = 0;
 		
 		if ([originalPixlist count] > 1)
 		{
-			DCMPix	*firstObject = [originalPixlist objectAtIndex:0];
-			DCMPix	*secondObject = [originalPixlist objectAtIndex:1];
+			DCMPix *firstObject = [originalPixlist objectAtIndex:0];
+			DCMPix *secondObject = [originalPixlist objectAtIndex:1];
 			
 			[firstObject orientation: vectors];
 			[secondObject orientation: vectorsB];
@@ -10734,23 +10769,21 @@ static int avoidReentryRefreshDatabase = 0;
     //    0  0  0   1  4  2  3 3 3
 	if (f == 0)
         return 4;
-	else
-	{
-		if (abs(f) > 1)
-		{
-			if (f > 1)
-                return 3;
-			else
-                return 0;
-		}
-		else
-		{
-			if (f == 1)
-                return 2;
-			else
-                return 1;
-		}
-	}
+
+    if (abs(f) > 1)
+    {
+        if (f > 1)
+            return 3;
+        else
+            return 0;
+    }
+    else
+    {
+        if (f == 1)
+            return 2;
+        else
+            return 1;
+    }
 }
 
 - (void) offsetMatrixSetting: (int) twentyFiveCodes
@@ -11029,9 +11062,7 @@ static int avoidReentryRefreshDatabase = 0;
 
 -(IBAction) ConvertToRGBMenu:(id) sender
 {
-	long	x, i;
-	float	cwl, cww;
-	
+	float cwl, cww;
 	[imageView getWLWW:&cwl :&cww];
 	
 	if ([[pixList[ curMovieIndex] objectAtIndex: 0] isRGB] == YES)
@@ -11044,9 +11075,9 @@ static int avoidReentryRefreshDatabase = 0;
 	}
 	else
 	{
-		for (x = 0; x < maxMovieIndex; x++)
+		for (int x = 0; x < maxMovieIndex; x++)
 		{
-			for (i = 0; i < [pixList[ x] count]; i++)
+			for (int i = 0; i < [pixList[ x] count]; i++)
 				if ([[pixList[ x] objectAtIndex: i] isRGB] == NO)
 					[[pixList[ x] objectAtIndex: i] ConvertToRGB: [sender tag] :cwl :cww];
 		}
@@ -11059,8 +11090,6 @@ static int avoidReentryRefreshDatabase = 0;
 
 -(IBAction) ConvertToBWMenu:(id) sender
 {
-	long x, i;
-	
 	if ([[pixList[ curMovieIndex] objectAtIndex: 0] isRGB] == NO)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"BW", nil),
@@ -11071,9 +11100,9 @@ static int avoidReentryRefreshDatabase = 0;
 	}
 	else
 	{
-		for (x = 0; x < maxMovieIndex; x++)
+		for (int x = 0; x < maxMovieIndex; x++)
 		{
-			for (i = 0; i < [pixList[ x] count]; i++)
+			for (int i = 0; i < [pixList[ x] count]; i++)
 				if ([[pixList[ x] objectAtIndex: i] isRGB] == YES)
 					[[pixList[ x] objectAtIndex: i] ConvertToBW: [sender tag]];
 		}
@@ -11462,7 +11491,7 @@ static int avoidReentryRefreshDatabase = 0;
             else
                 orientationVector = eSagittalNeg;
             
-            currentOrientationTool = 2;
+            currentOrientationTool = ORIENTATION_SAGITTAL;
         }
         
         if (fabs( vectors[7]) > fabs(vectors[6]) &&
@@ -11478,7 +11507,7 @@ static int avoidReentryRefreshDatabase = 0;
             else
                 orientationVector = eCoronalNeg;
             
-            currentOrientationTool = 1;
+            currentOrientationTool = ORIENTATION_CORONAL;
         }
         
         if (fabs( vectors[8]) > fabs(vectors[6]) &&
@@ -11494,10 +11523,10 @@ static int avoidReentryRefreshDatabase = 0;
             else
                 orientationVector = eAxialNeg;
             
-            currentOrientationTool = 0;
+            currentOrientationTool = ORIENTATION_AXIAL;
         }
         
-        if (originalOrientation == -1)
+        if (originalOrientation == ORIENTATION_UNDEFINED)
             originalOrientation = currentOrientationTool;
     }
     
@@ -11543,7 +11572,7 @@ static int avoidReentryRefreshDatabase = 0;
             
             if (interval != 0.0)
             {
-                if (currentOrientationTool >= 0)
+                if (currentOrientationTool != ORIENTATION_UNDEFINED)
                     [orientationMatrix selectCellWithTag: currentOrientationTool];
                 
                 if (interval != 0)
@@ -12322,7 +12351,9 @@ static float oldsetww, oldsetwl;
 						[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
 						[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
 						
-						[NSThread detachNewThreadSelector: @selector(applyConvolutionZThread:) toTarget: self withObject: d];
+						[NSThread detachNewThreadSelector: @selector(applyConvolutionZThread:)
+                                                 toTarget: self
+                                               withObject: d];
 					}
 				}
 				else
@@ -12350,7 +12381,9 @@ static float oldsetww, oldsetwl;
 		
 		[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification
+                                                            object: pixList[ curMovieIndex]
+                                                          userInfo: nil];
 	}
 	else
         NSRunAlertPanel(NSLocalizedString(@"Convolution", nil),
@@ -12369,7 +12402,7 @@ static float oldsetww, oldsetwl;
     
 	for (int i = 0; i < 25; i++)
 	{
-		NSCell  *theCell = [convMatrix cellWithTag: i];
+		NSCell *theCell = [convMatrix cellWithTag: i];
 		sum += [[theCell stringValue] floatValue];
 	}
 	
@@ -12380,51 +12413,50 @@ static float oldsetww, oldsetwl;
 
 - (IBAction) changeMatrixSize:(id) sender
 {
-	id          theCell = [sender selectedCell];
-    long		x, y;
+	id theCell = [sender selectedCell];
+    //long x, y;
 	
-    switch( [theCell tag])
+    switch ([theCell tag])
 	{
 		case 3: //3x3
-		for (x = 0; x < 5; x++)
-		{
-			for (y = 0; y < 5; y++)
-			{
-				theCell = [convMatrix cellAtRow:y column:x];
-				
-				if (x < 1 || x > 3 || y < 1 || y > 3)
-				{
-					[theCell setEnabled:NO];
-					[theCell setStringValue:@""];
-					[theCell setAlignment:NSCenterTextAlignment];
-				}
-				else
-				{
-					[theCell setEnabled:YES];
-					if ([[theCell stringValue] isEqualToString:@""] == YES)
-                        [theCell setStringValue:@"0"];
+            for (long x = 0; x < 5; x++)
+            {
+                for (long y = 0; y < 5; y++)
+                {
+                    theCell = [convMatrix cellAtRow:y column:x];
                     
-					[theCell setAlignment:NSCenterTextAlignment];
-				}
-			}
-		}
-		break;
+                    if (x < 1 || x > 3 || y < 1 || y > 3)
+                    {
+                        [theCell setEnabled:NO];
+                        [theCell setStringValue:@""];
+                        [theCell setAlignment:NSCenterTextAlignment];
+                    }
+                    else
+                    {
+                        [theCell setEnabled:YES];
+                        if ([theCell stringValue].length == 0)
+                            [theCell setStringValue:@"0"];
+                        
+                        [theCell setAlignment:NSCenterTextAlignment];
+                    }
+                }
+            }
+            break;
 		
 		case 5: //5x5
-		for (x = 0; x < 5; x++)
-		{
-			for (y = 0; y < 5; y++)
-			{
-				theCell = [convMatrix cellAtRow:y column:x];
-				
-				[theCell setEnabled:YES];
-				if ([[theCell stringValue] isEqualToString:@""] == YES)
-                    [theCell setStringValue:@"0"];
-                
-				[theCell setAlignment:NSCenterTextAlignment];
-			}
-		}
-		break;
+            for (long x = 0; x < 5; x++)
+            {
+                for (long y = 0; y < 5; y++)
+                {
+                    theCell = [convMatrix cellAtRow:y column:x];
+                    [theCell setEnabled:YES];
+                    if ([theCell stringValue].length == 0)
+                        [theCell setStringValue:@"0"];
+                    
+                    [theCell setAlignment:NSCenterTextAlignment];
+                }
+            }
+            break;
 	}
 	
 	[self convMatrixAction:self];
@@ -12559,7 +12591,7 @@ static float oldsetww, oldsetwl;
 						else
 						{
 							[theCell setEnabled:YES];
-							if ([[theCell stringValue] isEqualToString:@""])
+							if ([theCell stringValue].length == 0)
                                 [theCell setStringValue:@"0"];
                             
 							[theCell setAlignment:NSCenterTextAlignment];
@@ -12576,9 +12608,8 @@ static float oldsetww, oldsetwl;
 					for (y = 0; y < 5; y++)
 					{
 						NSCell *theCell = [convMatrix cellAtRow:y column:x];
-						
 						[theCell setEnabled:YES];
-						if ([[theCell stringValue] isEqualToString:@""])
+						if ([theCell stringValue].length == 0)
                             [theCell setStringValue:@"0"];
                         
 						[theCell setAlignment:NSCenterTextAlignment];
@@ -12704,9 +12735,8 @@ long				x, y;
 		for (long y = 0; y < 5; y++)
 		{
 			NSCell *theCell = [convMatrix cellAtRow:y column:x];
-			
 			[theCell setEnabled:YES];
-			if ([[theCell stringValue] isEqualToString:@""])
+			if ([theCell stringValue].length == 0)
                 [theCell setStringValue:@"0"];
             
 			[theCell setAlignment:NSCenterTextAlignment];
@@ -13596,37 +13626,38 @@ long				x, y;
 		[self clear8bitRepresentations];
 		
 		if ([[[PluginManager fusionPlugins] objectAtIndex: returnCode] isEqualToString: @"Subtraction Angio-CT"])
-			[self blendWithViewer:blendedWindow blendingType: 9]; // LL filter
+			[self blendWithViewer:blendedWindow blendingType: BLENDING_LL_FILTER];
 		else
 			[self executeFilterFromString: [[PluginManager fusionPlugins] objectAtIndex: returnCode]];
 	}
 	else if (returnCode > 0)
 	{
 		[self clear8bitRepresentations];
-		[self blendWithViewer:blendedWindow blendingType: returnCode];
+		[self blendWithViewer:blendedWindow blendingType: (BlendingType)returnCode];
 	}
 	
 	[blendedWindow release];
 	blendedWindow = nil;
 }
 
-- (void)blendWithViewer:(ViewerController *)bc blendingType:(int)blendingType
+- (void)blendWithViewer:(ViewerController *)bc
+           blendingType:(BlendingType)blendingType
 {
 	_blendingType = blendingType;
 	
 	long i;
-	switch(blendingType)
+	switch (blendingType)
 	{
-		case -1:	// PLUG-INS METHOD
+		case BLENDING_PLUGINS_METHOD:
 			//[self executeFilter:sender];
-		break;
+            break;
 		
-		case 1:		// Image fusion
+		case BLENDING_IMAGE_FUSION:
 			[self ActivateBlending: bc];
-		break;
+            break;
 		
-		case 2:
-		{	// Image subtraction
+		case BLENDING_IMAGE_SUBTRACTION:
+		{
 			NSUInteger modifierFlags = [[[NSApplication sharedApplication] currentEvent] modifierFlags];
 			
 			if ((modifierFlags & NSEventModifierFlagControl) != 0)
@@ -13657,9 +13688,9 @@ long				x, y;
 				}
  			}
 		}
-		break;
+            break;
 		
-		case 3:		// Image multiplication
+		case BLENDING_IMAGE_MULTIPLICATION:
 			for (i = 0; i < [pixList[ curMovieIndex] count]; i++)
 			{
 				[imageView setIndex:i];
@@ -13668,11 +13699,11 @@ long				x, y;
 				
 				[imageView multiply: [bc imageView]];
 			}
-		break;
+            break;
 		
-		case 4:		// RGB Composition
-		case 5:
-		case 6:
+		case BLENDING_RGB_COMPOSITION_1:
+		case BLENDING_RGB_COMPOSITION_2:
+		case BLENDING_RGB_COMPOSITION_3:
 			{
 				for (i = 0; i < [pixList[ curMovieIndex] count]; i++)   // Convert all images to RGB images if necessary
 				{
@@ -13687,8 +13718,8 @@ long				x, y;
 					
 					if ([srcPix isRGB])   // Only works if srcImage is BW
 					{
-						unsigned char*  srcPtr = (unsigned char*) [srcPix fImage];
-						unsigned char*  dstPtr = (unsigned char*) [dstPix fImage];
+						unsigned char* srcPtr = (unsigned char*) [srcPix fImage];
+						unsigned char* dstPtr = (unsigned char*) [dstPix fImage];
 						
 						long size = [srcPix pheight] * [srcPix pwidth]*4;
 						long temp;
@@ -13707,7 +13738,7 @@ long				x, y;
 					{
 						// Convert srcImage to 8 bits
 						
-						vImage_Buffer		srcf, dst8;
+						vImage_Buffer srcf, dst8;
 						
 						srcf.height = [srcPix pheight];
 						srcf.width = [srcPix pwidth];
@@ -13734,20 +13765,20 @@ long				x, y;
 						
 						switch(blendingType)
 						{
-							case 4:	
+							case BLENDING_RGB_COMPOSITION_1:
 								while (size-- > 0)
 									dstPtr[ size*4 + 1] = srcPtr[ size];
-							break;
+                                break;
 							
-							case 5:
+							case BLENDING_RGB_COMPOSITION_2:
 								while (size-- > 0)
 									dstPtr[ size*4 + 2] = srcPtr[ size];
-							break;
+                                break;
 							
-							case 6:
+							case BLENDING_RGB_COMPOSITION_3:
 								while (size-- > 0)
 									dstPtr[ size*4 + 3] = srcPtr[ size];
-							break;
+                                break;
 						}
 					}
 					
@@ -13757,28 +13788,27 @@ long				x, y;
 					[imageView setNeedsDisplay:YES];
 				}
 			}
-		break;
+            break;
 		
-		#ifndef OSIRIX_LIGHT
-		case 7:		// 2D Registration
+#ifndef OSIRIX_LIGHT
+		case BLENDING_2D_REGISTRATION:
 			[self computeRegistrationWithMovingViewer: bc];
-		break;
+            break;
 		
-		case 11:
+		case BLENDING_RESAMPLE_RESCALE:
 			[self resampleSeries: bc rescale: YES];
-		break;
+            break;
             
-        case 12:
+        case BLENDING_RESAMPLE_NO_RESCALE:
             [self resampleSeries: bc rescale: NO];
-        break;
-		#endif
+            break;
+#endif
 		
-		case 8:		// 3D Registration
-		
-		break;
+		case BLENDING_3D_REGISTRATION:
+            break;
 		
 //		#ifndef OSIRIX_LIGHT
-//		case 9: // LL
+//		case BLENDING_LL_FILTER:
 //		{
 //			[self checkEverythingLoaded];
 //			[bc checkEverythingLoaded];
@@ -13792,7 +13822,7 @@ long				x, y;
 //		break;
 //		#endif
 		
-		case 10:	// Copy ROIs
+		case BLENDING_COPY_ROIS:
 		{
 			WaitRendering *splash = [[WaitRendering alloc] init: NSLocalizedString( @"Copy ROIs between series...", nil)];
 			[splash showWindow:self];
@@ -13800,9 +13830,8 @@ long				x, y;
             [self.window makeKeyAndOrderFront: self];
             
 			int curIndex = [[self imageView] curImage];
-			NSArray	*bcRoiList = nil;
-			
-            NSMutableArray *copiedBalls = [NSMutableArray array];
+			//NSArray *bcRoiList = nil;
+            //NSMutableArray *copiedBalls = [NSMutableArray array];
             
 			for (int x = 0; x < [[self pixList] count]; x++)
 			{
@@ -13817,7 +13846,9 @@ long				x, y;
                     //Correct the origin only if the orientation is the same
                     copyROI.pix = imageView.curDCM;
                     
-                    [copyROI setOriginAndSpacing: imageView.curDCM.pixelSpacingX :imageView.curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: imageView.curDCM]];
+                    [copyROI setOriginAndSpacing: imageView.curDCM.pixelSpacingX
+                                                : imageView.curDCM.pixelSpacingY
+                                                : [DCMPix originCorrectedAccordingToOrientation: imageView.curDCM]];
                     curROI.curView = imageView;
                     
                     [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: copyROI];
@@ -13831,7 +13862,7 @@ long				x, y;
 			[splash close];
 			[splash autorelease];
 		}
-		break;
+            break;
 		
 		default:
 			NSRunCriticalAlertPanel(NSLocalizedString(@"OsiriX Light",nil),
@@ -13839,7 +13870,7 @@ long				x, y;
                                     NSLocalizedString(@"OK",nil),
                                     nil,
                                     nil);
-		break;
+            break;
 	}
 }
 
@@ -14245,9 +14276,9 @@ long				x, y;
 	[self addPlainRoiToCurrentSliceFromBuffer:buff withName:@""];
 }
 
--(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff withName:(NSString*)name
+-(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff
+                                  withName:(NSString*)name
 {
-int i,j,l;
 	unsigned char tempValue;
 	BOOL alreadyIn=NO;
 	
@@ -14291,101 +14322,109 @@ int i,j,l;
 	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	long height=[curPix pheight];
 	long width=[curPix pwidth];
-		for (j=0;j<height;j++)
-		{
-			for (i=0;i<width;i++)
-			{
-				tempValue=buff[(long)(i+j*width)];
-				if (tempValue!=0)
-				{
-					alreadyIn=NO;
-					// check if the region has not been already added to the nbRegion Mutable Array
-					for (l=0;l<[nbRegion count];l++)
-						if ([[nbRegion objectAtIndex:l] intValue]==tempValue)
-							alreadyIn=YES;
-					if (!alreadyIn)
-						[nbRegion addObject:[NSNumber numberWithInt:tempValue]];
-				}
-			}
-		}
+		
+    for (int j=0;j<height; j++)
+    {
+        for (int i=0; i<width; i++)
+        {
+            tempValue = buff[(long)(i+j*width)];
+            if (tempValue!=0)
+            {
+                alreadyIn=NO;
+                // check if the region has not been already added to the nbRegion Mutable Array
+                for (int k=0; k<[nbRegion count]; k++)
+                    if ([[nbRegion objectAtIndex:k] intValue] == tempValue)
+                        alreadyIn=YES;
+
+                if (!alreadyIn)
+                    [nbRegion addObject:[NSNumber numberWithInt:tempValue]];
+            }
+        }
+    }
 	
-	for (l=0;l<[nbRegion count];l++)
-		[self	addPlainRoiToCurrentSliceFromBuffer:buff
-				forSpecificValue:[[nbRegion objectAtIndex:l] intValue]
-				withColor:rgbList[l % nbColor]
-				withName:name];
-	
+	for (int k=0; k<[nbRegion count]; k++)
+		[self addPlainRoiToCurrentSliceFromBuffer: buff
+                                 forSpecificValue: [[nbRegion objectAtIndex:k] intValue]
+                                        withColor: rgbList[k % nbColor]
+                                         withName: name];
 }
--(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name
+
+-(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff
+                          forSpecificValue:(unsigned char)value
+                                 withColor:(RGBColor)aColor
+                                  withName:(NSString*)name
 {
-	int i,j,l;
-	ROI		*theNewROI;
-	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
-	long height=[curPix pheight];
-    long width=[curPix pwidth];
+	ROI	*theNewROI;
+	DCMPix *curPix = [[self pixList] objectAtIndex: [imageView curImage]];
+	long height = [curPix pheight];
+    long width = [curPix pwidth];
 	int upLeftX,upLeftY,dRightX,dRightY;
 	int tWidth,tHeight;
 	unsigned char* textureBuffer;
 	BOOL findOne=false;
-
-		// 1- For a Slice find the texture dimension for the specific value (param: value)
-		findOne=NO;
-		upLeftX=width;upLeftY=height;dRightX=0;dRightY=0; // initialisation with opposite values
-		for (j=0;j<height;j++)
-			for (i=0;i<width;i++)
-			{
-				if (buff[(long)(i+j*width)]==value)
-				{
-					findOne=YES;
-					// boundary check
-					if (i<upLeftX)
-						upLeftX=i;
-                    
-					if (j<upLeftY)
-						upLeftY=j;
-                    
-					if (i>dRightX)
-						dRightX=i;
-                    
-					if (j>dRightY)
-						dRightY=j;
-				}
-			}
+		
+    // 1- For a Slice find the texture dimension for the specific value (param: value)
+    findOne=NO;
+    upLeftX=width;upLeftY=height;dRightX=0;dRightY=0; // initialisation with opposite values
+    for (int j=0;j<height;j++)
+        for (int i=0;i<width;i++)
+        {
+            if (buff[(long)(i+j*width)]==value)
+            {
+                findOne=YES;
+                // boundary check
+                if (i<upLeftX)
+                    upLeftX=i;
+                
+                if (j<upLeftY)
+                    upLeftY=j;
+                
+                if (i>dRightX)
+                    dRightX=i;
+                
+                if (j>dRightY)
+                    dRightY=j;
+            }
+        }
 				
-				// Create texture ...		
-				if (findOne)
-				{
-					tWidth=dRightX-upLeftX+1;
-					tHeight=dRightY-upLeftY+1;
-					textureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
-					// clear texture
-					for (l=0;l<tWidth*tHeight;l++)       
-						textureBuffer[(long)l]=0;
-					
-					// fill in the texture
-					for (j=0;j<height;j++)
-						for (i=0;i<width;i++)
-							if (buff[(long)(i+j*width)]==value)
-								textureBuffer[(long)((i-upLeftX)+(j-upLeftY)*tWidth)]=0xFF;
-					
-					// 2- create a roi with the (initWithTexture) at slice k
-					name = ([name isEqualToString:@""])? [NSString stringWithFormat:@"area %d",value] : name;
-					theNewROI = [[[ROI alloc] initWithTexture:textureBuffer  textWidth:tWidth textHeight:tHeight textName:name
-													positionX:upLeftX positionY:upLeftY
-													 spacingX:[curPix pixelSpacingX]  spacingY:[curPix pixelSpacingY]
-												  imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
-					free(textureBuffer);
-					[theNewROI setColor:aColor];
-					//	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
-					[[[self roiList] objectAtIndex:[imageView curImage]] addObject:theNewROI];		
-					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
-				}
-	
+    
+    // Create texture ...
+    if (findOne)
+    {
+        tWidth = dRightX-upLeftX+1;
+        tHeight = dRightY-upLeftY+1;
+        textureBuffer = (unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
+        // clear texture
+        for (long k=0; k<tWidth*tHeight; k++)
+            textureBuffer[k]=0;
+        
+        // fill in the texture
+        for (int j=0;j<height;j++)
+            for (int i=0;i<width;i++)
+                if (buff[(long)(i+j*width)]==value)
+                    textureBuffer[(long)((i-upLeftX)+(j-upLeftY)*tWidth)] = 0xFF;
+        
+        // 2- create a ROI with the (initWithTexture) at slice k
+        name = (name.length == 0) ? [NSString stringWithFormat:@"area %d",value] : name;
+        theNewROI = [[[ROI alloc] initWithTexture:textureBuffer
+                                        textWidth:tWidth
+                                       textHeight:tHeight
+                                         textName:name
+                                        positionX:upLeftX
+                                        positionY:upLeftY
+                                         spacingX:[curPix pixelSpacingX]
+                                         spacingY:[curPix pixelSpacingY]
+                                      imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
+        free(textureBuffer);
+        [theNewROI setColor:aColor];
+        //	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
+        [[[self roiList] objectAtIndex:[imageView curImage]] addObject:theNewROI];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
+    }
 }
 
 -(void)addRoiFromFullStackBuffer:(unsigned char*)buff withName:(NSString*)name
 {
-	int i,j,k,l;
 	unsigned char tempValue;
 	BOOL alreadyIn=NO;
 	
@@ -14476,22 +14515,22 @@ int i,j,l;
 	 NSLog(@"color r=%d, g=%d, b=%d", aColor.red, aColor.green, aColor.blue);
 	 */
 	NSMutableArray* nbRegion=[NSMutableArray array];
-	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
+	DCMPix *curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	long height=[curPix pheight];
 	long width=[curPix pwidth];
 	long depth=[[self pixList] count];	
-	for (k=0;k<depth;k++)
+	for (int k=0; k<depth; k++)
 	{
-		for (j=0;j<height;j++)
+		for (int j=0; j<height; j++)
 		{
-			for (i=0;i<width;i++)
+			for (int i=0; i<width; i++)
 			{
 				tempValue=buff[(long)(i+j*width+k*width*height)];
 				if (tempValue!=0)
 				{
 					alreadyIn=NO;
 					// check if the region has not been already added to the nbRegion Mutable Array
-					for (l=0;l<[nbRegion count];l++)
+					for (int l=0;l<[nbRegion count];l++)
 						if ([[nbRegion objectAtIndex:l] intValue]==tempValue)
 							alreadyIn=YES;
 					if (!alreadyIn)
@@ -14500,7 +14539,8 @@ int i,j,l;
 			}
 		}
 	}
-	for (l=0;l<[nbRegion count];l++)
+
+    for (int l=0; l<[nbRegion count]; l++)
 		[self	addRoiFromFullStackBuffer:buff
 				forSpecificValue:[[nbRegion objectAtIndex:l] intValue]
 				withColor:rgbList[l % nbColor]
@@ -14514,9 +14554,8 @@ int i,j,l;
 }
 -(void)addRoiFromFullStackBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name
 {
-	int i,j,k,l;
-	ROI		*theNewROI;
-	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
+	ROI *theNewROI;
+	DCMPix *curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	long height=[curPix pheight];
     long width=[curPix pwidth];
 	long depth=[[self pixList] count];
@@ -14524,13 +14563,13 @@ int i,j,l;
 	int tWidth,tHeight;
 	unsigned char* textureBuffer;
 	BOOL findOne=false;
-	for (k=0;k<depth;k++)
+	for (int k=0; k<depth; k++)
 	{
 		// 1- For a Slice find the texture dimension for the specific value (param: value)
 		findOne=NO;
-		upLeftX=width;upLeftY=height;dRightX=0;dRightY=0; // initialisation with opposite values
-		for (j=0;j<height;j++)
-			for (i=0;i<width;i++)
+		upLeftX=width; upLeftY=height; dRightX=0; dRightY=0; // initialisation with opposite values
+		for (int j=0; j<height; j++)
+			for (int i=0; i<width; i++)
 			{
 				if (buff[(long)(i+j*width+k*width*height)]==value)
 				{
@@ -14550,34 +14589,34 @@ int i,j,l;
 				}
 			}
 				
-				// Create texture ...		
-				if (findOne)
-				{
-					tWidth=dRightX-upLeftX+1;
-					tHeight=dRightY-upLeftY+1;
-					textureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
-					// clear texture
-					for (l=0;l<tWidth*tHeight;l++)       
-						textureBuffer[(long)l]=0;
-					
-					// fill in the texture
-					for (j=0;j<height;j++)
-						for (i=0;i<width;i++)
-							if (buff[(long)(i+j*width+k*width*height)]==value)
-								textureBuffer[(long)((i-upLeftX)+(j-upLeftY)*tWidth)]=0xFF;
-					
-					// 2- create a roi with the (initWithTexture) at slice k
-					name = ([name isEqualToString:@""])? [NSString stringWithFormat:@"area %d",value] : name;
-					theNewROI = [[[ROI alloc] initWithTexture:textureBuffer  textWidth:tWidth textHeight:tHeight textName:name
-													positionX:upLeftX positionY:upLeftY
-													 spacingX:[curPix pixelSpacingX]  spacingY:[curPix pixelSpacingY]
-												  imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
-					free(textureBuffer);
-					[theNewROI setColor:aColor];
-					//	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
-					[[[self roiList] objectAtIndex:k] addObject:theNewROI];		
-					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
-				}
+        // Create texture ...
+        if (findOne)
+        {
+            tWidth=dRightX-upLeftX+1;
+            tHeight=dRightY-upLeftY+1;
+            textureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
+            // clear texture
+            for (int l=0; l<tWidth*tHeight; l++)
+                textureBuffer[(long)l]=0;
+            
+            // fill in the texture
+            for (int j=0; j<height; j++)
+                for (int i=0; i<width; i++)
+                    if (buff[(long)(i+j*width+k*width*height)]==value)
+                        textureBuffer[(long)((i-upLeftX)+(j-upLeftY)*tWidth)]=0xFF;
+            
+            // 2- create a ROI with the (initWithTexture) at slice k
+            name = (name.length == 0) ? [NSString stringWithFormat:@"area %d",value] : name;
+            theNewROI = [[[ROI alloc] initWithTexture:textureBuffer  textWidth:tWidth textHeight:tHeight textName:name
+                                            positionX:upLeftX positionY:upLeftY
+                                             spacingX:[curPix pixelSpacingX]  spacingY:[curPix pixelSpacingY]
+                                          imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
+            free(textureBuffer);
+            [theNewROI setColor:aColor];
+            //	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
+            [[[self roiList] objectAtIndex:k] addObject:theNewROI];
+            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
+        }
 	}
 }
 
@@ -14586,7 +14625,10 @@ int i,j,l;
 {
 	DCMPix *curPix = [[self pixList] objectAtIndex:[imageView curImage]];
 
-	ROI *theNewROI = [[[ROI alloc] initWithType:tLayerROI :[curPix pixelSpacingX] :[curPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: curPix]] autorelease];
+	ROI *theNewROI = [[[ROI alloc] initWithType: tLayerROI
+                                               : [curPix pixelSpacingX]
+                                               : [curPix pixelSpacingY]
+                                               : [DCMPix originCorrectedAccordingToOrientation: curPix]] autorelease];
 	[theNewROI setLayerPixelSpacingX:layerPixelSpacingX];
 	[theNewROI setLayerPixelSpacingY:layerPixelSpacingY];
 	[theNewROI setLayerReferenceFilePath:path];
@@ -14655,7 +14697,7 @@ int i,j,l;
 	float windowLevelMin = windowLevel - 0.5 * windowWidth;
 	
 	float value;
-	char imageValue;
+	unsigned char imageValue;
 
 	int bytesPerRow = [bitmap bytesPerRow];
 
@@ -14681,15 +14723,17 @@ int i,j,l;
                 imageValue = 0;
 			else
 			{
-				imageValue = (char)(a * value + b);
+				imageValue = (unsigned char)(a * value + b);
 			}
 		}
 		else
 			imageValue = value;	
-		imageBuffer[4*(int)x+(int)y*(int)bytesPerRow] = imageValue;
-		imageBuffer[4*(int)x+1+(int)y*(int)bytesPerRow] = imageValue;
-		imageBuffer[4*(int)x+2+(int)y*(int)bytesPerRow] = imageValue;
-		imageBuffer[4*(int)x+3+(int)y*(int)bytesPerRow] = 255;
+
+        int index = 4*(int)x + (int)y*(int)bytesPerRow;
+        imageBuffer[ index ]   = imageValue;
+		imageBuffer[ index+1 ] = imageValue;
+		imageBuffer[ index+2 ] = imageValue;
+		imageBuffer[ index+3 ] = 255;
 	}
 
 	NSImage *image = [[NSImage alloc] init] ;
@@ -14764,8 +14808,8 @@ int i,j,l;
                 [roisToDelete addObject: r];
 		}
 	}
+
     [ROI deleteROIs: roisToDelete];
-    
 	[name release];
 }
 
@@ -16278,7 +16322,8 @@ int i,j,l;
 	return rois;
 }
 
-- (ROI*) isoContourROI: (ROI*) a numberOfPoints: (int) nof
+- (ROI*) isoContourROI: (ROI*) a
+        numberOfPoints: (int) nof
 {
 #ifndef OSIRIX_LIGHT
 	if ([a type] == tCPolygon || [a type] == tOPolygon || [a type] == tPencil)
@@ -16286,17 +16331,16 @@ int i,j,l;
 		[a setPoints: [ROI resamplePoints: [a splinePoints] number: nof]];
 		return a;
 	}
-	else if ([a type] == tPlain)
+
+    if ([a type] == tPlain)
 	{
 		a = [self convertBrushROItoPolygon: a numPoints: nof];
 		[a setPoints: [ROI resamplePoints: [a splinePoints] number: nof]];
 		return a;
 	}
-	else
-        return nil;
-#else
-	return nil;
 #endif
+
+    return nil;
 }
 
 - (ROI*) roiMorphingBetween:(ROI*) a
@@ -16693,10 +16737,9 @@ int i,j,l;
 	}
 	
 	if (!found)
-	{
 		PaletteController *palette = [[PaletteController alloc] initWithViewer: self];
-	}
-//	else [self setROIToolTag: tPlain];
+//	else
+//      [self setROIToolTag: tPlain];
 }
 
 - (NSRecursiveLock*) roiLock { return roiLock;}
@@ -16779,7 +16822,7 @@ int i,j,l;
 		// do the morpho function...
 		ITKBrushROIFilter *filter = [[[ITKBrushROIFilter alloc] init] autorelease];
 
-		WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...",nil)];
+		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...",nil)];
 		[wait showWindow:self];
 		if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
 		{
@@ -16836,7 +16879,7 @@ int i,j,l;
 {
 	ROI* newROI = nil;
 	
-	#ifndef OSIRIX_LIGHT
+#ifndef OSIRIX_LIGHT
 	if ([selectedROI type] == tPlain)
 	{
 		// Convert it to Brush
@@ -16845,17 +16888,20 @@ int i,j,l;
         newROI.pix = selectedROI.pix;
         newROI.curView = imageView;
         
-		NSArray	*points = [ITKSegmentation3D extractContour: [selectedROI textureBuffer] width: [selectedROI textureWidth] height: [selectedROI textureHeight] numPoints: numPoints];
+		NSArray	*points = [ITKSegmentation3D extractContour: [selectedROI textureBuffer]
+                                                      width: [selectedROI textureWidth]
+                                                     height: [selectedROI textureHeight]
+                                                  numPoints: numPoints];
 		
-		int		i;
 		NSMutableArray	*pts = [NSMutableArray array];
 		
-		for (i = 0 ; i < [points count] ; i++)
+		for (int i = 0 ; i < [points count] ; i++)
 		{
-			[[points objectAtIndex: i] move: [selectedROI textureUpLeftCornerX] :[selectedROI textureUpLeftCornerY]];
+			[[points objectAtIndex: i] move: [selectedROI textureUpLeftCornerX]
+                                           : [selectedROI textureUpLeftCornerY]];
 		}
 		
-		for (i = 0 ; i < numPoints ; i++)
+		for (int i = 0 ; i < numPoints ; i++)
 		{
 			float x = (float) (i * [points count]) / (float) numPoints;
 			int xint = (int) x;
@@ -16877,18 +16923,16 @@ int i,j,l;
 		
 		[newROI setPoints: pts];
 	}
-	#endif
+#endif
 	
 	return newROI;
 }
 
 -(int) imageIndexOfROI:(ROI*) c
 {
-	int x, i;
-	
-	for (x = 0; x < [pixList[ curMovieIndex] count]; x++)
+	for (int x = 0; x < [pixList[ curMovieIndex] count]; x++)
 	{
-		for (i = 0; i < [[roiList[ curMovieIndex] objectAtIndex: x] count]; i++)
+		for (int i = 0; i < [[roiList[ curMovieIndex] objectAtIndex: x] count]; i++)
 		{
 			ROI *curROI = [[roiList[ curMovieIndex] objectAtIndex: x] objectAtIndex:i];
 			if (curROI == c)
@@ -16940,8 +16984,6 @@ int i,j,l;
 	
 	NSArray *selectedROIs = [self roiApplyWindow: self];
 	
-	int tag;
-	
     [imageView delete3DROIsAliases];
     
 	for (ROI *selectedROI in selectedROIs)
@@ -16950,51 +16992,23 @@ int i,j,l;
 		
 		if (index >= 0)
 		{
-            ROI	*newROI = nil;
-            
-			if ([selectedROI type] == tPlain)
-                tag = 1;
-			else
-                tag = 0;
-			
-			switch( tag)
-			{
-				case 1:
-				{
-					newROI = [self convertBrushROItoPolygon: selectedROI numPoints:100];
-					if (newROI)
-					{
-						// Add the new ROI
-                        newROI.pix = imageView.curDCM;
-						newROI.curView = selectedROI.curView;
-						[[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
-						[newROI setROIMode: ROI_selected];
-						[newROI setName: selectedROI.name];
-						[newROI setComments: selectedROI.comments];
-					}
-				}
-				break;
-				
-				case 0:
-				{
-                    {
-                        newROI = [selectedROI getBrushROI];
-                        if (newROI)
-                        {
-                            // Add the new ROI
-                            newROI.pix = imageView.curDCM;
-                            newROI.curView = selectedROI.curView;
-                            [[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
-                            [newROI setROIMode: ROI_selected];
-                            [newROI setName: selectedROI.name];
-                            [newROI setComments: selectedROI.comments];
-                        }
-                    }
-				}
-				break;
-			}
-			
-			// Remove the old ROI
+            ROI *newROI;
+            if ([selectedROI type] == tPlain)
+                newROI = [self convertBrushROItoPolygon: selectedROI numPoints:100];
+            else
+                newROI = [selectedROI getBrushROI];
+
+            // Add the new ROI
+            if (newROI) {
+                newROI.pix = imageView.curDCM;
+                newROI.curView = selectedROI.curView;
+                [newROI setROIMode: ROI_selected];
+                [newROI setName: selectedROI.name];
+                [newROI setComments: selectedROI.comments];
+                [[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
+            }
+
+            // Remove the old ROI
             if (selectedROI)
                 [ROI deleteROI: selectedROI];
 		}
@@ -17505,7 +17519,7 @@ int i,j,l;
 	}
 	else
 	{
-		if ([imageView syncro] != syncroOFF)
+		if ([imageView syncro] != SYNCHRO_OFF)
 		{
 			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
 		}
@@ -17550,15 +17564,15 @@ int i,j,l;
 	}
 	else
 	{
-		if ([imageView syncro] == syncroOFF)
+		if ([imageView syncro] == SYNCHRO_OFF)
 		{
 			if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSEventModifierFlagOption)
-				[imageView setSyncro: syncroREL];
+				[imageView setSyncro: SYNCHRO_ID_REL];
 			else
-				[imageView setSyncro: syncroLOC];
+				[imageView setSyncro: SYNCHRO_POSITION_ABS];
 		}
 		else
-            [imageView setSyncro: syncroOFF];
+            [imageView setSyncro: SYNCHRO_OFF];
 		
 		[imageView becomeMainWindow];
 	}
@@ -17610,12 +17624,12 @@ int i,j,l;
 
 - (IBAction) reSyncOrigin:(id) sender
 {
-	float	o[ 3];
-	int		x, i;
+	float o[ 3];
+	int x, i;
 	
 	if (blendingController)
 	{
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == NO || [imageView syncro] != syncroLOC)
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == NO || [imageView syncro] != SYNCHRO_POSITION_ABS)
 		{
 			float zDiff = [[[blendingController imageView] curDCM] sliceLocation] - [[imageView curDCM] sliceLocation];
 		
@@ -17668,7 +17682,7 @@ int i,j,l;
 			}
 			
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"COPYSETTINGS"];
-			[imageView setSyncro: syncroLOC];
+			[imageView setSyncro: SYNCHRO_POSITION_ABS];
 			[imageView sendSyncMessage: 0];
 			[self propagateSettings];
 		}
@@ -18002,7 +18016,8 @@ int i,j,l;
     return [self resampleSeries: movingViewer rescale: YES];
 }
 
-- (ViewerController*) resampleSeries:(ViewerController*) movingViewer rescale: (BOOL) rescale
+- (ViewerController*) resampleSeries:(ViewerController*) movingViewer
+                             rescale: (BOOL) rescale
 {
     [movingViewer displayWarningIfGantryTitled];
     [self displayWarningIfGantryTitled];
@@ -18122,7 +18137,9 @@ int i,j,l;
 		
 		ITKTransform * transform = [[ITKTransform alloc] initWithViewer:movingViewer];
 		
-		newViewer = [transform computeAffineTransformWithParameters: matrix resampleOnViewer: self rescale: rescale];
+		newViewer = [transform computeAffineTransformWithParameters: matrix
+                                                   resampleOnViewer: self
+                                                            rescale: rescale];
 		
 		[imageView sendSyncMessage: 0];
 		[self adjustSlider];
@@ -18239,15 +18256,14 @@ int i,j,l;
 		
 		[[[movingViewer pixList] objectAtIndex:0] orientation: vectorSensor];
 		[[[self pixList] objectAtIndex:0] orientation: vectorModel];
-		
-		int i,j; // 'for' indexes
-		for (i=0; i<[modelPointROIs count] && pointsNamesMatch2by2 && !triplets; i++)
+
+		for (int i=0; i<[modelPointROIs count] && pointsNamesMatch2by2 && !triplets; i++)
 		{
 			ROI *curModelPoint2D = [modelPointROIs objectAtIndex:i];
 			modelName = [curModelPoint2D name];
 			foundAMatchingName = NO;
 			
-			for (j=0; j<[sensorPointROIs count] && !foundAMatchingName; j++)
+			for (int j=0; j<[sensorPointROIs count] && !foundAMatchingName; j++)
 			{
 				ROI *curSensorPoint2D = [sensorPointROIs objectAtIndex:j];
 				sensorName = [curSensorPoint2D name];
@@ -19030,11 +19046,10 @@ static BOOL viewerControllerPlaying = NO;
                 
                 NSMutableArray *tempArray = [NSMutableArray array];
                 
-                for (int x = 0, size = 0; x < [pixList[ i] count]; x++)
+                for (int x = 0; x < [pixList[ i] count]; x++)
                 {
                     int oldIndex = [pixList[ i] indexOfObjectIdenticalTo: [sortedPixArray objectAtIndex: x]];
                     id o = [fileList[ i] objectAtIndex: oldIndex];
-                    
                     [tempArray addObject: o];
                 }
                 
@@ -19354,7 +19369,8 @@ static BOOL viewerControllerPlaying = NO;
 
 - (void) restoreWindowsAfterPrint
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] && NSIsEmptyRect( windowFrameToRestore) == NO)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] &&
+        NSIsEmptyRect( windowFrameToRestore) == NO)
     {
         int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
         [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
@@ -19377,11 +19393,6 @@ static BOOL viewerControllerPlaying = NO;
                 success:(BOOL)success
                 contextInfo:(void*)info
 {
-    if (success)
-	{
-	
-    }
-	
     NSString *tmpFolder = [NSTemporaryDirectory() stringByAppendingPathComponent:@"print"];
 	[[NSFileManager defaultManager] removeItemAtPath: tmpFolder error:nil];
     [self restoreWindowsAfterPrint];
@@ -19426,7 +19437,7 @@ static BOOL viewerControllerPlaying = NO;
 		if ([[printSettings cellWithTag: 0] state]) [settings setObject: @"YES" forKey: @"patientInfo"];
 		if ([[printSettings cellWithTag: 1] state]) [settings setObject: @"YES" forKey: @"studyInfo"];
         
-		//--------------------------Background color---------------------------------
+		//--------------------------Background color----------------------------
         
         [settings setObject: @"YES" forKey: @"backgroundColor"];
 		if ([[printSettings cellWithTag: 3] state])
@@ -19448,10 +19459,9 @@ static BOOL viewerControllerPlaying = NO;
 		//--------------------------Interval ---------------------------------
 		[settings setObject: [NSNumber numberWithInt: [printInterval intValue]] forKey: @"interval"];
 
-
 		[[NSUserDefaults standardUserDefaults] setObject: settings forKey: @"previousPrintSettings"];
 		
-		//--------------------------endpoints of the series to be printed---------------------------------
+		//--------------------------endpoints of the series to be printed-------
 		int from;
 		int to;
 		int interval;
@@ -19498,7 +19508,7 @@ static BOOL viewerControllerPlaying = NO;
 			break;
 		}
 		
-		//--------------------------Preparation images in /tmp/print---------------------------------
+		//--------------------------Preparation images in /tmp/print------------
 		
 		NSMutableArray *files = [NSMutableArray array];
         NSString *tmpFolder = [NSTemporaryDirectory() stringByAppendingPathComponent:@"print"];
@@ -19516,7 +19526,7 @@ static BOOL viewerControllerPlaying = NO;
 		
 		int currentImageIndex = [self imageIndex];
 		
-		/////// ****************
+		///
 		
 		float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
 		float scaleFactor = 1.0;
@@ -19537,7 +19547,7 @@ static BOOL viewerControllerPlaying = NO;
 		NSPoint o = [[[self window] screen] visibleFrame].origin;
 		o.y += [[[self window] screen] visibleFrame].size.height;
 		
-		/////// ****************
+		///
 		
 		[OSIWindowController setDontEnterMagneticFunctions: YES];
 		[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
@@ -19588,9 +19598,9 @@ static BOOL viewerControllerPlaying = NO;
 				
 				BOOL windowSizeChanged = NO;
 				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"] &&
-                    [self scaleValue] < 1.0)
+                    [imageView scaleValue] < 1.0)
 				{
-					scaleFactor = 1. / [self scaleValue];
+					scaleFactor = 1. / [imageView scaleValue];
 					
 					int MAXWindowSize = [[NSUserDefaults standardUserDefaults] integerForKey: @"MAXWindowSize"];
 					
@@ -19654,7 +19664,7 @@ static BOOL viewerControllerPlaying = NO;
         imageView.whiteBackground = whiteBackground;
 		FULL32BITPIPELINE = copyFULL32BITPIPELINE;
 		
-		/////// ****************
+		//
 		
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"allowSmartCropping"];
 		
@@ -19841,7 +19851,11 @@ static BOOL viewerControllerPlaying = NO;
             [v.window orderOut: self];
     }
     
-	[NSApp beginSheet: printWindow modalForWindow:nil modalDelegate:self didEndSelector:nil contextInfo:nil];
+	[NSApp beginSheet:printWindow
+       modalForWindow:self.window
+        modalDelegate:self
+       didEndSelector:nil
+          contextInfo:nil];
 }
 
 #ifndef OSIRIX_LIGHT
@@ -20196,7 +20210,8 @@ static BOOL viewerControllerPlaying = NO;
 - (NSDictionary*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers
 {
 	NSArray *viewers = [ViewerController getDisplayed2DViewers];
-	long annotCopy,clutBarsCopy;
+    long annotCopy;
+    ClutBarsType clutBarsCopy;
 	BOOL modalityAsSource = NO;
 	long width, height, spp, bpp, i, x;
 	float cwl, cww;
@@ -20206,14 +20221,14 @@ static BOOL viewerControllerPlaying = NO;
 	
 	if (screenCapture || allViewers)
 	{
-        annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
-        clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
+        annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY];
+        clutBarsCopy = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey: CLUTBARS_KEY];
         
-        if (imageView.annotationType > annotGraphics)
+        if (imageView.annotationType > ANNOTATIONS_GRAPHICS)
         {
             NSString *studyInstanceUID = imageView.studyObj.studyInstanceUID;
             NSString *patientUID = imageView.studyObj.patientUID;
-            int annotationsType  = annotGraphics;
+            int annotations = ANNOTATIONS_GRAPHICS;
             
             if (allViewers)
             {
@@ -20222,22 +20237,22 @@ static BOOL viewerControllerPlaying = NO;
                 {
                     if ([v.studyObj.studyInstanceUID isEqualToString: studyInstanceUID] == NO)
                     {
-                        if (annotationsType < annotBase)
-                            annotationsType = annotBase;
+                        if (annotations < ANNOTATIONS_BASE)
+                            annotations = ANNOTATIONS_BASE;
                     }
                     
                     if ([v.studyObj.patientUID isEqualToString: patientUID] == NO)
                     {
-                        if (annotationsType < annotFull)
-                            annotationsType = annotFull;
+                        if (annotations < ANNOTATIONS_FULL)
+                            annotations = ANNOTATIONS_FULL;
                     }
                 }
             }
             
             if ([[NSUserDefaults standardUserDefaults] boolForKey: @"keepCLUTBarsForSecondaryCapture"])
-                [DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotationsType];
+                [DCMView setCLUTBARS: clutBarsCopy withAnnotations: annotations];
             else
-                [DCMView setCLUTBARS: barHide ANNOTATIONS: annotationsType];
+                [DCMView setCLUTBARS: CLUT_BAR_HIDE withAnnotations: annotations];
         }
 	}
 	
@@ -20426,7 +20441,7 @@ static BOOL viewerControllerPlaying = NO;
         NSLog( @"No Data");
 	
 	if (screenCapture || allViewers)
-		[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotCopy];
+		[DCMView setCLUTBARS: clutBarsCopy withAnnotations: annotCopy];
 	
 	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil];
 }
@@ -20452,13 +20467,14 @@ static BOOL viewerControllerPlaying = NO;
 {
 	NSMutableArray *producedFiles = [NSMutableArray array];
 	
-	if (exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
+	if (!exportDCM)
+        exportDCM = [[DICOMExport alloc] init];
     
     [exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
     
     [exportDCM setSeriesDescription: seriesName];
 	
-	NSLog( @"export start");
+	NSLog(@"%s export start", __FUNCTION__);
 	
 	NSString *savedSeriesName = [dcmSeriesName stringValue];
 	
@@ -20482,7 +20498,7 @@ static BOOL viewerControllerPlaying = NO;
 		[pool release];
 	}
 	
-	NSLog( @"export end");
+	NSLog(@"%s export end", __FUNCTION__);
 
 	if ([producedFiles count])
 	{
@@ -20920,7 +20936,8 @@ static BOOL viewerControllerPlaying = NO;
 
 - (void) exportImage:(id) sender
 {
-	[imageView flagsChanged: nil];	// If shift key was pressed, hiding the ROI data	apple-shift-E
+    NSEvent *event = nil;
+	[imageView flagsChanged: event];	// If shift key was pressed, hiding the ROI data	apple-shift-E
 
 	[imageAllViewers setState: NSOffState];
 	
@@ -22260,7 +22277,7 @@ static BOOL viewerControllerPlaying = NO;
     retainedToolbarItems = [[NSMutableArray alloc] initWithCapacity: 0];
     
     resampleRatio = 1.0;
-    currentOrientationTool = -1;
+    currentOrientationTool = ORIENTATION_UNDEFINED;
     
     [imageView setDrawing: NO];
     
@@ -22364,7 +22381,13 @@ static BOOL viewerControllerPlaying = NO;
                name: OsirixDCMUpdateCurrentImageNotification
              object: nil];
 	
-    [[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, pasteBoardOsiriXPlugin, OsirixPluginPboardUTI, @"BrowserController.database.context.XIDs", nil]];
+    [[self window] registerForDraggedTypes: [NSArray arrayWithObjects:
+                                             NSFilenamesPboardType,
+                                             pasteBoardOsiriX,
+                                             pasteBoardOsiriXPlugin,
+                                             OsirixPluginPboardUTI,
+                                             DatabaseXID_DragType,
+                                             nil]];
     
 	if ([[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{
@@ -22430,7 +22453,7 @@ static BOOL viewerControllerPlaying = NO;
 	
 	NSString *com = [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.comment"];//JF20070103
 	
-	if (com == nil || [com isEqualToString:@""])
+	if (com.length == 0)
         [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 	else
         [CommentsField setTitle: com];
@@ -22444,7 +22467,7 @@ static BOOL viewerControllerPlaying = NO;
 	
 //    [[NSUserDefaults standardUserDefaults] addObserver: self forKeyPath: @"SeriesListVisible" options:NSKeyValueObservingOptionNew context:nil];
     
-	originalOrientation = -1;
+	originalOrientation = ORIENTATION_UNDEFINED;
 	[orientationMatrix setEnabled: NO];
 }
 
@@ -23307,14 +23330,10 @@ static BOOL viewerControllerPlaying = NO;
 
     viewer = [self openMPRViewer];
     [self place3DViewerWindow:viewer];
-    [viewer showWindow:self];
-    [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
-#if 1 // Horos
     dispatch_async(dispatch_get_main_queue(), ^(){
         [viewer showWindow:self];
-        [viewer showWindow:self];
+        [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
     });
-#endif
 }
 
 - (CPRController *)openCPRViewer
@@ -24103,10 +24122,10 @@ static BOOL viewerControllerPlaying = NO;
 	
 	NSString *com = [[fileList[ curMovieIndex] objectAtIndex: [imageView curImage]] valueForKeyPath:@"series.comment"];
 	
-	if (com == nil || [com isEqualToString:@""])
+	if (com.length == 0)
 		com = [[fileList[ curMovieIndex] objectAtIndex: [imageView curImage]] valueForKeyPath:@"series.study.comment"];
 	
-	if (com == nil || [com isEqualToString:@""])
+    if (com.length == 0)
         [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
     else
         [CommentsField setTitle: com];
@@ -24294,68 +24313,6 @@ static BOOL viewerControllerPlaying = NO;
 - (Dicom_Image *)currentImage
 {
 	return imageView.imageObj;
-}
-
-#pragma mark - Convenience methods for accessing values in the current imageView
-
--(float)curWW
-{
-	return [imageView curWW];
-}
-
--(float)curWL
-{
-	return [imageView curWL];
-}
-
-- (void)setWL:(float)cwl  WW:(float)cww
-{
-	[imageView setWLWW:cwl :cww];
-}
-
-- (BOOL)xFlipped
-{
-    return [imageView xFlipped];
-}
-	
-- (BOOL)yFlipped
-{
-	return [imageView yFlipped];
-}
-
-- (float)rotation
-{
-	return [imageView rotation];
-}
-
-- (void)setRotation:(float)rotation
-{
-	[imageView setRotation:rotation];
-}
-
-- (void)setOrigin:(NSPoint) o
-{
-	[imageView setOrigin:o];
-}
-
-- (float)scaleValue
-{
-	return [imageView scaleValue];
-}
-
-- (void)setScaleValue:(float)scaleValue
-{
-	[imageView setScaleValue:scaleValue];
-}
-
-- (void)setYFlipped:(BOOL) v
-{
-	[imageView setYFlipped:(BOOL) v];
-}
-
-- (void)setXFlipped:(BOOL) v
-{
-	[imageView setXFlipped:(BOOL) v];
 }
 
 - (SeriesView *) seriesView

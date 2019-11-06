@@ -144,11 +144,19 @@
 	}
 }
 
-- (int) echoAddress: (NSString*) address port:(int) port AET:(NSString*) aet
+- (int) echoAddress: (NSString*) address
+               port: (int) port
+                AET: (NSString*) aet
 {
 	NSTask* theTask = [[[NSTask alloc]init]autorelease];
 	
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"echoscu"]];
+    NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"echoscu"] path];
+    if (![[NSFileManager defaultManager] fileExistsAtPath: launchPath]) {
+        NSLog(@"%s %d file doesn't exist:%@", __FUNCTION__, __LINE__, launchPath);
+        return EXIT_FAILURE;
+    }
+
+    [theTask setLaunchPath:launchPath];
 
     NSString *dicPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"dicom.dic"];
     [theTask setEnvironment:[NSDictionary dictionaryWithObject:dicPath forKey:@"DCMDICTPATH"]];
@@ -182,7 +190,13 @@
         
         NSTask* theTask = [[[NSTask alloc] init] autorelease];
         
-        [theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"echoscu"]];
+        NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"echoscu"] path];
+        if (![[NSFileManager defaultManager] fileExistsAtPath: launchPath]) {
+            NSLog(@"%s %d file doesn't exist:%@", __FUNCTION__, __LINE__, launchPath);
+            return EXIT_FAILURE;
+        }
+        
+        [theTask setLaunchPath:launchPath];
         
         NSString *dicPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"dicom.dic"];
         [theTask setEnvironment:[NSDictionary dictionaryWithObject:dicPath forKey:@"DCMDICTPATH"]];

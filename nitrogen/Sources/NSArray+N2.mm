@@ -89,6 +89,8 @@ static id copy(id obj)
 
 @end
 
+#pragma mark -
+
 @implementation NSMutableArray (N2)
 
 -(void)addUniqueObjectsFromArray:(NSArray*)array {

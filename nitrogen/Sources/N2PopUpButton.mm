@@ -23,6 +23,9 @@
 
 @interface N2PopUpButtonCell : NSPopUpButtonCell
 @end
+
+#pragma mark -
+
 @implementation N2PopUpButtonCell
 
 -(void)drawBezelWithFrame:(NSRect)frame inView:(NSView*)view {
@@ -33,6 +36,8 @@
 }
 
 @end
+
+#pragma mark -
 
 @implementation N2PopUpButton
 

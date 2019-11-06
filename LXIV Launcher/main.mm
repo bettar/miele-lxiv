@@ -62,7 +62,6 @@ int GetAllPIDsForProcessName(const char* ProcessName,
     {
         return(kInvalidArgumentsError);
     }
-    
 
     //--- Setting return values to known values --- //
 

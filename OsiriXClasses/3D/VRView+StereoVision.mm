@@ -21,11 +21,9 @@
 // PURPOSE.
 // =========================================================================
 
-#ifdef _STEREO_VISION_
-
 #import "VRView+StereoVision.h"
 
-#import "VRView.h"
+#ifdef _STEREO_VISION_
 #import "DCMCursor.h"
 #import "AppController.h"
 #import "DCMPix.h"
@@ -112,9 +110,11 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 	VRView* mipv = (VRView*) clientdata;
 	[mipv setNeedsDisplay:YES];
 }
+#endif //_STEREO_VISION_
 
 @implementation VRView (StereoVision)
 
+#ifdef _STEREO_VISION_
 // Same Function as before, but added flag for stereo-vision
 -(id)initWithFrame:(NSRect)frame
 {
@@ -717,7 +717,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 	return 1;
 	
 }
-
+#endif // _STEREO_VISION_
 
 -(IBAction) invertedSides :(id) sender
 {
@@ -740,6 +740,8 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 	
 	[self setNeedsDisplay:YES];
 }
+
+#ifdef _STEREO_VISION_
 
 #pragma mark - User Commands
 
@@ -1086,24 +1088,24 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 				{
 					switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 					{
-						case 0:
-							blendingWl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
-							blendingWw =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+						case PETWindowingMode_CLASSIC:
+							blendingWl = (_startWL - (long) ([theEvent deltaY])*WWAdapter);
+							blendingWw = (_startWW + (long) ([theEvent deltaX])*WWAdapter);
 							
 							if( blendingWw < 0.1) blendingWw = 0.1;
 							break;
 							
-						case 1:
+						case PETWindowingMode_FIXED_MIN:
 							endlevel = _startMax + (-[theEvent deltaY]) * WWAdapter ;
 							
-							blendingWl =  (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+							blendingWl = (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
 							blendingWw = endlevel - _startMin;
 							
 							if( blendingWw < 0.1) blendingWw = 0.1;
 							if( blendingWl - blendingWw/2 < 0) blendingWl = blendingWw/2;
 							break;
 							
-						case 2:
+						case PETWindowingMode_MAXIMUM:
 							endlevel = _startMax - ([theEvent deltaY]) * WWAdapter ;
 							startlevel = _startMin + ([theEvent deltaX]) * WWAdapter ;
 							
@@ -1119,8 +1121,8 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 				}
 				else
 				{
-					blendingWl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
-					blendingWw =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+					blendingWl = (_startWL - (long) ([theEvent deltaY])*WWAdapter);
+					blendingWw = (_startWW + (long) ([theEvent deltaX])*WWAdapter);
 				}
 				
 				if( blendingWw < 0.1) blendingWw = 0.1;
@@ -1142,24 +1144,24 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 				{
 					switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 					{
-						case 0:
-							wl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
-							ww =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+						case PETWindowingMode_CLASSIC:
+							wl = (_startWL - (long) ([theEvent deltaY])*WWAdapter);
+							ww = (_startWW + (long) ([theEvent deltaX])*WWAdapter);
 							
 							if( ww < 0.1) ww = 0.1;
 							break;
 							
-						case 1:
+						case PETWindowingMode_FIXED_MIN:
 							endlevel = _startMax + (-[theEvent deltaY]) * WWAdapter ;
 							
-							wl =  (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+							wl = (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
 							ww = endlevel - _startMin;
 							
 							if( ww < 0.1) ww = 0.1;
 							if( wl - ww/2 < 0) wl = ww/2;
 							break;
 							
-						case 2:
+						case PETWindowingMode_MAXIMUM:
 							endlevel = _startMax - ([theEvent deltaY]) * WWAdapter ;
 							startlevel = _startMin + ([theEvent deltaX]) * WWAdapter ;
 							
@@ -1631,7 +1633,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 	if( best)
 	{
 		// SWITCH TO RAY CASTING IF WE USE BOTH ENGINES
-		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 2)
+		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == ENGINE_BOTH)
 		{
 			double a[6];
 			
@@ -2019,8 +2021,6 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 		}
 		else
 		{
-			int i;
-			
 			NSRect size = [self bounds];
 			
 			*width = (long) size.size.width;
@@ -2033,7 +2033,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 			[self getVTKRenderWindow]->MakeCurrent();
 			
 			buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
-			if( buf)
+			if ( buf)
 			{
 				CGLContextObj cgl_ctx = (CGLContextObj) [[NSOpenGLContext currentContext] CGLContextObj];
 				
@@ -2043,10 +2043,11 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 #else
 				glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
-				i = *width * *height;
-				unsigned char	*t_argb = buf;
-				unsigned char	*t_rgb = buf;
-				while( i-->0)
+
+                int i = *width * *height;
+				unsigned char *t_argb = buf;
+				unsigned char *t_rgb = buf;
+				while (i-- > 0)
 				{
 					*((int*) t_rgb) = *((int*) t_argb);
 					t_argb+=4;
@@ -2057,9 +2058,9 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 				long rowBytes = *width**spp**bpp/8;
 				
 				{
-					unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
+					unsigned char *tempBuf = (unsigned char*) malloc( rowBytes);
 					
-					for( i = 0; i < *height/2; i++)
+					for (int i = 0; i < *height/2; i++)
 					{
 						memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
 						memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
@@ -2070,18 +2071,18 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 				}
 				
 				//Add the small OsiriX logo at the bottom right of the image
-				NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];
-				NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
+				NSImage *logo = [NSImage imageNamed:@"SmallLogo.tif"];
+				NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
 				
-				for( i = 0; i < [TIFFRep pixelsHigh]; i++)
+				for (int i = 0; i < [TIFFRep pixelsHigh]; i++)
 				{
-					unsigned char	*srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-					unsigned char	*dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
+					unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
+					unsigned char *dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
 					
 					long x = [TIFFRep bytesPerRow]/3;
 					while( x-->0)
 					{
-						if( srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
+						if ( srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
 						{
 							dstPtr[ 0] = srcPtr[ 0];
 							dstPtr[ 1] = srcPtr[ 1];
@@ -2338,6 +2339,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 	if(StereoVisionOn)
 		[rightView renderer]->AddActor(actor);
 }
+#endif // _STEREO_VISION_
 
 @end
-#endif
+

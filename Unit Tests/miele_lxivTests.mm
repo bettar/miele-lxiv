@@ -14,6 +14,8 @@
 
 @end
 
+#pragma mark -
+
 @implementation miele_lxivTests
 
 - (void)setUp {

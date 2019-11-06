@@ -64,14 +64,6 @@ enum
     compression_JPEGLS = 4
 };
 
-enum
-{
-	always = 0,
-	cdOnly = 1,
-	notMainDrive = 2,
-	ask = 3
-};
-
 typedef NS_ENUM(NSUInteger, MultipleScreenType) {
     MULTIPLE_SCREEN_TYPE_MAIN_ONLY = 0, // use main screen only
     MULTIPLE_SCREEN_TYPE_2ND_ONLY = 1,  // use second screen only
@@ -112,6 +104,8 @@ extern "C"
 @class AppController, ToolbarPanelController, ThumbnailsListPanel, BonjourPublisher;
 
 extern AppController* OsiriX;
+
+#pragma mark -
 
 @interface AppController : NSObject	<NSApplicationDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate, NSSoundDelegate, NSMenuDelegate> // GrowlApplicationBridgeDelegate
 {
@@ -156,7 +150,7 @@ extern AppController* OsiriX;
 + (BOOL) willExecutePlugin:(id) filter;
 
 + (BOOL) hasAtLeastMacOS_Mavericks;     // 10.9
-+ (BOOL) hasMacOSX_AfterMojave;      // > 10.14
++ (BOOL) hasMacOSX_AfterCatalina;       // > 10.15
 
 +(NSString*)UID;
 

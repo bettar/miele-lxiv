@@ -37,7 +37,7 @@
 #import "CPRGenerator.h"
 #import "CPRDisplayInfo.h"
 
-extern int CLUTBARS;//, ANNOTATIONS;
+extern ClutBarsType CLUTBARS;
 extern BOOL frameZoomed;
 extern int splitPosition[ 3];
 
@@ -54,6 +54,7 @@ extern int splitPosition[ 3];
 
 @end
 
+#pragma mark -
 
 @implementation CPRTransverseView
 
@@ -455,25 +456,27 @@ extern int splitPosition[ 3];
 
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
-	long clutBars = CLUTBARS, annotations = annotationType;
+    ClutBarsType clutBarsSaved = CLUTBARS;
+    long annotationsSaved = annotationType;
 	
-	CLUTBARS = barHide;
+	CLUTBARS = CLUT_BAR_HIDE;
 	
-	if( annotationType > annotGraphics)
-		annotationType = annotGraphics;
+	if (annotationType > ANNOTATIONS_GRAPHICS)
+		annotationType = ANNOTATIONS_GRAPHICS;
 	
     NSMutableArray *rArray = curRoiList;
     
     [rArray retain];
     
-	for( int i = 0; i < rArray.count; i++ )
+	for (int i = 0; i < rArray.count; i++ )
 	{
 		ROI *r = [rArray objectAtIndex:i];
 		
 		r.displayCMOrPixels = YES; // We don't want the value in pixels
 		r.imageOrigin = NSMakePoint( curDCM.originX, curDCM.originY);
 		
-		if( r.type == t3Dpoint || r.type == t2DPoint)
+		if (r.type == t3Dpoint ||
+            r.type == t2DPoint)
 		{
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
 			[rArray removeObjectAtIndex: i];
@@ -485,8 +488,9 @@ extern int splitPosition[ 3];
 	
 	[super drawRect: aRect withContext: ctx];
 	
-	CLUTBARS = clutBars;
-	annotationType = annotations;
+    // Restore
+	CLUTBARS = clutBarsSaved;
+	annotationType = annotationsSaved;
 }
 
 - (void)subDrawRect:(NSRect)rect
@@ -537,7 +541,9 @@ extern int splitPosition[ 3];
         glEnable(GL_POINT_SMOOTH);
         glPointSize(8 * self.window.backingScaleFactor);
         glBegin(GL_POINTS);
-        glVertex2f(cursorVector.x, cursorVector.y);
+        {
+            glVertex2f(cursorVector.x, cursorVector.y);
+        }
         glEnd();
     }
 	
@@ -554,24 +560,26 @@ extern int splitPosition[ 3];
 		
 		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_LOOP);
-        glVertex2f(  -widthhalf, -heighthalf);
-        glVertex2f(  -widthhalf, heighthalf);
-        glVertex2f(  widthhalf, heighthalf);
-        glVertex2f(  widthhalf, -heighthalf);
+        {
+            glVertex2f(  -widthhalf, -heighthalf);
+            glVertex2f(  -widthhalf, heighthalf);
+            glVertex2f(  widthhalf, heighthalf);
+            glVertex2f(  widthhalf, -heighthalf);
+        }
 		glEnd();
 	}
 	
-	if( stanStringAttrib == nil)
+	if ( stanStringAttrib == nil)
 	{
 		stanStringAttrib = [[NSMutableDictionary dictionary] retain];
 		[stanStringAttrib setObject:[NSFont fontWithName:@"Helvetica" size: 14.0] forKey:NSFontAttributeName];
 		[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 	}
 	
-	if( stringTex == nil)
+	if ( stringTex == nil)
 	{
 		NSString *textValue = nil;
-		switch( _sectionType)
+		switch ( _sectionType)
 		{
 			case CPRTransverseViewCenterSectionType: textValue = @"B"; break;
 			case CPRTransverseViewLeftSectionType: textValue = @"A"; break;
@@ -598,7 +606,7 @@ extern int splitPosition[ 3];
 	glColor4f (0, 0, 0, 1);	[stringTex drawAtPoint:NSMakePoint( anchor.x+1, anchor.y+1) ratio: 1];
 	glColor4f (1, 1, 0, 1);	[stringTex drawAtPoint:NSMakePoint( anchor.x, anchor.y) ratio: 1];
 	
-	if( annotationType != annotNone)
+	if( annotationType != ANNOTATIONS_NONE)
 	{
 		glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 		glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale

@@ -940,12 +940,8 @@ if ([_type isEqualToString: @"Directory"])
 	return BasicColorPrintManagementMetaSOPClassUID;
 }
 
-
-
 - (NSString *)description{
 	return [NSString stringWithFormat:@"Abstract Syntax:%@  name:%@  type:%@", _uid, _name, _type];
 }
-
-
 
 @end

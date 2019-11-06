@@ -67,7 +67,8 @@
 - (void)appendBezierPathWithRoundedRect:(NSRect)rect cornerRadius:(float)radius;
 @end
 
-@interface GLString : NSObject {
+@interface GLString : NSObject
+{
 	CGLContextObj cgl_ctx; // current context at time of texture creation
 	GLuint texName;
 	NSSize texSize;

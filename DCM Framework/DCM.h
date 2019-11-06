@@ -48,5 +48,3 @@ enum DCM_CompressionQuality {
 @protocol MoveStatusProtocol
 	- (void)setStatus:(unsigned short)moveStatus  numberSent:(int)numberSent numberError:(int)numberErrors;
 @end
-
-

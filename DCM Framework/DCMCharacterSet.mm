@@ -20,6 +20,8 @@
 
 #import <DCM/DCMCharacterSet.h>
 
+#define NUM_ENCODINGS        10
+
 char* DCMreplaceInvalidCharacter( char* str ) {
 	long i = strlen( str);
 	
@@ -66,49 +68,58 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	return mutable1;
 }
 
-// Based on dcmtk 3.6 convertString function
-
-+ (NSString *) stringWithBytes:(char *) str length:(unsigned) length encodings: (NSStringEncoding*) encodings
+// Based on dcmtk 3.6.4 function DcmSpecificCharacterSet::convertString()
+// Used in DCM framework
+// targets miele and decompress both use DCM
+// TODO: Use the DCM framework version instead
++ (NSString *) stringWithBytes:(char *) str
+                        length:(unsigned) length
+                     encodings:(NSStringEncoding*) encodings
 {
-	if( str == nil)
+	if (!str)
         return nil;
     
     NSUInteger fromLength;
     
-    if( length > 0)
+    if (length > 0) {
         fromLength = length;
-	else
-    {
-        NSLog( @"***** warning DCMCharacterSet stringWithBytes, length == 0, use C String length");
+    }
+	else {
+        NSLog(@"***** warning DCMCharacterSet stringWithBytes, length == 0, use C String length");
         fromLength = strlen( str);
     }
-    
-	NSMutableString	*result = [NSMutableString string];
+
+    NSMutableString *result = [NSMutableString string];
     BOOL checkPNDelimiters = YES;
-    NSStringEncoding currentEncoding = encodings[ 0];
-	int pos = 0;
+    size_t pos = 0;
+    // some (extended) character sets use more than 1 byte per character
+    // (however, the default character set always uses a single byte)
+    unsigned char bytesPerChar = 1;
     char *firstChar = str;
     char *currentChar = str;
     BOOL isFirstGroup = NO; // if delimiters contains '=' -> patient name
     int escLength = 0;
-    
-	while(pos < fromLength)
-	{
-		char c0 = *currentChar++;
+    // initially, use the default descriptor
+    NSStringEncoding currentEncoding = encodings[ 0];
+    // iterate over all characters of the string
+    while (pos < fromLength)
+    {
+        char c0 = *currentChar++;
+        // check for characters ESC, HT, LF, FF, CR or any other specified delimiter
         BOOL isEscape = (c0 == '\033');
-        BOOL isDelimiter = (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || (((c0 == '^') || (c0 == '=')) && (((c0 != '^') && (c0 != '=')) || checkPNDelimiters));
+        BOOL isPNDelimiter = ((c0 == '^') || (c0 == '=')) && checkPNDelimiters;
+        BOOL isDelimiter = (c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || isPNDelimiter;
         
         if (isEscape || isDelimiter)
         {
-            NSInteger convertLength = currentChar - firstChar - 1;
-			
-            if( convertLength - (escLength+1) >= 0)
+            // convert the sub-string (before the delimiter) with the current character set
+            long int convertLength = currentChar - firstChar - 1;
+            if (convertLength - (escLength+1) >= 0)
             {
-                NSString *s = nil;
-                
-                s = [[[NSString alloc] initWithBytes: firstChar length:convertLength encoding: currentEncoding] autorelease];
-                
-                if( s)
+                NSString *s = [[[NSString alloc] initWithBytes: firstChar
+                                                        length: convertLength
+                                                      encoding: currentEncoding] autorelease];
+                if (s)
                     [result appendString: s];
             }
             
@@ -117,6 +128,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
                 isFirstGroup = NO;
         }
         
+        // the ESC character is used to explicitly switch between character sets
         if (isEscape)
         {
             // report a warning as this is a violation of DICOM PS 3.5 Section 6.2.1
@@ -186,29 +198,54 @@ char* DCMreplaceInvalidCharacter( char* str ) {
                     }
                 }
                 
-                if( key == nil)
-                    NSLog( @"*** key == nil");
+                // check whether a valid escape sequence has been found
+                if (key.length == 0) {
+                    if (escLength == 3)
+                        NSLog( @"Cannot convert character set: Illegal escape sequence 'ESC %x %x %x' found", c1, c2, c3);
+                    else
+                        NSLog( @"Cannot convert character set: Illegal escape sequence 'ESC %x %x' found", c1, c2);
+                }
                 else
                 {
                     currentEncoding = [DCMCharacterSet encodingForDICOMCharacterSet: key];
-                    
+#ifndef NDEBUG
                     BOOL found = NO;
-                    for( int x = 0; x < 10; x++)
-                    {
-                        if( currentEncoding == encodings[ x])
+                    for (int j = 0; j < NUM_ENCODINGS; j++)
+                        if (currentEncoding == encodings[j]) {
                             found = YES;
+                            break;
+                        }
+                    
+                    if (found == NO)
+                        NSLog(@"*** encoding not found in declared SpecificCharacterSet (0008,0005)");
+#endif
+                    // special case: these Japanese character sets replace the ASCII part (G0 code area),
+                    // so according to DICOM PS 3.5 Section 6.2.1.2 an explicit switch to the default is required
+                    checkPNDelimiters = (![key isEqualToString: @"ISO 2022 IR 87"]) &&
+                    (![key isEqualToString: @"ISO 2022 IR 159"]);
+                    
+                    // determine number of bytes per character (used by the selected character set)
+                    if ([key isEqualToString: @"ISO 2022 IR 87"] ||
+                        [key isEqualToString: @"ISO 2022 IR 159"] ||
+                        [key isEqualToString: @"ISO 2022 IR 58"])
+                    {
+                        //NSLog(@"Now using 2 bytes per character");
+                        bytesPerChar = 2;
+                    }
+                    else if ([key isEqualToString: @"ISO 2022 IR 149"])
+                    {
+                        //NSLog(@"Now using 1 or 2 bytes per character");
+                        bytesPerChar = 0;      // special handling for single- and multi-byte
+                    }
+                    else {
+                        //NSLog(@"Now using 1 byte per character");
+                        bytesPerChar = 1;
                     }
                     
-                    if( found == NO)
-                        NSLog( @"*** encoding not found in declared SpecificCharacterSet (0008,0005)");
-                    
-                    checkPNDelimiters = ([key isEqualToString: @"ISO 2022 IR 87"] == NO) && ([key isEqualToString: @"ISO 2022 IR 159"] == NO);
-                    
-                    if( checkPNDelimiters)
-                        firstChar = currentChar;
+                    if (checkPNDelimiters)
+                        firstChar = currentChar; // do not copy the escape sequence to the output
                     else
                         firstChar = currentChar - (escLength+1);
-                    
                 }
                 
                 pos += escLength;
@@ -217,40 +254,54 @@ char* DCMreplaceInvalidCharacter( char* str ) {
                     escLength = 0;
             }
             
-            if(pos >= fromLength)
+            if (pos >= fromLength)
                 NSLog( @"incomplete sequence");
         }
+        // the HT, LF, FF, CR character or other delimiters (depending on the VR) also cause a switch
         else if (isDelimiter)
         {
             [result appendFormat: @"%c", c0];
             
             if (currentEncoding != encodings[ 0])
             {
+                NSLog(@"Switching back to the default character set (because a delimiter was found)");
                 currentEncoding = encodings[ 0];
                 checkPNDelimiters = YES;
             }
+            // start new sub-string after delimiter
             firstChar = currentChar;
         }
+#if 1
+        // skip remaining bytes of current character (if any)
+        else if (bytesPerChar != 1)
+        {
+            const size_t skipBytes = (bytesPerChar > 0) ? (bytesPerChar - 1) : ((c0 & 0x80) ? 1 : 0);
+            if (pos + skipBytes < fromLength)
+                currentChar += skipBytes;
+            pos += skipBytes;
+        }
+#endif
         ++pos;
-	}
-	
+    }
+    
     // convert any remaining characters from the input string
     {
-        NSInteger convertLength = currentChar - firstChar;
+        long convertLength = currentChar - firstChar;
         if (convertLength > 0)
         {
-            NSInteger convertLength = currentChar - firstChar;
-            
-            if( firstChar + convertLength <= str + fromLength && ( convertLength - (escLength+1) >= 0))
+            if (firstChar + convertLength <= str + fromLength &&
+                (convertLength - (escLength+1) >= 0))
             {
-                NSString *s = [[[NSString alloc] initWithBytes: firstChar length:convertLength encoding: currentEncoding] autorelease];
+                NSString *s = [[[NSString alloc] initWithBytes: firstChar
+                                                        length: convertLength
+                                                      encoding: currentEncoding] autorelease];
                 
-                if( s)
+                if (s)
                     [result appendString: s];
             }
         }
-	}
-    
+    }
+
     return result;
 }
 
@@ -258,10 +309,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 {
 	NSStringEncoding encoding = NSISOLatin1StringEncoding;
 	
-	if( characterSet == nil)
-        return encoding;
-    
-	if( [characterSet isEqualToString:@""])
+	if (characterSet.length == 0)
         return encoding;
 	
 	characterSet = [characterSet stringByReplacingOccurrencesOfString:@"-" withString:@" "];
@@ -302,8 +350,8 @@ char* DCMreplaceInvalidCharacter( char* str ) {
             }
         }
 	}
-	return encoding;
-    
+
+    return encoding;
 }
 
 - (id)initWithCode:(NSString *)characterSet
@@ -313,24 +361,27 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 		_characterSet = [characterSet retain];
 		encoding = NSISOLatin1StringEncoding;
 		
-		if( encodings == nil)
-			encodings = (NSStringEncoding*) malloc( 10 * sizeof( NSStringEncoding));
+		if (!encodings)
+			encodings = (NSStringEncoding *)malloc(NUM_ENCODINGS * sizeof( NSStringEncoding));
 		
-		for( int i = 0; i < 10; i++) encodings[ i] = 0;
-		encodings[ 0] = NSISOLatin1StringEncoding;
+        encodings[0] = NSISOLatin1StringEncoding;
+		for (int i = 1; i < NUM_ENCODINGS; i++)
+            encodings[i] = NSUTF8StringEncoding;
 		
 		NSArray *e = [characterSet componentsSeparatedByString: @"\\"];
 		
-		for( int z = 0; z < [e count] ; z++)
+		for (int z = 0; z < [e count] ; z++)
 		{
-			if( z < 10)
+			if (z < NUM_ENCODINGS)
 				encodings[ z] = [DCMCharacterSet encodingForDICOMCharacterSet: [e objectAtIndex: z]];
 			else
-				NSLog( @"Encoding number >= 10 ???");
+				NSLog(@"Encoding number >= %d ???", NUM_ENCODINGS);
 		}
-		encoding = encodings[ 0];
+
+        encoding = encodings[0];
 	}
-	return self;
+
+    return self;
 }
 
 - (id)initWithCharacterSet:(DCMCharacterSet *)characterSet

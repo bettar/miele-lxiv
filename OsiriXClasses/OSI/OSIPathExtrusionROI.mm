@@ -67,7 +67,6 @@
 - (NSArray *)convexHull
 {
 	NSMutableArray *convexHull;
-	NSUInteger i;
 	N3Vector control1;
 	N3Vector control2;
 	N3Vector endpoint;
@@ -76,7 +75,7 @@
 	
 	convexHull = [NSMutableArray array];
 	
-	for (i = 0; i < [self.path elementCount]; i++) {
+	for (NSUInteger i = 0; i < [self.path elementCount]; i++) {
 		elementType = [self.path elementAtIndex:i control1:&control1 control2:&control2 endpoint:&endpoint];
 		switch (elementType) {
 			case N3MoveToBezierPathElement:
@@ -95,7 +94,7 @@
     
     halfNormal = N3VectorInvert(halfNormal);
 	
-    for (i = 0; i < [self.path elementCount]; i++) {
+    for (NSUInteger i = 0; i < [self.path elementCount]; i++) {
 		elementType = [self.path elementAtIndex:i control1:&control1 control2:&control2 endpoint:&endpoint];
 		switch (elementType) {
 			case N3MoveToBezierPathElement:
@@ -129,8 +128,6 @@
 	CGFloat maxZ;
 	BOOL zSet;
 	NSValue *vectorValue;
-	NSInteger i;
-	NSInteger j;
 	NSInteger runStart;
 	NSInteger runEnd;
 	
@@ -147,7 +144,7 @@
 	maxY = -CGFLOAT_MAX;
     z = 0;
 	
-	for (i = 0; i < [volumeBezierPath elementCount]; i++) {
+	for (NSInteger i = 0; i < [volumeBezierPath elementCount]; i++) {
 		[volumeBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
 #if CGFLOAT_IS_DOUBLE
 		endpoint.z = round(endpoint.z);
@@ -177,7 +174,7 @@
 	
     NSMutableData *runData = [[NSMutableData alloc] init];
 
-	for (i = minY; i <= maxY; i++) {
+	for (NSInteger i = minY; i <= maxY; i++) {
         if (i < 0 || i >= floatVolume.pixelsHigh) {
             continue;
         }
@@ -190,7 +187,7 @@
 			[intersectionNumbers addObject:[NSNumber numberWithDouble:[vectorValue N3VectorValue].x]];
 		}
 		[intersectionNumbers sortUsingSelector:@selector(compare:)];
-		for(j = 0; j+1 < [intersectionNumbers count]; j++, j++) {
+		for (NSInteger j = 0; j+1 < [intersectionNumbers count]; j++, j++) {
 			runStart = round([[intersectionNumbers objectAtIndex:j] doubleValue]);
 			runEnd = round([[intersectionNumbers objectAtIndex:j+1] doubleValue]);
             
@@ -226,15 +223,18 @@
     return mask;
 }
 
-- (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
+- (void)drawSlab:(OSISlab)slab
+    inCGLContext:(CGLContextObj)cgl_ctx
+     pixelFormat:(CGLPixelFormatObj)pixelFormat
+dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
-	double dicomToPixGLTransform[16];
-	NSInteger i;
 	N3Vector endpoint;
     N3BezierPath *flattenedPath;
     NSColor *deviceStrokeColor = [self.strokeColor colorUsingColorSpaceName:NSDeviceRGBColorSpace];
     
-    if (self.strokeThickness != 0 && self.strokeColor != nil) {
+    if (self.strokeThickness != 0 && self.strokeColor != nil)
+    {
+        double dicomToPixGLTransform[16];
         N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
         
         glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
@@ -245,22 +245,25 @@
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
         glLineWidth(self.strokeThickness);
-        glColor4f((float)[deviceStrokeColor redComponent], (float)[deviceStrokeColor greenComponent], (float)[deviceStrokeColor blueComponent], (float)[deviceStrokeColor alphaComponent]);
+        glColor4f((float)[deviceStrokeColor redComponent],
+                  (float)[deviceStrokeColor greenComponent],
+                  (float)[deviceStrokeColor blueComponent],
+                  (float)[deviceStrokeColor alphaComponent]);
 
-        N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
+        N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);  // redundant ?
         
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glMultMatrixd(dicomToPixGLTransform);
         
-        glBegin(GL_LINE_STRIP);
-        
         flattenedPath = [_path bezierPathByFlattening:N3BezierDefaultFlatness/5.0];
-        for (i = 0; i < [flattenedPath elementCount]; i++) {
-            [flattenedPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
-            glVertex3d(endpoint.x, endpoint.y, endpoint.z);
+        glBegin(GL_LINE_STRIP);
+        {
+            for (NSInteger i = 0; i < [flattenedPath elementCount]; i++) {
+                [flattenedPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
+                glVertex3d(endpoint.x, endpoint.y, endpoint.z);
+            }
         }
-        
         glEnd();
         
         glPopMatrix();

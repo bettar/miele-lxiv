@@ -295,15 +295,13 @@
 {
     NSUInteger floatCount;
     @synchronized(self) {
-        if (_floatData) {
+        if (_floatData)
             return [_floatData length] / sizeof(float);
-        }
 
         OSIROIMaskRun *maskRuns = (OSIROIMaskRun *)[[_ROIMask maskRunsData] bytes];
-        NSInteger i;
 
         floatCount = 0;
-        for (i = 0; i < [_ROIMask maskRunCount]; i++) {
+        for (NSInteger i = 0; i < [_ROIMask maskRunCount]; i++) {
             floatCount += maskRuns[i].widthRange.length;
         }
     }
@@ -322,10 +320,10 @@
 
 - (NSData *)floatData
 {
-    @synchronized(self) {
-        if (_floatData) {
+    @synchronized(self)
+    {
+        if (_floatData)
             return _floatData;
-        }
 
         NSUInteger floatCount = [self floatCount];
 
@@ -335,31 +333,24 @@
         }
         
         OSIROIMaskRun *maskRuns = (OSIROIMaskRun *)[[_ROIMask maskRunsData] bytes];
-        NSInteger i;
-        float *buffer;
-        float *runBuffer;
-        float *floatBuffer;
+        //float *buffer;
+        float *floatBuffer = (float *)calloc(1, floatCount * sizeof(float));
 
-        floatBuffer = (float *)malloc(floatCount * sizeof(float));
-        memset(floatBuffer, 0, floatCount * sizeof(float));
+        float *runBuffer = floatBuffer;
+        for (NSInteger i = 0; i < [_ROIMask maskRunCount]; i++) {
+            [_volumeData getFloatRun:runBuffer
+                  atPixelCoordinateX:maskRuns[i].widthRange.location
+                                   y:maskRuns[i].heightIndex
+                                   z:maskRuns[i].depthIndex
+                              length:maskRuns[i].widthRange.length];
 
-        runBuffer = floatBuffer;
-        for (i = 0; i < [_ROIMask maskRunCount]; i++) {
-            [_volumeData getFloatRun:runBuffer atPixelCoordinateX:maskRuns[i].widthRange.location y:maskRuns[i].heightIndex z:maskRuns[i].depthIndex length:maskRuns[i].widthRange.length];
             runBuffer += maskRuns[i].widthRange.length;
         }
         
         _floatData = [[NSData alloc] initWithBytesNoCopy:floatBuffer length:floatCount * sizeof(float) freeWhenDone:YES];
     }
+
     return _floatData;
 }
-
-
-			
-			
-			
-		 
-		 
-
 
 @end

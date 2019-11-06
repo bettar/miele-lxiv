@@ -25,6 +25,8 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -58,6 +60,8 @@
 			<string>Viewer</string>
 			<key>LSCanProvideIMVideoDataSource</key>
 			<string>Yes</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -78,6 +82,8 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -98,6 +104,8 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -118,6 +126,8 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -138,6 +148,8 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -158,6 +170,8 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -170,6 +184,8 @@
 			<string>Miele-LXIV plugin</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSTypeIsPackage</key>
 			<true/>
 		</dict>
@@ -187,7 +203,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>7.3.46</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -231,7 +247,7 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Your account will be used for the built-in iChat sharing service. If you don't allow access, you cannot use the iChat functions.</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2014-2018 bettar. All rights reserved.</string>
+	<string>Copyright © 2014-2019 bettar. All rights reserved.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

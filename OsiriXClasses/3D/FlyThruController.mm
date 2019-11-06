@@ -263,7 +263,8 @@
 		
 		[framesSlider setMaxValue: flyThru.numberOfFrames - 1];
 		
-		if( [controller3D isKindOfClass: [VRController class]] == NO || [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1)	// Only the VR supports LOD versus Best rendering mode if ray casting is used
+		if ([controller3D isKindOfClass: [VRController class]] == NO ||
+            [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == ENGINE_GPU_OPEN_GL)	// Only the VR supports LOD versus Best rendering mode if ray casting is used
 		{
 			self.levelOfDetailType =  0;
 			[[LOD cellWithTag: 1] setEnabled: NO];
@@ -274,8 +275,6 @@
 		}
 	}
 }
-
-
 
 - (IBAction) flyThruSetCurrentViewToSliderPosition:(id) sender
 {
@@ -364,7 +363,7 @@
 	short           val;
     
 	val = curMovieIndex;
-	val ++;
+	val++;
 	
 	if( val < 0) val = 1;
 	if( val > flyThru.numberOfFrames) val = 1;

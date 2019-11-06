@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface NSNotificationCenter (N2)
 
 - (void)postNotificationOnMainThread:(NSNotification *)notification;

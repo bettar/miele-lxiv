@@ -27,7 +27,7 @@
 
 #ifndef FIX_ISSUE_9
 extern unsigned char* compressJPEG(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome, int *destSize);
-extern NSRecursiveLock* PapyrusLock;
+extern NSRecursiveLock* Papyrus_Lock;
 #endif
 
 @implementation NSImage (OsiriX)
@@ -40,7 +40,7 @@ extern NSRecursiveLock* PapyrusLock;
 #ifndef FIX_ISSUE_9
 	if ([imageRep bitsPerPixel] == 8)
 	{
-		[PapyrusLock lock];
+		[Papyrus_Lock lock];
 		
 		@try
 		{
@@ -56,7 +56,7 @@ extern NSRecursiveLock* PapyrusLock;
             N2LogExceptionWithStackTrace(e);
 		}
 		
-		[PapyrusLock unlock];
+		[Papyrus_Lock unlock];
 	}
 	else
 #endif

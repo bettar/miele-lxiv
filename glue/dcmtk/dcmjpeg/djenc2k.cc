@@ -95,30 +95,24 @@ DJEncoder *DJEncoder2K::createEncoderInstance(
   return result;
 }
 
-// *************
-
 DJEncoder2KLossLess::DJEncoder2KLossLess()
 : DJCodecEncoder()
 {
 }
 
-
 DJEncoder2KLossLess::~DJEncoder2KLossLess()
 {
 }
-
 
 E_TransferSyntax DJEncoder2KLossLess::supportedTransferSyntax() const
 {
   return EXS_JPEG2000LosslessOnly;
 }
 
-
 OFBool DJEncoder2KLossLess::isLosslessProcess() const
 {
   return OFTrue;
 }
-
 
 void DJEncoder2KLossLess::createDerivationDescription(
   const DcmRepresentationParameter * toRepParam,
@@ -136,7 +130,6 @@ void DJEncoder2KLossLess::createDerivationDescription(
   appendCompressionRatio(derivationDescription, ratio);
 }
 
-
 DJEncoder *DJEncoder2KLossLess::createEncoderInstance(
     const DcmRepresentationParameter * toRepParam,
     const DJCodecParameter *cp,
@@ -152,5 +145,3 @@ DJEncoder *DJEncoder2KLossLess::createEncoderInstance(
     
   return result;
 }
-
-

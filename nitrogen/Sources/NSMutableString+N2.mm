@@ -18,10 +18,8 @@
      PURPOSE.
 =========================================================================*/
 
-
 #import "NSMutableString+N2.h"
 #import "NSString+N2.h"
-
 
 @implementation NSMutableString (N2)
 

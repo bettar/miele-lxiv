@@ -129,26 +129,25 @@ BOOL useQuartz() {
             currVersionNumber = [NSMutableString stringWithFormat:@"%@ %@",
                                  [d objectForKey:@"CFBundleName"],
                                  [d objectForKey:@"CFBundleShortVersionString"]];
-        break;
+            break;
         
         case 1:
             currVersionNumber = [NSMutableString stringWithFormat:@"Revision %@",
                                  [d objectForKey:@"CFBundleVersion"]];
-        break;
+            break;
         
         case 2:
             currVersionNumber = [d objectForKey:@"GitHash"];
             
             [[NSPasteboard generalPasteboard] clearContents];
             [[NSPasteboard generalPasteboard] writeObjects:[NSArray arrayWithObject: currVersionNumber]];
-        break;
+            break;
 	}
 	
 	[version setTitle: currVersionNumber];
 
     versionType++;
-    
-    if( versionType >= 3)
+    if (versionType >= 3)
         versionType = 0;
 }
 

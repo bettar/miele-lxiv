@@ -50,6 +50,7 @@
 #import "DefaultsOsiriX.h"
 #import "NSString+N2.h"
 #import "WaitRendering.h"
+#import "mieleTypes.h"
 
 /*
 #include <IOKit/IOKitLib.h>
@@ -73,13 +74,17 @@
 
 @end
 
+#pragma mark -
+
 @interface DefaultLocalDatabaseNodeIdentifier : LocalDatabaseNodeIdentifier
 
 +(DefaultLocalDatabaseNodeIdentifier*)identifier;
 
 @end
 
-/*@interface BonjourDataNodeIdentifier : DataNodeIdentifier
+/*
+#pragma mark -
+@interface BonjourDataNodeIdentifier : DataNodeIdentifier
 {
 	NSNetService* _service;
 }
@@ -88,7 +93,10 @@
 
 -(NSInteger)port;
 
-@end*/
+@end
+ */
+
+#pragma mark -
 
 @interface MountedDatabaseNodeIdentifier : LocalDatabaseNodeIdentifier
 {
@@ -113,8 +121,18 @@ enum {
 
 @end
 
+#pragma mark -
+
 @interface UnavaliableDataNodeException : NSException
 @end
+
+
+#pragma mark -
+
+@implementation UnavaliableDataNodeException
+@end
+
+#pragma mark -
 
 @implementation BrowserController (Sources)
 
@@ -153,7 +171,7 @@ enum {
 	PrettyCell* cell = [[[PrettyCell alloc] init] autorelease];
 	[[_sourcesTableView tableColumnWithIdentifier:@"Source"] setDataCell:cell];
 	
-	[_sourcesTableView registerForDraggedTypes:[NSArray arrayWithObject:O2AlbumDragType]];
+	[_sourcesTableView registerForDraggedTypes:[NSArray arrayWithObject:O2Album_DragType]];
 	
 	[_sourcesTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
 }
@@ -363,9 +381,11 @@ enum {
         else
         {
             NSLog(@"BrowserController+Sources.mm:%d setDatabaseFromSourceIdentifier", __LINE__);
-            [UnavaliableDataNodeException raise:NSGenericException format:@"%@", NSLocalizedString(@"This is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil)];
+            [UnavaliableDataNodeException raise:NSGenericException
+                                         format:@"%@", NSLocalizedString(@"This is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil)];
         }
-    } @catch (UnavaliableDataNodeException* e)
+    }
+    @catch (UnavaliableDataNodeException* e)
     {
         NSBeginAlertSheet(NSLocalizedString(@"Sources", nil), nil, nil, nil, self.window, NSApp, @selector(endSheet:), nil, nil, @"%@", [e reason]);
         [self selectCurrentDatabaseSource];
@@ -380,13 +400,18 @@ enum {
         [self performSelectorOnMainThread: @selector( redrawSources) withObject: nil waitUntilDone: NO];
 }
 
--(int)findDBPath:(NSString*)path dbFolder:(NSString*)DBFolderLocation { // __deprecated
+-(int)findDBPath:(NSString*)path dbFolder:(NSString*)DBFolderLocation __deprecated
+{
 	NSInteger i = [self rowForSourceIdentifier:[LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:path]];
-	if (i < 0) i = [self rowForSourceIdentifier:[LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:DBFolderLocation]];
-	return i;
+	if (i < 0)
+        i = [self rowForSourceIdentifier:[LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:DBFolderLocation]];
+
+    return i;
 }
 
 @end
+
+#pragma mark -
 
 @implementation BrowserSourcesHelper
 
@@ -414,11 +439,27 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		_nsbDicom = [[NSNetServiceBrowser alloc] init];
 		[_nsbDicom setDelegate:self];
 		[_nsbDicom searchForServicesOfType:@"_dicom._tcp." inDomain:@""];
-		// mounted devices
-		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidMountNotification object:nil];
-		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidUnmountNotification object:nil];
-        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidRenameVolumeNotification object:nil];
-		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeWillUnmountNotification:) name:NSWorkspaceWillUnmountNotification object:nil];
+
+        // mounted devices
+		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                               selector:@selector(_observeVolumeNotification:)
+                                                                   name:NSWorkspaceDidMountNotification
+                                                                 object:nil];
+
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                               selector:@selector(_observeVolumeNotification:)
+                                                                   name:NSWorkspaceDidUnmountNotification
+                                                                 object:nil];
+
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                               selector:@selector(_observeVolumeNotification:)
+                                                                   name:NSWorkspaceDidRenameVolumeNotification
+                                                                 object:nil];
+
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                               selector:@selector(_observeVolumeWillUnmountNotification:)
+                                                                   name:NSWorkspaceWillUnmountNotification
+                                                                 object:nil];
         
         // Is there a DICOMDIR at the same level of OsiriX ?
         NSString *appFolder = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
@@ -434,24 +475,28 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         {
             NSString *dicomdir = [NSString stringWithContentsOfFile: [appFolder stringByAppendingPathComponent: @"DICOMDIRPATH"] encoding: NSUTF8StringEncoding error:nil];
             
-            if( [[NSFileManager defaultManager] fileExistsAtPath: dicomdir])
-            @try {
-                [_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath: dicomdir.stringByDeletingLastPathComponent description:dicomdir.stringByDeletingLastPathComponent.lastPathComponent dictionary:nil type:MountTypeGeneric]];
-            } @catch (NSException* e) {
-                N2LogExceptionWithStackTrace(e);
+            if ([[NSFileManager defaultManager] fileExistsAtPath: dicomdir]) {
+                @try {
+                    [_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath: dicomdir.stringByDeletingLastPathComponent description:dicomdir.stringByDeletingLastPathComponent.lastPathComponent dictionary:nil type:MountTypeGeneric]];
+                }
+                @catch (NSException* e) {
+                    N2LogExceptionWithStackTrace(e);
+                }
             }
         }
         else
         {
-            int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"MOUNT"];
+            CDMountModeType mode = (CDMountModeType)[[NSUserDefaults standardUserDefaults] integerForKey: CD_MOUNT_KEY];
 #ifdef OSIRIX_LIGHT
-            mode = 0; //display the source
+            mode = CD_MODE_SHOW_AS_SEPARATE_SOURCE;
 #endif
             
-            if( mode != 2)
+            if (mode != CD_MODE_IGNORE)
             {
-                for (NSString* path in [[NSWorkspace sharedWorkspace] mountedRemovableMedia])
+                for (NSString* path in [[NSWorkspace sharedWorkspace] mountedRemovableMedia]) {
+                    //NSLog(@"%s %d, path: %@", __FUNCTION__, __LINE__, path);
                     [self _analyzeVolumeAtPath:path];
+                }
             }
         }
 	}
@@ -1058,12 +1103,16 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)_observeVolumeNotification:(NSNotification*)notification
 {
-    int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"MOUNT"];
+#ifndef NDEBUG
+    NSLog(@"%s %d %@\n%@", __FUNCTION__, __LINE__, notification.name, notification);
+#endif
+
+    CDMountModeType mode = (CDMountModeType)[[NSUserDefaults standardUserDefaults] integerForKey: CD_MOUNT_KEY];
 #ifdef OSIRIX_LIGHT
-    mode = 0; //display the source
+    mode = CD_MODE_SHOW_AS_SEPARATE_SOURCE;
 #endif
     
-    if( mode == 2)
+    if (mode == CD_MODE_IGNORE)
         return;
     
 	NSString* path = [[notification.userInfo objectForKey: NSWorkspaceVolumeURLKey] path];
@@ -1076,7 +1125,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		[self _analyzeVolumeAtPath:[[notification.userInfo objectForKey: NSWorkspaceVolumeURLKey] path]];
 	}
     
-    if( [notification.name isEqualToString:NSWorkspaceDidRenameVolumeNotification])
+    if ([notification.name isEqualToString:NSWorkspaceDidRenameVolumeNotification])
     {
         path = [[[notification userInfo] objectForKey: NSWorkspaceVolumeOldURLKey] path];
     }
@@ -1189,7 +1238,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(BOOL)tableView:(NSTableView*)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
 	NSPasteboard* pb = [info draggingPasteboard];
-	NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:@"BrowserController.database.context.XIDs"] 
+	NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:DatabaseXID_DragType] 
 													 mutabilityOption:NSPropertyListImmutable 
 															   format:NULL 
 													 errorDescription:NULL];
@@ -1213,6 +1262,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 }
 
 @end
+
+#pragma mark -
 
 @implementation DefaultLocalDatabaseNodeIdentifier
 
@@ -1247,6 +1298,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 @end
 
+#pragma mark -
 
 @implementation MountedDatabaseNodeIdentifier
 
@@ -1333,15 +1385,16 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         
         BOOL selectSource = NO;
         
-        NSInteger mode = [NSUserDefaults.standardUserDefaults integerForKey:@"MOUNT"];
+        CDMountModeType mode = (CDMountModeType)[NSUserDefaults.standardUserDefaults integerForKey:CD_MOUNT_KEY];
         BOOL autoSelectSourceCDDVD = [[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"];
         
 #ifdef OSIRIX_LIGHT
-        mode = 0; //display the source
+        mode = CD_MODE_SHOW_AS_SEPARATE_SOURCE;
         autoSelectSourceCDDVD = YES;
 #endif
         
-        if (mode == -1 || [[NSApp currentEvent] modifierFlags] & NSEventModifierFlagCommand) //The user clicked on the dialog box
+        if (mode == CD_MODE_ASK_USER ||
+            [[NSApp currentEvent] modifierFlags] & NSEventModifierFlagCommand) //The user clicked on the dialog box
         {
             if( autoselect)
                 selectSource = YES;
@@ -1349,7 +1402,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		else if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
             selectSource = YES;
         
-        if( selectSource)
+        if (selectSource)
 			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSourceIdentifier:) withObject:self waitUntilDone:NO modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
         else
             [[BrowserController currentBrowser] redrawSources];
@@ -1375,11 +1428,15 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(DicomDatabase*)database
 {
 	if (!_detected)
-        [UnavaliableDataNodeException raise:NSGenericException format:@"%@", NSLocalizedString(@"This disk is being processed. It is currently not available.", nil)];
+        [UnavaliableDataNodeException raise:NSGenericException
+                                     format:@"%@", NSLocalizedString(@"This disk is being processed. It is currently not available.", nil)];
     return _database;
 }
 
-+(id)mountedDatabaseNodeIdentifierWithPath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary type:(NSInteger)type
++(id)mountedDatabaseNodeIdentifierWithPath:(NSString*)devicePath
+                               description:(NSString*)description
+                                dictionary:(NSDictionary*)dictionary
+                                      type:(NSInteger)type
 {
 	BOOL scan = YES;
 	NSString* path = [[NSFileManager defaultManager] tmpFilePathInTmp];
@@ -1482,9 +1539,4 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 }
 
 @end
-
-@implementation UnavaliableDataNodeException
-@end
-
-
 

@@ -74,6 +74,7 @@
 
 @end
 
+#pragma mark -
 
 /**
  @brief The JSON writer class.
@@ -105,10 +106,14 @@
 
 @end
 
+#pragma mark -
+
 // don't use - exists for backwards compatibility. Will be removed in 2.3.
 @interface SBJsonWriter (Private)
 - (NSString*)stringWithFragment:(id)value;
 @end
+
+#pragma mark -
 
 /**
  @brief Allows generation of JSON for otherwise unsupported classes.
@@ -131,5 +136,5 @@
  */
 @interface NSObject (SBProxyForJson)
 - (id)proxyForJson;
-@end
 
+@end

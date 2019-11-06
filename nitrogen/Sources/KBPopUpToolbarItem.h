@@ -19,7 +19,6 @@
 #import <Cocoa/Cocoa.h>
 @class KBDelayedPopUpButton;
 
-
 @interface KBPopUpToolbarItem : NSToolbarItem
 {
 	KBDelayedPopUpButton *button;
@@ -31,6 +30,8 @@
 - (NSMenu *)menu;
 
 @end
+
+#pragma mark -
 
 @interface KBDelayedPopUpButtonCell : NSButtonCell {
     NSBezierPath* arrowPath;

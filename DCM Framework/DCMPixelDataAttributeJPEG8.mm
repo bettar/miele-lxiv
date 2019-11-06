@@ -417,13 +417,13 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 	if (DCMDEBUG)
         NSLog(@"convertjpeg8LosslessToHost");
     
-	struct jpeg_error_mgr			theJErr;		 /* the JPEG error manager var */
-	struct jpeg_decompress_struct	theCInfo;
-	unsigned long				    theLimit;
-	int								theRowStride;	 	/* physical row width in output buffer */
-	unsigned char					*theWrkCh8P; 		/* ptr to the image 8 bits */
-	unsigned char					*theBuffer8P;
-	NSMutableData					*rawData = nil ;
+	struct jpeg_error_mgr theJErr;  /* the JPEG error manager var */
+	struct jpeg_decompress_struct theCInfo;
+	unsigned long theLimit;
+	int theRowStride;               /* physical row width in output buffer */
+	unsigned char *theWrkCh8P;      /* ptr to the image 8 bits */
+	unsigned char *theBuffer8P;
+	NSMutableData *rawData = nil ;
 	
 	theCInfo.err = jpeg_std_error (&theJErr);
 	jpeg_create_decompress (&theCInfo);
@@ -439,7 +439,7 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 		case 1:
 			theCInfo.jpeg_color_space = JCS_GRAYSCALE;
 			theCInfo.out_color_space = JCS_GRAYSCALE;
-		break;
+            break;
     
 		case 3:
 		{
@@ -471,20 +471,22 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 					{
 						case 0:
 							theCInfo.jpeg_color_space = JCS_RGB;
-						break;
-						case 1:
+                            break;
+
+                        case 1:
 							theCInfo.jpeg_color_space = JCS_YCbCr;
-						break;
-						default:
+                            break;
+
+                        default:
 							theCInfo.jpeg_color_space = JCS_YCbCr; /* assume it's YCbCr */
-						break;
+                            break;
 					}
 				}
 				else
                     theCInfo.jpeg_color_space = JCS_RGB;
 			}
 		}
-		break;
+            break;
 	}
 //	if (_samplesPerPixel == 3)
 //	{
@@ -493,7 +495,7 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 //	}
 	
 	//start decompress	
-	 (void) jpeg_start_decompress (&theCInfo);
+    (void) jpeg_start_decompress (&theCInfo);
 	 
 	/* JSAMPLEs per row in output buffer */
 	theRowStride = theCInfo.output_width * theCInfo.output_components;
@@ -519,10 +521,9 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
     
     /* frees the row used by the decompressor */
 
-   free(theBuffer8P);
+    free(theBuffer8P);
 
-
-	(void) jpeg_finish_decompress (&theCInfo);
+    (void) jpeg_finish_decompress (&theCInfo);
   
   /* MAL added : cf Example.c */
   /* Step 8: Release JPEG decompression object */
@@ -576,14 +577,24 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
         DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
         NSString *photometricInterpretation = [attr value];
         J_COLOR_SPACE jpegColorSpace = JCS_UNKNOWN;
-        if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME1"])
+        if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] ||
+            [photometricInterpretation isEqualToString:@"MONOCHROME2"])
+        {
             jpegColorSpace = JCS_GRAYSCALE;
+        }
             
-        if ([photometricInterpretation isEqualToString:@"RGB"] || [photometricInterpretation isEqualToString:@"ARGB"])
+        if ([photometricInterpretation isEqualToString:@"RGB"] ||
+            [photometricInterpretation isEqualToString:@"ARGB"])
+        {
             jpegColorSpace = JCS_RGB;
+        }
             
-        if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"] || [photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"] || [photometricInterpretation isEqualToString:@"YBR_FULL"])
+        if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"] ||
+            [photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"] ||
+            [photometricInterpretation isEqualToString:@"YBR_FULL"])
+        {
             jpegColorSpace = JCS_YCbCr;
+        }
             
         if ([photometricInterpretation isEqualToString:@"CMYK"])
             jpegColorSpace = JCS_CMYK;

@@ -45,8 +45,10 @@ NSString* N2ViewBoundsSizeDidChangeNotificationOldBoundsSize = @"oldBoundsSize";
 	[[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:N2ViewBoundsSizeDidChangeNotification object:self userInfo:[NSDictionary dictionaryWithObject:[NSValue valueWithSize:oldBoundsSize] forKey:N2ViewBoundsSizeDidChangeNotificationOldBoundsSize]]];
 }
 
--(void)formatSubview:(NSView*)view {
-	if (view) {
+-(void)formatSubview:(NSView*)view
+{
+	if (view)
+    {
 		if (_foreColor && [view respondsToSelector:@selector(setTextColor:)])
 			[view performSelector:@selector(setTextColor:) withObject:_foreColor];
 		if (_backColor && [view respondsToSelector:@selector(setBackgroundColor:)])
@@ -55,13 +57,15 @@ NSString* N2ViewBoundsSizeDidChangeNotificationOldBoundsSize = @"oldBoundsSize";
 			[(NSText*)view setDrawsBackground:NO];
 		//if ([view respondsToSelector:@selector(setFont:)] && [view performSelector:@selector(font)])
 		//	[view performSelector:@selector(setFont:) withObject:[NSFont fontWithName:[[view performSelector:@selector(font)] fontName] size:[NSFont systemFontSizeForControlSize:[self controlSize]]]];
-	} else
+	}
+    else
 		view = self;
 	
 	for (NSView* subview in [view subviews])
 		if (![subview isKindOfClass:[N2View class]] || [(N2View*)subview n2layout] == NULL)
 			[self formatSubview:subview];
-	if ([view respondsToSelector:@selector(additionalSubviews)])
+
+    if ([view respondsToSelector:@selector(additionalSubviews)])
 		for (NSView* subview in [view performSelector:@selector(additionalSubviews)])
 			if (![subview isKindOfClass:[N2View class]] || [(N2View*)subview n2layout] == NULL)
 				[self formatSubview:subview];

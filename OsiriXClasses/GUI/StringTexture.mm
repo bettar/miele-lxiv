@@ -26,27 +26,27 @@
 - (void) deleteTexture
 {
 	NSOpenGLContext *c = [NSOpenGLContext currentContext];
+    if (!c)
+        return;
 	
 	NSUInteger index = [ctxArray indexOfObjectIdenticalTo: c];
-	
-	if( c && index != NSNotFound)
-	{
-		GLuint t = [[textArray objectAtIndex: index] intValue];
-		CGLContextObj cgl_ctx = [c CGLContextObj];
-		
-        if( cgl_ctx)
-        {
-            if( t)
-                (*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
-            else
-                N2LogStackTrace( @"deleteTexture");
-		}
+	if (index == NSNotFound)
+        return;
+
+    CGLContextObj cgl_ctx = [c CGLContextObj];
+    if (cgl_ctx)
+    {
+        GLuint t = [[textArray objectAtIndex: index] intValue];
+        if (t)
+            (*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
         else
             N2LogStackTrace( @"deleteTexture");
-        
-		[ctxArray removeObjectAtIndex: index];
-		[textArray removeObjectAtIndex: index];
-	}
+    }
+    else
+        N2LogStackTrace( @"deleteTexture");
+    
+    [ctxArray removeObjectAtIndex: index];
+    [textArray removeObjectAtIndex: index];
 }
 
 - (void) deleteTexture:(NSOpenGLContext*) c
@@ -74,7 +74,10 @@
 }
 
 // designated initializer
-- (id) initWithAttributedString:(NSAttributedString *)attributedString withTextColor:(NSColor *)text withBoxColor:(NSColor *)box withBorderColor:(NSColor *)border
+- (id) initWithAttributedString:(NSAttributedString *)attributedString
+                  withTextColor:(NSColor *)text
+                   withBoxColor:(NSColor *)box
+                withBorderColor:(NSColor *)border
 {
 	self = [super init];
 	antialiasing = NO;
@@ -95,20 +98,26 @@
 
 - (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs withTextColor:(NSColor *)text withBoxColor:(NSColor *)box withBorderColor:(NSColor *)border
 {
-	if( aString == nil) aString = @"";
+	if ( aString == nil)
+        aString = @"";
+
 	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease] withTextColor:text withBoxColor:box withBorderColor:border];
 }
 
 // basic methods that pick up defaults
 - (id) initWithAttributedString:(NSAttributedString *)attributedString;
 {
-	if( attributedString == nil) attributedString = [[[NSAttributedString alloc] initWithString: @""] autorelease];
+	if ( attributedString == nil)
+        attributedString = [[[NSAttributedString alloc] initWithString: @""] autorelease];
+    
 	return [self initWithAttributedString:attributedString withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f]];
 }
 
 - (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs
 {
-	if( aString == nil) aString = @"";
+	if ( aString == nil)
+        aString = @"";
+    
 	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease] withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
 }
 
@@ -208,7 +217,8 @@
 
 - (GLuint) genTextureWithBackingScaleFactor: (float) backingScaleFactor; // generates the texture without drawing texture to current context
 {
-    if( backingScaleFactor != 1.0 && backingScaleFactor != 2.0)
+    if (backingScaleFactor != 1.0 &&
+        backingScaleFactor != 2.0)
     {
 //        NSLog( @"******** genTextureWithBackingScaleFactor backingScaleFactor == %f", backingScaleFactor);
         backingScaleFactor = [[NSScreen mainScreen] backingScaleFactor];
@@ -217,16 +227,18 @@
     sf = backingScaleFactor;
     
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
-	CGLContextObj cgl_ctx = [currentContext CGLContextObj];
-	
-	if( currentContext == nil)
+	if (currentContext == nil)
 	{
 		NSLog( @"********* NO CURRENT CONTEXT for genTexture");
 		return 0;
 	}
-	
+
+    CGLContextObj cgl_ctx = [currentContext CGLContextObj];
+
 	[self deleteTexture: currentContext];
-	if( staticFrame == NO && frameSize.width == 0 && frameSize.height == 0) // find frame size if we have not already found it
+	if (staticFrame == NO &&
+        frameSize.width == 0 &&
+        frameSize.height == 0) // find frame size if we have not already found it
     {
 		frameSize = [string size]; // current string size
 		frameSize.width += marginSize.width * 2.0f; // add padding
@@ -305,14 +317,14 @@
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
 	GLuint texName = 0;
     
-    if( sf != currentContext.view.window.backingScaleFactor)
+    if (sf != currentContext.view.window.backingScaleFactor)
     {
         while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
     }
     
 	NSUInteger index = [ctxArray indexOfObjectIdenticalTo: currentContext];
     
-	if( index != NSNotFound)
+	if (index != NSNotFound)
 		texName = [[textArray objectAtIndex: index] intValue];
 	
 	if (!texName)
@@ -326,66 +338,83 @@
         
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
 		
-		glBegin (GL_QUADS);
-		
-		if( yFlipped == NO && xFlipped == NO)
-		{
-			glTexCoord2f (0.0f, 0.0f); // draw upper left in world coordinates
-			glVertex2f (bounds.origin.x, bounds.origin.y);
-	
-			glTexCoord2f (0.0f, texSize.height); // draw lower left in world coordinates
-			glVertex2f (bounds.origin.x, bounds.origin.y + bounds.size.height);
+        // world coordinates ?
+        GLfloat xA, yA; // upper left
+        GLfloat xB, yB; // lower left
+        GLfloat xC, yC; // upper right
+        GLfloat xD, yD; // lower right
 
-			glTexCoord2f (texSize.width, texSize.height); // draw upper right in world coordinates
-			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
-	
-			glTexCoord2f (texSize.width, 0.0f); // draw lower right in world coordinates
-			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
+        if ( yFlipped == NO && xFlipped == NO)
+        {
+            xA = bounds.origin.x;
+            yA = bounds.origin.y;
+    
+            xB = bounds.origin.x;
+            yB = bounds.origin.y + bounds.size.height;
 
-		}
-		else if( yFlipped == YES && xFlipped == YES)
-		{
-			glTexCoord2f (0.0f, 0.0f); // draw upper left in world coordinates
-			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
-	
-			glTexCoord2f (0.0f, texSize.height); // draw lower left in world coordinates
-			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
+            xC = bounds.origin.x + bounds.size.width;
+            yC = bounds.origin.y + bounds.size.height;
 
-			glTexCoord2f (texSize.width, texSize.height); // draw upper right in world coordinates
-			glVertex2f (bounds.origin.x, bounds.origin.y);
-	
-			glTexCoord2f (texSize.width, 0.0f); // draw lower right in world coordinates
-			glVertex2f (bounds.origin.x, bounds.origin.y + bounds.size.height);
-		}
-		else if( yFlipped == YES && xFlipped == NO)
-		{
-			glTexCoord2f (0.0f, 0.0f); // draw upper left in world coordinates
-			glVertex2f (bounds.origin.x, bounds.origin.y + bounds.size.height);
-	
-			glTexCoord2f (0.0f, texSize.height); // draw lower left in world coordinates
-			glVertex2f (bounds.origin.x, bounds.origin.y);
+            xD = bounds.origin.x + bounds.size.width;
+            yD = bounds.origin.y;
+        }
+        else if ( yFlipped == YES && xFlipped == YES)
+        {
+            xA = bounds.origin.x + bounds.size.width;
+            yA = bounds.origin.y + bounds.size.height;
 
-			glTexCoord2f (texSize.width, texSize.height); // draw upper right in world coordinates
-			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
-	
-			glTexCoord2f (texSize.width, 0.0f); // draw lower right in world coordinates
-			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
-		}
-		else if( yFlipped == NO && xFlipped == YES)
-		{
-			glTexCoord2f (0.0f, 0.0f); // draw upper left in world coordinates
-			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
+            xB = bounds.origin.x + bounds.size.width;
+            yB = bounds.origin.y;
+
+            xC = bounds.origin.x;
+            yC = bounds.origin.y;
+
+            xD = bounds.origin.x;
+            yD = bounds.origin.y + bounds.size.height;
+        }
+        else if ( yFlipped == YES && xFlipped == NO)
+        {
+            xA = bounds.origin.x;
+            yA = bounds.origin.y + bounds.size.height;
+
+            xB = bounds.origin.x;
+            yB = bounds.origin.y;
+
+            xC = bounds.origin.x + bounds.size.width;
+            yC = bounds.origin.y;
+
+            xD = bounds.origin.x + bounds.size.width;
+            yD = bounds.origin.y + bounds.size.height;
+        }
+        else // if ( yFlipped == NO && xFlipped == YES)
+        {
+            xA = bounds.origin.x + bounds.size.width;
+            yA = bounds.origin.y;
+
+            xB = bounds.origin.x + bounds.size.width;
+            yB = bounds.origin.y + bounds.size.height;
             
-			glTexCoord2f (0.0f, texSize.height); // draw lower left in world coordinates
-			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
-            
-			glTexCoord2f (texSize.width, texSize.height); // draw upper right in world coordinates
-			glVertex2f (bounds.origin.x, bounds.origin.y + bounds.size.height);
-            
-			glTexCoord2f (texSize.width, 0.0f); // draw lower right in world coordinates
-			glVertex2f (bounds.origin.x, bounds.origin.y);
-		}
-		
+            xC = bounds.origin.x;
+            yC = bounds.origin.y + bounds.size.height;
+
+            xD = bounds.origin.x;
+            yD = bounds.origin.y;
+        }
+
+        glBegin (GL_QUADS);
+        {
+            glTexCoord2f(0.0f, 0.0f);
+            glVertex2f(xA, yA);
+    
+            glTexCoord2f(0.0f, texSize.height);
+            glVertex2f(xB, yB);
+
+            glTexCoord2f(texSize.width, texSize.height);
+            glVertex2f(xC, yC);
+    
+            glTexCoord2f(texSize.width, 0.0f);
+            glVertex2f(xD, yD);
+        }
 		glEnd ();
 	}
 }
@@ -395,7 +424,7 @@
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
 	GLuint texName = 0;
 	NSUInteger index = [ctxArray indexOfObjectIdenticalTo: currentContext];
-	if( index != NSNotFound)
+	if (index != NSNotFound)
 		texName = [[textArray objectAtIndex: index] intValue];
 	
 	if (!texName)
@@ -403,7 +432,6 @@
 	
 	if (texName) // if successful
 		[self drawWithBounds:NSMakeRect (point.x, point.y, texSize.width, texSize.height*ratio)];
-
 }
 
 - (void) drawAtPoint:(NSPoint)point

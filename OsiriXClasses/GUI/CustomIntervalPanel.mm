@@ -48,7 +48,7 @@
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-    [BrowserController currentBrowser].timeIntervalType = 0;
+    [BrowserController currentBrowser].timeIntervalType = TIME_INTERVAL_NONE;
 }
 
 - (id)initWithWindow:(NSWindow *)window
@@ -153,7 +153,7 @@
         }
         
         if( [[self window] isVisible])
-            [BrowserController currentBrowser].timeIntervalType = 100;
+            [BrowserController currentBrowser].timeIntervalType = TIME_INTERVAL_CUSTOM;
     }
 }
 
@@ -180,7 +180,7 @@
         }
         
         if( [[self window] isVisible])
-            [BrowserController currentBrowser].timeIntervalType = 100;
+            [BrowserController currentBrowser].timeIntervalType = TIME_INTERVAL_CUSTOM;
     }
 }
 - (IBAction) nowFrom:(id)sender;

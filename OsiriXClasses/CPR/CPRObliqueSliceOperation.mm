@@ -38,6 +38,7 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
 
 @end
 
+#pragma mark -
 
 @implementation CPRObliqueSliceOperation
 
@@ -110,9 +111,6 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
 
 - (void)main
 {
-    NSInteger i;
-    NSInteger y;
-    NSInteger z;
     NSInteger pixelsWide;
     NSInteger pixelsHigh;
     NSInteger pixelsDeep;
@@ -132,8 +130,6 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     @try {
-        
-        
         if ([self isCancelled] == NO && self.request.pixelsHigh > 0) {        
             pixelsWide = self.request.pixelsWide;
             pixelsHigh = self.request.pixelsHigh;
@@ -174,7 +170,7 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
                 return;
             }
             
-            for (i = 0; i < pixelsWide; i++) {
+            for (NSInteger i = 0; i < pixelsWide; i++) {
                 vectors[i] = N3VectorAdd(origin, N3VectorScalarMultiply(leftDirection, (CGFloat)i));
                 downVectors[i] = downDirection;
             }
@@ -182,11 +178,11 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
                         
             fillOperations = [NSMutableSet set];
             
-            for (z = 0; z < pixelsDeep; z++) {
+            for (NSInteger z = 0; z < pixelsDeep; z++) {
                 slabOffset = N3VectorScalarMultiply(inSlabNormal, (CGFloat)z - (CGFloat)(pixelsDeep - 1)/2.0);
-                for (y = 0; y < pixelsHigh; y += FILL_HEIGHT) {
+                for (NSInteger y = 0; y < pixelsHigh; y += FILL_HEIGHT) {
                     heightOffset = N3VectorScalarMultiply(downDirection, (CGFloat)y);
-                    for (i = 0; i < pixelsWide; i++) {
+                    for (NSInteger i = 0; i < pixelsWide; i++) {
                         fillVectors[i] = N3VectorAdd(N3VectorAdd(vectors[i], heightOffset), slabOffset);
                     }
                     

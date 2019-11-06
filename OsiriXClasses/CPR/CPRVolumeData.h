@@ -114,10 +114,11 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
 
 - (BOOL)isDataValid __deprecated;
 - (void)invalidateData __deprecated;
-- (void)releaseInlineBuffer:(CPRVolumeDataInlineBuffer *)inlineBuffer __deprecated; // CPRVolumeTransform can no longer be invalided so the this is no longer needed
+- (void)releaseInlineBuffer:(CPRVolumeDataInlineBuffer *)inlineBuffer __deprecated; // CPRVolumeTransform can no longer be invalided so this is no longer needed
 
 @end
 
+#pragma mark -
 
 @interface CPRVolumeData (DCMPixAndVolume) // make a nice clean interface between the rest of of OsiriX that deals with pixlist and all their complications, and fill out our convenient data structure.
 
@@ -136,7 +137,6 @@ CF_INLINE const float* CPRVolumeDataFloatBytes(CPRVolumeDataInlineBuffer *inline
 {
 	return inlineBuffer->floatBytes;
 }
-
 
 CF_INLINE float CPRVolumeDataGetFloatAtPixelCoordinate(CPRVolumeDataInlineBuffer *inlineBuffer, NSInteger x, NSInteger y, NSInteger z)
 {

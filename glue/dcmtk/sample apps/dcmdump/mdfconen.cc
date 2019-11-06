@@ -483,6 +483,7 @@ int MdfConsoleEngine::executeJob(const MdfJob &job,
         error_count++;
         OFLOG_ERROR(dcmodifyLogger, "no valid option: " << job.option);
     }
+
     // if modify operation failed
     if (result.bad() && error_count == 0)
     {
@@ -490,8 +491,10 @@ int MdfConsoleEngine::executeJob(const MdfJob &job,
             OFLOG_ERROR(dcmodifyLogger, "modifying tag in file " << OFString(filename) << ": " << result.text());
         else
             OFLOG_ERROR(dcmodifyLogger, "modifying tag: " << result.text());
+
         error_count++;
     }
+
     return error_count;
 }
 

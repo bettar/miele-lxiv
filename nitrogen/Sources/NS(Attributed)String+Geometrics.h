@@ -141,6 +141,8 @@ extern NSTypesetterBehavior gNSStringGeometricsTypesetterBehavior ;
 
 @end
 
+#pragma mark -
+
 @interface NSString (Geometrics)
 
 // Measuring a String With Attributes

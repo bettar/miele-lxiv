@@ -70,21 +70,20 @@ extern short Use_kdu_IfAvailable;
 // use 16K blocks for temporary storage of compressed JPEG data
 #define IJGE12_BLOCKSIZE 16384
 
-///**
 //sample error callback expecting a FILE* client object
 //*/
 //static void error_callback(const char *msg, void *a)
 //{
 //	printf( "%s", msg);
 //}
-///**
+
 //sample warning callback expecting a FILE* client object
 //*/
 //static void warning_callback(const char *msg, void *a)
 //{
 //	printf( "%s", msg);
 //}
-///**
+
 //sample debug callback expecting no client object
 //*/
 //static void info_callback(const char *msg, void *a)
@@ -92,10 +91,10 @@ extern short Use_kdu_IfAvailable;
 //    printf( "%s", msg);
 //}
 
-static inline int int_ceildivpow2(int a, int b)
-{
-	return (a + (1 << b) - 1) >> b;
-}
+//static inline int int_ceildivpow2(int a, int b)
+//{
+//	return (a + (1 << b) - 1) >> b;
+//}
 
 DJCompressJP2K::DJCompressJP2K(const DJCodecParameter& cp, EJ_Mode mode, Uint8 theQuality, Uint8 theBitsPerSample)
 : DJEncoder()

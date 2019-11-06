@@ -84,7 +84,6 @@ static float deg2rad = M_PI / 180.0;
 @synthesize exportSeriesType;
 @synthesize exportRotationSpan;
 @synthesize exportReverseSliceOrder;
-//@synthesize exportSlabThinknessSameAsSlabThickness;
 @synthesize exportSlabThickness, exportNumberOfRotationFrames;
 @synthesize exportSliceIntervalSameAsVolumeSliceInterval;
 @synthesize exportSliceInterval, exportTransverseSliceInterval;
@@ -215,8 +214,8 @@ static float deg2rad = M_PI / 180.0;
 #endif
 	@try
 	{
-		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
-			[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+		if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] == ANNOTATIONS_NONE)
+			[[NSUserDefaults standardUserDefaults] setInteger: ANNOTATIONS_GRAPHICS forKey: ANNOTATIONS_KEY];
 		
 		viewer2D = viewer;
 		
@@ -403,7 +402,13 @@ static float deg2rad = M_PI / 180.0;
 			self.blendingMode = 0;
 		}
 		        
-		hiddenVRController = [[VRController alloc] initWithPix:pix :files :volume :fusedViewer2D :viewer style:@"noNib" mode:@"MIP"];
+		hiddenVRController = [[VRController alloc] initWithPix:pix
+                                                              :files
+                                                              :volume
+                                                              :fusedViewer2D
+                                                              :viewer
+                                                         style:@"noNib"
+                                                          mode:@"MIP"];
 		[hiddenVRController retain];
 		
 		// To avoid the "invalid drawable" message
@@ -511,7 +516,7 @@ static float deg2rad = M_PI / 180.0;
 		
 		[self setToolIndex: tWL];
         
-        self.cprType = [[NSUserDefaults standardUserDefaults] integerForKey: @"SavedCPRType"];
+        self.cprType = (CPRType)[[NSUserDefaults standardUserDefaults] integerForKey: @"SavedCPRType"];
         
         [[self window] registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, nil]];
         
@@ -2677,13 +2682,14 @@ static float deg2rad = M_PI / 180.0;
 		
 		if (self.exportImageFormat == CPR16BitExportImageFormat)
 		{
-			switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
+			switch ([[NSUserDefaults standardUserDefaults] integerForKey:EXPORTMATRIXFOR3D_KEY])
 			{
-				case 1: 
+				case EXPORT_SIZE_512:
 					exportWidth = exportHeight = 512;
 					resizeImage = 512;
 					break;
-				case 2:
+
+                case EXPORT_SIZE_768:
 					exportWidth = exportHeight = 768;
 					resizeImage = 768;
 					break;
@@ -2702,13 +2708,13 @@ static float deg2rad = M_PI / 180.0;
 			[views addObject: middleTransverseView];
 			[views addObject: bottomTransverseView];
 			
-			for( int i = (long)views.count-1; i >= 0; i--)
+			for (int i = views.count-1; i >= 0; i--)
 			{
 				if (NSEqualRects( [[views objectAtIndex: i] visibleRect], NSZeroRect))
 					[views removeObjectAtIndex: i];
 			}
 			
-			for( NSView *v in views)
+			for ( NSView *v in views)
 			{
 				NSRect bounds = [v bounds];
 				NSPoint _or = [v convertPoint: bounds.origin toView: nil];
@@ -3187,11 +3193,18 @@ static float deg2rad = M_PI / 180.0;
 	
 	curExportView = [self selectedView];
 	
+    NSWindow *sheet;
 	if (quicktimeExportMode)
-		[NSApp beginSheet: quicktimeWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+		sheet = quicktimeWindow;
 	else
-		[NSApp beginSheet: dcmWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
-	
+        sheet = dcmWindow;
+
+    [NSApp beginSheet:sheet
+       modalForWindow:self.window
+        modalDelegate:self
+       didEndSelector:nil
+          contextInfo:(void*) nil];
+
     self.exportSlabThickness = fabs( [self getClippingRangeThicknessInMm]);
     self.exportSliceInterval = fabs( [cprView.volumeData minPixelSpacing]);
     self.exportTransverseSliceInterval = fabs( [curvedPath transverseSectionSpacing]);
@@ -3305,7 +3318,7 @@ static float deg2rad = M_PI / 180.0;
 //	self.dcmBatchNumberOfFrames = 1 + dcmTo + dcmFrom;
 //}
 
-- (void) setExportImageFormat: (NSInteger) f
+- (void) setExportImageFormat: (CPRExportImageFormat) f
 {
 	exportImageFormat = f;
 	
@@ -3320,7 +3333,7 @@ static float deg2rad = M_PI / 180.0;
 		if (self.exportSeriesType == CPRTransverseViewsExportSeriesType)
 			self.exportSeriesType = CPRRotationExportSeriesType;
 		
-		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey:@"EXPORTMATRIXFOR3D"];
+		[[NSUserDefaults standardUserDefaults] setInteger:EXPORT_SIZE_CURRENT forKey:EXPORTMATRIXFOR3D_KEY];
 	}
 }
 
@@ -4333,7 +4346,7 @@ static float deg2rad = M_PI / 180.0;
     if (thisTime - lastMovieTime > 1.0 / self.movieRate)
     {
         val = self.curMovieIndex;
-        val ++;
+        val++;
         
 		if (val < 0) val = 0;
 		if (val > self.maxMovieIndex) val = 0;
@@ -4537,7 +4550,7 @@ static float deg2rad = M_PI / 180.0;
     }
 }
 
-- (void)setViewsPosition:(ViewsPosition) newViewsPosition
+- (void)setViewsPosition:(CPRLayoutType) newViewsPosition
 {
     NSDisableScreenUpdates();
     
@@ -4579,11 +4592,10 @@ static float deg2rad = M_PI / 180.0;
     NSEnableScreenUpdates();
 }
 
-- (ViewsPosition)viewsPosition
+- (CPRLayoutType)viewsPosition
 {
     return viewsPosition;
 }
-
 
 //- (void)setStraightenedCPRAngle:(double)newAngle
 //{

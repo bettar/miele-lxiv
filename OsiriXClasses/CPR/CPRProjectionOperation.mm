@@ -48,7 +48,6 @@
 - (void)main
 {
     float *floatBytes;
-    NSInteger i;
     float floati;
     NSInteger pixelsPerPlane;
 	N3AffineTransform volumeTransform;
@@ -72,7 +71,7 @@
         memcpy(floatBytes, CPRVolumeDataFloatBytes(&inlineBuffer), sizeof(float) * pixelsPerPlane);
         switch (_projectionMode) {
             case CPRProjectionModeMIP:
-                for (i = 1; i < _volumeData.pixelsDeep; i++) {
+                for (NSInteger i = 1; i < _volumeData.pixelsDeep; i++) {
                     if ([self isCancelled]) {
                         break;
                     }
@@ -80,7 +79,7 @@
                 }
                 break;
             case CPRProjectionModeMinIP:
-                for (i = 1; i < _volumeData.pixelsDeep; i++) {
+                for (NSInteger i = 1; i < _volumeData.pixelsDeep; i++) {
                     if ([self isCancelled]) {
                         break;
                     }					
@@ -88,7 +87,7 @@
                 }
                 break;
             case CPRProjectionModeMean:
-                for (i = 1; i < _volumeData.pixelsDeep; i++) {
+                for (NSInteger i = 1; i < _volumeData.pixelsDeep; i++) {
                     if ([self isCancelled]) {
                         break;
                     }					

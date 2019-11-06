@@ -382,8 +382,10 @@ extern int splitPosition[ 3];
 		length *= 0.1; // We want cm
 		
 		[topLeft addObject: [NSArray arrayWithObject: [NSString stringWithFormat: NSLocalizedString( @"A-B : %2.2f cm", nil), length*fabs( _curvedPath.transverseSectionPosition - _curvedPath.leftTransverseSectionPosition)]]];
-		[topLeft addObject: [NSArray arrayWithObject: [NSString stringWithFormat: NSLocalizedString( @"B-C : %2.2f cm", nil), length*fabs( _curvedPath.transverseSectionPosition - _curvedPath.rightTransverseSectionPosition)]]];
-		[topLeft addObject: [NSArray arrayWithObject: [NSString stringWithFormat: NSLocalizedString( @"A-C : %2.2f cm", nil), length*fabs( _curvedPath.leftTransverseSectionPosition - _curvedPath.rightTransverseSectionPosition)]]];
+
+        [topLeft addObject: [NSArray arrayWithObject: [NSString stringWithFormat: NSLocalizedString( @"B-C : %2.2f cm", nil), length*fabs( _curvedPath.transverseSectionPosition - _curvedPath.rightTransverseSectionPosition)]]];
+
+        [topLeft addObject: [NSArray arrayWithObject: [NSString stringWithFormat: NSLocalizedString( @"A-C : %2.2f cm", nil), length*fabs( _curvedPath.leftTransverseSectionPosition - _curvedPath.rightTransverseSectionPosition)]]];
 		
 		[super drawTextualData: size :annotations];
 		
@@ -469,9 +471,11 @@ extern int splitPosition[ 3];
     
 	glLineWidth(2.0 * self.window.backingScaleFactor);
     glBegin(GL_LINES);
-    glColor4d(0.0, 1.0, 0.0, 0.2);
-    glVertex2d(lineStart.x, lineStart.y);
-    glVertex2d(lineEnd.x, lineEnd.y);
+    {
+        glColor4d(0.0, 1.0, 0.0, 0.2);
+        glVertex2d(lineStart.x, lineStart.y);
+        glVertex2d(lineEnd.x, lineEnd.y);
+    }
     glEnd();
 	
 	glColor4d(0.0, 1.0, 0.0, 0.8);
@@ -486,7 +490,9 @@ extern int splitPosition[ 3];
         glPointSize(8 * self.window.backingScaleFactor);
         
         glBegin(GL_POINTS);
-        glVertex2f(cursorVector.x, cursorVector.y);
+        {
+            glVertex2f(cursorVector.x, cursorVector.y);
+        }
         glEnd();
     }
     
@@ -498,8 +504,10 @@ extern int splitPosition[ 3];
         lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*draggedPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
         glLineWidth(2.0 * self.window.backingScaleFactor);
         glBegin(GL_LINE_STRIP);
-        glVertex2f(lineStart.x, lineStart.y);
-        glVertex2f(lineEnd.x, lineEnd.y);
+        {
+            glVertex2f(lineStart.x, lineStart.y);
+            glVertex2f(lineEnd.x, lineEnd.y);
+        }
         glEnd();
 	}
     
@@ -537,8 +545,10 @@ extern int splitPosition[ 3];
 			lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight/2. + transverseWidth/2., 0), pixToSubDrawRectTransform);
 			glLineWidth(2.0 * self.window.backingScaleFactor);
 			glBegin(GL_LINE_STRIP);
-			glVertex2f(lineStart.x, lineStart.y);
-			glVertex2f(lineEnd.x, lineEnd.y);
+            {
+                glVertex2f(lineStart.x, lineStart.y);
+                glVertex2f(lineEnd.x, lineEnd.y);
+            }
 			glEnd();
 		}
 	}
@@ -561,8 +571,10 @@ extern int splitPosition[ 3];
 
 		glLineWidth(2.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_STRIP);
-		glVertex2f(lineBStart.x, lineBStart.y);
-		glVertex2f(lineBEnd.x, lineBEnd.y);
+        {
+            glVertex2f(lineBStart.x, lineBStart.y);
+            glVertex2f(lineBEnd.x, lineBEnd.y);
+        }
 		glEnd();
 				
 		leftTransverseSectionPosition = _curvedPath.leftTransverseSectionPosition;
@@ -573,8 +585,10 @@ extern int splitPosition[ 3];
 
 		glLineWidth(1.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_STRIP);
-		glVertex2f(lineAStart.x, lineAStart.y);
-		glVertex2f(lineAEnd.x, lineAEnd.y);
+        {
+            glVertex2f(lineAStart.x, lineAStart.y);
+            glVertex2f(lineAEnd.x, lineAEnd.y);
+        }
 		glEnd();
 		
 		rightTransverseSectionPosition = _curvedPath.rightTransverseSectionPosition;
@@ -584,8 +598,10 @@ extern int splitPosition[ 3];
 		lineCEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, curDCM.pheight/2. + transverseWidth/2., 0), pixToSubDrawRectTransform);
 
 		glBegin(GL_LINE_STRIP);
-		glVertex2f(lineCStart.x, lineCStart.y);
-		glVertex2f(lineCEnd.x, lineCEnd.y);
+        {
+            glVertex2f(lineCStart.x, lineCStart.y);
+            glVertex2f(lineCEnd.x, lineCEnd.y);
+        }
 		glEnd();
 		
 		// --- Text
@@ -681,7 +697,9 @@ extern int splitPosition[ 3];
 			glPointSize(8 * self.window.backingScaleFactor);
 			cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue], pixToSubDrawRectTransform);
 			glBegin(GL_POINTS);
-			glVertex2f(cursorVector.x, cursorVector.y);
+            {
+                glVertex2f(cursorVector.x, cursorVector.y);
+            }
 			glEnd();	
 		}
         
@@ -708,7 +726,9 @@ extern int splitPosition[ 3];
             glEnable(GL_POINT_SMOOTH);
             glPointSize(8 * self.window.backingScaleFactor);
             glBegin(GL_POINTS);
-            glVertex2f(cursorVector.x, cursorVector.y);
+            {
+                glVertex2f(cursorVector.x, cursorVector.y);
+            }
             glEnd();
         }
     }
@@ -733,7 +753,9 @@ extern int splitPosition[ 3];
             glPointSize(8 * self.window.backingScaleFactor);
             
             glBegin(GL_POINTS);
-            glVertex2f(cursorVector.x, cursorVector.y);
+            {
+                glVertex2f(cursorVector.x, cursorVector.y);
+            }
             glEnd();
         }
     }
@@ -754,10 +776,12 @@ extern int splitPosition[ 3];
 		
 		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_LOOP);
-        glVertex2f(  -widthhalf, -heighthalf);
-        glVertex2f(  -widthhalf, heighthalf);
-        glVertex2f(  widthhalf, heighthalf);
-        glVertex2f(  widthhalf, -heighthalf);
+        {
+            glVertex2f(  -widthhalf, -heighthalf);
+            glVertex2f(  -widthhalf, heighthalf);
+            glVertex2f(  widthhalf, heighthalf);
+            glVertex2f(  widthhalf, -heighthalf);
+        }
 		glEnd();
 	}
 	
@@ -801,7 +825,6 @@ extern int splitPosition[ 3];
 		NSPoint viewPoint;
 		N3Vector pixVector;
 		N3Line line;
-		NSInteger i;
 		BOOL overNode;
 		NSInteger hoverNodeIndex;
 		CGFloat relativePosition;
@@ -858,7 +881,7 @@ extern int splitPosition[ 3];
 			overNode = NO;
 			hoverNodeIndex = 0;
 			if (self.drawAllNodes) {
-				for (i = 0; i < [_curvedPath.nodes count]; i++) {
+				for (NSInteger i = 0; i < [_curvedPath.nodes count]; i++) {
 					relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
 					
 					if (N3VectorDistance(N3VectorMakeFromNSPoint(viewPoint),
@@ -919,7 +942,6 @@ extern int splitPosition[ 3];
     N3Vector pixVector;
     CGFloat pixWidth;
     CGFloat relativePosition;
-    NSInteger i;
     
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
@@ -933,10 +955,10 @@ extern int splitPosition[ 3];
 	
 	float exportTransverseSliceInterval = 0;
 	
-	if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
+	if ( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
 		exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
 	
-    if( exportTransverseSliceInterval == 0 && _displayTransverseLines && (ABS((pixVector.x/pixWidth) - _curvedPath.transverseSectionPosition)*pixWidth < 5.0))
+    if ( exportTransverseSliceInterval == 0 && _displayTransverseLines && (ABS((pixVector.x/pixWidth) - _curvedPath.transverseSectionPosition)*pixWidth < 5.0))
 	{
 		[self _sendWillEditCurvedPath];
         _draggingTransverse = YES;
@@ -950,7 +972,7 @@ extern int splitPosition[ 3];
     }
 	else
 	{
-        for (i = 0; i < [_curvedPath.nodes count]; i++)
+        for (NSInteger i = 0; i < [_curvedPath.nodes count]; i++)
 		{
             relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
             
@@ -1168,7 +1190,6 @@ extern int splitPosition[ 3];
 //    [lastDate release];
 //    lastDate = [[NSDate date] retain];
     
-    NSUInteger i;
     NSMutableArray *pixArray;
     DCMPix *newPix;
 	CPRVolumeDataInlineBuffer inlineBuffer;
@@ -1186,11 +1207,15 @@ extern int splitPosition[ 3];
     
     pixArray = [[NSMutableArray alloc] init];
     
-    for (i = 0; i < self.curvedVolumeData.pixelsDeep; i++)
+    for (NSUInteger i = 0; i < self.curvedVolumeData.pixelsDeep; i++)
 	{
 		[self.curvedVolumeData aquireInlineBuffer:&inlineBuffer];
-        newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.curvedVolumeData.pixelsWide*self.curvedVolumeData.pixelsHigh) :32
-                                             :self.curvedVolumeData.pixelsWide :self.curvedVolumeData.pixelsHigh :self.curvedVolumeData.pixelSpacingX :self.curvedVolumeData.pixelSpacingY
+        newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.curvedVolumeData.pixelsWide*self.curvedVolumeData.pixelsHigh)
+                                             :32
+                                             :self.curvedVolumeData.pixelsWide
+                                             :self.curvedVolumeData.pixelsHigh
+                                             :self.curvedVolumeData.pixelSpacingX
+                                             :self.curvedVolumeData.pixelSpacingY
                                              :0.0 :0.0 :0.0 :NO];
 
 		[newPix setImageObjectID: [[[self windowController] originalPix] imageObjectID]];
@@ -1204,7 +1229,7 @@ extern int splitPosition[ 3];
 	
 	if( [pixArray count])
 	{
-		for( i = 0; i < [pixArray count]; i++)
+		for (NSUInteger i = 0; i < [pixArray count]; i++)
 			[[pixArray objectAtIndex: i] setArrayPix:pixArray :i];
 		
 		[self setPixels:pixArray files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
@@ -1215,7 +1240,8 @@ extern int splitPosition[ 3];
 		
 		[self setFusion:[[self class] _fusionModeForCPRViewClippingRangeMode:_clippingRangeMode] :self.curvedVolumeData.pixelsDeep];
 		
-		if( previousWidth == [curDCM pwidth] && previousHeight == [curDCM pheight])
+		if (previousWidth == [curDCM pwidth] &&
+            previousHeight == [curDCM pheight])
 		{
 			[self setOrigin:previousOrigin];
 			[self setScaleValue: previousScale];
@@ -1223,7 +1249,7 @@ extern int splitPosition[ 3];
 		}
 		
 		NSArray *roiArray = [NSUnarchiver unarchiveObjectWithData: previousROIs];
-		for( ROI *r in roiArray)
+		for (ROI *r in roiArray)
 		{
 			r.pix = curDCM;
 			[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY) :NO :NO];
@@ -1459,64 +1485,67 @@ extern int splitPosition[ 3];
 
 - (void)_drawVerticalLines:(NSArray *)verticalLines
 {
-	NSNumber *indexNumber;
-	N3Vector lineStart;
-	N3Vector lineEnd;
-    double pixToSubdrawRectOpenGLTransform[16];
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if( cgl_ctx == nil)
+    if (cgl_ctx == nil)
         return;
     
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
-	for (indexNumber in verticalLines) {
-		lineStart = N3VectorMake([indexNumber doubleValue], 0, 0);
-        lineEnd = N3VectorMake([indexNumber doubleValue], curDCM.pheight, 0);
+	for (NSNumber *indexNumber in verticalLines) {
+		N3Vector lineStart = N3VectorMake([indexNumber doubleValue], 0, 0);
+        N3Vector lineEnd = N3VectorMake([indexNumber doubleValue], curDCM.pheight, 0);
         glBegin(GL_LINE_STRIP);
-        glVertex2d(lineStart.x, lineStart.y);
-        glVertex2d(lineEnd.x, lineEnd.y);
+        {
+            glVertex2d(lineStart.x, lineStart.y);
+            glVertex2d(lineEnd.x, lineEnd.y);
+        }
         glEnd();
 	}
+
     glPopMatrix();
 }
 
 - (void)_drawPlaneRuns:(NSArray*)planeRuns
 {
-	CGFloat pixelsPerMm;
-	NSInteger i;
-	N3Vector planePointVector;
 	_CPRStraightenedViewPlaneRun *planeRun;
-    double pixToSubdrawRectOpenGLTransform[16];
-    CGFloat pheight_2;
     
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	if( cgl_ctx == nil)
+	if (cgl_ctx == nil)
         return;
     
-	pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
-    pheight_2 = (CGFloat)curDCM.pheight/2.0;
+	CGFloat pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
+    CGFloat pheight_2 = (CGFloat)curDCM.pheight/2.0;
     
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
 	for (planeRun in planeRuns) {
 		glBegin(GL_LINE_STRIP);
-		for (i = 0; i < planeRun.range.length; i++) {
-			planePointVector = N3VectorMake(planeRun.range.location + i, ([[planeRun.distances objectAtIndex:i] doubleValue] * pixelsPerMm) + pheight_2, 0);
-			glVertex2d(planePointVector.x, planePointVector.y);
-		}
+        {
+            for (NSInteger i = 0; i < planeRun.range.length; i++)
+            {
+                N3Vector planePointVector = N3VectorMake(planeRun.range.location + i,
+                                                         ([[planeRun.distances objectAtIndex:i] doubleValue] * pixelsPerMm) + pheight_2,
+                                                         0);
+                glVertex2d(planePointVector.x, planePointVector.y);
+            }
+        }
 		glEnd();
 	}
+
     glPopMatrix();
 }
 
 - (NSArray *)_runsForPlane:(N3Plane)plane verticalLineIndexes:(NSArray **)verticalLinesHandle
 {
 	NSInteger numVectors;
-	NSInteger i;
 	BOOL topPointAbove;
 	BOOL bottomPointAbove;
 	BOOL prevBottomPointAbove;
@@ -1552,7 +1581,7 @@ extern int splitPosition[ 3];
 	halfHeight = ((CGFloat)curDCM.pheight*mmPerPixel)/2.0;
 	numVectors = N3BezierCoreGetVectorInfo([_curvedPath.bezierPath N3BezierCore], [_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth, 0, _curvedPath.initialNormal, points, NULL, normals, curDCM.pwidth);
 	
-	for (i = 0; i < numVectors; i++) {
+	for (NSInteger i = 0; i < numVectors; i++) {
 		bottom = N3VectorAdd(points[i], N3VectorScalarMultiply(normals[i], -halfHeight));
 		top = N3VectorAdd(points[i], N3VectorScalarMultiply(normals[i], halfHeight));
 		
@@ -1607,7 +1636,8 @@ extern int splitPosition[ 3];
 				[runs addObject:planeRun];
 				[planeRun release];
 				planeRun = nil;
-			} else if (ABS(prevAboveOrBelow - aboveOrBelow) == 2) { // if we switched sides without ever getting any points, put in a vertical line
+			}
+            else if (ABS(prevAboveOrBelow - aboveOrBelow) == 2) { // if we switched sides without ever getting any points, put in a vertical line
 				[verticalLines addObject:[NSNumber numberWithInteger:i]];
 			}
 		}
@@ -1887,11 +1917,9 @@ extern int splitPosition[ 3];
 
 - (id)initWithCPRStraightenedViewPlaneRun:(_CPRStraightenedViewPlaneRun *)planeRun heightPixelsPerMm:(CGFloat)pixelsPerMm
 {
-	NSInteger i;
-	N3MutableBezierPath *mutableBezierPath;
-	
-	mutableBezierPath = [[N3MutableBezierPath alloc] init];
-	for (i = planeRun.range.location; i < NSMaxRange(planeRun.range); i++) {
+	N3MutableBezierPath *mutableBezierPath = [[N3MutableBezierPath alloc] init];
+
+    for (NSInteger i = planeRun.range.location; i < NSMaxRange(planeRun.range); i++) {
 		if (i == planeRun.range.location) {
 			[mutableBezierPath moveToVector:N3VectorMake(i, [[planeRun.distances objectAtIndex:i - planeRun.range.location] doubleValue] * pixelsPerMm, 0)];
 		}

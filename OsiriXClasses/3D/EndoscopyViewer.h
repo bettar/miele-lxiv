@@ -25,6 +25,7 @@
 #import "Camera.h"
 #import "Window3DController.h"
 #import "FlyAssistant.h"
+#import "mieleTypes.h"
 
 @class OSIVoxel;
 
@@ -93,7 +94,7 @@
 
 @property(readonly) EndoscopyVRController *vrController;
 @property float lodDisplayed;
-@property int engine;
+@property EngineType engine;
 
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC : (ViewerController*) vC;
 - (BOOL) is2DViewer;

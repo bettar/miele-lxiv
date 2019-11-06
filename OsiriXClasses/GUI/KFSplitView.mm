@@ -982,14 +982,10 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 - (BOOL)setPositionAutosaveName:(NSString *)name
 {
     if ([name isEqualToString:@""])
-    {
         name = nil;
-    }
 
     if ([kfInUsePositionNames containsObject:name])
-    {
         return NO;
-    }
 
     if (kfPositionAutosaveName)
     {

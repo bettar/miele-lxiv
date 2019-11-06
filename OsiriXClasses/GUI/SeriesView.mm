@@ -174,12 +174,12 @@
 
 	int currentSize = imageRows * imageColumns;
 	int newSize = rows * columns;
-	int i;
 	
 	[[[self window] windowController] setUpdateTilingViewsValue: YES];
 	
 	BOOL wasVisible = [[self window] isVisible];
-	if( wasVisible) [[self window] orderOut: self];
+	if (wasVisible)
+        [[self window] orderOut: self];
 	
 	BOOL imageLevel = NO;
 	if( rescale)
@@ -197,11 +197,11 @@
             }
             
             float xOffset = [[imageObj valueForKey:@"xOffset"] floatValue];
-            if( xOffset)
+            if ( xOffset)
                 [imageObj setValue: [NSNumber numberWithFloat: xOffset * factor] forKey: @"xOffset"];
             
             float yOffset = [[imageObj valueForKey:@"yOffset"] floatValue];
-            if( yOffset)
+            if ( yOffset)
                 [imageObj setValue: [NSNumber numberWithFloat: yOffset * factor] forKey: @"yOffset"];
         }
     }
@@ -210,7 +210,7 @@
 	if (newSize < currentSize)
 	{
 		[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
-		for (i = currentSize - 1; i >= newSize ; i--)
+		for (int i = currentSize - 1; i >= newSize ; i--)
 		{
 			DCMView *view = [imageViews lastObject];			
 			[view removeFromSuperview];
@@ -222,7 +222,7 @@
 	else if (newSize > currentSize)
 	{
         BOOL csis = [[imageViews lastObject] COPYSETTINGSINSERIES];
-		for ( i = [imageViews count]; i < rows * columns; i++)
+		for (int  i = [imageViews count]; i < rows * columns; i++)
 		{
 			DCMView *dcmView = [[[DCMView alloc] initWithFrame:[self bounds]  imageRows:rows  imageColumns:columns] autorelease];
             [dcmView setCOPYSETTINGSINSERIESdirectly: csis];
@@ -232,7 +232,7 @@
 		}	
 	}
 	
-	for( DCMView *view in imageViews)
+	for ( DCMView *view in imageViews)
 		[view setRows:rows columns:columns];
 		
 	[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
@@ -241,9 +241,9 @@
 	[self resizeSubviewsWithOldSize:[self bounds].size];
 	[imageViews makeObjectsPerformSelector:@selector(setImageParamatersFromView:) withObject:[imageViews objectAtIndex:0]];
 	
-	if( rescale)
+	if ( rescale)
     {
-        if( imageLevel == NO)
+        if ( imageLevel == NO)
         {
             float factor = (float) imageRows / (float) rows;
             
@@ -253,7 +253,7 @@
         }
         else
         {
-            for( id view in imageViews)
+            for ( id view in imageViews)
                 [view updatePresentationStateFromSeriesOnlyImageLevel: NO]; // Apply the scale modifications
         }
     }
@@ -261,7 +261,7 @@
 	imageRows = rows;
 	imageColumns = columns;
 	
-	if( wasVisible)
+	if ( wasVisible)
         [[self window] makeKeyAndOrderFront: self];
 	
 	NSEnableScreenUpdates();

@@ -146,8 +146,8 @@
         
         uint8_t* op = (uint8_t *)self.waveformData.bytes;
         
-        CGFloat* mm = (CGFloat*)malloc(sizeof(CGFloat)*2*numberOfChannels);
-        memset(mm, 0, sizeof(CGFloat)*2*numberOfChannels);
+        CGFloat* mm = (CGFloat*)calloc(1, sizeof(CGFloat)*2*numberOfChannels);
+        // memset(mm, 0, sizeof(CGFloat)*2*numberOfChannels);
         
         NSUInteger il = numberOfChannels * numberOfSamplesPerChannel;
         self.buffer = [NSMutableData dataWithCapacity:il*sizeof(CGFloat)];

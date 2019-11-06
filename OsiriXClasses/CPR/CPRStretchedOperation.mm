@@ -40,6 +40,8 @@ static NSOperationQueue *_stretchedOperationFillQueue = nil;
 
 @end
 
+#pragma mark -
+
 @implementation CPRStretchedOperation
 
 @dynamic request;
@@ -115,9 +117,6 @@ static NSOperationQueue *_stretchedOperationFillQueue = nil;
     CGFloat fillDistance;
     CGFloat slabDistance;
     NSInteger numVectors;
-    NSInteger i;
-    NSInteger y;
-    NSInteger z;
     NSInteger pixelsWide;
     NSInteger pixelsHigh;
     NSInteger pixelsDeep;
@@ -208,7 +207,7 @@ static NSOperationQueue *_stretchedOperationFillQueue = nil;
             
             N3Plane topPlane;
             topPlane = N3PlaneMake(N3VectorAdd(N3VectorScalarMultiply(N3VectorNormalize(projectionNormal), _sampleSpacing*pixelsHigh*.5), midHeightPoint), projectionNormal);
-            for (i = 0; i < numVectors; i++) { // this implementation is a bit of a hack, just put the values that the straightened CPR would want, and use code copied from straightened CPR
+            for (NSInteger i = 0; i < numVectors; i++) { // this implementation is a bit of a hack, just put the values that the straightened CPR would want, and use code copied from straightened CPR
                 vectors[i] = N3LineIntersectionWithPlane(N3LineMake(vectors[i], projectionNormal), N3PlaneMake(midHeightPoint, projectionNormal));
 //                vectors[i] = N3LineIntersectionWithPlane(N3LineMake(vectors[i], projectionNormal), topPlane);
                 tangents[i] = N3VectorNormalize(N3VectorCrossProduct(normals[i], projectionNormal));
@@ -224,11 +223,11 @@ static NSOperationQueue *_stretchedOperationFillQueue = nil;
             
             fillOperations = [NSMutableSet set];
             
-            for (z = 0; z < pixelsDeep; z++) {
-                for (y = 0; y < pixelsHigh; y += FILL_HEIGHT) {
+            for (NSInteger z = 0; z < pixelsDeep; z++) {
+                for (NSInteger y = 0; y < pixelsHigh; y += FILL_HEIGHT) {
                     fillDistance = (CGFloat)y - (CGFloat)(pixelsHigh - 1)/2.0; // the distance to go out from the centerline
                     slabDistance = (CGFloat)z - (CGFloat)(pixelsDeep - 1)/2.0; // the distance to go out from the centerline
-                    for (i = 0; i < pixelsWide; i++) {
+                    for (NSInteger i = 0; i < pixelsWide; i++) {
                         fillVectors[i] = N3VectorAdd(N3VectorAdd(vectors[i], N3VectorScalarMultiply(fillNormals[i], fillDistance)), N3VectorScalarMultiply(inSlabNormals[i], slabDistance));
                     }
                     

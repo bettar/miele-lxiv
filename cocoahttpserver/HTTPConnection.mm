@@ -558,9 +558,8 @@ static NSMutableArray *recentNonces;
 	
 	// Note: We store all range values in the form of DDRange structs, wrapped in NSValue objects.
 	// Since DDRange consists of UInt64 values, the range extends up to 16 exabytes.
-	
-	NSUInteger i;
-	for(i = 0; i < [rangeComponents count]; i++)
+
+	for (NSUInteger i = 0; i < [rangeComponents count]; i++)
 	{
 		NSString *rangeComponent = [rangeComponents objectAtIndex:i];
 		
@@ -643,21 +642,17 @@ static NSMutableArray *recentNonces;
 	
 	// Now make sure none of the ranges overlap
 	
-	for(i = 0; i < [ranges count] - 1; i++)
+	for (NSUInteger i = 0; i < [ranges count] - 1; i++)
 	{
 		DDRange range1 = [[ranges objectAtIndex:i] ddrangeValue];
-		
-		NSUInteger j;
-		for(j = i+1; j < [ranges count]; j++)
+
+		for (NSUInteger j = i+1; j < [ranges count]; j++)
 		{
 			DDRange range2 = [[ranges objectAtIndex:j] ddrangeValue];
-			
 			DDRange iRange = DDIntersectionRange(range1, range2);
 			
-			if(iRange.length != 0)
-			{
+			if (iRange.length != 0)
 				return NO;
-			}
 		}
 	}
 	

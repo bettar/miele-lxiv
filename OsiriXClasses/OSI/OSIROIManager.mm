@@ -288,20 +288,8 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 
 - (void)_drawObjectsNotification:(NSNotification *)notification
 {
-    DCMView *dcmView;
-    OSIROI *roi;
-    CGLPixelFormatObj pixelFormatObj;
-    N3AffineTransform pixToDicomTransform;
-    N3AffineTransform dicomToPixTransform;
-    double pixToSubdrawRectOpenGLTransform[16];
-	N3Plane plane;
-    OSISlab slab;
-//    float thickness;
-//    float location;
-    CGLContextObj cgl_ctx;
-        
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if( cgl_ctx == nil)
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (cgl_ctx == nil)
         return;
     
 	if ([self.delegate isKindOfClass:[OSIVolumeWindow class]] == NO) {
@@ -313,12 +301,17 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
         return;
     }
     
-    dcmView = (DCMView *)[notification object];
-        
+    N3Plane plane;
+    DCMView *dcmView = (DCMView *)[notification object];
+
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([dcmView pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
-    pixelFormatObj = (CGLPixelFormatObj)[[dcmView pixelFormat] CGLPixelFormatObj];
-	pixToDicomTransform = [[dcmView curDCM] pixToDicomTransform];
-	if (N3AffineTransformDeterminant(pixToDicomTransform) != 0.0) {
+
+    CGLPixelFormatObj pixelFormatObj = (CGLPixelFormatObj)[[dcmView pixelFormat] CGLPixelFormatObj];
+	N3AffineTransform pixToDicomTransform = [[dcmView curDCM] pixToDicomTransform];
+    N3AffineTransform dicomToPixTransform;
+
+    if (N3AffineTransformDeterminant(pixToDicomTransform) != 0.0) {
 		dicomToPixTransform = N3AffineTransformInvert(pixToDicomTransform);
 		plane = N3PlaneApplyTransform(N3PlaneZZero, pixToDicomTransform);
 	}
@@ -328,12 +321,10 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 	}
 
 //    [dcmView getThickSlabThickness:&thickness location:&location];
-//    slab.thickness = thickness;
-    slab.thickness = 0;
-    slab.plane = plane;
-//    slab.plane.point = N3VectorAdd(slab.plane.point, N3VectorScalarMultiply(N3VectorNormalize(slab.plane.normal), thickness/2.0));
-	
-    for (roi in [self ROIs]) {
+    
+    OSISlab slab = OSISlabMake(plane, 0);
+
+    for (OSIROI * roi in [self ROIs]) {
         if ([[roi osiriXROIs] count] == 0) { //if this OSIROI is backed by old style ROI, don't draw it
             if ([roi respondsToSelector:@selector(drawSlab:inCGLContext:pixelFormat:dicomToPixTransform:)]) {
                 glMatrixMode(GL_MODELVIEW);
@@ -407,8 +398,6 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 	ViewerController *viewController;
 	NSArray *movieFrameROIList;
 	NSArray *movieFramePixList;
-	NSInteger i;
-	NSInteger j;
 	long maxMovieIndex;
 	OSIROI *roi;
 	ROI *osirixROI;
@@ -428,11 +417,11 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 	if (viewController) {
 		maxMovieIndex = [viewController maxMovieIndex];
 		
-		for (i = 0; i < maxMovieIndex; i++) {
+		for (NSInteger i = 0; i < maxMovieIndex; i++) {
 			movieFrameROIList = [viewController roiList:i];
 			movieFramePixList = [viewController pixList:i];
 			
-			for (j = 0; j < [movieFramePixList count]; j++) {
+			for (NSInteger j = 0; j < [movieFramePixList count]; j++) {
 				pix = [movieFramePixList objectAtIndex:j];
 				pixROIList = [movieFrameROIList objectAtIndex:j];
 				
@@ -549,18 +538,7 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 
 - (void)drawInDCMView:(DCMView *)dcmView
 {
-    OSIROI *roi;
-    CGLPixelFormatObj pixelFormatObj;
-    N3AffineTransform pixToDicomTransform;
-    N3AffineTransform dicomToPixTransform;
-    double pixToSubdrawRectOpenGLTransform[16];
-	N3Plane plane;
-    OSISlab slab;
-    //    float thickness;
-    //    float location;
-    CGLContextObj cgl_ctx;
-    
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
     
@@ -568,10 +546,15 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
         // only draw ROIs for the ROIs in an ROI manager that is owned by the VolumeWindow
 		return;
 	}
-    
+
+    N3AffineTransform dicomToPixTransform;
+    N3Plane plane;
+
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([dcmView pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
-    pixelFormatObj = (CGLPixelFormatObj)[[dcmView pixelFormat] CGLPixelFormatObj];
-	pixToDicomTransform = [[dcmView curDCM] pixToDicomTransform];
+
+    CGLPixelFormatObj pixelFormatObj = (CGLPixelFormatObj)[[dcmView pixelFormat] CGLPixelFormatObj];
+	N3AffineTransform pixToDicomTransform = [[dcmView curDCM] pixToDicomTransform];
 	if (N3AffineTransformDeterminant(pixToDicomTransform) != 0.0) {
 		dicomToPixTransform = N3AffineTransformInvert(pixToDicomTransform);
 		plane = N3PlaneApplyTransform(N3PlaneZZero, pixToDicomTransform);
@@ -581,27 +564,27 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 		plane = N3PlaneZZero;
 	}
     
-    //    [dcmView getThickSlabThickness:&thickness location:&location];
-    //    slab.thickness = thickness;
+//    [dcmView getThickSlabThickness:&thickness location:&location];
+    OSISlab slab;
+//    slab.thickness = thickness;
     slab.thickness = [[dcmView curDCM] sliceThickness];
     slab.plane = plane;
-    //    slab.plane.point = N3VectorAdd(slab.plane.point, N3VectorScalarMultiply(N3VectorNormalize(slab.plane.normal), thickness/2.0));
+//    slab.plane.point = N3VectorAdd(slab.plane.point, N3VectorScalarMultiply(N3VectorNormalize(slab.plane.normal), thickness/2.0));
 	
-    for (roi in [self ROIs]) {
-//        if ([[roi osiriXROIs] count] == 0) { //if this OSIROI is backed by old style ROI, don't draw it
-            if ([roi respondsToSelector:@selector(drawRect:inSlab:inCGLContext:pixelFormat:dicomToPixTransform:)]) {
-                glMatrixMode(GL_MODELVIEW);
-                glPushMatrix();
-                glMultMatrixd(pixToSubdrawRectOpenGLTransform);
-                
-                [roi drawRect:NSMakeRect(0, 0, 1024, 1024) inSlab:slab inCGLContext:cgl_ctx pixelFormat:pixelFormatObj dicomToPixTransform:dicomToPixTransform];
-                
-                glMatrixMode(GL_MODELVIEW);
-                glPopMatrix();
-            }
-//        }
+    for (OSIROI *roi in [self ROIs]) {
+//    if ([[roi osiriXROIs] count] == 0) { //if this OSIROI is backed by old style ROI, don't draw it
+        if ([roi respondsToSelector:@selector(drawRect:inSlab:inCGLContext:pixelFormat:dicomToPixTransform:)]) {
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            glMultMatrixd(pixToSubdrawRectOpenGLTransform);
+            
+            [roi drawRect:NSMakeRect(0, 0, 1024, 1024) inSlab:slab inCGLContext:cgl_ctx pixelFormat:pixelFormatObj dicomToPixTransform:dicomToPixTransform];
+            
+            glMatrixMode(GL_MODELVIEW);
+            glPopMatrix();
+        }
+//    }
     }
-    
 }
 
 @end

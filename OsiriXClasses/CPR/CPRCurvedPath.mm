@@ -407,10 +407,9 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 
 - (CPRCurvedPathControlToken)controlTokenNearPoint:(NSPoint)point transform:(N3AffineTransform)transform;
 {
-    NSUInteger i;
     N3Vector nodeVector;
     
-    for (i = 0; i < [_nodes count]; i++) {
+    for (NSUInteger i = 0; i < [_nodes count]; i++) {
         nodeVector = [[_nodes objectAtIndex:i] N3VectorValue];
         nodeVector = N3VectorApplyTransform(nodeVector, N3AffineTransformInvert(transform));
         nodeVector.z = 0.0;
@@ -484,7 +483,6 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     CGFloat curveLength;
     CGFloat mmPerPixel;
     NSInteger requestCount;
-    NSInteger i;
     N3Vector cross;
     N3VectorArray normals;
     N3VectorArray vectors;
@@ -508,14 +506,9 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 		return requests;
     }
     
-    normals = (N3VectorArray)malloc(requestCount * sizeof(N3Vector));
-    memset(normals, 0, requestCount * sizeof(N3Vector));
-    
-    vectors = (N3VectorArray)malloc(requestCount * sizeof(N3Vector));
-    memset(vectors, 0, requestCount * sizeof(N3Vector));
-    
-    tangents = (N3VectorArray)malloc(requestCount * sizeof(N3Vector));
-    memset(tangents, 0, requestCount * sizeof(N3Vector));
+    normals = (N3VectorArray)calloc(1, requestCount * sizeof(N3Vector));
+    vectors = (N3VectorArray)calloc(1, requestCount * sizeof(N3Vector));
+    tangents = (N3VectorArray)calloc(1, requestCount * sizeof(N3Vector));
     
 	float startingDistance = curveLength - (requestCount-1) * spacing;
 	startingDistance /= 2;
@@ -524,7 +517,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     
     mmPerPixel = mmWide / (CGFloat)width;
     
-    for (i = 0; i < requestCount; i++) {
+    for (NSInteger i = 0; i < requestCount; i++) {
         cross = N3VectorNormalize(N3VectorCrossProduct(tangents[i], normals[i]));
         
         request = [[CPRObliqueSliceGeneratorRequest alloc] initWithCenter:vectors[i] pixelsWide:width pixelsHigh:height
@@ -569,20 +562,15 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 
 - (void)_resetNodeRelativePositions
 {
-    NSMutableArray *nodeRelativePositions;
-    CGFloat curveLength;
-    NSInteger i;
-    
-    curveLength = [_bezierPath length];
-
-    nodeRelativePositions = [NSMutableArray array];
+    CGFloat curveLength = [_bezierPath length];
+    NSMutableArray *nodeRelativePositions = [NSMutableArray array];
 
     if (curveLength > 0) {
-        for (i = 0; i < [_nodes count]; i++)
+        for (NSInteger i = 0; i < [_nodes count]; i++)
             [nodeRelativePositions addObject:[NSNumber numberWithDouble:MIN([_bezierPath lengthThroughElementAtIndex:i] / curveLength, 1.0)]];
     }
     else {
-        for (i = 0; i < [_nodes count]; i++)
+        for (NSInteger i = 0; i < [_nodes count]; i++)
             [nodeRelativePositions addObject:[NSNumber numberWithDouble:0.0]];
     }
     

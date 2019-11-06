@@ -24,6 +24,7 @@
 #import "CPRGenerator.h"
 #import "CPRGeneratorRequest.h"
 #import "CPRVolumeData.h"
+//#include <OpenGL/CGLMacro.h>
 
 @interface OSIPlanarBrushROI ()
 
@@ -34,8 +35,6 @@
 - (id)initWithOsiriXROI:(ROI *)roi pixToDICOMTransfrom:(N3AffineTransform)pixToDICOMTransfrom
 {
 	NSMutableArray *hullPoints;
-    NSInteger i;
-    NSInteger j;
     N3AffineTransform volumeTransform;
     float* mask;
 	
@@ -53,23 +52,31 @@
             [hullPoints addObject:[NSValue valueWithN3Vector:N3VectorApplyTransform(N3VectorMake(roi.textureDownRightCornerX, roi.textureDownRightCornerY, 0), pixToDICOMTransfrom)]];
             _convexHull = hullPoints;
             
-            mask = (float *)malloc(roi.textureWidth * roi.textureHeight * sizeof(float));
-            memset(mask, 0, roi.textureWidth * roi.textureHeight * sizeof(float));
+            mask = (float *)calloc(1, roi.textureWidth * roi.textureHeight * sizeof(float));
             
-            for (j = 0; j < roi.textureHeight; j++) {
-                for (i = 0; i < roi.textureWidth; i++) {
+            for (NSInteger j = 0; j < roi.textureHeight; j++) {
+                for (NSInteger i = 0; i < roi.textureWidth; i++) {
                     mask[j*roi.textureWidth + i] = ((float)roi.textureBuffer[j*roi.textureWidth + i])/255.0;
                 }
             }
+
             volumeTransform = N3AffineTransformConcat(N3AffineTransformInvert(pixToDICOMTransfrom), N3AffineTransformMakeTranslation(-roi.textureUpLeftCornerX, -roi.textureUpLeftCornerY, 0));
-            _brushMask = [[OSIFloatVolumeData alloc] initWithFloatBytesNoCopy:mask pixelsWide:roi.textureWidth pixelsHigh:roi.textureHeight pixelsDeep:1 volumeTransform:volumeTransform outOfBoundsValue:0 freeWhenDone:YES];
+
+            _brushMask = [[OSIFloatVolumeData alloc] initWithFloatBytesNoCopy:mask
+                                                                   pixelsWide:roi.textureWidth
+                                                                   pixelsHigh:roi.textureHeight
+                                                                   pixelsDeep:1
+                                                              volumeTransform:volumeTransform
+                                                             outOfBoundsValue:0
+                                                                 freeWhenDone:YES];
         }
         else {
 			[self autorelease];
 			self = nil;
 		}
 	}
-	return self;
+
+    return self;
 }
 
 @end
@@ -128,17 +135,18 @@
 #endif
 }
 
-- (void)drawRect:(NSRect)rect inSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
+- (void)drawRect:(NSRect)rect
+          inSlab:(OSISlab)slab
+    inCGLContext:(CGLContextObj)cgl_ctx
+     pixelFormat:(CGLPixelFormatObj)pixelFormat
+dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
 {
-	double dicomToPixGLTransform[16];
-	
-	if (OSISlabContainsPlane(slab, _plane) == NO) {
+	if (OSISlabContainsPlane(slab, _plane) == NO)
 		return; // this ROI does not live on this slice
-	}
-    
+ 
+    double dicomToPixGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
-	
-    
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(dicomToPixGLTransform);
@@ -177,17 +185,19 @@
     
     glColor3f(1, 0, 1);
     glBegin(GL_LINES);
-    for (maskRunValue in maskRuns) {
-        maskRun = [maskRunValue OSIROIMaskRunValue];
-        
-        lineStart = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex + 0.5, maskRun.depthIndex);
-        lineEnd = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex + 0.5, maskRun.depthIndex);
-        
-        lineStart = N3VectorApplyTransform(lineStart, inverseVolumeTransform);
-        lineEnd = N3VectorApplyTransform(lineEnd, inverseVolumeTransform);
-        
-        glVertex3d(lineStart.x, lineStart.y, lineStart.z);
-        glVertex3d(lineEnd.x, lineEnd.y, lineEnd.z);
+    {
+        for (maskRunValue in maskRuns) {
+            maskRun = [maskRunValue OSIROIMaskRunValue];
+            
+            lineStart = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex + 0.5, maskRun.depthIndex);
+            lineEnd = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex + 0.5, maskRun.depthIndex);
+            
+            lineStart = N3VectorApplyTransform(lineStart, inverseVolumeTransform);
+            lineEnd = N3VectorApplyTransform(lineEnd, inverseVolumeTransform);
+            
+            glVertex3d(lineStart.x, lineStart.y, lineStart.z);
+            glVertex3d(lineEnd.x, lineEnd.y, lineEnd.z);
+        }
     }
     glEnd();
     

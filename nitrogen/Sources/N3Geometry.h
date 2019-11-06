@@ -21,7 +21,7 @@
 #ifndef _N3GEOMETRY_H_
 #define _N3GEOMETRY_H_
 
-#include <QuartzCore/CATransform3D.h>
+//#include <QuartzCore/CATransform3D.h>
 
 #ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
@@ -198,7 +198,6 @@ CFIndex findRealQuadraticRoots(CGFloat a, CGFloat b, CGFloat c, CGFloat *root1, 
 CFIndex findRealCubicRoots(CGFloat a, CGFloat b, CGFloat c, CGFloat d, CGFloat *root1, CGFloat *root2, CGFloat *root3); // returns the number of roots set 
 
 CF_EXTERN_C_END
-
  
 #ifdef __OBJC__
 
@@ -206,6 +205,8 @@ NSString *NSStringFromN3AffineTransform(N3AffineTransform transform);
 NSString *NSStringFromN3Vector(N3Vector vector);
 NSString *NSStringFromN3Line(N3Line line);
 NSString *NSStringFromN3Plane(N3Plane plane);
+
+#pragma mark -
 
 /** NSValue support. **/
 
@@ -225,6 +226,8 @@ NSString *NSStringFromN3Plane(N3Plane plane);
 
 @end
 
+#pragma mark -
+
 /** NSCoder support. **/
 
 @interface NSCoder (N3GeometryAdditions)
@@ -241,10 +244,6 @@ NSString *NSStringFromN3Plane(N3Plane plane);
 
 @end
 
-
 #endif /* __OBJC__ */
 
 #endif	/* _N3GEOMETRY_H_ */
-
-
-

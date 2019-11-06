@@ -167,9 +167,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 -(void) UpdateWLWWMenu: (NSNotification*) note
 {
     //*** Build the menu
-    NSUInteger i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
 
     // Presets VIEWER Menu
 	
@@ -191,10 +190,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[[wlwwPopup menu] addItemWithTitle:NSLocalizedString(@"Full dynamic", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
 	[[wlwwPopup menu] addItem: [NSMenuItem separatorItem]];
     
-    for (i = 0; i < [sortedKeys count]; i++)
+    for (NSUInteger i = 0; i < [sortedKeys count]; i++)
     {
         [[wlwwPopup menu] addItemWithTitle:[NSString stringWithFormat:@"%d - %@", (int) i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
     }
+
     [[wlwwPopup menu] addItem: [NSMenuItem separatorItem]];
     [[wlwwPopup menu] addItemWithTitle:NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
 	[[wlwwPopup menu] addItemWithTitle:NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector (SetWLWW:) keyEquivalent:@""];
@@ -410,7 +410,13 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
                            :(ViewerController*) bC
                            :(ViewerController*) vC
 {
-	return [self initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:@"standard" mode:@"VR"];
+	return [self initWithPix:(NSMutableArray*) pix
+                            :(NSArray*) f
+                            :(NSData*) vData
+                            :(ViewerController*) bC
+                            :(ViewerController*) vC
+                       style:@"standard"
+                        mode:@"VR"];
 }
 
 - (void) computeMinMax
@@ -497,9 +503,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
                       style:(NSString*) m
                        mode:(NSString*) renderingMode
 {
-    unsigned long   i;
-	BOOL			testInterval = YES;
-	DCMPix			*firstObject = [pix objectAtIndex: 0];
+    unsigned long i;
+	BOOL testInterval = YES;
+	DCMPix *firstObject = [pix objectAtIndex: 0];
 
 #if 1
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -892,7 +898,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 #if 0 // @@@
         [shadingsPresetsController setWindowController: self];      
 #else // Horos
-		[shadingsPresetsController addObserver:self forKeyPath:@"selectedObjects" options:0 context:VRController.class];
+		[shadingsPresetsController addObserver:self
+                                    forKeyPath:@"selectedObjects"
+                                       options:0
+                                       context:VRController.class];
 #endif
         [self setupToolbar];
     }
@@ -1216,7 +1225,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 -(void) dealloc
 {
 #if 1 // Horos
-[shadingsPresetsController removeObserver:self forKeyPath:@"selectedObjects" context:VRController.class];
+    [shadingsPresetsController removeObserver:self
+                                   forKeyPath:@"selectedObjects"
+                                      context:VRController.class];
 #endif
 	[style release];
 	
@@ -1290,7 +1301,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void)windowDidResize:(NSNotification *)aNotification
 {
-	if ([style isEqualToString:@"panel"] == NO) [view squareView: self];
+	if (![style isEqualToString:@"panel"])
+        [view squareView: self];
 }
 
 - (void)windowWillClose:(NSNotification *)notification
@@ -2077,15 +2089,16 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([convolutionView frame]), NSHeight([convolutionView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([convolutionView frame]), NSHeight([convolutionView frame]))];
     }
-	else if ([itemIdent isEqualToString: BackgroundColorViewToolbarItemIdentifier]) {
-	// Set up the standard properties 
-	[toolbarItem setLabel: NSLocalizedString(@"Background", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Background", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Background Color", nil)];
-	
-	[toolbarItem setView: BackgroundColorView];
-	[toolbarItem setMinSize:NSMakeSize(NSWidth([BackgroundColorView frame]), NSHeight([BackgroundColorView frame]))];
-	[toolbarItem setMaxSize:NSMakeSize(NSWidth([BackgroundColorView frame]), NSHeight([BackgroundColorView frame]))];
+	else if ([itemIdent isEqualToString: BackgroundColorViewToolbarItemIdentifier])
+    {
+        // Set up the standard properties
+        [toolbarItem setLabel: NSLocalizedString(@"Background", nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Background", nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Background Color", nil)];
+        
+        [toolbarItem setView: BackgroundColorView];
+        [toolbarItem setMinSize:NSMakeSize(NSWidth([BackgroundColorView frame]), NSHeight([BackgroundColorView frame]))];
+        [toolbarItem setMaxSize:NSMakeSize(NSWidth([BackgroundColorView frame]), NSHeight([BackgroundColorView frame]))];
     }
 	else if ([itemIdent isEqualToString: ScissorStateToolbarItemIdentifier]) {
 	// Set up the standard properties 
@@ -2229,8 +2242,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 												ExportToolbarItemIdentifier,
 												FlyThruToolbarItemIdentifier,
 												nil];
-	else
-		return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
+
+    return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
 												ModeToolbarItemIdentifier,
 												WLWWToolbarItemIdentifier,
 												LODToolbarItemIdentifier,
@@ -2250,42 +2263,41 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 {
 	if ([style isEqualToString:@"standard"])
 	{
-		NSMutableArray * a = [NSMutableArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
-											NSToolbarFlexibleSpaceItemIdentifier,
-											NSToolbarSpaceItemIdentifier,
-											NSToolbarSeparatorItemIdentifier,
-											WLWWToolbarItemIdentifier,
-											CLUTEditorsViewToolbarItemIdentifier,
-											PresetsPanelToolbarItemIdentifier,
-											LODToolbarItemIdentifier,
-											CaptureToolbarItemIdentifier,
-											CroppingToolbarItemIdentifier,
-											OrientationToolbarItemIdentifier,
-											ShadingToolbarItemIdentifier,
-											PerspectiveToolbarItemIdentifier,
-											OrientationsViewToolbarItemIdentifier,
-											ToolsToolbarItemIdentifier,
-											ModeToolbarItemIdentifier,
-											BlendingToolbarItemIdentifier,
-											MovieToolbarItemIdentifier,
-											StereoIdentifier,
-											QTExportToolbarItemIdentifier,
-											PhotosToolbarItemIdentifier,
-//											QTExportVRToolbarItemIdentifier,
-											MailToolbarItemIdentifier,
-											ResetToolbarItemIdentifier,
-											RevertToolbarItemIdentifier,
-											ExportToolbarItemIdentifier,
-											FlyThruToolbarItemIdentifier,
-											ScissorStateToolbarItemIdentifier,
-											ROIManagerToolbarItemIdentifier,
-											ConvolutionViewToolbarItemIdentifier,
-											BackgroundColorViewToolbarItemIdentifier,
-											ClippingRangeViewToolbarItemIdentifier,
-                                            EngineToolbarItemIdentifier,
-											nil];
-		
-        
+		NSMutableArray * a = [NSMutableArray arrayWithObjects:
+                              NSToolbarCustomizeToolbarItemIdentifier,
+                              NSToolbarFlexibleSpaceItemIdentifier,
+                              NSToolbarSpaceItemIdentifier,
+                              NSToolbarSeparatorItemIdentifier,
+                              WLWWToolbarItemIdentifier,
+                              CLUTEditorsViewToolbarItemIdentifier,
+                              PresetsPanelToolbarItemIdentifier,
+                              LODToolbarItemIdentifier,
+                              CaptureToolbarItemIdentifier,
+                              CroppingToolbarItemIdentifier,
+                              OrientationToolbarItemIdentifier,
+                              ShadingToolbarItemIdentifier,
+                              PerspectiveToolbarItemIdentifier,
+                              OrientationsViewToolbarItemIdentifier,
+                              ToolsToolbarItemIdentifier,
+                              ModeToolbarItemIdentifier,
+                              BlendingToolbarItemIdentifier,
+                              MovieToolbarItemIdentifier,
+                              StereoIdentifier,
+                              QTExportToolbarItemIdentifier,
+                              PhotosToolbarItemIdentifier,
+//							  QTExportVRToolbarItemIdentifier,
+                              MailToolbarItemIdentifier,
+                              ResetToolbarItemIdentifier,
+                              RevertToolbarItemIdentifier,
+                              ExportToolbarItemIdentifier,
+                              FlyThruToolbarItemIdentifier,
+                              ScissorStateToolbarItemIdentifier,
+                              ROIManagerToolbarItemIdentifier,
+                              ConvolutionViewToolbarItemIdentifier,
+                              BackgroundColorViewToolbarItemIdentifier,
+                              ClippingRangeViewToolbarItemIdentifier,
+                              EngineToolbarItemIdentifier,
+                              nil];
         
         for (id key in [PluginManager installedPlugins])
         {
@@ -2293,10 +2305,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
                 [a addObjectsFromArray: [[[PluginManager installedPlugins] objectForKey:key] toolbarAllowedIdentifiersForVRViewer: self]];
         }
         
-		return a;
+		return [a copy];
 	}
-	else
-		return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
+
+    return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
@@ -2492,7 +2504,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		if (sliceNumber>=0 && sliceNumber<[[viewer2D pixList] count])
 		{
 			// Create the new 2D Point ROI
-			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[firstDCMPix pixelSpacingX] :[firstDCMPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: firstDCMPix]] autorelease];
+			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint
+                                                           : [firstDCMPix pixelSpacingX]
+                                                           : [firstDCMPix pixelSpacingY]
+                                                           : [DCMPix originCorrectedAccordingToOrientation: firstDCMPix]] autorelease];
             
             if (rgb.red != 0 && rgb.green != 1 && rgb.blue != 2)
                 new2DPointROI.rgbcolor = rgb;
@@ -2868,7 +2883,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 {
 	[super showWindow: sender];
 	
-	if ([style isEqualToString:@"panel"] == NO)
+	if (![style isEqualToString:@"panel"])
 		[view squareView: self];
 }
 
@@ -2984,7 +2999,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	// path 1 : /OUR_DATA_LOCATION/CLUTs/
 	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
 	[path appendString: CLUTDATABASE];
-	// path 2 : /resources_bundle_path/CLUTs/
+
+    // path 2 : /resources_bundle_path/CLUTs/
 	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
 	[bundlePath appendString: CLUTDATABASE];
 
@@ -3333,7 +3349,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	// path 1 : /OsirirX Data/CLUTs/
 	NSMutableString *path1 = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
 	[path1 appendString:PRESETS_DIRECTORY];
-	// path 2 : /resources_bundle_path/CLUTs/
+
+    // path 2 : /resources_bundle_path/CLUTs/
 	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
 	[bundlePath appendString:PRESETS_DIRECTORY];
 
@@ -3383,7 +3400,8 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	// path 1 : /OsirirX Data/CLUTs/
 	NSMutableString *path1 = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
 	[path1 appendString:PRESETS_DIRECTORY];
-	// path 2 : /resources_bundle_path/CLUTs/
+
+    // path 2 : /resources_bundle_path/CLUTs/
 	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
 	[bundlePath appendString:PRESETS_DIRECTORY];
 
@@ -3439,7 +3457,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	for (NSUInteger i=0; i<[groups count]; i++)
 		[presetsGroupPopUpButton addItemWithTitle:[groups objectAtIndex:i]];
 
-	if ([presetsGroupPopUpButton numberOfItems]<1)
+	if ([presetsGroupPopUpButton numberOfItems] < 1)
 	{
 		[presetsGroupPopUpButton addItemWithTitle:NSLocalizedString(@"No Groups", nil)];
 		[presetsGroupPopUpButton setEnabled:NO];
@@ -3506,7 +3524,6 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 				float iwl = [[preset objectForKey:@"wl"] floatValue];
 				float iww = [[preset objectForKey:@"ww"] floatValue];
 				[self setWLWW:iwl :iww];
-
 			}
 			else
 			{
@@ -3624,25 +3641,28 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 
 - (void)displayPresetsForSelectedGroup;
 {
-	if ([presetsGroupPopUpButton numberOfItems]<1)
+#ifdef DEBUG_ISSUE_45
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+#endif
+	if ([presetsGroupPopUpButton numberOfItems] < 1)
         return;
     
 	NSArray *settingsList = [self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]];
 	
 	[numberOfPresetInGroupTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Number of Presets: %d", nil), [settingsList count]]];
-	
-	int i, n;
-	
+
 	// fill the thumbnails
-	n = 0;
+	int n = 0;
+    int i;
 	for (i=0; i<[presetPreviewArray count] && n<[settingsList count]; i++)
 	{
 		n = presetPageNumber*[presetPreviewArray count] + i;
-		if (n<[settingsList count])
+		if (n < [settingsList count])
 		{
+            // Example: "1. High Contrast"
 			[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[NSString stringWithFormat:@"%d. %@", n+1,[[settingsList objectAtIndex:n] objectForKey:@"name"]]];
+
 			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:NO];
-			
 			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setVtkCamera: [view vtkCamera]];
 			
 //			double a[ 6];
@@ -3658,16 +3678,18 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	
 	// the others will be black
 	
-	if (n>=[settingsList count]) i--;
+	if (n >= [settingsList count])
+        i--;
 	
-	while (i<[presetPreviewArray count])
+	while (i < [presetPreviewArray count])
 	{
 		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:@""];
 		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:YES];
 		i++;
 	}
 	
-	if ([presetPreviewArray count]) [(VRPresetPreview*)[presetPreviewArray objectAtIndex:0] setSelected];
+	if ([presetPreviewArray count])
+        [(VRPresetPreview*)[presetPreviewArray objectAtIndex:0] setSelected];
 }
 
 - (void)load3DSettingsDictionary:(NSDictionary*)preset forPreview:(VRPresetPreview*)preview;
@@ -3677,11 +3699,9 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	BOOL advancedCLUT = [[preset objectForKey:@"advancedCLUT"] boolValue];
 	if (!advancedCLUT)
 	{
-		NSDictionary *aCLUT;
 		NSArray *array;
 		unsigned char red[256], green[256], blue[256];
-		
-		aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey:aClutName];
+		NSDictionary *aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey:aClutName];
 		if (aCLUT)
 		{
 			array = [aCLUT objectForKey:@"Red"];

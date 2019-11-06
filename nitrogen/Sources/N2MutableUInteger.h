@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface N2MutableUInteger : NSObject {
 	NSUInteger _value;
 }

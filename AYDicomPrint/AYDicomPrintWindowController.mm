@@ -127,7 +127,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 		
 		printing = [[NSLock alloc] init];
         
-        windowFrameToRestore = NSMakeRect(0, 0, 0, 0);
+        windowFrameToRestore = NSZeroRect;
         scaleFitToRestore = m_CurrentViewer.imageView.isScaledFit;
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
@@ -230,7 +230,8 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	}
 	else
 	{
-		if ([[m_CurrentViewer imageView] flippedData]) [entireSeriesFrom setIntValue: [[m_CurrentViewer pixList] count] - [[m_CurrentViewer imageView] curImage]];
+		if ([[m_CurrentViewer imageView] flippedData])
+            [entireSeriesFrom setIntValue: [[m_CurrentViewer pixList] count] - [[m_CurrentViewer imageView] curImage]];
 		else
             [entireSeriesFrom setIntValue: 1+ [[m_CurrentViewer imageView] curImage]];
         
@@ -346,7 +347,8 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 		[entireSeriesFromText takeIntValueFrom: entireSeriesFrom];
 		[entireSeriesToText takeIntValueFrom: entireSeriesTo];
 		
-		if ([[m_CurrentViewer imageView] flippedData]) [[m_CurrentViewer imageView] setIndex: [[m_CurrentViewer pixList] count] - [sender intValue]];
+		if ([[m_CurrentViewer imageView] flippedData])
+            [[m_CurrentViewer imageView] setIndex: [[m_CurrentViewer pixList] count] - [sender intValue]];
 		else
             [[m_CurrentViewer imageView] setIndex:  [sender intValue]-1];
 		

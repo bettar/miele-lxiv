@@ -44,14 +44,13 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 {
 	if (!sharedLayoutManager)
 		sharedLayoutManager = [[WindowLayoutManager alloc] init];
-	return sharedLayoutManager;
+
+    return sharedLayoutManager;
 }
 
 - (id)init
 {
-	if (self = [super init])
-	{
-	}
+    self = [super init];
 	return self;
 }
 

@@ -43,7 +43,17 @@ struct rawData
 	NSMutableData	*m_ImageDataBytes;
 }
 
-- (NSArray *) dicomFileListForViewer: (ViewerController *) currentViewer destinationPath: (NSString *) destPath options: (NSDictionary*) options asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations;
-- (NSArray *) dicomFileListForViewer: (ViewerController *) currentViewer destinationPath: (NSString *) destPath options: (NSDictionary*) options fileList: (NSArray *) fileList asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations;
+- (NSArray *) dicomFileListForViewer: (ViewerController *) currentViewer
+                     destinationPath: (NSString *) destPath
+                             options: (NSDictionary*) options
+                        asColorPrint: (BOOL) colorPrint
+                     withAnnotations: (BOOL) annotations;
+
+- (NSArray *) dicomFileListForViewer: (ViewerController *) currentViewer
+                     destinationPath: (NSString *) destPath
+                             options: (NSDictionary*) options
+                            fileList: (NSArray *) fileList
+                        asColorPrint: (BOOL) colorPrint
+                     withAnnotations: (BOOL) annotations;
 
 @end

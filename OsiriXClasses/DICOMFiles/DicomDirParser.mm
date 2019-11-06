@@ -58,12 +58,14 @@ static int validFilePathDepth = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-- (void) _testForValidFilePath: (NSMutableArray*) dicomdirFileList path: (NSString*) startDirectory files: (NSMutableArray*) files
+- (void) _testForValidFilePath: (NSMutableArray*) dicomdirFileList
+                          path: (NSString*) startDirectory
+                         files: (NSMutableArray*) files
 {
-	if( startDirectory == Nil || files == Nil)
+	if (startDirectory == Nil || files == Nil)
         return;
     
-	if( [startDirectory isEqualToString: @""] || [startDirectory isEqualToString: @"/"])
+	if ([startDirectory isEqualToString: @""] || [startDirectory isEqualToString: @"/"])
         return;
     
 	validFilePathDepth++;
@@ -90,16 +92,24 @@ static int validFilePathDepth = 0;
                             NSString *ext = [uppercaseFilePath pathExtension];
                             
                             // only files with DCM or no extension, or a number like 82873.9982.9928.22
-                            if ([ext isEqualToString: @"DCM"] || [ext isEqualToString: @""] || [ext length] > 4 || [ext length] < 3 || [ext holdsIntegerValue] == YES)
+                            if ([ext isEqualToString: @"DCM"] ||
+                                [ext isEqualToString: @""] ||
+                                [ext length] > 4 ||
+                                [ext length] < 3 ||
+                                [ext holdsIntegerValue])
                             {
                                 NSString *cutFilePath = nil;
                                 
-                                if( [ext length] <= 4 && [ext length] >= 3 && [ext holdsIntegerValue] == NO)
+                                if ([ext length] <= 4 &&
+                                    [ext length] >= 3 &&
+                                    ![ext holdsIntegerValue])
+                                {
                                     cutFilePath = [uppercaseFilePath stringByDeletingPathExtension];
+                                }
                                 else
                                     cutFilePath = uppercaseFilePath;
                                 
-                                if( [cutFilePath length] < 2000)
+                                if ([cutFilePath length] < 2000)
                                 {
                                     NSAutoreleasePool *pool3 = [[NSAutoreleasePool alloc] init];
                                     
@@ -115,18 +125,18 @@ static int validFilePathDepth = 0;
                                         {
                                             NSString *cutFilePathWithoutPathExtension = [cutFilePath stringByDeletingPathExtension];
                                             
-                                            for( NSString *s in dicomdirFileList)
+                                            for (NSString *s in dicomdirFileList)
                                             {
-                                                if( [cutFilePathWithoutPathExtension isEqualToString: s])
+                                                if ([cutFilePathWithoutPathExtension isEqualToString: s])
                                                 {
                                                     [files addObject: filePath];
                                                     found = YES;
                                                     break;
                                                 }
                                                 
-                                                if( [[s pathExtension] isEqualToString: @""])	/// for this case: 738495.		// GE Scanner
+                                                if ([s pathExtension].length == 0)	/// for this case: 738495.		// GE Scanner
                                                 {
-                                                    if( [[cutFilePath stringByDeletingPathExtension] isEqualToString: [s stringByDeletingPathExtension]])
+                                                    if ([[cutFilePath stringByDeletingPathExtension] isEqualToString: [s stringByDeletingPathExtension]])
                                                     {
                                                         [files addObject: filePath];
                                                         found = YES;

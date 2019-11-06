@@ -21,13 +21,14 @@
 #import "O2DicomPredicateEditorCodeStrings.h"
 #import "O2DicomPredicateEditorDCMAttributeTag.h"
 
-
 @interface O2DicomPredicateEditorOrderedMutableDictionary : NSMutableDictionary {
     NSMutableArray* _sortedKeys;
     NSMutableDictionary* _content;
 }
 
 @end
+
+#pragma mark -
 
 @implementation O2DicomPredicateEditorOrderedMutableDictionary
 
@@ -81,6 +82,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation O2DicomPredicateEditorCodeStrings
 

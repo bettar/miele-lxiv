@@ -28,7 +28,6 @@
 #import "vtkCocoaGLView.h"
 #import "vtkMieleView.h"
 
-
 //#import "vtkCocoaWindow.h"
 #define id Id
 #include "vtkCamera.h"
@@ -72,7 +71,6 @@ typedef char* vtkCamera;
 //- (void) unselectAllActors;
 //- (void) updateProjectionMode: (int) i;
 //- (void) unselectAllActors;
-
 
 @end
 #endif

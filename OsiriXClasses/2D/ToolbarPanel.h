@@ -24,9 +24,8 @@
 /** Window Controller for Toolbar */
 @interface ToolbarPanelController : NSWindowController <NSToolbarDelegate>
 {	
-	NSToolbar               *toolbar;
-	ViewerController		*viewer;
-	BOOL					dontReenter;
+	NSToolbar *toolbar;
+	BOOL dontReenter;
 }
 
 @property (readonly) ViewerController *viewer;

@@ -274,7 +274,9 @@
 
 - (void) dealloc
 {
+#ifndef NDEBUG
     NSLog(@"Window3DController.mm:%d %@ dealloc %p", __LINE__, NSStringFromClass([self class]), self);
+#endif
 
     [NSObject cancelPreviousPerformRequestsWithTarget: self];
     

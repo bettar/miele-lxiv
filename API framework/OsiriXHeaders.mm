@@ -23,6 +23,8 @@
 @interface Dummy2Class : NSObject
 @end
 
+#pragma mark -
+
 @implementation Dummy2Class
 
 - (id)init

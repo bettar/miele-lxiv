@@ -28,8 +28,6 @@ PURPOSE.
 
 #import "tmp_locations.h"
 
-static NSString *albumDragType = @"Osirix Album drag";
-
 @implementation BrowserMatrix
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
@@ -102,7 +100,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 {
 	@try {
 	
-	NSSize dragOffset = NSMakeSize(0.0, 0.0);
+	NSSize dragOffset = NSZeroSize;
     
 	NSPoint event_location = [event locationInWindow];
 	NSPoint local_point = [self convertPoint:event_location fromView:nil];
@@ -161,14 +159,15 @@ static NSString *albumDragType = @"Osirix Album drag";
 		NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
 		
 		[pboard declareTypes:[NSArray arrayWithObjects:
-                              @"BrowserController.database.context.XIDs",
-                              albumDragType,
+                              DatabaseXID_DragType,
+                              O2Album_DragType,
                               (__bridge NSString *)kPasteboardTypeFileURLPromise,
                               NSFilenamesPboardType,
                               NSPasteboardTypeString,
                               nil]
                        owner:self];
-		[pboard setPropertyList:nil forType:albumDragType];
+
+        [pboard setPropertyList:@{} forType:O2Album_DragType];
 		[pboard setPropertyList:[NSArray arrayWithObject:@"dcm"]
                         forType:(__bridge NSString *)kPasteboardTypeFileURLPromise];
 
@@ -176,7 +175,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 		for( i = 0; i < [cells count]; i++)
 			[objects addObject:[[[BrowserController currentBrowser] matrixViewArray] objectAtIndex:[[cells objectAtIndex: i] tag]]];
 
-        [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[objects valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:@"BrowserController.database.context.XIDs"];
+        [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[objects valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:DatabaseXID_DragType];
 		
 		[self dragImage:thumbnail
                      at:local_point
@@ -303,7 +302,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 		[pboard setPropertyList:[NSArray arrayWithObject:jpgPath] forType:NSFilenamesPboardType];
 		[self dragImage:thumbnail
 					 at:local_point
-				 offset:NSMakeSize(0.0, 0.0)
+				 offset:NSZeroSize
 				  event:event
 			 pasteboard:pboard
 				 source:self
@@ -339,7 +338,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 		{
 			N2LogException( e);
 		}
-		NSDate	*start = [NSDate date];
+		NSDate *start = [NSDate date];
 		NSEvent *ev = nil;
 		
         @try
@@ -350,14 +349,18 @@ static NSString *albumDragType = @"Osirix Album drag";
 			
 			switch ([ev type])
 			{
-			case NSLeftMouseDragged:
-				keepOn = NO;
-				break;
-			case NSLeftMouseUp:
-				keepOn = NO;
-				break;
+                case NSLeftMouseDragged:
+                    keepOn = NO;
+                    break;
+
+                case NSLeftMouseUp:
+                    keepOn = NO;
+                    break;
+                    
+                default:
+                    break;
 			}
-		}while (keepOn && [start timeIntervalSinceNow] >= -1);
+		} while (keepOn && [start timeIntervalSinceNow] >= -1);
 		
 		if( keepOn)
 		{

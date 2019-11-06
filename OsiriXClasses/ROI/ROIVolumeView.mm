@@ -19,6 +19,7 @@
 =========================================================================*/
 
 #import "options.h"
+#import "mieleTypes.h"
 
 #import "ROIVolumeView.h"
 #import "DCMPix.h"
@@ -72,8 +73,7 @@
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
-	unsigned char	*buf = nil;
-	long			i;
+	unsigned char *buf = nil;
 	
 	NSRect size = [self bounds];
 	
@@ -85,7 +85,7 @@
 	*bpp = 8;
 	
 	buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
-	if( buf)
+	if (buf)
 	{
 		[self getVTKRenderWindow]->MakeCurrent();
 //		[[NSOpenGLContext currentContext] flushBuffer];
@@ -97,41 +97,39 @@
 #if __BIG_ENDIAN__
 			glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 #else
-			glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
-			i = *width * *height;
-			unsigned char	*t_argb = buf;
-			unsigned char	*t_rgb = buf;
-			while( i-- > 0)
-			{
-				*((int*) t_rgb) = *((int*) t_argb);
-				t_argb+=4;
-				t_rgb+=3;
-			}
+			
+        glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
+        long ii = *width * *height;
+        unsigned char *t_argb = buf;
+        unsigned char *t_rgb = buf;
+        while (ii-- > 0)
+        {
+            *((int*) t_rgb) = *((int*) t_argb);
+            t_argb += 4;
+            t_rgb += 3;
+        }
 #endif
 		
 		long rowBytes = *width**spp**bpp/8;
-		
-		{
-			unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
-			
-			for( i = 0; i < *height/2; i++)
-			{
-				memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
-				memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
-				memcpy( buf + i*rowBytes, tempBuf, rowBytes);
-			}
-			
-			free( tempBuf);
-		}
+        unsigned char *tempBuf = (unsigned char*)malloc( rowBytes);
+        for (long  i = 0; i < *height/2; i++)
+        {
+            memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+            memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
+            memcpy( buf + i*rowBytes, tempBuf, rowBytes);
+        }
+        
+        free(tempBuf);
+
 		
 		//Add the small OsiriX logo at the bottom right of the image
-		NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];
-		NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
+		NSImage *logo = [NSImage imageNamed:@"SmallLogo.tif"];
+		NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
 		
-		for( i = 0; i < [TIFFRep pixelsHigh]; i++)
+		for (long i = 0; i < [TIFFRep pixelsHigh]; i++)
 		{
-			unsigned char	*srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-			unsigned char	*dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
+			unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
+			unsigned char *dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
 			
 			long x = [TIFFRep bytesPerRow]/3;
 			while( x-- > 0)
@@ -166,7 +164,7 @@
 	
 	dataPtr = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES];
 
-	if( spp == 3)
+	if (spp == 3)
         colorSpace = NSCalibratedRGBColorSpace;
 	else
         colorSpace = NSCalibratedWhiteColorSpace;
@@ -185,8 +183,8 @@
 
 	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
 		
-	 NSImage *image = [[[NSImage alloc] init] autorelease];
-	 [image addRepresentation:rep];
+    NSImage *image = [[[NSImage alloc] init] autorelease];
+    [image addRepresentation:rep];
 	 
 	free( dataPtr);
 	
@@ -370,13 +368,17 @@
     NSString *error = 0L;
     
     NSMutableArray **ptsPtr = nil;
-    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2)
+    if ( [[NSUserDefaults standardUserDefaults] integerForKey:UseDelaunayFor3DRoi_KEY] != ROI_VOLUME_ISO_CONTOUR)
         ptsPtr = &ptsArray;
     
-    float volume = [vc computeVolume: roi points: ptsPtr generateMissingROIs: YES generatedROIs: generatedROIs computeData: statistics error: &error];
+    float volume = [vc computeVolume: roi
+                              points: ptsPtr
+                 generateMissingROIs: YES
+                       generatedROIs: generatedROIs
+                         computeData: statistics
+                               error: &error];
     
-    if( error || volume == 0) {
-        
+    if (error || volume == 0) {
         if( error == nil)
             error = NSLocalizedString( @"Not possible to compute a volume!", nil);
         
@@ -390,22 +392,24 @@
     }
     
     vtkPolyData *profile = nil;
-    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2)
+    if ( [[NSUserDefaults standardUserDefaults] integerForKey:UseDelaunayFor3DRoi_KEY] != ROI_VOLUME_ISO_CONTOUR)
     {
         vtkPoints *points = vtkPoints::New();
         long i = 0;
-        for( NSArray *pt3D in ptsArray)
-            points->InsertPoint( i++, [[pt3D objectAtIndex: 0] floatValue]*factor, [[pt3D objectAtIndex: 1] floatValue]*factor, [[pt3D objectAtIndex: 2] floatValue]*factor);
+        for (NSArray *pt3D in ptsArray)
+            points->InsertPoint(i++,
+                                [[pt3D objectAtIndex: 0] floatValue]*factor,
+                                [[pt3D objectAtIndex: 1] floatValue]*factor,
+                                [[pt3D objectAtIndex: 2] floatValue]*factor);
         
         profile = vtkPolyData::New();
         profile->SetPoints( points);
         points->Delete();
     }
     
-    switch ( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"])
+    switch ( [[NSUserDefaults standardUserDefaults] integerForKey: UseDelaunayFor3DRoi_KEY])
     {
-        // IsoContour
-        case 2:
+        case ROI_VOLUME_ISO_CONTOUR:
         {
             NSData *vD = nil;
             NSMutableArray *copyPixList = nil;
@@ -414,13 +418,13 @@
             for ( DCMPix *p in copyPixList)
                 memset( p.fImage, 0, p.pheight*p.pwidth*sizeof( float));
             
-            for ( int z = 1; z < [copyPixList count]-1; z++) // Black 3D Frame
+            for (int z = 1; z < [copyPixList count]-1; z++) // Black 3D Frame
             {
-                for( int i = 0; i < [[vc.roiList objectAtIndex: z] count]; i++)
+                for (int i = 0; i < [[vc.roiList objectAtIndex: z] count]; i++)
                 {
                     ROI	*curROI = [[vc.roiList objectAtIndex: z] objectAtIndex: i];
                     
-                    if( [[curROI name] isEqualToString: [roi name]])
+                    if ([[curROI name] isEqualToString: [roi name]])
                     {
                         DCMPix *p = [copyPixList objectAtIndex: z];
                         
@@ -486,7 +490,7 @@
             vtkPolyDataNormals *isoNormals = vtkPolyDataNormals::New();
             isoNormals->SetInputData( previousOutput);
             isoNormals->SetFeatureAngle( 120);
-	    isoNormals->Update();
+            isoNormals->Update();
             
             vtkPolyDataMapper *isoMapper = vtkPolyDataMapper::New();
             isoMapper->SetInputConnection( isoNormals->GetOutputPort());
@@ -507,8 +511,7 @@
         }
             break;
             
-            // Delaunay
-        case 1:
+        case ROI_VOLUME_DELAUNAY:
         {
             vtkDelaunay3D *delaunayTriangulator = vtkDelaunay3D::New();
             delaunayTriangulator->SetInputData( profile);
@@ -533,8 +536,7 @@
         }
             break;
             
-            // PowerCrust
-        case 0:
+        case ROI_VOLUME_POWER_CRUST:
         {
             vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
             power->SetInputData( profile);
@@ -565,7 +567,7 @@
             break;
     }
     
-    if( profile)
+    if (profile)
         profile->Delete();
     
     //Delete the generated ROIs - There was no generated ROIs previously
@@ -573,7 +575,7 @@
     {
         NSInteger index = [vc imageIndexOfROI: c];
         
-        if( index >= 0)
+        if (index >= 0)
         {
             [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: c userInfo: nil];
             [[vc.roiList objectAtIndex: index] removeObject: c];
@@ -616,10 +618,10 @@
             }
             roiVolumeActor->SetMapper( mapper);
             
-            if( mapper)
+            if ( mapper)
                 mapper->Delete();
             
-            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] == 2)
+            if ( [[NSUserDefaults standardUserDefaults] integerForKey: UseDelaunayFor3DRoi_KEY] == ROI_VOLUME_ISO_CONTOUR)
             {
                 ROIVolumeController *wo = self.window.windowController;
                 DCMPix *o = [wo.viewer.pixList objectAtIndex: 0];
@@ -631,7 +633,7 @@
 			// *****************Texture
 			NSString *location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
 			
-			if( location == nil || [location isEqualToString:@""])
+			if (location.length == 0)
 				location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
 			
 			vtkTIFFReader *bmpread = vtkTIFFReader::New();
@@ -659,7 +661,7 @@
 //                ballActor = nil;
 //            }
 //            
-//            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] != 2)
+//            if( [[NSUserDefaults standardUserDefaults] integerForKey: UseDelaunayFor3DRoi_KEY] != ROI_VOLUME_ISO_CONTOUR)
 //            {
 //                vtkPolyData *profile = nil;
 //                
@@ -773,9 +775,9 @@
         {
             printf( "***** C++ exception in %s\r", __PRETTY_FUNCTION__);
             
-            if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2) // Iso Contour
+            if( [[NSUserDefaults standardUserDefaults] integerForKey:UseDelaunayFor3DRoi_KEY] != ROI_VOLUME_ISO_CONTOUR)
             {
-                [[NSUserDefaults standardUserDefaults] setInteger: 2 forKey:@"UseDelaunayFor3DRoi"];
+                [[NSUserDefaults standardUserDefaults] setInteger:ROI_VOLUME_ISO_CONTOUR forKey:UseDelaunayFor3DRoi_KEY];
                 [self renderVolume];
             }
         }
@@ -784,9 +786,9 @@
     {
         N2LogExceptionWithStackTrace(e);
         
-        if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2) // Iso Contour
+        if( [[NSUserDefaults standardUserDefaults] integerForKey:UseDelaunayFor3DRoi_KEY] != ROI_VOLUME_ISO_CONTOUR)
         {
-            [[NSUserDefaults standardUserDefaults] setInteger: 2 forKey:@"UseDelaunayFor3DRoi"];
+            [[NSUserDefaults standardUserDefaults] setInteger:ROI_VOLUME_ISO_CONTOUR forKey:UseDelaunayFor3DRoi_KEY];
             [self renderVolume];
         }
     }

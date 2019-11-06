@@ -56,9 +56,10 @@
 
 @end
 
+#pragma mark -
+
 #define skipWhitespace(c) while (isspace(*c)) c++
 #define skipDigits(c) while (isdigit(*c)) c++
-
 
 @implementation SBJsonParser
 
@@ -478,6 +479,5 @@ static char ctrl[0x22];
     skipWhitespace(c);
     return !*c;
 }
-
 
 @end

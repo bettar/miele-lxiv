@@ -89,9 +89,25 @@
 #endif
 
 /* From PapyTypeDef3.h
-   Definition of the photometric interpretation */
-enum EPhoto_Interpret    {MONOCHROME1, MONOCHROME2, PALETTE, RGB, HSV, ARGB, CMYK,
-    YBR_FULL, YBR_FULL_422, YBR_PARTIAL_422, YBR_RCT, YBR_ICT, YUV_RCT, UNKNOWN_COLOR};
+   Definition of the photometric interpretation
+   See also 'photometricmode'
+ */
+enum EPhoto_Interpret {
+    MONOCHROME1,
+    MONOCHROME2,
+    PALETTE,
+    RGB,
+    HSV,
+    ARGB,
+    CMYK,
+    YBR_FULL,
+    YBR_FULL_422,
+    YBR_PARTIAL_422,
+    YBR_RCT,
+    YBR_ICT,
+    YUV_RCT,
+    UNKNOWN_COLOR
+};
 
 BOOL gUserDefaultsSet = NO;
 BOOL gUseShutter = NO;
@@ -101,9 +117,9 @@ BOOL gUseJPEGColorSpace = NO;
 BOOL gUSEPAPYRUSDCMPIX = NO;
 int gSUVAcquisitionTimeField = 0;
 NSMutableDictionary *gCUSTOM_IMAGE_ANNOTATIONS = nil;
-BOOL	runOsiriXInProtectedMode = NO;
-BOOL	quicktimeRunning = NO;
-NSLock	*quicktimeThreadLock = nil;
+BOOL runOsiriXInProtectedMode = NO;
+BOOL quicktimeRunning = NO;
+NSLock *quicktimeThreadLock = nil;
 
 static NSMutableDictionary *cachedPapyGroups = nil;
 static NSMutableDictionary *cachedDCMTKFileFormat = nil;
@@ -116,15 +132,15 @@ static float deg2rad = M_PI / 180.0;
 
 NSString* filenameWithDate( NSString *inputfile);
 
-extern NSRecursiveLock *PapyrusLock;
+extern NSRecursiveLock *Papyrus_Lock;
 extern short Altivec;
 
 void PapyrusLockFunction( int lock)
 {
 	if (lock)
-		[PapyrusLock lock];
+		[Papyrus_Lock lock];
 	else
-		[PapyrusLock unlock];
+		[Papyrus_Lock unlock];
 }
 
 void ConvertFloatToNative (float *theFloat)
@@ -174,22 +190,21 @@ void SwitchFloat (float *theFloat)
 unsigned char* CreateIconFrom16 (float* image, unsigned char* icon,  int height, int width, int iconWidth, long wl, long ww, BOOL isRGB)
 // create an icon from an 12 or 16 bit image
 {
-	float				ratio;
-	long				i, j;
-	long				line, destWidth, destHeight;
-	long				value;
-	long				min, max, diff;
+	float ratio;
+	long line, destWidth, destHeight;
+	long value;
+	long min, max, diff;
 	
 	min = wl - ww / 2; //if (min < 0) min = 0;
 	max = wl + ww / 2;
 	diff = max - min;
 	
-	if (diff <= 0)
-	{
+	if (diff <= 0) {
 		diff = 1;
 		max = min + 1;
 	}
-	if (width > height)
+
+    if (width > height)
         ratio = (float) width / PREVIEWSIZE;
 	else
         ratio = (float) height / PREVIEWSIZE;
@@ -205,17 +220,16 @@ unsigned char* CreateIconFrom16 (float* image, unsigned char* icon,  int height,
         
 		if (isRGB)
 		{
-			int x;
 			unsigned char *rgbImage = (unsigned char*) image;
 			int rowBytes = iconWidth*4;
 			
-			for (i = 0; i < destHeight; i++)  // lines
+			for (long i = 0; i < destHeight; i++)  // lines
 			{
 				line = width * (long) (ratio * i)*4 ;   //ARGB
 				iconPtr = icon + rowBytes*i;
-				for (j = 0; j < destWidth; j++)         // columns 
+				for (long j = 0; j < destWidth; j++)         // columns
 				{
-					for (x = 1; x< 4;x++, iconPtr++)		// Don't take alpha channel
+					for (int x = 1; x< 4;x++, iconPtr++)		// Don't take alpha channel
 					{
 						value = *( rgbImage + line + x + (long) (j * ratio)*4); //ARGB
 						
@@ -230,11 +244,11 @@ unsigned char* CreateIconFrom16 (float* image, unsigned char* icon,  int height,
 		else
 		{
 			int rowBytes = iconWidth;
-			for (i = 0; i < destHeight; i++)  // lines
+			for (long i = 0; i < destHeight; i++)  // lines
 			{
 				line = width * (long) (ratio * i) ;
 				iconPtr = icon + rowBytes*i;
-				for (j = 0; j < destWidth; j++, iconPtr++)         // columns 
+				for (long j = 0; j < destWidth; j++, iconPtr++)         // columns
 				{ 
 					value = *( image + line + (long) (j * ratio));
 					
@@ -1130,10 +1144,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int rad, char blackIndex)
 {
-	int		x,y;
-	int		xsqr;
-	int		inw = rad*2;
-	int		radsqr = (inw*inw)/4;
+	int	x,y;
+	int	xsqr;
+	int	inw = rad*2;
+	int	radsqr = (inw*inw)/4;
 	
 	if (cx < 0 || cx >= width)
         return;
@@ -1200,17 +1214,25 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			{
 				int xx, yy;
 				
-				xx = rad+x+cx;	yy = rad+y+cy;
-				if (xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = blackIndex;
+				xx = rad+x+cx;
+                yy = rad+y+cy;
+				if (xx >= 0 && xx < width && yy >= 0 && yy < height)
+                    buf[ xx + yy*width] = blackIndex;
 				
-				xx = rad-x+cx;	yy = rad+y+cy;
-				if (xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = blackIndex;
+				xx = rad-x+cx;
+                yy = rad+y+cy;
+				if (xx >= 0 && xx < width && yy >= 0 && yy < height)
+                    buf[ xx + yy*width] = blackIndex;
 				
-				xx = rad+x+cx;	yy = rad-y+cy;
-				if (xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = blackIndex;
+				xx = rad+x+cx;
+                yy = rad-y+cy;
+				if (xx >= 0 && xx < width && yy >= 0 && yy < height)
+                    buf[ xx + yy*width] = blackIndex;
 				
-				xx = rad-x+cx;	yy = rad-y+cy;
-				if (xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = blackIndex;
+				xx = rad-x+cx;
+                yy = rad-y+cy;
+				if (xx >= 0 && xx < width && yy >= 0 && yy < height)
+                    buf[ xx + yy*width] = blackIndex;
 			}
 		}
 	}
@@ -1228,12 +1250,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //}
 
 #pragma mark -
+
 @interface PixThread : NSObject
 {
 }
 @end
 
-#pragma mark - PixThread
+#pragma mark -
 
 @implementation PixThread
 
@@ -1388,7 +1411,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @end
 
-#pragma mark - DCMPix
+#pragma mark -
 
 @implementation DCMPix
 
@@ -1881,13 +1904,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return imageRep;
 }
 
-- (unsigned char *) ConvertYbrToRgb: (unsigned char *) ybrImage :(int) w :(int) h :(long) theKind :(char) planarConfig
+// Unused ?
+- (unsigned char *) ConvertYbrToRgb: (unsigned char *) ybrImage
+                                   : (int) w
+                                   : (int) h
+                                   : (EPhoto_Interpret) theKind
+                                   : (char) planarConfig
 {
-	long			loop, size;
-	unsigned char		*pYBR, *pRGB;
-	unsigned char		*theRGB;
-	int			y, y1, r, x, yy;
-	
+	long loop, size;
+	unsigned char *pYBR, *pRGB;
+	int y, y1, r, x, yy;
 	
 	// the planar configuration should be set to 0 whenever
 	// YBR_FULL_422 or YBR_PARTIAL_422 is used
@@ -1895,7 +1921,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		return NULL;
 	
 	// allocate room for the RGB image
-	theRGB = (unsigned char *) malloc ((long) w * (long) h * 3L);
+    unsigned char *theRGB = (unsigned char *) malloc ((long) w * (long) h * 3L);
 	if (theRGB == NULL)
         return NULL;
     
@@ -1906,138 +1932,136 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	uint8_t a;
 	uint8_t b;
 	uint8_t c;
-	
-	
+		
 	switch (planarConfig)
 	{
 		case 0 : // all pixels stored one after the other
 		
 		switch (theKind)
 		{
-			case YBR_FULL :		// YBR_FULL
-			// loop on the pixels of the image
-			for (loop = 0, pYBR = ybrImage; loop < size; loop++, pYBR += 3)
-			{
-				// get the Y, B and R channels from the original image
-				//            y = (int) pYBR [0];
-				//            b = (int) pYBR [1];
-				//            r = (int) pYBR [2];
-				
-				a = (int) pYBR [0];
-				b = (int) pYBR [1];
-				c = (int) pYBR [2];
-				
-				R = 38142 *(a-16) + 52298 *(c -128);
-				G = 38142 *(a-16) - 26640 *(c -128) - 12845 *(b -128);
-				B = 38142 *(a-16) + 66093 *(b -128);
-				
-				R = (R+16384)>>15;
-				G = (G+16384)>>15;
-				B = (B+16384)>>15;
-				
-				if (R < 0)   R = 0;
-				if (G < 0)   G = 0;
-				if (B < 0)   B = 0;
-				if (R > 255) R = 255;
-				if (G > 255) G = 255;
-				if (B > 255) B = 255;
-				
-				
-				// red
-				*pRGB = R;	//(unsigned char) (y + (1.402 *  r));
-				pRGB++;	// move the ptr to the Green
-				
-				// green
-				*pRGB = G;	//(unsigned char) (y - (0.344 * b) - (0.714 * r));
-				pRGB++;	// move the ptr to the Blue
-				
-				// blue
-				*pRGB = B;	//(unsigned char) (y + (1.772 * b));
-				pRGB++;	// move the ptr to the next Red
-				
-			} // for ...loop on the elements of the image to convert
-			break; // YBR_FULL
+			case YBR_FULL:
+                // loop on the pixels of the image
+                for (loop = 0, pYBR = ybrImage; loop < size; loop++, pYBR += 3)
+                {
+                    // get the Y, B and R channels from the original image
+                    //            y = (int) pYBR [0];
+                    //            b = (int) pYBR [1];
+                    //            r = (int) pYBR [2];
+                    
+                    a = (int) pYBR [0];
+                    b = (int) pYBR [1];
+                    c = (int) pYBR [2];
+                    
+                    R = 38142 *(a-16) + 52298 *(c -128);
+                    G = 38142 *(a-16) - 26640 *(c -128) - 12845 *(b -128);
+                    B = 38142 *(a-16) + 66093 *(b -128);
+                    
+                    R = (R+16384)>>15;
+                    G = (G+16384)>>15;
+                    B = (B+16384)>>15;
+                    
+                    if (R < 0)   R = 0;
+                    if (G < 0)   G = 0;
+                    if (B < 0)   B = 0;
+                    if (R > 255) R = 255;
+                    if (G > 255) G = 255;
+                    if (B > 255) B = 255;
+                    
+                    // red
+                    *pRGB = R;	//(unsigned char) (y + (1.402 *  r));
+                    pRGB++;	// move the ptr to the Green
+                    
+                    // green
+                    *pRGB = G;	//(unsigned char) (y - (0.344 * b) - (0.714 * r));
+                    pRGB++;	// move the ptr to the Blue
+                    
+                    // blue
+                    *pRGB = B;	//(unsigned char) (y + (1.772 * b));
+                    pRGB++;	// move the ptr to the next Red
+                    
+                } // for ...loop on the elements of the image to convert
+                break;
         
-			case YBR_FULL_422 :	// YBR_FULL_422
-			// loop on the pixels of the image
-			pYBR = ybrImage;
-		
-			for (yy = 0; yy < h; yy++)
-			{
-				unsigned char	*rr = pRGB;
-				unsigned char	*rr2 = pRGB+3*w;
-				
-				for (x = 0; x < w; x++)
-				{
-					y  = (int) pYBR [0];
-					b = (int) pYBR [1];
-					r = (int) pYBR [2];
-					
-					*(rr) = y;
-					*(rr+1) = b;
-					*(rr+2) = r;
-					
-	//				*(rr2) = y;
-	//				*(rr2+1) = b;
-	//				*(rr2+2) = r;
-					
-					pYBR += 3;
-					rr += 3;
-					rr2 += 3;
-				}
-				
-	//			pRGB += 2*w*3;
-				pRGB += w*3;
-			}
-			break;
+			case YBR_FULL_422:
+                // loop on the pixels of the image
+                pYBR = ybrImage;
+            
+                for (yy = 0; yy < h; yy++)
+                {
+                    unsigned char	*rr = pRGB;
+                    unsigned char	*rr2 = pRGB+3*w;
+                    
+                    for (x = 0; x < w; x++)
+                    {
+                        y  = (int) pYBR [0];
+                        b = (int) pYBR [1];
+                        r = (int) pYBR [2];
+                        
+                        *(rr) = y;
+                        *(rr+1) = b;
+                        *(rr+2) = r;
+                        
+        //				*(rr2) = y;
+        //				*(rr2+1) = b;
+        //				*(rr2+2) = r;
+                        
+                        pYBR += 3;
+                        rr += 3;
+                        rr2 += 3;
+                    }
+                    
+        //			pRGB += 2*w*3;
+                    pRGB += w*3;
+                }
+                break;
 			
-			case YBR_PARTIAL_422 :	// YBR_PARTIAL_422
-			// loop on the pixels of the image
-			for (loop = 0, pYBR = ybrImage; loop < (size / 2); loop++)
-			{
-				// get the Y, B and R channels from the original image
-				y  = (int) pYBR [0];
-				y1 = (int) pYBR [1];
-				// the Cb and Cr values are sampled horizontally at half the Y rate
-				b = (int) pYBR [2];
-				r = (int) pYBR [3];
-				
-				// ***** first pixel *****
-				// red 1
-				*pRGB = (unsigned char) ((1.1685 * y) + (0.0389 * b) + (1.596 * r));
-				pRGB++;	// move the ptr to the Green
-				
-				// green 1
-				*pRGB = (unsigned char) ((1.1685 * y) - (0.401 * b) - (0.813 * r));
-				pRGB++;	// move the ptr to the Blue
-				
-				// blue 1
-				*pRGB = (unsigned char) ((1.1685 * y) + (2.024 * b));
-				pRGB++;	// move the ptr to the next Red
-				
-				
-				// ***** second pixel *****
-				// red 2
-				*pRGB = (unsigned char) ((1.1685 * y1) + (0.0389 * b) + (1.596 * r));
-				pRGB++;	// move the ptr to the Green
-				
-				// green 2
-				*pRGB = (unsigned char) ((1.1685 * y1) - (0.401 * b) - (0.813 * r));
-				pRGB++;	// move the ptr to the Blue
-				
-				// blue 2
-				*pRGB = (unsigned char) ((1.1685 * y1) + (2.024 * b));
-				pRGB++;	// move the ptr to the next Red
-				
-				// the Cb and Cr values are sampled horizontally at half the Y rate
-				pYBR += 4;
-				
-			} // for ...loop on the elements of the image to convert
-			break; // YBR_FULL_422 and YBR_PARTIAL_422
+			case YBR_PARTIAL_422:
+                // loop on the pixels of the image
+                for (loop = 0, pYBR = ybrImage; loop < (size / 2); loop++)
+                {
+                    // get the Y, B and R channels from the original image
+                    y  = (int) pYBR [0];
+                    y1 = (int) pYBR [1];
+                    // the Cb and Cr values are sampled horizontally at half the Y rate
+                    b = (int) pYBR [2];
+                    r = (int) pYBR [3];
+                    
+                    // ***** first pixel *****
+                    // red 1
+                    *pRGB = (unsigned char) ((1.1685 * y) + (0.0389 * b) + (1.596 * r));
+                    pRGB++;	// move the ptr to the Green
+                    
+                    // green 1
+                    *pRGB = (unsigned char) ((1.1685 * y) - (0.401 * b) - (0.813 * r));
+                    pRGB++;	// move the ptr to the Blue
+                    
+                    // blue 1
+                    *pRGB = (unsigned char) ((1.1685 * y) + (2.024 * b));
+                    pRGB++;	// move the ptr to the next Red
+                    
+                    
+                    // ***** second pixel *****
+                    // red 2
+                    *pRGB = (unsigned char) ((1.1685 * y1) + (0.0389 * b) + (1.596 * r));
+                    pRGB++;	// move the ptr to the Green
+                    
+                    // green 2
+                    *pRGB = (unsigned char) ((1.1685 * y1) - (0.401 * b) - (0.813 * r));
+                    pRGB++;	// move the ptr to the Blue
+                    
+                    // blue 2
+                    *pRGB = (unsigned char) ((1.1685 * y1) + (2.024 * b));
+                    pRGB++;	// move the ptr to the next Red
+                    
+                    // the Cb and Cr values are sampled horizontally at half the Y rate
+                    pYBR += 4;
+                    
+                } // for ...loop on the elements of the image to convert
+                break; // YBR_FULL_422 and YBR_PARTIAL_422
 			
 			default :
-					// none...
-			break;
+                // none...
+                break;
 		} // switch ...kind of YBR
 		break;
 		
@@ -2072,7 +2096,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				if (G > 255) G = 255;
 				if (B > 255) B = 255;
 				
-				
 				// red
 				*pRGB = R;	//(unsigned char) ((int) *pY + (1.402 *  (int) *pR) - 179.448);
 				pRGB++;	// move the ptr to the Green
@@ -2087,11 +2110,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				
 			} // for ...loop on the elements of the image to convert
 		} // case 1
-		break;
+            break;
 		
 		default :
 			// none
-		break;
+            break;
 			
 	} // switch
     
@@ -2512,8 +2535,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 + (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) ROIorigin
 {	
-	unsigned char*	map = nil;
-	float*			tempImage = nil;
+	unsigned char *map = nil;
+	float *tempImage = nil;
 	
 	if ([roi type] == tCPolygon || [roi type] == tOPolygon || [roi type] == tPencil)
 	{
@@ -2609,7 +2632,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition spline:(BOOL) spline;
 {
-    return [self fillROI: roi newVal: newVal minValue: minValue maxValue: maxValue outside: outside orientationStack:orientationStack stackNo: stackNo restore: restore addition: addition spline: spline clipMin: NSMakePoint(0, 0) clipMax: NSMakePoint(0, 0)];
+    return [self fillROI: roi newVal: newVal minValue: minValue maxValue: maxValue outside: outside orientationStack:orientationStack stackNo: stackNo restore: restore addition: addition spline: spline clipMin: NSZeroPoint clipMax: NSZeroPoint];
 }
 
 - (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition spline:(BOOL) spline clipMin: (NSPoint) clipMin clipMax: (NSPoint) clipMax;
@@ -3645,12 +3668,21 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3]; // 1
 }
 
-- (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize
-{
-	return [self initWithData :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize];
-}
+//- (id) initwithdata :(float*) im
+//                    :(short) pixelSize
+//                    :(long) xDim
+//                    :(long) yDim
+//                    :(float) xSpace
+//                    :(float) ySpace
+//                    :(float) oX
+//                    :(float) oY
+//                    :(float) oZ
+//                    :(BOOL) volSize
+//{
+//	return [self initWithData :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize];
+//}
 
-- (id) initWithData :(float*) im
+- (instancetype) initWithData :(float*) im
                     :(short) pixelSize
                     :(long) xDim
                     :(long) yDim
@@ -5606,12 +5638,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         VOILUTApplied = YES;
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) reloadAnnotations
 {
 #ifdef OSIRIX_VIEWER
-	[PapyrusLock lock];
+	[Papyrus_Lock lock];
 	[annotationsDictionary removeAllObjects];
     
     @try
@@ -5623,7 +5655,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         NSLog( @"*********** reloadAnnotations: %@", e);
     }
     
-	[PapyrusLock unlock];
+	[Papyrus_Lock unlock];
 #endif
 }
 
@@ -6099,13 +6131,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     void *memoryTest = malloc( fileSize);
     if (memoryTest == nil)
     {
-        NSLog( @"------ loadDICOMDCMFramework memory test failed -> return");
+        NSLog( @"------ %s memory test failed -> return", __FUNCTION__);
         return NO;
     }
     free( memoryTest);
 #endif
-    
-    /////////////////////////
     
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     BOOL returnValue = YES;
@@ -6117,7 +6147,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     [purgeCacheLock lock];
     [purgeCacheLock unlockWithCondition: [purgeCacheLock condition]+1];
     
-    [PapyrusLock lock];
+    [Papyrus_Lock lock];
     
     @try
     {
@@ -6158,7 +6188,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         dcmObject = nil;
     }
     
-    [PapyrusLock unlock];
+    [Papyrus_Lock unlock];
     
     if (dcmObject == nil)
     {
@@ -6179,6 +6209,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     short imageNb = frameNo;
     
 #pragma mark - pdf
+
     if ([SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
     {
         NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
@@ -6673,7 +6704,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             
 #pragma mark - loading a frame
             
-            if ( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString: @"RTDOSE"])
+            if ( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString: @"RTDOSE"]) // Radiotherapy Dose
             {  // Set Z value for each frame
                 NSArray *gridFrameOffsetArray = [dcmObject attributeArrayWithName: @"GridFrameOffsetVector"];  //List of Z values
                 
@@ -6737,10 +6768,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     inverseVal = YES; savedWL = -savedWL;
             }
             /*else if ( [colorspace hasPrefix:@"MONOCHROME2"])	{inverseVal = NO; savedWL = savedWL;} */
-            if ( [colorspace hasPrefix:@"YBR"])
+            if ( [colorspace hasPrefix:@"YBR"]) {
                 isRGB = YES;
-            
-            if ( [colorspace hasPrefix:@"PALETTE"])	{
+            }
+            else if ( [colorspace hasPrefix:@"PALETTE"])	{
                 bitsAllocated = 8;
                 isRGB = YES;
                 NSLog(@"Palette depth conveted to 8 bit");
@@ -6749,7 +6780,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             if ([colorspace rangeOfString:@"RGB"].location != NSNotFound)
                 isRGB = YES;
             
-            /******** dcm Object will do this *******convertYbrToRgb -> planar is converted***/
+            /* dcm Object will do this. convertYbrToRgb -> planar is converted */
             if ([colorspace rangeOfString:@"YBR"].location != NSNotFound) {
                 fPlanarConf = 0;
                 isRGB = YES;
@@ -6757,11 +6788,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             
             if (isRGB)
             {
-                unsigned char *ptr;
-                unsigned char *tmpImage;
                 int loop = (int) height * (int) width;
-                tmpImage = (unsigned char *)malloc (loop * 4L);
-                ptr = tmpImage;
+                unsigned char *tmpImage = (unsigned char *)malloc (loop * 4L);
+                unsigned char *ptr = tmpImage;
                 
                 if (bitsAllocated > 8)
                 {
@@ -6772,8 +6801,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     }
                     
                     // RGB_FFF
-                    unsigned short   *bufPtr;
-                    bufPtr = (unsigned short*) oImage;
+                    unsigned short *bufPtr = (unsigned short*) oImage;
                     while (loop-- > 0)
                     {		//unsigned short=16 bit, then I suppose A should be 65535
                         *ptr++	= 255;			//ptr++;
@@ -6791,8 +6819,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     }
                     
                     // RGB_888
-                    unsigned char   *bufPtr;
-                    bufPtr = (unsigned char*) oImage;
+                    unsigned char *bufPtr = (unsigned char*) oImage;
                     
                     while (loop-- > 0)
                     {
@@ -6835,17 +6862,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 {
                     // Planar 8
                     //-> 16 bits image
-                    unsigned char *bufPtr;
-                    short *ptr, *tmpImage;
-                    int loop, totSize;
+                    int totSize = (int) ((int) height * (int) width * 2L);
+                    short *tmpImage = (short *)malloc( totSize);
+                    unsigned char *bufPtr = (unsigned char*) oImage;
+                    short *ptr = tmpImage;
                     
-                    totSize = (int) ((int) height * (int) width * 2L);
-                    tmpImage = (short *)malloc( totSize);
-                    
-                    bufPtr = (unsigned char*) oImage;
-                    ptr    = tmpImage;
-                    
-                    loop = totSize/2;
+                    int loop = totSize/2;
                     
                     if ([pixData length] < loop)
                     {
@@ -6861,8 +6883,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     oImage = (short*) tmpImage;
                 }
             }
-            
-            
+
             //***********
             
             if (isRGB)
@@ -6880,7 +6901,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 
                 if (oData && gDisplayDICOMOverlays)
                 {
-                    unsigned char	*rgbData = (unsigned char*) fImage;
+                    unsigned char *rgbData = (unsigned char*) fImage;
                     
                     for (int y = 0; y < oRows; y++)
                     {
@@ -6888,8 +6909,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         {
                             if (oData[ y * oColumns + x])
                             {
-                                if ((x + oOrigin[ 0]) >= 0 && (x + oOrigin[ 0]) < width &&
-                                   (y + oOrigin[ 1]) >= 0 && (y + oOrigin[ 1]) < height)
+                                if ((x + oOrigin[ 0]) >= 0 &&
+                                    (x + oOrigin[ 0]) < width &&
+                                    (y + oOrigin[ 1]) >= 0 &&
+                                    (y + oOrigin[ 1]) < height)
                                 {
                                     rgbData[ (y + oOrigin[ 1]) * width*4 + (x + oOrigin[ 0])*4 + 1] = 0xFF;
                                     rgbData[ (y + oOrigin[ 1]) * width*4 + (x + oOrigin[ 0])*4 + 2] = 0xFF;
@@ -7093,7 +7116,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	if ([purgeCacheLock lockWhenCondition: 0 beforeDate: [NSDate dateWithTimeIntervalSinceNow: 10]])
     {
-        [PapyrusLock lock];
+        [Papyrus_Lock lock];
         
         @try 
         {
@@ -7104,7 +7127,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
         }
         
-        [PapyrusLock unlock];
+        [Papyrus_Lock unlock];
         [purgeCacheLock unlock];
     }
     else
@@ -7113,7 +7136,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) clearCachedDCMFrameworkFiles
 {
-    [PapyrusLock lock];
+    [Papyrus_Lock lock];
     
     @try
     {
@@ -7138,7 +7161,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         N2LogExceptionWithStackTrace(e);
     }
     
-    [PapyrusLock unlock];
+    [Papyrus_Lock unlock];
 }
 
 - (BOOL) loadDICOMPapyrus
@@ -7337,7 +7360,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     }
 }
 
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"					
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 - (void) CheckLoadIn
 {
 	BOOL USECUSTOMTIFF = NO;
@@ -7596,14 +7620,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						{
 							case NIFTI_TYPE_UINT8:
 							{
-								unsigned char *bufPtr;
-								short *ptr;
-								long loop;
-								
-								bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(height * width);
-								ptr = oImage;
-								
-								loop = height * width;
+                                unsigned char *bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(height * width);
+                                short *ptr = oImage;
+								long loop = height * width;
 								while (loop-- > 0)
 								{
 									*ptr++ = *bufPtr++;
@@ -7633,15 +7652,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 								
 							case NIFTI_TYPE_INT32:
 								{
-									unsigned int *bufPtr;
-									short *ptr;
-									long loop;
-									
-									bufPtr = (unsigned int*) [fileData bytes];
+									unsigned int *bufPtr = (unsigned int*) [fileData bytes];
 									bufPtr += frameNo * (height * width);
-									ptr    = oImage;
-									
-									loop = height * width;
+                                    short *ptr = oImage;
+									long loop = height * width;
 									while (loop-- > 0)
 									{
 										if (swapByteOrder)
@@ -9617,7 +9631,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	subtractedfZero = subtractedfZ - 0.8 + (p*0.8);
 	subtractedfGamma = g;
 	
-	if (subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
+	if (subGammaFunction)
+        vImageDestroyGammaFunction( subGammaFunction);
 	
 	subGammaFunction = vImageCreateGammaFunction( subtractedfGamma, kvImageGamma_UseGammaValue_half_precision, 0);	
 	
@@ -9865,12 +9880,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             else
             {
                 float  fkernel[25], m;
-                int i;
                 
                 if (normalization != 0)
-                    for (i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i] / (float) normalization;
+                    for (int i = 0; i < 25; i++)
+                        fkernel[ i] = (float) kernel[ i] / (float) normalization;
                 else
-                    for (i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i];
+                    for (int i = 0; i < 25; i++)
+                        fkernel[ i] = (float) kernel[ i];
                 
                 m = *src;
                 err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, kernelsize, kernelsize, 0, kvImageDoNotTile + kvImageEdgeExtend);
@@ -10430,7 +10446,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		needToCompute8bitRepresentation = YES;
 }
 
-#pragma mark-
+#pragma mark -
 
 - (void) kill8bitsImage
 {
@@ -10993,9 +11009,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     NSArray *content = [annot objectForKey:@"fullContent"];
                     NSMutableArray *contentOUT = [NSMutableArray array];
                     
-                    BOOL contentForLine = NO;
+                    //BOOL contentForLine = NO;
                     
-                    for ( int f=0; f<[content count]; f++)
+                    for (int f=0; f<[content count]; f++)
                     {
                         @try
                         {
@@ -11189,9 +11205,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                 else if ([type isEqualToString:@"Manual"])
                                 {
                                     value = [field objectForKey:@"field"];
-                                    if (value==nil || [value length] == 0) value = @"-";
+                                    if ([value length] == 0)
+                                        value = @"-";
                                     
-                                    if (![value isEqualToString:@""]) value = [value stringByAppendingString:@" "];
+                                    if (![value isEqualToString:@""])
+                                        value = [value stringByAppendingString:@" "];
                                 }
                                 
                                 if (value) [contentOUT addObject:value];

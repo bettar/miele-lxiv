@@ -53,7 +53,7 @@
             
             NSString* dicomdirPath = [path stringByAppendingPathComponent:[NSString stringWithUTF8String:DEFAULT_DICOMDIR_NAME]];
             OFCondition result = ddir.createNewDicomDir(DicomDirInterface::AP_USBandFlashJPEG, [dicomdirPath fileSystemRepresentation], DEFAULT_FILESETID); // -Pfl
-            if (!result.good())
+            if (result.bad())
                 [NSException raise:NSGenericException format:@"Couldn't create new DICOMDIR file: %s", result.text()];
                 
             ddir.setFilesetDescriptor(NULL, DEFAULT_DESCRIPTOR_CHARSET); // UTF-8 ?
@@ -65,7 +65,7 @@
             }
             
             result = ddir.writeDicomDir(EET_ExplicitLength, EGL_withoutGL);
-            if (!result.good())
+            if (result.bad())
                 [NSException raise:NSGenericException format:@"Couldn't write DICOMDIR file: %s", result.text()];
             
             chmod([dicomdirPath fileSystemRepresentation], 0755);

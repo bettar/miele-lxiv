@@ -49,12 +49,10 @@ typedef char* vtkCamera;
 
 @class SRView;
 
-@interface VTKStereoSRView : vtkMieleView {
-	
-	NSCursor					*cursor;
-	
+@interface VTKStereoSRView : vtkMieleView
+{
+	NSCursor *cursor;
 	SRView	*superSRView;
-
 }
 
 -(id)initWithFrame:(NSRect)frame: (SRView*) aSRView;

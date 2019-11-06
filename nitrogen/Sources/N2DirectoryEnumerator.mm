@@ -30,6 +30,7 @@
 
 @end
 
+#pragma mark -
 
 @interface N2DirectoryEnumeratorReleaser : NSThread {
     DIR* _dir;
@@ -39,6 +40,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation N2DirectoryEnumerator
 
@@ -223,4 +225,3 @@
 }
 
 @end
-

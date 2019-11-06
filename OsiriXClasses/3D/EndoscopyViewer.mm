@@ -468,7 +468,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	
 }
 
-#pragma mark-
+#pragma mark -
 
 - (BOOL) is2DViewer
 {
@@ -565,7 +565,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
     return vrController.view.engine;
 }
 
-- (void) setEngine: (int) newEngine
+- (void) setEngine: (EngineType) newEngine
 {
 	vrController.view.engine = newEngine;
 }
@@ -1232,15 +1232,15 @@ return YES;
 {
 	// grab the content of the 4 views
 	unsigned char *axialDataPtr, *coronalDataPtr, *sagittalDataPtr, *view3DDataPtr;
-	long	widthAx, heightAx, sppAx, bppAx;
-	long	widthCor, heightCor, sppCor, bppCor;
-	long	widthSag, heightSag, sppSag, bppSag;
-	long	width3D, height3D, spp3D, bpp3D;
+	long widthAx, heightAx, sppAx, bppAx;
+	long widthCor, heightCor, sppCor, bppCor;
+	long widthSag, heightSag, sppSag, bppSag;
+	long width3D, height3D, spp3D, bpp3D;
 	
-	long	annotations	= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+	int annotations = [[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY];
 	
 	[[self window] makeFirstResponder: (NSView*) [vrController view]];
-	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: ANNOTATIONS_GRAPHICS forKey: ANNOTATIONS_KEY];
 	[DCMView setDefaults];
 	
 	[[mprController originalView] display];
@@ -1251,7 +1251,7 @@ return YES;
 	coronalDataPtr = [(EndoscopyMPRView*)[mprController xReslicedView] superGetRawPixels:&widthCor :&heightCor :&sppCor :&bppCor :YES :YES :NO];
 	sagittalDataPtr = [(EndoscopyMPRView*)[mprController yReslicedView] superGetRawPixels:&widthSag :&heightSag :&sppSag :&bppSag :YES :YES :NO];
 	
-	[[NSUserDefaults standardUserDefaults] setInteger: annotations forKey: @"ANNOTATIONS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: annotations forKey: ANNOTATIONS_KEY];
 	[DCMView setDefaults];
 	
 	[[mprController originalView] setNeedsDisplay: YES];
@@ -1260,7 +1260,7 @@ return YES;
 
 	view3DDataPtr = [(EndoscopyVRView*) [vrController view] superGetRawPixels:&width3D :&height3D :&spp3D :&bpp3D :YES :YES];
 	
-	// append the 4 views into one memory block
+	// Append the 4 views into one memory block
 	//long	width, height, spp, bpp;
 	
 	if (widthSag+width3D > widthAx+widthCor) *width = widthSag+width3D;
@@ -1273,7 +1273,7 @@ return YES;
 	if (dataPtr)
 	{
 		// copy the axial and coronal views row by row
-		for(int i=0; i<heightAx; i++)
+		for (int i=0; i<heightAx; i++)
 		{
 			memcpy(dataPtr+i*(*width)*3,axialDataPtr+i*widthAx*3,widthAx*3);
 			memcpy(dataPtr+widthAx*3+i*(*width)*3,coronalDataPtr+i*widthCor*3,widthCor*3);
@@ -1292,7 +1292,8 @@ return YES;
 		free(sagittalDataPtr);
 		free(view3DDataPtr);
 	}
-	return dataPtr;
+
+    return dataPtr;
 }
 
 - (DicomStudy *)currentStudy
@@ -1522,7 +1523,7 @@ return YES;
 			// move camera
 			OSIVoxel* cpos = [centerline objectAtIndex:flyAssistantPositionIndex];
 			OSIVoxel * fpos;
-            if (/*NO*/YES) {
+            if (/* DISABLES CODE */ (YES)) {
                 fpos = [assistant computeMaximizingViewDirectionFrom:cpos
                                                            LookingAt:[centerline objectAtIndex:flyAssistantPositionIndex+1]];
             }
@@ -1530,7 +1531,8 @@ return YES;
             {
                 fpos = [centerline objectAtIndex:flyAssistantPositionIndex+1];
             }
-			[self setCameraAtPosition:cpos TowardsPosition:fpos];
+
+            [self setCameraAtPosition:cpos TowardsPosition:fpos];
 			
 			// add current camera to Fly Thru
 			[[vrController flyThruController].stepsArrayController addObject:[vrController flyThruController].currentCamera];

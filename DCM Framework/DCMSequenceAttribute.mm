@@ -95,12 +95,13 @@
 	[self addItem:item offset:0];
 }
 
-- (void)addItem:(id)item offset:(long)offset {
-	if(DCMDEBUG)
+- (void)addItem:(id)item offset:(long)offset
+{
+	if (DCMDEBUG)
 		NSLog(@"Add sequence Item %@ at Offset:%ld", [item description], offset);
     
-	NSArray *objects =  [NSArray arrayWithObjects:item, [NSNumber numberWithInt:offset], nil];
-	NSArray *keys =		[NSArray arrayWithObjects:@"item", @"offset", nil];
+	NSArray *objects = [NSArray arrayWithObjects:item, [NSNumber numberWithInt:offset], nil];
+	NSArray *keys =	[NSArray arrayWithObjects:@"item", @"offset", nil];
 	NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
 	[sequenceItems addObject:dictionary];
 }
@@ -179,7 +180,7 @@
 // for the benefit of writeBaseToData
 
 - (long)valueLength {
-	return 0xFFFFFFFF;	
+	return 0xFFFFFFFFL;	
 }
 
 - (NSString *)readableDescription {

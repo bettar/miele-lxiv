@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14868" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14868"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -3114,6 +3114,7 @@ Gw
                     </textField>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="132" y="928"/>
         </window>
         <customView id="11361" userLabel="rawDataImport">
             <rect key="frame" x="0.0" y="0.0" width="712" height="259"/>
@@ -3308,6 +3309,7 @@ Gw
                     </cells>
                 </form>
             </subviews>
+            <point key="canvasLocation" x="1083" y="939"/>
         </customView>
         <customView id="11581" userLabel="SearchView">
             <rect key="frame" x="0.0" y="0.0" width="199" height="46"/>
@@ -3354,6 +3356,7 @@ Gw
                     </connections>
                 </button>
             </subviews>
+            <point key="canvasLocation" x="1083" y="1160"/>
         </customView>
         <menu title="Menu" id="11583" userLabel="searchMenu">
             <items>
@@ -3455,6 +3458,7 @@ Gw
                     </connections>
                 </popUpButton>
             </subviews>
+            <point key="canvasLocation" x="1083" y="731"/>
         </customView>
         <customView id="11606" userLabel="TimeInterval">
             <rect key="frame" x="0.0" y="0.0" width="108" height="26"/>
@@ -3489,6 +3493,7 @@ Gw
                     </connections>
                 </popUpButton>
             </subviews>
+            <point key="canvasLocation" x="4" y="154"/>
         </customView>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="11675" userLabel="newAlbum">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
@@ -3547,6 +3552,7 @@ Gw
                     </textField>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="4" y="-56"/>
         </window>
         <window title="Password" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="11804" userLabel="passwordAlbum">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
@@ -3614,6 +3620,7 @@ Gw
                     </textField>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="-645" y="165"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="12279" userLabel="Shared Defaults"/>
         <customView id="12309" userLabel="ExportAccessoryView">
@@ -3770,6 +3777,7 @@ Gw
                     </connections>
                 </textField>
             </subviews>
+            <point key="canvasLocation" x="-646" y="-96"/>
         </customView>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="12366" userLabel="subSampling">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
@@ -4001,6 +4009,7 @@ Gw
                     </matrix>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="-647" y="-428"/>
         </window>
         <customView id="12675" userLabel="exportQuicktime">
             <rect key="frame" x="0.0" y="0.0" width="355" height="36"/>
@@ -4015,6 +4024,7 @@ Gw
                     </buttonCell>
                 </button>
             </subviews>
+            <point key="canvasLocation" x="-648" y="-673"/>
         </customView>
         <customView id="12680" userLabel="PagesReportTemplates">
             <rect key="frame" x="0.0" y="0.0" width="40" height="32"/>
@@ -4039,6 +4049,7 @@ Gw
                     </popUpButtonCell>
                 </popUpButton>
             </subviews>
+            <point key="canvasLocation" x="-285" y="-418"/>
         </customView>
         <objectController id="12768">
             <declaredKeys>

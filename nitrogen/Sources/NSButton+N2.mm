@@ -38,9 +38,14 @@
 	if (size.width > width) size.width = width;
 	
 	switch ([self bezelStyle]) {
-		case NSRecessedBezelStyle: {
-			if ([[self cell] controlSize] == NSMiniControlSize) size.height -= 4;
-		} break;
+		case NSRecessedBezelStyle:
+			if ([[self cell] controlSize] == NSMiniControlSize)
+                size.height -= 4;
+
+            break;
+            
+        default:
+            break;
 	}
 	
 	return n2::ceil(size);

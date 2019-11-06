@@ -29,6 +29,8 @@
 #undef verify
 #include "dcmtk/dcmdata/dcdeftag.h"
 
+#define NUM_ENCODINGS        10
+
 @implementation DCMTKStudyQueryNode
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
@@ -67,10 +69,10 @@
 									extraParameters:(NSDictionary *)extraParameters]) {
 		
 		const char *string = nil;
-		NSStringEncoding encoding[ 10];
-		
-		for( int i = 0; i < 10; i++) encoding[ i] = 0;
-		encoding[ 0] = NSISOLatin1StringEncoding;
+		NSStringEncoding myEncodings[NUM_ENCODINGS];
+        myEncodings[0] = NSISOLatin1StringEncoding;
+		for (int i = 1; i < NUM_ENCODINGS; i++)
+            myEncodings[i] = NSUTF8StringEncoding;
 		
 //		dataset ->print( COUT);
 		
@@ -80,12 +82,16 @@
 		
 			NSArray	*c = [_specificCharacterSet componentsSeparatedByString:@"\\"];
 			
-			if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+			if ([c count] >= NUM_ENCODINGS)
+                NSLog( @"Encoding number >= %d ???", NUM_ENCODINGS);
 			
-			if( [c count] < 10)
+			if ([c count] < NUM_ENCODINGS)
 			{
-				for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-				for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+				for (int i = 0; i < [c count]; i++)
+                    myEncodings[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+
+				for (int i = [c count]; i < NUM_ENCODINGS; i++)
+                    myEncodings[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
 			}
 		}
 		
@@ -93,31 +99,31 @@
 			_uid = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			
 		if (dataset ->findAndGetString(DCM_StudyDescription, string).good() && string != nil) 
-			_theDescription = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
+			_theDescription = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
 		
 		if (dataset ->findAndGetString(DCM_PatientName, string).good() && string != nil)
-			_name = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+			_name = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
 		
 		if (dataset ->findAndGetString(DCM_PatientID, string).good() && string != nil)		
-			_patientID = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
+			_patientID = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
 			
 		if (dataset ->findAndGetString(DCM_AccessionNumber, string).good() && string != nil)		
-			_accessionNumber = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
+			_accessionNumber = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
 		
 		if (dataset ->findAndGetString(DCM_RETIRED_StudyComments, string).good() && string != nil)
-			_comments = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
+			_comments = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
 		
         if (dataset ->findAndGetString(DCM_RETIRED_InterpretationStatusID, string).good() && string != nil)
-			_interpretationStatusID = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
+			_interpretationStatusID = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
         
 		if (dataset ->findAndGetString(DCM_ReferringPhysicianName, string).good() && string != nil)
-			_referringPhysician = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+			_referringPhysician = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
 		
         if (dataset ->findAndGetString(DCM_PerformingPhysicianName, string).good() && string != nil)
-			_performingPhysician = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+			_performingPhysician = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
         
 		if (dataset ->findAndGetString(DCM_InstitutionName, string).good() && string != nil)		
-			_institutionName = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+			_institutionName = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
 		
 		if (dataset ->findAndGetString(DCM_PatientBirthDate, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
@@ -197,10 +203,10 @@
 	dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "SERIES", OFTrue);
 	
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CFINDBodyPartExaminedSupport"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CFINDBodyPartExaminedSupport"])
         dataset-> insertEmptyElement(DCM_BodyPartExamined, OFTrue);
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CFINDCommentsAndStatusSupport"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CFINDCommentsAndStatusSupport"])
     {
         dataset-> insertEmptyElement(DCM_RETIRED_StudyComments, OFTrue);
         dataset-> insertEmptyElement(DCM_RETIRED_InterpretationStatusID, OFTrue);
@@ -224,7 +230,7 @@
 
 - (NSString*) studyInstanceUID // Match DicomStudy
 {
-    if( _uid == nil)
+    if (_uid == nil)
         return @"";
     
     return _uid;
@@ -237,7 +243,7 @@
 
 - (NSString*) studyName // Match DicomStudy
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [_theDescription capitalizedString];
         
     return _theDescription;
@@ -250,7 +256,7 @@
 
 - (NSString*) name  // Match DicomStudy
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [_name capitalizedString];
     
     return _name;
@@ -355,7 +361,7 @@
 
 - (NSString*) performingPhysician // Match DicomStudy
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [_performingPhysician capitalizedString];
     
     return _performingPhysician;
@@ -393,7 +399,7 @@
 
 - (NSString*) referringPhysician
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [_referringPhysician capitalizedString];
     
     return _referringPhysician;
@@ -401,7 +407,7 @@
 
 - (NSString*) institutionName // Match DicomStudy
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [_institutionName capitalizedString];
     
     return _institutionName;
@@ -437,7 +443,7 @@
 
 - (void)addChild:(DcmDataset *)dataset
 {
-	if( dataset == nil)
+	if (dataset == nil)
 		return;
     
     @synchronized( _children)
@@ -446,7 +452,7 @@
             _children = [[NSMutableArray alloc] init];
 	}
     
-	if( [_extraParameters valueForKey: @"StudyInstanceUID"] == nil && _uid != nil && _extraParameters != nil)
+	if ([_extraParameters valueForKey: @"StudyInstanceUID"] == nil && _uid != nil && _extraParameters != nil)
 	{
 		NSMutableDictionary *newDict = [NSMutableDictionary dictionaryWithDictionary: _extraParameters];
 		
@@ -459,7 +465,7 @@
 	
 	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good()){}
 	
-	if( queryLevel == nil)
+	if (queryLevel == nil)
     {
         NSLog( @"**** queryLevel == nil");
         
@@ -470,7 +476,7 @@
     
     @synchronized( _children)
     {
-        if( strcmp( queryLevel, "IMAGE") == 0)
+        if (strcmp( queryLevel, "IMAGE") == 0)
         {
             DCMTKImageQueryNode *newNode = [DCMTKImageQueryNode queryNodeWithDataset: dataset
                                                                           callingAET: _callingAET
@@ -481,20 +487,20 @@
                                                                          compression: _compression
                                                                      extraParameters: _extraParameters];
             BOOL alreadyHere = NO;
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QRRemoveDuplicateEntries"])
+            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"QRRemoveDuplicateEntries"])
             {
                 //Is it already here?
                 for( DCMTKImageQueryNode* s in _children)
                 {
-                    if( [s.seriesInstanceUID isEqualToString: newNode.seriesInstanceUID] && [s.studyInstanceUID isEqualToString: newNode.studyInstanceUID] && [s.uid isEqualToString: newNode.uid] && [s.date isEqualToDate: newNode.date])
+                    if ([s.seriesInstanceUID isEqualToString: newNode.seriesInstanceUID] && [s.studyInstanceUID isEqualToString: newNode.studyInstanceUID] && [s.uid isEqualToString: newNode.uid] && [s.date isEqualToDate: newNode.date])
                         alreadyHere = YES;
                 }
             }
             
-            if( alreadyHere == NO)
+            if (alreadyHere == NO)
                 [_children addObject: newNode];
         }
-        else if( strcmp( queryLevel, "SERIES") == 0)
+        else if (strcmp( queryLevel, "SERIES") == 0)
         {
             DCMTKSeriesQueryNode *newNode = [DCMTKSeriesQueryNode queryNodeWithDataset: dataset
                                                                            callingAET: _callingAET
@@ -508,17 +514,17 @@
             newNode.study = self;
             
             BOOL alreadyHere = NO;
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QRRemoveDuplicateEntries"])
+            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"QRRemoveDuplicateEntries"])
             {
                 //Is it already here?
                 for( DCMTKSeriesQueryNode* s in _children)
                 {
-                    if( [s.studyInstanceUID isEqualToString: newNode.studyInstanceUID] && [s.uid isEqualToString: newNode.uid])
+                    if ([s.studyInstanceUID isEqualToString: newNode.studyInstanceUID] && [s.uid isEqualToString: newNode.uid])
                         alreadyHere = YES;
                 }
             }
             
-            if( alreadyHere == NO)
+            if (alreadyHere == NO)
                 [_children addObject: newNode];
         }
         else

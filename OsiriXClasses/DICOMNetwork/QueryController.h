@@ -29,7 +29,7 @@
 
 #define MAXINSTANCE 40
 
-enum
+enum querySearchTags
 {
     anyDate = 0,
     today = 1,

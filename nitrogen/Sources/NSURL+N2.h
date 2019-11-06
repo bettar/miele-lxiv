@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface N2URLParts : NSObject {
 	NSString *_protocol, *_address, *_port, *_path, *_params;
 }
@@ -30,6 +29,7 @@
 
 @end
 
+#pragma mark -
 
 @interface NSURL (N2)
 

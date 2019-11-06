@@ -68,8 +68,10 @@
 #endif
 #endif
 
+#import <DCM/DCMCharacterSet.h>
+
 extern NSString * convertDICOM( NSString *inputfile);
-extern NSRecursiveLock *PapyrusLock;
+extern NSRecursiveLock *Papyrus_Lock;
 
 static BOOL DEFAULTSSET = NO;
 static int TOOLKITPARSER = 1, PREFERPAPYRUSFORCD = 1;
@@ -90,28 +92,32 @@ static BOOL filesAreFromCDMedia = NO;
 
 #define QUICKTIMETIMEFRAMELIMIT 1200
 
-char* replaceBadCharacter (char* str, NSStringEncoding encoding) 
+static
+char* replaceBadChars(char* str, NSStringEncoding encoding)
 {
-	if( encoding != NSISOLatin1StringEncoding)
+    if (encoding != NSISOLatin1StringEncoding)
         return str;
 
-	long i = strlen( str);
-	
-	while( i-- >0)
-	{
-		if( str[i] == '/') str[i] = '-';
-		if( str[i] == '^') str[i] = ' ';
-	}
-	
-	i = strlen( str);
-	while( --i > 0)
-	{
-		if( str[i] ==' ') str[i] = 0;
-		else i = 0;
-	}
-	
-	return str;
+    long i = strlen( str);
+
+    while (i-- > 0)
+    {
+        if      (str[i] == '/') str[i] = '-';
+        else if (str[i] == '^') str[i] = ' ';
+    }
+
+    i = strlen( str);
+    while (--i > 0)
+    {
+        if (str[i] == ' ')
+            str[i] = 0;
+        else
+            i = 0;
+    }
+
+    return str;
 }
+
 
 //@implementation NSString(_encodings_)
 //- (NSArray*)allAvailableEncodings
@@ -225,11 +231,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return mutable1;
 }
 
-+ (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding
-{
-	return [DicomFile stringWithBytes: str encodings: encoding replaceBadCharacters: YES];
-}
-
 + (BOOL) checkForEscapeCharacter: (char *) strValue size:(size_t) strLength
 {
     BOOL result = NO;
@@ -262,23 +263,23 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	{
 		c = str[ i];
 		
-        //		if( encoding[ index] == NSISO2022JPStringEncoding || encoding[ index] == -2147483647)
-        //			twoCharsEncoding = YES;
-        //		else
-        //			twoCharsEncoding = NO;
+//		if( encoding[ index] == NSISO2022JPStringEncoding || encoding[ index] == -2147483647)
+//			twoCharsEncoding = YES;
+//		else
+//			twoCharsEncoding = NO;
 		
 		BOOL separatorFound = NO;
 		
-        //		if( twoCharsEncoding)
-        //		{
-        //			if( c == 0x1b && str[ i+1] == '(')
-        //				separatorFound = YES;
-        //		}
-        //		else
-        //		{
+//		if( twoCharsEncoding)
+//		{
+//			if( c == 0x1b && str[ i+1] == '(')
+//				separatorFound = YES;
+//		}
+//		else
+//		{
         if( c == 0x1b)
             separatorFound = YES;
-        //		}
+//		}
 		
 		if( separatorFound || i == len-1)
 		{
@@ -322,198 +323,38 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //		[result replaceOccurrencesOfString: @"(B" withString: @"" options: 0 range:result.range];
 //	}
 	
-	if( replace)
+	if (replace)
 		return [DicomFile NSreplaceBadCharacter: result];
-	else
-		return result;
+
+    return result;
 }
 
-// Based on dcmtk 3.6 convertString function
-
-+ (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encodings replaceBadCharacters: (BOOL) replace
++ (NSString *) stringWithBytes: (char *) str
+                     encodings: (NSStringEncoding*) encoding
 {
-	if( str == nil)
-        return nil;
-    
-    int fromLength = strlen( str);
-    
-	NSMutableString	*result = [NSMutableString string];
-    BOOL checkPNDelimiters = YES;
-    NSStringEncoding currentEncoding = encodings[ 0];
-	int pos = 0;
-    char *firstChar = str;
-    char *currentChar = str;
-    BOOL isFirstGroup = NO; // if delimiters contains '=' -> patient name
-    int escLength = 0;
-    
-	while(pos < fromLength)
-	{
-		char c0 = *currentChar++;
-        BOOL isEscape = (c0 == '\033');
-        BOOL isDelimiter = (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || (((c0 == '^') || (c0 == '=')) && (((c0 != '^') && (c0 != '=')) || checkPNDelimiters));
-       
-        if (isEscape || isDelimiter)
-        {
-            int convertLength = currentChar - firstChar - 1;
-			
-            if( convertLength - (escLength+1) >= 0)
-            {
-                NSString *s = nil;
-                
-                s = [[[NSString alloc] initWithBytes: firstChar length:convertLength encoding: currentEncoding] autorelease];
-                
-                if( s)
-                    [result appendString: s];
-            }
-            
-            // check whether this was the first component group of a PN value
-            if (isDelimiter && (c0 == '='))
-                isFirstGroup = NO;
-        }
-        
-        if (isEscape)
-        {
-            // report a warning as this is a violation of DICOM PS 3.5 Section 6.2.1
-            if (isFirstGroup)
-            {
-                NSLog( @"DcmSpecificCharacterSet: Escape sequences shall not be used in the first component group of a Person Name (PN), using them anyway)");
-            }
-            
-            // we need at least two more characters to determine the new character set
-            escLength = 2;
-            if (pos + escLength < fromLength)
-            {
-                NSString *key = nil;
-                char c1 = *currentChar++;
-                char c2 = *currentChar++;
-                char c3 = '\0';
-                if ((c1 == 0x28) && (c2 == 0x42))       // ASCII
-                    key = @"ISO 2022 IR 6";
-                else if ((c1 == 0x2d) && (c2 == 0x41))  // Latin alphabet No. 1
-                    key = @"ISO 2022 IR 100";
-                else if ((c1 == 0x2d) && (c2 == 0x42))  // Latin alphabet No. 2
-                    key = @"ISO 2022 IR 101";
-                else if ((c1 == 0x2d) && (c2 == 0x43))  // Latin alphabet No. 3
-                    key = @"ISO 2022 IR 109";
-                else if ((c1 == 0x2d) && (c2 == 0x44))  // Latin alphabet No. 4
-                    key = @"ISO 2022 IR 110";
-                else if ((c1 == 0x2d) && (c2 == 0x4c))  // Cyrillic
-                    key = @"ISO 2022 IR 144";
-                else if ((c1 == 0x2d) && (c2 == 0x47))  // Arabic
-                    key = @"ISO 2022 IR 127";
-                else if ((c1 == 0x2d) && (c2 == 0x46))  // Greek
-                    key = @"ISO 2022 IR 126";
-                else if ((c1 == 0x2d) && (c2 == 0x48))  // Hebrew
-                    key = @"ISO 2022 IR 138";
-                else if ((c1 == 0x2d) && (c2 == 0x4d))  // Latin alphabet No. 5
-                    key = @"ISO 2022 IR 148";
-                else if ((c1 == 0x29) && (c2 == 0x49))  // Japanese
-                    key = @"ISO 2022 IR 13";
-                else if ((c1 == 0x28) && (c2 == 0x4a))  // Japanese - is this really correct?
-                    key = @"ISO 2022 IR 13";
-                else if ((c1 == 0x2d) && (c2 == 0x54))  // Thai
-                    key = @"ISO 2022 IR 166";
-                else if ((c1 == 0x24) && (c2 == 0x42))  // Japanese (multi-byte)
-                    key = @"ISO 2022 IR 87";
-                else if ((c1 == 0x24) && (c2 == 0x28))  // Japanese (multi-byte)
-                {
-                    escLength = 3;
-                    // do we still have another character in the string?
-                    if (pos + escLength < fromLength)
-                    {
-                        c3 = *currentChar++;
-                        if (c3 == 0x44)
-                            key = @"ISO 2022 IR 159";
-                    }
-                }
-                else if ((c1 == 0x24) && (c2 == 0x29)) // Korean (multi-byte)
-                {
-                    escLength = 3;
-                    // do we still have another character in the string?
-                    if (pos + escLength < fromLength)
-                    {
-                        c3 = *currentChar++;
-                        if (c3 == 0x43)                 // Korean (multi-byte)
-                            key = @"ISO 2022 IR 149";
-                        else if (c3 == 0x41)            // Simplified Chinese (multi-byte)
-                            key = @"ISO 2022 IR 58";
-                    }
-                }
-        
-                if( key == nil)
-                    NSLog( @"*** key == nil");
-                else
-                {
-                    currentEncoding = [NSString encodingForDICOMCharacterSet: key];
-                    
-//                    BOOL found = NO;
-//                    for( int x = 0; x < 10; x++)
-//                    {
-//                        if( currentEncoding == encodings[ x])
-//                            found = YES;
-//                    }
-                    
-//                    if( found == NO)
-//                        NSLog( @"*** encoding not found in declared SpecificCharacterSet (0008,0005)");
-                    
-                    checkPNDelimiters = ([key isEqualToString: @"ISO 2022 IR 87"] == NO) && ([key isEqualToString: @"ISO 2022 IR 159"] == NO);
-                    
-                    if( checkPNDelimiters)
-                        firstChar = currentChar;
-                    else
-                        firstChar = currentChar - (escLength+1);
-                    
-                }
-                
-                pos += escLength;
-                
-                if( checkPNDelimiters)
-                    escLength = 0;
-            }
-            
-            if(pos >= fromLength)
-                NSLog( @"incomplete sequence");
-        }
-        else if (isDelimiter)
-        {
-            [result appendFormat: @"%c", c0];
-            
-            if (currentEncoding != encodings[ 0])
-            {
-                currentEncoding = encodings[ 0];
-                checkPNDelimiters = YES;
-            }
-            firstChar = currentChar;
-        }
-        ++pos;
-	}
-	
-    // convert any remaining characters from the input string
-    {
-        int convertLength = currentChar - firstChar;
-        if (convertLength > 0)
-        {
-            int convertLength = currentChar - firstChar;
-            
-            if( firstChar + convertLength <= str + fromLength && ( convertLength - (escLength+1) >= 0))
-            {
-                NSString *s = [[[NSString alloc] initWithBytes: firstChar length:convertLength encoding: currentEncoding] autorelease];
-            
-                if( s)
-                    [result appendString: s];
-            }
-        }
-	}
-    
-	if( replace)
-		return [DicomFile NSreplaceBadCharacter: result];
-	else
-		return result;
+    return [DicomFile stringWithBytes: str
+                            encodings: encoding
+                 replaceBadCharacters: YES];
 }
 
-+ (char *) replaceBadCharacter:(char *) str encoding: (NSStringEncoding) encoding
++ (NSString *) stringWithBytes: (char *) str
+                     encodings: (NSStringEncoding*) encodings
+          replaceBadCharacters: (BOOL) replace
 {
-	return replaceBadCharacter (str, encoding);
+    // Use the DCM framework implementation
+    NSMutableString *result = [[DCMCharacterSet stringWithBytes: str
+                                                         length: sizeof(str)
+                                                      encodings: encodings] mutableCopy];
+    if (replace)
+        return [DicomFile NSreplaceBadCharacter: result];
+
+    return result;
+}
+
++ (char *) replaceBadCharacter: (char *) str
+                      encoding: (NSStringEncoding) encoding
+{
+	return replaceBadChars(str, encoding);
 }
 
 + (void) resetDefaults
@@ -523,9 +364,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 + (void) setDefaults
 {
-	if( DEFAULTSSET == NO)
+	if (DEFAULTSSET == NO)
 	{
-		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"TOOLKITPARSER4"])
+		if ([[NSUserDefaults standardUserDefaults] objectForKey: @"TOOLKITPARSER4"])
 		{
 			NSUserDefaults *sd = [NSUserDefaults standardUserDefaults];
 			
@@ -534,9 +375,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			PREFERPAPYRUSFORCD = [sd integerForKey: @"PREFERPAPYRUSFORCD"];
             TOOLKITPARSER = 2; // Always and only DCMTK. Papyrus has been removed from the project.
             
-			#ifdef OSIRIX_LIGHT
+#ifdef OSIRIX_LIGHT
 			TOOLKITPARSER = 2;
-			#endif
+#endif
 			
 			COMMENTSFROMDICOMFILES = [sd boolForKey: @"CommentsFromDICOMFiles"];
 			COMMENTSAUTOFILL = [sd boolForKey: @"COMMENTSAUTOFILL"];
@@ -783,9 +624,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if (success)
 		{
-			int i, j;
-			
-		
 			int w = 0, h = 0;
 			FV_MM_HEAD mm_head;
 			NSXMLDocument *xmlDocument;
@@ -794,7 +632,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			FV_Read_MM_HEAD(head_data, &mm_head);
 			NoOfFrames = 1;
 			NoOfSeries = 1;
-			for(i = 0; i < FV_SPATIAL_DIMENSION; i++)
+			for (int i = 0; i < FV_SPATIAL_DIMENSION; i++)
 			{
 				if (*(mm_head.DimInfo[i].Name) == 'Z')
 					NoOfFrames = mm_head.DimInfo[i].Size;
@@ -822,14 +660,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			// set the comments and date fields
 			NSXMLElement* rootElement = [xmlDocument rootElement];
 			NSString* datetime_string = [NSString string];
-			for (i = 0; i < [rootElement childCount]; i++)
+			for (int i = 0; i < [rootElement childCount]; i++)
 			{
 				NSXMLNode* theNode = [rootElement childAtIndex:i];
 				if ([[theNode name] isEqualToString:@"Description"])
 					[dicomElements setObject:[theNode stringValue] forKey:@"studyComments"];
 					
 				if ([[theNode name] isEqualToString:@"Acquisition Parameters"])
-					for (j = 0; j < [theNode childCount]; j++)
+					for (int j = 0; j < [theNode childCount]; j++)
 					{
 						NSXMLNode* theSubNode = [theNode childAtIndex:j];
 						if ([[theSubNode name] isEqualToString:@"Date"])
@@ -856,7 +694,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
 			[dicomElements setObject:fileType forKey:@"fileType"];
 
-			for (i = 0; i < NoOfSeries; i++)
+			for (int i = 0; i < NoOfSeries; i++)
 			{
 				NSString* SeriesNum;
 				if (i)
@@ -874,11 +712,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				int pos = i;
 				NSString* seriesDesc = @"FV ";
 				int largestDimSize = 1;
-				int j;
-				for (j = 0; j < FV_SPATIAL_DIMENSION; j++)
+				for (int j = 0; j < FV_SPATIAL_DIMENSION; j++)
 					if (*(mm_head.DimInfo[j].Name) != 'X' && *(mm_head.DimInfo[j].Name) != 'Y' && *(mm_head.DimInfo[j].Name) != 'Z')
 						largestDimSize *= mm_head.DimInfo[j].Size;
-				for (j = FV_SPATIAL_DIMENSION - 1; j >= 0; j--)
+				for (int j = FV_SPATIAL_DIMENSION - 1; j >= 0; j--)
 				{
 					if (mm_head.DimInfo[j].Size > 1 && *(mm_head.DimInfo[j].Name) != 'X' && *(mm_head.DimInfo[j].Name) != 'Y' && *(mm_head.DimInfo[j].Name) != 'Z')
 					{
@@ -948,12 +785,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 -(short) getImageFile
 {
-	NSString	*extension = [[filePath pathExtension] lowercaseString];
+	NSString *extension = [[filePath pathExtension] lowercaseString];
 	
 	NoOfFrames = 1;
 	
-	
-	if( [extension isEqualToString:@"tiff"] ||
+	if ([extension isEqualToString:@"tiff"] ||
 		[extension isEqualToString:@"tif"] ||
 		[extension isEqualToString:@"stk"] ||
 		[extension isEqualToString:@"png"] ||
@@ -964,15 +800,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		[extension isEqualToString:@"pct"] ||
 		[extension isEqualToString:@"gif"])
 		{
-			NSImage		*otherImage = [[NSImage alloc] initWithContentsOfFile:filePath];
-			if( otherImage || [extension isEqualToString:@"tiff"] || [extension isEqualToString:@"tif"])
+			NSImage *otherImage = [[NSImage alloc] initWithContentsOfFile:filePath];
+			if (otherImage || [extension isEqualToString:@"tiff"] || [extension isEqualToString:@"tif"])
 			{
 				// Try to identify a 2 digit number in the last part of the file.
-				char				strNo[ 5];
-				NSString			*tempString = [[filePath lastPathComponent] stringByDeletingPathExtension];
+				char strNo[ 5];
+				NSString *tempString = [[filePath lastPathComponent] stringByDeletingPathExtension];
 				
-				#ifndef STATIC_DICOM_LIB
-				#ifndef OSIRIX_LIGHT
+#ifndef STATIC_DICOM_LIB
+#ifndef OSIRIX_LIGHT
 				if( [extension isEqualToString:@"tiff"] ||
 					[extension isEqualToString:@"stk"] ||
 					[extension isEqualToString:@"tif"])
@@ -1007,8 +843,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					}
 				}
 				else
-				#endif
-				#endif
+#endif
+#endif
 				{
                     @autoreleasepool
                     {
@@ -1023,22 +859,28 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     }
 				}
 				
-				if( [tempString length] >= 4) strNo[ 0] = [tempString characterAtIndex: [tempString length] -4];	else strNo[ 0]= 0;
-				if( [tempString length] >= 3) strNo[ 1] = [tempString characterAtIndex: [tempString length] -3];	else strNo[ 1]= 0;
-				if( [tempString length] >= 2) strNo[ 2] = [tempString characterAtIndex: [tempString length] -2];	else strNo[ 2]= 0;
-				if( [tempString length] >= 1) strNo[ 3] = [tempString characterAtIndex: [tempString length] -1];	else strNo[ 3]= 0;
-				strNo[ 4] = 0;
+				if( [tempString length] >= 4) strNo[ 0] = [tempString characterAtIndex: [tempString length] -4]; else strNo[ 0]= 0;
+				if( [tempString length] >= 3) strNo[ 1] = [tempString characterAtIndex: [tempString length] -3]; else strNo[ 1]= 0;
+				if( [tempString length] >= 2) strNo[ 2] = [tempString characterAtIndex: [tempString length] -2]; else strNo[ 2]= 0;
+				if( [tempString length] >= 1) strNo[ 3] = [tempString characterAtIndex: [tempString length] -1]; else strNo[ 3]= 0;
+
+                strNo[ 4] = 0;
 				
-				if( strNo[ 0] >= '0' && strNo[ 0] <= '9' && strNo[ 1] >= '0' && strNo[ 1] <= '9' && strNo[ 2] >= '0' && strNo[ 2] <= '9'  && strNo[ 3] >= '0' && strNo[ 3] <= '9')
+				if (strNo[ 0] >= '0' && strNo[ 0] <= '9' &&
+                    strNo[ 1] >= '0' && strNo[ 1] <= '9' &&
+                    strNo[ 2] >= '0' && strNo[ 2] <= '9' &&
+                    strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
 					imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
 					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 4] stringByAppendingString:[NSString stringWithCString: (char*) strNo encoding: NSISOLatin1StringEncoding]]];
 					self.serieID = [tempString substringToIndex: [tempString length] - 4];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 4]];
 				}
-				else if( strNo[ 1] >= '0' && strNo[ 1] <= '9' && strNo[ 2] >= '0' && strNo[ 2] <= '9' && strNo[ 3] >= '0' && strNo[ 3] <= '9')
+				else if (strNo[ 1] >= '0' && strNo[ 1] <= '9' &&
+                         strNo[ 2] >= '0' && strNo[ 2] <= '9' &&
+                         strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
-					// We HAVE a number with 3 digit at the end of the file!! Make a serie of it!
+					// We HAVE a number with 3 digits at the end of the file. Make a serie of it
 					
 					strNo[0] = strNo[ 1];
 					strNo[1] = strNo[ 2];
@@ -1050,9 +892,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					self.serieID = [tempString substringToIndex: [tempString length] - 3];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 3]];
 				}
-				else if( strNo[ 2] >= '0' && strNo[ 2] <= '9' && strNo[ 3] >= '0' && strNo[ 3] <= '9')
+				else if (strNo[ 2] >= '0' && strNo[ 2] <= '9' &&
+                         strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
-					// We HAVE a number with 2 digit at the end of the file!! Make a serie of it!
+					// We HAVE a number with 2 digits at the end of the file. Make a serie of it
 					strNo[0] = strNo[ 2];
 					strNo[1] = strNo[ 3];
 					strNo[2] = 0;
@@ -1062,9 +905,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					self.serieID = [tempString substringToIndex: [tempString length] - 2];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 2]];
 				}
-				else if( strNo[ 3] >= '0' && strNo[ 3] <= '9')
+				else if (strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
-					// We HAVE a number with 1 digit at the end of the file!! Make a serie of it!
+					// We HAVE a number with 1 digit at the end of the file. Make a serie of it
 					strNo[0] = strNo[ 3];
 					strNo[1] = 0;
 					
@@ -1086,22 +929,25 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				Modality = [[NSString alloc] initWithString:extension];
 				date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
-                if( date == nil) date = [[NSDate date] retain];
-				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+                if( date == nil)
+                    date = [[NSDate date] retain];
+
+                serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				fileType = [@"IMAGE" retain];
 				
-				if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
+				if (NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
 					self.serieID = [NSString stringWithFormat:@"%@-%@-%@", self.serieID, imageID, [filePath lastPathComponent]];
 				
 				NoOfSeries = 1;
 				
-				if( [extension isEqualToString:@"pdf"])
+				if ([extension isEqualToString:@"pdf"])
 				{
 					NSPDFImageRep *pdfRepresentation = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: filePath]];
 					
 					NoOfFrames = [pdfRepresentation pageCount];
 					
-					if( NoOfFrames > 50) NoOfFrames = 50;   // Limit number of pages
+					if (NoOfFrames > 50)
+                        NoOfFrames = 50;   // Limit number of pages
 				}
 				
 				[dicomElements setObject:studyID forKey:@"studyID"];
@@ -1732,7 +1578,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				Analyze = (struct dsr*) [file bytes];
 				
-				name = [[NSString alloc] initWithCString: replaceBadCharacter(Analyze->hk.db_name, NSISOLatin1StringEncoding) encoding: NSASCIIStringEncoding];
+				name = [[NSString alloc] initWithCString: replaceBadChars(Analyze->hk.db_name, NSISOLatin1StringEncoding) encoding: NSASCIIStringEncoding];
 				patientID = [[NSString alloc] initWithString:name];
 				studyID = [[NSString alloc] initWithString:name];
 				self.serieID = [[filePath lastPathComponent] stringByDeletingPathExtension];

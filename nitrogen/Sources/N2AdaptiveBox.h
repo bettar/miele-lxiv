@@ -30,6 +30,7 @@
 
 @end
 
+#pragma mark -
 
 @interface NSWindowController (N2AdaptiveBox)
 

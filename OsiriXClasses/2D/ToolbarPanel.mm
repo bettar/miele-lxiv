@@ -34,8 +34,6 @@ static int fixedHeight = 92;
 
 @implementation ToolbarPanelController
 
-@synthesize viewer;
-
 - (long) fixedHeight
 {
     return fixedHeight;
@@ -69,7 +67,7 @@ static int fixedHeight = 92;
 
 -(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
 {
-	NSRect screenRect = [viewer.window.screen visibleFrame];
+	NSRect screenRect = [self.viewer.window.screen visibleFrame];
 	
 	NSRect dstframe;
 	dstframe.size.height = [self fixedHeight];
@@ -83,10 +81,11 @@ static int fixedHeight = 92;
 
 - (id)initForViewer:(ViewerController *)v withToolbar:(NSToolbar *)t
 {
-	if (self = [super initWithWindowNibName:@"ToolbarPanel"])
+    self = [super initWithWindowNibName:@"ToolbarPanel"];
+	if (self)
 	{
 		toolbar = [t retain];
-        viewer = [v retain];
+        _viewer = [v retain];
 		
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
         [[self window] setToolbar: toolbar];
@@ -127,7 +126,7 @@ static int fixedHeight = 92;
 {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     
-    [viewer release];
+    [self.viewer release];
     [toolbar release];
 	[super dealloc];
 }
@@ -136,11 +135,11 @@ static int fixedHeight = 92;
 {
 	if( [aNotification object] == [self window])
 	{
-        if( [[viewer window] isVisible])
+        if( [[self.viewer window] isVisible])
         {
             if( [self.window.toolbar customizationPaletteIsRunning] == NO)
             {
-                [[viewer window] makeKeyAndOrderFront: self];
+                [[self.viewer window] makeKeyAndOrderFront: self];
                 [self.window orderBack: self];
             }
         }
@@ -153,11 +152,11 @@ static int fixedHeight = 92;
 {
 	if( [aNotification object] == [self window])
 	{
-        if( [[viewer window] isVisible])
+        if( [[self.viewer window] isVisible])
         {
             if( [self.window.toolbar customizationPaletteIsRunning] == NO)
             {
-                [[viewer window] makeKeyAndOrderFront: self];
+                [[self.viewer window] makeKeyAndOrderFront: self];
                 [self.window orderBack: self];
             }
         }
@@ -173,7 +172,7 @@ static int fixedHeight = 92;
 
 - (void) viewerWillClose: (NSNotification*) n
 {
-    if( [n object] == viewer)
+    if( [n object] == self.viewer)
         [self.window orderOut: self];
 }
 @end

@@ -909,9 +909,10 @@ extern int delayedTileWindows;
 		[cell setTextColor: [NSColor textColor]];
 		[cell setFont:[NSFont systemFontOfSize:12]];
 	}
-	[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
-    
-     if ([modifiedFields containsObject: [self getPath: item]])
+
+    [cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
+
+    if ([modifiedFields containsObject: [self getPath: item]])
          [cell setTextColor: [NSColor redColor]];
 }
 

@@ -17,6 +17,8 @@
 
 static float backgroundInset = 1.5;
 
+#pragma mark -
+
 @implementation KBDelayedPopUpButtonCell
 
 @synthesize arrowPath;
@@ -195,8 +197,12 @@ static float backgroundInset = 1.5;
 
 @end
 
+#pragma mark -
+
 @interface KBDelayedPopUpButton : NSButton
 @end
+
+#pragma mark -
 
 @implementation KBDelayedPopUpButton
 
@@ -217,6 +223,7 @@ static float backgroundInset = 1.5;
 
 @end
 
+#pragma mark -
 
 @implementation KBPopUpToolbarItem
 

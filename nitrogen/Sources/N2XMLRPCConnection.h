@@ -29,6 +29,8 @@
 
 @end
 
+#pragma mark -
+
 @interface N2XMLRPCConnection : N2Connection {
 	NSObject<N2XMLRPCConnectionDelegate>* _delegate;
 	BOOL _executed, _waitingToClose, _dontSpecifyStringType;

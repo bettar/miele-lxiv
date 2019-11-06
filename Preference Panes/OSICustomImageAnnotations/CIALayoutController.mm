@@ -362,9 +362,8 @@
 				
 				if([[[currentPlaceHolder annotationsArray] objectAtIndex:0] frame].origin.y <= [annotation frame].origin.y)
 					index = 0;
-					
-				int j;
-				for (j=0; j<(long) [[currentPlaceHolder annotationsArray] count]-1; j++)
+
+				for (int j=0; j<(long) [[currentPlaceHolder annotationsArray] count]-1; j++)
 				{
 					annotation1 = [[currentPlaceHolder annotationsArray] objectAtIndex:j];
 					annotation2 = [[currentPlaceHolder annotationsArray] objectAtIndex:j+1];
@@ -433,7 +432,7 @@
 		for (int i=0; i<numberOfHighlightedPlaceHolders; i++)
 		{
 			placeHolderCenter = [[highlightedPlaceHolders objectAtIndex:i] frame].origin.x + [[highlightedPlaceHolders objectAtIndex:i] frame].size.width/2.0;
-			distanceToMouse[i] = fabsf(mouseLocationInView.x - placeHolderCenter);
+			distanceToMouse[i] = fabs(mouseLocationInView.x - placeHolderCenter);
 		}
 
 		float minDistance = MAXFLOAT;
@@ -562,7 +561,8 @@
 	}
 	else if([sender isEqualTo:[prefPane addCustomDICOMFieldButton]])
 	{
-		if([[[prefPane dicomGroupTextField] stringValue] isEqualToString:@""] || [[[prefPane dicomElementTextField] stringValue] isEqualToString:@""])
+		if ([[[prefPane dicomGroupTextField] stringValue] isEqualToString:@""] ||
+            [[[prefPane dicomElementTextField] stringValue] isEqualToString:@""])
 		{
 			NSRunAlertPanel(NSLocalizedString( @"Custom DICOM Field", nil),
                             NSLocalizedString( @"Please provide a value for both \"Group\" and \"Element\" fields.", nil),
@@ -575,7 +575,7 @@
 		if([[prefPane DICOMFieldsPopUpButton] indexOfSelectedItem]==0)
 		{
 			// custom field
-			if([[[prefPane dicomNameTokenField] stringValue] isEqualToString:@""])
+			if ([[prefPane dicomNameTokenField] stringValue].length == 0)
 			{
 				formatString = @"DICOM_%@_%@";
 //				if(!aTokenIsSelected)
@@ -673,7 +673,8 @@
 - (void)resizeTokenField; // not used
 {
 	return;
-	NSRect oldTokenFieldFrame = [[prefPane contentTokenField] frame];
+#if 0
+    NSRect oldTokenFieldFrame = [[prefPane contentTokenField] frame];
 	NSSize cellSize = [[[prefPane contentTokenField] cell] cellSizeForBounds:[[prefPane contentTokenField] bounds]];
 
 	NSBox *globalPaneBox = [[[[self window] contentView] subviews] objectAtIndex:0];
@@ -697,7 +698,7 @@
 	[selectedAnnotation setMouseDownLocation:loc];
 
 	[[self window] setFrame:NSMakeRect([[self window] frame].origin.x, [[self window] frame].origin.y+oldTokenFieldFrame.size.height-cellSize.height, [[self window] frame].size.width, [[self window] frame].size.height-oldTokenFieldFrame.size.height+cellSize.height) display:YES];
-	
+#endif
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification
@@ -732,7 +733,6 @@
 			}
 		}
 	}
-
 }
 
 - (NSArray *)tokenField:(NSTokenField *)tokenField readFromPasteboard:(NSPasteboard *)pboard
@@ -809,12 +809,11 @@
 // auto completion
 - (NSArray *)tokenField:(NSTokenField *)tokenField completionsForSubstring:(NSString *)substring indexOfToken:(NSInteger)tokenIndex indexOfSelectedItem:(NSInteger *)selectedIndex
 {
-	int i, j;
 	NSMutableArray *resultArray = [NSMutableArray array];
 	int substringLength = [substring length];
 	NSRange comparisonRange = NSMakeRange(0, substringLength);
 	
-	if([tokenField isEqualTo:[prefPane contentTokenField]])
+	if ([tokenField isEqualTo:[prefPane contentTokenField]])
 	{
 		[resultArray addObject:substring];
 		
@@ -822,12 +821,12 @@
 		NSString *currentTitle;	
 		
 		titles = databaseStudyFieldsArray;
-		for (i=0; i<[titles count]; i++)
+		for (int i=0; i<[titles count]; i++)
 		{
 			currentTitle = [titles objectAtIndex:i];
 			if([currentTitle length]>=substringLength)
 			{
-				for (j=0; j<[currentTitle length]-substringLength+1; j++)
+				for (int j=0; j<[currentTitle length]-substringLength+1; j++)
 				{
 					if([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
 						[resultArray addObject:[NSString stringWithFormat:@"DB_study.%@", currentTitle]];
@@ -835,27 +834,27 @@
 			}
 		}
 		titles = databaseSeriesFieldsArray;
-		for (i=0; i<[titles count]; i++)
+		for (int i=0; i<[titles count]; i++)
 		{
 			currentTitle = [titles objectAtIndex:i];
 			if([currentTitle length]>=substringLength)
 			{
-				for (j=0; j<[currentTitle length]-substringLength+1; j++)
+				for (int j=0; j<[currentTitle length]-substringLength+1; j++)
 				{
-					if([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
+					if ([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
 						[resultArray addObject:[NSString stringWithFormat:@"DB_series.%@", currentTitle]];
 				}
 			}
 		}
 		titles = databaseImageFieldsArray;
-		for (i=0; i<[titles count]; i++)
+		for (int i=0; i<[titles count]; i++)
 		{
 			currentTitle = [titles objectAtIndex:i];
 			if([currentTitle length]>=substringLength)
 			{
-				for (j=0; j<[currentTitle length]-substringLength+1; j++)
+				for (int j=0; j<[currentTitle length]-substringLength+1; j++)
 				{
-					if([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
+					if ([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
 						[resultArray addObject:[NSString stringWithFormat:@"DB_image.%@", currentTitle]];
 				}
 			}
@@ -864,29 +863,28 @@
 		NSArray *localizedTitles = [self specialFieldsLocalizedTitles];
 		titles = [self specialFieldsTitles];
 		
-		for (i=0; i<[localizedTitles count]; i++)
+		for (int i=0; i<[localizedTitles count]; i++)
 		{
 			currentTitle = [localizedTitles objectAtIndex:i];
 			if([currentTitle length]>=substringLength)
 			{
-				for (j=0; j<[currentTitle length]-substringLength+1; j++)
+				for (int j=0; j<[currentTitle length]-substringLength+1; j++)
 				{
-					if([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
+					if ([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
 						[resultArray addObject:[NSString stringWithFormat:@"Special_%@", [titles objectAtIndex:i]]];
 				}
 			}
-
 		}
 		
 		titles = DICOMFieldsArray;
-		for (i=0; i<[titles count]; i++)
+		for (int i=0; i<[titles count]; i++)
 		{
 			currentTitle = [[titles objectAtIndex:i] name];
-			if([currentTitle length]>=substringLength)
+			if ([currentTitle length]>=substringLength)
 			{
-				for (j=0; j<[currentTitle length]-substringLength+1; j++)
+				for (int j=0; j<[currentTitle length]-substringLength+1; j++)
 				{
-					if([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
+					if ([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
 						[resultArray addObject:[NSString stringWithFormat:@"DICOM_%@", currentTitle]];
 				}
 			}
@@ -895,10 +893,10 @@
 	else if([tokenField isEqualTo:[prefPane dicomNameTokenField]])
 	{
 		NSString *currentTitle;
-		for (i=0; i<[DICOMFieldsArray count]; i++)
+		for (int i=0; i<[DICOMFieldsArray count]; i++)
 		{
 			currentTitle = [[DICOMFieldsArray objectAtIndex:i] name];
-			if([currentTitle compare:substring options:NSCaseInsensitiveSearch range:comparisonRange]==NSOrderedSame)
+			if ([currentTitle compare:substring options:NSCaseInsensitiveSearch range:comparisonRange]==NSOrderedSame)
 				[resultArray addObject:[[DICOMFieldsArray objectAtIndex:i] name]];
 		}
 	}

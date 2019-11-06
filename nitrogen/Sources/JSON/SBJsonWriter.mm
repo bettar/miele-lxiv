@@ -46,6 +46,8 @@
 
 @end
 
+#pragma mark -
+
 @implementation SBJsonWriter
 
 @synthesize sortKeys;
@@ -66,7 +68,6 @@
     return nil;
 }
 
-
 - (NSString*)stringWithObject:(id)value {
     
     if ([value isKindOfClass:[NSDictionary class]] || [value isKindOfClass:[NSArray class]]) {
@@ -78,12 +79,12 @@
     return nil;
 }
 
-
 - (NSString*)indent {
     return [@"\n" stringByPaddingToLength:1 + 2 * depth withString:@" " startingAtIndex:0];
 }
 
-- (BOOL)appendValue:(id)fragment into:(NSMutableString*)json {
+- (BOOL)appendValue:(id)fragment into:(NSMutableString*)json
+{
     if ([fragment isKindOfClass:[NSDictionary class]]) {
         if (![self appendDictionary:fragment into:json])
             return NO;
@@ -229,6 +230,5 @@
     [json appendString:@"\""];
     return YES;
 }
-
 
 @end

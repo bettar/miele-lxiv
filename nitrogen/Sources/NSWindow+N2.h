@@ -20,7 +20,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface NSWindow (N2)
 
 -(NSSize)contentSizeForFrameSize:(NSSize)frameSize;

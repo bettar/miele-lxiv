@@ -180,7 +180,8 @@ unsigned int minimumStep;
 - (void) checkForFrame
 {
 	NSRect frame = [self convertRectToBacking: [self frame]];
-	NSPoint o = [self convertPoint: NSMakePoint(0, 0) toView:0L];
+	NSPoint o = [self convertPoint: NSZeroPoint
+                            toView: 0L];
 	frame.origin = o;
 	
 	if (NSEqualRects( frame, [vrView frame]) == NO)
@@ -330,9 +331,7 @@ unsigned int minimumStep;
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
     if ([item action] == @selector(scaleToFit:))
-    {
         return NO;
-    }
     
     return YES;
 }
@@ -351,10 +350,10 @@ unsigned int minimumStep;
 		return;
 	
 	long h, w;
-	float previousWW, previousWL;
 	BOOL isRGB;
 	BOOL previousOriginInPlane = NO;
 	
+    float previousWW, previousWL;
 	[self getWLWW: &previousWL :&previousWW];
 	
 	Camera *currentCamera = [vrView cameraWithThumbnail: NO];
@@ -535,7 +534,7 @@ unsigned int minimumStep;
 				
 				NSPoint rotationCenter = NSMakePoint( [pix pwidth]/2., [pix pheight]/2.);
 				
-				for( ROI* r in curRoiList)
+				for (ROI* r in curRoiList)
 				{
 					if (rotationPlane)
 					{
@@ -880,19 +879,23 @@ unsigned int minimumStep;
 	{
 		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_LOOP);
+        {
 			glVertex2f(  -widthhalf, -heighthalf);
 			glVertex2f(  -widthhalf, heighthalf);
 			glVertex2f(  widthhalf, heighthalf);
 			glVertex2f(  widthhalf, -heighthalf);
+        }
 		glEnd();
 	}
 	
 	glLineWidth(2.0 * self.window.backingScaleFactor);
 	glBegin(GL_POLYGON);
+    {
 		glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
 		glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
 		glVertex2f(widthhalf, -heighthalf);
 		glVertex2f(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
+    }
 	glEnd();
 	glLineWidth(1.0 * self.window.backingScaleFactor);
 	
@@ -943,33 +946,38 @@ unsigned int minimumStep;
 			[pixA convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
 			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
 			
+            sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+            sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+            sc[0] -= curDCM.pwidth * 0.5f;
+            sc[1] -= curDCM.pheight * 0.5f;
 			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
-			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-			sc[0] -= curDCM.pwidth * 0.5f;
-			sc[1] -= curDCM.pheight * 0.5f;
-			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            {
+                glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            }
 			glEnd();
 			
 			[self colorForView:viewIDB];
 			pt = windowController.mousePosition;
-			dc[0] = pt.x; dc[1] = pt.y; dc[2] = pt.z;
+			dc[0] = pt.x;
+            dc[1] = pt.y;
+            dc[2] = pt.z;
 			[pixB convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
 			sc[0] = sc[ 0] / pixB.pixelSpacingX;
 			sc[1] = sc[ 1] / pixB.pixelSpacingY;
 			[pixB convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
 			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
 			
+            sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+            sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+            sc[0] -= curDCM.pwidth * 0.5f;
+            sc[1] -= curDCM.pheight * 0.5f;
 			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
-			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-			sc[0] -= curDCM.pwidth * 0.5f;
-			sc[1] -= curDCM.pheight * 0.5f;
-			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            {
+                glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            }
 			glEnd();
-
 		}
 
         if (viewID != windowController.mouseViewID)
@@ -977,17 +985,20 @@ unsigned int minimumStep;
 			[self colorForView: viewID];
 //			[self colorForView: windowController.mouseViewID];
 			Point3D *pt = windowController.mousePosition;
-			float sc[ 3], dc[ 3] = { pt.x, pt.y, pt.z};
+            float sc[ 3];
+            float dc[ 3] = { pt.x, pt.y, pt.z};
 			
 			[pix convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
 			
+            sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+            sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+            sc[0] -= curDCM.pwidth * 0.5f;
+            sc[1] -= curDCM.pheight * 0.5f;
 			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
-			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-			sc[0] -= curDCM.pwidth * 0.5f;
-			sc[1] -= curDCM.pheight * 0.5f;
-			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            {
+                glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            }
 			glEnd();
 		}
 	}
@@ -1198,114 +1209,116 @@ unsigned int minimumStep;
 - (void) detect2DPointInThisSlice
 {
 	ViewerController *viewer2D = [windowController viewer];
-	
-	if (viewer2D)
-	{
-		// First delete all 2D Points in our pix
-		
-		NSMutableDictionary *ROIsStateSaved = [NSMutableDictionary dictionary];
-		
-		for (int i = (long)[curRoiList count] -1 ; i >= 0; i--)
-		{
-			ROI *r = [curRoiList objectAtIndex: i];
-			if ([r type] == t2DPoint)
-			{
-				if (r.parentROI)
-					[ROIsStateSaved setObject: [NSNumber numberWithInt: [r ROImode]] forKey: [NSValue valueWithPointer: r.parentROI]];
-				[curRoiList removeObjectAtIndex: i];
-			}
-		}
-		
-		NSArray *roiList = [viewer2D roiList: [windowController curMovieIndex]];
-		NSArray *pixList = [viewer2D pixList: [windowController curMovieIndex]];
-		
-		for (int i = 0; i < [roiList count]; i++)
-		{
-			NSArray *pts = [roiList objectAtIndex: i];
-			DCMPix *p = [pixList objectAtIndex: i];
-			
-			for( ROI *r in pts)
-			{
-				if ([r type] == t2DPoint)
-				{
-					float location[ 3];
-					
-					[p convertPixX: r.rect.origin.x pixY: r.rect.origin.y toDICOMCoords: location pixelCenter: YES];
-					
-					// Is this point in our plane?
-					
-					float vectors[ 9], orig[ 3], locationTemp[ 3];
-					float distance = 999999;
-					
-					orig[ 0] = [pix originX];
-					orig[ 1] = [pix originY];
-					orig[ 2] = [pix originZ];
-					
-					[pix orientation: vectors];
-					
-					distance = [DCMView pbase_Plane: location :orig :&(vectors[ 6]) :locationTemp];
-					
-					if (distance < pix.sliceThickness)
-					{
-						float sc[ 3];
-						
-						[pix convertDICOMCoords: location toSliceCoords: sc pixelCenter: YES];
-						
-						sc[ 0] = sc[ 0] / pix.pixelSpacingX;
-						sc[ 1] = sc[ 1] / pix.pixelSpacingY;
-						
-						ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :pix.pixelSpacingX :pix.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: pix]];
-						
-						[new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
-						
-						[new2DPointROI setParentROI: r];
-						[self roiSet: new2DPointROI];
-						[curRoiList addObject: new2DPointROI];
-						
-						int mode = [[ROIsStateSaved objectForKey: [NSValue valueWithPointer: r]] intValue];
-						if (mode)
-							[new2DPointROI setROIMode: (ROI_mode)mode];
-					}
-				}
-			}
-		}
-		
-		[self setNeedsDisplay: YES];
-	}
+	if (!viewer2D)
+        return;
+
+    // First delete all 2D Points in our pix
+    
+    NSMutableDictionary *ROIsStateSaved = [NSMutableDictionary dictionary];
+    
+    for (int i = (long)[curRoiList count] -1 ; i >= 0; i--)
+    {
+        ROI *r = [curRoiList objectAtIndex: i];
+        if ([r type] == t2DPoint)
+        {
+            if (r.parentROI)
+                [ROIsStateSaved setObject: [NSNumber numberWithInt: [r ROImode]] forKey: [NSValue valueWithPointer: r.parentROI]];
+
+            [curRoiList removeObjectAtIndex: i];
+        }
+    }
+    
+    NSArray *roiList = [viewer2D roiList: [windowController curMovieIndex]];
+    NSArray *pixList = [viewer2D pixList: [windowController curMovieIndex]];
+    
+    for (int i = 0; i < [roiList count]; i++)
+    {
+        NSArray *pts = [roiList objectAtIndex: i];
+        DCMPix *p = [pixList objectAtIndex: i];
+        
+        for( ROI *r in pts)
+        {
+            if ([r type] == t2DPoint)
+            {
+                float location[ 3];
+                
+                [p convertPixX: r.rect.origin.x pixY: r.rect.origin.y toDICOMCoords: location pixelCenter: YES];
+                
+                // Is this point in our plane?
+                
+                float vectors[ 9], orig[ 3], locationTemp[ 3];
+                float distance = 999999;
+                
+                orig[ 0] = [pix originX];
+                orig[ 1] = [pix originY];
+                orig[ 2] = [pix originZ];
+                
+                [pix orientation: vectors];
+                
+                distance = [DCMView pbase_Plane: location :orig :&(vectors[ 6]) :locationTemp];
+                
+                if (distance < pix.sliceThickness)
+                {
+                    float sc[ 3];
+                    
+                    [pix convertDICOMCoords: location toSliceCoords: sc pixelCenter: YES];
+                    
+                    sc[ 0] = sc[ 0] / pix.pixelSpacingX;
+                    sc[ 1] = sc[ 1] / pix.pixelSpacingY;
+                    
+                    ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint
+                                                                  : pix.pixelSpacingX
+                                                                  : pix.pixelSpacingY
+                                                                  : [DCMPix originCorrectedAccordingToOrientation: pix]];
+                    
+                    [new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
+                    
+                    [new2DPointROI setParentROI: r];
+                    [self roiSet: new2DPointROI];
+                    [curRoiList addObject: new2DPointROI];
+                    
+                    int mode = [[ROIsStateSaved objectForKey: [NSValue valueWithPointer: r]] intValue];
+                    if (mode)
+                        [new2DPointROI setROIMode: (ROI_mode)mode];
+                }
+            }
+        }
+    }
+    
+    [self setNeedsDisplay: YES];
 }
 
 - (void) add2DPoint: (float*) r
 {
 	ViewerController *viewer2D = [windowController viewer];
-	
-	if (viewer2D)
-	{
-		DCMPix *p = [[viewer2D pixList] objectAtIndex: 0];
-		
-		float sc[ 3];
-		
-		[p convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
+	if (!viewer2D)
+        return;
 
-		sc[ 0] = sc[ 0] / p.pixelSpacingX;
-		sc[ 1] = sc[ 1] / p.pixelSpacingY;
-		sc[ 2] = sc[ 2] / p.sliceInterval;
-		
-		sc[ 2] = round( sc[ 2]);
-		
-		if (sc[ 2] >= 0 && sc[ 2] < [[viewer2D pixList] count])
-		{
-			// Create the new 2D Point ROI
-			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :p.pixelSpacingX :p.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: p]] autorelease];
-			
-			[new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
-			
-			[[viewer2D imageView] roiSet:new2DPointROI];
-			[[[viewer2D roiList] objectAtIndex: sc[ 2]] addObject: new2DPointROI];
-			
-			// notify the change
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: new2DPointROI userInfo: nil];
-		}
-	}
+    DCMPix *p = [[viewer2D pixList] objectAtIndex: 0];
+    
+    float sc[ 3];
+    
+    [p convertDICOMCoords: r toSliceCoords: sc pixelCenter: YES];
+
+    sc[ 0] = sc[ 0] / p.pixelSpacingX;
+    sc[ 1] = sc[ 1] / p.pixelSpacingY;
+    sc[ 2] = sc[ 2] / p.sliceInterval;
+    
+    sc[ 2] = round( sc[ 2]);
+    
+    if (sc[ 2] >= 0 && sc[ 2] < [[viewer2D pixList] count])
+    {
+        // Create the new 2D Point ROI
+        ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :p.pixelSpacingX :p.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: p]] autorelease];
+        
+        [new2DPointROI setROIRect: NSMakeRect( sc[ 0], sc[ 1], 0, 0)];
+        
+        [[viewer2D imageView] roiSet:new2DPointROI];
+        [[[viewer2D roiList] objectAtIndex: sc[ 2]] addObject: new2DPointROI];
+        
+        // notify the change
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: new2DPointROI userInfo: nil];
+    }
 }
 
 -(void) roiChange:(NSNotification*)note
@@ -1392,7 +1405,7 @@ unsigned int minimumStep;
 
 - (int) mouseOnLines: (NSPoint) mouseLocation
 {
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] == ANNOTATIONS_NONE)
 		return 0;
 	
 	if (displayCrossLines == NO || frameZoomed)
@@ -1416,7 +1429,10 @@ unsigned int minimumStep;
 		
 		float f = curDCM.pixelSpacingX / LOD * self.window.backingScaleFactor;
 		
-		if (mouseLocation.x > r.x - BS * f && mouseLocation.x < r.x + BS* f && mouseLocation.y > r.y - BS* f && mouseLocation.y < r.y + BS* f)
+		if (mouseLocation.x > r.x - BS * f &&
+            mouseLocation.x < r.x + BS * f &&
+            mouseLocation.y > r.y - BS * f &&
+            mouseLocation.y < r.y + BS * f)
 		{
 			return 2;
 		}
@@ -1441,7 +1457,8 @@ unsigned int minimumStep;
                 distance2 /= curDCM.pixelSpacingX;
 			}
             
-			if (distance1 * scaleValue < 10*self.window.backingScaleFactor || distance2 * scaleValue < 10*self.window.backingScaleFactor)
+			if (distance1 * scaleValue < 10*self.window.backingScaleFactor ||
+                distance2 * scaleValue < 10*self.window.backingScaleFactor)
 			{
 				return 1;
 			}
@@ -1655,7 +1672,8 @@ unsigned int minimumStep;
 			rotateLines = YES;
 			
 			NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
-			mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
+			mouseLocation.x *= curDCM.pixelSpacingX;
+            mouseLocation.y *= curDCM.pixelSpacingY;
 			rotateLinesStartAngle = [self angleBetween: mouseLocation center: [self centerLines]] - angleMPR;
 			
 			[self mouseDragged: theEvent];
@@ -2014,21 +2032,17 @@ unsigned int minimumStep;
 
 - (void)drawOSIROIs
 {
-    double pixToSubdrawRectOpenGLTransform[16];
-    CGLContextObj cgl_ctx;
-    OSIROI *roi;
-    
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
     
-    if ([self ROIManager] == nil) {
+    if ([self ROIManager] == nil)
         return;
-    }
     
+    double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
     
-    for (roi in [[self ROIManager] ROIs]) {
+    for (OSIROI *roi in [[self ROIManager] ROIs]) {
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glMultMatrixd(pixToSubdrawRectOpenGLTransform);

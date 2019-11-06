@@ -86,6 +86,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcerror.h"
 
 //#define HANDLE_QUERY_IDENTIFIER
+#define NUM_ENCODINGS        10
 
 extern BOOL forkedProcess;
 
@@ -205,13 +206,13 @@ static int DB_TagSupported (DcmTagKey tag)
 
 static OFCondition DB_GetTagLevel (DcmTagKey tag, DB_LEVEL *level)
 {
-    int i;
-    for (i = 0; i < NbFindAttr; i++)
-        if (TbFindAttr[i]. tag == tag)
+    int ii;
+    for (ii = 0; ii < NbFindAttr; ii++)
+        if (TbFindAttr[ii]. tag == tag)
             break;
 
-    if (i < NbFindAttr) {
-        *level = TbFindAttr[i]. level;
+    if (ii < NbFindAttr) {
+        *level = TbFindAttr[ii]. level;
         return (EC_Normal);
     }
     
@@ -224,18 +225,18 @@ static OFCondition DB_GetTagLevel (DcmTagKey tag, DB_LEVEL *level)
 
 static OFCondition DB_GetTagKeyAttr (DcmTagKey tag, DB_KEY_TYPE *keyAttr)
 {
-    int i;
-
-    for (i = 0; i < NbFindAttr; i++)
-    if (TbFindAttr[i]. tag == tag)
-        break;
-
-    if (i < NbFindAttr) {
-    *keyAttr = TbFindAttr[i]. keyAttr;
-    return (EC_Normal);
+    int ii;
+    
+    for (ii = 0; ii < NbFindAttr; ii++)
+        if (TbFindAttr[ii]. tag == tag)
+            break;
+    
+    if (ii < NbFindAttr) {
+        *keyAttr = TbFindAttr[ii]. keyAttr;
+        return (EC_Normal);
     }
     else
-    return (DcmQROsiriXDatabaseError);
+        return (DcmQROsiriXDatabaseError);
 }
 
 /*******************
@@ -244,14 +245,14 @@ static OFCondition DB_GetTagKeyAttr (DcmTagKey tag, DB_KEY_TYPE *keyAttr)
 
 //static OFCondition DB_GetTagKeyClass (DcmTagKey tag, DB_KEY_CLASS *keyAttr)
 //{
-//    int i;
+//    int ii;
 //
-//    for (i = 0; i < NbFindAttr; i++)
-//    if (TbFindAttr[i]. tag == tag)
+//    for (ii = 0; ii < NbFindAttr; ii++)
+//    if (TbFindAttr[ii]. tag == tag)
 //        break;
 //
-//    if (i < NbFindAttr) {
-//    *keyAttr = TbFindAttr[i]. keyClass;
+//    if (ii < NbFindAttr) {
+//    *keyAttr = TbFindAttr[ii]. keyClass;
 //    return (EC_Normal);
 //    }
 //    else
@@ -331,8 +332,8 @@ void str_toupper(char *s)
     while(*s)
     {
 		int v = toupper(*s);
-		if( v < 32) v = '0';
-		if( v > 'Z') v = '0';
+		if (v < 32) v = '0';
+		if (v > 'Z') v = '0';
         *s = v;
         s++;
     }
@@ -343,7 +344,7 @@ Log Entry
 *************/
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dataset)
 {
-	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO)
+	if ([[BrowserController currentBrowser] isNetworkLogsActive] == NO)
         return EC_Normal;
 	
 	const char *scs = 0L;
@@ -395,25 +396,26 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	else
         strcpy( seriesUID, patientName);
 	
-	if( handle_->logDictionary == nil)
+	if (handle_->logDictionary == nil)
 	{
 		handle_->logDictionary = [NSMutableDictionary new];
 		
         // Encoding
-        NSStringEncoding encoding[ 10];
-        for( int i = 0; i < 10; i++) encoding[ i] = 0;
-        encoding[ 0] = NSISOLatin1StringEncoding;
+        NSStringEncoding myEncodings[NUM_ENCODINGS];
+        myEncodings[0] = NSISOLatin1StringEncoding;
+        for (int i = 1; i < NUM_ENCODINGS; i++)
+            myEncodings[i] = NSUTF8StringEncoding;
         
         NSArray	*c = [[NSString stringWithCString: specificCharacterSet] componentsSeparatedByString:@"\\"];
         
-        if( [c count] < 10)
+        if ([c count] < NUM_ENCODINGS)
         {
             for (int i = 0; i < [c count]; i++)
-                encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+                myEncodings[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
         }
         
-        [handle_->logDictionary setObject: [DicomFile stringWithBytes: patientName encodings: encoding] forKey: @"logPatientName"];
-        [handle_->logDictionary setObject: [DicomFile stringWithBytes: studyDescription encodings: encoding] forKey: @"logStudyDescription"];
+        [handle_->logDictionary setObject: [DicomFile stringWithBytes: patientName encodings: myEncodings] forKey: @"logPatientName"];
+        [handle_->logDictionary setObject: [DicomFile stringWithBytes: studyDescription encodings: myEncodings] forKey: @"logStudyDescription"];
         [handle_->logDictionary setObject: handle_->callingAET forKey: @"logCallingAET"];
         [handle_->logDictionary setObject: [NSDate date] forKey: @"logStartTime"];
 		[handle_->logDictionary setObject: @"In Progress" forKey: @"logMessage"];
@@ -516,7 +518,8 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
 			{
                 status->setStatus(STATUS_FIND_Refused_OutOfResources);
                 return (DcmQROsiriXDatabaseError) ;
-            } else {
+            }
+            else {
                 /* only char string type tags are supported at the moment */
                 char *s = NULL;
                 dcelem->getString(s);
@@ -531,7 +534,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
                 char level [50] ;
 
                 strncpy(level, (char*)elem.PValueField,
-                        (elem.ValueLength<50)? (size_t)(elem.ValueLength) : 49) ;
+                        (elem.ValueLength<50) ? (size_t)(elem.ValueLength) : 49) ;
 
                 /*** Skip this two lines if you want strict comparison
                 **/
@@ -619,7 +622,6 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
     /**** Test the consistency of the request list
     ***/
 
-
     if (doCheckFindIdentifier) {
         cond = testFindRequestList (handle_->findRequestList, handle_->queryLevel, qLevel, lLevel) ;
         if (cond != EC_Normal) {
@@ -637,7 +639,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
     ***/
 	
 	// Search Core Data here
-	if( handle_ -> dataHandler == 0L)
+	if (handle_ -> dataHandler == 0L)
 		handle_ -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
 		
 	cond = [handle_->dataHandler prepareFindForDataSet:findRequestIdentifiers];
@@ -826,19 +828,19 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::testFindRequestList (
  */
 
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextFindResponse (
-                DcmDataset      **findResponseIdentifiers,
-                DcmQueryRetrieveDatabaseStatus  *status,
+                DcmDataset **findResponseIdentifiers,
+                DcmQueryRetrieveDatabaseStatus *status,
                 const DcmQueryRetrieveCharacterSetOptions& characterSetOptions)
 {
     DCMQRDB_INFO("nextFindResponse () : start");
 
-	OFCondition         cond = EC_Normal;
+	OFCondition cond = EC_Normal;
 	BOOL isComplete;
 
     *findResponseIdentifiers = new DcmDataset ;
     DCMQRDB_INFO("nextFindResponse () : new dataset");
 	
-	if( handle_ -> dataHandler == 0L)
+	if (handle_ -> dataHandler == 0L)
 		handle_ -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
 		
 	cond = [handle_ ->dataHandler nextFindObject:*findResponseIdentifiers isComplete:&isComplete];
@@ -907,7 +909,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
     status->setStatus(STATUS_Pending);
     
     /**** Goto the next matching image number ***/
-    if( handle_ -> dataHandler == 0L)
+    if (handle_ -> dataHandler == 0L)
         handle_ -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
     
     OFCondition cond = [handle_->dataHandler nextMoveObject:imageFileName];
@@ -1097,7 +1099,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
 	
 	// Search Core Data here
 	//NSLog(@"search core data for move");
-	if( handle_ -> dataHandler == 0L)
+	if (handle_ -> dataHandler == 0L)
 		handle_ -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
 	
 	handle_ -> dataHandler.callingAET = [NSString stringWithString: handle_ -> callingAET];
@@ -1189,7 +1191,6 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 
 DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 {
-
 	if (handle_)
 	{
 		// set logEntry to complete

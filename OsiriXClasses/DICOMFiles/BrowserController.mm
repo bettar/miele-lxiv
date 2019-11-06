@@ -19,6 +19,7 @@
  =========================================================================*/
 
 #include "options.h"
+#import "mieleTypes.h"
 
 #import "ToolbarPanel.h"
 #import "DicomDatabase.h"
@@ -27,6 +28,7 @@
 #import "DCMTKStudyQueryNode.h"
 #import "DCMTKSeriesQueryNode.h"
 #import "DicomDatabase+Scan.h"
+#import "DicomDatabase+Clean.h"
 #import "RemoteDicomDatabase.h"
 #import "SRAnnotation.h"
 #import <DiscRecording/DRDevice.h>
@@ -153,7 +155,11 @@
 #import "Reports.h" // for ReportType
 
 static BrowserController *browserWindow = nil;
-NSString* O2AlbumDragType = @"Osirix Album drag";
+
+NSString * const O2Album_DragType = @"Osirix Album drag";
+NSString * const DatabaseXID_DragType = @"BrowserController.database.context.XIDs";
+NSString * const SeriesViewer_DragType = @"Osirix Series Viewer Drag";
+
 static BOOL loadingIsOver = NO;//, isAutoCleanDatabaseRunning = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
@@ -326,6 +332,7 @@ static volatile BOOL waitForRunningProcess = NO;
             [comparativeTable setRowHeight: 16];
         else
             [comparativeTable setRowHeight: 29];
+
         [_activityTableView setRowHeight: 38];
         [oMatrix setCellSize: NSMakeSize( 105, 113)];
     }
@@ -339,6 +346,7 @@ static volatile BOOL waitForRunningProcess = NO;
             [comparativeTable setRowHeight: 21];
         else
             [comparativeTable setRowHeight: 43];
+
         [_activityTableView setRowHeight: 48];
         [oMatrix setCellSize: NSMakeSize( 105 * 1.3, 113 * 1.3)];
     }
@@ -486,9 +494,11 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
 @synthesize databaseOutline, albumTable, comparativePatientUID, distantStudyMessage;
-@synthesize bonjourSourcesBox, timeIntervalType, smartAlbumDistantName, selectedAlbumName;
+@synthesize bonjourSourcesBox;
+@synthesize smartAlbumDistantName, selectedAlbumName;
 @synthesize bonjourBrowser, pathToEncryptedFile, comparativeStudies, distantTimeIntervalStart, distantTimeIntervalEnd;
-@synthesize searchString = _searchString, fetchPredicate = _fetchPredicate, distantSearchType, distantSearchString;
+@synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
+@synthesize distantSearchString;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize pluginManagerController, modalityFilter;
 
@@ -677,7 +687,8 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-#pragma deprecated (addFilesToDatabase:)
+#pragma mark - Deprecated
+
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -687,7 +698,6 @@ static NSConditionLock *threadLock = nil;
     return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray]];
 }
 
-#pragma deprecated (addFilesToDatabase::)
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray :(BOOL)onlyDICOM // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -697,7 +707,6 @@ static NSConditionLock *threadLock = nil;
 	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
 
-#pragma deprecated (addFilesToDatabase:onlyDICOM:produceAddedFiles:)
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -710,7 +719,6 @@ static NSConditionLock *threadLock = nil;
                                             rereadExistingItems:NO]];
 }
 
-#pragma deprecated (addFilesToDatabase:onlyDICOM:produceAddedFiles:parseExistingObject:)
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -723,17 +731,6 @@ static NSConditionLock *threadLock = nil;
                                             rereadExistingItems:parseExistingObject]];
 }
 
-#pragma deprecated (checkForExistingReport:dbFolder:)
-- (void) checkForExistingReport: (NSManagedObject*) study dbFolder: (NSString*) dbFolder
-{
-    N2LogStackTrace( @"****** deprecated function");
-	DicomDatabase* db = [DicomDatabase databaseForContext:study.managedObjectContext];
-	[db checkForExistingReportForStudy:study];
-}
-
-#pragma mark-
-
-#pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -745,7 +742,6 @@ static NSConditionLock *threadLock = nil;
 	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
-#pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder generatedByOsiriX:(BOOL)generatedByOsiriX // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -757,7 +753,6 @@ static NSConditionLock *threadLock = nil;
 	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject generatedByOsiriX:generatedByOsiriX]];
 }
 
-#pragma deprecated
 +(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX mountedVolume: (BOOL) mountedVolume // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -769,7 +764,6 @@ static NSConditionLock *threadLock = nil;
 	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject generatedByOsiriX:generatedByOsiriX]];
 }
 
-#pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -780,7 +774,6 @@ static NSConditionLock *threadLock = nil;
 	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
-#pragma deprecated
 -(NSArray*)subAddFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM produceAddedFiles:(BOOL)produceAddedFiles parseExistingObject:(BOOL)parseExistingObject context:(NSManagedObjectContext*)context dbFolder:(NSString*)dbFolder // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -790,7 +783,6 @@ static NSConditionLock *threadLock = nil;
 	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
-#pragma deprecated
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM safeRebuild:(BOOL)safeRebuild produceAddedFiles:(BOOL)produceAddedFiles { // __deprecated // notice: the "safeRebuild" seemed to be already ignored before the DicomDatabase transition
 
     N2LogStackTrace( @"****** deprecated function");
@@ -800,7 +792,6 @@ static NSConditionLock *threadLock = nil;
     return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
 
-#pragma deprecated
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM produceAddedFiles:(BOOL)produceAddedFiles parseExistingObject:(BOOL)parseExistingObject context:(NSManagedObjectContext*)context dbFolder:(NSString*)dbFolder // __deprecated
 {
     N2LogStackTrace( @"****** deprecated function");
@@ -810,8 +801,14 @@ static NSConditionLock *threadLock = nil;
     return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
-#pragma mark-
+#pragma mark -
 
+- (void) checkForExistingReport: (NSManagedObject*) study dbFolder: (NSString*) dbFolder
+{
+    N2LogStackTrace( @"****** deprecated function");
+    DicomDatabase* db = [DicomDatabase databaseForContext:study.managedObjectContext];
+    [db checkForExistingReportForStudy:study];
+}
 
 + (void) asyncWADOXMLDownloadURL:(NSURL*) url
 {
@@ -1236,7 +1233,8 @@ static NSConditionLock *threadLock = nil;
                                     {
                                         NSManagedObject *study = [series valueForKey: @"study"];
                                         
-                                        if ([study valueForKey: commentField] == nil || [[study valueForKey: commentField] isEqualToString:@""])
+                                        if ([study valueForKey: commentField] == nil ||
+                                            [[study valueForKey: commentField] isEqualToString:@""])
                                         {
                                             [study willChangeValueForKey: commentField];
                                             [study setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
@@ -1394,7 +1392,7 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (NSTimeInterval) databaseLastModification // __deprecated
+- (NSTimeInterval) databaseLastModification __deprecated
 {
 	return _database.timeOfLastModification;
 }
@@ -1404,7 +1402,7 @@ static NSConditionLock *threadLock = nil;
 	_database.timeOfLastModification = t;
 }
 
-- (NSManagedObjectModel*)managedObjectModel // __deprecated
+- (NSManagedObjectModel*)managedObjectModel __deprecated
 {
     return self.database.managedObjectModel;
 }
@@ -1423,9 +1421,7 @@ static NSConditionLock *threadLock = nil;
 	[self refreshAlbums];
 }
 
-// ------------------
-
-- (NSManagedObjectContext*)localManagedObjectContextIndependentContext:(BOOL)independentContext // __deprecated
+- (NSManagedObjectContext*)localManagedObjectContextIndependentContext:(BOOL)independentContext __deprecated
 {
 	return [[DicomDatabase activeLocalDatabase] independentContext:independentContext];
 }
@@ -1435,31 +1431,29 @@ static NSConditionLock *threadLock = nil;
 	return [self localManagedObjectContextIndependentContext:NO];
 }
 
-// ------------------
 
 - (NSManagedObjectContext*)defaultManagerObjectContext // __deprecated
 {
 	return [self defaultManagerObjectContextIndependentContext:NO];
 }
 
-- (NSManagedObjectContext*)defaultManagerObjectContextIndependentContext:(BOOL)independentContext // __deprecated
+- (NSManagedObjectContext*)defaultManagerObjectContextIndependentContext:(BOOL)independentContext __deprecated
 {
 	return [[DicomDatabase defaultDatabase] independentContext:independentContext];
 }
 
-// ------------------
 
 - (NSManagedObjectContext*)managedObjectContext // __deprecated
 {
 	return [self managedObjectContextIndependentContext:NO];
 }
 
-- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext // __deprecated
+- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext __deprecated
 {
 	return [self managedObjectContextIndependentContext:independentContext path:_database.baseDirPath]; 
 }
 
-- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext path:(NSString*)path // __deprecated
+- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext path:(NSString*)path __deprecated
 {
 	if (!path)
 		return nil;
@@ -1472,14 +1466,10 @@ static NSConditionLock *threadLock = nil;
 	return [[DicomDatabase existingDatabaseAtPath:path] independentContext:independentContext];
 }
 
-// ------------------
-
 - (void) addDICOMDIR:(NSString*) dicomdir :(NSMutableArray*) files
 {
 	DicomDirParser *parsed = [[DicomDirParser alloc] init: dicomdir];
-	
 	[parsed parseArray: files];
-	
 	[parsed release];
 }
 
@@ -1487,7 +1477,7 @@ static NSConditionLock *threadLock = nil;
 {
 	NSMutableArray	*localFiles = [NSMutableArray array];
 	
-	// FIRST DOWNLOAD FILES TO LOCAL DATABASE
+    // First download files to local database
 	
 	for (NSURL *url in URLs)
 	{
@@ -1501,7 +1491,7 @@ static NSConditionLock *threadLock = nil;
 		}
 	}
 	
-	// THEN, LOAD THEM
+	// Then, load them
 	[self addFilesAndFolderToDatabase: localFiles];
 	
 	return localFiles;
@@ -1863,12 +1853,12 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
--(void)openDatabaseIn:(NSString*)a Bonjour:(BOOL)isBonjour // __deprecated
+-(void)openDatabaseIn:(NSString*)a Bonjour:(BOOL)isBonjour __deprecated
 {
 	[self openDatabaseIn:a Bonjour:isBonjour refresh:NO];
 }
 
--(void)openDatabaseIn:(NSString*)a Bonjour:(BOOL)isBonjour refresh:(BOOL)refresh // __deprecated
+-(void)openDatabaseIn:(NSString*)a Bonjour:(BOOL)isBonjour refresh:(BOOL)refresh __deprecated
 {
 	if (isBonjour)
         [NSException raise:NSGenericException format:@"TODO do something smart :P"]; // TODO: hmmm
@@ -1877,8 +1867,8 @@ static NSConditionLock *threadLock = nil;
 	[self setDatabase:db];
 }
 
-#pragma deprecated (openDatabaseInBonjour:)
--(void)openDatabaseInBonjour:(NSString*)path { // deprecated 
+-(void)openDatabaseInBonjour:(NSString*)path __deprecated
+{
 	[self openDatabaseIn:path Bonjour:YES refresh:YES];
 }
 
@@ -1932,7 +1922,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void)showEntireDatabase
 {
-	self.timeIntervalType = 0;
+	self.timeIntervalType = TIME_INTERVAL_NONE;
 	self.modalityFilter = nil;
     
 	[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
@@ -1956,83 +1946,77 @@ static NSConditionLock *threadLock = nil;
         [self.window setRepresentedFilename: _database? _database.baseDirPath : @""];
 }
 
-- (NSString*)getDatabaseFolderFor: (NSString*)path // __deprecated
+#if 0
+- (NSString*)getDatabaseFolderFor: (NSString*)path __deprecated
 {
-	BOOL isDirectory;
-	
-	if ([[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
-	{
-		if (isDirectory == NO)
-		{
-			// It is a SQL file
-			
-			if ([[path pathExtension] isEqualToString:@"sql"] == NO) NSLog( @"**** No SQL extension ???");
-			
-			NSString	*db = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
-			
-			if (db == nil)
-			{
-				NSString	*p = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DATABASE.noindex"];
-				
-				if ([[NSFileManager defaultManager] fileExistsAtPath: p])
-				{
-					db = [[path stringByDeletingLastPathComponent] stringByDeletingLastPathComponent]; 
-				}
-				else
-				{
-					db = [self.documentsDirectory stringByDeletingLastPathComponent];
-				}
-			}
-			
-			return db;
-		}
-		else
-		{
-			return path;
-		}
-	}
-	
-	return nil;
-}
-
-- (NSString*)getDatabaseIndexFileFor: (NSString*)path {  // __deprecated
 	BOOL isDirectory;
 	
 	if ([[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
 	{
 		if (isDirectory)
-		{
-			// Default SQL file
-			NSString	*index = [[path stringByAppendingPathComponent:OUR_DATA_LOCATION] stringByAppendingPathComponent:@"Database.sql"];
-			
-			if ([[NSFileManager defaultManager] fileExistsAtPath: index])
-			{
-				return index;
-			}
-			
-			return nil;
-		}
-		else
-		{
-			return path;
-		}
+            return path;
+
+        // It is a SQL file
+        
+        if ([[path pathExtension] isEqualToString:@"sql"] == NO)
+            NSLog( @"**** No SQL extension ???");
+        
+        NSString *db = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
+        
+        if (db == nil)
+        {
+            NSString *p = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DATABASE.noindex"];
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath: p])
+            {
+                db = [[path stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+            }
+            else
+            {
+                db = [self.documentsDirectory stringByDeletingLastPathComponent];
+            }
+        }
+        
+        return db;
 	}
 	
 	return nil;
 }
 
--(BOOL)isBonjour:(NSManagedObjectContext*)c // __deprecated
+- (NSString*)getDatabaseIndexFileFor: (NSString*)path __deprecated
+{
+	BOOL isDirectory;
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
+	{
+		if (isDirectory)
+            return path;
+
+        // Default SQL file
+        NSString *index = [[path stringByAppendingPathComponent:OUR_DATA_LOCATION] stringByAppendingPathComponent:@"Database.sql"];
+
+        if ([[NSFileManager defaultManager] fileExistsAtPath: index])
+        {
+            return index;
+        }
+	}
+	
+	return nil;
+}
+#endif
+
+-(BOOL)isBonjour:(NSManagedObjectContext*)c __deprecated
 {
 	DicomDatabase* db = [DicomDatabase databaseForContext:c];
 	return ![db isLocal];
 }
 
--(void)loadDatabase:(NSString*)path // __deprecated
+-(void)loadDatabase:(NSString*)path __deprecated
 {
 	[self setDatabase:[DicomDatabase databaseAtPath:path]];
 }
 
--(long)saveDatabase:(NSString*)path context:(NSManagedObjectContext*)context // __deprecated
+-(long)saveDatabase:(NSString*)path context:(NSManagedObjectContext*)context __deprecated
 {
 	NSError* err = nil;
 	DicomDatabase* database = [DicomDatabase databaseForContext:context];
@@ -2040,14 +2024,12 @@ static NSConditionLock *threadLock = nil;
 	return [err code];
 }
 
-// TODO: #pragma we know saveDatabase:context: is deprecated
--(long)saveDatabase // __deprecated
+-(long)saveDatabase __deprecated
 {
 	return [self saveDatabase:nil context:self.database.managedObjectContext];
 }
 
-// TODO: #pragma we know saveDatabase:context: is deprecated
--(long)saveDatabase:(NSString*)path // __deprecated
+-(long)saveDatabase:(NSString*)path __deprecated
 {
 	return [self saveDatabase:path context:self.database.managedObjectContext];
 }
@@ -2114,7 +2096,7 @@ static NSConditionLock *threadLock = nil;
         if (studyIndex != NSNotFound)
             rowIndex = [databaseOutline rowForItem: [outlineViewArray objectAtIndex: studyIndex]];
         
-        if (studyIndex == NSNotFound && (albumTable.selectedRow > 0 || self.searchString.length > 0 || self.timeIntervalType != 0))
+        if (studyIndex == NSNotFound && (albumTable.selectedRow > 0 || self.searchString.length > 0 || self.timeIntervalType != TIME_INTERVAL_NONE))
         {
             if ([study isKindOfClass: [DicomStudy class]]) // It's a local study: we HAVE to find it ! Select the entire DB
             {
@@ -2190,7 +2172,7 @@ static NSConditionLock *threadLock = nil;
 				if ([[im valueForKey: @"fileType"] hasPrefix: @"DICOM"])
 					extension = @"dcm";
 				
-				if ([extension isEqualToString:@""])
+				if (extension.length == 0)
 					extension = @"dcm";
 				
 				NSString *dstPath = [self getNewFileDatabasePath:extension];
@@ -2237,14 +2219,14 @@ static NSConditionLock *threadLock = nil;
 	if ([filesInput count] == 0)
         return;
 	
-	BOOL COPYDATABASE = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"];
-	int COPYDATABASEMODE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASEMODE"];
+	BOOL shouldCopyDb = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"];
+	CopyDBModeType copyDbMode = (CopyDBModeType)[[NSUserDefaults standardUserDefaults] integerForKey: COPYDATABASEMODE_KEY];
 	
 	if ([options objectForKey: @"COPYDATABASE"])
-		COPYDATABASE = [[options objectForKey: @"COPYDATABASE"] boolValue];
+		shouldCopyDb = [[options objectForKey: @"COPYDATABASE"] boolValue];
 		
-	if ([options objectForKey: @"COPYDATABASEMODE"])
-		COPYDATABASEMODE = [[options objectForKey: @"COPYDATABASEMODE"] integerValue];
+	if ([options objectForKey: COPYDATABASEMODE_KEY])
+		copyDbMode = (CopyDBModeType)[[options objectForKey: COPYDATABASEMODE_KEY] integerValue];
 	
 //	if (DICOMDIRCDMODE)
 //		COPYDATABASE = NO;
@@ -2262,36 +2244,36 @@ static NSConditionLock *threadLock = nil;
 	
 	BOOL copyFiles = NO;
 	
-	if (COPYDATABASE && [newFilesToCopyList count])
+	if (shouldCopyDb && [newFilesToCopyList count])
 	{
 		copyFiles = YES;
 		
-		switch (COPYDATABASEMODE)
+		switch (copyDbMode)
 		{
-			case always:
+			case COPY_DB_ALWAYS:
 				break;
 				
-			case notMainDrive:
+			case COPY_DB_NOT_MAIN_DRIVE:
                 {
                     NSArray *pathFilesComponent = [[filesInput objectAtIndex:0] pathComponents];
                     
                     if ([[[pathFilesComponent objectAtIndex: 1] uppercaseString] isEqualToString:@"VOLUMES"])
-                        NSLog(@"not the main drive!");
+                        NSLog(@"%s not the main drive!", __FUNCTION__);
                     else
                         copyFiles = NO;
                 }
                 break;
 				
-			case cdOnly:
+			case COPY_DB_CD_ONLY:
                 {
-                    NSLog( @"%@", [filesInput objectAtIndex:0]);
+                    NSLog(@"%s %@", __FUNCTION__, [filesInput objectAtIndex:0]);
                     
                     if ([BrowserController isItCD: [filesInput objectAtIndex:0]] == NO)
                         copyFiles = NO;
                 }
                 break;
 				
-			case ask:
+			case COPY_DB_ASK_USER:
 				switch (NSRunInformationalAlertPanel(
 													 NSLocalizedString(@"OsiriX Database", nil),
 													 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?", nil),
@@ -2372,10 +2354,7 @@ static NSConditionLock *threadLock = nil;
 							if ([[[curFile dicomElements] objectForKey: @"fileType"] hasPrefix: @"DICOM"])
 								extension = @"dcm";
                             
-							if ([extension isEqualToString:@""])
-								extension = @"dcm"; 
-							
-							if ([extension length] > 4 || [extension length] < 3)
+							if ([extension length] == 0 || [extension length] > 4 || [extension length] < 3)
 								extension = @"dcm";
 							
 							NSString *dstPath = [self getNewFileDatabasePath:extension];
@@ -2592,12 +2571,12 @@ static NSConditionLock *threadLock = nil;
 	NSBeginInformationalAlertSheet(nil, nil, NSLocalizedString(@"Cancel", nil), nil, self.window, self, @selector(_rebuildSqlSheetDidEnd:returnCode:contextInfo:), nil, nil, NSLocalizedString(@"Are you sure you want to rebuild this database's SQL index? This operation can take several minutes.", nil));
 }
 
-- (void) autoCleanDatabaseDate: (id)sender // __deprecated
+- (void) autoCleanDatabaseDate: (id)sender __deprecated
 {
 	[_database cleanOldStuff];
 }
 
-+ (BOOL) isHardDiskFull // __deprecated
++ (BOOL) isHardDiskFull __deprecated
 {
 	return [[DicomDatabase activeLocalDatabase] isFileSystemFreeSizeLimitReached];
 }
@@ -2612,14 +2591,14 @@ static NSConditionLock *threadLock = nil;
                                 message);
 }
 
-- (void) autoCleanDatabaseFreeSpace: (id)sender // __deprecated
+- (void) autoCleanDatabaseFreeSpace: (id)sender __deprecated
 {
 	[_database initiateCleanUnlessAlreadyCleaning];
 }
 
 #pragma mark - Web Portal Database // deprecated, use WebPortal.defaultWebPortal
 
--(long)saveUserDatabase // __deprecated
+-(long)saveUserDatabase __deprecated
 {
 #ifndef OSIRIX_LIGHT
 	[[[WebPortal defaultWebPortal] database] save:NULL];
@@ -2627,7 +2606,7 @@ static NSConditionLock *threadLock = nil;
 	return 0;
 }
 
--(NSManagedObjectModel*)userManagedObjectModel // __deprecated
+-(NSManagedObjectModel*)userManagedObjectModel __deprecated
 {
 #ifndef OSIRIX_LIGHT
 	return [[[WebPortal defaultWebPortal] database] managedObjectModel];
@@ -2636,7 +2615,7 @@ static NSConditionLock *threadLock = nil;
 #endif
 }
 
--(NSManagedObjectContext*)userManagedObjectContext // __deprecated
+-(NSManagedObjectContext*)userManagedObjectContext __deprecated
 {
 #ifndef OSIRIX_LIGHT
 	return [[[WebPortal defaultWebPortal] database] managedObjectContext];
@@ -2645,7 +2624,7 @@ static NSConditionLock *threadLock = nil;
 #endif
 }
 
--(WebPortalUser*)userWithName:(NSString*)name // __deprecated
+-(WebPortalUser*)userWithName:(NSString*)name __deprecated
 {
 #ifndef OSIRIX_LIGHT
 	return [[[WebPortal defaultWebPortal] database] userWithName:name];
@@ -2664,8 +2643,11 @@ static NSConditionLock *threadLock = nil;
 
 - (IBAction)setSearchType: (id)sender
 {
-	if (searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+	if (searchType == SEARCH_TYPE_PATIENT_NAME &&
+        [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+    {
 		[searchField setTextColor: [NSColor windowBackgroundColor]];
+    }
 	else
 		[searchField setTextColor: [NSColor textColor]];
 
@@ -2676,13 +2658,13 @@ static NSConditionLock *threadLock = nil;
     
 	[[[sender menu] itemWithTag: [sender tag]] setState: NSOnState];
 	[toolbarSearchItem setLabel: [NSString stringWithFormat: NSLocalizedString(@"Search by %@", nil), [sender title]]];
-	searchType = [sender tag];
+	searchType = (browserSearchTags)[sender tag];
     
-	//create new Filter Predicate when changing searchType ans set searchString to nil;
+	// Create new Filter Predicate when changing searchType and set searchString to nil
 	[self setSearchString:nil];
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
     
-    if (_searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
+    if (_searchString.length > 2 || (_searchString.length >= 2 && searchType == SEARCH_TYPE_MODALITY))
     {
         @synchronized( self)
         {
@@ -2731,40 +2713,40 @@ static NSConditionLock *threadLock = nil;
 
 - (void) computeTimeInterval
 {
-	switch( self.timeIntervalType)
+	switch (self.timeIntervalType)
 	{
-		case 0:	// None
+		case TIME_INTERVAL_NONE:
 			[timeIntervalStart release];		timeIntervalStart = nil;
 			[timeIntervalEnd release];			timeIntervalEnd = nil;
 			break;
 			
-		case 1:	// 1 hour
+		case TIME_INTERVAL_1_HOUR:
 			[timeIntervalStart release];		timeIntervalStart = [[NSDate dateWithTimeIntervalSinceNow: -60*60] retain];
 			[timeIntervalEnd release];			timeIntervalEnd = nil;
 			break;
 			
-		case 2:	// 6 hours
+		case TIME_INTERVAL_6_HOURS:
 			[timeIntervalStart release];		timeIntervalStart = [[NSDate dateWithTimeIntervalSinceNow: -60*60*6] retain];
 			[timeIntervalEnd release];			timeIntervalEnd = nil;
 			break;
 			
-		case 3:	// 12 hours
+		case TIME_INTERVAL_12_HOURS:
 			[timeIntervalStart release];		timeIntervalStart = [[NSDate dateWithTimeIntervalSinceNow: -60*60*12] retain];
 			[timeIntervalEnd release];			timeIntervalEnd = nil;
 			break;
 			
-		case 7:	// 24 hours
+		case TIME_INTERVAL_24_HOURS:
 			[timeIntervalStart release];		timeIntervalStart = [[NSDate dateWithTimeIntervalSinceNow: -60*60*24] retain];
 			[timeIntervalEnd release];			timeIntervalEnd = nil;
 			break;
 			
-		case 8:	// 48 hours
+		case TIME_INTERVAL_48_HOURS:
 			[timeIntervalStart release];		timeIntervalStart = [[NSDate dateWithTimeIntervalSinceNow: -60*60*48] retain];
 			[timeIntervalEnd release];			timeIntervalEnd = nil;
 			break;
 			
-		case 4:	{ // Today
-			
+		case TIME_INTERVAL_TODAY:
+        {
 			NSCalendarDate *now = [NSCalendarDate calendarDate];
 			NSCalendarDate *start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
 			
@@ -2773,9 +2755,8 @@ static NSConditionLock *threadLock = nil;
 		}
 			break;
 			
-		case 5:
-		{	// One week
-			
+		case TIME_INTERVAL_LAST_7_DAYS:
+		{
 			NSCalendarDate *now		= [NSCalendarDate calendarDate];
 			NSCalendarDate *oneWeek = [now dateByAddingYears:0 months:0 days:-7 hours:0 minutes:0 seconds:0];
 			
@@ -2784,8 +2765,8 @@ static NSConditionLock *threadLock = nil;
 		}
 			break;
 			
-		case 6:	{ // One month
-			
+		case TIME_INTERVAL_1_MONTH:
+        {
 			NSCalendarDate *now		= [NSCalendarDate calendarDate];
 			NSCalendarDate *oneWeek = [now dateByAddingYears:0 months:-1 days:0 hours:0 minutes:0 seconds:0];
 			
@@ -2794,7 +2775,7 @@ static NSConditionLock *threadLock = nil;
 		}
 			break;
 			
-		case 100:	// Custom
+		case TIME_INTERVAL_CUSTOM:
             [timeIntervalStart release];
             [timeIntervalEnd release];
 			timeIntervalStart = [[CustomIntervalPanel sharedCustomIntervalPanel].fromDate copy];
@@ -2822,8 +2803,10 @@ static NSConditionLock *threadLock = nil;
                                                     nil]];
         }
     }
-    else if (_searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
+    else if (_searchString.length > 2 || (_searchString.length >= 2 && searchType == SEARCH_TYPE_MODALITY))
+    {
         [self setSearchString: _searchString];
+    }
     else
     {
         @synchronized( self)
@@ -2838,10 +2821,10 @@ static NSConditionLock *threadLock = nil;
 - (void) setTimeIntervalType: (int) t
 {
     [self willChangeValueForKey: @"timeIntervalType"];
-	timeIntervalType = t;
+	_timeIntervalType = t;
     [self didChangeValueForKey: @"timeIntervalType"];
 	
-	if (t == 100)
+	if (t == TIME_INTERVAL_CUSTOM)
         [[[CustomIntervalPanel sharedCustomIntervalPanel] window] makeKeyAndOrderFront: self];
 	
     [self computeTimeInterval];
@@ -4287,7 +4270,7 @@ static NSConditionLock *threadLock = nil;
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     int selectedAlbumIndex = [[dict objectForKey: @"selectedAlbumIndex"] intValue];
-    int curSearchType = [[dict objectForKey: @"searchType"] intValue];
+    browserSearchTags curSearchType = (browserSearchTags)[[dict objectForKey: @"searchType"] intValue];
     NSString *curSearchString = [dict objectForKey: @"searchString"];
     
     [NSThread currentThread].name = NSLocalizedString( @"Search For Search Field...", nil);
@@ -4296,7 +4279,7 @@ static NSConditionLock *threadLock = nil;
     {
         NSLog( @"Search For %@: %@", [BrowserController stringForSearchType: curSearchType], curSearchString);
         
-        if ([curSearchString length] > 2 || (_searchString.length >= 2 && searchType == 5))
+        if ([curSearchString length] > 2 || (_searchString.length >= 2 && searchType == SEARCH_TYPE_MODALITY))
         {
             if (!searchForComparativeStudiesLock)
                 searchForComparativeStudiesLock = [NSRecursiveLock new];
@@ -7159,17 +7142,21 @@ static NSConditionLock *threadLock = nil;
     }
     
 	[pboard declareTypes: [NSArray arrayWithObjects:
-                           @"BrowserController.database.context.XIDs",
-                           O2AlbumDragType,
+                           DatabaseXID_DragType,
+                           O2Album_DragType,
                            (__bridge NSString *)kPasteboardTypeFileURLPromise,
                            NSFilenamesPboardType,
                            NSPasteboardTypeString,
                            nil]
                    owner:self];
-	[pboard setPropertyList:nil forType:O2AlbumDragType];
+
+    [pboard setPropertyList:@{} forType:O2Album_DragType];
+
     [pboard setPropertyList:[NSArray arrayWithObject:@"dcm"]
                     forType:(__bridge NSString *)kPasteboardTypeFileURLPromise];
-	[pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[pbItems valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:@"BrowserController.database.context.XIDs"];
+
+    [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[pbItems valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL]
+                    forType:DatabaseXID_DragType];
 	
 	return YES;
 }
@@ -7367,11 +7354,11 @@ static NSConditionLock *threadLock = nil;
 - (void) databaseOpenStudy:(DicomStudy*) currentStudy withProtocol:(NSDictionary*) currentHangingProtocol
 {
     BOOL restoreNOAutotiling = NO;
-    int WINDOWSIZEVIEWERCopy = 0;
+    WindowSizeViewerType WINDOWSIZEVIEWERCopy = WINDOW_SIZE_FULL_SCREEN;
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] != YES)
     {
         restoreNOAutotiling = YES;
-        WINDOWSIZEVIEWERCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"WINDOWSIZEVIEWER"];
+        WINDOWSIZEVIEWERCopy = (WindowSizeViewerType)[[NSUserDefaults standardUserDefaults] integerForKey: WINDOWSIZEVIEWER_KEY];
         [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"AUTOTILING"];
     }
 
@@ -7393,9 +7380,9 @@ static NSConditionLock *threadLock = nil;
         if ([currentHangingProtocol valueForKey: @"Sync"])
         {
             if ([[currentHangingProtocol valueForKey: @"Sync"] boolValue])
-                [DCMView setSyncro: syncroLOC];
+                [DCMView setSyncro: SYNCHRO_POSITION_ABS];
             else
-                [DCMView setSyncro: syncroOFF];
+                [DCMView setSyncro: SYNCHRO_OFF];
         }
         
         if ([currentHangingProtocol valueForKey: @"Propagate"])
@@ -7535,8 +7522,9 @@ static NSConditionLock *threadLock = nil;
             {
                 distantStudies = NO;
                 
-                int copy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
-                [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"ListenerCompressionSettings"]; //No time for decompression....
+                ListenerCompressionSettingsType copy = (ListenerCompressionSettingsType)[[NSUserDefaults standardUserDefaults] integerForKey: ListenerCompressionSettings_KEY];
+                // No time for decompression. Temporarily alter the settings
+                [[NSUserDefaults standardUserDefaults] setInteger: LISTENER_COMPRESSION_DONT_MODIFY forKey: ListenerCompressionSettings_KEY];
                 
                 for (int i = 0; i < comparatives.count; i++)
                 {
@@ -7553,7 +7541,7 @@ static NSConditionLock *threadLock = nil;
                         NSArray *studyArray = nil;
                         @try
                         {
-                            // We need to receive the 'messages' for the new db objects from the background thread
+                            // We need to receive the 'messages' for the new DB objects from the background thread
                             [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.5]];
                             
                             studyArray = [self.database.managedObjectContext executeFetchRequest: r error: nil];
@@ -7567,7 +7555,8 @@ static NSConditionLock *threadLock = nil;
                     }
                 }
                 
-                [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: @"ListenerCompressionSettings"];
+                // Restore setting
+                [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: ListenerCompressionSettings_KEY];
                 
                 if (distantStudies && w == nil)
                 {
@@ -7720,7 +7709,7 @@ static NSConditionLock *threadLock = nil;
     if (restoreNOAutotiling)
     {
         [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"AUTOTILING"];
-        [[NSUserDefaults standardUserDefaults] setInteger: WINDOWSIZEVIEWERCopy forKey: @"WINDOWSIZEVIEWER"];
+        [[NSUserDefaults standardUserDefaults] setInteger: WINDOWSIZEVIEWERCopy forKey: WINDOWSIZEVIEWER_KEY];
     }
 }
 
@@ -7827,8 +7816,10 @@ static NSConditionLock *threadLock = nil;
                             
                             if (distantStudy)
                             {
-                                int copy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
-                                [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"ListenerCompressionSettings"]; //No time for decompression....
+                                int copy = [[NSUserDefaults standardUserDefaults] integerForKey: ListenerCompressionSettings_KEY];
+                                                
+                                // No time for decompression. Temporarily alter the settings
+                                [[NSUserDefaults standardUserDefaults] setInteger:LISTENER_COMPRESSION_DONT_MODIFY forKey: ListenerCompressionSettings_KEY];
                                 
                                 [QueryController retrieveStudies: [NSArray arrayWithObject: distantStudy] showErrors: NO checkForPreviousAutoRetrieve: YES];
                                 
@@ -7857,7 +7848,8 @@ static NSConditionLock *threadLock = nil;
                                 }
                                 while (([studiesArray count] == 0 || lastNumberOfImages != currentNumberOfImages) && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
                                 
-                                [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: @"ListenerCompressionSettings"];
+                                // Restore setting
+                                [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: ListenerCompressionSettings_KEY];
                             }
 #endif
                         }
@@ -7945,9 +7937,9 @@ static NSConditionLock *threadLock = nil;
                     if (syncSettings)
                     {
                         if ([syncSettings boolValue])
-                            [DCMView setSyncro: syncroLOC];
+                            [DCMView setSyncro: SYNCHRO_POSITION_ABS];
                         else
-                            [DCMView setSyncro: syncroOFF];
+                            [DCMView setSyncro: SYNCHRO_OFF];
                     }
                     
                     if (propagateSettings)
@@ -8047,13 +8039,15 @@ static NSConditionLock *threadLock = nil;
                             [v setImageIndex: index];
                             
                             if ([[[v imageView] curDCM] SUVConverted])
-                                [v setWL: wl*[v factorPET2SUV] WW: ww*[v factorPET2SUV]];
+                                [[v imageView] setWLWW: wl*[v factorPET2SUV]
+                                                      : ww*[v factorPET2SUV]];
                             else
-                                [v setWL: wl WW: ww];
+                                [[v imageView] setWLWW: wl
+                                                      : ww];
                             
-                            [v setScaleValue: scale];
-                            [v setRotation: rotation];
-                            [v setOrigin: NSMakePoint( x, y)];
+                            [[v imageView] setScaleValue: scale];
+                            [[v imageView] setRotation: rotation];
+                            [[v imageView] setOrigin: NSMakePoint( x, y)];
                             
                             if ([[dict valueForKey: @"SyncButtonBehaviorIsBetweenStudies"] boolValue])
                             {
@@ -8485,7 +8479,11 @@ static NSConditionLock *threadLock = nil;
 	return NO;
 }
 
-- (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements { // __deprecated
+- (int) findObject:(NSString*) request
+             table:(NSString*) table
+           execute: (NSString*) execute
+          elements:(NSString**) elements  __deprecated
+{
 	if (elements)
 		*elements = nil;
 			
@@ -8493,11 +8491,10 @@ static NSConditionLock *threadLock = nil;
 	if (!table) return -33;
 	if (!execute) return -34;
 	
-	NSError				*error = nil;
-	
-	NSManagedObject			*element = nil;
-	NSArray					*array = nil;
-	NSManagedObjectContext	*context = self.database.managedObjectContext;
+	NSError *error = nil;
+	NSManagedObject *element = nil;
+	NSArray *array = nil;
+	NSManagedObjectContext *context = self.database.managedObjectContext;
 	
 	[self checkIncoming: self];
 	// We cannot call checkIncomingNow, because we currently have the lock for context, and IF a separate checkIncoming thread has started, he is currently waiting for the context lock, and we will wait for the checkIncomingLock...
@@ -8901,9 +8898,9 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (ViewerController*) loadSeries:(NSManagedObject *)
-                          series:(ViewerController*)
-                          viewer:(BOOL) firstViewer
+- (ViewerController*) loadSeries:(NSManagedObject *) series
+                                :(ViewerController*) viewer
+                                :(BOOL) firstViewer
                    keyImagesOnly:(BOOL) keyImages
 {
     BOOL movie4D = NO;
@@ -11794,7 +11791,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 		DicomAlbum* album = [albumArray objectAtIndex:row];
 		
 		NSPasteboard* pb = [info draggingPasteboard];
-		NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:@"BrowserController.database.context.XIDs"] mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
+		NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:DatabaseXID_DragType] mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
 		NSMutableArray* items = [NSMutableArray array];
 		for (NSString* xid in xids)
 			[items addObject:[_database objectWithID:[NSManagedObject UidForXid:xid]]];
@@ -12024,12 +12021,14 @@ constrainSplitPosition:(CGFloat)proposedPosition
             [comparativeRetrieveQueue addObject: study];
         }
         
-        int copy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
-        [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"ListenerCompressionSettings"]; //No time for decompression....
-        
-        #ifndef OSIRIX_LIGHT
+        int copy = [[NSUserDefaults standardUserDefaults] integerForKey: ListenerCompressionSettings_KEY];
+
+        // No time for decompression. Temporarily alter the settings
+        [[NSUserDefaults standardUserDefaults] setInteger:LISTENER_COMPRESSION_DONT_MODIFY forKey: ListenerCompressionSettings_KEY];
+
+#ifndef OSIRIX_LIGHT
         [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO checkForPreviousAutoRetrieve: NO];
-        #endif
+#endif
         
         DicomDatabase *idb = [[DicomDatabase activeLocalDatabase] independentDatabase];
         
@@ -12039,7 +12038,8 @@ constrainSplitPosition:(CGFloat)proposedPosition
         if ([idb waitForCompressThread])
             [idb importFilesFromIncomingDir];
         
-        [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: @"ListenerCompressionSettings"];
+        // Restore setting
+        [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: ListenerCompressionSettings_KEY];
         
         @synchronized( comparativeRetrieveQueue)
         {
@@ -12146,7 +12146,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
                 
                 // Clear the time interval
                 if ([[[CustomIntervalPanel sharedCustomIntervalPanel] window] isVisible] == NO)
-                    [self setTimeIntervalType: 0];
+                    [self setTimeIntervalType: TIME_INTERVAL_NONE];
                 
                 [self setModalityFilter: nil];
             }
@@ -13702,7 +13702,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 					for (ViewerController *v in viewers)
 					{
 						[[v imageView] scaleToFit];
-						[[v imageView] setOriginX:0 Y:0];
+						[[v imageView] setOrigin:NSZeroPoint];
 						
 						if ([[v window] isKeyWindow])
                             kV = v;
@@ -14166,7 +14166,7 @@ static NSArray*	openSubSeriesArray = nil;
                             nil);
 }
 
-+ (long) computeDATABASEINDEXforDatabase:(NSString*)path // __deprecated
++ (long) computeDATABASEINDEXforDatabase:(NSString*)path __deprecated
 {
 	return [[DicomDatabase databaseAtPath:path] computeDataFileIndex];
 }
@@ -14250,8 +14250,8 @@ static NSArray*	openSubSeriesArray = nil;
 		previousNoOfFiles = 0;
 		previousItem = nil;
 		
-		searchType = 7;
-		self.timeIntervalType = 0;
+		searchType = SEARCH_TYPE_ALL_FIELDS;
+		_timeIntervalType = TIME_INTERVAL_NONE;
 		
 		outlineViewArray = [[NSArray array] retain];
 		browserWindow = self;
@@ -14302,11 +14302,20 @@ static NSArray*	openSubSeriesArray = nil;
         [NSTimer scheduledTimerWithTimeInterval: 1 target:self selector:@selector(refreshComparativeStudiesIfNeeded:) userInfo:self repeats:YES];
         
 		loadPreviewIndex = 0;
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:OsirixReportModeChangedNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alternateButtonPressed:) name:OsirixAlternateButtonPressedNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(updateReportToolbarIcon:)
+                                                     name:OsirixReportModeChangedNotification
+                                                   object:nil];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(alternateButtonPressed:)
+                                                     name:OsirixAlternateButtonPressedNotification
+                                                   object:nil];
 	}
-	return self;
+
+    return self;
 }
+
 - (void) setDBDate
 {
 	[TimeFormat release];
@@ -14366,22 +14375,22 @@ static NSArray*	openSubSeriesArray = nil;
 	return s;
 }
 
-- (NSDateFormatter*)DateOfBirthFormat // __deprecated
+- (NSDateFormatter*)DateOfBirthFormat __deprecated
 {
 	return  [NSUserDefaults dateFormatter];
 }
 
-+ (NSString*)DateOfBirthFormat:(NSDate*)d // __deprecated
++ (NSString*)DateOfBirthFormat:(NSDate*)d __deprecated
 {
 	return  [[NSUserDefaults dateFormatter] stringFromDate:d];
 }
 
-- (NSDateFormatter*)DateTimeFormat // __deprecated
+- (NSDateFormatter*)DateTimeFormat __deprecated
 {
 	return [NSUserDefaults dateTimeFormatter];
 }
 
-+ (NSString*)DateTimeFormat:(NSDate*)d // __deprecated
++ (NSString*)DateTimeFormat:(NSDate*)d __deprecated
 {
 	return [[NSUserDefaults dateTimeFormatter] stringFromDate:d];
 }
@@ -14582,7 +14591,7 @@ static NSArray*	openSubSeriesArray = nil;
         
     //    NSLog( @"%@", [[NSFontManager sharedFontManager] availableFonts]);
         
-        NSRect r = NSMakeRect(0, 0, 0, 0);
+        NSRect r = NSZeroRect;
         
         r = NSRectFromString( [[NSUserDefaults standardUserDefaults] stringForKey: @"DBWindowFrame"]);
         //NSLog(@"%s %d DBWindowFrame:%@", __FUNCTION__, __LINE__, NSStringFromRect(r));
@@ -14683,7 +14692,7 @@ static NSArray*	openSubSeriesArray = nil;
             [cell setEditable:YES];
             [[albumTable tableColumnWithIdentifier:@"Source"] setDataCell:cell];
             [albumTable setDelegate:self];
-            [albumTable registerForDraggedTypes:[NSArray arrayWithObject:O2AlbumDragType]];
+            [albumTable registerForDraggedTypes:[NSArray arrayWithObject:O2Album_DragType]];
             
     //		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
     //		[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
@@ -15646,7 +15655,7 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else if ([menuItem action] == @selector(annotMenu:))
 	{
-		if ([menuItem tag] == [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"])
+		if ([menuItem tag] == [[NSUserDefaults standardUserDefaults] integerForKey:ANNOTATIONS_KEY])
             [menuItem setState: NSOnState];
 		else
             [menuItem setState: NSOffState];
@@ -15703,7 +15712,7 @@ static NSArray*	openSubSeriesArray = nil;
 
 #pragma mark - DICOM Network & Files functions
 
-- (void) resetListenerTimer // __deprecated
+- (void) resetListenerTimer __deprecated
 {
 	[DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
 }
@@ -15957,7 +15966,7 @@ static NSArray*	openSubSeriesArray = nil;
 	[deleteQueue unlock];
 }
 
-+ (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory // __deprecated
++ (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory __deprecated
 {
     @try {
         return [DicomDatabase _findDicomdirIn:[startDirectory stringsByAppendingPaths:[[[NSFileManager defaultManager] enumeratorAtPath:startDirectory filesOnly:YES] allObjects]]];
@@ -16196,26 +16205,23 @@ static NSArray*	openSubSeriesArray = nil;
 //#endif
 //}
 
-#pragma deprecated (pathResolved:)
-- (NSString*) pathResolved:(NSString*) inPath
+- (NSString*) pathResolved:(NSString*) inPath __deprecated
 {
 	return [[NSFileManager defaultManager] destinationOfAliasAtPath:inPath];
 }
 
-#pragma deprecated (isAliasPath:)
-- (BOOL) isAliasPath:(NSString *)inPath
+- (BOOL) isAliasPath:(NSString *)inPath __deprecated
 {
 	return [[NSFileManager defaultManager] destinationOfAliasAtPath:inPath] != nil;
 }
 
-#pragma deprecated (resolveAliasPath:)
-- (NSString*) resolveAliasPath:(NSString*)inPath
+- (NSString*) resolveAliasPath:(NSString*)inPath __deprecated
 {
 	NSString* resolved = [[NSFileManager defaultManager] destinationOfAliasAtPath:inPath];
 	return resolved ? resolved : inPath;
 }
 
-- (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path // __deprecated
+- (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path __deprecated
 {
 	NSString *folder = path;
 	
@@ -16255,7 +16261,8 @@ static NSArray*	openSubSeriesArray = nil;
 		if ([self pathResolved: path])
 			folder = [self pathResolved: path];
 	}
-	return folder;
+
+    return folder;
 }
 
 - (IBAction)revealInFinder: (id)sender
@@ -16267,12 +16274,12 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 	}
-	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+	else
+        filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 	
 	if ([filesToExport count])
-	{
-		[[NSWorkspace sharedWorkspace] selectFile:[filesToExport objectAtIndex: 0] inFileViewerRootedAtPath:nil];
-	}
+		[[NSWorkspace sharedWorkspace] selectFile:[filesToExport objectAtIndex: 0]
+                         inFileViewerRootedAtPath:@""];
 }
 
 static volatile int numberOfThreadsForJPEG = 0;
@@ -16353,28 +16360,27 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 #ifndef OSIRIX_LIGHT
 
-#pragma deprecated(decompressDICOMJPEGinINCOMING:)
-- (void)decompressDICOMJPEGinINCOMING:(NSArray*)array // __deprecated
+- (void)decompressDICOMJPEGinINCOMING:(NSArray*)array __deprecated
 {
 	[self decompressDICOMList:array to:_database.incomingDirPath];
 }
 
-- (void)decompressDICOMJPEG:(NSArray*)array // __deprecated
+- (void)decompressDICOMJPEG:(NSArray*)array __deprecated
 {
 	[self decompressDICOMList:array to:nil];
 }
 
-- (void)compressDICOMJPEGinINCOMING:(NSArray*)array // __deprecated
+- (void)compressDICOMJPEGinINCOMING:(NSArray*)array __deprecated
 {
 	[self compressDICOMWithJPEG:array to:_database.incomingDirPath];
 }
 
-- (void)compressDICOMJPEG:(NSArray*)array // __deprecated
+- (void)compressDICOMJPEG:(NSArray*)array __deprecated
 {
 	[self compressDICOMWithJPEG:array];
 }
 
-- (void)decompressArrayOfFiles:(NSArray*)array work:(NSNumber*)work // __deprecated
+- (void)decompressArrayOfFiles:(NSArray*)array work:(NSNumber*)work __deprecated
 {
 	switch ([work charValue])
     {
@@ -16467,18 +16473,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 #endif
 
-- (void)checkIncomingThread: (id)sender // __deprecated
+- (void)checkIncomingThread: (id)sender __deprecated
 {
 	[[DicomDatabase activeLocalDatabase] importFilesFromIncomingDir];
 }
 
-- (void) checkIncomingNow: (id) sender // __deprecated
+- (void) checkIncomingNow: (id) sender __deprecated
 {
 //	if (DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	[[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 }
 
-- (void)checkIncoming: (id)sender // __deprecated
+- (void)checkIncoming: (id)sender __deprecated
 {
 //	if (DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	[[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
@@ -17765,15 +17771,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 			for (int i = 0; i < [filesToExport count]; i++)
 			{
 				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
-				NSString		*extension = [[filesToExport objectAtIndex:i] pathExtension];
+				NSString *extension = [[filesToExport objectAtIndex:i] pathExtension];
 				
 				if ([curImage valueForKey: @"fileType"])
-				{
 					if ([[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"])
 						extension = @"dcm";
-				}
 				
-				if ([extension isEqualToString:@""])
+				if (extension.length == 0)
 					extension = @"dcm"; 
 				
 				NSString *tempPath;
@@ -18535,10 +18539,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	switch (aspc.end)
 	{
 		case AnonymizationSavePanelSaveAs:
-		{
 			[Anonymization anonymizeFiles:imagePaths dicomImages: imageObjs toPath:aspc.outputDir withTags:aspc.anonymizationViewController.tagsValues];
-		}
-		break;
+            break;
 		
 		case AnonymizationSavePanelAdd:
 		case AnonymizationSavePanelReplace:
@@ -18550,19 +18552,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if (aspc.end == AnonymizationSavePanelReplace)
 				[self delItem:self]; // this assumes the selection hasn't changed since the user clicked the Anonymize button
 			
-			BOOL COPYDATABASE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASE"];
-			int COPYDATABASEMODE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASEMODE"];
+			BOOL copyDbOriginal = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASE"];
+			CopyDBModeType copyDbModeOriginal = (CopyDBModeType)[[NSUserDefaults standardUserDefaults] integerForKey: COPYDATABASEMODE_KEY];
 	
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"COPYDATABASE"];
-			[[NSUserDefaults standardUserDefaults] setInteger: always forKey: @"COPYDATABASEMODE"];
+			[[NSUserDefaults standardUserDefaults] setInteger: COPY_DB_ALWAYS forKey: COPYDATABASEMODE_KEY];
 
-			// add new files
+			// Add new files
 			[self addFilesAndFolderToDatabase:anonymizedFiles.allValues];
 			
-			[[NSUserDefaults standardUserDefaults] setBool: COPYDATABASE forKey: @"COPYDATABASE"];
-			[[NSUserDefaults standardUserDefaults] setInteger: COPYDATABASEMODE forKey: @"COPYDATABASEMODE"];
+			[[NSUserDefaults standardUserDefaults] setBool: copyDbOriginal forKey: @"COPYDATABASE"];
+			[[NSUserDefaults standardUserDefaults] setInteger: copyDbModeOriginal forKey: COPYDATABASEMODE_KEY];
 		}
-		break;
+            break;
 	}
 }
 
@@ -18976,7 +18978,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 //	}
 //}
 
-- (void) checkReportsDICOMSRConsistency // __deprecated
+- (void) checkReportsDICOMSRConsistency __deprecated
 {
 	[_database checkReportsConsistencyWithDICOMSR];
 }
@@ -19183,7 +19185,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSIndexSet *index = [databaseOutline selectedRowIndexes];
 	NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
-	int reportsMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue];
+	ReportType reportsMode = (ReportType)[[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue];
 	
     if ([item isKindOfClass:[DicomSeries class]])
         item = [item valueForKey:@"study"];
@@ -19226,9 +19228,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				if (plugin)
 				{
 //					[checkBonjourUpToDateThreadLock lock];
-					
-                    
-                    
+
 					@try 
 					{
 						NSLog(@"generate report with plugin");
@@ -19260,9 +19260,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			else
 			// *********************************************
-			// REPORTS GENERATED AND HANDLED BY OSIRIX
+			// REPORTS GENERATED AND HANDLED BY Miele-LXIV
 			// *********************************************
-			{
+            {
 //				[checkBonjourUpToDateThreadLock lock];
 				
 				@try
@@ -19340,7 +19340,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						
 						if (reportsMode != REPORT_TYPE_PLUGIN)
 						{
-							Reports	*report = [[Reports alloc] init];
+							Reports	*report = [Reports new];
 							if ([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])
                                 [report setTemplateName:[[sender selectedItem] title]];
 							
@@ -19380,8 +19380,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 	}
 	
-	[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixReportModeChangedNotification object: nil userInfo: nil];
+	[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixReportModeChangedNotification
+                                                        object: nil
+                                                      userInfo: nil];
 }
 #endif
 
@@ -19414,7 +19417,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			reportToolbarItemType = 3;
             break;
 	}
-	return [NSImage imageNamed:iconName];
+
+    return [NSImage imageNamed:iconName];
 }
 
 - (void)updateReportToolbarIcon: (NSNotification *)note
@@ -19444,12 +19448,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-
 - (void)setToolbarReportIconForItem: (NSToolbarItem *)item
 {
 	@try
 	{
-		#ifndef OSIRIX_LIGHT
+#ifndef OSIRIX_LIGHT
 		NSMutableArray* templatesArray = nil;
         switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
             case REPORT_TYPE_PAGES:
@@ -19496,6 +19499,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					icon = [[NSWorkspace sharedWorkspace] iconForFileType:@"download"]; // Safari document
 				else if ([[NSFileManager defaultManager] fileExistsAtPath:studySelected.reportURL])
 					icon = [[NSWorkspace sharedWorkspace] iconForFile:studySelected.reportURL];
+
                 if (icon)
                     reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate]; // To force the update
 			}
@@ -19505,9 +19509,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 			[item setImage:icon];
 		}
-		#else
+#else
 		[item setImage:[NSImage imageNamed:@"Report.icns"]];
-		#endif
+#endif
 	}
 	@catch (NSException * e)
 	{
@@ -19518,7 +19522,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)reportToolbarItemWillPopUp: (NSNotification *)notif
 {
-	#ifndef OSIRIX_LIGHT
+#ifndef OSIRIX_LIGHT
 	if ([[notif object] isEqualTo:reportTemplatesListPopUpButton])
 	{
 		[reportTemplatesListPopUpButton removeAllItems];
@@ -19535,7 +19539,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
         [reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
 	}
-	#endif
+#endif
 }
 
 #pragma mark - Toolbar functions
@@ -19547,7 +19551,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
-	[self flagsChanged: nil];
+	[self flagsChanged:[NSApp currentEvent]];
 	
     @synchronized (_albumNoOfStudiesCache)
     {
@@ -20555,7 +20559,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 #pragma mark - Bonjour
 
-- (void)setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key // __deprecated
+- (void)setBonjourDatabaseValue:(NSManagedObject*) obj
+                          value:(id) value
+                         forKey:(NSString*) key __deprecated
 {
 	[(RemoteDicomDatabase*)_database object:obj setValue:value forKey:key];
 }
@@ -20597,7 +20603,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[_sourcesTableView reloadData];
 }
 
-- (void) switchToDefaultDBIfNeeded // __deprecated
+- (void) switchToDefaultDBIfNeeded __deprecated
 {
 	NSString *defaultPath = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
 	
@@ -20605,7 +20611,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[self resetToLocalDatabase];
 }
 
-- (void)openDatabasePath: (NSString*)path // __deprecated
+- (void)openDatabasePath: (NSString*)path __deprecated
 {
 	NSThread* thread = [NSThread currentThread];
 	[thread setName:NSLocalizedString(@"Opening database...", nil)];
@@ -20634,7 +20640,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 
 
-- (NSString*) localDatabasePath { // deprecated
+- (NSString*) localDatabasePath  __deprecated
+{
 	return [[DicomDatabase activeLocalDatabase] sqlFilePath];
 }
 
@@ -20691,8 +20698,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return isNetworkLogsActive;
 }
 
-#pragma deprecated (setFixedDocumentsDirectory)
-- (NSString *)setFixedDocumentsDirectory // __deprecated
+- (NSString *)setFixedDocumentsDirectory __deprecated
 {
 	NSLog(@"%s IS NOT AVAILABLE ANYMORE, moved to DicomDatabase.. This message should never appear!", __PRETTY_FUNCTION__);
 	return nil;
@@ -20734,45 +20740,53 @@ static volatile int numberOfThreadsForJPEG = 0;
 //	return fixedDocumentsDirectory;
 }
 
-- (NSString *) localDocumentsDirectory // __deprecated
+- (NSString *) localDocumentsDirectory __deprecated
 {
 	return [[DicomDatabase activeLocalDatabase] baseDirPath];
 }
 
-- (NSString *) fixedDocumentsDirectory // __deprecated
+- (NSString *) fixedDocumentsDirectory __deprecated
 {
 	return [[DicomDatabase activeLocalDatabase] baseDirPath];
 }
 
-- (const char *) cfixedDocumentsDirectory // __deprecated
-{ return [[DicomDatabase activeLocalDatabase] baseDirPathC]; }
+- (const char *) cfixedDocumentsDirectory __deprecated
+{
+    return [[DicomDatabase activeLocalDatabase] baseDirPathC];
+}
 
-- (const char *) cfixedIncomingDirectory // __deprecated
-{ return [[DicomDatabase activeLocalDatabase] incomingDirPathC]; }
+- (const char *) cfixedIncomingDirectory __deprecated
+{
+    return [[DicomDatabase activeLocalDatabase] incomingDirPathC];
+}
 
-- (const char *) cfixedTempNoIndexDirectory // __deprecated
-{ return [[DicomDatabase activeLocalDatabase] tempDirPathC]; }
+- (const char *) cfixedTempNoIndexDirectory __deprecated
+{
+    return [[DicomDatabase activeLocalDatabase] tempDirPathC];
+}
 
-- (const char *) cfixedIncomingNoIndexDirectory // __deprecated
-{ return [[DicomDatabase activeLocalDatabase] incomingDirPathC]; }
+- (const char *) cfixedIncomingNoIndexDirectory __deprecated
+{
+    return [[DicomDatabase activeLocalDatabase] incomingDirPathC];
+}
 
-- (NSString*)INCOMINGPATH // __deprecated
+- (NSString*)INCOMINGPATH __deprecated
 {
 	return [_database incomingDirPath];
 }
 
-+ (NSString *) defaultDocumentsDirectory // __deprecated
++ (NSString *) defaultDocumentsDirectory __deprecated
 {
 //	NSString *dir = documentsDirectory();
 	return [[DicomDatabase defaultDatabase] baseDirPath];
 }
 
-- (NSString*) TEMPPATH // __deprecated
+- (NSString*) TEMPPATH __deprecated
 {
 	return [_database tempDirPath];
 }
 
-- (NSString*)documentsDirectory // __deprecated
+- (NSString*)documentsDirectory __deprecated
 {
 	return [_database baseDirPath];
 }
@@ -20804,7 +20818,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)setSearchString: (NSString *)searchString
 {
-    if (searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+    if (searchType == SEARCH_TYPE_PATIENT_NAME && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
         [searchField setTextColor: [NSColor textBackgroundColor]];
     else
         [searchField setTextColor: [NSColor textColor]];
@@ -20822,7 +20836,7 @@ static volatile int numberOfThreadsForJPEG = 0;
     [self outlineViewRefresh];
     [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
     
-    if (_searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
+    if (_searchString.length > 2 || (_searchString.length >= 2 && searchType == SEARCH_TYPE_MODALITY))
     {
         @synchronized( self)
         {
@@ -20898,59 +20912,58 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if ([_searchString length] > 0)
 	{
-		switch(searchType) 
+		switch (searchType)
 		{
-		case 7:			// All fields 
+		case SEARCH_TYPE_ALL_FIELDS:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: All fields = %@", nil), _searchString];
 			break;
 			
-		case 0:			// Patient Name
+		case SEARCH_TYPE_PATIENT_NAME:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Patient's name = %@", nil), _searchString];
 			break;
 			
-		case 1:			// Patient ID
+		case SEARCH_TYPE_PATIENT_ID:
 			description = [[NSString alloc] initWithFormat:@" / Search: Patient's ID = %@", _searchString];
 			break;
 			
-		case 2:			// Study/Series ID
+		case SEARCH_TYPE_STUDY_SERIES_ID:
 			description = [[NSString alloc] initWithFormat:@" / Search: Study's ID = %@", _searchString];
 			break;
 			
-		case 3:			// Comments
+		case SEARCH_TYPE_COMMENT:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Comments = %@", nil), _searchString];
 			break;
 			
-		case 4:			// Study Description
+		case SEARCH_TYPE_STUDY_DESCRIPTION:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Study Description = %@", nil), _searchString];
 			break;
 			
-		case 5:			// Modality
+		case SEARCH_TYPE_MODALITY:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Modality = %@", nil), _searchString];
 			break;
 			
-		case 6:			// Accession Number 
+		case SEARCH_TYPE_ACCESSION_NUMBER:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Accession Number = %@", nil), _searchString];
 			break;
 		
-		case 8:			// Comments
+		case SEARCH_TYPE_COMMENT2:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Comments 2 = %@", nil), _searchString];
 			break;
 			
-		case 9:			// Comments
+		case SEARCH_TYPE_COMMENT3:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Comments 3 = %@", nil), _searchString];
 			break;
 			
-		case 10:			// Comments
+		case SEARCH_TYPE_COMMENT4:
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Comments 4 = %@", nil), _searchString];
 			break;
 			
-		case 100:		
-			// Advanced
+		case SEARCH_TYPE_ADVANCED:
 			break;
 		}
-		
 	}
-	return [description autorelease];
+
+    return [description autorelease];
 }
 
 - (NSPredicate*) patientsnamePredicate: (NSString*) s
@@ -21020,60 +21033,61 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		switch (searchType)
 		{
-			case 7:			// All Fields
+			case SEARCH_TYPE_ALL_FIELDS:
 				s = _searchString;
 				
 				if ([s length] >= 3)
 					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@) OR (performingPhysician CONTAINS[cd] %@) OR (referringPhysician CONTAINS[cd] %@) OR (institutionName CONTAINS[cd] %@)", s, s, s, s, s, s, s, s, s, s, s, s, s];
                 else if ([s length] >= 1)
                     predicate = [self patientsnamePredicate: _searchString];
-			break;
+                break;
 			
-			case 0:			// Patient Name
+			case SEARCH_TYPE_PATIENT_NAME:
                 predicate = [self patientsnamePredicate: _searchString];
-			break;
+                break;
 			
-			case 1:			// Patient ID
+			case SEARCH_TYPE_PATIENT_ID:
 				predicate = [NSPredicate predicateWithFormat: @"patientID CONTAINS[cd] %@", _searchString];
-			break;
+                break;
 			
-			case 2:			// Study/Series ID
+			case SEARCH_TYPE_STUDY_SERIES_ID:
 				predicate = [NSPredicate predicateWithFormat: @"id CONTAINS[cd] %@", _searchString];
-			break;
+                break;
 			
-			case 3:			// Comments
+			case SEARCH_TYPE_COMMENT:
 				predicate = [NSPredicate predicateWithFormat: @"comment CONTAINS[cd] %@", _searchString];
-			break;
-			
-			case 4:			// Study Description
+                break;
+                
+            case SEARCH_TYPE_COMMENT2:
+                predicate = [NSPredicate predicateWithFormat: @"comment2 CONTAINS[cd] %@", _searchString];
+                break;
+            
+            case SEARCH_TYPE_COMMENT3:
+                predicate = [NSPredicate predicateWithFormat: @"comment3 CONTAINS[cd] %@", _searchString];
+                break;
+            
+            case SEARCH_TYPE_COMMENT4:
+                predicate = [NSPredicate predicateWithFormat: @"comment4 CONTAINS[cd] %@", _searchString];
+                break;
+
+			case SEARCH_TYPE_STUDY_DESCRIPTION:
 				predicate = [NSPredicate predicateWithFormat: @"studyName CONTAINS[cd] %@", _searchString];
-			break;
+                break;
 			
-			case 5:			// Modality
+			case SEARCH_TYPE_MODALITY:
 				predicate = [NSPredicate predicateWithFormat: @"modality CONTAINS[cd] %@", _searchString];
-			break;
+                break;
 			
-			case 6:			// Accession Number 
+			case SEARCH_TYPE_ACCESSION_NUMBER:
 				predicate = [NSPredicate predicateWithFormat: @"accessionNumber CONTAINS[cd] %@", _searchString];
-			break;
+                break;
 			
-			case 8:			// Comments
-				predicate = [NSPredicate predicateWithFormat: @"comment2 CONTAINS[cd] %@", _searchString];
-			break;
-			
-			case 9:			// Comments
-				predicate = [NSPredicate predicateWithFormat: @"comment3 CONTAINS[cd] %@", _searchString];
-			break;
-			
-			case 10:			// Comments
-				predicate = [NSPredicate predicateWithFormat: @"comment4 CONTAINS[cd] %@", _searchString];
-			break;
-			
-			case 100:		// Advanced
-			break;
+			case SEARCH_TYPE_ADVANCED:
+                break;
 		}
 	}
-	return predicate;
+
+    return predicate;
 }
 
 - (NSArray *) databaseSelection

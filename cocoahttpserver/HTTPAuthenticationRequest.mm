@@ -12,6 +12,7 @@
 - (NSString *)nonquotedSubHeaderFieldValue:(NSString *)param fromHeaderFieldValue:(NSString *)header;
 @end
 
+#pragma mark -
 
 @implementation HTTPAuthenticationRequest
 

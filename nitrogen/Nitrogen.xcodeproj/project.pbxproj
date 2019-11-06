@@ -24,20 +24,20 @@
 		71854F1A146D7DC400081915 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71854F19146D7DC400081915 /* IOKit.framework */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		B4F336391611A97900E46F7F /* ISO8601DateFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F3357F1611A97800E46F7F /* ISO8601DateFormatter.h */; };
-		B4F3363A1611A97900E46F7F /* ISO8601DateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F335801611A97800E46F7F /* ISO8601DateFormatter.m */; };
+		B4F3363A1611A97900E46F7F /* ISO8601DateFormatter.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335801611A97800E46F7F /* ISO8601DateFormatter.mm */; };
 		B4F3363B1611A97900E46F7F /* JSON.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335821611A97800E46F7F /* JSON.h */; };
 		B4F3363C1611A97900E46F7F /* NSObject+SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335831611A97800E46F7F /* NSObject+SBJSON.h */; };
-		B4F3363D1611A97900E46F7F /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F335841611A97800E46F7F /* NSObject+SBJSON.m */; };
+		B4F3363D1611A97900E46F7F /* NSObject+SBJSON.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335841611A97800E46F7F /* NSObject+SBJSON.mm */; };
 		B4F3363E1611A97900E46F7F /* NSString+SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335851611A97800E46F7F /* NSString+SBJSON.h */; };
-		B4F3363F1611A97900E46F7F /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F335861611A97800E46F7F /* NSString+SBJSON.m */; };
+		B4F3363F1611A97900E46F7F /* NSString+SBJSON.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335861611A97800E46F7F /* NSString+SBJSON.mm */; };
 		B4F336401611A97900E46F7F /* SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335871611A97800E46F7F /* SBJSON.h */; };
-		B4F336411611A97900E46F7F /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F335881611A97800E46F7F /* SBJSON.m */; };
+		B4F336411611A97900E46F7F /* SBJSON.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335881611A97800E46F7F /* SBJSON.mm */; };
 		B4F336421611A97900E46F7F /* SBJsonBase.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335891611A97800E46F7F /* SBJsonBase.h */; };
-		B4F336431611A97900E46F7F /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F3358A1611A97800E46F7F /* SBJsonBase.m */; };
+		B4F336431611A97900E46F7F /* SBJsonBase.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F3358A1611A97800E46F7F /* SBJsonBase.mm */; };
 		B4F336441611A97900E46F7F /* SBJsonParser.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F3358B1611A97800E46F7F /* SBJsonParser.h */; };
-		B4F336451611A97900E46F7F /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F3358C1611A97800E46F7F /* SBJsonParser.m */; };
+		B4F336451611A97900E46F7F /* SBJsonParser.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F3358C1611A97800E46F7F /* SBJsonParser.mm */; };
 		B4F336461611A97900E46F7F /* SBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F3358D1611A97800E46F7F /* SBJsonWriter.h */; };
-		B4F336471611A97900E46F7F /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F3358E1611A97800E46F7F /* SBJsonWriter.m */; };
+		B4F336471611A97900E46F7F /* SBJsonWriter.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F3358E1611A97800E46F7F /* SBJsonWriter.mm */; };
 		B4F336481611A97900E46F7F /* N2AdaptiveBox.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F3358F1611A97800E46F7F /* N2AdaptiveBox.h */; };
 		B4F336491611A97900E46F7F /* N2AdaptiveBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335901611A97800E46F7F /* N2AdaptiveBox.mm */; };
 		B4F3364A1611A97900E46F7F /* N2Alignment.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335911611A97800E46F7F /* N2Alignment.h */; };
@@ -89,7 +89,7 @@
 		B4F336781611A97900E46F7F /* N2MutableUInteger.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335BF1611A97800E46F7F /* N2MutableUInteger.h */; };
 		B4F336791611A97900E46F7F /* N2MutableUInteger.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335C01611A97800E46F7F /* N2MutableUInteger.mm */; };
 		B4F3367A1611A97900E46F7F /* N2OpenGLViewWithSplitsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335C11611A97800E46F7F /* N2OpenGLViewWithSplitsWindow.h */; };
-		B4F3367B1611A97900E46F7F /* N2OpenGLViewWithSplitsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F335C21611A97800E46F7F /* N2OpenGLViewWithSplitsWindow.m */; };
+		B4F3367B1611A97900E46F7F /* N2OpenGLViewWithSplitsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335C21611A97800E46F7F /* N2OpenGLViewWithSplitsWindow.mm */; };
 		B4F3367C1611A97900E46F7F /* N2Operators.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335C31611A97800E46F7F /* N2Operators.h */; };
 		B4F3367D1611A97900E46F7F /* N2Operators.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335C41611A97800E46F7F /* N2Operators.mm */; };
 		B4F3367E1611A97900E46F7F /* N2Pair.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335C51611A97800E46F7F /* N2Pair.h */; };
@@ -138,16 +138,16 @@
 		B4F336A91611A97900E46F7F /* N2XMLRPCWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335F01611A97800E46F7F /* N2XMLRPCWebServiceClient.h */; };
 		B4F336AA1611A97900E46F7F /* N2XMLRPCWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335F11611A97800E46F7F /* N2XMLRPCWebServiceClient.mm */; };
 		B4F336AB1611A97900E46F7F /* N3BezierCore.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335F21611A97800E46F7F /* N3BezierCore.h */; };
-		B4F336AC1611A97900E46F7F /* N3BezierCore.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F335F31611A97800E46F7F /* N3BezierCore.m */; };
+		B4F336AC1611A97900E46F7F /* N3BezierCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335F31611A97800E46F7F /* N3BezierCore.mm */; };
 		B4F336AD1611A97900E46F7F /* N3BezierCoreAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335F41611A97800E46F7F /* N3BezierCoreAdditions.h */; };
-		B4F336AE1611A97900E46F7F /* N3BezierCoreAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F335F51611A97800E46F7F /* N3BezierCoreAdditions.m */; };
+		B4F336AE1611A97900E46F7F /* N3BezierCoreAdditions.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335F51611A97800E46F7F /* N3BezierCoreAdditions.mm */; };
 		B4F336AF1611A97900E46F7F /* N3BezierPath.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335F61611A97800E46F7F /* N3BezierPath.h */; };
-		B4F336B01611A97900E46F7F /* N3BezierPath.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F335F71611A97800E46F7F /* N3BezierPath.m */; };
+		B4F336B01611A97900E46F7F /* N3BezierPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335F71611A97800E46F7F /* N3BezierPath.mm */; };
 		B4F336B11611A97900E46F7F /* N3Geometry.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335F81611A97800E46F7F /* N3Geometry.h */; };
-		B4F336B21611A97900E46F7F /* N3Geometry.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F335F91611A97800E46F7F /* N3Geometry.m */; };
+		B4F336B21611A97900E46F7F /* N3Geometry.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335F91611A97800E46F7F /* N3Geometry.mm */; };
 		B4F336B31611A97900E46F7F /* Nitrogen.pch in Headers */ = {isa = PBXBuildFile; fileRef = B4F335FA1611A97800E46F7F /* Nitrogen.pch */; };
 		B4F336B41611A97900E46F7F /* NS(Attributed)String+Geometrics.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335FB1611A97800E46F7F /* NS(Attributed)String+Geometrics.h */; };
-		B4F336B51611A97900E46F7F /* NS(Attributed)String+Geometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F335FC1611A97800E46F7F /* NS(Attributed)String+Geometrics.m */; };
+		B4F336B51611A97900E46F7F /* NS(Attributed)String+Geometrics.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335FC1611A97800E46F7F /* NS(Attributed)String+Geometrics.mm */; };
 		B4F336B61611A97900E46F7F /* NSAppleEventDescriptor+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335FD1611A97800E46F7F /* NSAppleEventDescriptor+N2.h */; };
 		B4F336B71611A97900E46F7F /* NSAppleEventDescriptor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F335FE1611A97800E46F7F /* NSAppleEventDescriptor+N2.mm */; };
 		B4F336B81611A97900E46F7F /* NSAppleScript+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F335FF1611A97800E46F7F /* NSAppleScript+N2.h */; };
@@ -189,7 +189,7 @@
 		B4F336DC1611A97900E46F7F /* NSPanel+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F336231611A97800E46F7F /* NSPanel+N2.h */; };
 		B4F336DD1611A97900E46F7F /* NSPanel+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F336241611A97800E46F7F /* NSPanel+N2.mm */; };
 		B4F336DE1611A97900E46F7F /* NSScreen+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F336251611A97800E46F7F /* NSScreen+N2.h */; };
-		B4F336DF1611A97900E46F7F /* NSScreen+N2.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F336261611A97800E46F7F /* NSScreen+N2.m */; };
+		B4F336DF1611A97900E46F7F /* NSScreen+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F336261611A97800E46F7F /* NSScreen+N2.mm */; };
 		B4F336E01611A97900E46F7F /* NSString+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F336271611A97800E46F7F /* NSString+N2.h */; };
 		B4F336E11611A97900E46F7F /* NSString+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F336281611A97800E46F7F /* NSString+N2.mm */; };
 		B4F336E21611A97900E46F7F /* NSTextView+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F336291611A97800E46F7F /* NSTextView+N2.h */; };
@@ -207,7 +207,7 @@
 		B4F336EE1611A97900E46F7F /* NSXMLNode+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F336351611A97800E46F7F /* NSXMLNode+N2.h */; };
 		B4F336EF1611A97900E46F7F /* NSXMLNode+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F336361611A97800E46F7F /* NSXMLNode+N2.mm */; };
 		B4F336F01611A97900E46F7F /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F336371611A97800E46F7F /* SMTPClient.h */; };
-		B4F336F11611A97900E46F7F /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F336381611A97800E46F7F /* SMTPClient.m */; };
+		B4F336F11611A97900E46F7F /* SMTPClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = B4F336381611A97800E46F7F /* SMTPClient.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -241,20 +241,20 @@
 		71C4B70513A4A85B008E5639 /* Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info copy.plist"; path = "Resources/Info copy.plist"; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* Nitrogen.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Nitrogen.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4F3357F1611A97800E46F7F /* ISO8601DateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISO8601DateFormatter.h; sourceTree = "<group>"; };
-		B4F335801611A97800E46F7F /* ISO8601DateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISO8601DateFormatter.m; sourceTree = "<group>"; };
+		B4F335801611A97800E46F7F /* ISO8601DateFormatter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ISO8601DateFormatter.mm; sourceTree = "<group>"; };
 		B4F335821611A97800E46F7F /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		B4F335831611A97800E46F7F /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJSON.h"; sourceTree = "<group>"; };
-		B4F335841611A97800E46F7F /* NSObject+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJSON.m"; sourceTree = "<group>"; };
+		B4F335841611A97800E46F7F /* NSObject+SBJSON.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSObject+SBJSON.mm"; sourceTree = "<group>"; };
 		B4F335851611A97800E46F7F /* NSString+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SBJSON.h"; sourceTree = "<group>"; };
-		B4F335861611A97800E46F7F /* NSString+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SBJSON.m"; sourceTree = "<group>"; };
+		B4F335861611A97800E46F7F /* NSString+SBJSON.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSString+SBJSON.mm"; sourceTree = "<group>"; };
 		B4F335871611A97800E46F7F /* SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJSON.h; sourceTree = "<group>"; };
-		B4F335881611A97800E46F7F /* SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJSON.m; sourceTree = "<group>"; };
+		B4F335881611A97800E46F7F /* SBJSON.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SBJSON.mm; sourceTree = "<group>"; };
 		B4F335891611A97800E46F7F /* SBJsonBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonBase.h; sourceTree = "<group>"; };
-		B4F3358A1611A97800E46F7F /* SBJsonBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonBase.m; sourceTree = "<group>"; };
+		B4F3358A1611A97800E46F7F /* SBJsonBase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SBJsonBase.mm; sourceTree = "<group>"; };
 		B4F3358B1611A97800E46F7F /* SBJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonParser.h; sourceTree = "<group>"; };
-		B4F3358C1611A97800E46F7F /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
+		B4F3358C1611A97800E46F7F /* SBJsonParser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SBJsonParser.mm; sourceTree = "<group>"; };
 		B4F3358D1611A97800E46F7F /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
-		B4F3358E1611A97800E46F7F /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		B4F3358E1611A97800E46F7F /* SBJsonWriter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SBJsonWriter.mm; sourceTree = "<group>"; };
 		B4F3358F1611A97800E46F7F /* N2AdaptiveBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2AdaptiveBox.h; sourceTree = "<group>"; };
 		B4F335901611A97800E46F7F /* N2AdaptiveBox.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2AdaptiveBox.mm; sourceTree = "<group>"; };
 		B4F335911611A97800E46F7F /* N2Alignment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2Alignment.h; sourceTree = "<group>"; };
@@ -306,7 +306,7 @@
 		B4F335BF1611A97800E46F7F /* N2MutableUInteger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2MutableUInteger.h; sourceTree = "<group>"; };
 		B4F335C01611A97800E46F7F /* N2MutableUInteger.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2MutableUInteger.mm; sourceTree = "<group>"; };
 		B4F335C11611A97800E46F7F /* N2OpenGLViewWithSplitsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2OpenGLViewWithSplitsWindow.h; sourceTree = "<group>"; };
-		B4F335C21611A97800E46F7F /* N2OpenGLViewWithSplitsWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = N2OpenGLViewWithSplitsWindow.m; sourceTree = "<group>"; };
+		B4F335C21611A97800E46F7F /* N2OpenGLViewWithSplitsWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2OpenGLViewWithSplitsWindow.mm; sourceTree = "<group>"; };
 		B4F335C31611A97800E46F7F /* N2Operators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2Operators.h; sourceTree = "<group>"; };
 		B4F335C41611A97800E46F7F /* N2Operators.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2Operators.mm; sourceTree = "<group>"; };
 		B4F335C51611A97800E46F7F /* N2Pair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2Pair.h; sourceTree = "<group>"; };
@@ -355,16 +355,16 @@
 		B4F335F01611A97800E46F7F /* N2XMLRPCWebServiceClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2XMLRPCWebServiceClient.h; sourceTree = "<group>"; };
 		B4F335F11611A97800E46F7F /* N2XMLRPCWebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2XMLRPCWebServiceClient.mm; sourceTree = "<group>"; };
 		B4F335F21611A97800E46F7F /* N3BezierCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N3BezierCore.h; sourceTree = "<group>"; };
-		B4F335F31611A97800E46F7F /* N3BezierCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = N3BezierCore.m; sourceTree = "<group>"; };
+		B4F335F31611A97800E46F7F /* N3BezierCore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N3BezierCore.mm; sourceTree = "<group>"; };
 		B4F335F41611A97800E46F7F /* N3BezierCoreAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N3BezierCoreAdditions.h; sourceTree = "<group>"; };
-		B4F335F51611A97800E46F7F /* N3BezierCoreAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = N3BezierCoreAdditions.m; sourceTree = "<group>"; };
+		B4F335F51611A97800E46F7F /* N3BezierCoreAdditions.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N3BezierCoreAdditions.mm; sourceTree = "<group>"; };
 		B4F335F61611A97800E46F7F /* N3BezierPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N3BezierPath.h; sourceTree = "<group>"; };
-		B4F335F71611A97800E46F7F /* N3BezierPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = N3BezierPath.m; sourceTree = "<group>"; };
+		B4F335F71611A97800E46F7F /* N3BezierPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N3BezierPath.mm; sourceTree = "<group>"; };
 		B4F335F81611A97800E46F7F /* N3Geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N3Geometry.h; sourceTree = "<group>"; };
-		B4F335F91611A97800E46F7F /* N3Geometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = N3Geometry.m; sourceTree = "<group>"; };
+		B4F335F91611A97800E46F7F /* N3Geometry.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N3Geometry.mm; sourceTree = "<group>"; };
 		B4F335FA1611A97800E46F7F /* Nitrogen.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nitrogen.pch; sourceTree = "<group>"; };
 		B4F335FB1611A97800E46F7F /* NS(Attributed)String+Geometrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NS(Attributed)String+Geometrics.h"; sourceTree = "<group>"; };
-		B4F335FC1611A97800E46F7F /* NS(Attributed)String+Geometrics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NS(Attributed)String+Geometrics.m"; sourceTree = "<group>"; };
+		B4F335FC1611A97800E46F7F /* NS(Attributed)String+Geometrics.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NS(Attributed)String+Geometrics.mm"; sourceTree = "<group>"; };
 		B4F335FD1611A97800E46F7F /* NSAppleEventDescriptor+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAppleEventDescriptor+N2.h"; sourceTree = "<group>"; };
 		B4F335FE1611A97800E46F7F /* NSAppleEventDescriptor+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSAppleEventDescriptor+N2.mm"; sourceTree = "<group>"; };
 		B4F335FF1611A97800E46F7F /* NSAppleScript+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAppleScript+N2.h"; sourceTree = "<group>"; };
@@ -406,7 +406,7 @@
 		B4F336231611A97800E46F7F /* NSPanel+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPanel+N2.h"; sourceTree = "<group>"; };
 		B4F336241611A97800E46F7F /* NSPanel+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSPanel+N2.mm"; sourceTree = "<group>"; };
 		B4F336251611A97800E46F7F /* NSScreen+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSScreen+N2.h"; sourceTree = "<group>"; };
-		B4F336261611A97800E46F7F /* NSScreen+N2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSScreen+N2.m"; sourceTree = "<group>"; };
+		B4F336261611A97800E46F7F /* NSScreen+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSScreen+N2.mm"; sourceTree = "<group>"; };
 		B4F336271611A97800E46F7F /* NSString+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+N2.h"; sourceTree = "<group>"; };
 		B4F336281611A97800E46F7F /* NSString+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSString+N2.mm"; sourceTree = "<group>"; };
 		B4F336291611A97800E46F7F /* NSTextView+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTextView+N2.h"; sourceTree = "<group>"; };
@@ -424,7 +424,7 @@
 		B4F336351611A97800E46F7F /* NSXMLNode+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSXMLNode+N2.h"; sourceTree = "<group>"; };
 		B4F336361611A97800E46F7F /* NSXMLNode+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSXMLNode+N2.mm"; sourceTree = "<group>"; };
 		B4F336371611A97800E46F7F /* SMTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTPClient.h; sourceTree = "<group>"; };
-		B4F336381611A97800E46F7F /* SMTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTPClient.m; sourceTree = "<group>"; };
+		B4F336381611A97800E46F7F /* SMTPClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SMTPClient.mm; sourceTree = "<group>"; };
 		D2F7E79907B2D74100F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -545,7 +545,7 @@
 			isa = PBXGroup;
 			children = (
 				B4F3357F1611A97800E46F7F /* ISO8601DateFormatter.h */,
-				B4F335801611A97800E46F7F /* ISO8601DateFormatter.m */,
+				B4F335801611A97800E46F7F /* ISO8601DateFormatter.mm */,
 				B4F335811611A97800E46F7F /* JSON */,
 				B4F3358F1611A97800E46F7F /* N2AdaptiveBox.h */,
 				B4F335901611A97800E46F7F /* N2AdaptiveBox.mm */,
@@ -598,7 +598,7 @@
 				B4F335BF1611A97800E46F7F /* N2MutableUInteger.h */,
 				B4F335C01611A97800E46F7F /* N2MutableUInteger.mm */,
 				B4F335C11611A97800E46F7F /* N2OpenGLViewWithSplitsWindow.h */,
-				B4F335C21611A97800E46F7F /* N2OpenGLViewWithSplitsWindow.m */,
+				B4F335C21611A97800E46F7F /* N2OpenGLViewWithSplitsWindow.mm */,
 				B4F335C31611A97800E46F7F /* N2Operators.h */,
 				B4F335C41611A97800E46F7F /* N2Operators.mm */,
 				B4F335C51611A97800E46F7F /* N2Pair.h */,
@@ -647,16 +647,16 @@
 				B4F335F01611A97800E46F7F /* N2XMLRPCWebServiceClient.h */,
 				B4F335F11611A97800E46F7F /* N2XMLRPCWebServiceClient.mm */,
 				B4F335F21611A97800E46F7F /* N3BezierCore.h */,
-				B4F335F31611A97800E46F7F /* N3BezierCore.m */,
+				B4F335F31611A97800E46F7F /* N3BezierCore.mm */,
 				B4F335F41611A97800E46F7F /* N3BezierCoreAdditions.h */,
-				B4F335F51611A97800E46F7F /* N3BezierCoreAdditions.m */,
+				B4F335F51611A97800E46F7F /* N3BezierCoreAdditions.mm */,
 				B4F335F61611A97800E46F7F /* N3BezierPath.h */,
-				B4F335F71611A97800E46F7F /* N3BezierPath.m */,
+				B4F335F71611A97800E46F7F /* N3BezierPath.mm */,
 				B4F335F81611A97800E46F7F /* N3Geometry.h */,
-				B4F335F91611A97800E46F7F /* N3Geometry.m */,
+				B4F335F91611A97800E46F7F /* N3Geometry.mm */,
 				B4F335FA1611A97800E46F7F /* Nitrogen.pch */,
 				B4F335FB1611A97800E46F7F /* NS(Attributed)String+Geometrics.h */,
-				B4F335FC1611A97800E46F7F /* NS(Attributed)String+Geometrics.m */,
+				B4F335FC1611A97800E46F7F /* NS(Attributed)String+Geometrics.mm */,
 				B4F335FD1611A97800E46F7F /* NSAppleEventDescriptor+N2.h */,
 				B4F335FE1611A97800E46F7F /* NSAppleEventDescriptor+N2.mm */,
 				B4F335FF1611A97800E46F7F /* NSAppleScript+N2.h */,
@@ -698,7 +698,7 @@
 				B4F336231611A97800E46F7F /* NSPanel+N2.h */,
 				B4F336241611A97800E46F7F /* NSPanel+N2.mm */,
 				B4F336251611A97800E46F7F /* NSScreen+N2.h */,
-				B4F336261611A97800E46F7F /* NSScreen+N2.m */,
+				B4F336261611A97800E46F7F /* NSScreen+N2.mm */,
 				B4F336271611A97800E46F7F /* NSString+N2.h */,
 				B4F336281611A97800E46F7F /* NSString+N2.mm */,
 				B4F336291611A97800E46F7F /* NSTextView+N2.h */,
@@ -716,7 +716,7 @@
 				B4F336351611A97800E46F7F /* NSXMLNode+N2.h */,
 				B4F336361611A97800E46F7F /* NSXMLNode+N2.mm */,
 				B4F336371611A97800E46F7F /* SMTPClient.h */,
-				B4F336381611A97800E46F7F /* SMTPClient.m */,
+				B4F336381611A97800E46F7F /* SMTPClient.mm */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -726,17 +726,17 @@
 			children = (
 				B4F335821611A97800E46F7F /* JSON.h */,
 				B4F335831611A97800E46F7F /* NSObject+SBJSON.h */,
-				B4F335841611A97800E46F7F /* NSObject+SBJSON.m */,
+				B4F335841611A97800E46F7F /* NSObject+SBJSON.mm */,
 				B4F335851611A97800E46F7F /* NSString+SBJSON.h */,
-				B4F335861611A97800E46F7F /* NSString+SBJSON.m */,
+				B4F335861611A97800E46F7F /* NSString+SBJSON.mm */,
 				B4F335871611A97800E46F7F /* SBJSON.h */,
-				B4F335881611A97800E46F7F /* SBJSON.m */,
+				B4F335881611A97800E46F7F /* SBJSON.mm */,
 				B4F335891611A97800E46F7F /* SBJsonBase.h */,
-				B4F3358A1611A97800E46F7F /* SBJsonBase.m */,
+				B4F3358A1611A97800E46F7F /* SBJsonBase.mm */,
 				B4F3358B1611A97800E46F7F /* SBJsonParser.h */,
-				B4F3358C1611A97800E46F7F /* SBJsonParser.m */,
+				B4F3358C1611A97800E46F7F /* SBJsonParser.mm */,
 				B4F3358D1611A97800E46F7F /* SBJsonWriter.h */,
-				B4F3358E1611A97800E46F7F /* SBJsonWriter.m */,
+				B4F3358E1611A97800E46F7F /* SBJsonWriter.mm */,
 			);
 			path = JSON;
 			sourceTree = "<group>";
@@ -1011,13 +1011,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B4F3363A1611A97900E46F7F /* ISO8601DateFormatter.m in Sources */,
-				B4F3363D1611A97900E46F7F /* NSObject+SBJSON.m in Sources */,
-				B4F3363F1611A97900E46F7F /* NSString+SBJSON.m in Sources */,
-				B4F336411611A97900E46F7F /* SBJSON.m in Sources */,
-				B4F336431611A97900E46F7F /* SBJsonBase.m in Sources */,
-				B4F336451611A97900E46F7F /* SBJsonParser.m in Sources */,
-				B4F336471611A97900E46F7F /* SBJsonWriter.m in Sources */,
+				B4F3363A1611A97900E46F7F /* ISO8601DateFormatter.mm in Sources */,
+				B4F3363D1611A97900E46F7F /* NSObject+SBJSON.mm in Sources */,
+				B4F3363F1611A97900E46F7F /* NSString+SBJSON.mm in Sources */,
+				B4F336411611A97900E46F7F /* SBJSON.mm in Sources */,
+				B4F336431611A97900E46F7F /* SBJsonBase.mm in Sources */,
+				B4F336451611A97900E46F7F /* SBJsonParser.mm in Sources */,
+				B4F336471611A97900E46F7F /* SBJsonWriter.mm in Sources */,
 				B4F336491611A97900E46F7F /* N2AdaptiveBox.mm in Sources */,
 				B4F3364B1611A97900E46F7F /* N2Alignment.mm in Sources */,
 				B4F3364D1611A97900E46F7F /* N2Button.mm in Sources */,
@@ -1043,7 +1043,7 @@
 				B4F336751611A97900E46F7F /* N2ManagedDatabase.mm in Sources */,
 				B4F336771611A97900E46F7F /* N2MinMax.mm in Sources */,
 				B4F336791611A97900E46F7F /* N2MutableUInteger.mm in Sources */,
-				B4F3367B1611A97900E46F7F /* N2OpenGLViewWithSplitsWindow.m in Sources */,
+				B4F3367B1611A97900E46F7F /* N2OpenGLViewWithSplitsWindow.mm in Sources */,
 				B4F3367D1611A97900E46F7F /* N2Operators.mm in Sources */,
 				B4F3367F1611A97900E46F7F /* N2Pair.mm in Sources */,
 				B4F336811611A97900E46F7F /* N2Panel.mm in Sources */,
@@ -1067,11 +1067,11 @@
 				B4F336A61611A97900E46F7F /* N2XMLRPC.mm in Sources */,
 				B4F336A81611A97900E46F7F /* N2XMLRPCConnection.mm in Sources */,
 				B4F336AA1611A97900E46F7F /* N2XMLRPCWebServiceClient.mm in Sources */,
-				B4F336AC1611A97900E46F7F /* N3BezierCore.m in Sources */,
-				B4F336AE1611A97900E46F7F /* N3BezierCoreAdditions.m in Sources */,
-				B4F336B01611A97900E46F7F /* N3BezierPath.m in Sources */,
-				B4F336B21611A97900E46F7F /* N3Geometry.m in Sources */,
-				B4F336B51611A97900E46F7F /* NS(Attributed)String+Geometrics.m in Sources */,
+				B4F336AC1611A97900E46F7F /* N3BezierCore.mm in Sources */,
+				B4F336AE1611A97900E46F7F /* N3BezierCoreAdditions.mm in Sources */,
+				B4F336B01611A97900E46F7F /* N3BezierPath.mm in Sources */,
+				B4F336B21611A97900E46F7F /* N3Geometry.mm in Sources */,
+				B4F336B51611A97900E46F7F /* NS(Attributed)String+Geometrics.mm in Sources */,
 				B4F336B71611A97900E46F7F /* NSAppleEventDescriptor+N2.mm in Sources */,
 				B4F336B91611A97900E46F7F /* NSAppleScript+N2.mm in Sources */,
 				B4F336BB1611A97900E46F7F /* NSArray+N2.mm in Sources */,
@@ -1092,7 +1092,7 @@
 				B4F336D91611A97900E46F7F /* NSMutableString+N2.mm in Sources */,
 				B4F336DB1611A97900E46F7F /* NSNotificationCenter+N2.mm in Sources */,
 				B4F336DD1611A97900E46F7F /* NSPanel+N2.mm in Sources */,
-				B4F336DF1611A97900E46F7F /* NSScreen+N2.m in Sources */,
+				B4F336DF1611A97900E46F7F /* NSScreen+N2.mm in Sources */,
 				B4F336E11611A97900E46F7F /* NSString+N2.mm in Sources */,
 				B4F336E31611A97900E46F7F /* NSTextView+N2.mm in Sources */,
 				B4F336E51611A97900E46F7F /* NSThread+N2.mm in Sources */,
@@ -1101,7 +1101,7 @@
 				B4F336EB1611A97900E46F7F /* NSView+N2.mm in Sources */,
 				B4F336ED1611A97900E46F7F /* NSWindow+N2.mm in Sources */,
 				B4F336EF1611A97900E46F7F /* NSXMLNode+N2.mm in Sources */,
-				B4F336F11611A97900E46F7F /* SMTPClient.m in Sources */,
+				B4F336F11611A97900E46F7F /* SMTPClient.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1120,11 +1120,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					i386,
-					x86_64,
-					ppc,
-				);
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1135,6 +1130,13 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Sources/Nitrogen.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = NITROGEN_FW;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/..",
+					"$(SRCROOT)/../OsiriXClasses/DICOMNetwork",
+					"$(SRCROOT)/../Binaries/DCMTK/include",
+					"$(SRCROOT)/../cocoahttpserver",
+				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "@loader_path/../Frameworks";
 				MACH_O_TYPE = mh_dylib;
@@ -1146,11 +1148,7 @@
 		1DEB91B208733DA50010E9CD /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					x86_64,
-					i386,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
@@ -1162,8 +1160,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "@executable_path/../Plug-ins";
 				MACH_O_TYPE = mh_bundle;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = NO;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = "non-global";
 			};

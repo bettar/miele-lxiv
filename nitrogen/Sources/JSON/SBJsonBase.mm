@@ -36,7 +36,6 @@
 #import "SBJsonBase.h"
 NSString * SBJSONErrorDomain = @"org.brautaset.JSON.ErrorDomain";
 
-
 @implementation SBJsonBase
 
 @synthesize errorTrace;
