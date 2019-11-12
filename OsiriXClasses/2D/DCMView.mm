@@ -21,7 +21,7 @@
 #include "options.h"
 #import "mgl.h" // include first
 
-#include "GLRenderer.h"
+#import "GLRenderer.h"
 
 #ifdef WITH_GLM
 #include "glm/glm.hpp"
@@ -8192,64 +8192,6 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (!cgl_ctx)
         return;
 #endif
-
-#ifndef NDEBUG
-    checkOGLVersion();
-
-    // 1 1 1 (1 0) 1 0      OK: same result with and without GLEW
-    NSLog(@"check(GL_...) %d %d %d (%d %d) %d %d",
-          checkExtension("GL_EXT_texture_rectangle"),   // 1
-          checkExtension("GL_ARB_texture_rectangle"),   // 1
-          checkExtension("GL_APPLE_client_storage"),    // 1
-
-          checkExtension("GL_APPLE_packed_pixel"),  // 1 for 2.1
-          checkExtension("GL_EXT_packed_pixels"),   // 0 for 2.1
-
-          checkExtension("GL_SGIS_texture_edge_clamp"), // 1
-          checkExtension("GL_EXT_texture_edge_clamp")); // 0
-
-#ifdef WITH_GLEW
-    // NG: all 0
-    // It works on the sample and bettar projects, but not here
-    NSLog(@"GLEW_EXT %d %d %d %d %d %d, %d",
-          GLEW_EXT_texture_rectangle,
-          GLEW_ARB_texture_rectangle,
-          GLEW_APPLE_client_storage,
-          
-          GLEW_EXT_packed_pixels,  // GLEW_APPLE_packed_pixels not defined
-          GLEW_EXT_texture_edge_clamp,
-
-          GLEW_SGIS_texture_edge_clamp,
-          GLEW_APPLE_texture_range);
-
-    // 1 1 1 (0 0) 1 0
-    NSLog(@"glewIsSupported(GL_EXT...) %d %d %d (%d %d) %d %d",
-          glewIsSupported("GL_EXT_texture_rectangle"),
-          glewIsSupported("GL_ARB_texture_rectangle"),
-          glewIsSupported("GL_APPLE_client_storage"),
-
-          glewIsSupported("GL_APPLE_packed_pixel"),
-          glewIsSupported("GL_EXT_packed_pixels"),
-
-          glewIsSupported("GL_SGIS_texture_edge_clamp"),
-          glewIsSupported("GL_EXT_texture_edge_clamp"));
-#endif // WITH_GLEW
-
-    // with GLEW: all 1
-    // without GLEW: 1 1 1 0 (0) 1
-    NSLog(@"GL_EXT %d %d %d %d (%d) %d",
-          GL_EXT_texture_rectangle,
-          GL_ARB_texture_rectangle,
-          GL_APPLE_client_storage,
-          GL_EXT_packed_pixels,    // undefined in glext.h, unless GL_GLEXT_WUNDEF_SUPPORT
-#ifdef WITH_GLEW
-          GL_EXT_texture_edge_clamp, // undefined in glext.h
-#else
-          0,
-#endif
-          GL_SGIS_texture_edge_clamp);
-
-#endif // NDEBUG
     
     // Compare capabilities based on extension string and GL version
     // Turn them off if absent
@@ -8263,28 +8205,6 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         f_sgis_texture_edge_clamp = checkExtension("GL_SGIS_texture_edge_clamp");
         f_gl_texture_edge_clamp = checkExtension("GL_EXT_texture_edge_clamp");
     }
-
-#ifndef NDEBUG
-    // 1 1 1 1 1 0
-    NSLog(@"f_ext %d %d %d %d, edge clamp: %d %d",
-          f_ext_texture_rectangle,
-          f_arb_texture_rectangle,
-          f_ext_client_storage,
-          f_ext_packed_pixel,  // 0 on sample project
-
-          f_sgis_texture_edge_clamp,
-          f_gl_texture_edge_clamp);
-
-    #if 0
-    // This code works on sample app but not here
-    NSAssert(f_ext_texture_rectangle == GLEW_EXT_texture_rectangle, @"%d", __LINE__);
-    NSAssert(f_arb_texture_rectangle == GLEW_ARB_texture_rectangle, @"%d", __LINE__);
-    NSAssert(f_ext_client_storage == GLEW_APPLE_client_storage, @"%d", __LINE__);
-    NSAssert(f_ext_packed_pixel == GLEW_EXT_packed_pixels, @"%d", __LINE__);
-    NSAssert(f_sgis_texture_edge_clamp == GLEW_SGIS_texture_edge_clamp, @"%d", __LINE__);
-    NSAssert(f_gl_texture_edge_clamp == GLEW_EXT_texture_edge_clamp, @"%d", __LINE__);
-    #endif
-#endif // NDEBUG
 
     // Get device max texture size
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &deviceMaxTextureSize);
@@ -15007,30 +14927,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (glewReturnCode != GLEW_OK)
         NSLog(@"Failed to initialize GLEW");
     #endif
-#else // WITH_GLEW
+#else
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 #endif
-    
-#ifndef NDEBUG
-    NSLog(@"%s %d, OpenGL version %s", __FUNCTION__, __LINE__, glGetString(GL_VERSION));  // 2.1 APPLE-17.10.22
-    checkOpenGLErrors(__LINE__);
-
-    NSLog(@"OpenGL renderer: %s", glGetString(GL_RENDERER)); // Apple Software Renderer / Intel Iris OpenGL Engine
-    checkOpenGLErrors(__LINE__);
-
-    NSLog(@"OpenGL vendor: %s", glGetString(GL_VENDOR));
-    checkOpenGLErrors(__LINE__);
-
-#ifndef WITH_OPENGL_32
-    //const GLubyte *strExtension = glGetString(GL_EXTENSIONS);
-    //NSLog(@"OpenGL extensions, size %zu\n %s", strlen((const char *)strExtension), strExtension);
-#else
-    GLint nExt = 0;
-    glGetIntegerv(GL_NUM_EXTENSIONS, &nExt);  // 0 for OpenGL 2.1 because a different way is used to retrieve them
-    NSLog(@"GL_NUM_EXTENSIONS: %d", nExt);
-    checkOpenGLErrors(__LINE__);
-#endif
-#endif // NDEBUG
 
     blendingFactor = 0.5;
 

@@ -21,7 +21,7 @@
 //diskutil erasevolume HFS+ "ramdisk" `hdiutil attach -nomount ram://1165430`
 
 #import "mgl.h" // include first
-#include "GLRenderer.h"
+#import "GLRenderer.h"
 
 #import "SystemConfiguration/SCDynamicStoreCopySpecific.h"
 #include <CoreFoundation/CoreFoundation.h>

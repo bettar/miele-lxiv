@@ -12,7 +12,6 @@
 
 int checkOpenGLErrors(int lineNo);
 bool checkExtension(const char* ext);
-void checkOGLVersion();
 
 #ifdef WITH_OPENGL_32
 void checkShader(GLuint shader);

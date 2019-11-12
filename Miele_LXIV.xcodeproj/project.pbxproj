@@ -147,9 +147,7 @@
 		43A02EE1219D9B5400E788B6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43A02EDF219D9B5300E788B6 /* Localizable.strings */; };
 		43A89425232F805700CED2CB /* dicomFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* dicomFile.mm */; };
 		43B516412372FB7000106783 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */; };
-		43B51644237323C000106783 /* GLEW.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43B51643237323C000106783 /* GLEW.framework */; };
 		43B5164523732A0300106783 /* AppController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB142DFD05600D76008461A0 /* AppController.mm */; };
-		43B5164623732AA300106783 /* GLEW.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 43B51643237323C000106783 /* GLEW.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		43B516492373423700106783 /* GLRenderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43B516472373423700106783 /* GLRenderer.mm */; };
 		43BF296D21662E1D0022CF3B /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43BF296C21662E1D0022CF3B /* main.mm */; };
 		43BF296E21662F100022CF3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43CC5BA5216511E200F1B1CA /* Assets.xcassets */; };
@@ -1120,7 +1118,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				43B5164623732AA300106783 /* GLEW.framework in Embed Frameworks */,
 				4357DF11224BE01800D4A467 /* libtiff.5.4.0.dylib in Embed Frameworks */,
 				4357DF14224BE0AA00D4A467 /* libpng16.16.35.0.dylib in Embed Frameworks */,
 				4373D6222174A8FF000F4BE1 /* libjpeg.9.dylib in Embed Frameworks */,
@@ -3078,7 +3075,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43B51644237323C000106783 /* GLEW.framework in Frameworks */,
 				4357DF13224BE09100D4A467 /* libpng16.16.35.0.dylib in Frameworks */,
 				430D9F102199FB37006EA1B1 /* OpenGL.framework in Frameworks */,
 				4357DF0F224BDFD000D4A467 /* libtiff.5.4.0.dylib in Frameworks */,
