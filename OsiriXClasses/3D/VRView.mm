@@ -19,11 +19,7 @@
 =========================================================================*/
 
 #import "options.h"
-
-#include <OpenGL/OpenGL.h>
-#include <OpenGL/CGLCurrent.h>
-#include <OpenGL/CGLContext.h>
-#include <OpenGL/CGLMacro.h>
+#import "mgl.h" // include first
 
 #import "VRView.h"
 

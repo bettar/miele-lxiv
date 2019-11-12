@@ -18,6 +18,8 @@
  PURPOSE.
  =========================================================================*/
 
+#import "mgl.h" // include first
+
 #import "DefaultsOsiriX.h"
 #import "PluginManager.h"
 #import "NSUserDefaults+OsiriX.h"

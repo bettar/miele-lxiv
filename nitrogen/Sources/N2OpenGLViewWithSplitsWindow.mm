@@ -20,7 +20,6 @@
 
 #import <N2OpenGLViewWithSplitsWindow.h>
 
-
 @implementation N2OpenGLViewWithSplitsWindow
 
 @synthesize needsEnableUpdate;

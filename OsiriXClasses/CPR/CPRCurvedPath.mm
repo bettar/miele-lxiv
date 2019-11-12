@@ -22,7 +22,7 @@
 #import "N3BezierPath.h"
 #import "N3BezierCoreAdditions.h"
 #import "CPRGeneratorRequest.h"
-#include <OpenGL/CGLMacro.h>
+
 #import "WaitRendering.h"
 #import "Notifications.h"
 

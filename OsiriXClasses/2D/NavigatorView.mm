@@ -18,15 +18,13 @@
      PURPOSE.
 =========================================================================*/
 
+#import "mgl.h" // include first
+
 #import "NavigatorView.h"
 #import "NavigatorWindowController.h"
 #import "ROI.h"
 #import "Notifications.h"
 #import "AppController.h"
-
-#include <OpenGL/CGLMacro.h>
-#include <OpenGL/CGLCurrent.h>
-#include <OpenGL/CGLContext.h>
 
 #import "DCMPix.h"
 
@@ -115,8 +113,13 @@ static float deg2rad = M_PI/180.0;
 
 - (id)initWithFrame:(NSRect)frame
 {
-	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
-	NSOpenGLPixelFormat* pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
+	NSOpenGLPixelFormatAttribute attrs[] = {
+        NSOpenGLPFADoubleBuffer,
+        NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32,
+        0
+    };
+
+    NSOpenGLPixelFormat* pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
 	  
 	self = [super initWithFrame:frame pixelFormat:pixFmt];
 	
@@ -264,12 +267,12 @@ static float deg2rad = M_PI/180.0;
 	
 	if( textureBuffer)
 	{
-		glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, [pix pwidth]*[pix pheight]*4, textureBuffer);
+		glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, [pix pwidth]*[pix pheight]*4, textureBuffer); 
 		
 		glGenTextures(1, &textureName);
-		glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
+		glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName); // TODO: GLEW_EXT_texture_rectangle
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, [pix pwidth]);
-		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
 		glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 
 		GLfloat borderColor[4] = {0., 0., 0., 1.0};
@@ -280,14 +283,19 @@ static float deg2rad = M_PI/180.0;
 		glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_INTENSITY8, [pix pwidth], [pix pheight], 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, textureBuffer);
+		glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0,
+                     GL_INTENSITY8,
+                     [pix pwidth], [pix pheight], 0,
+                     GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                     textureBuffer);
 		
 		if([[thumbnailsTextureArray objectAtIndex:i] intValue] >= 0)
 		{
 			GLuint oldTextureName = [[thumbnailsTextureArray objectAtIndex:i] intValue];
 			glDeleteTextures(1, &oldTextureName);
 		}
-		[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:textureName]];
+
+        [thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:textureName]];
 	}
 	else
 		[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:-1]];

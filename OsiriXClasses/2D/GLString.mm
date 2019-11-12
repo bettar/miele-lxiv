@@ -57,6 +57,8 @@
 // Copyright ( C ) 2003-2007 Apple Inc. All Rights Reserved.
 //
 
+#import "mgl.h" // include first
+
 #import "GLString.h"
 #import "N2Debug.h"
 
@@ -98,11 +100,9 @@
 }
 @end
 
-#pragma mark - GLString
+#pragma mark -
 
 @implementation GLString
-
-#pragma mark - Deallocs
 
 - (void) deleteTexture
 {
@@ -242,18 +242,24 @@
 		if ((cgl_ctx = CGLGetCurrentContext ())) // if we successfully retrieve a current context (required)
 		{
 			glPushAttrib(GL_TEXTURE_BIT);
-			if (0 != texName) glDeleteTextures( 1, &texName);
-			glGenTextures (1, &texName);
+			if (0 != texName)
+                glDeleteTextures( 1, &texName);
+
+            glGenTextures (1, &texName);
 			
+#if !defined( WITH_OPENGL_32) || defined( WITH_GLEW) // TODO: GLEW_EXT_texture_rectangle
 			glTexParameterf (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_PRIORITY, 1.0f);
+#endif
 			glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
             
-            // The cached hint specifies to cache texture data in video memory. This hint is recommended when you have textures that you plan to use multiple times or that use linear filtering
+            // The cached hint specifies to cache texture data in video memory.
+            // This hint is recommended when you have textures that you plan to use multiple times or that use linear filtering
 			glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 			
             // Make a single memory mapping for all of the textures used by the application:
 			glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, texSize.width * texSize.height * 4, [bitmap bitmapData]);
-			glPixelStorei (GL_UNPACK_ROW_LENGTH, texSize.width);
+
+            glPixelStorei (GL_UNPACK_ROW_LENGTH, texSize.width);
 			
 			glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
 			

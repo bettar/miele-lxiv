@@ -20,6 +20,7 @@
 
 #import "options.h"
 #import "url.h"
+#import "mgl.h" // include first
 
 #import "VRController.h"
 #import "AppController.h"

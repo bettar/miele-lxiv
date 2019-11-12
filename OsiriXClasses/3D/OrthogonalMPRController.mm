@@ -24,9 +24,6 @@
 #import "Notifications.h"
 #import "AppController.h"
 
-#include <OpenGL/CGLCurrent.h>
-#include <OpenGL/CGLContext.h>
-
 #import "ROI.h"
 
 @implementation OrthogonalMPRController

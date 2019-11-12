@@ -23,8 +23,6 @@
 #import "VRPresetPreview.h"
 #import "Notifications.h"
 
-extern int checkOpenGLErrors(int lineNo);
-
 @implementation VRPresetPreview
 
 -(id)initWithFrame:(NSRect)frame
@@ -661,11 +659,6 @@ extern int checkOpenGLErrors(int lineNo);
 
 - (void) drawRect:(NSRect)aRect
 {
-#ifdef DEBUG_ISSUE_45
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-    checkOpenGLErrors(__LINE__);
-#endif
-
 // GitHub issue #45
 //    if (isEmpty) {
 //		[[NSColor blackColor] set];

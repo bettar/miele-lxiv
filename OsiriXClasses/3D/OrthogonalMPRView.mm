@@ -18,6 +18,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "mgl.h" // include first
+
 #import "OrthogonalMPRController.h"
 #import "OrthogonalMPRView.h"
 #import "DCMPix.h"
@@ -454,7 +456,9 @@
 	{
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable(GL_BLEND);
-		glEnable(GL_POINT_SMOOTH);
+#ifndef WITH_OPENGL_32
+        glEnable(GL_POINT_SMOOTH);
+#endif
 		glEnable(GL_LINE_SMOOTH);
 		glEnable(GL_POLYGON_SMOOTH);
 	
@@ -558,7 +562,9 @@
 		
 		glDisable(GL_LINE_SMOOTH);
 		glDisable(GL_POLYGON_SMOOTH);
-		glDisable(GL_POINT_SMOOTH);
+#ifndef WITH_OPENGL_32
+        glDisable(GL_POINT_SMOOTH);
+#endif
 		glDisable(GL_BLEND);
 	}
 	

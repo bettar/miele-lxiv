@@ -9,7 +9,6 @@
 //  See file LICENCE for details.
 //
 
-#include <stdio.h>
 #include "AYDcmPrintSCU.h"
 
 #include "dcmtk/dcmpstat/dvpsdef.h"

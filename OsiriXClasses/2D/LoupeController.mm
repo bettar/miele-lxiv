@@ -20,12 +20,11 @@
 
 #import "LoupeController.h"
 
-
 @implementation LoupeController
 
 - (id)init;
 {
-	if(![super initWithWindowNibName:@"Loupe"])
+	if (![super initWithWindowNibName:@"Loupe"])
         return nil;
     
 	return self;
@@ -82,9 +81,10 @@
 	//[[[self window] contentView] setNeedsDisplay:YES];	
 }
 
-- (void)drawLoupeBorder:(BOOL)drawLoupeBorder;
+// Unused ?
+- (void)drawMagnifierBorder:(BOOL)drawBorder;
 {
-	loupeView.drawLoupeBorder = drawLoupeBorder;
+	loupeView.drawLoupeBorder = drawBorder;
 }
 
 @end

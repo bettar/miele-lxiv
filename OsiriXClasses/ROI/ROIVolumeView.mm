@@ -19,7 +19,10 @@
 =========================================================================*/
 
 #import "options.h"
+#import "mgl.h" // include first
+
 #import "mieleTypes.h"
+
 
 #import "ROIVolumeView.h"
 #import "DCMPix.h"
@@ -27,9 +30,6 @@
 #import "DICOMExport.h"
 #import "ROIVolumeController.h"
 #import "BrowserController.h"
-
-#include <OpenGL/OpenGL.h>
-#include <OpenGL/CGLCurrent.h>
 
 #include "math.h"
 #import "QuicktimeExport.h"
@@ -90,7 +90,10 @@
 		[self getVTKRenderWindow]->MakeCurrent();
 //		[[NSOpenGLContext currentContext] flushBuffer];
 		
-		//CGLContextObj cgl_ctx = (CGLContextObj) [[NSOpenGLContext currentContext] CGLContextObj];
+
+#ifndef WITH_GLEW
+        CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+#endif
 		
 		glReadBuffer(GL_FRONT);
 		

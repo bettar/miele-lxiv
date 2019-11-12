@@ -24,8 +24,6 @@
 #include "vtkPoints.h"
 #include "vtkMatrix4x4.h"
 
-#include <stdio.h>
-
 //#include "etkRegistration.hpp"
 
 @implementation HornRegistration

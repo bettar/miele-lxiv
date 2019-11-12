@@ -44,8 +44,6 @@ Binaries/VTKLibs
 Binaries/weasis/
 Binaries/._OsiriX Report.template
 Index/
-options.h
-url.h
 
 nitrogen/Nitrogen.xcodeproj/xcuserdata/admin.xcuserdatad/xcschemes/xcschememanagement.plist
 CMake*

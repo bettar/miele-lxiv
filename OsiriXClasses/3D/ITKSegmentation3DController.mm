@@ -18,6 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
+#import "mgl.h" // include first
 
 #import "ITKSegmentation3D.h"
 #import "ViewerController.h"

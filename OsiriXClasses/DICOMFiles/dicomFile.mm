@@ -18,11 +18,11 @@
      PURPOSE.
 =========================================================================*/
 
-#include <stdio.h>
-
 #include "options.h"
+#import "mgl.h" // include first
 #include "url.h"
 #import "tmp_locations.h"
+
 #import <DCM/DCMUIDs.h>
 
 #ifndef OSIRIX_LIGHT

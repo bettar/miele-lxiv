@@ -22,6 +22,8 @@
 Manages the Window for creating Calcium Scoring ROIs
 ***************************************************************/
 
+#import "mgl.h" // include first
+
 #import "ITKSegmentation3D.h"
 #import "ViewerController.h"
 #import "DCMPix.h"

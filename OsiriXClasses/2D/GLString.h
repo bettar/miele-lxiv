@@ -56,10 +56,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <OpenGL/gl.h>
-#import <OpenGL/glext.h>
-#import <OpenGL/OpenGL.h>
-#import <OpenGL/CGLContext.h>
 
 @interface NSBezierPath (RoundRect)
 + (NSBezierPath *)bezierPathWithRoundedRect:(NSRect)rect cornerRadius:(float)radius;

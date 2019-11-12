@@ -19,6 +19,8 @@
 =========================================================================*/
 
 #import "options.h"
+#import "mgl.h" // include first
+
 #import "mieleTypes.h"
 
 #import "SRView.h"
@@ -29,8 +31,7 @@
 #import "DICOMExport.h"
 #import "Notifications.h"
 #import "Wait.h"
-#include <OpenGL/OpenGL.h>
-#include <OpenGL/CGLCurrent.h>
+
 #include "math.h"
 #include "vtkImageFlip.h"
 #import "QuicktimeExport.h"

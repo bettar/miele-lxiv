@@ -19,6 +19,7 @@
 =========================================================================*/
 
 #import "options.h"
+#import "mgl.h" // include first
 
 #import "N3Geometry.h"
 #import "CPRTransverseView.h"
@@ -538,7 +539,9 @@ extern int splitPosition[ 3];
         cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
         
         glColor4d(1.0, 1.0, 0.0, 1.0);
+#ifndef WITH_OPENGL_32
         glEnable(GL_POINT_SMOOTH);
+#endif
         glPointSize(8 * self.window.backingScaleFactor);
         glBegin(GL_POINTS);
         {
@@ -597,7 +600,7 @@ extern int splitPosition[ 3];
 	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 	glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
 
-	glEnable (GL_TEXTURE_RECTANGLE_EXT);
+	glEnable (GL_TEXTURE_RECTANGLE_EXT);  // TODO: GLEW_EXT_texture_rectangle
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	

@@ -20,6 +20,9 @@
 
 //diskutil erasevolume HFS+ "ramdisk" `hdiutil attach -nomount ram://1165430`
 
+#import "mgl.h" // include first
+#include "GLRenderer.h"
+
 #import "SystemConfiguration/SCDynamicStoreCopySpecific.h"
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreFoundation/CFString.h>
@@ -58,9 +61,9 @@
 #ifndef OSIRIX_LIGHT
 #import "BonjourPublisher.h"
 
-#ifndef MACAPPSTORE
-#import "Reports.h"
-#endif
+//#ifndef MACAPPSTORE
+//#import "Reports.h"
+//#endif
 
 #import "VRView.h"
 #endif // OSIRIX_LIGHT
@@ -88,13 +91,10 @@
 #import "DicomStudy.h"
 #import "SRAnnotation.h"
 #import "Reports.h"
-#include <OpenGL/OpenGL.h>
 
 #include <kdu_OsiriXSupport.h>
 
 #include <execinfo.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #import "url.h"
 #import "tmp_locations.h"
@@ -3023,6 +3023,12 @@ static BOOL initialized = NO;
                 NSLog(@"DCMTK %s %s", OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE);
                 NSLog(@"JPEG-LS %s", DJLSDecoderRegistration::getLibraryVersionString().c_str());
                 NSLog(@"OpenJPEG %d.%d.%d", OPJ_VERSION_MAJOR, OPJ_VERSION_MINOR, OPJ_VERSION_BUILD);
+                // To read the OpenGL version we need a context. Too early here.
+
+                
+#ifdef WITH_GLEW
+                NSLog(@"GLEW %s", glewGetString(GLEW_VERSION));
+#endif
 #ifdef WITH_OPENSSL
                 NSLog(@"%s", OpenSSL_version(OPENSSL_VERSION));
 #endif
@@ -3033,14 +3039,6 @@ static BOOL initialized = NO;
                 NSArray *tiffLines = [tiffVersion componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
                 NSLog(@"%@", tiffLines[0]);
 
-                // Too early here
-//                CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-//                if (cgl_ctx) {
-//                    const GLubyte * strVersion = glGetString (GL_VERSION); // get version string
-//                    const GLubyte * strExtension = glGetString (GL_EXTENSIONS);	// get extension string
-//                    NSLog(@"OpenGL version:%s, extension:%s", strVersion, strExtension);
-//                }
-                
                 NSMutableArray *components = [[[NSBundle mainBundle] localizations] mutableCopy];
                 if ([components containsObject:@"Base"])
                     [components removeObject:@"Base"];

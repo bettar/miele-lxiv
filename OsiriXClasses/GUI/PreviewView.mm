@@ -19,6 +19,8 @@
 =========================================================================*/
 
 #include "options.h"
+#import "mgl.h" // include first
+
 #import "NSFont_OpenGL/NSFont_OpenGL.h"
 #import "PreviewView.h"
 
@@ -35,11 +37,13 @@
     if (cgl_ctx == nil)
         return;
     
+#ifndef WITH_OPENGL_32
     if (fontListGL)
         glDeleteLists (fontListGL, 150);
     
     fontListGL = glGenLists (150);
-    
+#endif
+
     [fontGL release];
     fontGL = [[NSFont systemFontOfSize: 12] retain];
     

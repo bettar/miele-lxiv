@@ -23,7 +23,7 @@
 #import "Mailer.h"
 #import <Accelerate/Accelerate.h>
 #import "DCMPix.h"
-#import "VRController.h"
+//#import "VRController.h"
 #import "printView.h"
 #import "VRView.h"
 #import "Notifications.h"

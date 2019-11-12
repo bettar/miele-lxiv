@@ -14,6 +14,7 @@
 //
 
 #import "options.h"
+#import "mgl.h" // include first
 
 #import "CPRStretchedView.h"
 #import "CPRGeneratorRequest.h"
@@ -473,7 +474,9 @@ extern int splitPosition[ 3];
     
 	glEnable(GL_BLEND);
 	glEnable(GL_POLYGON_SMOOTH);
-	glEnable(GL_POINT_SMOOTH);
+#ifndef WITH_OPENGL_32
+    glEnable(GL_POINT_SMOOTH);
+#endif
 	glEnable(GL_LINE_SMOOTH);
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
@@ -509,7 +512,9 @@ extern int splitPosition[ 3];
 	{
         cursorVector = [self _centerlinePixVectorForRelativePosition:_displayInfo.mouseCursorPosition];
         
+#ifndef WITH_OPENGL_32
         glEnable(GL_POINT_SMOOTH);
+#endif
         glPointSize(8 * self.window.backingScaleFactor);
         
         glBegin(GL_POINTS);
@@ -517,7 +522,9 @@ extern int splitPosition[ 3];
             glVertex2f(cursorVector.x, cursorVector.y);
         }
         glEnd();
+#ifndef WITH_OPENGL_32
         glDisable(GL_POINT_SMOOTH);
+#endif
     }
     
     glPopMatrix();
@@ -670,7 +677,7 @@ extern int splitPosition[ 3];
 			[stringTexC setAntiAliasing: YES];
 		}
 		
-		glEnable (GL_TEXTURE_RECTANGLE_EXT);
+		glEnable (GL_TEXTURE_RECTANGLE_EXT);  // TODO: GLEW_EXT_texture_rectangle
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -720,7 +727,9 @@ extern int splitPosition[ 3];
                        [planeColor greenComponent],
                        [planeColor blueComponent],
                        [planeColor alphaComponent]);
-			glEnable(GL_POINT_SMOOTH);
+#ifndef WITH_OPENGL_32
+            glEnable(GL_POINT_SMOOTH);
+#endif
 			glPointSize(8 * self.window.backingScaleFactor);
 			cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue], pixToSubDrawRectTransform);
 
@@ -751,7 +760,9 @@ extern int splitPosition[ 3];
 //            cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
 //            
 //            glColor4d(1.0, 1.0, 0.0, 1.0);
+//#ifndef WITH_OPENGL_32
 //            glEnable(GL_POINT_SMOOTH);
+//#endif
 //            glPointSize(8 * self.window.backingScaleFactor);
 //            glBegin(GL_POINTS);
 //            glVertex2f(cursorVector.x, cursorVector.y);
@@ -773,7 +784,9 @@ extern int splitPosition[ 3];
             else
                 glColor4d(1.0, 0.0, 0.0, 1.0);
             
+#ifndef WITH_OPENGL_32
             glEnable(GL_POINT_SMOOTH);
+#endif
             glPointSize(8 * self.window.backingScaleFactor);
             
             glBegin(GL_POINTS);
@@ -812,7 +825,9 @@ extern int splitPosition[ 3];
 	
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
-	glDisable(GL_POINT_SMOOTH);
+#ifndef WITH_OPENGL_32
+    glDisable(GL_POINT_SMOOTH);
+#endif
 	glDisable(GL_BLEND);	
 }
 

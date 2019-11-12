@@ -14,10 +14,11 @@
 //  Copyright (c) 2012 OsiriX Team. All rights reserved.
 //
 
+#import "mgl.h" // include first
+
 #import "OSIPathExtrusionROI.h"
 #import "OSIFloatVolumeData.h"
 #import "OSIROIMask.h"
-#include <OpenGL/CGLMacro.h>
 
 @interface OSIPathExtrusionROI ()
 @property (nonatomic, readwrite, retain) N3BezierPath *path;
@@ -270,7 +271,9 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
         
         glDisable(GL_LINE_SMOOTH);
         glDisable(GL_POLYGON_SMOOTH);
+#ifndef WITH_OPENGL_32
         glDisable(GL_POINT_SMOOTH);
+#endif
         glDisable(GL_BLEND);
     }
 }

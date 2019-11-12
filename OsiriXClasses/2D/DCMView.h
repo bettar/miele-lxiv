@@ -24,12 +24,7 @@
 #include "options.h"
 
 #import "ROI.h"
-
-#include <OpenGL/CGLCurrent.h>
-#include <OpenGL/CGLContext.h>
-
 #import "N3Geometry.h"
-//#import "ROI.h"
 
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
@@ -199,21 +194,8 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
     long			textureWidth, blendingTextureWidth;
     long			textureHeight, blendingTextureHeight;
     
-	BOOL			f_ext_texture_rectangle; // is texture rectangle extension supported
-	// GL_ARB_texture_rectangle provides support for non-power of-two textures
-	BOOL			f_arb_texture_rectangle; // is texture rectangle extension supported
-	//* GL_APPLE_client_storage allows you to prevent OpenGL from copying your texture data into the client. Instead, OpenGL keeps the memory pointer you provided when creating the texture. Your application must keep the texture data at that location until the referencing OpenGL texture is deleted.
-	BOOL			f_ext_client_storage; // is client storage extension supported
-	BOOL			f_ext_packed_pixel; // is packed pixel extension supported
-	BOOL			f_ext_texture_edge_clamp; // is SGI texture edge clamp extension supported
-	BOOL			f_gl_texture_edge_clamp; // is OpenGL texture edge clamp support (1.2+)
-    
 	GLint           edgeClampParam; // the param that is passed to the texturing parameteres
     GLint           interpolationType;
-
-	long			maxTextureSize; // the minimum max texture size across all GPUs
-	long			maxNOPTDTextureSize; // the minimum max texture size across all GPUs that support non-power of two texture dimensions
-	GLenum			TEXTRECTMODE;
 	
 	BOOL			isKeyView; //needed for Image View subclass
 	NSCursor		*cursor;

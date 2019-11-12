@@ -18,14 +18,17 @@
  PURPOSE.
  =========================================================================*/
 
+#import "mgl.h" // include first
+
 #import "LoupeView.h"
 
 @implementation LoupeView
 
-@synthesize drawLoupeBorder;
-
-- (void)makeTextureFromImage:(NSImage*)image forTexture:(GLuint*)texName buffer:(GLubyte*)buffer;
-{	
+- (void)makeTextureFromImage:(NSImage*)image
+                  forTexture:(GLuint*)texName
+                      buffer:(GLubyte*)buffer;
+{
+    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	NSSize imageSize = [image size];
 	
 	NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithData:[image TIFFRepresentation]];
@@ -37,14 +40,23 @@
 	
 	CGLContextObj cgl_ctx = [[self openGLContext] CGLContextObj];
 	glGenTextures(1, texName);
-	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, *texName);
+	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, *texName);  // TODO: GLEW_EXT_texture_rectangle
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/[bitmap samplesPerPixel]);
-	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, ([bitmap samplesPerPixel]==4)?GL_RGBA:GL_RGB, imageSize.width, imageSize.height, 0, ([bitmap samplesPerPixel]==4)?GL_RGBA:GL_RGB, GL_UNSIGNED_BYTE, buffer);
+	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0,
+                 ([bitmap samplesPerPixel]==4) ? GL_RGBA : GL_RGB,
+                 imageSize.width, imageSize.height, 0,
+                 ([bitmap samplesPerPixel]==4) ? GL_RGBA : GL_RGB,
+                 GL_UNSIGNED_BYTE,
+                 buffer);
 }
 
-- (void)setTexture:(char*)texture withSize:(NSSize)textureSize bytesPerRow:(int)bytesPerRow rotation:(float)rotation;
+- (void)setTexture:(char*)texture
+          withSize:(NSSize)textureSize
+       bytesPerRow:(int)bytesPerRow
+          rotation:(float)rotation;
 {
+    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	textureRotation = rotation;
 	
 	[[self openGLContext] makeCurrentContext];
@@ -67,28 +79,42 @@
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureID);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, bytesPerRow);
-	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-	glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  // TODO: GLEW_EXT_texture_rectangle
 	glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glColor4f( 1, 1, 1, 1);
+    
 #if __BIG_ENDIAN__
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, textureSize.width, textureSize.height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, textureBuffer);
+    GLenum _type = GL_UNSIGNED_INT_8_8_8_8_REV;
 #else
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, textureSize.width, textureSize.height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, textureBuffer);
+    GLenum _type = GL_UNSIGNED_INT_8_8_8_8;
 #endif
+
+    glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0,
+                 GL_RGBA,
+                 textureSize.width, textureSize.height, 0,
+                 GL_BGRA, _type,
+                 textureBuffer);
 		
 	[self setNeedsDisplay:YES];
 }
 
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
-	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
+    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
+	NSOpenGLPixelFormatAttribute attrs[] =
+    {
+        NSOpenGLPFADoubleBuffer,
+        NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32,
+        0
+    };
+
     NSOpenGLPixelFormat* pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
 #ifndef NDEBUG
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     const GLubyte *strVersion = glGetString(GL_VERSION);
-    NSLog(@"LoupeView.mm %s %d OpenGL %s, ctx:%p, class:%@", __FUNCTION__, __LINE__, strVersion, cgl_ctx, NSStringFromClass([self class]));
+    NSLog(@"%s %d, OpenGL %s, ctx:%p, class:%@", __FUNCTION__, __LINE__, strVersion, cgl_ctx, NSStringFromClass([self class]));
 #endif
 
 	self = [super initWithFrame:frameRect pixelFormat:pixFmt];
@@ -101,20 +127,20 @@
 		loupeMaskImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupeMask.png"]];
 		loupeMaskTextureWidth = [loupeMaskImage size].width;
 		loupeMaskTextureHeight = [loupeMaskImage size].height;
-		drawLoupeBorder = NO;
+		_drawLoupeBorder = NO;
     }
     return self;
 }
 
 - (void) dealloc
 {
-	if(loupeTextureBuffer)
+	if (loupeTextureBuffer)
 		free(loupeTextureBuffer);
 
-	if(loupeMaskTextureBuffer)
+	if (loupeMaskTextureBuffer)
 		free(loupeMaskTextureBuffer);
 	
-	if(textureBuffer)
+	if (textureBuffer)
 		free(textureBuffer);
 	
 	[super dealloc];
@@ -122,6 +148,7 @@
 
 - (void)drawRect:(NSRect)rect
 {
+    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	CGLContextObj cgl_ctx = [[self openGLContext] CGLContextObj];
 
 	GLint opaque = 0;
@@ -129,20 +156,24 @@
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
+    glViewport(0, 0, [self frame].size.width, [self frame].size.height);
+#ifdef WITH_OPENGL_32
+    // TODO:
+#else
 	glMatrixMode (GL_MODELVIEW);
 	glLoadIdentity ();
-	glViewport(0, 0, [self frame].size.width, [self frame].size.height);
 	glScalef(2.0f/[self frame].size.width, -2.0f / [self frame].size.height, 1.0f);
 	glTranslatef(-([self frame].size.width)/2.0f, -([self frame].size.height)/2.0f, 0.0f); // translate center to upper left
+#endif
 
 	glEnable(GL_BLEND);
 //	glBlendEquation(GL_FUNC_ADD);
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	if(loupeTextureID==0)
+	if (loupeTextureID==0)
 		[self makeTextureFromImage:loupeImage forTexture:&loupeTextureID buffer:loupeTextureBuffer];
 
-	if(loupeMaskTextureID==0)
+	if (loupeMaskTextureID==0)
 		[self makeTextureFromImage:loupeMaskImage forTexture:&loupeMaskTextureID buffer:loupeMaskTextureBuffer];
 
 	if (loupeMaskTextureID)
@@ -185,7 +216,7 @@
         }
 		
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, textureWidth*4);
-		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
 
 		glEnable(GL_TEXTURE_RECTANGLE_EXT);
 		
@@ -194,7 +225,7 @@
 		glColor4f(1.0, 1.0, 1.0, 1.0);
 
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, textureWidth*4);
-		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
 
 		glBegin(GL_QUAD_STRIP);
         {
@@ -226,7 +257,7 @@
 	glBlendEquation(GL_FUNC_ADD);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	if (loupeTextureID && drawLoupeBorder)
+	if (loupeTextureID && _drawLoupeBorder)
 	{
 		glEnable(GL_TEXTURE_RECTANGLE_EXT);
 		
@@ -253,7 +284,6 @@
 		glDisable(GL_TEXTURE_RECTANGLE_EXT);
 	}
 	
-	
 //	glColor4f(0.7, 0.7, 0.0, 1.0);
 //	glLineWidth(10);
 //	
@@ -265,7 +295,9 @@
 //	
 //	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 //	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-//	glEnable(GL_POINT_SMOOTH);
+//#ifndef WITH_OPENGL_32
+//        glEnable(GL_POINT_SMOOTH);
+//#endif
 //	glEnable(GL_LINE_SMOOTH);
 //	glEnable(GL_POLYGON_SMOOTH);
 //	
@@ -290,12 +322,13 @@
 //	glEnd();
 //	glDisable(GL_LINE_SMOOTH);
 //	glDisable(GL_POLYGON_SMOOTH);
-//	glDisable(GL_POINT_SMOOTH);
+//#ifndef WITH_OPENGL_32
+//    glDisable(GL_POINT_SMOOTH);
+//#endif
 	
 	glDisable(GL_BLEND);
 	
 	[[self openGLContext] flushBuffer];	
-	
 }
 
 -(void)awakeFromNib

@@ -56,12 +56,15 @@
  Copyright (C) 2007 Apple Inc. All Rights Reserved.
  
  */ 
- 
+
+#import "mgl.h" // include first
+
 #import "OpenGLScreenReader.h"
 
 @interface OpenGLScreenReader (PrivateMethods)
-	-(void)flipImageData;
-	-(CGImageRef)createRGBImageFromBufferData;
+
+-(void)flipImageData;
+-(CGImageRef)createRGBImageFromBufferData;
 @end
 
 #pragma mark -
@@ -69,7 +72,7 @@
 @implementation OpenGLScreenReader (PrivateMethods)
 
 /*
-  * perform an in-place swap from Quadrant 1 to Quadrant III format
+  * Perform an in-place swap from Quadrant 1 to Quadrant 3 format
   * (upside-down PostScript/GL to right side up QD/CG raster format)
   * We do this in-place, which requires more copying, but will touch
   * only half the pages.  (Display grabs are BIG!)
@@ -79,20 +82,15 @@
   
 -(void)flipImageData
 {
-    long top, bottom;
-    void * buffer;
-    void * topP;
-    void * bottomP;
-    void * base;
-    long rowBytes;
-
-    top = 0;
-    bottom = mHeight - 1;
-    base = mData;
-    rowBytes = mByteWidth;
-    buffer = malloc(rowBytes);
+    long top = 0;
+    long bottom = mHeight - 1;
+    void *base = mData;
+    long rowBytes = mByteWidth;
+    void *buffer = malloc(rowBytes);
     NSAssert( buffer != nil, @"malloc failure");
 
+    void *topP;
+    void *bottomP;
     while ( top < bottom )
     {
         topP = (void *)((top * rowBytes) + (intptr_t)base);
@@ -167,7 +165,7 @@
     [mOpenGLScreenReader release];
 }
 
-#pragma mark ---------- Initialization ----------
+#pragma mark - Initialization
 
 -(id) init
 {
@@ -201,12 +199,14 @@
             [self autorelease];
             return nil;
         }
+
         [mGLContext retain];
 
         // Set our context as the current OpenGL context
         [mGLContext makeCurrentContext];
+
         // Set full-screen mode
-        [mGLContext setFullScreen];
+        [mGLContext setFullScreen];  // Already done with 'NSOpenGLPFAFullScreen' ?
 
 		NSRect mainScreenRect = [[NSScreen mainScreen] frame];
 		mWidth = mainScreenRect.size.width;
@@ -218,10 +218,11 @@
         mData = malloc(mByteWidth * mHeight);
         NSAssert( mData != 0, @"malloc failed");
     }
+
     return self;
 }
 
-#pragma mark ---------- Screen Reader  ----------
+#pragma mark - Screen Reader
 
 // Perform a simple, synchronous full-screen read operation using glReadPixels(). 
 // Although this is not the most optimal technique, it is sufficient for doing 
@@ -234,6 +235,9 @@
 // Use this routine if you want to read only a portion of the screen pixels
 - (void) readPartialScreenToBuffer: (size_t) width bufferHeight:(size_t) height bufferBaseAddress: (void *) baseAddress
 {
+#ifndef WITH_GLEW
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+#endif
     // select front buffer as our source for pixel data
     glReadBuffer(GL_FRONT);
     
@@ -243,9 +247,9 @@
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
     
     glPixelStorei(GL_PACK_ALIGNMENT, 4); /* Force 4-byte alignment */
-    glPixelStorei(GL_PACK_ROW_LENGTH, 0);
-    glPixelStorei(GL_PACK_SKIP_ROWS, 0);
-    glPixelStorei(GL_PACK_SKIP_PIXELS, 0);
+    glPixelStorei(GL_PACK_ROW_LENGTH, GL_FALSE);
+    glPixelStorei(GL_PACK_SKIP_ROWS, GL_FALSE);
+    glPixelStorei(GL_PACK_SKIP_PIXELS, GL_FALSE);
     
     //Read a block of pixels from the frame buffer
     glReadPixels(0, 0, width, height, GL_BGRA, 
@@ -352,17 +356,20 @@
     CFRelease(url);
 }
 
-#pragma mark ---------- Cleanup  ----------
+#pragma mark - Cleanup
 
 -(void)dealloc
 {    
     // Get rid of GL context
     [NSOpenGLContext clearCurrentContext];
+
     // disassociate from full screen
     [mGLContext clearDrawable];
+
     // and release the context
     [mGLContext release];
-	// release memory for screen data
+
+    // release memory for screen data
 	free(mData);
 
     [super dealloc];

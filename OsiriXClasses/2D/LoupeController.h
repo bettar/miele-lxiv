@@ -29,6 +29,6 @@
 //- (void)setTexture:(char*)texture withSize:(NSSize)textureSize bytesPerRow:(int)bytesPerRow viewSize:(NSSize)viewSize;
 - (void)centerWindowOnMouse;
 - (void)setWindowCenter:(NSPoint)center;
-- (void)drawLoupeBorder:(BOOL)drawLoupeBorder;
+- (void)drawMagnifierBorder:(BOOL)drawBorder;
 
 @end

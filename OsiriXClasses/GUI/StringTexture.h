@@ -20,12 +20,6 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import <OpenGL/gl.h>
-#import <OpenGL/glext.h>
-#import <OpenGL/OpenGL.h>
-#import <OpenGL/CGLContext.h>
-#import <OpenGL/CGLMacro.h>
-
 
 /** \brief  Converts NSStrings to OpenGL textures*/
 @interface StringTexture : NSObject

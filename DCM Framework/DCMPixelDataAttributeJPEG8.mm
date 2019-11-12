@@ -18,8 +18,6 @@
      PURPOSE.
 =========================================================================*/
 
-#import <stdio.h>
-
 #import "DCM.h"
 #import "DCMPixelDataAttributeJPEG16.h"
 #import "DCMPixelDataAttributeJPEG12.h"

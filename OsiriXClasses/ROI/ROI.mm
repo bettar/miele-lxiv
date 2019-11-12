@@ -18,10 +18,9 @@
      PURPOSE.
 =========================================================================*/
 
-#import "ROI.h"
+#import "mgl.h" // include first
 
-#import <OpenGL/CGLContext.h>
-#import <OpenGL/CGLMacro.h>
+#import "ROI.h"
 
 #import "AppController.h"
 #import "StringTexture.h"
@@ -1662,14 +1661,14 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
         
         if (c && index != NSNotFound)
         {
-            GLuint t = [[textArray objectAtIndex: index] intValue];
             CGLContextObj cgl_ctx = [c CGLContextObj];
             if (cgl_ctx == nil)
                 return;
-            
+       
+            GLuint t = [[textArray objectAtIndex: index] intValue];
             if (t)
                 (*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
-            
+
             [ctxArray removeObjectAtIndex: index];
             [textArray removeObjectAtIndex: index];
         }
@@ -2330,7 +2329,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
     StringTexture *sT= [self stringTextureForString: str];
     
-    glEnable (GL_TEXTURE_RECTANGLE_EXT);
+    glEnable (GL_TEXTURE_RECTANGLE_EXT); // TODO: GLEW_EXT_texture_rectangle
 //    glEnable(GL_BLEND);
 //    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     
@@ -2344,7 +2343,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     [sT drawAtPoint: NSMakePoint( xc, yc)];
     
 //    glDisable(GL_BLEND);
-    glDisable (GL_TEXTURE_RECTANGLE_EXT);
+    glDisable (GL_TEXTURE_RECTANGLE_EXT);  // TODO: GLEW_EXT_texture_rectangle
 }
 
 -(float) EllipseArea
@@ -5726,7 +5725,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+#ifndef WITH_OPENGL_32
 		glEnable(GL_POINT_SMOOTH);
+#endif
 		glEnable(GL_LINE_SMOOTH);
 		glEnable(GL_POLYGON_SMOOTH);
 		glEnable(GL_BLEND);
@@ -5960,7 +5961,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                     glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
                                 }
                                 
-                                glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_INTENSITY8, newWidth, newHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, textureBufferSelected);
+                                glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0,
+                                              GL_INTENSITY8,
+                                              newWidth, newHeight, 0,
+                                              GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                                              textureBufferSelected);
                                 
                                 glColor4f( 0, 0, 0, 1.0);
                                 
@@ -6027,7 +6032,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                     glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
                 }
                 
-                glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_INTENSITY8, textureWidth, textureHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, textureBuffer);
+                glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0,
+                              GL_INTENSITY8,
+                              textureWidth, textureHeight, 0,
+                              GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                              textureBuffer);
                 
                 glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
                 
@@ -7744,7 +7753,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             {	
                                 glEnable(GL_BLEND);
                                 glDisable(GL_POLYGON_SMOOTH);
+#ifndef WITH_OPENGL_32
                                 glDisable(GL_POINT_SMOOTH);
+#endif
                                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                                 // inside: fill							
                                 glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., 0.25);
@@ -8666,7 +8677,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		glDisable(GL_LINE_SMOOTH);
 		glDisable(GL_POLYGON_SMOOTH);
+#ifndef WITH_OPENGL_32
 		glDisable(GL_POINT_SMOOTH);
+#endif
 		glDisable(GL_BLEND);
 	}
 	@catch (NSException *e)
@@ -9280,11 +9293,17 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
         glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
 	}
     
-	#if __BIG_ENDIAN__
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, textureBuffer);
-	#else
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, textureBuffer);
-	#endif
+#if __BIG_ENDIAN__
+    GLenum _type = GL_UNSIGNED_INT_8_8_8_8_REV;
+#else
+    GLenum _type = GL_UNSIGNED_INT_8_8_8_8;
+#endif
+
+    glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0,
+                 GL_RGBA,
+                 width, height, 0,
+                 GL_BGRA, _type,
+                 textureBuffer);
 
 	[ctxArray addObject: currentContext];
 	[textArray addObject: [NSNumber numberWithInt: textureName]];

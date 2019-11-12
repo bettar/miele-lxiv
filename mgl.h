@@ -1,0 +1,50 @@
+//
+//  mgl.h
+//  Miele_LXIV
+//
+//  Created by Alessandro Bettarini on 10 Nov 2019.
+//  Copyright © 2019 bettar. All rights reserved.
+//  License GPLv3.0 -- see License File
+//
+// Purpose: centralized place to include OpenGL related header files
+
+#ifndef mgl_h
+#define mgl_h
+
+//#define WITH_OPENGL_32 // core profile
+//#define WITH_GLEW
+
+#pragma mark -
+
+//#import <vtk_glew.h>
+
+#ifdef WITH_GLEW
+#import <GLEW/glew.h>
+#else
+
+#define GL_GLEXT_WUNDEF_SUPPORT // see glext.h
+
+#ifdef WITH_OPENGL_32
+#import <OpenGL/gl3.h>
+#import <OpenGL/gl3ext.h>
+#define GL_INTENSITY8               0x804B
+#define GL_LUMINANCE                0x1909
+#define GL_LUMINANCE_FLOAT32_APPLE  0x8818 // GLEW_APPLE_float_pixels
+#else
+#import <OpenGL/OpenGL.h>
+#import <OpenGL/CGLCurrent.h>
+#import <OpenGL/CGLMacro.h>
+#import <OpenGL/glu.h> // for gluUnProject, it includes gl.h
+//#import <OpenGL/gl.h>
+//#import <OpenGL/glext.h>
+#endif
+
+#endif // WITH_GLEW
+
+#import <OpenGL/CGLContext.h> // for (*cgl_ctx->disp.delete_textures)
+
+#if defined(WITH_OPENGL_32)
+//#define WITH_SWIZZLE_MASK
+#endif
+
+#endif /* mgl_h */

@@ -21,7 +21,6 @@
 #include "FVTiff.h"
 #include "CoreFoundation/CFByteOrder.h"
 #include "string.h"
-#include <stdio.h>
 
 static TIFFExtendProc _TIFFParentExtender = NULL;
 

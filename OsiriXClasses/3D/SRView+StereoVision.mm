@@ -32,8 +32,7 @@
 #import "DICOMExport.h"
 #import "Notifications.h"
 #import "Wait.h"
-#include <OpenGL/OpenGL.h>
-#include <OpenGL/CGLCurrent.h>
+
 #include "math.h"
 #include "vtkImageFlip.h"
 #import "QuicktimeExport.h"

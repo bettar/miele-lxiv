@@ -23,7 +23,6 @@
 #import <DCM/DCMPixelDataAttribute.h>
 #import "DCM.h"
 #import "dcmtk/dcmjpeg/libijg12/jpeglib12.h"
-#import <stdio.h>
 #import "jpegdatasrc.h"
 #import "DCMPixelDataAttributeJPEG8.h"
 #import "DCMPixelDataAttributeJPEG12.h"

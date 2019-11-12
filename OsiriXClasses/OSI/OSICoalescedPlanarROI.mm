@@ -18,13 +18,14 @@
  PURPOSE.
  =========================================================================*/
 
+#import "mgl.h" // include first
+
 #import "OSICoalescedPlanarROI.h"
 #import "OSIFloatVolumeData.h"
 #import "OSIROIMask.h"
 #import "CPRGenerator.h"
 #import "CPRGeneratorRequest.h"
 #import "OSIGeometry.h"
-#include <OpenGL/CGLMacro.h>
 
 @interface OSICoalescedPlanarROI ()
 

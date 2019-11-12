@@ -21,8 +21,7 @@
 #import "OrthogonalMPRViewer.h"
 #import "OrthogonalMPRPETCTViewer.h"
 #import "OpacityTransferView.h"
-#include <OpenGL/CGLCurrent.h>
-#include <OpenGL/CGLContext.h>
+
 #import "Mailer.h"
 #import "DICOMExport.h"
 #import "Wait.h"

@@ -20,11 +20,6 @@
 
 #include "options.h"
 
-#import <OpenGL/gl.h>
-#import <OpenGL/glext.h>
-#import <OpenGL/glu.h> // it includes gl.h
-//#import <OpenGL/CGLMacro.h>
-
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import "MyPoint.h"

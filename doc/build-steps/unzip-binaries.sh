@@ -40,14 +40,5 @@ rm ._*
 #unzip -uo libxerces-c.27.dylib.zip
 #unzip -uo xercesc.zip
 
-# Don't overwrite customized files
-cd "$SRCROOT"
-if [ ! -f "options.h" ] ; then
-    unzip -uo options.h.zip
-fi
-if [ ! -f "url.h" ] ; then
-    unzip -uo url.h.zip
-fi
-
 exit 0
 

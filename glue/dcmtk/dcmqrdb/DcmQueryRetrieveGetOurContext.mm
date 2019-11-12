@@ -4,7 +4,6 @@
 //  Created by Alex Bettarini on 12 May 2015
 //
 
-#include <stdio.h>
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #import <DCM/DCMObject.h>

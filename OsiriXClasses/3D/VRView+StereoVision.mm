@@ -29,10 +29,7 @@
 #import "DCMPix.h"
 #import "DCMView.h"
 #import "ROI.h"
-#include <OpenGL/OpenGL.h>
-#include <OpenGL/CGLCurrent.h>
-#include <OpenGL/CGLContext.h>
-#include <OpenGL/CGLMacro.h>
+
 #include "math.h"
 #import "Wait.h"
 #import "QuicktimeExport.h"

@@ -8,7 +8,7 @@
 #include "url.h"
 #import "DDKeychain.h"
 #import "DICOMTLS.h"
-#include <stdio.h>
+
 #include <AssertMacros.h>
 
 static NSMutableDictionary *lockedFiles = nil;

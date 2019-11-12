@@ -18,6 +18,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "mgl.h" // include first
+
 #import "StringTexture.h"
 #import "N2Debug.h"
 
@@ -38,7 +40,7 @@
     {
         GLuint t = [[textArray objectAtIndex: index] intValue];
         if (t)
-            (*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
+            (*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, (GLuint)1, &t);
         else
             N2LogStackTrace( @"deleteTexture");
     }
@@ -288,13 +290,25 @@
             texSize.height = [bitmap size].height * backingScaleFactor; // retina
             
             glGenTextures (1, &texName);
+
+#if !defined( WITH_OPENGL_32) || defined( WITH_GLEW) // TODO: GLEW_EXT_texture_rectangle
             glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
-            glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, GL_FALSE);
             
-            glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+            glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
+
+#if !defined( WITH_OPENGL_32) || defined( WITH_GLEW) // TODO:
+            // The cached hint specifies to cache texture data in video memory.
+            // This hint is recommended when you have textures that you plan to use multiple times or that use linear filtering
             glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
             
-            glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, bitmap.pixelsWide, bitmap.pixelsHigh, 0, GL_RGBA, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
+            glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0,
+                          GL_RGBA,
+                          bitmap.pixelsWide, bitmap.pixelsHigh, 0,
+                          GL_RGBA, GL_UNSIGNED_BYTE,
+                          [bitmap bitmapData]);
+#endif
             
             [ctxArray addObject: currentContext];
             [textArray addObject: [NSNumber numberWithInt: texName]];
@@ -401,6 +415,9 @@
             yD = bounds.origin.y;
         }
 
+#ifdef WITH_OPENGL_32
+        // TODO:
+#else
         glBegin (GL_QUADS);
         {
             glTexCoord2f(0.0f, 0.0f);
@@ -416,6 +433,7 @@
             glVertex2f(xD, yD);
         }
 		glEnd ();
+#endif
 	}
 }
 

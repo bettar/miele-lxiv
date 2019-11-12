@@ -18,6 +18,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "mgl.h" // include first
+
 #import "EndoscopyMPRView.h"
 #import "EndoscopyViewer.h"
 #import "DCMPix.h"
@@ -75,7 +77,10 @@
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
-    
+   
+#ifdef WITH_OPENGL_32
+    // TODO: replacement code
+#else
 	glPushMatrix();
 	
 	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
@@ -87,12 +92,16 @@
 	// antialiasing
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable(GL_BLEND);
-	glEnable(GL_POINT_SMOOTH);
+#ifndef WITH_OPENGL_32
+    glEnable(GL_POINT_SMOOTH);
+#endif
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
+
+    // draw the direction vector
+    glColor3f (1.0f, 0.0f, 1.0f);
+#endif
 	
-	// draw the direction vector
-	glColor3f (1.0f, 0.0f, 1.0f);
 	glLineWidth(1.0 * self.window.backingScaleFactor);
 
     float cfocalShiftX = focalShiftX;
@@ -103,10 +112,10 @@
         
     if (yFlipped)
         cfocalShiftY *= -1.0;
-    
-//    cfocalShiftX = cfocalShiftX;
-//    cfocalShiftY = cfocalShiftY;
 
+#ifdef WITH_OPENGL_32
+    // TODO: replacement code
+#else
     glBegin(GL_LINES);
     {
         glVertex2f(xCrossCenter,yCrossCenter);
@@ -114,15 +123,21 @@
                    yCrossCenter + cfocalShiftY * normalizationFactor);    //*[self pixelSpacingY]/[self pixelSpacingX]
     }
 	glEnd();
+#endif
 				
 	// draw a point at the end of FOCAL POINT vector (handle to move the vector)
 	glPointSize(2.0 * near * self.window.backingScaleFactor);
+    
+#ifdef WITH_OPENGL_32
+    // TODO: replacement code
+#else
 	glBegin(GL_POINTS);
     {
         glVertex2f(xCrossCenter + cfocalShiftX * normalizationFactor,
                    yCrossCenter + cfocalShiftY * normalizationFactor);    //*[self pixelSpacingY]/[self pixelSpacingX]
     }
 	glEnd();
+#endif
 
     glPointSize(1.0 * self.window.backingScaleFactor);
 	
@@ -133,10 +148,13 @@
 	sizeViewUp = (vectViewUpNorm==0)? 0.0: sizeViewUp;
 	sizeViewUp = (vectViewUpNorm>sizeViewUp)? sizeViewUp : vectViewUpNorm;
 	float normalizationViewUpFactor = sizeViewUp/vectViewUpNorm*2.0;
-	
-	// draw the view up vecteur
+
+    glLineWidth(1.0 * self.window.backingScaleFactor);
+#ifdef WITH_OPENGL_32
+    // TODO: replacement code
+#else
+	// draw the view up vector
 	glColor3f (0.0f, 0.75f, 1.0f);
-	glLineWidth(1.0 * self.window.backingScaleFactor);
 	glBegin(GL_LINES);
     {
         glVertex2f(xCrossCenter,yCrossCenter);
@@ -144,12 +162,16 @@
                    yCrossCenter + viewUpY * normalizationViewUpFactor);    //*[self pixelSpacingY]/[self pixelSpacingX]
     }
 	glEnd();
+#endif
 	
 	// draw the Fly Through Path
     if (flyThroughPath)
     {
-        glColor3f (0.8f, 0.0f, 0.25f);
         glLineWidth(1.0 * self.window.backingScaleFactor);
+#ifdef WITH_OPENGL_32
+        // TODO: replacement code
+#else
+        glColor3f (0.8f, 0.0f, 0.25f);
         glBegin(GL_LINE_STRIP);
         {
             for (int i=0; i<[flyThroughPath count]; i++)
@@ -161,20 +183,27 @@
             }
         }
         glEnd();
+#endif
     }
 	
 	// antialiasing end
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
+#ifndef WITH_OPENGL_32
 	glDisable(GL_POINT_SMOOTH);
+#endif
 	glDisable(GL_BLEND);
 	
-	glPopMatrix();
+#ifdef WITH_OPENGL_32
+    // TODO: replacement code
+#else
+    glPopMatrix();
+#endif
 }
 
 - (BOOL) mouseOnFocal:(NSEvent *)theEvent
 {
-	NSPoint		mouseLocStart;
+	NSPoint mouseLocStart;
 	
 	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: self];
 	mouseLocStart = [[[theEvent window] contentView] convertPoint:mouseLocStart toView:self];

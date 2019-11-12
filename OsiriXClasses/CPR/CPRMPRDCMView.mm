@@ -19,6 +19,7 @@
  =========================================================================*/
 
 #import "options.h"
+#import "mgl.h" // include first
 
 #import "CPRController.h"
 #import "CPRMPRDCMView.h"
@@ -34,8 +35,6 @@
 #import "OSIEnvironment.h"
 #import "OSIROI.h"
 #import "OSIVolumeWindow.h"
-
-#include <OpenGL/CGLMacro.h>
 
 #include "N3Geometry.h"
 #import "vtkMath.h"
@@ -642,23 +641,36 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	if (cgl_ctx == nil)
         return;
     
+#ifdef WITH_OPENGL_32
+    // TODO: replacement code
+#else
 	switch( v)
 	{
 		case 1:
 			//glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
-			glColor4f ([windowController.colorAxis1 redComponent], [windowController.colorAxis1 greenComponent], [windowController.colorAxis1 blueComponent], [windowController.colorAxis1 alphaComponent]);
+			glColor4f ([windowController.colorAxis1 redComponent],
+                       [windowController.colorAxis1 greenComponent],
+                       [windowController.colorAxis1 blueComponent],
+                       [windowController.colorAxis1 alphaComponent]);
             break;
             
 		case 2:
 			//glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
-			glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
+			glColor4f ([windowController.colorAxis2 redComponent],
+                       [windowController.colorAxis2 greenComponent],
+                       [windowController.colorAxis2 blueComponent],
+                       [windowController.colorAxis2 alphaComponent]);
             break;
             
 		case 3:
 			//glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
-			glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
+			glColor4f ([windowController.colorAxis3 redComponent],
+                       [windowController.colorAxis3 greenComponent],
+                       [windowController.colorAxis3 blueComponent],
+                       [windowController.colorAxis3 alphaComponent]);
             break;
 	}
+#endif
 }
 
 - (void) drawLine: (float[2][3]) sft thickness: (float) thickness
@@ -744,7 +756,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable(GL_BLEND);
-	glEnable(GL_POINT_SMOOTH);
+#ifndef WITH_OPENGL_32
+    glEnable(GL_POINT_SMOOTH);
+#endif
 	glEnable(GL_LINE_SMOOTH);
 	glPointSize( 12 * self.window.backingScaleFactor);
 	
@@ -756,12 +770,27 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		switch( viewID)
 		{
 			case 1:
-				glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
+#ifdef WITH_OPENGL_32
+                // TODO: replacement code
+#else
+				glColor4f ([windowController.colorAxis2 redComponent],
+                           [windowController.colorAxis2 greenComponent],
+                           [windowController.colorAxis2 blueComponent],
+                           [windowController.colorAxis2 alphaComponent]);
+#endif
 				if (crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesA thickness: thickness];
 				}
-				glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
+
+#ifdef WITH_OPENGL_32
+                // TODO: replacement code
+#else
+                glColor4f ([windowController.colorAxis3 redComponent],
+                           [windowController.colorAxis3 greenComponent],
+                           [windowController.colorAxis3 blueComponent],
+                           [windowController.colorAxis3 alphaComponent]);
+#endif
 				if (crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesB thickness: thickness];
@@ -769,13 +798,27 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
                 break;
                 
 			case 2:
-				glColor4f ([windowController.colorAxis1 redComponent], [windowController.colorAxis1 greenComponent], [windowController.colorAxis1 blueComponent], [windowController.colorAxis1 alphaComponent]);
+#ifdef WITH_OPENGL_32
+                // TODO: replacement code
+#else
+				glColor4f ([windowController.colorAxis1 redComponent],
+                           [windowController.colorAxis1 greenComponent],
+                           [windowController.colorAxis1 blueComponent],
+                           [windowController.colorAxis1 alphaComponent]);
+#endif
 				if (crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesA thickness: thickness];
 				}
 				
-				glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
+#ifdef WITH_OPENGL_32
+                // TODO: replacement code
+#else
+				glColor4f ([windowController.colorAxis3 redComponent],
+                           [windowController.colorAxis3 greenComponent],
+                           [windowController.colorAxis3 blueComponent],
+                           [windowController.colorAxis3 alphaComponent]);
+#endif
 				if (crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesB thickness: thickness];
@@ -783,13 +826,27 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
                 break;
                 
 			case 3:
-				glColor4f ([windowController.colorAxis1 redComponent], [windowController.colorAxis1 greenComponent], [windowController.colorAxis1 blueComponent], [windowController.colorAxis1 alphaComponent]);
+#ifdef WITH_OPENGL_32
+                // TODO: replacement code
+#else
+				glColor4f ([windowController.colorAxis1 redComponent],
+                           [windowController.colorAxis1 greenComponent],
+                           [windowController.colorAxis1 blueComponent],
+                           [windowController.colorAxis1 alphaComponent]);
+#endif
 				if (crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesA thickness: thickness];
 				}
 				
-				glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
+#ifdef WITH_OPENGL_32
+                // TODO: replacement code
+#else
+				glColor4f ([windowController.colorAxis2 redComponent],
+                           [windowController.colorAxis2 greenComponent],
+                           [windowController.colorAxis2 blueComponent],
+                           [windowController.colorAxis2 alphaComponent]);
+#endif
 				if (crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesB thickness: thickness];
@@ -928,7 +985,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				N3Vector cursorVector;
 				N3AffineTransform transform;
 				[self colorForView:viewID];
-				glEnable(GL_POINT_SMOOTH);
+#ifndef WITH_OPENGL_32
+                glEnable(GL_POINT_SMOOTH);
+#endif
 				glPointSize(8 * self.window.backingScaleFactor);
 				transform = N3AffineTransformConcat(N3AffineTransformInvert([self pixToDicomTransform]), [self pixToSubDrawRectTransform]);
 				cursorVector = N3VectorApplyTransform([displayInfo mouseVectorForPlane:planeName], transform);
@@ -944,7 +1003,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
-	glDisable(GL_POINT_SMOOTH);
+#ifndef WITH_OPENGL_32
+    glDisable(GL_POINT_SMOOTH);
+#endif
 	glDisable(GL_BLEND);
 }
 
@@ -2688,7 +2749,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     if (cgl_ctx == nil)
         return;
     
+#ifndef WITH_OPENGL_32
     glEnable(GL_POINT_SMOOTH);
+#endif
     glPointSize( pointSize * self.window.backingScaleFactor);
     
     glBegin(GL_POINTS);

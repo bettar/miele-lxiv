@@ -14,6 +14,8 @@
 //  Copyright 2011 OsiriX Team. All rights reserved.
 //
 
+#import "mgl.h" // include first
+
 #import "OSIPlanarBrushROI.h"
 #import "OSIROI+Private.h"
 #import "OSIROIMask.h"
@@ -24,7 +26,6 @@
 #import "CPRGenerator.h"
 #import "CPRGeneratorRequest.h"
 #import "CPRVolumeData.h"
-//#include <OpenGL/CGLMacro.h>
 
 @interface OSIPlanarBrushROI ()
 

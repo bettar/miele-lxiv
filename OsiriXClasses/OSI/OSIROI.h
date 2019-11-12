@@ -18,9 +18,10 @@
  PURPOSE.
  =========================================================================*/
 
+//#import "mgl.h" // include first
+
 #import <Cocoa/Cocoa.h>
 #import "OSIGeometry.h"
-#import <OpenGL/CGLTypes.h>
 
 @class OSIStudy;
 @class ROI;

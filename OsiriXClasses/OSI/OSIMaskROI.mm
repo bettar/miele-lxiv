@@ -14,12 +14,14 @@
 //  Copyright (c) 2012 OsiriX Team. All rights reserved.
 //
 
+#import "mgl.h" // include first
+
 #import "OSIMaskROI.h"
 #import "CPRGenerator.h"
 #import "CPRGeneratorRequest.h"
 #import "OSIFloatVolumeData.h"
 #import "Notifications.h"
-#include <OpenGL/CGLMacro.h>
+
 #include <Accelerate/Accelerate.h>
 
 @interface OSIMaskROI ()
@@ -345,7 +347,9 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+#ifndef WITH_OPENGL_32
     glEnable(GL_POINT_SMOOTH);
+#endif
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_POLYGON_SMOOTH);
     glEnable(GL_BLEND);
@@ -377,7 +381,9 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 
     glDisable(GL_LINE_SMOOTH);
     glDisable(GL_POLYGON_SMOOTH);
+#ifndef WITH_OPENGL_32
     glDisable(GL_POINT_SMOOTH);
+#endif
     glDisable(GL_BLEND);
 }
 

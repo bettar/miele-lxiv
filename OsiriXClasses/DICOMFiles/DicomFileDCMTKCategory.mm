@@ -18,6 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
+#import "mgl.h" // include first
 #include "dcmtk/config/osconfig.h"
 
 #import "DicomFileDCMTKCategory.h"

@@ -64,7 +64,6 @@
 */
 
 #include <Cocoa/Cocoa.h>
-#include <stdio.h>
 
 #include <CoreFoundation/CoreFoundation.h>
 

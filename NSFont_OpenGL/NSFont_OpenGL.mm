@@ -36,6 +36,8 @@
 
 /* NSFont_OpenGL.m */
 
+#import "mgl.h" // include first
+
 #import "NSFont_OpenGL.h"
 #import "N2Debug.h"
 
@@ -436,6 +438,9 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 	}
     
    // Make sure a list isn't already under construction
+#ifndef WITH_GLEW
+   CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+#endif
    glGetIntegerv( GL_LIST_INDEX, &curListIndex );
    if( curListIndex != 0 )
    {

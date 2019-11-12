@@ -80,6 +80,7 @@
 		4384743021AC842200FA56C2 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		43879B7721D64C7600DEF6A9 /* AYDcmPrintSCU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43879B7621D64C7600DEF6A9 /* AYDcmPrintSCU.cpp */; };
 		43879B7921D64CB500DEF6A9 /* AYPrintManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43879B7821D64CB500DEF6A9 /* AYPrintManager.cpp */; };
+		439FC5EF237713AC009718CD /* libopenjp2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 439FC5EE237713AC009718CD /* libopenjp2.a */; };
 		43A02BCA219D7F1B00E788B6 /* OSIPACSOnDemand.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43A02BC8219D7F1B00E788B6 /* OSIPACSOnDemand.xib */; };
 		43A02BD3219D809500E788B6 /* OSIWebSharingPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43A02BD1219D809400E788B6 /* OSIWebSharingPreferencePanePref.xib */; };
 		43A02BD8219D812700E788B6 /* OSIViewerPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43A02BD6219D812600E788B6 /* OSIViewerPreferencePanePref.xib */; };
@@ -145,6 +146,11 @@
 		43A02CAA219D889700E788B6 /* CPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43A02C91219D889700E788B6 /* CPR.xib */; };
 		43A02EE1219D9B5400E788B6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43A02EDF219D9B5300E788B6 /* Localizable.strings */; };
 		43A89425232F805700CED2CB /* dicomFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* dicomFile.mm */; };
+		43B516412372FB7000106783 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */; };
+		43B51644237323C000106783 /* GLEW.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43B51643237323C000106783 /* GLEW.framework */; };
+		43B5164523732A0300106783 /* AppController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB142DFD05600D76008461A0 /* AppController.mm */; };
+		43B5164623732AA300106783 /* GLEW.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 43B51643237323C000106783 /* GLEW.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		43B516492373423700106783 /* GLRenderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43B516472373423700106783 /* GLRenderer.mm */; };
 		43BF296D21662E1D0022CF3B /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43BF296C21662E1D0022CF3B /* main.mm */; };
 		43BF296E21662F100022CF3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43CC5BA5216511E200F1B1CA /* Assets.xcassets */; };
 		43CC5BA6216511E200F1B1CA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43CC5BA5216511E200F1B1CA /* Assets.xcassets */; };
@@ -603,7 +609,6 @@
 		AB28B8D805B79D1600A9906C /* NSFullScreenWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABAA284C058A4F7F00F0601D /* NSFullScreenWindow.mm */; };
 		AB28B8DA05B79D1800A9906C /* NSFont_OpenGL.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB3C6A8F057ADCA60001052D /* NSFont_OpenGL.mm */; };
 		AB28B8E205B79D1F00A9906C /* Wait.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6F34FC0574081F00CDCA47 /* Wait.mm */; };
-		AB28B8E305B79D1F00A9906C /* AppController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB142DFD05600D76008461A0 /* AppController.mm */; };
 		AB28B8E505B79D2100A9906C /* QueryController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB425D73058FC58E00224020 /* QueryController.mm */; };
 		AB28B8ED05B79D2600A9906C /* dicomData.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABFA7CD2056056F300963FF8 /* dicomData.mm */; };
 		AB28B8EE05B79D2700A9906C /* NSSplitViewSave.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB08564C059211F9009962D7 /* NSSplitViewSave.mm */; };
@@ -1115,6 +1120,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				43B5164623732AA300106783 /* GLEW.framework in Embed Frameworks */,
 				4357DF11224BE01800D4A467 /* libtiff.5.4.0.dylib in Embed Frameworks */,
 				4357DF14224BE0AA00D4A467 /* libpng16.16.35.0.dylib in Embed Frameworks */,
 				4373D6222174A8FF000F4BE1 /* libjpeg.9.dylib in Embed Frameworks */,
@@ -1519,7 +1525,6 @@
 		4365FC371B01C4F100380C25 /* DcmQueryRetrieveOsiriSCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DcmQueryRetrieveOsiriSCP.h; sourceTree = "<group>"; };
 		436B5888217261DF009F42D3 /* libjpeg.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.9.dylib; path = "../../../../install/miele-201612/jpeg-9b/lib/libjpeg.9.dylib"; sourceTree = "<group>"; };
 		4373D6212174A8FF000F4BE1 /* libjpeg.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.9.dylib; path = "../../../../install/miele-201612/jpeg-9b/lib/libjpeg.9.dylib"; sourceTree = "<group>"; };
-		4373D6262174BC92000F4BE1 /* libopenjp2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopenjp2.a; path = "../../../../install/miele-201612/openjpeg-2.2.0/lib/libopenjp2.a"; sourceTree = "<group>"; };
 		43748A9E21B0212E00A1446C /* Photos.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Photos.icns; sourceTree = "<group>"; };
 		437B656421ED030600A9A548 /* libjpeg.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libjpeg.9.dylib; sourceTree = "<group>"; };
 		438718A22067BDA9009575DB /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = ../../../../../../System/Library/Frameworks/AddressBook.framework; sourceTree = "<group>"; };
@@ -1539,6 +1544,7 @@
 		438AE1AA21B51E1400C5E98F /* miele-lxiv-Development.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "miele-lxiv-Development.entitlements"; sourceTree = "<group>"; };
 		438AE1AB21B5651B00C5E98F /* LXIV Launcher-Deployment.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Deployment.entitlements"; path = "LXIV Launcher/LXIV Launcher-Deployment.entitlements"; sourceTree = "<group>"; };
 		438AE1AC21B5651C00C5E98F /* LXIV Launcher-Distribution.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Distribution.entitlements"; path = "LXIV Launcher/LXIV Launcher-Distribution.entitlements"; sourceTree = "<group>"; };
+		439FC5EE237713AC009718CD /* libopenjp2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopenjp2.a; path = "../../../../install/miele-201612/openjpeg-2.3.1/lib/libopenjp2.a"; sourceTree = "<group>"; };
 		43A02E9F219D94CC00E788B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = GUI/Base.lproj/3DPosition.xib; sourceTree = "<group>"; };
 		43A02EA0219D94CD00E788B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = GUI/Base.lproj/AnonymizationCustomTagPanel.xib; sourceTree = "<group>"; };
 		43A02EA1219D94CD00E788B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = GUI/Base.lproj/AnonymizationPanel.xib; sourceTree = "<group>"; };
@@ -1605,8 +1611,12 @@
 		43A02EDE219D94E700E788B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = GUI/Base.lproj/AYDicomPrintPref.xib; sourceTree = "<group>"; };
 		43A02EE0219D9B5300E788B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = GUI/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		43A4038B1DFA32F300ADA719 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		43B51643237323C000106783 /* GLEW.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLEW.framework; path = "../../../../install/miele-201612/glew-2.1.0/GLEW.framework"; sourceTree = "<group>"; };
+		43B516472373423700106783 /* GLRenderer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GLRenderer.mm; sourceTree = "<group>"; };
+		43B516482373423700106783 /* GLRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLRenderer.h; sourceTree = "<group>"; };
 		43BF296C21662E1D0022CF3B /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = "LXIV Launcher/main.mm"; sourceTree = "<group>"; };
 		43BF296F21662F420022CF3B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "LXIV Launcher/Info.plist"; sourceTree = "<group>"; };
+		43C9A5DB2377FF0800FB28AE /* mgl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mgl.h; sourceTree = "<group>"; };
 		43CC5BA5216511E200F1B1CA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		43D746D621A6C1160055FA87 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = GUI/es.lproj/3DPosition.strings; sourceTree = "<group>"; };
 		43D746D721A6C1160055FA87 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = GUI/es.lproj/AnonymizationCustomTagPanel.strings; sourceTree = "<group>"; };
@@ -3045,6 +3055,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				434930B722549D2B00C30B21 /* libtiff.5.4.0.dylib in Frameworks */,
+				43B516412372FB7000106783 /* OpenGL.framework in Frameworks */,
 				434930B622549CA600C30B21 /* libpng16.16.35.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3067,9 +3078,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43B51644237323C000106783 /* GLEW.framework in Frameworks */,
 				4357DF13224BE09100D4A467 /* libpng16.16.35.0.dylib in Frameworks */,
 				430D9F102199FB37006EA1B1 /* OpenGL.framework in Frameworks */,
 				4357DF0F224BDFD000D4A467 /* libtiff.5.4.0.dylib in Frameworks */,
+				439FC5EF237713AC009718CD /* libopenjp2.a in Frameworks */,
 				436B5889217261DF009F42D3 /* libjpeg.9.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3170,6 +3183,8 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				43B516472373423700106783 /* GLRenderer.mm */,
+				43B516482373423700106783 /* GLRenderer.h */,
 				438AE1AA21B51E1400C5E98F /* miele-lxiv-Development.entitlements */,
 				438AE1A921B5177700C5E98F /* miele-lxiv-Deployment.entitlements */,
 				43A36C26219B1E4A00C506D3 /* GUI */,
@@ -3203,6 +3218,7 @@
 				4307C62B1A2091900083877C /* url.h */,
 				434B46151A19F2A3008CF8CF /* options.h */,
 				43475BF02344C55300BEE02C /* mieleTypes.h */,
+				43C9A5DB2377FF0800FB28AE /* mgl.h */,
 			);
 			name = "Other Sources";
 			sourceTree = SOURCE_ROOT;
@@ -3255,6 +3271,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				43B51643237323C000106783 /* GLEW.framework */,
 				4357DF12224BE09000D4A467 /* libpng16.16.35.0.dylib */,
 				4357DF0E224BDFD000D4A467 /* libtiff.5.4.0.dylib */,
 				437B656421ED030600A9A548 /* libjpeg.9.dylib */,
@@ -3292,7 +3309,7 @@
 		434B461A1A19F4E4008CF8CF /* OpenJPEG */ = {
 			isa = PBXGroup;
 			children = (
-				4373D6262174BC92000F4BE1 /* libopenjp2.a */,
+				439FC5EE237713AC009718CD /* libopenjp2.a */,
 				434B461B1A19F631008CF8CF /* OPJSupport.cpp */,
 				434B461C1A19F631008CF8CF /* OPJSupport.h */,
 			);
@@ -6246,7 +6263,6 @@
 				AB28B8D805B79D1600A9906C /* NSFullScreenWindow.mm in Sources */,
 				AB28B8DA05B79D1800A9906C /* NSFont_OpenGL.mm in Sources */,
 				AB28B8E205B79D1F00A9906C /* Wait.mm in Sources */,
-				AB28B8E305B79D1F00A9906C /* AppController.mm in Sources */,
 				AB28B8E505B79D2100A9906C /* QueryController.mm in Sources */,
 				AB28B8ED05B79D2600A9906C /* dicomData.mm in Sources */,
 				AB28B8EE05B79D2700A9906C /* NSSplitViewSave.mm in Sources */,
@@ -6444,6 +6460,7 @@
 				841721C310D8D745001A833F /* HTTPAuthenticationRequest.mm in Sources */,
 				841721C510D8D745001A833F /* HTTPConnection.mm in Sources */,
 				841721C710D8D745001A833F /* HTTPResponse.mm in Sources */,
+				43B516492373423700106783 /* GLRenderer.mm in Sources */,
 				841721C910D8D745001A833F /* HTTPServer.mm in Sources */,
 				841721CB10D8D745001A833F /* SSCrypto.mm in Sources */,
 				A930149510DA63C200AF0051 /* OpenGLScreenReader.mm in Sources */,
@@ -6692,6 +6709,7 @@
 				4FCBBD80162C685A00C9CBE3 /* OSIPathExtrusionROI.mm in Sources */,
 				4FCBBD82162C685A00C9CBE3 /* OSIROIMaskRunStack.mm in Sources */,
 				7188E85816301A61006105BE /* KBPopUpToolbarItem.mm in Sources */,
+				43B5164523732A0300106783 /* AppController.mm in Sources */,
 				71A28B791637F0D200489F2A /* DCMWaveform.mm in Sources */,
 				7147C18A1644160800A9D095 /* O2ViewerThumbnailsMatrix.mm in Sources */,
 				71EB83C116DCB7FF00D48646 /* O2DicomPredicateEditor.mm in Sources */,
@@ -8009,6 +8027,8 @@
 					FOR_MIELE_LXIV,
 					XCODE_LXIV,
 					NDEBUG,
+					GLEW_STATIC,
+					MACAPPSTORE,
 				);
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = NO;
@@ -8051,7 +8071,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					OSIRIX_VIEWER,
-					MACAPPSTORE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -8093,6 +8112,7 @@
 				);
 				MARKETING_VERSION = 7.5.52;
 				OTHER_CFLAGS = "";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
 					"-std=gnu++14",
@@ -8338,6 +8358,7 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/DCMTK/include",
+					"$(SRCROOT)/Binaries/GLEW/include",
 					"$(SRCROOT)",
 					"$(SRCROOT)/Binaries/Ming",
 					"$(SRCROOT)/cocoahttpserver",
@@ -8543,6 +8564,7 @@
 					FOR_MIELE_LXIV,
 					XCODE_LXIV,
 					NDEBUG,
+					GLEW_STATIC,
 				);
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = NO;
@@ -8627,6 +8649,7 @@
 				);
 				MARKETING_VERSION = 7.5.52;
 				OTHER_CFLAGS = "";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
 					"-std=gnu++14",
@@ -8874,6 +8897,7 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/DCMTK/include",
+					"$(SRCROOT)/Binaries/GLEW/include",
 					"$(SRCROOT)",
 					"$(SRCROOT)/Binaries/Ming",
 					"$(SRCROOT)/cocoahttpserver",
@@ -9192,7 +9216,6 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CODE_SIGN_ENTITLEMENTS = "miele-lxiv-$(CONFIGURATION).entitlements";
-				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -9201,6 +9224,7 @@
 					"$(SRCROOT)/Binaries",
 					"$(BUILD_DIR)/$(CONFIGURATION)",
 					"$(SRCROOT)/Binaries/libjpeg/lib",
+					"\"$(SRCROOT)/Binaries/GLEW\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -9208,8 +9232,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					FOR_MIELE_LXIV,
-					XCODE_LXIV,
+					"$(inherited)",
 					OSIRIX_VIEWER,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -9251,6 +9274,7 @@
 				);
 				MARKETING_VERSION = 7.5.52;
 				OTHER_CFLAGS = "";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
 					"-std=gnu++14",
@@ -9289,9 +9313,9 @@
 					"-framework",
 					IOKit,
 					"-framework",
-					OpenGL,
-					"-framework",
 					DCM,
+					"-framework",
+					OpenGL,
 					"-framework",
 					PreferencePanes,
 					"-framework",
@@ -9366,6 +9390,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					FOR_MIELE_LXIV,
 					XCODE_LXIV,
+					GLEW_STATIC,
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
@@ -9452,7 +9477,10 @@
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
-				FRAMEWORK_SEARCH_PATHS = " $(BUILD_DIR)/$(CONFIGURATION)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(BUILD_DIR)/$(CONFIGURATION)",
+					"\"$(SRCROOT)/Binaries/GLEW\"",
+				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
@@ -9461,6 +9489,7 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/DCMTK/include",
+					"$(SRCROOT)/Binaries/GLEW/include",
 					"$(SRCROOT)",
 					"$(SRCROOT)/Binaries/Ming",
 					"$(SRCROOT)/cocoahttpserver",

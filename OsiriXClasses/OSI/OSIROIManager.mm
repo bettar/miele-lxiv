@@ -18,6 +18,8 @@
  PURPOSE.
  =========================================================================*/
 
+#import "mgl.h" // include first
+
 #import "OSIROIManager.h"
 #import "OSIROIManager+Private.h"
 #import "OSIVolumeWindow.h"

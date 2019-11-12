@@ -18,6 +18,8 @@
  PURPOSE.
  =========================================================================*/
 
+#import "mgl.h" // include first
+
 #import "OSIROI.h"
 #import "OSIROI+Private.h"
 #import "OSIPlanarPathROI.h"

@@ -19,20 +19,9 @@
 =========================================================================*/
 
 #include "options.h"
+#import "mgl.h" // include first
 
-#ifdef WITH_OPENGL_32
-#import <OpenGL/gl3.h>
-#import <OpenGL/gl3ext.h>
-#define GL_INTENSITY8               0x804B
-#define GL_LUMINANCE                0x1909
-#define GL_LUMINANCE_FLOAT32_APPLE  0x8818
-#endif // WITH_OPENGL_32
-
-#if defined(WITH_OPENGL_32)
-//#define WITH_SWIZZLE_MASK
-#define PLACE_1 // CCM when defining the texture
-//#define PLACE_2 // CCM when drawing
-//#define WITH_GLM
+#include "GLRenderer.h"
 
 #ifdef WITH_GLM
 #include "glm/glm.hpp"
@@ -40,16 +29,6 @@
 #include "glm/gtc/type_ptr.hpp"
 //#define APPLY_TRANS_ROT_SCALE  // TODO: comment it in
 #endif
-#endif // WITH_OPENGL_32
-
-#if !defined(WITH_OPENGL_32)
-#include <OpenGL/glu.h> // it includes gl.h
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#ifndef WITH_GLEW
-#include <OpenGL/CGLMacro.h>
-#endif
-#endif // WITH_OPENGL_32
 
 #import <DCM/DCMAbstractSyntaxUID.h>
 #import "DCMView.h"
@@ -143,9 +122,6 @@ dest[2]=v1[0]*v2[1]-v1[1]*v2[0];
 //#define SUB(dest,v1,v2) dest[0]=v1[0]-v2[0]; \
 //dest[1]=v1[1]-v2[1]; \
 //dest[2]=v1[2]-v2[2];
-
-int checkOpenGLErrors(int lineNo);
-int checkExtension(const char* ext);
 
 #pragma mark -
 
@@ -518,7 +494,9 @@ static void DrawGLImageTile (unsigned long drawType,
 	}*/
 }
 
-static long GetNextTextureSize (long textureDimension, long maxTextureSize, Boolean textureRectangle)
+static long GetNextTextureSize (long textureDimension,
+                                long maxTextureSize,
+                                Boolean textureRectangle)
 {
 	long targetTextureSize = maxTextureSize; // start at max texture size
 	if (textureRectangle)
@@ -648,209 +626,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     return [d2 compare: d1];
 }
 
-///
-
-int checkOpenGLErrors(int lineNo)
-{
-    int errorCount = 0;
-#ifndef NDEBUG
-    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if (!cgl_ctx)
-        NSLog(@"Error DCMView.mm:%d", __LINE__);
-    
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        NSLog(@"DCMView.mm:%5d OpenGL error 0x%04X, ctx:%p", lineNo, err, cgl_ctx);
-        errorCount++;
-        //[NSException raise:NSGenericException format:@"OpenGL error 0x%04X, ctx:%p", err, cgl_ctx];
-    }
-#endif
-    return errorCount;
-}
-
-// Check extensions without using GLEW
-int checkExtension(const char* ext)
-{
-#ifndef WITH_OPENGL_32
-    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-#endif
-
-    const GLubyte *v = glGetString(GL_VERSION);
-    if (!ext)
-        NSLog(@"DCMView.mm:%d OpenGL version<%s>", __LINE__, v);
-    
-    if (v[0] < '3') { // old API before OpenGL 3.0
-        const char *strExtension = (const char *)glGetString(GL_EXTENSIONS);
-        
-        if (ext)
-            return strstr(strExtension, ext) ? 1 : 0;
-
-        printf("%s\n", strExtension); // the whole list
-        return -4;
-    }
-    
-#ifdef WITH_OPENGL_32
-    // New API since OpenGL 3.0
-    GLint nExt = 2000;
-    glGetIntegerv(GL_NUM_EXTENSIONS, &nExt); checkOpenGLErrors(__LINE__);
-    
-    for (GLint i = 0; i < nExt; i++)
-    {
-        const char *s = (const char *)glGetStringi(GL_EXTENSIONS, i);
-        if (glGetError() == GL_INVALID_VALUE)
-            break;
-
-        if (!s)
-            break;  // not found
-
-        if (ext)
-        {
-            if (!strcmp(s, ext))
-                return 1;  // found
-        }
-        else
-        {
-            printf("ext:%d, %s\n", i, s);
-        }
-    } // for
-
-    return 0;  // not found
-#endif
-
-    return -5;  // invalid
-}
-
-void listAllExtensions()
-{
-    (void)checkExtension(NULL);
-}
-
-#ifndef NDEBUG
-void checkOGLVersion()
-{
-    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    const GLubyte *v = glGetString(GL_VERSION);
-    NSLog(@"DCMView.mm:%d OpenGL context:%p, version<%s>", __LINE__, cgl_ctx, v);
-
-    //NSLog(@"DCMView.mm:%d %@ ", __LINE__, [self class]);
-    //NSLog(@"DCMView.mm:%d OpenGL context:%p", __LINE__, cgl_ctx);
-    //printf("DCMView.mm:%d version %s\n", __LINE__, glGetString(GL_VERSION));
-}
-#endif // NDEBUG
-
-#define kFailedToInitialiseGLException @"Failed to initialise OpenGL"
-
-//void checkShader(GLuint shader)
-//{
-#ifndef WITH_OPENGL_32
-//    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-#endif
-//    GLint success;
-//    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-//    if ( !success )
-//    {
-//        GLint infoLogLength;
-//        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
-//
-//        GLchar infoLog[infoLogLength+1];
-//        glGetShaderInfoLog(shader, infoLogLength, nullptr, infoLog);
-//        [NSException raise:kFailedToInitialiseGLException
-//                    format:@"Failed to compile shader %i\n%s", shader, infoLog];
-//    }
-//}
-
-//void checkProgram(GLuint program)
-//{
-//    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-//    GLint success;
-//    glGetProgramiv(program, GL_LINK_STATUS, &success);
-//    if ( !success )
-//    {
-//        GLint infoLogLength;
-//        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
-//
-//        GLchar infoLog[infoLogLength+1];
-//        glGetProgramInfoLog(program, infoLogLength, nullptr, infoLog);
-//        [NSException raise:kFailedToInitialiseGLException
-//                    format:@"Failed to link program %i\n%s", program, infoLog];
-//    }
-//}
-
-//GLuint compileShader(GLenum type, NSString *file)
-//{
-//    const GLchar *source = (GLchar *)[[NSString stringWithContentsOfFile:file encoding:NSASCIIStringEncoding error:nil] cStringUsingEncoding:NSASCIIStringEncoding];
-//
-//    if (nil == source)
-//    {
-//        [NSException raise:kFailedToInitialiseGLException
-//                    format:@"Failed to read shader file %@", file];
-//    }
-//
-//    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-//    auto shader = glCreateShader(type);
-//    glShaderSource(shader, 1, &source, nullptr);
-//    glCompileShader(shader);
-//
-//    checkShader(shader);
-//    return shader;
-//}
-
-//GLuint loadShaders(NSString *vertex, NSString *fragment)
-//{
-//    GLuint vs = compileShader(GL_VERTEX_SHADER, vertex);
-//    GLuint fs = compileShader(GL_FRAGMENT_SHADER, fragment);
-//
-//    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-//    // 4. Attach the shaders
-//    auto programId = glCreateProgram();
-//
-//    // checkPoint[3] = 1;
-//    NSLog(@"DCMView.mm:%d loadShader() [2] vertex:%u fragment:%u program:%u", __LINE__, vs, fs, programId);
-//
-//    glAttachShader(programId, vs);
-//    glAttachShader(programId, fs);
-//    glLinkProgram(programId);
-//    checkOpenGLErrors(__LINE__);
-//
-//#if 0
-//    // Too early here. It causes:
-//    //  "Validation Failed: Current draw framebuffer is invalid."
-//    glValidateProgram(programId);
-//#endif
-//
-//    checkProgram(programId);
-//
-//#ifdef DISPLAY_TEXTURE_DATA
-//    glDetachShader(programId, vs);    checkOpenGLErrors(__LINE__);
-//    glDetachShader(programId, fs);    checkOpenGLErrors(__LINE__);
-//#endif
-//
-//    glDeleteShader(vs);
-//    glDeleteShader(fs);    checkOpenGLErrors(__LINE__);
-//
-//    return programId;
-//}
-
-//GLuint getShaderProgram(NSString *shaderName)
-//{
-//    NSLog(@"DCMView.mm:%d %s", __LINE__, __PRETTY_FUNCTION__);
-//
-//    //static
-//    GLuint shaderProgram = GL_ZERO;
-//
-//    if (shaderProgram != GL_ZERO)
-//        return shaderProgram;
-//
-//    // 3. Define and compile vertex and fragment shaders
-//
-//
-//    NSString *vertex   = [[NSBundle mainBundle] pathForResource:shaderName ofType:@"vsh"];
-//    NSString *fragment = [[NSBundle mainBundle] pathForResource:shaderName ofType:@"fsh"];
-//    shaderProgram = loadShaders(vertex, fragment);
-//
-//    return shaderProgram;
-//}
-
 #pragma mark -
 
 @implementation DCMExportPlugin
@@ -869,7 +644,26 @@ void checkOGLVersion()
 
 @interface DCMView ()
 {
+    BOOL f_ext_texture_rectangle;
+    
+    // GL_ARB_texture_rectangle provides support for non-power of-two textures
+    BOOL f_arb_texture_rectangle;
+
+    // GL_APPLE_client_storage allows you to prevent OpenGL from copying your texture data into the client.
+    // Instead, OpenGL keeps the memory pointer you provided when creating the texture.
+    // Your application must keep the texture data at that location until the referencing OpenGL texture is deleted.
+    BOOL f_ext_client_storage;
+
+    BOOL f_ext_packed_pixel;
+
+    BOOL f_sgis_texture_edge_clamp;
+    BOOL f_gl_texture_edge_clamp;
+    
+    long _minMaxTextureSize; // the minimum max texture size across all GPUs
+    long _minMaxNOPTDTextureSize; // the minimum max texture size across all GPUs that support non-power of two texture dimensions
+    GLenum _textRectMode;
 }
+
 - (void) drawClutBar;
 - (void) drawRuler;
 - (void) drawKeyViewBox;
@@ -1557,7 +1351,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
 	glEnable(GL_BLEND);
 	glDisable(GL_POLYGON_SMOOTH);
-	glDisable(GL_POINT_SMOOTH);
+#ifndef WITH_OPENGL_32
+    glDisable(GL_POINT_SMOOTH);
+#endif
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	int circleRes = 20;
@@ -2298,7 +2094,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
             glEnable(GL_BLEND);
             glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-            glEnable(GL_TEXTURE_RECTANGLE_EXT);
+            glEnable(GL_TEXTURE_RECTANGLE_EXT);  // TODO: GLEW_EXT_texture_rectangle
 
             if (self.whiteBackground)
                 glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
@@ -4329,6 +4125,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         glBindTexture(GL_TEXTURE_RECTANGLE_EXT, *texName);
         glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/[bitmap samplesPerPixel]);
         glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
+
         // The cached hint specifies to cache texture data in video memory. This hint is recommended when you have textures that you plan to use multiple times or that use linear filtering
         glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
         
@@ -8381,108 +8178,136 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 -(void) FindMinimumOpenGLCapabilities
 {
-#ifdef WITH_GLEW
     [[self openGLContext] makeCurrentContext];
-#endif
+
     GLint deviceMaxTextureSize = 0;
 	GLint NPOTDMaxTextureSize = 0;
 
-  #ifdef WITH_OPENGL_32
-    f_ext_texture_rectangle = NO;
-    f_arb_texture_rectangle = NO;
-    f_ext_client_storage = NO;
-    f_ext_packed_pixel = NO;
-    f_ext_texture_edge_clamp = NO;
-    f_gl_texture_edge_clamp = NO;
-  #else
-    f_ext_texture_rectangle = YES;
-    f_arb_texture_rectangle = YES;
-    f_ext_client_storage = YES;
-    f_ext_packed_pixel = YES;
-    f_ext_texture_edge_clamp = YES;
-    f_gl_texture_edge_clamp = YES;
-  #endif
-
     // init desired caps to max values
-    maxTextureSize = 0x7FFFFFFF;
-    maxNOPTDTextureSize = 0x7FFFFFFF;
+    _minMaxTextureSize = 0x7FFFFFFF;
+    _minMaxNOPTDTextureSize = 0x7FFFFFFF;
 
 #ifndef WITH_OPENGL_32
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if (!cgl_ctx) {
-        NSLog(@"%s %d", __FUNCTION__, __LINE__);
+    if (!cgl_ctx)
         return;
 #endif
-    }
 
-    // get strings
+#ifndef NDEBUG
+    checkOGLVersion();
 
-#ifndef WITH_OPENGL_32
-    const GLubyte *strExtension = glGetString(GL_EXTENSIONS);    // get extension string
+    // 1 1 1 (1 0) 1 0      OK: same result with and without GLEW
+    NSLog(@"check(GL_...) %d %d %d (%d %d) %d %d",
+          checkExtension("GL_EXT_texture_rectangle"),   // 1
+          checkExtension("GL_ARB_texture_rectangle"),   // 1
+          checkExtension("GL_APPLE_client_storage"),    // 1
 
+          checkExtension("GL_APPLE_packed_pixel"),  // 1 for 2.1
+          checkExtension("GL_EXT_packed_pixels"),   // 0 for 2.1
+
+          checkExtension("GL_SGIS_texture_edge_clamp"), // 1
+          checkExtension("GL_EXT_texture_edge_clamp")); // 0
+
+#ifdef WITH_GLEW
+    // NG: all 0
+    // It works on the sample and bettar projects, but not here
+    NSLog(@"GLEW_EXT %d %d %d %d %d %d, %d",
+          GLEW_EXT_texture_rectangle,
+          GLEW_ARB_texture_rectangle,
+          GLEW_APPLE_client_storage,
+          
+          GLEW_EXT_packed_pixels,  // GLEW_APPLE_packed_pixels not defined
+          GLEW_EXT_texture_edge_clamp,
+
+          GLEW_SGIS_texture_edge_clamp,
+          GLEW_APPLE_texture_range);
+
+    // 1 1 1 (0 0) 1 0
+    NSLog(@"glewIsSupported(GL_EXT...) %d %d %d (%d %d) %d %d",
+          glewIsSupported("GL_EXT_texture_rectangle"),
+          glewIsSupported("GL_ARB_texture_rectangle"),
+          glewIsSupported("GL_APPLE_client_storage"),
+
+          glewIsSupported("GL_APPLE_packed_pixel"),
+          glewIsSupported("GL_EXT_packed_pixels"),
+
+          glewIsSupported("GL_SGIS_texture_edge_clamp"),
+          glewIsSupported("GL_EXT_texture_edge_clamp"));
+#endif // WITH_GLEW
+
+    // with GLEW: all 1
+    // without GLEW: 1 1 1 0 (0) 1
+    NSLog(@"GL_EXT %d %d %d %d (%d) %d",
+          GL_EXT_texture_rectangle,
+          GL_ARB_texture_rectangle,
+          GL_APPLE_client_storage,
+          GL_EXT_packed_pixels,    // undefined in glext.h, unless GL_GLEXT_WUNDEF_SUPPORT
+#ifdef WITH_GLEW
+          GL_EXT_texture_edge_clamp, // undefined in glext.h
+#else
+          0,
+#endif
+          GL_SGIS_texture_edge_clamp);
+
+#endif // NDEBUG
+    
     // Compare capabilities based on extension string and GL version
     // Turn them off if absent
-    if (strExtension) {
-        f_ext_texture_rectangle =
-            f_ext_texture_rectangle && strstr((const char *) strExtension, "GL_EXT_texture_rectangle");
-        f_arb_texture_rectangle =
-            f_arb_texture_rectangle && strstr((const char *) strExtension, "GL_ARB_texture_rectangle");
-        f_ext_client_storage =
-            f_ext_client_storage && strstr((const char *) strExtension, "GL_APPLE_client_storage");
-        f_ext_packed_pixel =
-            f_ext_packed_pixel && strstr((const char *) strExtension, "GL_APPLE_packed_pixel");
-        f_ext_texture_edge_clamp =
-            f_ext_texture_edge_clamp && strstr((const char *) strExtension, "GL_SGIS_texture_edge_clamp");
-    }
-#endif // WITH_OPENGL_32
-
-    const GLubyte *strVersion = glGetString(GL_VERSION); // get version string
-    
-    // Get just the non-vendor specific part of version string
-    enum { kShortVersionLength = 32 };
-    GLubyte strShortVersion[kShortVersionLength];
-
-    short i = 0;
-    while ((((strVersion[i] <= '9') && (strVersion[i] >= '0')) || (strVersion[i] == '.')) &&
-           (i < kShortVersionLength)) // get only basic version info (until first space)
     {
-        strShortVersion[i] = strVersion[i];
-        i++;
-    }
-    strShortVersion[i] = 0; // Truncate string
+        f_ext_texture_rectangle = checkExtension("GL_EXT_texture_rectangle");
+        f_arb_texture_rectangle = checkExtension("GL_ARB_texture_rectangle");
+        f_ext_client_storage = checkExtension("GL_APPLE_client_storage");
 
-    f_gl_texture_edge_clamp =
-            f_gl_texture_edge_clamp &&
-            !strstr((const char *) strShortVersion, "1.0") &&
-            !strstr((const char *) strShortVersion, "1.1"); // if not 1.0 and not 1.1 must be 1.2 or greater
-    
-    //NSLog(@"%s %d OpenGL %s, f_gl_texture_edge_clamp:%d", __FUNCTION__, __LINE__, strShortVersion, f_gl_texture_edge_clamp);
+        f_ext_packed_pixel = checkExtension("GL_APPLE_packed_pixel"); // 2.1
+
+        f_sgis_texture_edge_clamp = checkExtension("GL_SGIS_texture_edge_clamp");
+        f_gl_texture_edge_clamp = checkExtension("GL_EXT_texture_edge_clamp");
+    }
+
+#ifndef NDEBUG
+    // 1 1 1 1 1 0
+    NSLog(@"f_ext %d %d %d %d, edge clamp: %d %d",
+          f_ext_texture_rectangle,
+          f_arb_texture_rectangle,
+          f_ext_client_storage,
+          f_ext_packed_pixel,  // 0 on sample project
+
+          f_sgis_texture_edge_clamp,
+          f_gl_texture_edge_clamp);
+
+    #if 0
+    // This code works on sample app but not here
+    NSAssert(f_ext_texture_rectangle == GLEW_EXT_texture_rectangle, @"%d", __LINE__);
+    NSAssert(f_arb_texture_rectangle == GLEW_ARB_texture_rectangle, @"%d", __LINE__);
+    NSAssert(f_ext_client_storage == GLEW_APPLE_client_storage, @"%d", __LINE__);
+    NSAssert(f_ext_packed_pixel == GLEW_EXT_packed_pixels, @"%d", __LINE__);
+    NSAssert(f_sgis_texture_edge_clamp == GLEW_SGIS_texture_edge_clamp, @"%d", __LINE__);
+    NSAssert(f_gl_texture_edge_clamp == GLEW_EXT_texture_edge_clamp, @"%d", __LINE__);
+    #endif
+#endif // NDEBUG
 
     // Get device max texture size
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &deviceMaxTextureSize);
-    if (deviceMaxTextureSize < maxTextureSize)
-        maxTextureSize = deviceMaxTextureSize;
+    if (deviceMaxTextureSize < _minMaxTextureSize)
+        _minMaxTextureSize = deviceMaxTextureSize;
 
     // Get max size of non-power of two texture on devices which support
 
-#ifndef WITH_OPENGL_32
-    if (strExtension)
-    if (NULL != strstr ((const char *) strExtension, "GL_EXT_texture_rectangle"))
+    if (f_ext_texture_rectangle)
     {
 #ifdef GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT
         glGetIntegerv (GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT, &NPOTDMaxTextureSize);
-        if (NPOTDMaxTextureSize < maxNOPTDTextureSize)
-        maxNOPTDTextureSize = NPOTDMaxTextureSize;
+        if (NPOTDMaxTextureSize < _minMaxNOPTDTextureSize)
+            _minMaxNOPTDTextureSize = NPOTDMaxTextureSize;
 #endif
     }
-#endif
     
-//			maxTextureSize = 500;
+//	maxTextureSize = 500;
     
     // Set clamp param based on retrieved capabilities
-    if (f_gl_texture_edge_clamp) // If OpenGL 1.2 or later and texture edge clamp is supported natively
+    if (f_gl_texture_edge_clamp)
         edgeClampParam = GL_CLAMP_TO_EDGE;  // use 1.2+ constant to clamp texture coords so as to not sample the border color
-    else if (f_ext_texture_edge_clamp) // If GL_SGIS_texture_edge_clamp extension supported
+    else if (f_sgis_texture_edge_clamp)
         edgeClampParam = GL_CLAMP_TO_EDGE_SGIS; // use extension to clamp texture coords so as to not sample the border color
     else
         edgeClampParam = GL_CLAMP; // clamp texture coords to [0, 1]
@@ -8493,16 +8318,16 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		NSLog(@"ARB Rectangular Texturing!");
 #endif
         // Allow texture targets for textures of any dimensions
-        TEXTRECTMODE = GL_TEXTURE_RECTANGLE_ARB;
-        maxTextureSize = maxNOPTDTextureSize;
+        _textRectMode = GL_TEXTURE_RECTANGLE_ARB;
+        _minMaxTextureSize = _minMaxNOPTDTextureSize;
     }
     else if (f_ext_texture_rectangle)
     {
 #ifndef NDEBUG
 		NSLog(@"Rectangular Texturing!");
 #endif
-        TEXTRECTMODE = GL_TEXTURE_RECTANGLE_EXT;
-        maxTextureSize = maxNOPTDTextureSize;
+        _textRectMode = GL_TEXTURE_RECTANGLE_EXT;
+        _minMaxTextureSize = _minMaxNOPTDTextureSize;
     }
     else
     {
@@ -8510,7 +8335,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         NSLog(@"Normal Texturing!");
 #endif
         // Note that OpenGL does not use DMA for a power-of-two texture target. So, unlike the rectangular texture, the power-of-two texture will incur one additional copy and performance won't be quite as fast.
-        TEXTRECTMODE = GL_TEXTURE_2D;
+        _textRectMode = GL_TEXTURE_2D;
     }
 }
 
@@ -8725,7 +8550,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	effectiveTextureMod = 0;	//2;	//OVERLAP
 	
-	glEnable (TEXTRECTMODE); // enable texturing
+	glEnable (_textRectMode); // enable texturing
 	glColor4f (1.0f, 1.0f, 1.0f, 1.0f); // tint of the image
     
 //    float sf = self.window.backingScaleFactor;
@@ -8735,16 +8560,16 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	{
         // Use remaining to determine next texture size.
         // Current effective texture width for drawing:
-        currTextureWidth = GetNextTextureSize (tW - offsetX, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // current effective texture width for drawing
+        currTextureWidth = GetNextTextureSize(tW - offsetX, _minMaxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // current effective texture width for drawing
         offsetY = 0; // start at top
         for (long y = 0; y < tY; y++) // for a complete column
         {
             // Use remaining to determine next texture size.
             // Effective texture height for drawing:
-            currTextureHeight = GetNextTextureSize (tH - offsetY, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // effective texture height for drawing
+            currTextureHeight = GetNextTextureSize(tH - offsetY, _minMaxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // effective texture height for drawing
 
             // Work through textures in same order as stored, setting each texture name as current in turn
-            glBindTexture(TEXTRECTMODE, texture[k++]);
+            glBindTexture(_textRectMode, texture[k++]);
             
             //NSLog(@"%s %d DrawGLImageTile %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
             DrawGLImageTile(GL_TRIANGLE_STRIP, curDCM.pwidth, curDCM.pheight, scaleValue,		//
@@ -8759,7 +8584,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         offsetX += currTextureWidth; // offset drawing position for next texture horizontally
 	}
 	
-    glDisable(TEXTRECTMODE); // done with texturing
+    glDisable(_textRectMode); // done with texturing
 }
 
 - (NSPoint) positionWithoutRotation: (NSPoint) tPt
@@ -10282,7 +10107,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         GLfloat x1 = scaleValue*(mx/curDCM.pixelSpacingX - curDCM.pwidth/2.);
         GLfloat y1 = scaleValue*(my/curDCM.pixelSpacingY - curDCM.pheight/2.);
 
-		glEnable(GL_POINT_SMOOTH);
+#ifndef WITH_OPENGL_32
+        glEnable(GL_POINT_SMOOTH);
+#endif
 		glPointSize( 12 * self.window.backingScaleFactor);
 		
 		glBegin(GL_POINTS);
@@ -11301,7 +11128,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				{
 					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 					glEnable(GL_BLEND);
-					glEnable(GL_POINT_SMOOTH);
+#ifndef WITH_OPENGL_32
+                    glEnable(GL_POINT_SMOOTH);
+#endif
 					glEnable(GL_LINE_SMOOTH);
 					glEnable(GL_POLYGON_SMOOTH);
 					
@@ -11506,7 +11335,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //						glGenTextures(1, &iChatCursorTextureName);
 //						glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
 //						glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
-//						glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+//						glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
 //						glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 //						
 //						glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, iChatCursorImageSize.width, iChatCursorImageSize.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, iChatCursorTextureBuffer);
@@ -11655,7 +11484,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			
 			GLuint textID;
 			
-			glEnable(TEXTRECTMODE);
+			glEnable(_textRectMode);
 			glPixelStorei(GL_UNPACK_ROW_LENGTH, LENSSIZE); 
 			glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
 			glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
@@ -11663,14 +11492,14 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			glGenTextures(1, &textID);
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(TEXTRECTMODE, textID);
+			glBindTexture(_textRectMode, textID);
             if (NOINTERPOLATION)
                 interpolationType = GL_NEAREST;
             else
                 interpolationType = GL_LINEAR; 	//GL_LINEAR_MIPMAP_LINEAR
             
-            glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, interpolationType);
-            glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, interpolationType);
+            glTexParameteri(_textRectMode, GL_TEXTURE_MIN_FILTER, interpolationType);
+            glTexParameteri(_textRectMode, GL_TEXTURE_MAG_FILTER, interpolationType);
 				
 			glColor4f( 1, 1, 1, 1);
 			// Allocate memory for a texture
@@ -11679,7 +11508,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 #else
             GLenum _type = GL_UNSIGNED_INT_8_8_8_8;
 #endif
-			glTexImage2D(TEXTRECTMODE, 0,       // target, LOD
+			glTexImage2D(_textRectMode, 0,      // target, LOD
                          GL_RGBA,               // internal format
                          LENSSIZE, LENSSIZE, 0, // width (s), height (t),border
                          GL_BGRA, _type,        // external format, type
@@ -11695,7 +11524,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 			glActiveTexture(GL_TEXTURE0);
 			glEnable(loupeMaskTextureID);
-			glBindTexture(TEXTRECTMODE, loupeMaskTextureID);
+			glBindTexture(_textRectMode, loupeMaskTextureID);
 			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
 			glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
@@ -11703,7 +11532,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             
 			glActiveTexture(GL_TEXTURE1);
 			glEnable(textID);
-			glBindTexture(TEXTRECTMODE, textID);
+			glBindTexture(_textRectMode, textID);
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
 			glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
@@ -11713,9 +11542,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
 
 			glActiveTexture(GL_TEXTURE0);
-			glEnable(TEXTRECTMODE);
+			glEnable(_textRectMode);
 			glActiveTexture(GL_TEXTURE1);
-			glEnable(TEXTRECTMODE);
+			glEnable(_textRectMode);
 			
 			glBegin (GL_QUAD_STRIP);
             {
@@ -11744,18 +11573,18 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			glEnd();
 			
 			glActiveTexture(GL_TEXTURE1); // deactivate multitexturing
-			glDisable(TEXTRECTMODE);
+			glDisable(_textRectMode);
 			glDeleteTextures( 1, &textID);
 
 			/* multitexturing ends */
 			
 			// back to single texturing mode:
 			glActiveTexture(GL_TEXTURE0); // activate single texture unit
-			glDisable(TEXTRECTMODE);
+			glDisable(_textRectMode);
 		
 			/* drawing loupe border */
-			BOOL drawLoupeBorder = YES;
-			if (loupeTextureID && drawLoupeBorder)
+			BOOL drawLensBorder = YES;
+			if (loupeTextureID && drawLensBorder)
 			{
 				glEnable(GL_TEXTURE_RECTANGLE_EXT);
 				
@@ -11785,43 +11614,46 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             glDisable(GL_BLEND);
             
             glPopAttrib();
-			
-            
-	//		glColor4f ( 0, 0, 0 , 0.8);
-	//		glLineWidth( 3 * sf);
-	//		
-	//		int resol = LENSSIZE*4*scaleValue;
-	//		
-	//		eventLocation.x += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
-	//		eventLocation.y += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
-	//		
-	//		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-	//		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-	//		glEnable(GL_POINT_SMOOTH);
-	//		glEnable(GL_LINE_SMOOTH);
-	//		glEnable(GL_POLYGON_SMOOTH);
-	//		
-	//		float f = ((LENSSIZE-1)*scaleValue*2/LENSRATIO);
-	//
-	//		glBegin(GL_LINE_LOOP);
-	//		for (int i = 0; i < resol ; i++ )
-	//		{
-	//			float angle = i * 2 * M_PI /resol;
-	//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
-	//		}
-	//		glEnd();
-	//		glPointSize( 3 * sf);
-	//		glBegin( GL_POINTS);
-	//		for (int i = 0; i < resol ; i++ )
-	//		{
-	//			float angle = i * 2 * M_PI /resol;
-	//			
-	//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
-	//		}
-	//		glEnd();
-	//		glDisable(GL_LINE_SMOOTH);
-	//		glDisable(GL_POLYGON_SMOOTH);
-	//		glDisable(GL_POINT_SMOOTH);
+
+//		glColor4f ( 0, 0, 0 , 0.8);
+//		glLineWidth( 3 * sf);
+//
+//		int resol = LENSSIZE*4*scaleValue;
+//
+//		eventLocation.x += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
+//		eventLocation.y += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
+//
+//		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+//		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+//#ifndef WITH_OPENGL_32
+//		glEnable(GL_POINT_SMOOTH);
+//#endif
+//		glEnable(GL_LINE_SMOOTH);
+//		glEnable(GL_POLYGON_SMOOTH);
+//
+//		float f = ((LENSSIZE-1)*scaleValue*2/LENSRATIO);
+//
+//		glBegin(GL_LINE_LOOP);
+//		for (int i = 0; i < resol ; i++ )
+//		{
+//			float angle = i * 2 * M_PI /resol;
+//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
+//		}
+//		glEnd();
+//		glPointSize( 3 * sf);
+//		glBegin( GL_POINTS);
+//		for (int i = 0; i < resol ; i++ )
+//		{
+//			float angle = i * 2 * M_PI /resol;
+//
+//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
+//		}
+//		glEnd();
+//		glDisable(GL_LINE_SMOOTH);
+//		glDisable(GL_POLYGON_SMOOTH);
+//#ifndef WITH_OPENGL_32
+//    glDisable(GL_POINT_SMOOTH);
+//#endif
 		}
 #endif
         
@@ -13980,7 +13812,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if ([ViewerController numberOf2DViewer] > MAXNUMBEROF32BITVIEWERS)
 		intFULL32BITPIPELINE = NO;
 	
-	if (curDCM.pheight >= maxTextureSize)
+	if (curDCM.pheight >= _minMaxTextureSize)
 		intFULL32BITPIPELINE = NO;
 		
 	if (curDCM.subtractedfImage)
@@ -13989,7 +13821,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if (curDCM.shutterEnabled)
 		intFULL32BITPIPELINE = NO;
     
-	if (curDCM.pwidth >= maxTextureSize)
+	if (curDCM.pwidth >= _minMaxTextureSize)
 		intFULL32BITPIPELINE = NO;
 	
 	if (!blending)
@@ -14202,8 +14034,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
     checkOpenGLErrors(__LINE__);
 
-    if (!glIsEnabled(TEXTRECTMODE)) {
-        glEnable(TEXTRECTMODE);
+    if (!glIsEnabled(_textRectMode)) {
+        glEnable(_textRectMode);
         checkOpenGLErrors(__LINE__); // GL_INVALID_ENUM 0x0500
     }
     
@@ -14228,10 +14060,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		*tW = curDCM.pwidth  * resampledScale;
 		*tH = curDCM.pheight * resampledScale;
 		
-		if (*tW >= maxTextureSize) 
+		if (*tW >= _minMaxTextureSize)
 			intFULL32BITPIPELINE = NO;
 		
-		if (*tH >= maxTextureSize) 
+		if (*tH >= _minMaxTextureSize)
 			intFULL32BITPIPELINE = NO;
 		
 		vImage_Buffer src, dst;
@@ -14382,8 +14214,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, *tW);    checkOpenGLErrors(__LINE__);
 	
-	*tX = GetTextureNumFromTextureDim( *tW, maxTextureSize, false, f_ext_texture_rectangle );
-	*tY = GetTextureNumFromTextureDim( *tH, maxTextureSize, false, f_ext_texture_rectangle );
+	*tX = GetTextureNumFromTextureDim( *tW, _minMaxTextureSize, false, f_ext_texture_rectangle );
+	*tY = GetTextureNumFromTextureDim( *tH, _minMaxTextureSize, false, f_ext_texture_rectangle );
 
 	if (*tX * *tY == 0)
 		NSLog(@"****** *tX * *tY == 0");
@@ -14399,16 +14231,24 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     checkOpenGLErrors(__LINE__);
     
     // Make a single memory mapping for all of the textures used by the application:
-	glTextureRangeAPPLE(TEXTRECTMODE, (*tW) * (*tH) * 4, baseAddr);    checkOpenGLErrors(__LINE__);
+#ifdef WITH_GLEW
+    NSLog(@"%s %d, GLEW_APPLE_texture_range %d", __FILE__, __LINE__, GLEW_APPLE_texture_range);
+    if (GLEW_APPLE_texture_range)
+#endif
+    {
+        glTextureRangeAPPLE(_textRectMode, (*tW) * (*tH) * 4, baseAddr);
+        checkOpenGLErrors(__LINE__);
+    }
 
-    glGenTextures(n, texture);      checkOpenGLErrors(__LINE__);
+    glGenTextures(n, texture);
+    checkOpenGLErrors(__LINE__);
 
 	{
         int k = 0, offsetX = 0;
         int currWidth=0, currHeight=0;
 		for (int x = 0; x < *tX; x++)
 		{
-			currWidth = GetNextTextureSize(*tW - offsetX, maxTextureSize, f_ext_texture_rectangle);
+			currWidth = GetNextTextureSize(*tW - offsetX, _minMaxTextureSize, f_ext_texture_rectangle);
 			
 			int offsetY = 0;
 			for (int y = 0; y < *tY; y++)
@@ -14444,13 +14284,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				}
                 
                 // Use remaining to determine next texture size
-				currHeight = GetNextTextureSize(*tH - offsetY, maxTextureSize, f_ext_texture_rectangle);
+				currHeight = GetNextTextureSize(*tH - offsetY, _minMaxTextureSize, f_ext_texture_rectangle);
 
 				checkOpenGLErrors(__LINE__);
 
-                glBindTexture(TEXTRECTMODE, texture[k++]);      checkOpenGLErrors(__LINE__);
+                glBindTexture(_textRectMode, texture[k++]);      checkOpenGLErrors(__LINE__);
                 
-				glTexParameterf(TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);   checkOpenGLErrors(__LINE__);
+				glTexParameterf(_textRectMode, GL_TEXTURE_PRIORITY, 1.0f);   checkOpenGLErrors(__LINE__);
                 
 				if (f_ext_client_storage)
 					glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
@@ -14464,7 +14304,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //					if (*tW >= 1024 && *tH >= 1024 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
 					{
                         // The cached hint specifies to cache texture data in video memory. This hint is recommended when you have textures that you plan to use multiple times or that use linear filtering
-						glTexParameteri(TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for small matrix in RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to GL_TRUE
+						glTexParameteri(_textRectMode, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for small matrix in RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to GL_TRUE
                         checkOpenGLErrors(__LINE__);
 					}
 				}
@@ -14474,12 +14314,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				else
                     interpolationType = GL_LINEAR; 	// GL_LINEAR_MIPMAP_LINEAR
                 
-                // TEXTRECTMODE: GL_TEXTURE_RECTANGLE_EXT == GL_TEXTURE_RECTANGLE_EXT == 0x84F5
+                // _textRectMode: GL_TEXTURE_RECTANGLE_EXT == GL_TEXTURE_RECTANGLE_EXT == 0x84F5
                 // edgeClampParam: GL_CLAMP_TO_EDGE == GL_CLAMP_TO_EDGE_SGIS == 0x812F
-                glTexParameteri(TEXTRECTMODE, GL_TEXTURE_WRAP_S, edgeClampParam);          checkOpenGLErrors(__LINE__);
-                glTexParameteri(TEXTRECTMODE, GL_TEXTURE_WRAP_T, edgeClampParam);          checkOpenGLErrors(__LINE__);
-                glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, interpolationType);   checkOpenGLErrors(__LINE__);
-                glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, interpolationType);   checkOpenGLErrors(__LINE__);
+                glTexParameteri(_textRectMode, GL_TEXTURE_WRAP_S, edgeClampParam);          checkOpenGLErrors(__LINE__);
+                glTexParameteri(_textRectMode, GL_TEXTURE_WRAP_T, edgeClampParam);          checkOpenGLErrors(__LINE__);
+                glTexParameteri(_textRectMode, GL_TEXTURE_MIN_FILTER, interpolationType);   checkOpenGLErrors(__LINE__);
+                glTexParameteri(_textRectMode, GL_TEXTURE_MAG_FILTER, interpolationType);   checkOpenGLErrors(__LINE__);
 
 				glColor4f(1.0f, 1.0f, 1.0f, 1.0f);     checkOpenGLErrors(__LINE__); // GL_INVALID_ENUM, 0x0500
                 
@@ -14494,7 +14334,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     // Allocate memory for a texture
                     if (isRGB || [curDCM thickSlabVRActivated])
                     {
-                        glTexImage2D (TEXTRECTMODE, 0,
+                        glTexImage2D (_textRectMode, 0,
                                       GL_RGBA,
                                       currWidth, currHeight, 0,
                                       GL_BGRA_EXT, _type,
@@ -14503,7 +14343,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     else if (localColorTransfer || blending)
                     {
                         // grayscale image with LUT
-                        glTexImage2D (TEXTRECTMODE, 0,
+                        glTexImage2D (_textRectMode, 0,
                                       GL_RGBA,
                                       currWidth, currHeight, 0,
                                       GL_BGRA_EXT, _type,
@@ -14513,7 +14353,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     {
                         if (!intFULL32BITPIPELINE)
                         {
-                              glTexImage2D (TEXTRECTMODE, 0,
+                              glTexImage2D (_textRectMode, 0,
                                             GL_INTENSITY8,
                                             currWidth, currHeight, 0,
                                             GL_LUMINANCE, GL_UNSIGNED_BYTE,
@@ -14530,34 +14370,31 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 								max = [curDCM fullwl] + [curDCM fullww] / 2;
 							}
 
-#if 1
+#ifndef WITH_OPENGL_32
                             // Window width and level is implemented here
-                            glPixelTransferf( GL_RED_BIAS, -min/(max-min)); checkOpenGLErrors(__LINE__); // GL_INVALID_OPERATION, 0x0502
-                            
-                            glPixelTransferf( GL_RED_SCALE, 1./(max-min));  checkOpenGLErrors(__LINE__);
-#endif
+                            glPixelTransferf( GL_RED_BIAS, -min/(max-min));
+                            glPixelTransferf( GL_RED_SCALE, 1./(max-min));
                             checkOpenGLErrors(__LINE__);
-
-#if defined(WITH_GLEW)
-                            if (checkExtension("GL_APPLE_float_pixels"))
 #endif
+
+                            if (checkExtension("GL_APPLE_float_pixels"))
                             {
-                                glTexImage2D(TEXTRECTMODE, 0,
+                                glTexImage2D(_textRectMode, 0,
                                              GL_LUMINANCE_FLOAT32_APPLE,  // deprecated rendering engine ?
                                              currWidth, currHeight, 0,
                                              GL_LUMINANCE, GL_FLOAT,
-                                             pBuffer);                  checkOpenGLErrors(__LINE__);
+                                             pBuffer);
                             }
-#if defined(WITH_GLEW)
+#ifdef WITH_OPENGL_32
                             else
   #ifdef WITH_SWIZZLE_MASK
                                 if (checkExtension("GL_ARB_texture_swizzle"))
   #endif
                             {
-                                GLenum target = TEXTRECTMODE;
+                                GLenum target = _textRectMode;
   #ifdef WITH_SWIZZLE_MASK
                                 GLint swizzleMask[] = {GL_RED, GL_RED, GL_RED, GL_ONE};
-                                //glBindTexture(target, texture[k++]);                       checkOpenGLErrors(__LINE__);
+                                //glBindTexture(target, texture[k++]);
                                 glTexParameteriv(target, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask); checkOpenGLErrors(__LINE__);
   #endif
                                 // Give the image to OpenGL
@@ -14565,26 +14402,29 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                              GL_RGBA,
                                              currWidth, currHeight, 0,
                                              GL_RED, GL_FLOAT,
-                                             pBuffer);                  checkOpenGLErrors(__LINE__);
+                                             pBuffer);
+                                checkOpenGLErrors(__LINE__);
                             }
   #ifdef WITH_SWIZZLE_MASK
                             else {
                                 [NSException raise:NSGenericException
-                                            format:@"Line %i, no GL_APPLE_float_pixels, TEXTRECTMODE:0x%x", __LINE__, TEXTRECTMODE];
+                                            format:@"Line %i, no GL_APPLE_float_pixels, _textRectMode:0x%x", __LINE__, _textRectMode];
                             }
   #endif
-#endif
+#endif // WITH_OPENGL_32
                             checkOpenGLErrors(__LINE__);
-                            
-#if 1
+
+#ifndef WITH_OPENGL_32
                             // Restore
-							glPixelTransferf( GL_RED_BIAS, 0);      checkOpenGLErrors(__LINE__); // GL_INVALID_OPERATION, 0x0502
+							glPixelTransferf( GL_RED_BIAS, 0);
                             //glPixelTransferf( GL_GREEN_BIAS, 0);
                             //glPixelTransferf( GL_BLUE_BIAS, 0);
 
-                            glPixelTransferf( GL_RED_SCALE, 1);     checkOpenGLErrors(__LINE__);
+                            glPixelTransferf( GL_RED_SCALE, 1);
                             //glPixelTransferf( GL_GREEN_SCALE, 1);
                             //glPixelTransferf( GL_BLUE_SCALE, 1);
+
+                            checkOpenGLErrors(__LINE__);
 #endif
                         }
                     }
@@ -14602,7 +14442,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		}
 	}
 
-    glDisable(TEXTRECTMODE);    checkOpenGLErrors(__LINE__);
+    glDisable(_textRectMode);    checkOpenGLErrors(__LINE__);
 	
 	if (computedfImage)
 	{
@@ -14962,6 +14802,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 - (instancetype)initWithFrameInternal:(NSRect)frameRect
 {
+    NSLog(@"%s", __FUNCTION__);
+
     if (PETredTable == nil)
         [DCMView computePETBlendingCLUT];
     
@@ -15010,36 +14852,24 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                                options:NSKeyValueObservingOptionNew
                                                context:nil];
 
-#if 0 // @@@
-    NSOpenGLPixelFormatAttribute attrs[] =
-    {
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_10
-        NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion4_1Core,
-#elif MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
-        NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
-#endif
-        NSOpenGLPFADoubleBuffer ,
-        NSOpenGLPFADepthSize    , 32,
-        NSOpenGLPFANoRecovery,
-        NSOpenGLPFAMinimumPolicy,
-        //NSOpenGLPFAColorFloat, // +GL_EXT_depth_bounds_test, +GL_EXT_texture_mirror_clamp, -GL_APPLE_object_purgeable
-        0
-    };
-#else // @@@
     NSOpenGLPixelFormatAttribute attrs[] =
     {
 #ifdef WITH_OPENGL_32
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_10
+    #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_10
         NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion4_1Core,
-#elif MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+    #elif MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
         NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,  // results in "OpenGL version:4.1 INTEL-10.14.73"
+    #endif
+
+#else
+        NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersionLegacy,  // for immediate mode
 #endif
         
 //        NSOpenGLPFAColorSize    , 24,
 //        NSOpenGLPFAAlphaSize    , 8,
 //        NSOpenGLPFAAccelerated,
-#endif
+
         NSOpenGLPFADoubleBuffer ,
         NSOpenGLPFADepthSize    , 32,
         
@@ -15049,7 +14879,6 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         NSOpenGLPFAMinimumPolicy,
         0
     };
-#endif // @@@
 
     NSOpenGLPixelFormat *pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
     if ( !pixFmt )
@@ -15066,7 +14895,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     }
 	self = [super initWithFrame:frameRect pixelFormat:pixFmt];
 
+#ifndef WITH_OPENGL_32
     [self setWantsBestResolutionOpenGLSurface:YES]; // Retina https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
+#endif
     
     drawingFrameRect = [self convertRectToBacking: [self frame]]; //retina
     
@@ -15160,8 +14991,47 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     dcmPixList = nil;
     dcmFilesList = nil;
     
+    //checkOpenGLErrors(__LINE__); // Will get a warning as there is no context
     [[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
+    checkOpenGLErrors(__LINE__);
+        
+#ifdef WITH_GLEW
+    #if defined(WITH_OPENGL_32)
+    glewExperimental = true; // Needed for core profile
+    #endif
+
+    GLenum glewReturnCode = glewInit();
+    #ifndef NDEBUG
+    NSAssert(glewReturnCode == GLEW_OK, @"%s %d, GLEW failed to initialize with code: %d", __FUNCTION__, __LINE__, glewReturnCode);
+    #else
+    if (glewReturnCode != GLEW_OK)
+        NSLog(@"Failed to initialize GLEW");
+    #endif
+#else // WITH_GLEW
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+#endif
     
+#ifndef NDEBUG
+    NSLog(@"%s %d, OpenGL version %s", __FUNCTION__, __LINE__, glGetString(GL_VERSION));  // 2.1 APPLE-17.10.22
+    checkOpenGLErrors(__LINE__);
+
+    NSLog(@"OpenGL renderer: %s", glGetString(GL_RENDERER)); // Apple Software Renderer / Intel Iris OpenGL Engine
+    checkOpenGLErrors(__LINE__);
+
+    NSLog(@"OpenGL vendor: %s", glGetString(GL_VENDOR));
+    checkOpenGLErrors(__LINE__);
+
+#ifndef WITH_OPENGL_32
+    //const GLubyte *strExtension = glGetString(GL_EXTENSIONS);
+    //NSLog(@"OpenGL extensions, size %zu\n %s", strlen((const char *)strExtension), strExtension);
+#else
+    GLint nExt = 0;
+    glGetIntegerv(GL_NUM_EXTENSIONS, &nExt);  // 0 for OpenGL 2.1 because a different way is used to retrieve them
+    NSLog(@"GL_NUM_EXTENSIONS: %d", nExt);
+    checkOpenGLErrors(__LINE__);
+#endif
+#endif // NDEBUG
+
     blendingFactor = 0.5;
 
     GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
@@ -15169,25 +15039,18 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
 	[self FindMinimumOpenGLCapabilities];
 
-//    glEnable(GL_MULTISAMPLE_ARB);
-//    glHint (GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
-	
+//  glEnable(GL_MULTISAMPLE_ARB);
+//  glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
 //	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	if (cgl_ctx)
-    {
-        // This hint is for antialiasing
-        glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);  // hint for antialiasing
 
-        // Setup some basic OpenGL stuff
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        fontColor = nil;
-	}
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // byte alignment, otherwise default is 4
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    fontColor = nil;
     
-    //	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: self];
-    //	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
+//	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: self];
+//	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
     
     currentTool = tWL;
     
@@ -16500,7 +16363,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //		
 //	[loupeController setTexture:lensTexture withSize:NSMakeSize(LENSSIZE, LENSSIZE) bytesPerRow:LENSSIZE rotation:self.rotation];
 //	[loupeController setWindowCenter:center];
-//	[loupeController drawLoupeBorder:YES];
+//	[loupeController drawMagnifierBorder:YES];
 //}
 //
 //- (void)hideLoupe;
