@@ -1789,7 +1789,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	[[self windowController] redo: sender];
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (void)paste:(id)sender
 {
     NSPasteboard *pb = [NSPasteboard generalPasteboard];
@@ -9096,7 +9096,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glLineWidth(self.window.backingScaleFactor);
 	
-//	#ifndef OSIRIX_LIGHT
+//	#ifndef MIELE_LIGHT
 //	if (iChatRunning && cgl_ctx==[_alternateContext CGLContextObj])
 //	{
 //		if (!iChatFontListGL) iChatFontListGL = glGenLists(150);
@@ -10576,7 +10576,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     BOOL is2DViewer = [self is2DViewer];
 	float sf = self.window.backingScaleFactor;
     
-//	#ifndef OSIRIX_LIGHT
+//	#ifndef MIELE_LIGHT
 //    iChatRunning = NO;
 //    if (is2DViewer)
 //        iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
@@ -10745,7 +10745,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			}
 			
 			// highlight the visible part of the view (the part visible through iChat)
-//			#ifndef OSIRIX_LIGHT
+//			#ifndef MIELE_LIGHT
 //			if (iChatRunning && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
 //			{
 //				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
@@ -10970,7 +10970,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     }
 					
                     // let the pluginSDK draw anything it needs to draw, we use a notification for now, but that is nasty style, we really should be calling a method
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
                     [[OSIEnvironment sharedEnvironment] drawDCMView:self];
 #endif
                     
@@ -12190,7 +12190,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         *offset = 0;
 	
 	if (
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 		[self class] == [OrthogonalMPRPETCTView class] ||
 #endif
 		[self class] == [OrthogonalMPRView class])
@@ -13574,7 +13574,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	memcpy( correctedOrientation, o, sizeof o );
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 // Converts points in DCMPix "Slice Coordinates"
 // to coordinates that need to be passed to GL in subDrawRect
 - (N3AffineTransform)pixToSubDrawRectTransform
@@ -13605,7 +13605,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
     return pixToSubDrawRectTransform;
 }
-#endif // OSIRIX_LIGHT
+#endif // MIELE_LIGHT
 
 -(void) setOriginWithRotationX:(float) x Y:(float) y
 {

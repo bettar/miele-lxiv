@@ -189,7 +189,7 @@ PURPOSE.
 	
 	if( [[tableColumn identifier] isEqualToString:@"volume"])
 	{
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 		float volume = [viewer computeVolume:[curRoiList objectAtIndex:row] points:nil error: nil];
 		
 		if( volume)

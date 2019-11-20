@@ -634,7 +634,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
                     if ([path.lowercaseString rangeOfString:@"/."].location != NSNotFound) //Don't scan hidden files
                         continue;
                     
-                    if ([path.lowercaseString rangeOfString:@".app"].location != NSNotFound) //Don't scan the content of MacOS application: OsiriX Lite
+                    if ([path.lowercaseString rangeOfString:@".app"].location != NSNotFound) //Don't scan the content of MacOS application: Miele-LXIV Lite
                         continue;
                         
                     if ([DicomFile isDICOMFile:path])
@@ -675,7 +675,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
         
         CDMountModeType mode = (CDMountModeType)[NSUserDefaults.standardUserDefaults integerForKey:CD_MOUNT_KEY];
         
-#ifdef OSIRIX_LIGHT
+#ifdef MIELE_LIGHT
         mode = CD_MODE_SHOW_AS_SEPARATE_SOURCE;
 #endif
         

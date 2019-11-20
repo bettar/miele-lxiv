@@ -92,7 +92,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 - (NSSet*) paths;
 - (NSString*) completePath;
 - (NSString*) completePathResolved;
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (DCMSequenceAttribute*) graphicAnnotationSequence;
 #endif
 - (NSImage*) image;

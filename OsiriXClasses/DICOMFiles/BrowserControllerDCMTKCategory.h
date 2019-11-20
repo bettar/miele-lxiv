@@ -26,7 +26,7 @@
 @interface BrowserController (BrowserControllerDCMTKCategory)
 + (NSString*) compressionString: (NSString*) string;
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (NSData*) getDICOMFile:(NSString*) file inSyntax:(NSString*) syntax quality: (int) quality;
 - (BOOL) testFiles: (NSArray*) files __deprecated;
 - (BOOL) needToCompressFile: (NSString*) path __deprecated;

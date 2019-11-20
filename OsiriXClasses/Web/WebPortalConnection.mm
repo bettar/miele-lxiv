@@ -477,7 +477,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
     
 	if ([requestedPath hasPrefix:@"/weasis/"])
 	{
-		#ifndef OSIRIX_LIGHT
+		#ifndef MIELE_LIGHT
 		response.data = [NSData dataWithContentsOfFile:[[[AppController sharedAppController] weasisBasePath] stringByAppendingPathComponent:requestedPath]];
 		#else
 		response.statusCode = 404;

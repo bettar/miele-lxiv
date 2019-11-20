@@ -2808,6 +2808,9 @@
 "Miele-LXIV crashed" = "Miele-LXIV s'est écrasé";
 
 /* No comment provided by engineer. */
+"Miele-LXIV Lite" = "Miele-LXIV Lite";
+
+/* No comment provided by engineer. */
 "Miele-LXIV Web Site" = "Site Web de Miele-LXIV";
 
 /* No comment provided by engineer. */
@@ -3325,12 +3328,6 @@
 
 /* No comment provided by engineer. */
 "OsiriX is up-to-date" = "Miele-LXIV est à jour";
-
-/* No comment provided by engineer. */
-"OsiriX Light" = "Miele-LXIV Light";
-
-/* No comment provided by engineer. */
-"OsiriX Lite" = "Miele-LXIV Lite";
 
 /* No comment provided by engineer. */
 "OsiriX requires templates files in Pages '09 format. Open your template in Pages, select File menu and Export to Pages '09 format." = "Miele-LXIV a besoin de fichiers modèles au format Pages'09. Ouvrez votre modèle dans Pages, sélectionnez le menu Fichier et Exporter au format Pages'09.";
@@ -5478,6 +5475,9 @@ alpha: %2$.3f";
 
 /* No comment provided by engineer. */
 "Yesterday XA" = "Hier XA";
+
+/* No comment provided by engineer. */
+"You can download the full version of Miele-LXIV on the Internet." = "Vous pouvez télécharger la version complète de Miele-LXIV sur Internet.";
 
 /* No comment provided by engineer. */
 "You can only edit the 'Content' column." = "Vous ne pouvez éditer que la colonne'Contenu'.";

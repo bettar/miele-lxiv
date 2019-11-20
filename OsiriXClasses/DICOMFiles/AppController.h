@@ -32,7 +32,7 @@
 */
 
 #ifdef OSIRIX_VIEWER
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #ifndef MACAPPSTORE
 //#import <Growl/Growl.h>
 #endif
@@ -95,7 +95,7 @@ extern "C"
 *
 */
 
-//#if defined(OSIRIX_VIEWER) && !defined(OSIRIX_LIGHT) && !defined(MACAPPSTORE)
+//#if defined(OSIRIX_VIEWER) && !defined(MIELE_LIGHT) && !defined(MACAPPSTORE)
 //#else
 //@protocol GrowlApplicationBridgeDelegate
 //@end
@@ -179,10 +179,11 @@ extern AppController* OsiriX;
 - (BOOL) isStoreSCPRunning;
 
 #pragma mark - static menu items
+
 //===============OSIRIX========================
 - (IBAction) about:(id)sender; /**< Display the about window */
 - (IBAction) showPreferencePanel:(id)sender; /**< Show Preferences window */
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (IBAction) checkForUpdates:(id) sender;  /**< Check for update */
 - (IBAction) autoQueryRefresh:(id)sender;
 #endif
@@ -274,7 +275,7 @@ extern AppController* OsiriX;
 #pragma mark -
 -(WebPortal*)defaultWebPortal;
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 -(NSString*)weasisBasePath;
 #endif
 

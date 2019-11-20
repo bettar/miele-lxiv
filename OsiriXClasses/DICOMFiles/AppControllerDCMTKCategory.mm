@@ -37,7 +37,7 @@ extern int gPutSrcAETitleInSourceApplicationEntityTitle, gPutDstAETitleInPrivate
 
 - (void)initDCMTK
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     // register global JPEG codecs
     DJDecoderRegistration::registerCodecs();
     DJEncoderRegistration::registerCodecs(
@@ -82,7 +82,7 @@ extern int gPutSrcAETitleInSourceApplicationEntityTitle, gPutDstAETitleInPrivate
 }
 - (void)destroyDCMTK
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     // deregister JPEG codecs
     DJDecoderRegistration::cleanup();
     DJEncoderRegistration::cleanup();

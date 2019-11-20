@@ -2807,6 +2807,9 @@
 "Miele-LXIV crashed" = "Miele-LXIV 坠毁";
 
 /* No comment provided by engineer. */
+"Miele-LXIV Lite" = "Miele-LXIV Lite";
+
+/* No comment provided by engineer. */
 "Miele-LXIV Web Site" = "Miele-LXIV 网站";
 
 /* No comment provided by engineer. */
@@ -3324,12 +3327,6 @@
 
 /* No comment provided by engineer. */
 "OsiriX is up-to-date" = "Miele-LXIV 是最新的";
-
-/* No comment provided by engineer. */
-"OsiriX Light" = "Miele-LXIV Light";
-
-/* No comment provided by engineer. */
-"OsiriX Lite" = "Miele-LXIV Lite";
 
 /* No comment provided by engineer. */
 "OsiriX requires templates files in Pages '09 format. Open your template in Pages, select File menu and Export to Pages '09 format." = "Miele-LXIV 需要 Pages '09 格式的模板文件。在 Pages 中打开模板, 选择 \"文件\" 菜单, 然后选择 \"导出到\" Pages ’09 格式。";
@@ -5477,6 +5474,9 @@ alpha:%2$.3f";
 
 /* No comment provided by engineer. */
 "Yesterday XA" = "昨天XA";
+
+/* No comment provided by engineer. */
+"You can download the full version of Miele-LXIV on the Internet." = "您可以在互联网上下载 Miele-LXIV 的完整版。";
 
 /* No comment provided by engineer. */
 "You can only edit the 'Content' column." = "您只能编辑 \"内容\" 列。";

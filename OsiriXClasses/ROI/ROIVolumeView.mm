@@ -361,7 +361,7 @@
 {
     vtkMapper *mapper = nil;
     
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 
     NSMutableArray *generatedROIs = [NSMutableArray array];
     NSMutableArray *ptsArray = nil;
@@ -584,7 +584,7 @@
             [[vc.roiList objectAtIndex: index] removeObject: c];
         }
     }
-#endif // OSIRIX_LIGHT
+#endif // MIELE_LIGHT
     return mapper;
 }
 

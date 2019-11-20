@@ -480,7 +480,7 @@ static DicomDatabase* activeLocalDatabase = nil;
             
             // report templates
 #if 1 //ndef MACAPPSTORE
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
             NSString *templatesPath = [self.baseDirPath stringByAppendingPathComponent:@"TEMPLATES"];
             for (NSString* rfName in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
                 NSString *rfPath = [templatesPath stringByAppendingPathComponent:rfName];
@@ -1331,7 +1331,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 //- (void)listenerAnonymizeFiles: (NSArray*)files
 //{
-//#ifndef OSIRIX_LIGHT
+//#ifndef MIELE_LIGHT
 //	NSArray* array = [NSArray arrayWithObjects: [DCMAttributeTag tagWithName:@"PatientsName"], @"**anonymized**", nil];
 //	NSMutableArray* tags = [NSMutableArray array];
 //	
@@ -2835,7 +2835,7 @@ static BOOL protectionAgainstReentry = NO;
                         
                         BOOL succeed = YES;
                         
-        #ifndef OSIRIX_LIGHT
+        #ifndef MIELE_LIGHT
                         thread.status = NSLocalizedString(@"Validating the files...", nil);
                         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
                             succeed = [DicomDatabase testFiles: copiedFiles];
@@ -2992,7 +2992,7 @@ static BOOL protectionAgainstReentry = NO;
 		}
 		
 		NSMutableArray *filesArray = [NSMutableArray array];
-#ifdef OSIRIX_LIGHT
+#ifdef MIELE_LIGHT
 		listenerCompressionSettings = 0;
 #endif
 		
@@ -3215,7 +3215,7 @@ static BOOL protectionAgainstReentry = NO;
                             {
                                 if ((isJPEGCompressed == YES && listenerCompressionSettings == 1) ||    // Decompress
                                     (isJPEGCompressed == NO  && listenerCompressionSettings == 2        // Compress
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
                                      && [DicomDatabase fileNeedsDecompression: srcPath]
 #else	
 #endif
@@ -3341,7 +3341,7 @@ static BOOL protectionAgainstReentry = NO;
     if (enumer.nextObject) // there is more data
         [self performSelector:@selector(initiateImportFilesFromIncomingDirUnlessAlreadyImporting) withObject:nil afterDelay:0];
 	
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	if ([compressedPathArray count] > 0) // there are files to compress/decompress in the decompression dir
     {
 		if (listenerCompressionSettings == 1 || listenerCompressionSettings == 0) // decompress, listenerCompressionSettings == 0 for zip support!
@@ -4254,7 +4254,7 @@ static BOOL protectionAgainstReentry = NO;
 
 -(void)checkForExistingReportForStudy:(DicomStudy*)study
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	@try { // is there a report?
 		NSArray* filenames = [NSArray arrayWithObjects: [Reports getUniqueFilename:study], [Reports getOldUniqueFilename:study], NULL];
 		NSArray* extensions = [NSArray arrayWithObjects: @"pages", @"odt", @"doc", @"docx", @"rtf", NULL];

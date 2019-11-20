@@ -123,7 +123,7 @@
 #import "url.h"
 #import "tmp_locations.h"
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #import "Anonymization.h"
 #import "AnonymizationSavePanelController.h"
 #import "AnonymizationViewController.h"
@@ -1018,7 +1018,7 @@ static NSConditionLock *threadLock = nil;
 - (void) testAutorouting
 {
 	// Test the routing filters
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
 	{
 		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
@@ -1584,7 +1584,7 @@ static NSConditionLock *threadLock = nil;
             studiesToCheck = [NSArray arrayWithObject: studySelected];
     }
     
-    #ifndef OSIRIX_LIGHT
+    #ifndef MIELE_LIGHT
     //If PACS On-Demand is activated, check if a local study has more or same number of images of a distant study
     NSMutableArray *patientStudies = [NSMutableArray array];
     
@@ -1824,7 +1824,7 @@ static NSConditionLock *threadLock = nil;
 				[self refreshMatrix: self];
 				[self refreshAlbums];
 				
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 				if ([QueryController currentQueryController])
 					[[QueryController currentQueryController] refresh: self];
 				else if ([QueryController currentAutoQueryController])
@@ -2600,7 +2600,7 @@ static NSConditionLock *threadLock = nil;
 
 -(long)saveUserDatabase __deprecated
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	[[[WebPortal defaultWebPortal] database] save:NULL];
 #endif
 	return 0;
@@ -2608,7 +2608,7 @@ static NSConditionLock *threadLock = nil;
 
 -(NSManagedObjectModel*)userManagedObjectModel __deprecated
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	return [[[WebPortal defaultWebPortal] database] managedObjectModel];
 #else
 	return NULL;
@@ -2617,7 +2617,7 @@ static NSConditionLock *threadLock = nil;
 
 -(NSManagedObjectContext*)userManagedObjectContext __deprecated
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	return [[[WebPortal defaultWebPortal] database] managedObjectContext];
 #else
 	return NULL;
@@ -2626,7 +2626,7 @@ static NSConditionLock *threadLock = nil;
 
 -(WebPortalUser*)userWithName:(NSString*)name __deprecated
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	return [[[WebPortal defaultWebPortal] database] userWithName:name];
 #else
 	return NULL;
@@ -3155,7 +3155,7 @@ static NSConditionLock *threadLock = nil;
                 }
                 
                 // Merge local and distant studies
-                #ifndef OSIRIX_LIGHT
+                #ifndef MIELE_LIGHT
                 
                 // Autoretrieve?
                 NSMutableArray *studyToAutoretrieve = [NSMutableArray array];
@@ -3428,7 +3428,7 @@ static NSConditionLock *threadLock = nil;
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     autoretrievingPACSOnDemandSmartAlbum = YES;
     {
-        #ifndef OSIRIX_LIGHT
+        #ifndef MIELE_LIGHT
         [studies setValue:@YES forKey:@"isAutoRetrieve"];
         [QueryController retrieveStudies: studies showErrors: NO checkForPreviousAutoRetrieve: YES];
         #endif
@@ -3688,7 +3688,7 @@ static NSConditionLock *threadLock = nil;
         [comparativeTable reloadData];
 	}
 	
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	if ([QueryController currentQueryController])
 		[[QueryController currentQueryController] refresh: self];
 	else if ([QueryController currentAutoQueryController])
@@ -3698,7 +3698,7 @@ static NSConditionLock *threadLock = nil;
 
 - (NSArray*) childrenArray: (id)item onlyImages: (BOOL)onlyImages
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     if ([item isDistant])
         return [NSArray array];
 #endif
@@ -4165,7 +4165,7 @@ static NSConditionLock *threadLock = nil;
 
 - (NSArray*) distantStudiesForSearchString: (NSString*) curSearchString type:(int) curSearchType
 {
-    #ifndef OSIRIX_LIGHT
+    #ifndef MIELE_LIGHT
     if (!searchForComparativeStudiesLock)
         searchForComparativeStudiesLock = [NSRecursiveLock new];
     
@@ -4356,7 +4356,7 @@ static NSConditionLock *threadLock = nil;
 
 - (NSArray*) distantStudiesForIntervalFrom: (NSDate*) from to:(NSDate*) to
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     if (!searchForComparativeStudiesLock)
         searchForComparativeStudiesLock = [NSRecursiveLock new];
     
@@ -4496,7 +4496,7 @@ static NSConditionLock *threadLock = nil;
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] == NO)
         return [NSArray array];
     
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     if (!searchForComparativeStudiesLock)
         searchForComparativeStudiesLock = [NSRecursiveLock new];
     
@@ -4719,7 +4719,7 @@ static NSConditionLock *threadLock = nil;
                             if (servers.count)
                             {
                                 // Distant studies
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
                                 distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName usePatientBirthDate: usePatientBirthDate servers: servers showErrors: NO];
                                 
                                 // Merge local and distant studies
@@ -5022,7 +5022,7 @@ static NSConditionLock *threadLock = nil;
                 selectedStudy = [copy objectAtIndex: [comparativeTable selectedRow]];
             
             BOOL found = NO;
-            #ifndef OSIRIX_LIGHT
+            #ifndef MIELE_LIGHT
             for (DCMTKStudyQueryNode *study in self.comparativeStudies)
             {
                 if ([study.studyInstanceUID isEqualToString: newStudy.studyInstanceUID])
@@ -5440,7 +5440,7 @@ static NSConditionLock *threadLock = nil;
 	[self mergeSeriesExecute: seriesArray];
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (IBAction) unifyStudies:(id) sender
 {
     [ViewerController closeAllWindows];
@@ -6130,7 +6130,7 @@ static NSConditionLock *threadLock = nil;
     
 	[self refreshMatrix: self];
     
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	[[QueryController currentQueryController] executeRefresh: self];
 	[[QueryController currentAutoQueryController] executeRefresh: self];
 #endif
@@ -6299,7 +6299,7 @@ static NSConditionLock *threadLock = nil;
         
         [self refreshMatrix: self];
         
-        #ifndef OSIRIX_LIGHT
+        #ifndef MIELE_LIGHT
         [[QueryController currentQueryController] executeRefresh: self];
         [[QueryController currentAutoQueryController] executeRefresh: self];
         #endif
@@ -6480,7 +6480,7 @@ static NSConditionLock *threadLock = nil;
 		}
 		else
 		{
-#ifndef  OSIRIX_LIGHT
+#ifndef  MIELE_LIGHT
             if ([item isKindOfClass: [DCMTKStudyQueryNode class]])
                 returnVal = [[item children] objectAtIndex: index];
             else
@@ -6506,7 +6506,7 @@ static NSConditionLock *threadLock = nil;
 	
     if ([item isDistant])
     {
-        #ifndef OSIRIX_LIGHT
+        #ifndef MIELE_LIGHT
         if ([item isKindOfClass: [DCMTKStudyQueryNode class]])
             return YES;
         else
@@ -6539,7 +6539,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	else
 	{
-        #ifndef OSIRIX_LIGHT
+        #ifndef MIELE_LIGHT
         if ([item isDistant])
         {
             @try
@@ -6844,7 +6844,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[_database save:NULL];
 	
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	if ([QueryController currentQueryController])
 		[[QueryController currentQueryController] refresh: self];
 	else if ([QueryController currentAutoQueryController])
@@ -7228,7 +7228,7 @@ static NSConditionLock *threadLock = nil;
 			r = YES;
 		}
 		
-		#ifndef OSIRIX_LIGHT
+		#ifndef MIELE_LIGHT
 		
 		if (([[[im valueForKey:@"modality"] lowercaseString] isEqualToString:@"pdf"] || [DCMAbstractSyntaxUID isPDF: [im valueForKeyPath: @"series.seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isStructuredReport: [im valueForKeyPath: @"series.seriesSOPClassUID"]]) && [[NSUserDefaults standardUserDefaults] boolForKey: @"openPDFwithPreview"])
 		{
@@ -7439,7 +7439,7 @@ static NSConditionLock *threadLock = nil;
             {
                 id comparativeStudy = nil;
                 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
                 if ([s isKindOfClass: [DCMTKStudyQueryNode class]])
                 {
                     DCMTKStudyQueryNode *study = s;
@@ -7513,7 +7513,7 @@ static NSConditionLock *threadLock = nil;
                     break;
             }
             
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
             // Wait until all distant studies are retrieved
             WaitRendering *w = nil;
             NSTimeInterval timeout = [NSDate timeIntervalSinceReferenceDate];
@@ -7730,7 +7730,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void) databaseOpenStudy: (NSManagedObject*) item
 {
-#ifndef  OSIRIX_LIGHT
+#ifndef  MIELE_LIGHT
     if ([item isKindOfClass: [DCMTKStudyQueryNode class]])
     {
         // Check to see if already in retrieving mode, if not download it
@@ -7809,7 +7809,7 @@ static NSConditionLock *threadLock = nil;
                         
                         if ([studiesArray count] == 0)
                         {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
                             NSArray *servers = [BrowserController comparativeServers];
                             
                             DCMTKStudyQueryNode *distantStudy = [[QueryController queryStudiesForFilters: [NSDictionary dictionaryWithObject: studyUID forKey: @"StudyInstanceUID"] servers: servers showErrors: NO] lastObject];
@@ -8147,7 +8147,7 @@ static NSConditionLock *threadLock = nil;
 		
         if ([[item numberOfImages] intValue] != 0)
         {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
             if ([item isDistant])
             {
                 id study = item;
@@ -8164,7 +8164,7 @@ static NSConditionLock *threadLock = nil;
                 [self databaseOpenStudy: item];
             }
         }
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
         else {
             [self querySelectedStudy:self];
         }
@@ -8995,7 +8995,7 @@ static NSConditionLock *threadLock = nil;
 	return string;
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 
 - (IBAction) pasteImageForSourceFile: (NSString*) sourceFile
 {
@@ -9879,7 +9879,7 @@ static BOOL withReset = NO;
 	[oMatrix setNeedsDisplay:YES];
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (void) pdfPreview:(id)sender
 {
     [self matrixPressed:sender];
@@ -12026,7 +12026,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
         // No time for decompression. Temporarily alter the settings
         [[NSUserDefaults standardUserDefaults] setInteger:LISTENER_COMPRESSION_DONT_MODIFY forKey: ListenerCompressionSettings_KEY];
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
         [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO checkForPreviousAutoRetrieve: NO];
 #endif
         
@@ -12182,7 +12182,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
                 
                 if (study && dontSelectStudyFromComparativeStudies == NO)
                 {
-//                    #ifndef OSIRIX_LIGHT
+//                    #ifndef MIELE_LIGHT
 //                    if ([study isDistant]) // distant study -> download it, and select it
 //                    {
 //                        [self retrieveComparativeStudy: study select: YES open: NO]; -- Only when double-clicking
@@ -13856,7 +13856,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
                                      nil);
 	}
 	
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	BOOL escKey = CGEventSourceKeyState( kCGEventSourceStateCombinedSessionState, 53);
 	
 	if (escKey) //Open the images, and export them
@@ -13891,7 +13891,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	else
 		[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 	
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	BOOL escKey = CGEventSourceKeyState( kCGEventSourceStateCombinedSessionState, 53);
 	
 	if (escKey) //Open the images, and export them
@@ -14860,7 +14860,7 @@ static NSArray*	openSubSeriesArray = nil;
         
         [self refreshMatrix: self];
         
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
         if ([[NSUserDefaults standardUserDefaults] boolForKey: @"restartAutoQueryAndRetrieve"] == YES &&
             [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettingsArray"] != nil)
         {
@@ -16180,7 +16180,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
 //- (void)listenerAnonymizeFiles: (NSArray*)files
 //{
-//	#ifndef OSIRIX_LIGHT
+//	#ifndef MIELE_LIGHT
 //	NSArray				*array = [NSArray arrayWithObjects: [DCMAttributeTag tagWithName:@"PatientsName"], @"**anonymized**", [DCMAttributeTag tagWithName:@"PatientID"], @"00000",nil];
 //	NSMutableArray		*tags = [NSMutableArray array];
 //	
@@ -16358,7 +16358,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return [[[array objectAtIndex: 0] valueForKey: @"compression"] intValue];
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 
 - (void)decompressDICOMJPEGinINCOMING:(NSArray*)array __deprecated
 {
@@ -16846,7 +16846,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			tempPath = [tempPath stringByAppendingFormat: @"_%d", uniqueSeriesID];
 			previousPath = [NSString stringWithString: tempPath];
 			
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 			if ([DCMAbstractSyntaxUID isPDF: [curImage valueForKeyPath: @"series.seriesSOPClassUID"]])
 			{
 				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [curImage valueForKey: @"completePath"] decodingPixelData:NO];
@@ -17282,7 +17282,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self exportImageAs: @"tif" sender: sender];
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 
 - (IBAction) addStudiesToUser: (id) sender
 {
@@ -17363,7 +17363,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 -(IBAction)sendEmailNotification:(id)sender
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	self.temporaryNotificationEmail = @"";
 	self.customTextNotificationEmail = @"";
 	
@@ -17499,7 +17499,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 -(IBAction)sendMail:(id)sender
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     #define kScriptName (@"Mail")
     #define kScriptType (@"scpt")
     #define kHandlerName (@"mail_images")
@@ -17658,7 +17658,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return mstr;
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (void) importReport:(NSString*) path UID: (NSString*) uid
 {
 	if ([[NSFileManager defaultManager] fileExistsAtPath: path])
@@ -18060,7 +18060,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	//		[waitCompressionWindow showWindow:self];
 	//		[[waitCompressionWindow progress] setMaxValue: [files2Compress count]];
 			
-			#ifndef OSIRIX_LIGHT
+			#ifndef MIELE_LIGHT
 			switch( [compressionMatrix selectedTag])
 			{
 				case 1:
@@ -18078,7 +18078,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		// ANR - I had to create this loop, otherwise, if I export a folder on the desktop, the dcmkdir will scan all files and folders available on the desktop.... not only the exported folder.
 		
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 		if (addDICOMDIR && exportAborted == NO)
 		{
 			for (int i = 0; i < [filesToExport count]; i++)
@@ -18333,7 +18333,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 
 #ifdef OSIRIX_VIEWER
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (void) exportROIAndKeyImagesAsDICOMSeries: (id) sender
 {
     WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Generating the DICOM files...", nil)];
@@ -18461,7 +18461,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (void)burnDICOM: (id)sender
 {
 	for (NSWindow *win in [NSApp windows])
@@ -18492,7 +18492,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 #endif
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (IBAction)anonymizeDICOM:(id)sender
 {
 	NSMutableArray *dicomFiles2Anonymize = [NSMutableArray array];
@@ -18616,7 +18616,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 
 #endif
 
@@ -18647,7 +18647,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self selectServer: objects];
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (IBAction)querySelectedStudy: (id)sender
 {
 //	if (DICOMDIRCDMODE)
@@ -18711,7 +18711,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[sender release];
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (IBAction)importRawData:(id)sender
 {
 	[[rdPatientForm cellWithTag:0] setStringValue: @"Raw Data"]; //Patient Name
@@ -18930,7 +18930,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 #pragma mark - RTSTRUCT
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (void)createROIsFromRTSTRUCT: (id)sender
 {
 	NSMutableArray *filesArray = [NSMutableArray array];
@@ -19180,7 +19180,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (IBAction) generateReport: (id)sender
 {
 	NSIndexSet *index = [databaseOutline selectedRowIndexes];
@@ -19452,7 +19452,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	@try
 	{
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 		NSMutableArray* templatesArray = nil;
         switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
             case REPORT_TYPE_PAGES:
@@ -19522,7 +19522,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)reportToolbarItemWillPopUp: (NSNotification *)notif
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	if ([[notif object] isEqualTo:reportTemplatesListPopUpButton])
 	{
 		[reportTemplatesListPopUpButton removeAllItems];
@@ -20280,7 +20280,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		else
 			[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 		
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 		BOOL escKey = CGEventSourceKeyState( kCGEventSourceStateCombinedSessionState, 53);
 		
 		if (escKey) //Open the images, and export them

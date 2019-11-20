@@ -1039,7 +1039,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"10" forKey:@"DICOMConnectionTimeout"];
 	[defaultValues setObject:@"1" forKey:@"NSWindowsSetFrameAnimate"];
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONTYPE"];
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	[defaultValues setObject: @YES forKey: @"COPYDATABASE"];
 #else
 	[defaultValues setObject: @NO forKey: @"COPYDATABASE"];
@@ -1121,7 +1121,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject: dataPeak forKey: @"peakValueColor"];
     [defaultValues setObject: dataIso  forKey: @"isoContourColor"];
 #else
-    // OsiriX Lite does it this way ?
+    // Miele-LXIV Lite does it this way ?
     [defaultValues setObject:[NSNumber numberWithFloat: 0.5 * 65535.] forKey:@"peakValueColorR"];
     [defaultValues setObject:[NSNumber numberWithFloat: 0.5 * 65535.] forKey:@"peakValueColorG"];
     [defaultValues setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"peakValueColorB"];

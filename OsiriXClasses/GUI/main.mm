@@ -25,13 +25,13 @@
 
 #include "options.h"
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #include "FVTiff.h"
 #endif
 
 int main(int argc, const char *argv[])
 {	
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     FVTIFFInitialize();
 #endif
    

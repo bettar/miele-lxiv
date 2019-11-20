@@ -12,6 +12,7 @@
 
 #define URL_MIELE_SOURCES           @"https://github.com/bettar/miele-lxiv"
 #define URL_MIELE_WEB_PAGE          @"http://bettar.github.io/miele-lxiv"
+#define URL_MIELE_MAC_APP_STORE     @"https://apps.apple.com/us/app/miele-lxiv/id988332475"
 
 #define URL_MIELE_WEB_RESOURCES     @"https://raw.githubusercontent.com/bettar/miele-lxiv"
 #define URL_VENDOR                  @"http://bettar.no-ip.org/lxiv"

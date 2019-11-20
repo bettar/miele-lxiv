@@ -23,7 +23,7 @@
 
 #import "OSI3DPreferencePane.h"
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #import "vtkMieleView.h"
 #endif
 
@@ -62,7 +62,7 @@
     if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == ENGINE_CPU)
         return;
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[mainWindow screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
     
     //vram /= 1024*1024;

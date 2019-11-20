@@ -68,7 +68,7 @@ extern NSRecursiveLock *Papyrus_Lock;
 		return NSLocalizedString( @"Unknown UID", nil);
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 
 static int uniqueID = 1;
 static NSString *uniqueSync = @"uniqueSync";

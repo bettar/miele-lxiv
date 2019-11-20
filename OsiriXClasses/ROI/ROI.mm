@@ -2702,7 +2702,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		return tempArray;
 	}
 	
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	if (type == tPlain)
 	{
 		NSMutableArray  *tempArray = [ITKSegmentation3D extractContour:textureBuffer

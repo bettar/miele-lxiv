@@ -798,7 +798,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 		[fusionPluginsMenu insertItemWithTitle:NSLocalizedString(@"Select a fusion plug-in", nil) action:nil keyEquivalent:@"" atIndex:0];
 		
 		NSLog( @"|||||||||||||||||| Plugins loading START ||||||||||||||||||");
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
         NSString *pluginCrash = [[[NSFileManager defaultManager] userApplicationSupportFolderForApp] stringByAppendingPathComponent:@"Plugin_Loading"];
         if ([[NSFileManager defaultManager] fileExistsAtPath: pluginCrash] &&
             ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotDeleteCrashingPlugins"])

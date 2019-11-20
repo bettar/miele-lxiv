@@ -487,7 +487,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         else
         {
             CDMountModeType mode = (CDMountModeType)[[NSUserDefaults standardUserDefaults] integerForKey: CD_MOUNT_KEY];
-#ifdef OSIRIX_LIGHT
+#ifdef MIELE_LIGHT
             mode = CD_MODE_SHOW_AS_SEPARATE_SOURCE;
 #endif
             
@@ -1108,7 +1108,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 #endif
 
     CDMountModeType mode = (CDMountModeType)[[NSUserDefaults standardUserDefaults] integerForKey: CD_MOUNT_KEY];
-#ifdef OSIRIX_LIGHT
+#ifdef MIELE_LIGHT
     mode = CD_MODE_SHOW_AS_SEPARATE_SOURCE;
 #endif
     
@@ -1388,7 +1388,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         CDMountModeType mode = (CDMountModeType)[NSUserDefaults.standardUserDefaults integerForKey:CD_MOUNT_KEY];
         BOOL autoSelectSourceCDDVD = [[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"];
         
-#ifdef OSIRIX_LIGHT
+#ifdef MIELE_LIGHT
         mode = CD_MODE_SHOW_AS_SEPARATE_SOURCE;
         autoSelectSourceCDDVD = YES;
 #endif

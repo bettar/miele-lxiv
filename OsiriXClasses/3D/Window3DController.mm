@@ -35,7 +35,7 @@
 
 @implementation Window3DController
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (void) mprViewer:(id) sender
 {
 	[[self viewer] mprViewer: sender];

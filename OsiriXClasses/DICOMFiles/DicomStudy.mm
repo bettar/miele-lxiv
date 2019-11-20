@@ -352,7 +352,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     
     avoidReentry3++;
     
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	if( [self.hasDICOM boolValue] == YES)
 	{
         @try
@@ -620,7 +620,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     
     avoidReentry2++;
     
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	if ([self.hasDICOM boolValue] == YES)
 	{
 		@try {
@@ -717,7 +717,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     
     avoidReentry++;
     
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	if( [self.hasDICOM boolValue] == YES)
 	{
 		[self.managedObjectContext lock];
@@ -955,7 +955,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (void) dcmodifyThread: (NSDictionary*) dict
 {
 	#ifdef OSIRIX_VIEWER
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	[[DicomStudy dbModifyLock] lock];
 	@try {
@@ -1092,7 +1092,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (void) setStateText: (NSNumber*) c
 {
 	#ifdef OSIRIX_VIEWER
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	@try 
 	{
 		if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
@@ -2308,7 +2308,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (NSArray*) generateDICOMSCImagesForKeyImages: (BOOL) keyImages andROIImages: (BOOL) ROIImages
 {
 #ifdef OSIRIX_VIEWER
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     NSArray *images = nil;
     
     if( keyImages && ROIImages)
@@ -2362,7 +2362,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 }
 
 #ifdef OSIRIX_VIEWER
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 -(NSArray*)authorizedUsers
 {
     NSManagedObjectContext* webContext = [WebPortal.defaultWebPortal.database independentContext];

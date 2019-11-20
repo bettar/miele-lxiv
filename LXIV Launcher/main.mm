@@ -13,8 +13,10 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #import "tmp_locations.h"
+#import "url.h"
 
-#define WITH_CHOICE_FOR_VIEWER_LITE
+#define WITH_OPTION_TO_LAUNCH_VIEWER_LITE
+#define WITH_DOWLOAD_SUGGESTION
 
 enum	{kSuccess = 0,
         kCouldNotFindRequestedProcess = -1, 
@@ -23,20 +25,18 @@ enum	{kSuccess = 0,
         kUnableToAllocateMemoryForBuffer = -4,
         kPIDBufferOverrunError = -5};
 
-
 int GetAllPIDsForProcessName(const char* ProcessName, 
                              pid_t ArrayOfReturnedPIDs[], 
                              const unsigned int NumberOfPossiblePIDsInArray, 
                              unsigned int* NumberOfMatchesFound,
                              int* SysctlError)
 {
-    // --- Defining local variables for this function and initializing all to zero --- //
+    // --- Defining local variables for this function and initializing all to zero
     int mib[6] = {0,0,0,0,0,0}; //used for sysctl call.
     int SuccessfullyGotProcessInformation;
     size_t sizeOfBufferRequired = 0; //set to zero to start with.
     int error = 0;
     long NumberOfRunningProcesses = 0;
-    unsigned int Counter = 0;
     struct kinfo_proc* BSDProcessInformationStructure = NULL;
     pid_t CurrentExaminedProcessPID = 0;
     char* CurrentExaminedProcessName = NULL;
@@ -207,7 +207,7 @@ int GetAllPIDsForProcessName(const char* ProcessName,
      * Note we limit the compairison to MAXCOMLEN which is the maximum length of a BSD process name which is used
      * by the system. 
      */
-    for (Counter = 0 ; Counter < NumberOfRunningProcesses ; Counter++)
+    for (unsigned int Counter = 0 ; Counter < NumberOfRunningProcesses ; Counter++)
     {
         //Getting PID of process we are examining
         CurrentExaminedProcessPID = BSDProcessInformationStructure[Counter].kp_proc.p_pid; 
@@ -215,8 +215,8 @@ int GetAllPIDsForProcessName(const char* ProcessName,
         //Getting name of process we are examining
         CurrentExaminedProcessName = BSDProcessInformationStructure[Counter].kp_proc.p_comm; 
         
-        if ((CurrentExaminedProcessPID > 0) //Valid PID
-           && ((strncmp(CurrentExaminedProcessName, ProcessName, MAXCOMLEN) == 0))) //name matches
+        if ((CurrentExaminedProcessPID > 0) && //Valid PID
+            ((strncmp(CurrentExaminedProcessName, ProcessName, MAXCOMLEN) == 0))) //name matches
         {	
             // --- Got a match add it to the array if possible --- //
             if ((*NumberOfMatchesFound + 1) > NumberOfPossiblePIDsInArray)
@@ -232,20 +232,18 @@ int GetAllPIDsForProcessName(const char* ProcessName,
             //incrementing our number of matches found.
             *NumberOfMatchesFound = *NumberOfMatchesFound + 1;
         }
-    }//end looking through process list
+    } //end looking through process list
 
     free(BSDProcessInformationStructure); //done with allocated buffer so release.
 
     if (*NumberOfMatchesFound == 0)
     {
         //didn't find any matches return error.
-        return(kCouldNotFindRequestedProcess);
+        return kCouldNotFindRequestedProcess;
     }
-    else
-    {
-        //found matches return success.
-        return(kSuccess);
-    }
+
+    // Found matches, return success.
+    return kSuccess;
 }
 
 int main(int argc, char** argv)
@@ -257,16 +255,16 @@ int main(int argc, char** argv)
     NSLog(@"tempLocation: %@", tempLocation);
 #endif
 	
-    ////////////////////////////////////////////////////////////////////////////
-    // First try launching Miele-LXIV if available
+#pragma mark - First try launching Miele-LXIV if available
+
     NSString* appName = @"miele-lxiv.app";
 #ifndef NDEBUG
     NSLog(@"Launching %@", [[NSWorkspace sharedWorkspace] fullPathForApplication:appName]);
 #endif
     BOOL launched = [[NSWorkspace sharedWorkspace] launchApplication:appName];
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Second choice launch OsiriX if available
+#pragma mark - Second choice launch OsiriX if available
+
     if (!launched) {
         appName = @"OsiriX.app";
 #ifndef NDEBUG
@@ -275,15 +273,15 @@ int main(int argc, char** argv)
         launched = [[NSWorkspace sharedWorkspace] launchApplication:appName];
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Third choice
-#ifdef WITH_CHOICE_FOR_VIEWER_LITE
+#pragma mark - Third choice
+
+#ifdef WITH_OPTION_TO_LAUNCH_VIEWER_LITE
     if (!launched) {
         NSTask* task;
         BOOL liteViewerAvailable;
         
 #if 0  // No need to make it because NSTemporaryDirectory() gives an existing directory
-        // make directory to hold OsiriX Lite
+        // make directory to hold Miele-LXIV Lite
         task = [NSTask launchedTaskWithLaunchPath:@"/bin/mkdir"
                                         arguments:[NSArray arrayWithObjects:
                                                    @"-p", tempLocation,
@@ -291,8 +289,8 @@ int main(int argc, char** argv)
         [task waitUntilExit];
 #endif
         
-        // unzip OsiriX Lite
-        NSString *liteViewerName = @"OsiriX Lite";
+        // Unzip Miele-LXIV Lite
+        NSString *liteViewerName = @"miele-lxiv-lite";
         NSString *liteViewerPath = [[NSBundle mainBundle] pathForResource:liteViewerName ofType:@"zip"];
         NSLog(@"liteViewerPath %@", liteViewerPath);
         NSFileManager *fm = [NSFileManager defaultManager];
@@ -312,8 +310,30 @@ int main(int argc, char** argv)
             launched = [[NSWorkspace sharedWorkspace] launchApplication:[tempLocation stringByAppendingPathComponent:appName]];
         }
     }
-#endif
+#endif // WITH_OPTION_TO_LAUNCH_VIEWER_LITE
     
+#ifdef WITH_DOWLOAD_SUGGESTION
+    if (!launched)
+    {
+        @try
+        {
+            long button = NSRunAlertPanel(NSLocalizedString( @"Miele-LXIV Lite", nil),
+                                         NSLocalizedString( @"You can download the full version of Miele-LXIV on the Internet.", nil),
+                                         NSLocalizedString( @"Continue", nil),
+                                         NSLocalizedString( @"Download", nil),
+                                         nil);
+        
+            if (NSCancelButton == button)
+                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_MAC_APP_STORE]];
+        }
+        @catch (NSException * e)
+        {
+            NSLog( @"%s %d, exception: %@", __FUNCTION__, __LINE__, e);
+            exit( 0);
+        }
+    }
+#endif // WITH_DOWLOAD_SUGGESTION
+
 	if (launched) {
 		// Write the path to DICOMDIR, if available
 		[[NSFileManager defaultManager] removeItemAtPath: [tempLocation stringByAppendingPathComponent: @"DICOMDIRPATH"] error: nil];
@@ -328,12 +348,10 @@ int main(int argc, char** argv)
 
 		pid_t MyArray [kPIDArrayLength];
 		unsigned int NumberOfMatches;
-		int Counter, Error;
 		
-		Error = GetAllPIDsForProcessName( [appName UTF8String], MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
-		
+		int Error = GetAllPIDsForProcessName( [appName UTF8String], MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
 		if (Error == 0)
-			for (Counter = 0 ; Counter < NumberOfMatches ; Counter++)
+			for (int Counter = 0 ; Counter < NumberOfMatches ; Counter++)
 				if( MyArray[ Counter] != getpid())
 				{
                     
@@ -349,8 +367,7 @@ int main(int argc, char** argv)
 				}
 	}
     else {
-		// TODO: display error
-        /// @todo{display error}
+        NSLog( @"%s %d, Lite not launched", __FUNCTION__, __LINE__);
 	}
 	
 	[pool release];

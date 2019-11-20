@@ -935,7 +935,7 @@ static NSMutableDictionary *otherStudiesForThisPatientCache = nil;
                     if( servers.count)
                     {
                         // Distant studies
-    #ifndef OSIRIX_LIGHT
+    #ifndef MIELE_LIGHT
                         NSArray *distantStudies = [QueryController queryStudiesForPatient: study usePatientID: usePatientID usePatientName: usePatientName usePatientBirthDate: usePatientBirthDate servers: servers showErrors: NO];
                         
                         // Merge local and distant studies

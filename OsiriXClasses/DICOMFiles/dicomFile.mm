@@ -25,7 +25,7 @@
 
 #import <DCM/DCMUIDs.h>
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #include "FVTiff.h"
 #endif
 #import "MutableArrayCategory.h"
@@ -40,7 +40,7 @@
 #import "DICOMToNSString.h"
 #import "DefaultsOsiriX.h"
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #ifdef VTK_USE_SYSTEM_TIFF
 #include <tiffio.h>
 #else
@@ -63,7 +63,7 @@
 #endif
 
 #ifdef OSIRIX_VIEWER
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #import "DicomStudy.h"
 #endif
 #endif
@@ -375,7 +375,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			PREFERPAPYRUSFORCD = [sd integerForKey: @"PREFERPAPYRUSFORCD"];
             TOOLKITPARSER = 2; // Always and only DCMTK. Papyrus has been removed from the project.
             
-#ifdef OSIRIX_LIGHT
+#ifdef MIELE_LIGHT
 			TOOLKITPARSER = 2;
 #endif
 			
@@ -459,7 +459,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	int success = NO;
 	
 	#ifndef STATIC_DICOM_LIB
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	NSString *extension = [[file pathExtension] lowercaseString];
 	
 	if( [extension isEqualToString:@"tiff"] ||
@@ -484,7 +484,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	int success = NO;
 
 	#ifndef STATIC_DICOM_LIB
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	NSString *extension = [[file pathExtension] lowercaseString];
 	
 	if( [extension isEqualToString:@"tiff"] ||
@@ -608,7 +608,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	int success = 0;
 	
 	#ifndef STATIC_DICOM_LIB
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	NSString *extension = [[filePath pathExtension] lowercaseString];
 	
 	if( [extension isEqualToString:@"tiff"] ||
@@ -808,7 +808,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 				NSString *tempString = [[filePath lastPathComponent] stringByDeletingPathExtension];
 				
 #ifndef STATIC_DICOM_LIB
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 				if( [extension isEqualToString:@"tiff"] ||
 					[extension isEqualToString:@"stk"] ||
 					[extension isEqualToString:@"tif"])
@@ -1796,7 +1796,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 - (NSPDFImageRep*) PDFImageRep
 {
 #ifdef OSIRIX_VIEWER
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 
     NSString *pathDicomSrSlash = [NSTemporaryDirectory() stringByAppendingPathComponent:@"dicomsr_osirix/"];
 

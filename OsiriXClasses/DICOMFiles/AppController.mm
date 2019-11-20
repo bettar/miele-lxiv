@@ -58,7 +58,7 @@
 #import <objc/runtime.h>
 #import "NSPanel+N2.h"
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #import "BonjourPublisher.h"
 
 //#ifndef MACAPPSTORE
@@ -66,7 +66,7 @@
 //#endif
 
 #import "VRView.h"
-#endif // OSIRIX_LIGHT
+#endif // MIELE_LIGHT
 
 #import "PluginManagerController.h"
 #import "OSIWindowController.h"
@@ -177,7 +177,7 @@ enum	{kSuccess = 0,
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#ifdef OSIRIX_LIGHT
+#ifdef MIELE_LIGHT
 void exitOsiriX(void)
 {
 	[NSException raise: @"JPEG error exception raised" format: @"JPEG error exception raised - See Console.app for error message"];
@@ -464,7 +464,7 @@ NSString* convertDICOM( NSString *inputfile)
 	
 	converting = YES;
 	NSLog(@"convertDICOM - FAILED to use current DICOM File Parser : %@", inputfile);
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	[[BrowserController currentBrowser] decompressDICOMList: [NSArray arrayWithObject: inputfile]
                                                          to: [outputfile stringByDeletingLastPathComponent]];
 	#endif
@@ -1077,7 +1077,7 @@ static NSDate *lastWarningDate = nil;
 		
 		[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
 		
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 		// refresh the plugin manager window (if open)
 		NSArray *winList = [NSApp windows];		
 		for (NSWindow *window in winList)
@@ -1111,7 +1111,7 @@ static NSDate *lastWarningDate = nil;
     [NSApp stopModal];
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (IBAction) autoQueryRefresh:(id)sender
 {
 	[[QueryController currentAutoQueryController] refreshAutoQR: sender];
@@ -1538,7 +1538,7 @@ static NSDate *lastWarningDate = nil;
         
         Use_kdu_IfAvailable = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseKDUForJPEG2000"];
         
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
         [DCMPixelDataAttribute setUse_kdu_IfAvailable: Use_kdu_IfAvailable];
 #endif
         
@@ -2347,7 +2347,7 @@ static NSDate *lastWarningDate = nil;
 -(void) startSTORESCP:(id) sender
 {
 	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	[STORESCP_Lock lock];
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
@@ -2387,7 +2387,7 @@ static NSDate *lastWarningDate = nil;
 -(void) startSTORESCPTLS:(id) sender
 {
 	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
     [NSThread currentThread].name = @"DICOM Store-SCP TLS";
@@ -2742,7 +2742,7 @@ static BOOL firstCall = YES;
 {
 	unlink( [[NSTemporaryDirectory() stringByAppendingPathComponent:@"kill_all_storescu"] UTF8String]);
 	
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     [DICOMTLS eraseKeys];
 #endif
     
@@ -2759,7 +2759,7 @@ static BOOL firstCall = YES;
 	
 	[[BrowserController currentBrowser] browserPrepareForClose];
     
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	[WebPortal finalizeWebPortalClass];
 #endif
 
@@ -2862,20 +2862,20 @@ static BOOL firstCall = YES;
 	if ([[BrowserController currentBrowser] shouldTerminate: sender] == NO)
         return;
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     [[NSUserDefaults standardUserDefaults] setBool: [[[QueryController currentQueryController] window] isVisible] forKey: @"isQueryControllerVisible"];
 #endif
     for (NSWindow *w in [NSApp windows])
 		[w orderOut:sender];
     
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	[dcmtkQRSCP abort];
 	[dcmtkQRSCPTLS abort];
 #endif
 	
     [NSThread sleepForTimeInterval: 0.5];
     
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	[[QueryController currentQueryController] release];
 	[[QueryController currentAutoQueryController] release];
 #endif
@@ -2904,7 +2904,7 @@ static BOOL firstCall = YES;
         self = [super init];
         OsiriX = appController = self;
         
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
         [DICOMTLS eraseKeys];
 #endif
         [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
@@ -2922,7 +2922,7 @@ static BOOL firstCall = YES;
         
         [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
         
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
         [VRView testGraphicBoard];
 #endif
     }
@@ -3407,7 +3407,7 @@ static BOOL initialized = NO;
 				
 				Use_kdu_IfAvailable = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseKDUForJPEG2000"];
 				
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
                 [Reports checkForWordTemplates];
 				[Reports checkForPagesTemplate];
 				[DCMPixelDataAttribute setUse_kdu_IfAvailable: Use_kdu_IfAvailable];
@@ -3458,7 +3458,7 @@ static BOOL initialized = NO;
         description:(NSString*) description
                name:(NSString*) name
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #ifndef MACAPPSTORE
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"displayGrowlNotification"])
 	{
@@ -3483,7 +3483,7 @@ static BOOL initialized = NO;
 	
 	[self killAllStoreSCU: self];
 	
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	if (dcmtkQRSCP)
 		[QueryController echo: [self privateIP] port:[dcmtkQRSCP port] AET: [dcmtkQRSCP aeTitle]];
 
@@ -3615,7 +3615,7 @@ static BOOL initialized = NO;
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"SeriesListVisible"];
 //    [[NSUserDefaults standardUserDefaults] setBool: NO  forKey: @"AUTOHIDEMATRIX"];
     
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
 		[NSThread detachNewThreadSelector: @selector(checkForPluginUpdates:)
                                  toTarget: pluginManager
@@ -3645,17 +3645,17 @@ static BOOL initialized = NO;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
 		[[[BrowserController currentBrowser] window] orderOut: self];
 
-#ifdef OSIRIX_LIGHT
+#ifdef MIELE_LIGHT
 	@try
 	{
-		int button = NSRunAlertPanel(NSLocalizedString( @"OsiriX Lite", nil),
+		long button = NSRunAlertPanel(NSLocalizedString( @"Miele-LXIV Lite", nil),
                                      NSLocalizedString( @"This is the Lite version of OsiriX: many functions are not available. You can download the full version of OsiriX on the Internet.", nil),
                                      NSLocalizedString( @"Continue", nil),
                                      NSLocalizedString( @"Download", nil),
                                      nil);
 	
 		if (NSCancelButton == button)
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_WEB_PAGE]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_MAC_APP_STORE]];
 	}
 	@catch (NSException * e)
 	{
@@ -3742,7 +3742,7 @@ static BOOL initialized = NO;
 	[self testMenus];
     
 #if 0 // TODO: reinstate odt2pdf
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     if ([[NSBundle bundleForClass:[self class]] pathForAuxiliaryExecutable:@"odt2pdf"] == nil)
         N2LogStackTrace( @"\r****** path to odt2pdf == nil\r*****************************");  // raise exception
 #endif
@@ -3768,7 +3768,7 @@ static BOOL initialized = NO;
     
     [ROI loadDefaultSettings];
     
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #ifdef NDEBUG
     PFMoveToApplicationsFolderIfNecessary();
     
@@ -3806,7 +3806,7 @@ static BOOL initialized = NO;
     CFRelease( code);
 #endif // WITH_CODE_SIGNING
 #endif // NDEBUG
-#endif // OSIRIX_LIGHT
+#endif // MIELE_LIGHT
     
     if (![AppController hasAtLeastMacOS_Mavericks])
     {
@@ -3831,7 +3831,7 @@ static BOOL initialized = NO;
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
 #endif
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"isQueryControllerVisible"])
     {
         if ([QueryController currentQueryController] == nil)
@@ -4161,18 +4161,18 @@ static BOOL initialized = NO;
 	
 	[DicomDatabase initializeDicomDatabaseClass];
 	[BrowserController initializeBrowserControllerClass];
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	[WebPortal initializeWebPortalClass];
     _bonjourPublisher = [[BonjourPublisher alloc] init];
 #endif
 	
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
 		if (XMLRPCServer == nil)
             XMLRPCServer = [[XMLRPCInterface alloc] init];
 #endif
 	
-//	#ifndef OSIRIX_LIGHT
+//	#ifndef MIELE_LIGHT
 //	#ifndef MACAPPSTORE
 //	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"displayGrowlNotification"])
 //	{
@@ -4544,7 +4544,7 @@ static BOOL initialized = NO;
 {
 	WaitRendering *wait = nil;
 	
-#ifdef OSIRIX_LIGHT
+#ifdef MIELE_LIGHT
 	wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX Lite...", nil)] autorelease];
 #else
     wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Starting Miele-LXIV", nil)] autorelease];
@@ -4553,7 +4553,7 @@ static BOOL initialized = NO;
 	return wait;
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (IBAction) checkForUpdates: (id) sender
 {
 #ifndef MACAPPSTORE
@@ -4609,7 +4609,7 @@ static BOOL initialized = NO;
 #endif // NDEBUG
 #endif // MACAPPSTORE
 }
-#endif // OSIRIX_LIGHT
+#endif // MIELE_LIGHT
 
 //- (void) URL: (NSURL*) sender resourceDidFailLoadingWithReason: (NSString*) reason
 //{
@@ -4653,7 +4653,7 @@ static BOOL initialized = NO;
 	[dcmtkQRSCPTLS release];
 	dcmtkQRSCPTLS = nil;
 	
-//	#ifndef OSIRIX_LIGHT
+//	#ifndef MIELE_LIGHT
 //	[IChatTheatreDelegate releaseSharedDelegate];
 //	#endif
 	
@@ -5065,7 +5065,7 @@ static BOOL initialized = NO;
 		
 		if ([item action] == @selector(autoQueryRefresh:))
 		{
-			#ifndef OSIRIX_LIGHT
+			#ifndef MIELE_LIGHT
 			if ([QueryController currentAutoQueryController])
 				return YES;
 			else
@@ -5876,7 +5876,7 @@ static BOOL initialized = NO;
 {
     @try
     {
-        #ifndef OSIRIX_LIGHT
+        #ifndef MIELE_LIGHT
         return [[[WebPortal defaultWebPortal] database] managedObjectContext];
         #endif
     }
@@ -5896,14 +5896,14 @@ static BOOL initialized = NO;
 }
 
 -(WebPortal*)defaultWebPortal {
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	return [WebPortal defaultWebPortal];
 	#else
 	return nil;
 	#endif
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 
 -(NSString*)weasisBasePath {
 	return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"weasis"];

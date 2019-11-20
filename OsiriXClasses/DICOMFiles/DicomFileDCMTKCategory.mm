@@ -41,7 +41,7 @@
 #include "dcmtk/dcmjpeg/dipijpeg.h"    /* for dcmimage JPEG plugin */
 
 #ifdef OSIRIX_VIEWER
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #include "NrrdIO.h"  // ITK nearly raw raster data
 #endif
 #endif
@@ -167,7 +167,7 @@ extern NSRecursiveLock *Papyrus_Lock;
 -(short) getNRRDFile
 {
 	#ifdef OSIRIX_VIEWER
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	int			success = 0;
 	NSString	*extension = [[filePath pathExtension] lowercaseString];
 	char		*err = nil;
@@ -997,7 +997,7 @@ extern NSRecursiveLock *Papyrus_Lock;
     }
     
 #ifdef OSIRIX_VIEWER
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     if ([sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"])
     {
         if ([DicomStudy displaySeriesWithSOPClassUID: sopClassUID andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]])

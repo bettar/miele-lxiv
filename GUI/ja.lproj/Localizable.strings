@@ -2807,6 +2807,9 @@
 "Miele-LXIV crashed" = "Miele-LXIVがクラッシュ";
 
 /* No comment provided by engineer. */
+"Miele-LXIV Lite" = "Miele-LXIV Lite";
+
+/* No comment provided by engineer. */
 "Miele-LXIV Web Site" = "Miele-LXIV Webサイト";
 
 /* No comment provided by engineer. */
@@ -3325,12 +3328,6 @@
 
 /* No comment provided by engineer. */
 "OsiriX is up-to-date" = "Miele-LXIVは最新のものです";
-
-/* No comment provided by engineer. */
-"OsiriX Light" = "Miele-LXIV Light";
-
-/* No comment provided by engineer. */
-"OsiriX Lite" = "Miele-LXIV Lite";
 
 /* No comment provided by engineer. */
 "OsiriX requires templates files in Pages '09 format. Open your template in Pages, select File menu and Export to Pages '09 format." = "Miele-LXIVでは、Pages ‘09形式のテンプレートファイルが必要です。 Pagesでテンプレートを開き、ファイルメニューを選択し、Pages '09形式にエクスポートします。";
@@ -5478,6 +5475,9 @@ alpha : %1.3f" = "値 : %1$.0f
 
 /* No comment provided by engineer. */
 "Yesterday XA" = "昨日のXA";
+
+/* No comment provided by engineer. */
+"You can download the full version of Miele-LXIV on the Internet." = "Miele-LXIVのフルバージョンはインターネット上でダウンロードできます。";
 
 /* No comment provided by engineer. */
 "You can only edit the 'Content' column." = "「コンテンツ」列のみを編集できます。";

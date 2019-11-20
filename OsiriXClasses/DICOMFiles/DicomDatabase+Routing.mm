@@ -352,7 +352,7 @@
 }
 
 -(void)applyRoutingRules:(NSArray*)autoroutingRules toImages:(NSArray*)newImagesOriginal {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	if (!autoroutingRules)
 		autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey:@"AUTOROUTINGDICTIONARY"];
 	

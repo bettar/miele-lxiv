@@ -593,7 +593,7 @@ extern NSString * const SeriesViewer_DragType;
 - (void) refreshMatrix:(id) sender;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (IBAction) paste: (id)sender;
 - (IBAction) pasteImageForSourceFile: (NSString*) sourceFile;
 - (void) decompressDICOMJPEG: (NSArray*) array __deprecated;

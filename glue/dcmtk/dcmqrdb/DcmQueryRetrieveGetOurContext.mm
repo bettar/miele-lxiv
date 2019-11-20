@@ -63,7 +63,7 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
     OFCondition cond = EC_Normal;
     
     DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"];
     
     if (useDCMTKForJP2K == NO &&
@@ -129,7 +129,7 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 
     useDCMTKForJP2K = NO; // FIXME: Testing issue #19, using DCMTK doesn't work.
     
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     if( useDCMTKForJP2K == NO && newXfer == EXS_JPEG2000)
     {
         DCMQRDB_INFO("SEND - Compress JPEG 2000 Lossy");
@@ -187,7 +187,7 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
     {
         DCMQRDB_INFO("SEND - Compress DCMTK JPEG Lossy");
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 //		DcmItem *metaInfo = fileformat.getMetaInfo();
         
         DcmRepresentationParameter *params = nil;

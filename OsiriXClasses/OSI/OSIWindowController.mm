@@ -84,7 +84,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 
 #pragma mark - Magnetic Windows & Tiling
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (IBAction) paste:(id) sender;
 {
 	if ([[self pixList] count])
@@ -537,7 +537,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 	return nil;
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (IBAction)querySelectedStudy: (id)sender
 {
 	[[BrowserController currentBrowser] querySelectedStudy: self];

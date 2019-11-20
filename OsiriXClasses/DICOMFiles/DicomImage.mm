@@ -568,7 +568,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 - (void) dcmodifyThread: (NSDictionary*) dict
 {
 #ifdef OSIRIX_VIEWER
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	[[DicomStudy dbModifyLock] lock];
 	@try {
@@ -649,7 +649,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         if( [f boolValue] != [[self primitiveValueForKey: @"storedIsKeyImage"] boolValue])
         {
             #ifdef OSIRIX_VIEWER
-            #ifndef OSIRIX_LIGHT
+            #ifndef MIELE_LIGHT
             if( [self.series.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"]  && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
             {
                 NSString *c = nil;
@@ -1108,7 +1108,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return [NSSet setWithObject:[self completePathWithNoDownloadAndLocalOnly]];
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 // DICOM Presentation State
 - (DCMSequenceAttribute *)graphicAnnotationSequence
 {

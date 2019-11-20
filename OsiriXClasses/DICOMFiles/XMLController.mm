@@ -18,7 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #include "FVTiff.h"
 #endif
 
@@ -555,7 +555,7 @@ extern int delayedTileWindows;
         
 		isDICOM = YES;
 	}
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	else if([DicomFile isFVTiffFile:srcFile])
 	{
 		xmlDocument = XML_from_FVTiff(srcFile);

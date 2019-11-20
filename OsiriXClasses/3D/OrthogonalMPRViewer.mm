@@ -903,7 +903,7 @@ return YES;
     return valid;
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (IBAction) Panel3D:(id) sender
 {
 	[viewer Panel3D: sender];
@@ -1475,7 +1475,7 @@ return YES;
         [OrthogonalMPRViewer updateSyncSeriesToolbarItemUI:self];
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (NSDictionary*) exportDICOMFileInt :(BOOL) screenCapture
 {
 	DCMPix *curPix = [[self keyView] curDCM];
@@ -2584,7 +2584,7 @@ return YES;
 + (bool) isMPRViewer:(id) viewer{
     
     return [viewer isKindOfClass:[OrthogonalMPRViewer class]]
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     || [viewer isKindOfClass:[OrthogonalMPRPETCTViewer class]]
 #endif
     ;

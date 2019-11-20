@@ -2279,7 +2279,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                         else // Explicit VR Little Endian
                             ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
                         
-    #ifdef OSIRIX_LIGHT
+    #ifdef MIELE_LIGHT
                         response.data = [NSData dataWithContentsOfFile: cachedPathForSOPInstanceUID];
     #else
                         response.data = [[BrowserController currentBrowser] getDICOMFile:cachedPathForSOPInstanceUID inSyntax: ts.transferSyntax quality: imageQuality];
@@ -2787,7 +2787,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 }
 
 -(void)processSeriesPdf {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	if (!series)
 		return;

@@ -136,7 +136,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWadoServiceEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 +(void)initializeWebPortalClass { // called from AppController
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalPortNumberDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalAddressDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];

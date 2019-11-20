@@ -549,7 +549,7 @@ static int gTotalN2ManagedObjectContext = 0;
         else if ([oid isKindOfClass:[NSManagedObject class]]) {
             oid = [oid objectID];
         }
-#if !defined(OSIRIX_LIGHT) && !defined(NITROGEN_FW)
+#if !defined(MIELE_LIGHT) && !defined(NITROGEN_FW)
         else if ([oid isKindOfClass:[DCMTKQueryNode class]]) {
             return oid;
         }

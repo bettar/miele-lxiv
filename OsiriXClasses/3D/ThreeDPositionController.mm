@@ -95,7 +95,7 @@ static ThreeDPositionController *nav = nil;
 		[[v imageView] sendSyncMessage: 0];
 		[v refresh];
 	}
-	#ifndef OSIRIX_LIGHT
+	#ifndef MIELE_LIGHT
 	for( NSWindow *w in [[NSApplication sharedApplication] windows])
 	{
 		if( [[w windowController] isKindOfClass: [OrthogonalMPRPETCTViewer class]])

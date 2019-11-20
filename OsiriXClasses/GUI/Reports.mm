@@ -497,7 +497,7 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 
 +(void)checkForWordTemplates
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
     @try {
         NSString *path = BrowserController.currentBrowser.database.baseDirPath;
         
@@ -818,7 +818,7 @@ static BOOL Pages5orHigher = FALSE;
 // Called again from DicomDatabase initiWithPath
 + (void)checkForPagesTemplate;
 {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	NSString* templatesDirPath = [Reports databasePagesTemplatesDirPath];
 
 #ifndef NDEBUG

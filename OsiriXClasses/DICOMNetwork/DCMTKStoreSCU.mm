@@ -519,7 +519,7 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 	
 	NSLog( @"SEND - decompress: %@", [[NSString stringWithUTF8String: fname] lastPathComponent]);
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"]; // deprecated
     
 	if (useDCMTKForJP2K == NO &&
@@ -579,7 +579,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
     {
         DcmXfer filexfer( dataset->getOriginalXfer());
         
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
         BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"]; // deprecated
         
         if( useDCMTKForJP2K == NO && opt_networkTransferSyntax == EXS_JPEG2000)
@@ -638,7 +638,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
         {
             try
             {
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
                 NSLog(@"SEND - Compress DCMTK JPEG: %s", fname);
                 
 //                DcmItem *metaInfo = fileformat.getMetaInfo();
@@ -1303,7 +1303,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 	DcmTLSTransportLayer *tLayer = NULL;
 #endif
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 //	if( _secureConnection)
 //		[DDKeychain lockTmpFiles];
 	NSString *uniqueStringID = [NSString stringWithFormat:@"%d.%d.%d", getpid(), inc++, (int) random()];
@@ -1311,7 +1311,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	@try
 	{
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #ifdef WITH_OPENSSL
 		if (_cipherSuites)
 		{
@@ -1365,7 +1365,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
             }
 		}
 #endif // WITH_OPENSSL
-#endif // OSIRIX_LIGHT
+#endif // MIELE_LIGHT
 		
 		  int paramCount = [_filesToSend count];
 		  const char *currentFilename = NULL;
@@ -1461,7 +1461,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 			//return;
 		}
 	
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #ifdef WITH_OPENSSL
 		if( _secureConnection)
         {
@@ -1847,7 +1847,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
     WSACleanup();
 #endif
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #ifdef WITH_OPENSSL
 /*
     if (tLayer && opt_writeSeedFile)

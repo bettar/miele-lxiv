@@ -63,7 +63,7 @@
 //#include "vtktiff/vtk_tiff_mangle.h"
 #endif
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 #include "FVTiff.h"
 #endif
 #include "Analyze.h"
@@ -1596,7 +1596,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             [gCUSTOM_IMAGE_ANNOTATIONS addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"]];
 		}
         
-#ifdef OSIRIX_LIGHT
+#ifdef MIELE_LIGHT
         gUSEPAPYRUSDCMPIX = NO;
 #endif
 
@@ -4251,7 +4251,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 -(void) LoadTiff:(long) directory
 {
 #ifndef STATIC_DICOM_LIB
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	long			i, totSize;
 	int				w, h, row;
 	short			bpp, count, tifspp;
@@ -4606,7 +4606,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 -(void) LoadFVTiff
 {
 #ifndef STATIC_DICOM_LIB
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 	int success = 0, i;
 	short head_size = 0;
 	const char * head_data = 0;
@@ -5188,7 +5188,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf( 2) / halflife);
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject
 {
 #ifdef OSIRIX_VIEWER
@@ -6120,7 +6120,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     }
 }
 
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
 - (BOOL)loadDICOMDCMFramework
 {
 #if 1 // TODO: try to skip this to make it faster
@@ -6245,7 +6245,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     else if ([SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
     {
 #ifdef OSIRIX_VIEWER
- #ifndef OSIRIX_LIGHT
+ #ifndef MIELE_LIGHT
         @try
         {
             NSString *pathDicomSrSlash = [NSTemporaryDirectory() stringByAppendingPathComponent:@"dicomsr_osirix/"];
@@ -6319,9 +6319,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         {
             N2LogExceptionWithStackTrace(e);
         }
- #else // OSIRIX_LIGHT
+ #else // MIELE_LIGHT
         [self getDataFromNSImage: [NSImage imageNamed: @"NSIconViewTemplate"]];
- #endif // OSIRIX_LIGHT
+ #endif // MIELE_LIGHT
 #else // OSIRIX_VIEWER
         [self getDataFromNSImage: [NSImage imageNamed: @"NSIconViewTemplate"]];
 #endif // OSIRIX_VIEWER
@@ -7417,7 +7417,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					success = [self loadDICOMPapyrus]; // always fail
 					
 #ifdef OSIRIX_VIEWER
-#ifndef OSIRIX_LIGHT
+#ifndef MIELE_LIGHT
                     if (success == NO)
                     {
                         // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
@@ -7448,7 +7448,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #endif
 #endif
 				}
-#ifndef OSIRIX_LIGHT  // Also Decompress ?
+#ifndef MIELE_LIGHT  // Also Decompress ?
 				else
 				{
 					success = [self loadDICOMDCMFramework];					

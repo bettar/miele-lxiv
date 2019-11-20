@@ -70,7 +70,7 @@
 /* Class = "NSTextFieldCell"; title = "(8 or more characters)"; ObjectID = "144"; */
 "144.title" = "(8 o più caratteri)";
 
-/* Class = "NSButtonCell"; title = "Include OsiriX Lite viewer (mac only, about 8MB)"; ObjectID = "147"; */
+/* Class = "NSButtonCell"; title = "Include Miele-LXIV Lite viewer (mac only, about 8MB)"; ObjectID = "147"; */
 "147.title" = "Includi il visualizzatore Miele-LXIV Lite (solo Mac, circa 8MB)";
 
 /* Class = "NSTextFieldCell"; title = "Destination:"; ObjectID = "158"; */

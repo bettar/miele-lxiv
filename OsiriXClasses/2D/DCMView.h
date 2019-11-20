@@ -436,7 +436,7 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 - (BOOL) roiTool:(long) tool;
 - (void) prepareToRelease;
 - (void) orientationCorrectedToView:(float*) correctedOrientation;
-//#ifndef OSIRIX_LIGHT
+//#ifndef MIELE_LIGHT
 - (N3AffineTransform)pixToSubDrawRectTransform; // Converts points in DCMPix "Slice Coordinates" to coordinates that need to be passed to GL in subDrawRect
 //#endif
 - (NSPoint) ConvertFromNSView2GL:(NSPoint) a;
