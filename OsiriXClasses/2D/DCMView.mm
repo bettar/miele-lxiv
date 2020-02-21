@@ -3562,7 +3562,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	
 	@try 
 	{
-        NSLog(@"%s %d", __FUNCTION__, __LINE__);
 		DicomSeries *curSeries = self.seriesObj;
 		DicomStudy *curStudy = self.studyObj;
 		
@@ -4961,10 +4960,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			{
 				NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 				tempPt = [self ConvertFromNSView2GL:tempPt];
-                if ([self clickInROI: tempPt testTextBox: YES]) {
+                if ([self clickInROI: tempPt testTextBox: YES])
 					roiHit = YES;
-                    NSLog(@"%s %d, roiHit", __FUNCTION__, __LINE__);
-                }
 			}
 			
 			if (roiHit == NO)
@@ -5257,7 +5254,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 						{
 							if ([r clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
 							{
-                                NSLog(@"%s %d", __FUNCTION__, __LINE__);
 								selectedIdx = [curRoiList indexOfObject: r];
 								roiFound = YES;
                                 break;
@@ -5310,7 +5306,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 						}
 					}
 						
-                    NSLog(@"%s %d, DoNothing: %d", __FUNCTION__, __LINE__, DoNothing);
 					if (DoNothing == NO)
 					{
 						if (selectedIdx != NSNotFound &&
@@ -5364,7 +5359,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 						}
 						else // Start drawing a new ROI !
 						{
-                            NSLog(@"%s %d, Start drawing a new ROI", __FUNCTION__, __LINE__);
 							if (curROI)
 							{
 								drawingROI = [curROI mouseRoiDown:tempPt :scaleValue];
@@ -5379,7 +5373,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 									[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: curROI userInfo: nil];
 							}
 							else
-							{NSLog(@"%s %d, Unselect previous ROIs", __FUNCTION__, __LINE__);
+							{
 								// Unselect previous ROIs
 								for (ROI *r in curRoiList)
                                     [r setROIMode : ROI_sleep];
@@ -10318,7 +10312,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 // Unused ?
 - (void) loadOpenGLIdentityForDrawingFrame: (NSRect) r
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
 #ifndef WITH_OPENGL_32
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
@@ -10355,7 +10348,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 // unused ?
 - (void) applyImageTransformation __deprecated
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
 #ifndef WITH_OPENGL_32
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
@@ -11254,8 +11246,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 - (void) drawKeyViewBox
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-
     float sf = self.window.backingScaleFactor;
     float heighthalf = drawingFrameRect.size.height/2 - 1;
     float widthhalf = drawingFrameRect.size.width/2 - 1;
@@ -11301,8 +11291,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 // TODO: check if it's redundant, see also method drawKeyViewBox
 - (void) drawKeyViewBox2
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-
     float sf = self.window.backingScaleFactor;
     float heighthalf = drawingFrameRect.size.height/2;
     float widthhalf = drawingFrameRect.size.width/2;
@@ -11942,15 +11930,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 {
     //NSLog(@"%s %d, self:%p %@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]));
 
-#if !WITH_OPENGL_32_STEP3
 #ifdef WITH_OPENGL_32
-    if (needToUpdateProjections)
-    {
+    if (needToUpdateProjections) {
         [self updateAllProjections];
         needToUpdateProjections = false;
     }
 #endif
-#endif
+
     long annotations = annotationType;
     BOOL frontMost = NO;
     BOOL is2DViewer = [self is2DViewer];
@@ -12035,52 +12021,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
 		glClear (GL_COLOR_BUFFER_BIT);
-
-#if WITH_OPENGL_32_STEP2 || WITH_OPENGL_32_STEP3
-        checkOpenGLErrors(__LINE__);
-        NSLog(@"%s %d, class:%@, ctx:%@, programs: %d,%d, %lu buffers", __FUNCTION__, __LINE__,
-              [self class],
-              ctx,
-              scene.imageProgram.programHandle,
-              scene.overlayProgram.programHandle,
-              (unsigned long)[_m_buffers count]);
-        
-        // Draw - setup
-
-        GLint viewport[4];
-        glGetIntegerv(GL_VIEWPORT, viewport);
-
-        glClearColor(0.3f, 0.2f, 0.2f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  #if 1 //def WITH_GLM
-        CGSize scale = drawingFrameRect.size;
-        scale.height = -scale.height; // TODO: check why -1
-  #else
-        CGSize scale = NSMakeSize(1, 1);
-  #endif
-#endif
-        
-#if WITH_OPENGL_32_STEP2
-#include "DCMViewStep2.mm"
-#endif
-
-#if WITH_OPENGL_32_STEP3
-#include "DCMViewStep3.mm"
-#endif
-                
-#if WITH_OPENGL_32_STEP2 || WITH_OPENGL_32_STEP3
-        // Draw - tear down test code
-        glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind
-
-        renderer_setProgram(0, __LINE__);
-        // Swap buffer to screen
-        [ctx flushBuffer];
-
-        //[NSOpenGLContext clearCurrentContext];
-            
-        drawingFrameRect = [self convertRectToBacking: [self frame]];
-        return;
-#endif
 
 #ifdef WITH_OPENGL_32
 //  #ifdef WITH_GLM
@@ -12580,7 +12520,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 					
 					if (slicePoint3D[ 0] != HUGE_VALF)
 					{
-                        NSLog(@"%s %d", __FUNCTION__, __LINE__);
 						float tempPoint3D[2];
 						
 						tempPoint3D[0] = slicePoint3D[ 0] / curDCM.pixelSpacingX;
@@ -15055,10 +14994,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
          resampledBaseAddr: (char**) rAddr
      resampledBaseAddrSize: (int*) rBAddrSize
 {
-#if WITH_OPENGL_32_STEP2 || WITH_OPENGL_32_STEP3
-    return nil;
-#endif
-
     //NSLog(@"DCmView.mm %d loadTextureIn >>> START %@ %p", __LINE__, NSStringFromClass([self class]), self);
 	// *tX, *tY, *tW, *tH are output parameters ?
     checkOpenGLErrors(__LINE__);
@@ -16106,7 +16041,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     [self createOpenGLView:frame];
     if (self)
 	{
-        NSLog(@"%s %d %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
         [self initWithFrameInternal:frame];
 
 #ifdef WITH_OPENGL_32
@@ -16188,7 +16122,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     }
 
     self = [super initWithFrame:frameRect pixelFormat:pixFmt];
-#if 1
+#ifndef NDEBUG
     [[self openGLContext] makeCurrentContext];
     NSLog(@"%s %d, class %@, OpenGL legacy:%i", __FUNCTION__, __LINE__,
           NSStringFromClass([self class]), checkOGLVersion());
@@ -16346,7 +16280,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     _m_buffers = [[NSMutableArray array] retain];
 #endif
     
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
     // Make the context current
     //checkOpenGLErrors(__LINE__); // Will get a warning as there is no context
     [[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
@@ -16375,9 +16308,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 	[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
     
-#if !WITH_OPENGL_32_STEP2 && !WITH_OPENGL_32_STEP3
 	[self FindMinimumOpenGLCapabilities];
-#endif
 
 //  glEnable(GL_MULTISAMPLE_ARB);
 //  glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
@@ -16421,71 +16352,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     [scene addProgramOverlayLine];
     [scene addProgramFont];
     
-    [GLScene setCurrentScene: &scene];// Maybe not needed here
+    [GLScene setCurrentScene: &scene]; // Maybe not needed here
     
     [self setShaderProgramOverlay];
     //[self setShaderProgramOverlay_withMode_Normal];
     [self setShaderProgramLoupe];
-    //renderer_setProgram(scene.loupeProgram.programHandle);
     renderer_setTextureCount(1, __LINE__);
     
     renderer_setProgram(0, __LINE__);
-
-#if WITH_OPENGL_32_STEP2 // init overlay
-    // Pre
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
-  #if 1 //def WITH_GLM
-    GLfloat scaleWidth = frameRect.size.width;
-    GLfloat scaleHeight = -frameRect.size.height;
-  #else
-    GLfloat scaleWidth = 1;
-    GLfloat scaleHeight = 1;
-  #endif
-#define VP      0.5f    // vertex position
-    const GLfloat vertex_buffer_data[] = {
-        0.0f * scaleWidth,  VP * scaleHeight,
-         VP * scaleWidth, -VP * scaleHeight,
-        -VP * scaleWidth, -VP * scaleHeight
-    };
-    
-    int dim=2;
-
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    NSLog(@"%s %d, seqId:%d, generated VBO:%u", __FUNCTION__, __LINE__, seqId, vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(vertex_buffer_data),
-                 vertex_buffer_data,
-                 GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(scene.overlayProgram.vertexAttribXY);
-    glVertexAttribPointer(scene.overlayProgram.vertexAttribXY, dim, GL_FLOAT, GL_FALSE, 0, (GLvoid*) 0);
-    
-    NSLog(@"%lu _m_buffers before", (unsigned long)[_m_buffers count]);
-    [_m_buffers addObject:[NSNumber numberWithUnsignedInteger:vbo]];
-    NSLog(@"%lu _m_buffers after", (unsigned long)[_m_buffers count]);
-
-    // Post
-    glBindVertexArray(0);
-#endif // WITH_OPENGL_32_STEP2
-
-#if 0
-    glGenVertexArrays(1, &VAO);  // @@@ called first but unused ???
-    glBindVertexArray(VAO);
-    NSLog(@"%s %d, GL_APPLE_vertex_array_object:%d, VAO:%u", __FUNCTION__, __LINE__,
-          checkExtension("GL_APPLE_vertex_array_object"), VAO);
-
-    // 6. Upload vertices and colours
-    [self addVBO:3 :[NSData dataWithBytes:vertex_buffer_data length:sizeof(vertex_buffer_data)]];
-    [self addVBO:2 :[NSData dataWithBytes:uv_buffer_data     length:sizeof(uv_buffer_data)]];
-    
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind
 #endif
-#endif // WITH_OPENGL_32
 }
 
 - (void) prepareToRelease

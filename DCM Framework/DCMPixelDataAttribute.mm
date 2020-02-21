@@ -1837,8 +1837,6 @@ void info_callback(const char *msg, void *a) {
 
 - (void)decodeData
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (!_framesCreated)
 		[self createFrames];

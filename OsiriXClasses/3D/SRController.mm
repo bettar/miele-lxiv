@@ -156,10 +156,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 {
 	BOOL testInterval = YES;
 	
-#ifndef NDEBUG
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-#endif
-
     @try
     {
         pixList = pix;
@@ -543,9 +539,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 
 - (void) ChangeSettings:(id) sender
 {
-#ifndef NDEBUG
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-#endif
     fusionSettingsWindow = NO;
     
     self.resolution = [[settings objectForKey: @"resolution"] floatValue];

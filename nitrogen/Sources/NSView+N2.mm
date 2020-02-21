@@ -33,7 +33,6 @@
 }
 
 -(id)initWithSize:(NSSize)size {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	return [self initWithFrame:NSMakeRect(NSZeroPoint, size)];
 }
 

@@ -451,8 +451,6 @@ extern int splitPosition[ 3];
     CGFloat pixelsPerMm;
 	NSColor *planeColor;
 
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-    
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (!cgl_ctx)
         return;

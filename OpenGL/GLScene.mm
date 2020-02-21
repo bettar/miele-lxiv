@@ -41,7 +41,6 @@ static GLScene *currentScene = nil;
 
 - (instancetype)init
 {
-    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
     self = [super init];
     if (self)
     {

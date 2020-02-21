@@ -137,7 +137,6 @@ public:
 	
 	virtual void Execute(vtkObject *caller, unsigned long, void*)
     {
-        NSLog(@"%s %d", __FUNCTION__, __LINE__);
 		vtkBoxWidget *widget = reinterpret_cast<vtkBoxWidget*>(caller);
 		
 		vtkVolume *volume = (vtkVolume*) widget->GetProp3D();
@@ -5966,9 +5965,6 @@ public:
                : (unsigned char*) g
                : (unsigned char*) b
 {
-#ifdef DEBUG_ISSUE_45
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-#endif
 	if (fullDepthMode)
         return;
     

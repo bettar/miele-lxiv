@@ -3645,9 +3645,6 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 
 - (void)displayPresetsForSelectedGroup;
 {
-#ifdef DEBUG_ISSUE_45
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-#endif
 	if ([presetsGroupPopUpButton numberOfItems] < 1)
         return;
     

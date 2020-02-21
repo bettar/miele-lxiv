@@ -14,11 +14,6 @@
 #define WITH_OPENGL_32 // core profile
 //#define WITH_GLEW
 
-#ifdef WITH_OPENGL_32
-//#define WITH_OPENGL_32_STEP2   2  // overlay program with only 2D points
-//#define WITH_OPENGL_32_STEP3   3  // overlay program with renderer call
-#endif
-
 #pragma mark -
 
 //#import <vtk_glew.h>

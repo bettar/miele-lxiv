@@ -12346,7 +12346,10 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	return enoughMemory;
 }
 
-- (ViewerController*) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages
+- (ViewerController*) openViewerFromImages:(NSArray*) toOpenArray
+                                     movie:(BOOL) movieViewer
+                                    viewer:(ViewerController*) viewer
+                             keyImagesOnly:(BOOL) keyImages
 {
 	return [self openViewerFromImages:toOpenArray
                                 movie:movieViewer
@@ -12355,9 +12358,12 @@ constrainSplitPosition:(CGFloat)proposedPosition
                         tryToFlipData:NO];
 }
 
-- (ViewerController*) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages tryToFlipData:(BOOL) tryToFlipData
+- (ViewerController*) openViewerFromImages:(NSArray*) toOpenArray
+                                     movie:(BOOL) movieViewer
+                                    viewer:(ViewerController*) viewer
+                             keyImagesOnly:(BOOL) keyImages
+                             tryToFlipData:(BOOL) tryToFlipData
 {
-    NSLog(@"BrowserController.mm %d, openViewerFromImages", __LINE__);
     unsigned long *memBlockSize = (unsigned long *)calloc( [toOpenArray count], sizeof (unsigned long));
 	
 	BOOL				multiFrame = NO, preFlippedData = NO;
@@ -14652,7 +14658,6 @@ static NSArray*	openSubSeriesArray = nil;
         gHorizontalHistory = [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"];
         if (gHorizontalHistory)
         {
-            //NSLog(@"%s %d", __FUNCTION__, __LINE__);
             NSSplitView * s = [[NSSplitView alloc] initWithFrame: splitViewVert.bounds];
             
             [s setDelegate: self];

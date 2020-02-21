@@ -4676,7 +4676,6 @@ static BOOL initialized = NO;
 
 - (id) FindViewer:(NSString*) nibName :(NSArray*) pixList
 {
-    NSLog(@"%s %d, class:%@" , __FUNCTION__, __LINE__, NSStringFromClass([self class]));
 	for (id loopItem in [NSApp windows])
 	{
 		if ([[[loopItem windowController] windowNibName] isEqualToString: nibName])

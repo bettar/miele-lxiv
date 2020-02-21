@@ -1490,8 +1490,6 @@ void renderer_drawLineStrip_xy_rgba(NSArray *pArray)
 // The inside is filled
 void renderer_drawPolygon(NSArray *pArray)
 {
-    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
-
 #ifdef WITH_OPENGL_32
     assert(sScene != nil && sScene.currentProgram != 0);
     const int dimV = 2; // number of components in the vertex array: X,Y

@@ -640,7 +640,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
         NSLog(@"Line %d Error: %@", __LINE__, [error userInfo]);
         [self _setProgressMessage: NSLocalizedString( @"Can't write to temporary directory.", nil)];
         [self closeSheet: self];
-        return; ////////////////////////////////////////////////////////////////
+        return; // /////////////////////////////////////////////////////////////
     }
 
     // send printjob
@@ -718,12 +718,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 		}
 
 #ifdef NDEBUG
-        // remove temporary files
-<<<<<<< HEAD
-        [[NSFileManager defaultManager] removeFileAtPath: [jsonPath stringByDeletingLastPathComponent] handler: nil];
-#else
-        NSLog(@"%s %d, TODO: removeFileAtPath: %@", __FUNCTION__, __LINE__, [jsonPath stringByDeletingLastPathComponent]);
-=======
+        // Remove temporary files
         [[NSFileManager defaultManager] removeItemAtPath: [jsonPath stringByDeletingLastPathComponent] error: nil];
 #else
         NSLog(@"%s %d, TODO: removeItemAtPath: %@", __FUNCTION__, __LINE__, [jsonPath stringByDeletingLastPathComponent]);

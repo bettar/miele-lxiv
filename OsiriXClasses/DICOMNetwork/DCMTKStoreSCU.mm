@@ -717,7 +717,6 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
      *   fname - [in] Name of the file which shall be processed.
      */
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
     DIC_US msgId = assoc->nextMsgID++;
     T_ASC_PresentationContextID presId;
     T_DIMSE_C_StoreRQ req;
@@ -946,7 +945,6 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
      *   fname - [in] Name of the file which shall be processed.
      */
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
     OFCondition cond = EC_Normal;
 	
     /* opt_repeatCount specifies how many times a certain file shall be processed */

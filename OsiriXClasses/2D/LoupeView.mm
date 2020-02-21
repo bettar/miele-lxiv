@@ -29,7 +29,6 @@
                         forTexture: (GLuint*)tex_ID
                             buffer: (GLubyte*)buffer;
 {
-    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	NSSize imageSize = [image size];
 	
 	NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithData:[image TIFFRepresentation]];
@@ -62,7 +61,6 @@
        bytesPerRow:(int)bytesPerRow
           rotation:(float)rotation;
 {
-    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	textureRotation = rotation;
 	
 	[[self openGLContext] makeCurrentContext];
@@ -118,7 +116,6 @@
 
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
-    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	NSOpenGLPixelFormatAttribute attrs[] =
     {
         NSOpenGLPFADoubleBuffer,
@@ -164,7 +161,6 @@
 
 - (void)drawRect:(NSRect)rect
 {
-    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
 #ifndef WITH_OPENGL_32
 	CGLContextObj cgl_ctx = [[self openGLContext] CGLContextObj];
 #endif

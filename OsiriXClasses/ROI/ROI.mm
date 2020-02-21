@@ -438,8 +438,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     [curView setShaderProgramForLineWidth: thick * backingScaleFactor];
     renderer_set_rgba(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
     
-    //NSLog(@"ROI.mm %d, tMeasure/tArrow, lineWidth:%f", __LINE__, thick * backingScaleFactor);
-
     if (type == tArrow)
     {
         //NSLog(@"ROI.mm %d, tArrow", __LINE__);
@@ -540,8 +538,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     }
     else  // type == tMeasure or tOpenPolygon
     {
-        NSLog(@"ROI.mm %d, tMeasure", __LINE__);
-        
         NSMutableArray *pArray = [NSMutableArray array];
         for (id pt in points) {
             glm::vec2 pp(([pt x] - offset.x) * scaleValue,
@@ -616,7 +612,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
         for (long i = 0; i < [points count]; i++) {
             if (i == selectedModifyPoint || i == PointUnderMouse)
             {
-                //NSLog(@"ROI drawROIWithScaleValue %d, light red (modify/under mouse)", __LINE__);
                 Point_xy_rgb pc;
                 pc.c = glm::vec3(1.0f, 0.2f, 0.2f);
                 pc.p.x = ([[points objectAtIndex: i] x] - offset.x) * scaleValue;
@@ -625,7 +620,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
             }
             else if (mode >= ROI_selected)
             {
-                //NSLog(@"ROI drawROIWithScaleValue %d, light blue  (selected)", __LINE__);
                 Point_xy_rgb pc;
                 pc.c = glm::vec3(0.5f, 0.5f, 1.0f);
                 pc.p.x = ([[points objectAtIndex: i] x] - offset.x) * scaleValue;
@@ -914,8 +908,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                        thickness:(float)thick
               prepareTextualData:(BOOL)prepareTextualData
 {
-    NSLog(@"ROI.mm %d, draw tROI, scaleValue:%.3f", __LINE__, scaleValue);
-    
 #ifndef WITH_OPENGL_32
     NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
     CGLContextObj cgl_ctx = [currentContext CGLContextObj];
@@ -1075,8 +1067,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                                    thickness:(float)thick
                           prepareTextualData:(BOOL)prepareTextualData
 {
-    NSLog(@"ROI.mm %d, drawROIWithScaleValue, tOval, tOvalAngle", __LINE__);
-
     NSRect rrect = rect;
     
     if (rrect.size.height < 0)
@@ -1588,8 +1578,6 @@ static const float ARROWSIZEConstant = 25.0f;
                            thickness:(float)thick
                   prepareTextualData:(BOOL)prepareTextualData
 {
-    NSLog(@"ROI.mm %d, t2DPoint", __LINE__);
-
     //float angle;
 
     renderer_set_rgba(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
@@ -1833,8 +1821,6 @@ static const float ARROWSIZEConstant = 25.0f;
     float screenYUpL;
     float screenXDr;
     float screenYDr;
-    
-    NSLog(@"ROI.mm %d, tPlain", __LINE__);
 
 #ifndef WITH_OPENGL_32
     NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
@@ -2621,8 +2607,6 @@ static const float ARROWSIZEConstant = 25.0f;
                         thickness: (float)thick
                prepareTextualData: (BOOL)prepareTextualData
 {
-    NSLog(@"ROI drawROIWithScaleValue %d, tAxis", __LINE__);
-
     float backingScaleFactor = curView.window.backingScaleFactor;
     
     if (mode == ROI_drawing)
@@ -2724,8 +2708,6 @@ static const float ARROWSIZEConstant = 25.0f;
                             thickness: (float)thick
                    prepareTextualData: (BOOL)prepareTextualData
 {
-    NSLog(@"ROI drawROIWithScaleValue %d, tDynAngle", __LINE__);
-
 #pragma mark draw line strip
 
     NSMutableArray *arrayPoint2DColor = [NSMutableArray array];
@@ -5582,7 +5564,6 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
 
 - (NSPoint) lowerRightPoint
 {
-    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	double xmin, xmax, ymin, ymax;
 	NSPoint result = NSZeroPoint;
 	
@@ -5893,7 +5874,6 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
                        :(float) scale
                        :(BOOL) testDrawRect
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	NSRect arect;
 	ROI_mode imode = ROI_sleep;
 	
@@ -6554,13 +6534,11 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 
 - (BOOL)mouseRoiDown:(NSPoint)pt :(float)scale
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	return [self mouseRoiDown:pt :[curView curImage] :scale];
 }
 
 - (BOOL)mouseRoiDownIn:(NSPoint)pt :(int)slice :(float)scale
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
     float backingScaleFactor = curView.window.backingScaleFactor;
 	MyPoint	*mypt;
 	
@@ -6719,7 +6697,6 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 	if (mode == ROI_drawing)
         return YES;
 
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
     return NO;
 }
 
@@ -7439,8 +7416,6 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 
 - (BOOL) mouseRoiDragged:(NSPoint) pt :(unsigned int) modifier :(float) scale
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-
 	if (locked)
 		return NO;
 		
@@ -7800,8 +7775,6 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 		}
 		else
 		{
-            NSLog(@"%s %d", __FUNCTION__, __LINE__);
-
 			if (type == tLayerROI)
                 clickPoint = pt;
 			
@@ -7965,21 +7938,24 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
     if (hidden)
         m = ROI_sleep;
     
-	if (mode != m)
-	{
-        if ([NSEvent pressedMouseButtons] != 0 &&
-            (mode == ROI_drawing || mode == ROI_selectedModify))
-        {
-            NSLog( @"---- change ROI mode during modification? from %d to %d", m, mode);
-        }
-        
-		mode = m;
-        
-        if ([NSThread isMainThread])
-            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
-        
-        parentROI.ROImode = m;
-	}
+	if (mode == m)
+        return;
+
+#ifndef NDEBUG
+    if ([NSEvent pressedMouseButtons] != 0 &&
+        (mode == ROI_drawing || mode == ROI_selectedModify))
+    {
+        NSLog( @"---- change ROI mode during modification? from %d to %d", m, mode);
+    }
+#endif
+    
+    mode = m;
+    
+    if ([NSThread isMainThread])
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification
+                                                            object: self
+                                                          userInfo: nil];
+    parentROI.ROImode = m;
 }
 
 - (void) setName:(NSString*) a
@@ -8949,8 +8925,6 @@ void gl_round_box(int mode,
         return;
     }
     
-    NSLog(@"ROI.mm %d, ROI type: %d, mode: %d, %ld points", __LINE__, type, mode, [points count]);
-	
     float backingScaleFactor = curView.window.backingScaleFactor;
     
 	[roiLock lock];
@@ -9043,7 +9017,7 @@ void gl_round_box(int mode,
 
 #pragma mark tROI
 
-			case tROI: // Rectangle
+			case tROI: // rectangle
                 [self tROI_drawWithScaleValue: scaleValue
                                        offset: offset
                           highlightIfSelected: highlightIfSelected
@@ -9104,12 +9078,11 @@ void gl_round_box(int mode,
 
 #pragma mark tClosedPolygon, tOpenPolygon, tAngle, tPencil
 
-            case tOpenPolygon:      // 10
-            case tClosedPolygon:    // 11
-			case tAngle:            // 12
-			case tPencil:           // 15
+            case tOpenPolygon:
+            case tClosedPolygon:
+			case tAngle:
+			case tPencil:
 			{
-                NSLog(@"ROI drawROIWithScaleValue %d, tClosedPolygon tOpenPolygon tAngle tPencil", __LINE__);
 #define RATIO_FOROPOLYGONAREA 3.
 			
 				if (mode == ROI_drawing)

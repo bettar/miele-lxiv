@@ -41,8 +41,6 @@
 
 - (instancetype)initWithFrame:(NSRect)frame
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-
     if (self = [super initWithFrame:frame])
     {
         [self initializeVTKSupport];
@@ -69,9 +67,6 @@
 // that contains our NSView subclass is actually on screen and ready to be drawn.
 - (void)drawRect:(NSRect)theRect
 {
-#ifndef NDEBUG
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-#endif
     // Check for a valid vtkWindowInteractor and then initialize it. Technically we
     // do not need to do this, but what happens is that the window that contains
     // this object will not immediately render it so you end up with a big empty

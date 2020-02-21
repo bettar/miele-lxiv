@@ -342,8 +342,6 @@
 
 - (NSDictionary*) setPixSource:(ROI*) r
 {
-    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
-
 	GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 	[self getVTKRenderWindow]->MakeCurrent();
 	[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];

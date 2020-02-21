@@ -10108,10 +10108,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	long stacksize;
 	unsigned char *rgbaImage;
-	float iwl, iww;
+    float iwl;
+    float iww;
 	float *fResult = nil;
 	
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	if (fixed8bitsWLWW)
 	{
 		iww = 256;

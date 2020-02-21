@@ -1721,8 +1721,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(BOOL) processReslice:(ResliceType) directionXY :(BOOL) newViewer
 {
-    NSLog(@"%s %d, class:%@" , __FUNCTION__, __LINE__, NSStringFromClass([self class]));
-
     DCMPix *firstPix = [pixList[ curMovieIndex] objectAtIndex: 0];
 	DCMPix *lastPix = nil;
 	long i, newTotal;
@@ -1735,8 +1733,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSString *previousCLUT = [curCLUTMenu retain];
 	NSString *previousOpacity = [curOpacityMenu retain];
 	
-    NSLog(@"%s %d", __FUNCTION__, __LINE__); // Issue #50
-
     BOOL square = NO;
     if ([pixList[ curMovieIndex] count] < 100 &&
        firstPix.pheight <= 256 &&
@@ -8483,7 +8479,6 @@ static NSMutableArray *poolOf2DViewers = nil;
          withFiles:(NSMutableArray*)d
         withVolume:(NSData*)v
 {
-    NSLog(@"%s %d, class:%@" , __FUNCTION__, __LINE__, NSStringFromClass([self class]));
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"usePoolOfNSWindowControllerFor2DViewers"])
     {
         NSLog( @"---- poolOf2DViewers ACTIVATED");
@@ -8977,8 +8972,6 @@ static int avoidReentryRefreshDatabase = 0;
 	int			previousCurImage = [imageView curImage];
 	BOOL		wasFlipped = [imageView flippedData];
 	
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-
 	@synchronized( self)
 	{
         NSDisableScreenUpdates();
@@ -12019,9 +12012,6 @@ static int avoidReentryRefreshDatabase = 0;
 
 - (void) SetThicknessInterval:(id) sender
 {
-    NSLog(@"%s %d, class:%@" , __FUNCTION__, __LINE__, NSStringFromClass([self class]));
-
-	float v[ 9], o[ 3];
 	DCMPix *p = [pixList[curMovieIndex] objectAtIndex:0];
     
     if ([p sliceInterval])
@@ -12035,6 +12025,7 @@ static int avoidReentryRefreshDatabase = 0;
     [customXSpacing setFloatValue: [p pixelSpacingX]];
 	[customYSpacing setFloatValue: [p pixelSpacingY]];
 	
+    float v[ 9];
 	[p orientation: v];
 	
 	if (v[ 0] == 0 && v[ 1] == 0 && v[ 2] == 0)
@@ -12047,6 +12038,7 @@ static int avoidReentryRefreshDatabase = 0;
 	for (long i = 0; i < 9; i++)
         [[customVectors cellWithTag: i] setFloatValue: v[ i]];
 	
+    float o[ 3];
 	o[ 0] = [p originX];
 	o[ 1] = [p originY];
 	o[ 2] = [p originZ];
@@ -23403,7 +23395,6 @@ static BOOL viewerControllerPlaying = NO;
 
 - (CPRController *)openCPRViewer
 {
-    //NSLog(@"%s %d, class:%@" , __FUNCTION__, __LINE__, NSStringFromClass([self class]));
     [self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
@@ -23426,7 +23417,6 @@ static BOOL viewerControllerPlaying = NO;
 // Action to open the CPRViewer
 - (IBAction) cprViewer:(id) sender
 {
-    NSLog(@"%s %d, class:%@" , __FUNCTION__, __LINE__, NSStringFromClass([self class]));
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
@@ -24504,8 +24494,6 @@ static BOOL viewerControllerPlaying = NO;
 		return;
 	}
     
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-	
 	if ([NavigatorWindowController navigatorWindowController] == nil)
 	{
         if ([self isDataVolumicIn4D: YES
