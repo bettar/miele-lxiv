@@ -182,7 +182,7 @@
             toDate = [[[NSCalendar currentCalendar] dateFromComponents: components] retain];
         }
         
-        if( [[self window] isVisible])
+        if ([[self window] isVisible])
             [BrowserController currentBrowser].timeIntervalType = TIME_INTERVAL_CUSTOM;
     }
 }

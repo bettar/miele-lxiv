@@ -82,7 +82,8 @@
 	[self setColor:[sender color]];
 }
 
--(void)click:(NSNotification*)notification {
+-(void)click:(NSNotification*)notification
+{
 	NSColorPanel* panel = [NSColorPanel sharedColorPanel];
 //	if (![panel isVisible] || [panel target] != self) {
 		[panel setTarget:self];

@@ -778,7 +778,6 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
     return [subMask1 maskRunCount] == 0 && [subMask2 maskRunCount] == 0;
 }
 
-
 - (OSIROIMask *)filteredROIMaskUsingPredicate:(NSPredicate *)predicate floatVolumeData:(OSIFloatVolumeData *)floatVolumeData
 {
     NSMutableArray *newMaskArray = [NSMutableArray array];

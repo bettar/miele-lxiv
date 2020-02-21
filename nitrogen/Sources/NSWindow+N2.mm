@@ -40,7 +40,8 @@
 	return [self frameRectForContentRect:NSMakeRect([self frame].origin, contentSize)].size; // [self frame].origin isnt't correct but that doesnt matter
 }
 
--(CGFloat)toolbarHeight {
+-(CGFloat)toolbarHeight
+{
 	if (![self.toolbar isVisible])
 		return 0;
 	

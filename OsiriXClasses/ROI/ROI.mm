@@ -1175,6 +1175,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                 [pArrayArms addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
             }
 
+            [curView setShaderProgramOverlay_withMode_Normal];
             renderer_drawLine_xy([pArrayArms copy], GL_LINE_STRIP);
         }
     
@@ -8622,8 +8623,6 @@ void gl_round_box(int mode,
 		drawRect = NSZeroRect;
 		return;
 	}
-    
-    //NSLog(@"%s %d, type: %d", __FUNCTION__, __LINE__, type);
 
     BOOL moved;
 	drawRect = [self findAnEmptySpaceForMyRect: drawRect
@@ -8660,7 +8659,7 @@ void gl_round_box(int mode,
     // TODO: deal with positioning of the ROI text
     
 #ifdef WITH_OPENGL_32
-    [curView setShaderProgramOverlay];
+    [curView setShaderProgramOverlay_withMode_Normal];
 #else
     glPushMatrix();
 #endif
@@ -8691,8 +8690,7 @@ void gl_round_box(int mode,
 
         renderer_drawPolygon([pArray copy]);    // GL_POLYGON / GL_TRIANGLE_FAN
     }
-
-#else // BOX_WITH_ROUNDED_CORNERS
+#else
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     glEnable(GL_POLYGON_SMOOTH);
     gl_round_box(GL_POLYGON,
@@ -8703,7 +8701,7 @@ void gl_round_box(int mode,
                  fontHeight*sf/5.,
                  sf);
     glDisable(GL_POLYGON_SMOOTH);
-#endif // BOX_WITH_ROUNDED_CORNERS
+#endif
     
     NSPoint tPt = NSMakePoint(drawRect.origin.x + 4*sf,
                               drawRect.origin.y + (fontHeight*sf + 2*sf));

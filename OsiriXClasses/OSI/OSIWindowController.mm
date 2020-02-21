@@ -375,7 +375,10 @@ static BOOL protectedReentryWindowDidResize = NO;
 			e = [[NSApp windows] objectEnumerator];
 			while (window = [e nextObject])
 			{
-				if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [OSIWindowController class]] && [window.screen isEqualTo: theWindow.screen])
+				if (window != theWindow &&
+                    [window isVisible] &&
+                    [[window windowController] isKindOfClass: [OSIWindowController class]] &&
+                    [window.screen isEqualTo: theWindow.screen])
 				{
 					if ([[window windowController] magnetic])
 						[rects addObject: [NSValue valueWithRect: [window frame]]];
@@ -462,13 +465,16 @@ static BOOL protectedReentryWindowDidResize = NO;
 			e = [[NSApp windows] objectEnumerator];
 			while (window = [e nextObject])
 			{
-				if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [OSIWindowController class]])
+				if (window != theWindow &&
+                    [window isVisible] &&
+                    [[window windowController] isKindOfClass: [OSIWindowController class]])
 				{
 					if ([[window windowController] magnetic])
 					{
 						frame = [window frame];
 						
-						if (fabs( frame.origin.x - myFrame.origin.x) < 30 && fabs( NSMaxY( frame) - NSMaxY( myFrame)) < 30)
+						if (fabs( frame.origin.x - myFrame.origin.x) < 30 &&
+                            fabs( NSMaxY( frame) - NSMaxY( myFrame)) < 30)
 						{
 							dontEnterMagneticFunctions = YES;
 							

@@ -129,7 +129,8 @@
     return r;
 }
 
-- (void)keyDown:(NSEvent*)e {
+- (void)keyDown:(NSEvent*)e
+{
     if (e.keyCode == 49 || e.keyCode == 53 || e.keyCode == 76 || e.keyCode == 36) { // esc,return,space,enter
         if (self.helperWindow.isVisible)
             [self hideHelper];

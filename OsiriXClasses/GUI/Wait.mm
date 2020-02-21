@@ -29,12 +29,13 @@
 {
 	NSMutableArray *winList = [NSMutableArray array];
 	
-	for( NSWindow *w in [NSApp windows])
+	for (NSWindow *w in [NSApp windows])
 	{
-		if( [w isVisible] && ([[w windowController] isKindOfClass: [WaitRendering class]] || [[w windowController] isKindOfClass: [Wait class]]))
+		if ([w isVisible] && ([[w windowController] isKindOfClass: [WaitRendering class]] || [[w windowController] isKindOfClass: [Wait class]]))
 			[winList addObject: [w windowController]];
 	}
-	[[self window] center];
+
+    [[self window] center];
 	[[self window] setFrameTopLeftPoint: NSMakePoint( [[self window] frame].origin.x, [[self window] frame].origin.y - [winList count] * (10 + [[self window] frame].size.height))];
 	
 	[super showWindow: sender];

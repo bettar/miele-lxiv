@@ -3335,10 +3335,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow animate: (BOOL) animate
 {
-	NSRect	curRect = [[self window] frame];
+	NSRect curRect = [[self window] frame];
 	BOOL wasAlreadyVisible = [[self window] isVisible];
 	
-	//To avoid the use of WindowDidMove function - Magnetic windows
+	// To avoid the use of WindowDidMove function - Magnetic windows
 	[OSIWindowController setDontEnterMagneticFunctions: YES];
 	
 	rect.origin.x = roundf( rect.origin.x);
@@ -10029,8 +10029,17 @@ static int avoidReentryRefreshDatabase = 0;
             
             queue.maxConcurrentOperationCount = mpprocessors;
             
-            // FIXME: UI API called on a background thread: -[NSWindow isVisible]
-            while (viewer.window.isVisible == NO &&
+            // UI API called on a background thread: -[NSWindow isVisible]
+            __block BOOL visible = FALSE;
+            if ([NSThread isMainThread])
+                visible = viewer.window.isVisible;
+            else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    visible = viewer.window.isVisible;
+                });
+            }
+            
+            while (!visible &&
                    [[NSThread currentThread] isCancelled] == NO)
             {
                 [NSThread sleepForTimeInterval: 0.01];
