@@ -118,7 +118,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		
 		[view setNeedsDisplay:YES];
     }
-	
 }
 
 - (IBAction) ApplyGeometrieSettings: (id) sender

@@ -26,6 +26,8 @@
 
 #define URL_OSIRIX_DOC_SECURITY     URL_MIELE_WEB_PAGE@"/Documentation/Guides/Security/index.html"
 #define URL_OSIRIX_LEARNING         URL_MIELE_WEB_PAGE@"/Learning.html"
+//#define URL_OSIRIX_DISCUSSION     @"http://groups.yahoo.com/group/osirix/"
+#define URL_MIELE_DISCUSSION        @"https://github.com/bettar/miele-lxiv/wiki"
 #define URL_OSIRIX_UPDATE           URL_VENDOR@"/download.html"
 #define URL_OSIRIX_UPDATE_CRASH     URL_VENDOR@"/download.html"
 #define URL_MIELE_VERSION           URL_MIELE_WEB_RESOURCES@"/lxiv/version.xml"
@@ -33,7 +35,7 @@
 
 #define URL_OSIRIX_PLUGINS          URL_MIELE_WEB_PAGE@"/Plugins.html"
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 // We want our own Defaults plist saved in ~/Library/Preferences/
 // Make sure it matches "Bundle Identifier" in Deployment-Info.plist
 
@@ -43,7 +45,7 @@
 // CFBundleIdentifier = Company ID + CFBundleName
 #define BUNDLE_IDENTIFIER           "com.bettarini.miele-lxiv"
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 // This is the address of the plist containing the list of the available plugins.
 // the alternative link will be used if the first one doesn't reply...
 
@@ -58,7 +60,7 @@
 #define URL_PLUGIN_LIST                     PLUGINS_MIELE
 #define URL_PLUGIN_LIST_MIRROR1             PLUGINS_MIELE_MIRROR1
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 // Plugin submission method
 
 //#define SUBMIT_PLUGIN_WITH_MAIL_APP
@@ -69,11 +71,11 @@
 
 #define PLUGIN_SUBMISSION_NO_MAIL_APP_URL   URL_MIELE_WEB_PAGE@"/submit_plugin/index_no_mail_app.html"
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 #define SYNC_DB_URL                         @"http://list.dicom.dcm/DB.plist"  // was OsiriXDB.plist"
 #define SYNC_DICOM_NODES_URL                @"http://list.dicom.dcm/DICOMNodes.plist"
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 // Our identity
 
 #define OUR_IMPLEMENTATION_NAME @"MIELE"

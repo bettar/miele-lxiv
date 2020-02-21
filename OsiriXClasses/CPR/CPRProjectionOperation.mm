@@ -31,7 +31,7 @@
 - (id)init
 {
     if ( (self = [super init]) ) {
-        _projectionMode = CPRProjectionModeNone;
+        _projectionMode = CPR_PROJECTION_MODE_NONE;
     }
     return self;
 }
@@ -59,7 +59,7 @@
         if ([self isCancelled])
             return;
         
-		if (_projectionMode == CPRProjectionModeNone) {
+		if (_projectionMode == CPR_PROJECTION_MODE_NONE) {
 			_generatedVolume = [_volumeData retain];
 			return;
 		}
@@ -69,8 +69,9 @@
 				
 		[_volumeData aquireInlineBuffer:&inlineBuffer];
         memcpy(floatBytes, CPRVolumeDataFloatBytes(&inlineBuffer), sizeof(float) * pixelsPerPlane);
-        switch (_projectionMode) {
-            case CPRProjectionModeMIP:
+        switch (_projectionMode)
+        {
+            case CPR_PROJECTION_MODE_MIP:
                 for (NSInteger i = 1; i < _volumeData.pixelsDeep; i++) {
                     if ([self isCancelled]) {
                         break;
@@ -78,7 +79,8 @@
                     vDSP_vmax(floatBytes, 1, (float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i * pixelsPerPlane), 1, floatBytes, 1, pixelsPerPlane);
                 }
                 break;
-            case CPRProjectionModeMinIP:
+
+            case CPR_PROJECTION_MODE_MIN_IP:
                 for (NSInteger i = 1; i < _volumeData.pixelsDeep; i++) {
                     if ([self isCancelled]) {
                         break;
@@ -86,7 +88,8 @@
                     vDSP_vmin(floatBytes, 1, (float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i * pixelsPerPlane), 1, floatBytes, 1, pixelsPerPlane);
                 }
                 break;
-            case CPRProjectionModeMean:
+
+            case CPR_PROJECTION_MODE_MEAN:
                 for (NSInteger i = 1; i < _volumeData.pixelsDeep; i++) {
                     if ([self isCancelled]) {
                         break;
@@ -95,6 +98,7 @@
                     vDSP_vavlin((float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i * pixelsPerPlane), 1, &floati, floatBytes, 1, pixelsPerPlane);
                 }
                 break;
+
             default:
                 break;
         }

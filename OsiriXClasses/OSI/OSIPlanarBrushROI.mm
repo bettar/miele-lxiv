@@ -16,6 +16,12 @@
 
 #import "mgl.h" // include first
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
+#import "GLRenderer.h"
+
 #import "OSIPlanarBrushROI.h"
 #import "OSIROI+Private.h"
 #import "OSIROIMask.h"
@@ -148,17 +154,25 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
     double dicomToPixGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
 
+#ifdef WITH_OPENGL_32
+    // TODO: To be tested
+    #define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_OSI_PLANAR_BRUSH_ROI
+    #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_OSI_PLANAR_BRUSH_ROI
+    // Define a local model matrix and apply it locally without affecting the shader
+    glm::mat4 M = glm::make_mat4(dicomToPixGLTransform);
+    #endif
+#else
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(dicomToPixGLTransform);
+#endif
     
-    glLineWidth(3.0);    
+    renderer_setLineWidth(3.0);
     
     // let's try drawing the mask
     OSIROIMask *mask;
     NSArray *maskRuns;
     OSIROIMaskRun maskRun;
-    NSValue *maskRunValue;
     N3AffineTransform inverseVolumeTransform;
     N3Vector lineStart;
     N3Vector lineEnd;
@@ -182,12 +196,17 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
     
     inverseVolumeTransform = N3AffineTransformInvert([volumeData volumeTransform]);
     mask = [self ROIMaskForFloatVolumeData:volumeData];
-    maskRuns = [mask maskRuns];
-    
-    glColor3f(1, 0, 1);
+    maskRuns = [mask maskRuns]; // Value stored to 'maskRuns' is never read
+
+    renderer_set_rgb(1, 0, 1);
+
+#ifdef WITH_OPENGL_32
+    // TODO: renderer_drawLines([pArray copy]); Note: XYZ
+    NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+#else
     glBegin(GL_LINES);
     {
-        for (maskRunValue in maskRuns) {
+        for (NSValue *maskRunValue in maskRuns) {
             maskRun = [maskRunValue OSIROIMaskRunValue];
             
             lineStart = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex + 0.5, maskRun.depthIndex);
@@ -203,6 +222,7 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
     glEnd();
     
     glPopMatrix();
+#endif
 }
 
 - (NSSet *)osiriXROIs

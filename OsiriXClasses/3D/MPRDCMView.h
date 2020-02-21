@@ -60,7 +60,8 @@
 
 @property (readonly) DCMPix *pix;
 @property (retain) Camera *camera;
-@property float angleMPR, fromIntervalExport, toIntervalExport, LOD;
+@property float angleMPR;  // in degrees
+@property float fromIntervalExport, toIntervalExport, LOD;
 @property int viewExport;
 @property (nonatomic) BOOL displayCrossLines, dontUseAutoLOD;
 @property (readonly) VRView *vrView;

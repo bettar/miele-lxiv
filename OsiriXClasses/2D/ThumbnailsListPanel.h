@@ -23,11 +23,11 @@
 
 @interface ThumbnailsListPanel : NSWindowController
 {	
-	NSView                  *thumbnailsView;
-    NSView                  *superView;
-	long					screen;
-	ViewerController		*viewer;
-	BOOL					dontReenter;
+	NSView *thumbnailsView;
+    NSView *superView;
+	long screen;
+	ViewerController *viewer;
+	BOOL dontReenter;
 }
 
 @property (readonly) ViewerController *viewer;

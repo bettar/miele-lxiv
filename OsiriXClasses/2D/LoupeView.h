@@ -23,12 +23,14 @@
 
 @interface LoupeView : NSOpenGLView
 {
-	NSImage *loupeImage, *loupeMaskImage;
-	
-	GLuint loupeTextureID, loupeTextureWidth, loupeTextureHeight;
+    NSImage *loupeRingImage;	
+    GLuint loupeRingTextureID;
+    GLuint loupeTextureWidth, loupeTextureHeight;
 	GLubyte *loupeTextureBuffer;
 	
-	GLuint loupeMaskTextureID, loupeMaskTextureWidth, loupeMaskTextureHeight;
+    NSImage *loupeMaskImage;
+    GLuint loupeMaskTextureID;
+    GLuint loupeMaskTextureWidth, loupeMaskTextureHeight;
 	GLubyte *loupeMaskTextureBuffer;
 	
 	GLuint textureID, textureWidth, textureHeight;
@@ -38,9 +40,9 @@
 
 @property BOOL drawLoupeBorder;
 
-- (void)makeTextureFromImage:(NSImage*)image
-                  forTexture:(GLuint*)texName
-                      buffer:(GLubyte*)buffer;
+- (void)makeTextureObjectFromImage: (NSImage*)image
+                        forTexture: (GLuint*)texName
+                            buffer: (GLubyte*)buffer;
 
 - (void)setTexture:(char*)texture
           withSize:(NSSize)textureSize

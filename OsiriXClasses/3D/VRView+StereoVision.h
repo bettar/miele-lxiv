@@ -106,50 +106,10 @@
 #include "vtkCallbackCommand.h"
 // ****************************
 
-
 #undef id
 
 class vtkMyCallbackVR;
 
-#else
-/*
-typedef char* vtkTransform;
-typedef char* vtkImageActor;
-typedef char* vtkImageMapToColors;
-typedef char* vtkLookupTable;
-typedef char* vtkImageReslice;
-typedef char* vtkImageImport;
-typedef char* vtkCamera;
-typedef char* vtkActor;
-typedef char* vtkPolyDataMapper;
-typedef char* vtkOutlineFilter;
-typedef char* vtkLineWidget;
-
-typedef char* vtkTextActor;
-typedef char* vtkVolumeRayCastMapper;
-typedef char* vtkFixedPointVolumeRayCastMapper;
-typedef char* OsiriXFixedPointVolumeRayCastMapper;
-typedef char* vtkVolumeRayCastMIPFunction;
-typedef char* vtkVolume;
-
-
-typedef char* vtkPiecewiseFunction;
-typedef char* vtkVolumeTextureMapper2D;
-typedef char* vtkPolyData;
-typedef char* vtkVolumeProperty;
-typedef char* vtkPolyDataMapper2D;
-
-typedef char* vtkColorTransferFunction;
-typedef char* vtkActor2D;
-typedef char* vtkMyCallback;
-typedef char* vtkBoxWidget;
-typedef char* vtkVolumeRayCastCompositeFunction;
-
-typedef char* vtkRenderer;
-typedef char* vtkVolumeTextureMapper3D;
-typedef char* vtkOrientationMarkerWidget;
-
-typedef char* vtkMyCallbackVR;*/
 #endif
 
 #include <Accelerate/Accelerate.h>
@@ -172,8 +132,11 @@ typedef char* vtkMyCallbackVR;*/
 #define vtkMieleView    NSView
 #endif
 
+#endif // _STEREO_VISION_
+
 @interface VRView ( StereoVision )
 
+#ifdef _STEREO_VISION_
 - (short) LeftRightDualScreen;
 - (void) LeftRightSingleScreen;
 - (void) initStereoLeftRight;
@@ -183,18 +146,10 @@ typedef char* vtkMyCallbackVR;*/
 - (short) LeftRightMovieScreen;
 - (void) setDisplayStereo3DPoints: (vtkRenderer*) theRenderer: (BOOL) on;
 - (void) setNewGeometry: (double) screenHeight: (double) screenDistance: (double) eyeDistance;
-
-- (IBAction) SwitchStereoMode :(id) sender;
-- (IBAction) invertedSides :(id) sender;
-
-@end
-
-#else // _STEREO_VISION_
-
-@interface VRView ( StereoVision )
-
-- (IBAction) SwitchStereoMode :(id) sender;
-- (IBAction) invertedSides :(id) sender;
-
-@end
 #endif // _STEREO_VISION_
+
+//- (IBAction) SwitchStereoMode :(id) sender;
+- (IBAction) invertedSides :(id) sender;
+
+@end
+

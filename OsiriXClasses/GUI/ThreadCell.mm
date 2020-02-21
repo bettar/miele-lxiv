@@ -149,7 +149,10 @@
 	[self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(NSThread*)obj change:(NSDictionary*)change context:(void*)context
+-(void)observeValueForKeyPath:(NSString*)keyPath
+                     ofObject:(NSThread*)obj
+                       change:(NSDictionary*)change
+                      context:(void*)context
 {
     if (obj == _thread)
     {
@@ -163,23 +166,31 @@
         }
         
         if (![NSThread isMainThread]) {
-            [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], NULL] waitUntilDone:NO];
+            [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:)
+                                   withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], NULL]
+                                waitUntilDone:NO];
             return;
         }
         
         if ([keyPath isEqualToString:NSThreadStatusKey]) {
             [self.view setNeedsDisplayInRect: [self.view rectOfRow:[self.manager.threads indexOfObject:self.thread]]];
             return;
-        } else if ([keyPath isEqualToString:NSThreadProgressKey]) {
+        }
+  
+        if ([keyPath isEqualToString:NSThreadProgressKey]) {
             [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
             [self.progressIndicator setIndeterminate: self.thread.progress < 0];
-            if (self.thread.progress < 0) [self.progressIndicator startAnimation:self];
+            if (self.thread.progress < 0)
+                [self.progressIndicator startAnimation:self];
+            
             if (fabs(_lastDisplayedProgress-obj.progress) > 1.0/self.progressIndicator.frame.size.width) {
                 _lastDisplayedProgress = obj.progress;
                 [self.progressIndicator setNeedsDisplay: YES];
             }
             return;
-        } else if ([keyPath isEqualToString:NSThreadSupportsCancelKey] || [keyPath isEqualToString:NSThreadIsCancelledKey]) {
+        }
+        
+        if ([keyPath isEqualToString:NSThreadSupportsCancelKey] || [keyPath isEqualToString:NSThreadIsCancelledKey]) {
             [self.cancelButton setHidden:(!self.thread.supportsCancel)||self.thread.isCancelled];
             [self.cancelButton setEnabled:self.thread.supportsCancel];
             return;
@@ -242,7 +253,10 @@
 		[self.progressIndicator startAnimation:self];
 	}
     
-    NSRect progressFrame = NSMakeRect(frame.origin.x+3, frame.origin.y + (frame.size.height - 12), frame.size.width-6, 10);
+    NSRect progressFrame = NSMakeRect(NSMinX(frame) + 3,
+                                      NSMaxY(frame) - 12,
+                                      frame.size.width - 6,
+                                      10);
     
 	if (!NSEqualRects(self.progressIndicator.frame, progressFrame))
         [self.progressIndicator setFrame:progressFrame];

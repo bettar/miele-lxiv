@@ -23,13 +23,16 @@
 
 @implementation StudyView
 
-- (id)initWithFrame:(NSRect)frame {
-	return [self initWithFrame:frame seriesRows:1  seriesColumns:1];
-
-
+- (id)initWithFrame:(NSRect)frame
+{
+	return [self initWithFrame:frame
+                    seriesRows:1
+                 seriesColumns:1];
 }
 
-- (id)initWithFrame:(NSRect)frame seriesRows:(int)rows  seriesColumns:(int)columns
+- (id)initWithFrame:(NSRect)frame
+         seriesRows:(int)rows
+      seriesColumns:(int)columns
 {
 	 self = [super initWithFrame:frame];
 	 if (self)

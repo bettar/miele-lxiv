@@ -131,9 +131,10 @@
         
         iwl = [WLnew floatValue];
         iww = [WWnew floatValue];
-        if( iww < 1) iww = 1;
+        if (iww < 1)
+            iww = 1;
         
-        if( self.WLWWNewName.length)
+        if (self.WLWWNewName.length > 0)
         {
             NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] mutableCopy] autorelease];
             

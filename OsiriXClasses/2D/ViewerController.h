@@ -267,7 +267,9 @@ enum
 	NSMutableArray			*fileList[ MAX4D];
     NSMutableArray          *pixList[ MAX4D], *roiList[ MAX4D], *copyRoiList[ MAX4D];
 	NSData					*volumeData[ MAX4D];
-	short					curMovieIndex, maxMovieIndex, orientationVector;
+    short					curMovieIndex;
+    short                   maxMovieIndex;
+    short                   orientationVector;
     NSToolbar               *toolbar;
 	
 	float					direction;

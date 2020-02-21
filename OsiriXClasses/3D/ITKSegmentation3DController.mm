@@ -20,6 +20,8 @@
 
 #import "mgl.h" // include first
 
+#import "GLRenderer.h"
+
 #import "ITKSegmentation3D.h"
 #import "ViewerController.h"
 #import "DCMPix.h"
@@ -171,27 +173,35 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 			NSDictionary *userInfo = [note userInfo];
 			
 			CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-            if( cgl_ctx == nil)
+            if (cgl_ctx == nil)
                 return;
             
-			glColor3f (0.0f, 1.0f, 0.5f);
-			glLineWidth(2.0 * self.window.backingScaleFactor);
             float scaleValue = [[userInfo valueForKey:@"scaleValue"] floatValue];
             float crossx = startingPoint.x - [[userInfo valueForKey:@"offsetx"] floatValue];
             float crossy = startingPoint.y - [[userInfo valueForKey:@"offsety"] floatValue];
-            glBegin(GL_LINES);
+
+            renderer_setLineWidth(2.0 * self.window.backingScaleFactor);
+            renderer_set_rgb(0.0f, 1.0f, 0.5f);
+
             {
-                glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
-                glVertex2f( scaleValue * (crossx -  5), scaleValue*(crossy));
-                glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
-                glVertex2f( scaleValue * (crossx +  5), scaleValue*(crossy));
+                const int nPoints = 8;
+                glm::vec2 pA[nPoints];
+                pA[0] = glm::vec2( scaleValue * (crossx - 40), scaleValue*(crossy));
+                pA[1] = glm::vec2( scaleValue * (crossx -  5), scaleValue*(crossy));
+                pA[2] = glm::vec2( scaleValue * (crossx + 40), scaleValue*(crossy));
+                pA[3] = glm::vec2( scaleValue * (crossx +  5), scaleValue*(crossy));
                 
-                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
-                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
-                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
-                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
+                pA[4] = glm::vec2( scaleValue * (crossx), scaleValue*(crossy - 40));
+                pA[5] = glm::vec2( scaleValue * (crossx), scaleValue*(crossy -  5));
+                pA[6] = glm::vec2( scaleValue * (crossx), scaleValue*(crossy +  5));
+                pA[7] = glm::vec2( scaleValue * (crossx), scaleValue*(crossy + 40));
+
+                NSMutableArray *pArray = [NSMutableArray array];
+                for (int i=0; i<nPoints; i++)
+                    [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec2)]];
+
+                renderer_drawLine_xy([pArray copy], GL_LINES);
             }
-			glEnd();
 		}
 	}
 }

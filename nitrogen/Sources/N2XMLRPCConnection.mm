@@ -160,8 +160,9 @@
 		_doc = [[NSXMLDocument alloc] initWithData:content options:NSXMLNodeOptionsNone error: &error];
         if (!_doc)
         {
-            if( content.length)
+            if (content.length > 0)
                 NSLog( @"--- incomplete/corrupted XML document: %@", error.localizedDescription);
+
             return; // data is incomplete, try later with more data
         }
 //        DLog(@"Handling XMLRPC request: %@", [doc XMLString]);

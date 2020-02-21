@@ -23,6 +23,7 @@ Manages the Window for creating Calcium Scoring ROIs
 ***************************************************************/
 
 #import "mgl.h" // include first
+#import "GLRenderer.h"
 
 #import "ITKSegmentation3D.h"
 #import "ViewerController.h"
@@ -226,18 +227,23 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		zpx = [[_viewer imageView] curImage];
 		
 		float location[3];
-		[[[_viewer imageView] curDCM] convertPixX: (float) xpx pixY: (float) ypx toDICOMCoords: (float*) location pixelCenter: YES];
+		[[[_viewer imageView] curDCM] convertPixX: (float) xpx
+                                             pixY: (float) ypx
+                                    toDICOMCoords: (float*) location
+                                      pixelCenter: YES];
 		xmm = location[0];
 		ymm = location[1];
 		zmm = location[2];
 		
 		[self setStartingPointPixelPosition:[NSString stringWithFormat:NSLocalizedString(@"px:\t\tx:%d y:%d", nil), xpx, ypx]];
-		[self setStartingPointWorldPosition:[NSString stringWithFormat:NSLocalizedString(@"mm:\t\tx:%2.2f y:%2.2f z:%2.2f", nil), xmm, ymm, zmm]];
-		[self setStartingPointValue:[NSString stringWithFormat:NSLocalizedString(@"value:\t%2.2f", nil), [[[_viewer imageView] curDCM] getPixelValueX: xpx Y:ypx]]];
-		_startingPoint = NSMakePoint(xpx, ypx);
+
+        [self setStartingPointWorldPosition:[NSString stringWithFormat:NSLocalizedString(@"mm:\t\tx:%2.2f y:%2.2f z:%2.2f", nil), xmm, ymm, zmm]];
+
+        [self setStartingPointValue:[NSString stringWithFormat:NSLocalizedString(@"value:\t%2.2f", nil), [[[_viewer imageView] curDCM] getPixelValueX: xpx Y:ypx]]];
+
+        _startingPoint = NSMakePoint(xpx, ypx);
 		
 		[self compute: self];
-		
 	}
 }
 
@@ -245,7 +251,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 {
 	if ([note object] == [_viewer imageView])
 	{
-		if ( _startingPoint.x != 0 && _startingPoint.y != 0)
+		if (_startingPoint.x != 0 &&
+            _startingPoint.y != 0)
 		{
 			NSDictionary	*userInfo = [note userInfo];
 			
@@ -256,30 +263,38 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
             float scaleValue = [[userInfo valueForKey:@"scaleValue"] floatValue];
             float crossx = _startingPoint.x - [[userInfo valueForKey:@"offsetx"] floatValue];
             float crossy = _startingPoint.y - [[userInfo valueForKey:@"offsety"] floatValue];
-			glColor3f (0.0f, 1.0f, 0.5f);
-			glLineWidth(2.0 * self.window.backingScaleFactor);
-			glBegin(GL_LINES);
-            {
-                glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
-                glVertex2f( scaleValue * (crossx - 5), scaleValue*(crossy));
-                glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
-                glVertex2f( scaleValue * (crossx + 5), scaleValue*(crossy));
-                
-                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
-                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
-                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
-                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
-            }
-			glEnd();
+
+            const int nPoints = 8;
+            glm::vec2 pA[nPoints];
+            pA[0] = glm::vec2( scaleValue * (crossx - 40), scaleValue*(crossy));
+            pA[1] = glm::vec2( scaleValue * (crossx - 5), scaleValue*(crossy));
+            pA[2] = glm::vec2( scaleValue * (crossx + 40), scaleValue*(crossy));
+            pA[3] = glm::vec2( scaleValue * (crossx + 5), scaleValue*(crossy));
+            
+            pA[4] = glm::vec2( scaleValue * (crossx), scaleValue*(crossy-40));
+            pA[5] = glm::vec2( scaleValue * (crossx), scaleValue*(crossy-5));
+            pA[6] = glm::vec2( scaleValue * (crossx), scaleValue*(crossy+5));
+            pA[7] = glm::vec2( scaleValue * (crossx), scaleValue*(crossy+40));
+
+            NSMutableArray *pArray = [NSMutableArray array];
+            for (int i=0; i<nPoints; i++)
+                [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec2)]];
+
+            //[self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
+            renderer_setLineWidth(2.0 * self.window.backingScaleFactor);
+            renderer_set_rgb(0.0f, 1.0f, 0.5f);// greenish-cyan
+            renderer_drawLine_xy([pArray copy], GL_LINES);
 		}
 	}
 }
 
--(NSString *)startingPointPixelPosition{
+-(NSString *)startingPointPixelPosition
+{
 	return _startingPointPixelPosition;
 }
 
-- (void)setStartingPointPixelPosition:(NSString *)position{
+- (void)setStartingPointPixelPosition:(NSString *)position
+{
 	[_startingPointPixelPosition release];
 	_startingPointPixelPosition  = [position retain];
 }

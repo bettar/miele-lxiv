@@ -127,7 +127,10 @@
     NSGraphicsContext *nsctxt = [NSGraphicsContext graphicsContextWithGraphicsPort:ctxt flipped:NO];
     [NSGraphicsContext saveGraphicsState];
     [NSGraphicsContext setCurrentContext:nsctxt];
-    [image drawAtPoint:NSMakePoint(0.0, 0.0) fromRect: NSZeroRect operation:NSCompositeCopy fraction: 1.0];
+    [image drawAtPoint: NSZeroPoint
+              fromRect: NSZeroRect
+             operation: NSCompositeCopy
+              fraction: 1.0];
     [NSGraphicsContext restoreGraphicsState];
     
     CVPixelBufferUnlockBaseAddress(buffer, 0);
@@ -158,8 +161,7 @@
                               withIntermediateDirectories: YES
                                                attributes: nil
                                                     error: nil];
-    
-    
+
     if (produceFiles)
     {
         result = NSFileHandlingPanelOKButton;
@@ -185,7 +187,7 @@
         if( [exportTypes count])
             [type addItemsWithTitles: [exportTypes valueForKey: @"name"]];
         
-        int index = 0;
+        NSUInteger index = 0;
         
         for (NSDictionary *d in exportTypes)
         {
@@ -210,7 +212,7 @@
     
     @try
     {
-        if( result == NSFileHandlingPanelOKButton)
+        if (result == NSFileHandlingPanelOKButton)
         {
             CMTimeValue timeValue = 600 / [[NSUserDefaults standardUserDefaults] integerForKey:@"quicktimeExportRateValue"];
             CMTime frameDuration = CMTimeMake( timeValue, 600);
@@ -243,9 +245,9 @@
                         NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];    
                         NSEnableScreenUpdates();
                         
-                        if( im)
+                        if (im)
                         {
-                            if( writerInput == nil)
+                            if (writerInput == nil)
                             {
                                 // Define video settings to be passed to the AVAssetWriterInput instance
                                 

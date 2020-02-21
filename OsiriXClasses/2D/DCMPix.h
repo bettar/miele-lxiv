@@ -52,7 +52,7 @@ typedef struct NSPointInt NSPointInt;
 extern "C"
 {
 #endif /*cplusplus*/
-extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
+extern XYZ ArbitraryRotate(XYZ p, double theta, XYZ r);
 #ifdef __cplusplus
 }
 #endif /*cplusplus*/

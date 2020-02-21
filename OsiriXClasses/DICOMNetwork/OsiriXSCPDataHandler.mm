@@ -1236,13 +1236,14 @@ extern BOOL forkedProcess;
 	}
 }
 
-- (void)imageDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset
+- (void)imageDatasetForFetchedObject:(id)fetchedObject
+                             dataset:(DcmDataset *)dataset
 {
 	@try
 	{
 		NSManagedObject *image = fetchedObject;
 		
-		for( NSString *keyString in [findTemplate allKeys])
+		for (NSString *keyString in [findTemplate allKeys])
 		{
 			NSArray *elementAndGroup = [keyString componentsSeparatedByString: @","];
 			

@@ -264,7 +264,7 @@ OFCondition AYPrintManager::createRQ(
 
     if (cond.good())
     {
-        status = response.msg.NCreateRSP.DimseStatus;
+        status = response.msg.NCreateRSP.DimseStatus; // Assigned value is garbage or undefined
         if (status != STATUS_Success)
             OFLOG_ERROR(printscuLogger, "Error sending Create RQ, status: " << status);
 
@@ -309,7 +309,7 @@ OFCondition AYPrintManager::setRQ(
     
     OFCondition cond = sendNRequest(presCtx, request, modificationList, response, statusDetail, attributeListOut);
     if (cond.good())
-        status = response.msg.NSetRSP.DimseStatus;
+        status = response.msg.NSetRSP.DimseStatus; // Assigned value is garbage or undefined
 
     if (status != STATUS_Success)
         OFLOG_ERROR(printscuLogger, "Error sending Set RQ, status: " << status);
@@ -366,7 +366,7 @@ OFCondition AYPrintManager::getRQ(
     
     OFCondition cond = sendNRequest(presCtx, request, NULL, response, statusDetail, attributeListOut);
     if (cond.good())
-        status = response.msg.NGetRSP.DimseStatus;
+        status = response.msg.NGetRSP.DimseStatus; // Assigned value is garbage or undefined
 
     if (status != STATUS_Success)
         OFLOG_ERROR(printscuLogger, "Error sending Get RQ, status: " << status);
@@ -410,7 +410,7 @@ OFCondition AYPrintManager::actionRQ(
     
     OFCondition cond = sendNRequest(presCtx, request, actionInformation, response, statusDetail, actionReply);
     if (cond.good())
-        status = response.msg.NActionRSP.DimseStatus;
+        status = response.msg.NActionRSP.DimseStatus; // Assigned value is garbage or undefined
 
     if (status != STATUS_Success)
         OFLOG_ERROR(printscuLogger, "Error sending Action RQ, status: " << status);
@@ -451,7 +451,7 @@ OFCondition AYPrintManager::deleteRQ(
     
     OFCondition cond = sendNRequest(presCtx, request, NULL, response, statusDetail, attributeListOut);
     if (cond.good())
-        status = response.msg.NDeleteRSP.DimseStatus;
+        status = response.msg.NDeleteRSP.DimseStatus; // Assigned value is garbage or undefined
 
     if (status != STATUS_Success)
         OFLOG_ERROR(printscuLogger, "Error sending Delete RQ, status: " << status);
@@ -662,6 +662,7 @@ OFCondition AYPrintManager::negotiateAssociation(
 
     if (cond.good())
     {
+        // Access to field 'sendPDVLength' results in a dereference of a null pointer (loaded from field 'assoc')
         DCMPSTAT_INFO("Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")");
     }
     else {

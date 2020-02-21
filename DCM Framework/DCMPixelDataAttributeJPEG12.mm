@@ -425,8 +425,6 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 	theCInfo.err = jpeg_std_error (&theJErr);
 	jpeg_create_decompress (&theCInfo);
 	
-
-	
 	jpeg12_nsdata_src (&theCInfo, jpegData);
 	jpeg_read_header (&theCInfo, TRUE);
 
@@ -481,7 +479,8 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 	jpeg_destroy_decompress(&theCInfo);
 	if (DCMDEBUG)
 		NSLog(@"JPEG12 decompressed data length: %d", (int) [rawData length]);
-	return rawData;
+
+    return rawData;
 }
 
 //- (NSMutableData *)compressJPEG12:(NSMutableData *)data  compressionSyntax:(DCMTransferSyntax *)compressionSyntax  quality:(float)quality{

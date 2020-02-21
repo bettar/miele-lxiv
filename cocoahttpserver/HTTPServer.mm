@@ -17,7 +17,8 @@
 **/
 - (id)init
 {
-	if((self = [super init]))
+    self = [super init];
+	if (self)
 	{
 		// Initialize underlying asynchronous tcp/ip socket
 		asyncSocket = [[AsyncSocket alloc] initWithDelegate:self];
@@ -105,7 +106,7 @@
 }
 - (void)setDocumentRoot:(NSURL *)value
 {
-    if(![documentRoot isEqual:value])
+    if (![documentRoot isEqual:value])
 	{
         [documentRoot release];
         documentRoot = [value copy];
@@ -135,7 +136,7 @@
 }
 - (void)setDomain:(NSString *)value
 {
-	if(![domain isEqualToString:value])
+	if (![domain isEqualToString:value])
 	{
 		[domain release];
         domain = [value copy];
@@ -151,7 +152,7 @@
 }
 - (void)setType:(NSString *)value
 {
-	if(![type isEqualToString:value])
+	if (![type isEqualToString:value])
 	{
 		[type release];
 		type = [value copy];
@@ -171,7 +172,7 @@
 }
 - (void)setName:(NSString *)value
 {
-	if(![name isEqualToString:value])
+	if (![name isEqualToString:value])
 	{
         [name release];
         name = [value copy];
@@ -198,13 +199,13 @@
 }
 - (void)setTXTRecordDictionary:(NSDictionary *)value
 {
-	if(![txtRecordDictionary isEqualToDictionary:value])
+	if (![txtRecordDictionary isEqualToDictionary:value])
 	{
 		[txtRecordDictionary release];
 		txtRecordDictionary = [value copy];
 		
 		// And update the txtRecord of the netService if it has already been published
-		if(netService)
+		if (netService)
 		{
 			[netService setTXTRecordData:[NSNetService dataFromTXTRecordDictionary:txtRecordDictionary]];
 		}
@@ -216,8 +217,7 @@
 - (BOOL)start:(NSError **)errPtr
 {
 	BOOL success = [asyncSocket acceptOnPort:port error:errPtr];
-	
-	if(success)
+	if (success)
 	{
 		// Update our port number
 		[self setPort:[asyncSocket localPort]];
@@ -226,7 +226,7 @@
 		NSLog(@"Started HTTP server on port %hu", port);
 		
 		// We can only publish our bonjour service if a type has been set
-		if(type != nil)
+		if (type != nil)
 		{
 			// Create the NSNetService with our basic parameters
 			netService = [[NSNetService alloc] initWithDomain:domain type:type name:name port:port];
@@ -238,7 +238,7 @@
 			// This will cause the OS to crash!!!
 			
 			// Set the txtRecordDictionary if we have one
-			if(txtRecordDictionary != nil)
+			if (txtRecordDictionary != nil)
 			{
 				[netService setTXTRecordData:[NSNetService dataFromTXTRecordDictionary:txtRecordDictionary]];
 			}
@@ -246,7 +246,8 @@
 	}
 	else
 	{
-		if(errPtr) NSLog(@"Failed to start HTTP Server: %@", *errPtr);
+		if (errPtr)
+            NSLog(@"Failed to start HTTP Server: %@", *errPtr);
 	}
 	
 	return success;
@@ -255,7 +256,7 @@
 - (BOOL)stop
 {
 	// First stop publishing the service via bonjour
-	if(netService)
+	if (netService)
 	{
 		[netService stop];
 		[netService release];
@@ -288,7 +289,8 @@
 	{
 		result = [connections count];
 	}
-	return result;
+
+    return result;
 }
 
 #pragma mark - AsyncSocket Delegate Methods:

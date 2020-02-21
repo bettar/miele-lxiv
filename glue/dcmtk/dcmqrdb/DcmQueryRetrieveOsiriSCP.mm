@@ -78,23 +78,19 @@ static void getCallback(
 }
 
 // See DIMSE_StoreProviderCallback in dimse.h
-static void storeCallback(/* in */
-                          void *callbackData,
-                          T_DIMSE_StoreProgress *progress,  /* progress state */
-                          T_DIMSE_C_StoreRQ *req,           /* original store request */
-                          char *imageFileName,              /* being received into */
-                          DcmDataset **imageDataSet,        /* being received into */
-                          /* out */
-                          T_DIMSE_C_StoreRSP *rsp,          /* final store response */
-                          DcmDataset **stDetail)
+static void storeCallback(
+  /* in */
+  void *callbackData,
+  T_DIMSE_StoreProgress *progress,  /* progress state */
+  T_DIMSE_C_StoreRQ *req,           /* original store request */
+  char *imageFileName,              /* being received into */
+  DcmDataset **imageDataSet,        /* being received into */
+  /* out */
+  T_DIMSE_C_StoreRSP *rsp,          /* final store response */
+  DcmDataset **stDetail)
 {
-    DcmQueryRetrieveStoreContext *context = OFstatic_cast(DcmQueryRetrieveStoreContext *, callbackData);
-    context->callbackHandler(progress,
-                             req,
-                             imageFileName,
-                             imageDataSet,
-                             rsp,
-                             stDetail);
+  DcmQueryRetrieveStoreContext *context = OFstatic_cast(DcmQueryRetrieveStoreContext *, callbackData);
+  context->callbackHandler(progress, req, imageFileName, imageDataSet, rsp, stDetail);
 }
 
 #pragma mark - class DcmQueryRetrieveOsiriSCP
@@ -116,7 +112,7 @@ void DcmQueryRetrieveOsiriSCP::writeErrorMessage( const char *str)
 {
     if( options_.singleProcess_)
     {
-        if( str)
+        if (str)
             [[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:)
                                                                   withObject: @(str)
                                                                waitUntilDone: NO];
@@ -142,9 +138,16 @@ OFCondition DcmQueryRetrieveOsiriSCP::handleAssociation(T_ASC_Association * asso
     return DcmQueryRetrieveSCP::handleAssociation(assoc, correctUIDPadding);
 }
 
-// See DCMTK sources: dcmqrsrv.cc
-OFCondition DcmQueryRetrieveOsiriSCP::getSCP(T_ASC_Association * assoc,
-                                             T_DIMSE_C_GetRQ * request,
+// See DCMTK sources: dcmqrsrv.cc:280
+/* Unused, but inserted to help the diff tool
+OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_FindRQ * request,
+        T_ASC_PresentationContextID presID,
+        DcmQueryRetrieveDatabaseHandle& dbHandle)
+{
+}
+*/
+
+OFCondition DcmQueryRetrieveOsiriSCP::getSCP(T_ASC_Association * assoc, T_DIMSE_C_GetRQ * request,
                                              T_ASC_PresentationContextID presID,
                                              DcmQueryRetrieveDatabaseHandle& dbHandle)
 {
@@ -172,14 +175,21 @@ OFCondition DcmQueryRetrieveOsiriSCP::getSCP(T_ASC_Association * assoc,
     return cond;
 }
 
-// see DCMTK source: dcmqrsrv.cc
-OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(
-                T_ASC_Association * assoc,
-                T_DIMSE_C_StoreRQ * request,
-                T_ASC_PresentationContextID presId,
-                DcmQueryRetrieveDatabaseHandle& dbHandle,
-                OFBool correctUIDPadding)
+// See DCMTK sources: dcmqrsrv.cc:330
+/* Unused, but inserted to help the diff tool.
+OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_MoveRQ * request,
+        T_ASC_PresentationContextID presID, DcmQueryRetrieveDatabaseHandle& dbHandle)
 {
+}
+*/
+
+// see DCMTK source: dcmqrsrv.cc:353
+OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request,
+             T_ASC_PresentationContextID presId,
+             DcmQueryRetrieveDatabaseHandle& dbHandle,
+             OFBool correctUIDPadding)
+{
+    NSLog(@"DcmQueryRetrieveOsiriSCP.mm %s %d", __FUNCTION__, __LINE__);
 #if 0
     // TODO: call base class instead of repeating this block of code (need to resolve imageFileName)
     DcmQueryRetrieveSCP::storeSCP(assoc,request,presId,dbHandle,correctUIDPadding);
@@ -189,20 +199,20 @@ OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(
     char imageFileName[MAXPATHLEN+1];
     DcmFileFormat dcmff;
 
+#ifndef NDEBUG
+    OFLog::configure(OFLogger::DEBUG_LOG_LEVEL);
+    //DCM_dcmdataLogger.setLogLevel(OFLogger::DEBUG_LOG_LEVEL);
+    //DCM_dcmqrdbLogger.setLogLevel(OFLogger::DEBUG_LOG_LEVEL);
+#else
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"verbose_dcmtkStoreScu"])
     {
-  #ifndef NDEBUG
-        OFLog::configure(OFLogger::DEBUG_LOG_LEVEL);
-        //DCM_dcmdataLogger.setLogLevel(OFLogger::DEBUG_LOG_LEVEL);
-        //DCM_dcmqrdbLogger.setLogLevel(OFLogger::DEBUG_LOG_LEVEL);
-  #else
         OFLog::configure(OFLogger::INFO_LOG_LEVEL);
-  #endif
     }
     else
     {
         OFLog::configure(OFLogger::ERROR_LOG_LEVEL);        
     }
+#endif
     
     DcmQueryRetrieveStoreContext context(dbHandle, options_, STATUS_Success, &dcmff, correctUIDPadding);
     
@@ -210,39 +220,48 @@ OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(
     DCMQRDB_INFO("Received Store SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
     
     if (!dcmIsaStorageSOPClassUID(request->AffectedSOPClassUID)) {
-        /* callback will send back SOP class not supported status */
+        /* callback will send back sop class not supported status */
         context.setStatus(STATUS_STORE_Refused_SOPClassNotSupported);
         /* must still receive data */
         //strcpy(imageFileName, NULL_DEVICE_NAME);
         OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
     }
-    else if (options_.ignoreStoreData_) {
+    else if (options_.ignoreStoreData_)
+    {
         strcpy(imageFileName, NULL_DEVICE_NAME);
         OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
     }
-    else {
-        dbcond = dbHandle.makeNewStoreFileName(request->AffectedSOPClassUID,
-                                               request->AffectedSOPInstanceUID,
-                                               imageFileName,
-                                               sizeof(imageFileName));
+    else
+    {
+        dbcond = dbHandle.makeNewStoreFileName(
+            request->AffectedSOPClassUID,
+            request->AffectedSOPInstanceUID,
+            imageFileName, sizeof(imageFileName));
         
         if (dbcond.bad())
         {
             DCMQRDB_ERROR("storeSCP: Database: makeNewStoreFileName Failed");
             /* must still receive data */
+#if 0
             strcpy(imageFileName, NULL_DEVICE_NAME);
+#else
+            OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
+#endif
+
             /* callback will send back out of resources status */
             context.setStatus(STATUS_STORE_Refused_OutOfResources);
         }
     }
-    
+
+#if 1
     FILE *pFile = fopen([[NSTemporaryDirectory() stringByAppendingPathComponent:@"kill_all_storescu"] UTF8String], "r");
     if (pFile)
     {
         fclose (pFile);
         cond = ASC_abortAssociation(assoc);
     }
-    
+#endif
+
 #ifdef LOCK_IMAGE_FILES
     /* exclusively lock image file */
 #ifdef O_BINARY
@@ -255,44 +274,49 @@ OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(
         DCMQRDB_ERROR("storeSCP: file locking failed, cannot create file");
         
         /* must still receive data */
-        strcpy(imageFileName, NULL_DEVICE_NAME);
+        OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
         
         /* callback will send back out of resources status */
         context.setStatus(STATUS_STORE_Refused_OutOfResources);
     }
     else
-        dcmtk_flock(lockfd, LOCK_EX);
+      dcmtk_flock(lockfd, LOCK_EX);
 #endif
-    
+
     context.setFileName(imageFileName);
-    
+
     // store SourceApplicationEntityTitle in metaheader
     if (assoc && assoc->params)
     {
-        const char *aet = assoc->params->DULparams.callingAPTitle;
-        if (aet)
-            dcmff.getMetaInfo()->putAndInsertString(DCM_SourceApplicationEntityTitle, aet);
+      const char *aet = assoc->params->DULparams.callingAPTitle;
+      if (aet) dcmff.getMetaInfo()->putAndInsertString(DCM_SourceApplicationEntityTitle, aet);
     }
-    
+
     DcmDataset *dset = dcmff.getDataset();
-    
-    /* we must still retrieve the data set even if some error has occured */
-    
+
+    /* we must still retrieve the data set even if some error has occurred */
+
     if (options_.bitPreserving_)
     { /* the bypass option can be set on the command line */
         cond = DIMSE_storeProvider(assoc, presId, request,
-                                   imageFileName, (int)options_.useMetaheader_,
+                                   imageFileName,
+                                   (int)options_.useMetaheader_,
                                    NULL,
                                    storeCallback,
-                                   (void*)&context, options_.blockMode_, options_.dimse_timeout_);
+                                   (void*)&context,
+                                   options_.blockMode_,
+                                   options_.dimse_timeout_);
     }
     else
     {
         cond = DIMSE_storeProvider(assoc, presId, request,
-                                   (char *)NULL, (int)options_.useMetaheader_,
+                                   (char *)NULL,
+                                   (int)options_.useMetaheader_,
                                    &dset,
                                    storeCallback,
-                                   (void*)&context, options_.blockMode_, options_.dimse_timeout_);
+                                   (void*)&context,
+                                   options_.blockMode_,
+                                   options_.dimse_timeout_);
     }
     
 #if 1
@@ -313,7 +337,12 @@ OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(
         {
             DCMQRDB_INFO("Store SCP - status:" << context.getStatus()
                          << " Deleting Image File:" << imageFileName);
+#if 0
             unlink(imageFileName); // The file in TEMP.noindex is deleted
+#else
+        OFStandard::deleteFile(imageFileName);
+
+#endif
         }
         dbHandle.pruneInvalidRecords();
     }
@@ -328,7 +357,8 @@ OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(
 #endif
 #endif
     
-    // Extra stuff for OsiriX:
+#pragma mark - Extra stuff for Miele-LXIV
+
     // It moves the retrieved file from TEMP to INCOMING
     
     if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
@@ -339,7 +369,7 @@ OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(
                 last( imageFileName, '/'));
         rename( imageFileName, dir); // Moving the file from TEMP.noindex to INCOMING.noindex
         
-        if( forkedProcess == NO && index == 0)
+        if (forkedProcess == NO && index == 0)
         {
             [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
         }

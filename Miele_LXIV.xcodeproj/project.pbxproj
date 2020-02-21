@@ -36,6 +36,10 @@
 		430CB70E218C66CD000C2547 /* SRController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 430CB70D218C66CD000C2547 /* SRController.mm */; };
 		430D9F102199FB37006EA1B1 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */; };
 		43110BEB21679E5B00B0405B /* DCM.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4323CE1A23E036A400E96458 /* GLProgramLoupe.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4323CE1923E036A400E96458 /* GLProgramLoupe.mm */; };
+		4323CE1D23E036B800E96458 /* GLProgramText.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4323CE1C23E036B800E96458 /* GLProgramText.mm */; };
+		4323CE2023E036D700E96458 /* GLScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4323CE1F23E036D700E96458 /* GLScene.mm */; };
+		4329FF3C239D3E7A0006FF16 /* font.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 4329FF3B239D3E7A0006FF16 /* font.vsh */; };
 		4333FD721AB3082C00E82B49 /* DcmQueryRetrieveOsiriSCP.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4333FD711AB3082C00E82B49 /* DcmQueryRetrieveOsiriSCP.mm */; };
 		43384CD22347352C00662E7E /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
 		433C9DC82255F5FC00EBC6E9 /* miele_lxivTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 434930EE225512EC00C30B21 /* miele_lxivTests.mm */; };
@@ -80,6 +84,12 @@
 		4384743021AC842200FA56C2 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		43879B7721D64C7600DEF6A9 /* AYDcmPrintSCU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43879B7621D64C7600DEF6A9 /* AYDcmPrintSCU.cpp */; };
 		43879B7921D64CB500DEF6A9 /* AYPrintManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43879B7821D64CB500DEF6A9 /* AYPrintManager.cpp */; };
+		43977C2E23D340920044054B /* loupe.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 43977C2D23D340920044054B /* loupe.vsh */; };
+		43977C3023D340AF0044054B /* loupe.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43977C2F23D340AF0044054B /* loupe.fsh */; };
+		4398390B23DD7F2C0019B0A8 /* GLProgram.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4398390A23DD7F2C0019B0A8 /* GLProgram.mm */; };
+		4398390E23DDC7C10019B0A8 /* GLProgramOverlay.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4398390D23DDC7C10019B0A8 /* GLProgramOverlay.mm */; };
+		43985D3523DCB23E00DD57DD /* GLProgramImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43985D3423DCB23E00DD57DD /* GLProgramImage.mm */; };
+		4398A0D423DEDCD80024AE59 /* GLProgramOverlayLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4398A0D323DEDCD80024AE59 /* GLProgramOverlayLine.mm */; };
 		439FC5EF237713AC009718CD /* libopenjp2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 439FC5EE237713AC009718CD /* libopenjp2.a */; };
 		43A02BCA219D7F1B00E788B6 /* OSIPACSOnDemand.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43A02BC8219D7F1B00E788B6 /* OSIPACSOnDemand.xib */; };
 		43A02BD3219D809500E788B6 /* OSIWebSharingPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43A02BD1219D809400E788B6 /* OSIWebSharingPreferencePanePref.xib */; };
@@ -145,17 +155,26 @@
 		43A02CA9219D889700E788B6 /* Endoscopy.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43A02C8F219D889600E788B6 /* Endoscopy.xib */; };
 		43A02CAA219D889700E788B6 /* CPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43A02C91219D889700E788B6 /* CPR.xib */; };
 		43A02EE1219D9B5400E788B6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43A02EDF219D9B5300E788B6 /* Localizable.strings */; };
+		43A1678E23E472BB001694E3 /* PieChartImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = A97D4C600CE3459D003FE2E6 /* PieChartImage.mm */; };
 		43A89425232F805700CED2CB /* dicomFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* dicomFile.mm */; };
 		43B516412372FB7000106783 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */; };
 		43B5164523732A0300106783 /* AppController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB142DFD05600D76008461A0 /* AppController.mm */; };
 		43B516492373423700106783 /* GLRenderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43B516472373423700106783 /* GLRenderer.mm */; };
 		43BF296D21662E1D0022CF3B /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43BF296C21662E1D0022CF3B /* main.mm */; };
 		43BF296E21662F100022CF3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43CC5BA5216511E200F1B1CA /* Assets.xcassets */; };
+		43BF4BB52387070400CE2294 /* image.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43BF4BB42387070300CE2294 /* image.fsh */; };
+		43BF4BB72387070F00CE2294 /* image.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 43BF4BB62387070F00CE2294 /* image.vsh */; };
+		43BF4BB92387071900CE2294 /* overlay.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43BF4BB82387071800CE2294 /* overlay.fsh */; };
+		43BF4BBB2387072C00CE2294 /* overlay.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 43BF4BBA2387072C00CE2294 /* overlay.vsh */; };
 		43CC5BA6216511E200F1B1CA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43CC5BA5216511E200F1B1CA /* Assets.xcassets */; };
 		43D7471A21A6C4C80055FA87 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43D7471821A6C4C80055FA87 /* InfoPlist.strings */; };
 		43D7471D21A6C4C80055FA87 /* AsyncSocket.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43D7471B21A6C4C80055FA87 /* AsyncSocket.strings */; };
 		43D7472021A6C4C80055FA87 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43D7471E21A6C4C80055FA87 /* InfoPlist.strings */; };
+		43D7F84523C72B0E0022372F /* overlayLine.gsh in Resources */ = {isa = PBXBuildFile; fileRef = 43D7F84423C72B0E0022372F /* overlayLine.gsh */; };
+		43DB7C1A23C83FE700B3C9EA /* overlayLine.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 43DB7C1923C83FE700B3C9EA /* overlayLine.vsh */; };
+		43DB7C1C23C8402600B3C9EA /* overlayLine.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43DB7C1B23C8402600B3C9EA /* overlayLine.fsh */; };
 		43E27D2B1AF338FA007B92CA /* ROI3DSettingsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */; };
+		43F3D28E239D3EEB004CAD67 /* font.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43F3D28D239D3EEB004CAD67 /* font.fsh */; };
 		43F8F9AB1AA7DAA6008F318C /* LoupeController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43F8F9A51AA7DAA6008F318C /* LoupeController.mm */; };
 		43F8F9AD1AA7DAA6008F318C /* LoupeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43F8F9A71AA7DAA6008F318C /* LoupeView.mm */; };
 		43F8F9AF1AA7DAA6008F318C /* LoupeWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43F8F9A91AA7DAA6008F318C /* LoupeWindow.mm */; };
@@ -478,7 +497,6 @@
 		A978DEA70CB0D4BE00FB2C3D /* NSImage+FrameworkImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = A978DE7E0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.mm */; };
 		A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.mm */; };
 		A97B73980CB380EF00E5348D /* mieleplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = A97B73970CB380EF00E5348D /* mieleplugin.icns */; };
-		A97D4C620CE3459D003FE2E6 /* PieChartImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = A97D4C600CE3459D003FE2E6 /* PieChartImage.mm */; };
 		A9897D9B0D4A142200BAC447 /* displayRGB.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9897D970D4A142200BAC447 /* displayRGB.tif */; };
 		A9897D9C0D4A142200BAC447 /* displayTotoku.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9897D980D4A142200BAC447 /* displayTotoku.tif */; };
 		A98FFBE60CA92B58000291C8 /* altivecFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.cpp */; };
@@ -501,7 +519,7 @@
 		A9B23D1615CFE8D0000E47C3 /* Point.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D1515CFE8D0000E47C3 /* Point.pdf */; };
 		A9B23D1915CFE8E2000E47C3 /* Length.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D1815CFE8E2000E47C3 /* Length.pdf */; };
 		A9B23D1C15CFE8FB000E47C3 /* Closed Polygon.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D1B15CFE8FB000E47C3 /* Closed Polygon.pdf */; };
-		A9B23D1F15CFE917000E47C3 /* Opened Polygon.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D1E15CFE917000E47C3 /* Opened Polygon.pdf */; };
+		A9B23D1F15CFE917000E47C3 /* Open Polygon.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D1E15CFE917000E47C3 /* Open Polygon.pdf */; };
 		A9B23D2215CFE928000E47C3 /* Arrow.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D2115CFE928000E47C3 /* Arrow.pdf */; };
 		A9B23D2515CFE938000E47C3 /* Angle.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D2415CFE938000E47C3 /* Angle.pdf */; };
 		A9B23D2815CFE948000E47C3 /* DynamicAngle.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D2715CFE947000E47C3 /* DynamicAngle.pdf */; };
@@ -1488,7 +1506,14 @@
 		4307C62B1A2091900083877C /* url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = url.h; sourceTree = "<group>"; };
 		430CB70C218C66CD000C2547 /* SRController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRController.h; sourceTree = "<group>"; };
 		430CB70D218C66CD000C2547 /* SRController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SRController.mm; sourceTree = "<group>"; };
+		4323CE1823E036A400E96458 /* GLProgramLoupe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramLoupe.h; sourceTree = "<group>"; };
+		4323CE1923E036A400E96458 /* GLProgramLoupe.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GLProgramLoupe.mm; sourceTree = "<group>"; };
+		4323CE1B23E036B800E96458 /* GLProgramText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramText.h; sourceTree = "<group>"; };
+		4323CE1C23E036B800E96458 /* GLProgramText.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GLProgramText.mm; sourceTree = "<group>"; };
+		4323CE1E23E036D700E96458 /* GLScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLScene.h; sourceTree = "<group>"; };
+		4323CE1F23E036D700E96458 /* GLScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GLScene.mm; sourceTree = "<group>"; };
 		43254D58216A1A9F003846E3 /* LXIV Launcher-Development.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Development.entitlements"; path = "LXIV Launcher/LXIV Launcher-Development.entitlements"; sourceTree = "<group>"; };
+		4329FF3B239D3E7A0006FF16 /* font.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = font.vsh; sourceTree = "<group>"; };
 		4333FD711AB3082C00E82B49 /* DcmQueryRetrieveOsiriSCP.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DcmQueryRetrieveOsiriSCP.mm; sourceTree = "<group>"; };
 		433DA136215A5B2500D5A70B /* BrowserController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BrowserController.mm; sourceTree = "<group>"; };
 		433DA137215A5B2500D5A70B /* BrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserController.h; sourceTree = "<group>"; };
@@ -1541,6 +1566,17 @@
 		438AE1AA21B51E1400C5E98F /* miele-lxiv-Development.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "miele-lxiv-Development.entitlements"; sourceTree = "<group>"; };
 		438AE1AB21B5651B00C5E98F /* LXIV Launcher-Deployment.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Deployment.entitlements"; path = "LXIV Launcher/LXIV Launcher-Deployment.entitlements"; sourceTree = "<group>"; };
 		438AE1AC21B5651C00C5E98F /* LXIV Launcher-Distribution.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Distribution.entitlements"; path = "LXIV Launcher/LXIV Launcher-Distribution.entitlements"; sourceTree = "<group>"; };
+		43977C2D23D340920044054B /* loupe.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = loupe.vsh; sourceTree = "<group>"; };
+		43977C2F23D340AF0044054B /* loupe.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = loupe.fsh; sourceTree = "<group>"; };
+		4398390923DD7F2C0019B0A8 /* GLProgram.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgram.h; sourceTree = "<group>"; };
+		4398390A23DD7F2C0019B0A8 /* GLProgram.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GLProgram.mm; sourceTree = "<group>"; };
+		4398390C23DDC7C10019B0A8 /* GLProgramOverlay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramOverlay.h; sourceTree = "<group>"; };
+		4398390D23DDC7C10019B0A8 /* GLProgramOverlay.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GLProgramOverlay.mm; sourceTree = "<group>"; };
+		43985D3323DCB23E00DD57DD /* GLProgramImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramImage.h; sourceTree = "<group>"; };
+		43985D3423DCB23E00DD57DD /* GLProgramImage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GLProgramImage.mm; sourceTree = "<group>"; };
+		4398A0D223DEDCD80024AE59 /* GLProgramOverlayLine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramOverlayLine.h; sourceTree = "<group>"; };
+		4398A0D323DEDCD80024AE59 /* GLProgramOverlayLine.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GLProgramOverlayLine.mm; sourceTree = "<group>"; };
+		43999E2B238A8DA2003CBC24 /* cprTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cprTypes.h; sourceTree = "<group>"; };
 		439FC5EE237713AC009718CD /* libopenjp2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopenjp2.a; path = "../../../../install/miele-201612/openjpeg-2.3.1/lib/libopenjp2.a"; sourceTree = "<group>"; };
 		43A02E9F219D94CC00E788B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = GUI/Base.lproj/3DPosition.xib; sourceTree = "<group>"; };
 		43A02EA0219D94CD00E788B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = GUI/Base.lproj/AnonymizationCustomTagPanel.xib; sourceTree = "<group>"; };
@@ -1613,6 +1649,10 @@
 		43B516482373423700106783 /* GLRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLRenderer.h; sourceTree = "<group>"; };
 		43BF296C21662E1D0022CF3B /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = "LXIV Launcher/main.mm"; sourceTree = "<group>"; };
 		43BF296F21662F420022CF3B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "LXIV Launcher/Info.plist"; sourceTree = "<group>"; };
+		43BF4BB42387070300CE2294 /* image.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = image.fsh; sourceTree = "<group>"; };
+		43BF4BB62387070F00CE2294 /* image.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = image.vsh; sourceTree = "<group>"; };
+		43BF4BB82387071800CE2294 /* overlay.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = overlay.fsh; sourceTree = "<group>"; };
+		43BF4BBA2387072C00CE2294 /* overlay.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = overlay.vsh; sourceTree = "<group>"; };
 		43C9A5DB2377FF0800FB28AE /* mgl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mgl.h; sourceTree = "<group>"; };
 		43CC5BA5216511E200F1B1CA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		43D746D621A6C1160055FA87 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = GUI/es.lproj/3DPosition.strings; sourceTree = "<group>"; };
@@ -1699,10 +1739,14 @@
 		43D7472E21A6DBC30055FA87 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/AsyncSocket.strings"; sourceTree = "<group>"; };
 		43D7472F21A6DBC30055FA87 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		43D7473021A6DBC30055FA87 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		43D7F84423C72B0E0022372F /* overlayLine.gsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = overlayLine.gsh; sourceTree = "<group>"; };
+		43DB7C1923C83FE700B3C9EA /* overlayLine.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = overlayLine.vsh; sourceTree = "<group>"; };
+		43DB7C1B23C8402600B3C9EA /* overlayLine.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = overlayLine.fsh; sourceTree = "<group>"; };
 		43E27D261AF32929007B92CA /* tmp_locations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tmp_locations.h; sourceTree = "<group>"; };
 		43E27D281AF338FA007B92CA /* ROI3DSettingsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROI3DSettingsWindow.h; sourceTree = "<group>"; };
 		43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ROI3DSettingsWindow.mm; sourceTree = "<group>"; };
 		43E6A512216CC297005A031A /* odt2pdf.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = odt2pdf.zip; path = Binaries/ReportsToPDF/odt2pdf/build/odt2pdf.zip; sourceTree = "<group>"; };
+		43F3D28D239D3EEB004CAD67 /* font.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = font.fsh; sourceTree = "<group>"; };
 		43F8F9A41AA7DAA6008F318C /* LoupeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoupeController.h; sourceTree = "<group>"; };
 		43F8F9A51AA7DAA6008F318C /* LoupeController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LoupeController.mm; sourceTree = "<group>"; };
 		43F8F9A61AA7DAA6008F318C /* LoupeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoupeView.h; sourceTree = "<group>"; };
@@ -2278,7 +2322,7 @@
 		A9B23D1515CFE8D0000E47C3 /* Point.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Point.pdf; sourceTree = "<group>"; };
 		A9B23D1815CFE8E2000E47C3 /* Length.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Length.pdf; sourceTree = "<group>"; };
 		A9B23D1B15CFE8FB000E47C3 /* Closed Polygon.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Closed Polygon.pdf"; sourceTree = "<group>"; };
-		A9B23D1E15CFE917000E47C3 /* Opened Polygon.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Opened Polygon.pdf"; sourceTree = "<group>"; };
+		A9B23D1E15CFE917000E47C3 /* Open Polygon.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Open Polygon.pdf"; sourceTree = "<group>"; };
 		A9B23D2115CFE928000E47C3 /* Arrow.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Arrow.pdf; sourceTree = "<group>"; };
 		A9B23D2415CFE938000E47C3 /* Angle.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Angle.pdf; sourceTree = "<group>"; };
 		A9B23D2715CFE947000E47C3 /* DynamicAngle.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = DynamicAngle.pdf; sourceTree = "<group>"; };
@@ -3179,8 +3223,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
-				43B516472373423700106783 /* GLRenderer.mm */,
-				43B516482373423700106783 /* GLRenderer.h */,
+				43BF4BB02387069200CE2294 /* OpenGL */,
 				438AE1AA21B51E1400C5E98F /* miele-lxiv-Development.entitlements */,
 				438AE1A921B5177700C5E98F /* miele-lxiv-Deployment.entitlements */,
 				43A36C26219B1E4A00C506D3 /* GUI */,
@@ -3215,6 +3258,7 @@
 				434B46151A19F2A3008CF8CF /* options.h */,
 				43475BF02344C55300BEE02C /* mieleTypes.h */,
 				43C9A5DB2377FF0800FB28AE /* mgl.h */,
+				43999E2B238A8DA2003CBC24 /* cprTypes.h */,
 			);
 			name = "Other Sources";
 			sourceTree = SOURCE_ROOT;
@@ -4086,6 +4130,48 @@
 			name = GUI;
 			sourceTree = "<group>";
 		};
+		43BF4BB02387069200CE2294 /* OpenGL */ = {
+			isa = PBXGroup;
+			children = (
+				4323CE1E23E036D700E96458 /* GLScene.h */,
+				4323CE1F23E036D700E96458 /* GLScene.mm */,
+				43BF4BB1238706B200CE2294 /* Shaders */,
+				43B516482373423700106783 /* GLRenderer.h */,
+				43B516472373423700106783 /* GLRenderer.mm */,
+				4398390923DD7F2C0019B0A8 /* GLProgram.h */,
+				4398390A23DD7F2C0019B0A8 /* GLProgram.mm */,
+				43985D3323DCB23E00DD57DD /* GLProgramImage.h */,
+				43985D3423DCB23E00DD57DD /* GLProgramImage.mm */,
+				4398390C23DDC7C10019B0A8 /* GLProgramOverlay.h */,
+				4398390D23DDC7C10019B0A8 /* GLProgramOverlay.mm */,
+				4398A0D223DEDCD80024AE59 /* GLProgramOverlayLine.h */,
+				4398A0D323DEDCD80024AE59 /* GLProgramOverlayLine.mm */,
+				4323CE1823E036A400E96458 /* GLProgramLoupe.h */,
+				4323CE1923E036A400E96458 /* GLProgramLoupe.mm */,
+				4323CE1B23E036B800E96458 /* GLProgramText.h */,
+				4323CE1C23E036B800E96458 /* GLProgramText.mm */,
+			);
+			path = OpenGL;
+			sourceTree = "<group>";
+		};
+		43BF4BB1238706B200CE2294 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				43BF4BB62387070F00CE2294 /* image.vsh */,
+				43BF4BB42387070300CE2294 /* image.fsh */,
+				43BF4BBA2387072C00CE2294 /* overlay.vsh */,
+				43BF4BB82387071800CE2294 /* overlay.fsh */,
+				43DB7C1923C83FE700B3C9EA /* overlayLine.vsh */,
+				43D7F84423C72B0E0022372F /* overlayLine.gsh */,
+				43DB7C1B23C8402600B3C9EA /* overlayLine.fsh */,
+				4329FF3B239D3E7A0006FF16 /* font.vsh */,
+				43F3D28D239D3EEB004CAD67 /* font.fsh */,
+				43977C2D23D340920044054B /* loupe.vsh */,
+				43977C2F23D340AF0044054B /* loupe.fsh */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
 		43E9D2B82167865800CFBD0B /* API framework */ = {
 			isa = PBXGroup;
 			children = (
@@ -4864,7 +4950,7 @@
 				7E2BE3F40715DBFB0017898A /* Network.tif */,
 				ABBB6493063587B200D9531F /* Next.tif */,
 				A9B23D6C15D018B6000E47C3 /* normalPosition.pdf */,
-				A9B23D1E15CFE917000E47C3 /* Opened Polygon.pdf */,
+				A9B23D1E15CFE917000E47C3 /* Open Polygon.pdf */,
 				CEE619EE0912C73000C31D78 /* OrientationWidget.tif */,
 				A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */,
 				AB10FA670B96C95500D74684 /* OsirixDownload.icns */,
@@ -5603,6 +5689,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43BF4BB52387070400CE2294 /* image.fsh in Resources */,
 				CE0C4792183139C400D4C50E /* pages092pdf.applescript in Resources */,
 				596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */,
 				43A02C5B219D883100E788B6 /* Plot.xib in Resources */,
@@ -5615,12 +5702,15 @@
 				ABBB64B2063587B200D9531F /* Axial.tif in Resources */,
 				43013227219D9D0F00A82781 /* InfoPlist.strings in Resources */,
 				ABBB64B3063587B200D9531F /* BSRSettings.tif in Resources */,
+				43977C2E23D340920044054B /* loupe.vsh in Resources */,
 				43A02C95219D889700E788B6 /* AYDicomPrint.xib in Resources */,
 				ABBB64B4063587B200D9531F /* BestRendering.pdf in Resources */,
 				ABBB64B7063587B200D9531F /* Cor.tif in Resources */,
 				43A02C60219D883100E788B6 /* WaitRendering.xib in Resources */,
 				ABBB64B8063587B200D9531F /* Cropping.pdf in Resources */,
 				ABBB64BA063587B200D9531F /* DAT.icns in Resources */,
+				43BF4BB72387070F00CE2294 /* image.vsh in Resources */,
+				43D7F84523C72B0E0022372F /* overlayLine.gsh in Resources */,
 				ABBB64BB063587B200D9531F /* dcm.icns in Resources */,
 				ABBB64BF063587B200D9531F /* Logo.tif in Resources */,
 				ABBB64C0063587B200D9531F /* MIP.tif in Resources */,
@@ -5673,9 +5763,11 @@
 				ABBA8DA1065AB90200A1F89C /* VR Red Vessels.plist in Resources */,
 				BF398B8B065B124700AD1F25 /* InArrow.tif in Resources */,
 				7E9C6D26066D2BCD00D33966 /* greenLight.tif in Resources */,
+				4329FF3C239D3E7A0006FF16 /* font.vsh in Resources */,
 				7E9C6D2E066D2BE800D33966 /* redLight.tif in Resources */,
 				AB9139B906839830006F3936 /* PIC.icns in Resources */,
 				AB9139BA06839830006F3936 /* lsm.icns in Resources */,
+				43F3D28E239D3EEB004CAD67 /* font.fsh in Resources */,
 				CE279EF006AEFB87008315C8 /* Mail.icns in Resources */,
 				CE1335EA06B02DC000B7FC03 /* iChat.icns in Resources */,
 				CE74824206C9701200FFA74C /* trash.icns in Resources */,
@@ -5730,6 +5822,7 @@
 				CE5EABCA0935E702006D85DD /* Rainbow.plist in Resources */,
 				CE5EABCB0935E702006D85DD /* ired.plist in Resources */,
 				CE5EABCC0935E702006D85DD /* Hue2.plist in Resources */,
+				43DB7C1A23C83FE700B3C9EA /* overlayLine.vsh in Resources */,
 				CE5EABCD0935E702006D85DD /* Hue1.plist in Resources */,
 				CE5EABCE0935E702006D85DD /* HotMetal.plist in Resources */,
 				CE5EABCF0935E702006D85DD /* HotGreen.plist in Resources */,
@@ -5775,6 +5868,7 @@
 				ABD55A000AEE146900108895 /* AxialSmall.tif in Resources */,
 				ABB36D800AF2548C00DBEEA2 /* away.tif in Resources */,
 				ABB36D810AF2548C00DBEEA2 /* available.tif in Resources */,
+				43BF4BBB2387072C00CE2294 /* overlay.vsh in Resources */,
 				AB3886AC0B2449CD00831F74 /* SagSmallOpposite.tif in Resources */,
 				AB9E05470B30107A00661F7E /* key.png in Resources */,
 				CE1366B50B41D0F200944876 /* mpeg2.tif in Resources */,
@@ -5854,6 +5948,7 @@
 				43A02C12219D871100E788B6 /* AYDicomPrintPref.xib in Resources */,
 				AB7824680D3BACC700460DCE /* WebServicesHTML in Resources */,
 				43A02C52219D883100E788B6 /* ROIManager.xib in Resources */,
+				43977C3023D340AF0044054B /* loupe.fsh in Resources */,
 				A9897D9B0D4A142200BAC447 /* displayRGB.tif in Resources */,
 				CE91370618B51E9C00BDF7F8 /* ExportROIAndKeyImages.tif in Resources */,
 				43A02C4B219D883100E788B6 /* ROIVolume.xib in Resources */,
@@ -5865,6 +5960,7 @@
 				43A02BD3219D809500E788B6 /* OSIWebSharingPreferencePanePref.xib in Resources */,
 				8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */,
 				AB9693C00E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
+				43BF4BB92387071900CE2294 /* overlay.fsh in Resources */,
 				CE03A3CC0EA2AE0300951EF4 /* iPhone.tif in Resources */,
 				AB932A960EA38DEF0006DF1B /* CobbAngle.tif in Resources */,
 				AB1B31A10EB06AFA0061FA40 /* Jet.plist in Resources */,
@@ -5996,7 +6092,7 @@
 				A9B23D1615CFE8D0000E47C3 /* Point.pdf in Resources */,
 				A9B23D1915CFE8E2000E47C3 /* Length.pdf in Resources */,
 				A9B23D1C15CFE8FB000E47C3 /* Closed Polygon.pdf in Resources */,
-				A9B23D1F15CFE917000E47C3 /* Opened Polygon.pdf in Resources */,
+				A9B23D1F15CFE917000E47C3 /* Open Polygon.pdf in Resources */,
 				A9B23D2215CFE928000E47C3 /* Arrow.pdf in Resources */,
 				A9B23D2515CFE938000E47C3 /* Angle.pdf in Resources */,
 				A9B23D2815CFE948000E47C3 /* DynamicAngle.pdf in Resources */,
@@ -6012,6 +6108,7 @@
 				43A02BCA219D7F1B00E788B6 /* OSIPACSOnDemand.xib in Resources */,
 				A9B23D4615D004CD000E47C3 /* 3DRotateCamera.pdf in Resources */,
 				A9B23D4915D00710000E47C3 /* 3DRotate.pdf in Resources */,
+				43DB7C1C23C8402600B3C9EA /* overlayLine.fsh in Resources */,
 				A9B23D4C15D00B82000E47C3 /* 3DCut.pdf in Resources */,
 				43A02C5E219D883100E788B6 /* XMLViewer.xib in Resources */,
 				A9B23D4F15D00D73000E47C3 /* bonesRemoval.pdf in Resources */,
@@ -6264,6 +6361,7 @@
 				AB28B8EE05B79D2700A9906C /* NSSplitViewSave.mm in Sources */,
 				AB28B8F205B79D2900A9906C /* SplashScreen.mm in Sources */,
 				AB28B8F305B79D2A00A9906C /* ViewerController.mm in Sources */,
+				43A1678E23E472BB001694E3 /* PieChartImage.mm in Sources */,
 				AB28B8FC05B79D3400A9906C /* dicomFile.mm in Sources */,
 				AB28B8FF05B79D3600A9906C /* DicomDirParser.mm in Sources */,
 				AB28B90005B79D3800A9906C /* DCMView.mm in Sources */,
@@ -6304,6 +6402,7 @@
 				7E55AE1606C80E460059D6EB /* StudyView.mm in Sources */,
 				CE6E2CB806CAE45A00BC7907 /* PlotWindow.mm in Sources */,
 				CE6E2CB906CAE45A00BC7907 /* PlotView.mm in Sources */,
+				43985D3523DCB23E00DD57DD /* GLProgramImage.mm in Sources */,
 				CE74456A06DBA4CB0034D05E /* ITK.mm in Sources */,
 				CE4A922D06DBF255006DAAF7 /* ITKSegmentation3D.mm in Sources */,
 				433F9A891A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */,
@@ -6344,6 +6443,7 @@
 				CE97630308FABDA600E6F8B0 /* PaletteController.mm in Sources */,
 				A9F6E4BD08FEAF450060285A /* OrthogonalReslice.mm in Sources */,
 				A9F6E4C708FEAF7F0060285A /* OrthogonalMPRView.mm in Sources */,
+				4323CE1D23E036B800E96458 /* GLProgramText.mm in Sources */,
 				A9F6E4D108FEAFB20060285A /* OrthogonalMPRController.mm in Sources */,
 				A9F6E4DB08FEAFE50060285A /* OrthogonalMPRViewer.mm in Sources */,
 				A9F6E4F508FEB0510060285A /* OrthogonalMPRPETCTView.mm in Sources */,
@@ -6410,6 +6510,7 @@
 				A91115620BFB354F001000B4 /* ColorView.mm in Sources */,
 				A918CC7E0C02E51B00CAC7A3 /* stringAdditions.mm in Sources */,
 				ABC47B5A0C031397001CEA21 /* BrowserMatrix.mm in Sources */,
+				4323CE2023E036D700E96458 /* GLScene.mm in Sources */,
 				AB87FA7B0C06BEB200CD2976 /* nifti1_io.cpp in Sources */,
 				AB87FA7D0C06BEB200CD2976 /* znzlib.cpp in Sources */,
 				BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
@@ -6430,7 +6531,6 @@
 				A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.mm in Sources */,
 				BF84E5420CB16A2900431BC2 /* FlyThruTableView.mm in Sources */,
 				CE4701000CC51A6600ECF78A /* WindowLayoutManager.mm in Sources */,
-				A97D4C620CE3459D003FE2E6 /* PieChartImage.mm in Sources */,
 				CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.mm in Sources */,
 				CEE8CED00D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.mm in Sources */,
 				A910FB320D5767610095A956 /* NavigatorWindowController.mm in Sources */,
@@ -6467,6 +6567,7 @@
 				AB10FAB011293378009EB238 /* N2Operators.mm in Sources */,
 				AB10FAB211293378009EB238 /* N2MinMax.mm in Sources */,
 				4365FC361B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm in Sources */,
+				4398390B23DD7F2C0019B0A8 /* GLProgram.mm in Sources */,
 				AB10FAB411293378009EB238 /* N2Alignment.mm in Sources */,
 				AB10FAB611293378009EB238 /* N2Resizer.mm in Sources */,
 				AB10FAB811293378009EB238 /* N2Shell.mm in Sources */,
@@ -6541,6 +6642,7 @@
 				5997899311B7B48F002DB107 /* NSUserDefaultsController+N2.mm in Sources */,
 				5997899711B7B4A0002DB107 /* N2AdaptiveBox.mm in Sources */,
 				5997899B11B7B4BD002DB107 /* NSFileManager+N2.mm in Sources */,
+				4323CE1A23E036A400E96458 /* GLProgramLoupe.mm in Sources */,
 				59A31D5211BF9371001D4844 /* N2TextField.mm in Sources */,
 				59DC28B311C611F100DAD5B4 /* NSThread+N2.mm in Sources */,
 				59DC28B711C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.mm in Sources */,
@@ -6610,6 +6712,7 @@
 				CEB98990133500D30083F3FD /* OSIWebSharingPreferencePanePref.mm in Sources */,
 				433F9A801A1B18A500E52C6C /* vtkMieleView.mm in Sources */,
 				CEB98A04133507AC0083F3FD /* OSIViewerPreferencePanePref.mm in Sources */,
+				4398390E23DDC7C10019B0A8 /* GLProgramOverlay.mm in Sources */,
 				CEB98A0E133507BB0083F3FD /* OSIPETPreferencePane.mm in Sources */,
 				CEB98A1A133507C80083F3FD /* OSILocationsPreferencePanePref.mm in Sources */,
 				CEB98A1C133507C80083F3FD /* ServerTableView.mm in Sources */,
@@ -6670,6 +6773,7 @@
 				59DB271A14515B5900E78E03 /* BrowserController+Sources.mm in Sources */,
 				59DB271E14515B5900E78E03 /* BrowserController+Sources+Copy.mm in Sources */,
 				59C447C214516F1000D71580 /* DataNodeIdentifier.mm in Sources */,
+				4398A0D423DEDCD80024AE59 /* GLProgramOverlayLine.mm in Sources */,
 				59C447D214516FF500D71580 /* DicomDatabase+Clean.mm in Sources */,
 				59C447D614516FF500D71580 /* DicomDatabase+DCMTK.mm in Sources */,
 				43F8F9AF1AA7DAA6008F318C /* LoupeWindow.mm in Sources */,
@@ -8012,7 +8116,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20191026;
+				CURRENT_PROJECT_VERSION = 20200220;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8093,6 +8197,8 @@
 					"$(SRCROOT)/nitrogen/Sources/**",
 					"\"$(SRCROOT)/Preference Panes/**\"",
 					"$(SRCROOT)/OsiriXClasses/**",
+					"$(SRCROOT)/OpenGL",
+					"$(SRCROOT)/Binaries/GLM/include",
 				);
 				IBC_FLATTEN_NIBS = YES;
 				INFOPLIST_FILE = "Deployment-Info.plist";
@@ -8106,7 +8212,7 @@
 					"$(SRCROOT)/Binaries/openssl/lib",
 					"$(SRCROOT)/Binaries/libiconv/lib",
 				);
-				MARKETING_VERSION = 7.5.52;
+				MARKETING_VERSION = 8.0.54;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8209,7 +8315,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 7.5.52;
+				MARKETING_VERSION = 8.0.54;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8265,7 +8371,7 @@
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/Binaries/libjpeg/lib";
-				MARKETING_VERSION = 7.5.52;
+				MARKETING_VERSION = 8.0.54;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8363,6 +8469,7 @@
 					"$(SRCROOT)/nitrogen/Sources",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/OsiriXClasses/**",
+					"$(SRCROOT)/Binaries/GLM/include",
 				);
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -8502,7 +8609,7 @@
 					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"$(SRCROOT)/Binaries/libtiff/lib",
 				);
-				MARKETING_VERSION = 7.5.52;
+				MARKETING_VERSION = 8.0.54;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
 					"-std=gnu++14",
@@ -8549,7 +8656,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20191026;
+				CURRENT_PROJECT_VERSION = 20200220;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8630,6 +8737,8 @@
 					"$(SRCROOT)/nitrogen/Sources/**",
 					"\"$(SRCROOT)/Preference Panes/**\"",
 					"$(SRCROOT)/OsiriXClasses/**",
+					"$(SRCROOT)/OpenGL",
+					"$(SRCROOT)/Binaries/GLM/include",
 				);
 				IBC_FLATTEN_NIBS = YES;
 				INFOPLIST_FILE = "Deployment-Info.plist";
@@ -8643,7 +8752,7 @@
 					"$(SRCROOT)/Binaries/openssl/lib",
 					"$(SRCROOT)/Binaries/libiconv/lib",
 				);
-				MARKETING_VERSION = 7.5.52;
+				MARKETING_VERSION = 8.0.54;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8747,7 +8856,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 7.5.52;
+				MARKETING_VERSION = 8.0.54;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8803,7 +8912,7 @@
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/Binaries/libjpeg/lib";
-				MARKETING_VERSION = 7.5.52;
+				MARKETING_VERSION = 8.0.54;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8902,6 +9011,7 @@
 					"$(SRCROOT)/nitrogen/Sources",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/OsiriXClasses/**",
+					"$(SRCROOT)/Binaries/GLM/include",
 				);
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -9042,7 +9152,7 @@
 					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"$(SRCROOT)/Binaries/libtiff/lib",
 				);
-				MARKETING_VERSION = 7.5.52;
+				MARKETING_VERSION = 8.0.54;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
 					"-std=gnu++14",
@@ -9085,7 +9195,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 7.5.52;
+				MARKETING_VERSION = 8.0.54;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9138,7 +9248,7 @@
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/Binaries/libjpeg/lib";
-				MARKETING_VERSION = 7.5.52;
+				MARKETING_VERSION = 8.0.54;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9230,6 +9340,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					OSIRIX_VIEWER,
+					WITH_GLM,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -9256,6 +9367,8 @@
 					"$(SRCROOT)/nitrogen/Sources/**",
 					"\"$(SRCROOT)/Preference Panes/**\"",
 					"$(SRCROOT)/OsiriXClasses/**",
+					"$(SRCROOT)/OpenGL",
+					"$(SRCROOT)/Binaries/GLM/include",
 				);
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = "Deployment-Info.plist";
@@ -9268,7 +9381,7 @@
 					"$(SRCROOT)/Binaries/openssl/lib",
 					"$(SRCROOT)/Binaries/libiconv/lib",
 				);
-				MARKETING_VERSION = 7.5.52;
+				MARKETING_VERSION = 8.0.54;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -9375,7 +9488,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
-				CURRENT_PROJECT_VERSION = 20191026;
+				CURRENT_PROJECT_VERSION = 20200220;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -9438,7 +9551,7 @@
 					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"$(SRCROOT)/Binaries/libtiff/lib",
 				);
-				MARKETING_VERSION = 7.5.52;
+				MARKETING_VERSION = 8.0.54;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
 					"-std=gnu++14",
@@ -9494,6 +9607,7 @@
 					"$(SRCROOT)/nitrogen/Sources",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/OsiriXClasses/**",
+					"$(SRCROOT)/Binaries/GLM/include",
 				);
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (

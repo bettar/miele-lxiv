@@ -175,14 +175,15 @@
         snprintf(bytestr, sizeof(bytestr), "%c", c);
         strncat(charstr, bytestr, sizeof(charstr)-strlen(charstr)-1);
         
-        if(n%16 == 0) {
+        if (n%16 == 0) {
             /* line completed */
             //printf("[%4.4s]   %-50.50s  %s\n", addrstr, hexstr, charstr);
             [ret appendString:[NSString stringWithFormat:@"[%4.4s]   %-50.50s  %s\n",
                 addrstr, hexstr, charstr]];
             hexstr[0] = 0;
             charstr[0] = 0;
-        } else if(n%8 == 0) {
+        }
+        else if (n%8 == 0) {
             /* half line: add whitespaces */
             strncat(hexstr, "  ", sizeof(hexstr)-strlen(hexstr)-1);
             strncat(charstr, " ", sizeof(charstr)-strlen(charstr)-1);
@@ -219,7 +220,7 @@
 **/
 - (id)init
 {
-    if((self = [super init]))
+    if ((self = [super init]))
 	{
         // Call private method to handle the setup for internal OpenSSL stuff
 		[self setupOpenSSL];
@@ -233,7 +234,7 @@
 **/
 - (id)initWithSymmetricKey:(NSData *)k
 {
-    if((self = [super init]))
+    if ((self = [super init]))
 	{
         // Call private method to handle the setup for internal OpenSSL stuff
 		[self setupOpenSSL];
@@ -268,17 +269,17 @@
 **/
 - (id)initWithPublicKey:(NSData *)pub privateKey:(NSData *)priv;
 {
-    if((self = [super init]))
+    if ((self = [super init]))
 	{
 		// Call private method to handle the setup for internal OpenSSL stuff
 		[self setupOpenSSL];
 		
 		// Store the publicKey variable (if not nil)
-		if(pub != nil)
+		if (pub != nil)
 			[self setPublicKey:pub];
 		
 		// Store the privateKey variable (if not nil)
-		if(priv != nil)
+		if (priv != nil)
 			[self setPrivateKey:priv];
 		
 		// Since we're using public and private keys, we can assume we're not using symmetric encryption
@@ -531,7 +532,7 @@
 {
 	// If there is no cipher text set, or the cipher text is an empty string (zero length data)
 	// then there is nothing to decrypt, and we may as well return nil
-    if(cipherText == nil || [cipherText length] == 0)
+    if (cipherText == nil || [cipherText length] == 0)
 	{
         return nil;
     }
@@ -541,7 +542,7 @@
     inlen = [cipherText length];
     unsigned char *input = (unsigned char *)[cipherText bytes];
     
-    if([self isSymmetric])
+    if ([self isSymmetric])
 	{
 		// Use symmetric decryption...
 		
@@ -554,10 +555,10 @@
 #endif
         const EVP_CIPHER *cipher;
 
-        if(cipherName)
+        if (cipherName)
 		{
             cipher = EVP_get_cipherbyname((const char *)[cipherName UTF8String]);
-            if(!cipher)
+            if (!cipher)
 			{
 				NSLog(@"cannot get cipher with name %@", cipherName);
 				return nil;
@@ -566,7 +567,7 @@
 		else
 		{
             cipher = EVP_bf_cbc();
-            if(!cipher)
+            if (!cipher)
 			{
                 NSLog(@"cannot get cipher with name %@", @"EVP_bf_cbc");
                 return nil;
@@ -580,7 +581,7 @@
 		
 		if ([cipherText length] > 8+8)
 		{
-			if(strncmp((const char *)[cipherText bytes], "Salted__", 8) == 0)
+			if (strncmp((const char *)[cipherText bytes], "Salted__", 8) == 0)
 			{
 				salt = [cipherText subdataWithRange:NSMakeRange(8, 8)];
 				
@@ -645,22 +646,21 @@
 	{
 		// Use asymmetric decryption...
 		
-        if([self privateKey] == nil)
+        if ([self privateKey] == nil)
 		{
             NSLog(@"Cannot decrypt without the private key, which is currently nil");
             return nil;
         }
         
-        BIO *privateBIO = NULL;
-		RSA *privateRSA = NULL;
-		
-		if(!(privateBIO = BIO_new_mem_buf((unsigned char*)[[self privateKey] bytes], [[self privateKey] length])))
+        BIO *privateBIO = BIO_new_mem_buf((unsigned char*)[[self privateKey] bytes], [[self privateKey] length]);
+		if (!privateBIO)
 		{
 			NSLog(@"BIO_new_mem_buf() failed!");
 			return nil;
 		}
 		
-		if(!PEM_read_bio_RSAPrivateKey(privateBIO, &privateRSA, NULL, NULL))
+        RSA *privateRSA = NULL;
+		if (!PEM_read_bio_RSAPrivateKey(privateBIO, &privateRSA, NULL, NULL))
 		{
 			NSLog(@"PEM_read_bio_RSAPrivateKey() failed!");
 			return nil;
@@ -669,7 +669,7 @@
 		// RSA_check_key() returns 1 if rsa is a valid RSA key, and 0 otherwise.
 		
 		unsigned long check = RSA_check_key(privateRSA);
-		if(check != 1)
+		if (check != 1)
 		{
 			NSLog(@"RSA_check_key() failed with result %d!", (int) check);
 			return nil;
@@ -721,7 +721,7 @@
 {
 	// If there is no cipher text set, or the cipher text is an empty string (zero length data)
 	// then there is nothing to decrypt, and we may as well return nil
-	if(cipherText == nil || [cipherText length] == 0)
+	if (cipherText == nil || [cipherText length] == 0)
 	{
 		return nil;
 	}
@@ -731,22 +731,21 @@
 	inlen = [cipherText length];
 	unsigned char *input = (unsigned char *)[cipherText bytes];
 	
-	if([self publicKey] == nil)
+	if ([self publicKey] == nil)
 	{
 		NSLog(@"Cannot verify (decrypt) without the public key, which is currently nil");
 		return nil;
 	}
-	
-	BIO *publicBIO = NULL;
-	RSA *publicRSA = NULL;
-	
-	if(!(publicBIO = BIO_new_mem_buf((unsigned char *)[[self publicKey] bytes], [[self publicKey] length])))
+		
+    BIO *publicBIO = BIO_new_mem_buf((unsigned char *)[[self publicKey] bytes], [[self publicKey] length]);
+	if (!publicBIO)
 	{
 		NSLog(@"BIO_new_mem_buf() failed!");
 		return nil;
 	}
 	
-	if(!PEM_read_bio_RSA_PUBKEY(publicBIO, &publicRSA, NULL, NULL))
+    RSA *publicRSA = NULL;
+	if (!PEM_read_bio_RSA_PUBKEY(publicBIO, &publicRSA, NULL, NULL))
 	{
 		NSLog(@"PEM_read_bio_RSA_PUBKEY() failed!");
 		return nil;
@@ -797,19 +796,18 @@
 **/
 - (NSData *)encrypt
 {
-    if([self isSymmetric] && [self symmetricKey])
+    if ([self isSymmetric] && [self symmetricKey])
 	{
         return [self encrypt:@"aes128"];
     }
-	else if([self publicKey])
+
+    if ([self publicKey])
 	{
         return [self encrypt:nil];
     }
-	else
-	{
-        NSLog(@"No symmetric key or public key is set!");
-        return nil;
-    }
+
+    NSLog(@"No symmetric key or public key is set!");
+    return nil;
 }
 
 /**
@@ -824,7 +822,7 @@
 {
 	// If there is no clear text set, or the clear text is an empty string (zero length data)
 	// then there is nothing to encrypt, and we may as well return nil
-    if(clearText == nil || [clearText length] == 0)
+    if (clearText == nil || [clearText length] == 0)
 	{
 		return nil;
     }
@@ -909,22 +907,21 @@
 	{
 		// Perform asymmetric encryption...
 		
-        if([self publicKey] == nil)
+        if ([self publicKey] == nil)
 		{
             NSLog(@"Cannot encrypt without the public key, which is currently nil");
             return nil;
         }
         
-        BIO *publicBIO = NULL;
-        RSA *publicRSA = NULL;
-        
-        if(!(publicBIO = BIO_new_mem_buf((unsigned char*)[[self publicKey] bytes], [[self publicKey] length])))
+        BIO *publicBIO = BIO_new_mem_buf((unsigned char*)[[self publicKey] bytes], [[self publicKey] length]);
+        if (!publicBIO)
 		{
             NSLog(@"BIO_new_mem_buf() failed!");
             return nil;
         }
         
-        if(!PEM_read_bio_RSA_PUBKEY(publicBIO, &publicRSA, NULL, NULL))
+        RSA *publicRSA = NULL;
+        if (!PEM_read_bio_RSA_PUBKEY(publicBIO, &publicRSA, NULL, NULL))
 		{
             NSLog(@"PEM_read_bio_RSA_PUBKEY() failed!");
             return nil;
@@ -961,7 +958,7 @@
     [self setCipherText:[NSData dataWithBytes:outbuf length:outlen]];
     
 	// Release the outbuf, since it was malloc'd
-    if(outbuf) {
+    if (outbuf) {
         free(outbuf);
     }
     
@@ -978,7 +975,7 @@
 {
 	// If there is no clear text set, or the clear text is an empty string (zero length data)
 	// then there is nothing to encrypt, and we may as well return nil
-    if(clearText == nil || [clearText length] == 0)
+    if (clearText == nil || [clearText length] == 0)
 	{
 		return nil;
     }
@@ -988,22 +985,21 @@
     int outlen, inlen;
     inlen = [clearText length];
 	
-	if([self privateKey] == nil)
+	if ([self privateKey] == nil)
 	{
 		NSLog(@"Cannot sign (encrypt) without the private key, which is currently nil");
 		return nil;
 	}
 	
-	BIO *privateBIO = NULL;
-	RSA *privateRSA = NULL;
-	
-	if(!(privateBIO = BIO_new_mem_buf((unsigned char*)[[self privateKey] bytes], [[self privateKey] length])))
+    BIO *privateBIO = BIO_new_mem_buf((unsigned char*)[[self privateKey] bytes], [[self privateKey] length]);
+	if (!privateBIO)
 	{
 		NSLog(@"BIO_new_mem_buf() failed!");
 		return nil;
 	}
 	
-	if(!PEM_read_bio_RSAPrivateKey(privateBIO, &privateRSA, NULL, NULL))
+    RSA *privateRSA = NULL;
+	if (!PEM_read_bio_RSAPrivateKey(privateBIO, &privateRSA, NULL, NULL))
 	{
 		NSLog(@"PEM_read_bio_RSAPrivateKey() failed!");
 		return nil;
@@ -1012,7 +1008,7 @@
 	// RSA_check_key() returns 1 if rsa is a valid RSA key, and 0 otherwise.
 	
 	unsigned long check = RSA_check_key(privateRSA);
-	if(check != 1)
+	if (check != 1)
 	{
 		NSLog(@"RSA_check_key() failed with result %d!", (int) check);
 		return nil;
@@ -1047,7 +1043,7 @@
     [self setCipherText:[NSData dataWithBytes:outbuf length:outlen]];
     
 	// Release the outbuf, since it was malloc'd
-    if(outbuf) {
+    if (outbuf) {
         free(outbuf);
     }
     
@@ -1061,7 +1057,7 @@
 **/
 - (NSData *)digest:(NSString *)digestName
 {
-    if(clearText == nil) {
+    if (clearText == nil) {
         return nil;
     }
 
@@ -1089,7 +1085,7 @@
     }
     else {
         digest=EVP_md5();
-        if(!digest) {
+        if (!digest) {
             NSLog(@"cannot get digest with name %@",@"MD5");
             return nil;
         }
@@ -1102,7 +1098,7 @@
     EVP_MD_CTX_init(ctx);
 #endif
     EVP_DigestInit(ctx,digest);
-    if(!EVP_DigestUpdate(ctx,input,inlen)) {
+    if (!EVP_DigestUpdate(ctx,input,inlen)) {
         NSLog(@"EVP_DigestUpdate() failed!");
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
         EVP_MD_CTX_cleanup(&ctx);
@@ -1171,15 +1167,14 @@
 
 + (NSData *)generateRSAPublicKeyFromPrivateKey:(NSData *)privateKey
 {
-    BIO *privateBIO = NULL;
-	RSA *privateRSA = NULL;
-	
-	if (!(privateBIO = BIO_new_mem_buf((unsigned char*)[privateKey bytes], [privateKey length])))
+    BIO *privateBIO = BIO_new_mem_buf((unsigned char*)[privateKey bytes], [privateKey length]);
+	if (!privateBIO)
 	{
 		NSLog(@"BIO_new_mem_buf() failed!");
 		return nil;
 	}
-	
+
+    RSA *privateRSA = NULL;
 	if (!PEM_read_bio_RSAPrivateKey(privateBIO, &privateRSA, NULL, NULL))
 	{
 		NSLog(@"PEM_read_bio_RSAPrivateKey() failed!");

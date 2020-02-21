@@ -125,7 +125,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 		
         c.closeOnRemoteClose = YES;
 		c.maximumReadSizePerEvent = 1024*128;
-		if (request.length) [c writeData:request];
+		if (request.length > 0)
+            [c writeData:request];
 		
         #define TIMEOUT 45
         NSTimeInterval lastTimeInterval = [NSDate timeIntervalSinceReferenceDate] + 1;
@@ -365,7 +366,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
             uint8_t buffer[maxLength];
             NSInteger length;
             do {
-                if ((length = [_inputStream read:buffer maxLength:maxLength]) > 0) {
+                length = [_inputStream read:buffer maxLength:maxLength];
+                if (length > 0) {
                     // DLog(@"%@ Read %d Bytes", self, (int)length);
 //                  std::cerr << [[NSString stringWithFormat:@"%@ Read %d Bytes", self, length] UTF8String] << ": ";
 //                     for (int i = 0; i < length; ++i)
@@ -377,16 +379,19 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
                         _handlingData = YES;
                         @try {
                             [self handleData:_inputBuffer];
-                        } @catch (NSException* e) {
+                        }
+                        @catch (NSException* e) {
                             N2LogExceptionWithStackTrace(e);
-                        } @finally {
+                        }
+                        @finally {
                             _handlingData = NO;
                         }
                     }
                     
                     if (length < maxLength)
                         break;
-                } else {
+                }
+                else {
                     if (length < 0) {
                         [NSException raise:NSGenericException format:@"%@", @"Warning: [NSInputStream read:maxLength:]"];
 //                        [self performSelector:@selector(close) withObject:nil afterDelay:0];
@@ -428,7 +433,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
     if (_outputBufferIndex == _outputBuffer.length) { // all data was sent, reset the send buffer
         [_outputBuffer setLength:0];
         _outputBufferIndex = 0;
-    } else if (_outputBufferIndex > 1024*1024) { // more than 1 MB of data was sent, reduce the buffer
+    }
+    else if (_outputBufferIndex > 1024*1024) { // more than 1 MB of data was sent, reduce the buffer
         [_outputBuffer replaceBytesInRange:NSMakeRange(0, _outputBufferIndex) withBytes:nil length:0];
         _outputBufferIndex = 0;
     }

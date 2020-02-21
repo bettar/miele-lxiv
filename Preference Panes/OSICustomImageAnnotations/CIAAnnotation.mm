@@ -159,19 +159,21 @@
 	animatedFrameOrigin = newOrigin;
 	
 	BOOL needsDisplay = NO;
-	if(newX>0.0 && newX+[self frame].size.width<[[self superview] frame].size.width)
+	if (newX > 0.0 &&
+        newX+[self frame].size.width < [[self superview] frame].size.width)
 	{
 		newOrigin.x = newX;
 		needsDisplay = YES;
 	}
 	
-	if(newY>0.0 && newY+[self frame].size.height<[[self superview] frame].size.height)
+	if (newY > 0.0 &&
+        newY+[self frame].size.height < [[self superview] frame].size.height)
 	{
 		newOrigin.y = newY;
 		needsDisplay = YES;
 	}
 	
-	if(needsDisplay)
+	if (needsDisplay)
 	{
 		[self setFrameOrigin:newOrigin];
 		[[self superview] setNeedsDisplay:YES];
@@ -180,7 +182,7 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-	if(!self.isEnabled || isOrientationWidget)
+	if (!self.isEnabled || isOrientationWidget)
         return;
     
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseDownNotification" object:self];
@@ -206,7 +208,7 @@
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-	if(!self.isEnabled || isOrientationWidget)
+	if (!self.isEnabled || isOrientationWidget)
         return;
     
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseUpNotification" object:self];
@@ -323,8 +325,8 @@
 
 + (id)defaultAnimationForKey:(NSString *)key
 {
-	//if([key isEqualToString:@"frameOrigin"])
-	if([key isEqualToString:@"animatedFrameOrigin"])
+	//if ([key isEqualToString:@"frameOrigin"])
+	if ([key isEqualToString:@"animatedFrameOrigin"])
 	{
 		return [CABasicAnimation animation];
 	}

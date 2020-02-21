@@ -401,7 +401,7 @@
 "A 3D Scissor State already exists. Do you want to replace it with curent state?" = "Einen 3D-Scherschen-Zustand gibt es bereits. Wollen Sie ihn durch den aktuellen Zustand ersetzen?";
 
 /* No comment provided by engineer. */
-"A burn session is already opened. Close it to burn a new study." = "Eine Burn-Session ist bereits eröffnet. Schließen Sie es, um eine neue Studie zu brennen.";
+"A burn session is already open. Close it to burn a new study." = "Eine Burn-Session ist bereits eröffnet. Schließen Sie es, um eine neue Studie zu brennen.";
 
 /* No comment provided by engineer. */
 "A disc named %@, containing %d DICOM files, was mounted. What do you want to do with these files?" = "Eine Disc mit dem Namen%1$@, die%2$d DICOM-Dateien enthält, wurde montiert. Was möchten Sie mit diesen Dateien machen?";
@@ -1208,16 +1208,16 @@
 "cm/sec" = "cm/s";
 
 /* cm2 */
-"cm²" = "cm²";
+"cm\u00B2" = "cm²";
 
 /* cm2/sec */
-"cm²/sec" = "cm²/s";
+"cm\u00B2/sec" = "cm²/s";
 
 /* cm3 */
-"cm³" = "cm³";
+"cm\u00B3" = "cm³";
 
 /* cm3/sec */
-"cm³/sec" = "cm³/s";
+"cm\u00B3/sec" = "cm³/s";
 
 /* No comment provided by engineer. */
 "Cobb" = "Cobb";
@@ -1499,7 +1499,7 @@
 "dB" = "dB";
 
 /* decibel per second */
-"dB/sec" = "dB/sec";
+"dB/sec" = "dB/s";
 
 /* keep it short ! */
 "dbl-click" = "dbl-klicken";
@@ -3497,9 +3497,6 @@
 "PITUITARY" = "Hypophyse";
 
 /* No comment provided by engineer. */
-"Pixmeo Web site" = "Miele-LXIV Website";
-
-/* No comment provided by engineer. */
 "Play" = "Abspielen";
 
 /* No comment provided by engineer. */
@@ -4488,6 +4485,9 @@
 
 /* No comment provided by engineer. */
 "Sorted by Value" = "Sortiert nach Wert";
+
+/* No comment provided by engineer. */
+"Source Code Repository" = "Quellcode-Repository";
 
 /* No comment provided by engineer. */
 "Sources" = "Quellen";

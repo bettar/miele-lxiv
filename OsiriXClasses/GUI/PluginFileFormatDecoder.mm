@@ -95,7 +95,6 @@
 	return _isRGB;
 }
 
-
 - (NSString *)patientName{
 	return _patientName;
 }

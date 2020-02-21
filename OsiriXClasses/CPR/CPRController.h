@@ -25,37 +25,7 @@
 #import "VRView.h"
 #import "FlyAssistant.h"
 
-typedef NS_ENUM(NSInteger, CPRLayoutType) {
-    NormalPosition = 0,
-    HorizontalPosition = 1,
-    VerticalPosition = 2
-};
-
-typedef NS_ENUM(NSInteger, CPRType) {
-    CPRStraightenedType = 0,
-    CPRStretchedType = 1
-};
-
-typedef NS_ENUM(NSInteger, CPRExportImageFormat) {
-    CPR8BitRGBExportImageFormat = 0,
-    CPR16BitExportImageFormat = 1
-};
-
-typedef NS_ENUM(NSInteger, CPRExportSequenceType) {
-    CPRCurrentOnlyExportSequenceType = 0,
-    CPRSeriesExportSequenceType = 1
-};
-
-typedef NS_ENUM(NSInteger, CPRExportSeriesType) {
-    CPRRotationExportSeriesType = 0,
-    CPRSlabExportSeriesType = 1,
-    CPRTransverseViewsExportSeriesType = 2
-};
-
-typedef NS_ENUM(NSInteger, CPRExportRotationSpan) {
-    CPR180ExportRotationSpan = 0,
-    CPR360ExportRotationSpan = 1
-};
+#import "cprTypes.h"
 
 @class CPRMPRDCMView;
 @class CPRView;
@@ -84,11 +54,15 @@ typedef NS_ENUM(NSInteger, CPRExportRotationSpan) {
     IBOutlet CPRView *cprView;
     IBOutlet CPRTransverseView *topTransverseView, *middleTransverseView, *bottomTransverseView;
 
-	IBOutlet NSSplitView *horizontalSplit1, *horizontalSplit2, *verticalSplit;
+    IBOutlet NSSplitView *horizontalSplit1;
+    IBOutlet NSSplitView *horizontalSplit2;
+    IBOutlet NSSplitView *verticalSplit;
     IBOutlet NSView *tbStraightenedCPRAngle;
     double straightenedCPRAngle; // this is in degrees, the CPRView uses radians
-    IBOutlet NSView *tbCPRType, *tbViewsPosition, *tbCPRPathMode;
-    CPRType cprType;
+    IBOutlet NSView *tbCPRType;
+    IBOutlet NSView *tbViewsPosition;
+    IBOutlet NSView *tbCPRPathMode;
+    CPRType controllerCprType;
     CPRLayoutType viewsPosition;
     
     CPRVolumeData *cprVolumeData;   
@@ -109,7 +83,7 @@ typedef NS_ENUM(NSInteger, CPRExportRotationSpan) {
 	// Blending
 	DCMView *blendedMprView1, *blendedMprView2, *blendedMprView3;
 	float blendingPercentage;
-	int blendingMode;
+//	BlendingMode2DType blendingMode;
 	BOOL blendingModeAvailable;
 	NSString *startingOpacityMenu;
 	
@@ -158,14 +132,15 @@ typedef NS_ENUM(NSInteger, CPRExportRotationSpan) {
 	NSInteger exportNumberOfRotationFrames;
     CGFloat exportSlabThickness;
     BOOL exportSliceIntervalSameAsVolumeSliceInterval;
-    CGFloat exportSliceInterval, exportTransverseSliceInterval;
+    CGFloat exportSliceInterval;
+    CGFloat exportTransverseSliceInterval;
     
 //	int dcmmN;
 	
 	// Clipping Range
     float dcmIntervalMin, dcmIntervalMax;
 	float clippingRangeThickness;
-	int clippingRangeMode;
+	//int clippingRangeMode; // TODO: CPRProjectionMode
 	
 	NSArray *wlwwMenuItems;
 	
@@ -186,8 +161,10 @@ typedef NS_ENUM(NSInteger, CPRExportRotationSpan) {
 }
 
 @property (nonatomic) float clippingRangeThickness, dcmIntervalMin, dcmIntervalMax, blendingPercentage;
-@property (nonatomic) int clippingRangeMode, mouseViewID;
-@property (nonatomic) int curMovieIndex, maxMovieIndex, blendingMode;
+@property (nonatomic) CPRProjectionMode clippingRangeMode; // TODO: CPRProjectionMode
+@property (nonatomic) int mouseViewID;
+@property (nonatomic) int curMovieIndex, maxMovieIndex;
+@property (nonatomic) BlendingMode2DType blendingMode;
 @property (nonatomic, retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;
 @property (readonly) DCMPix *originalPix;
@@ -202,7 +179,7 @@ typedef NS_ENUM(NSInteger, CPRExportRotationSpan) {
 @property (nonatomic) BOOL curvedPathCreationMode, highResolutionMode;
 @property (retain) NSColor *curvedPathColor;
 @property (nonatomic) double straightenedCPRAngle;
-@property (nonatomic) CPRType cprType;
+@property (nonatomic) CPRType controllerCprType;
 @property (nonatomic) CPRLayoutType viewsPosition;
 @property (nonatomic, readonly) CPRView *cprView;
 
@@ -218,7 +195,8 @@ typedef NS_ENUM(NSInteger, CPRExportRotationSpan) {
 @property (nonatomic) NSInteger exportNumberOfRotationFrames;
 @property (nonatomic) CGFloat exportSlabThickness;
 @property (nonatomic) BOOL exportSliceIntervalSameAsVolumeSliceInterval;
-@property (nonatomic) CGFloat exportSliceInterval, exportTransverseSliceInterval;
+@property (nonatomic) CGFloat exportSliceInterval;
+@property (nonatomic) CGFloat exportTransverseSliceInterval;
 @property (nonatomic, readonly) NSInteger exportSequenceNumberOfFrames;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation;

@@ -309,10 +309,13 @@
 
 - (IBAction) setThickness:(NSSlider*) sender
 {
+    NSLog(@"%s %d, %f", __FUNCTION__, __LINE__, [sender floatValue]);
 	[curROI setThickness: [sender floatValue]];
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 	
-	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
+	if ([self allWithSameName])
+        [self setAllMatchingROIsToSameParamsAs: curROI
+                                   withNewName: [curROI name]];
 }
 
 - (IBAction) setOpacity:(NSSlider*) sender
@@ -347,10 +350,10 @@
 
 + (void) addROIValues: (ROI*) r dictionary: (NSMutableDictionary*) d
 {
-    if (r.name.length)
+    if (r.name.length > 0)
         [d setObject: r.name forKey:@"Name"];
     
-    if (r.comments.length)
+    if (r.comments.length > 0)
         [d setObject: r.comments forKey:@"Comments"];
     
     NSMutableArray *ROIPoints = [NSMutableArray array];

@@ -47,6 +47,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 BOOL gPluginsAlertAlreadyDisplayed = NO;
 
+// 'PluginManager' lacks a 'dealloc' instance method but must release 'downloadQueue'
 @implementation PluginManager
 
 @synthesize downloadQueue;
@@ -875,7 +876,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 //            
             
             // list of requirements
-            for (NSString* req in [bundle.infoDictionary objectForKey:PINFO_REQUIREMENTS]) {
+            for (NSString* req in [bundle.infoDictionary objectForKey:PINFO_REQUIREMENTS])
+            {
                 // make sure they're loaded before this plugin
                 NSIndexSet* is = [pathsOfPluginsToLoad indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
                     NSBundle* bundle = [NSBundle bundleWithPath:obj];
@@ -1006,7 +1008,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 //	return NO;
 //}
 
-+ (void)movePluginFromPath:(NSString*)sourcePath toPath:(NSString*)destinationPath;
++ (void)movePluginFromPath:(NSString*)sourcePath
+                    toPath:(NSString*)destinationPath;
 {
 	if ([sourcePath isEqualToString:destinationPath])
         return;

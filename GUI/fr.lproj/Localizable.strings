@@ -401,7 +401,7 @@
 "A 3D Scissor State already exists. Do you want to replace it with curent state?" = "Un état de ciseaux 3D existe déjà. Voulez-vous le remplacer par l'état actuel ?";
 
 /* No comment provided by engineer. */
-"A burn session is already opened. Close it to burn a new study." = "Une session de gravure est déjà ouverte. Fermez-le pour brûler une nouvelle étude.";
+"A burn session is already open. Close it to burn a new study." = "Une session de gravure est déjà ouverte. Fermez-le pour brûler une nouvelle étude.";
 
 /* No comment provided by engineer. */
 "A disc named %@, containing %d DICOM files, was mounted. What do you want to do with these files?" = "Un disque nommé %1$@, contenant %2$d fichiers DICOM, a été monté. Que voulez-vous faire de ces fichiers ?";
@@ -1209,16 +1209,16 @@
 "cm/sec" = "cm/s";
 
 /* cm2 */
-"cm²" = "cm²";
+"cm\u00B2" = "cm²";
 
 /* cm2/sec */
-"cm²/sec" = "cm²/s";
+"cm\u00B2/sec" = "cm²/s";
 
 /* cm3 */
-"cm³" = "cm³";
+"cm\u00B3" = "cm³";
 
 /* cm3/sec */
-"cm³/sec" = "cm³/s";
+"cm\u00B3/sec" = "cm³/s";
 
 /* No comment provided by engineer. */
 "Cobb" = "Cobb";
@@ -3498,9 +3498,6 @@
 "PITUITARY" = "PITUITAIRE";
 
 /* No comment provided by engineer. */
-"Pixmeo Web site" = "Site Web de Miele-LXIV";
-
-/* No comment provided by engineer. */
 "Play" = "Lire";
 
 /* No comment provided by engineer. */
@@ -4489,6 +4486,9 @@
 
 /* No comment provided by engineer. */
 "Sorted by Value" = "Trié par valeur";
+
+/* No comment provided by engineer. */
+"Source Code Repository" = "Source Code Repository";
 
 /* No comment provided by engineer. */
 "Sources" = "Sources";

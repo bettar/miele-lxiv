@@ -228,7 +228,10 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
         {
             decodeInfo.cstr_info = opj_get_cstr_info(decodeInfo.codec);
             
+            // Value stored to 'max_tiles' is never read
             max_reduction = decodeInfo.cstr_info->m_default_tile_info.tccp_info->numresolutions;
+
+            // Value stored to 'max_tiles' is never read
             max_tiles = decodeInfo.cstr_info->tw * decodeInfo.cstr_info->th;
             
             decodeInfo.cstr_index = opj_get_cstr_index(decodeInfo.codec);
@@ -357,13 +360,13 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
         has_alpha2 = (decodeInfo.image->numcomps == 2);
         hasAlpha = (has_alpha4 || has_alpha2);
 
-        if(has_rgb)
+        if (has_rgb)
         {
             red = decodeInfo.image->comps[0].data;
             green = decodeInfo.image->comps[1].data;
             blue = decodeInfo.image->comps[2].data;
 
-            if(has_alpha4)
+            if (has_alpha4)
             {
                 alpha = decodeInfo.image->comps[3].data;
             }
@@ -372,7 +375,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
         else
         {
             red = green = blue = decodeInfo.image->comps[0].data;
-            if(has_alpha2)
+            if (has_alpha2)
             {
                 alpha = decodeInfo.image->comps[1].data;
             }
@@ -386,7 +389,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             rc = (unsigned char)*red++;
             gc = (unsigned char)*green++;
             bc = (unsigned char)*blue++;
-            if(hasAlpha)
+            if ((hasAlpha) && (alpha != NULL))
             {
                 ac = (unsigned char)*alpha++;
             }
@@ -529,7 +532,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
     opj_image_t * image = NULL;
     
     assert( sample_pixel == 1 || sample_pixel == 3 );
-    if( sample_pixel == 1 )
+    if ( sample_pixel == 1 )
     {
         numcomps = 1;
         color_space = OPJ_CLRSPC_GRAY;
@@ -540,7 +543,8 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
         color_space = OPJ_CLRSPC_SRGB;
         /* Does OpenJPEG support: OPJ_CLRSPC_SYCC ?? */
     }
-    if( bitsallocated % 8 != 0 )
+
+    if ( bitsallocated % 8 != 0 )
     {
         return 0;
     }

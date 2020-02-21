@@ -16,6 +16,12 @@
 #import "options.h"
 #import "mgl.h" // include first
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
+#import "GLRenderer.h"
+
 #import "CPRStretchedView.h"
 #import "CPRGeneratorRequest.h"
 #import "CPRVolumeData.h"
@@ -32,8 +38,6 @@
 #import "StringTexture.h"
 #import "NSColor+N2.h"
 #import <objc/runtime.h>
-
-static float deg2rad = M_PI / 180.0f; 
 
 #define _extraWidthFactor 1.2
 
@@ -90,7 +94,7 @@ extern int splitPosition[ 3];
 @property (nonatomic, readwrite, assign) BOOL drawAllNodes;
 @property (nonatomic, readwrite, retain) N3BezierPath *centerlinePath;
 
-+ (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRViewClippingRangeMode)clippingRangeMode;
++ (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRProjectionMode)clippingRangeMode;
 
 - (void)_setNeedsNewRequest;
 - (void)_sendNewRequestIfNeeded;
@@ -149,7 +153,6 @@ extern int splitPosition[ 3];
 @synthesize curvedPath = _curvedPath;
 @synthesize displayInfo = _displayInfo;
 @synthesize curvedVolumeData = _curvedVolumeData;
-@synthesize clippingRangeMode = _clippingRangeMode;
 @synthesize lastRequest = _lastRequest;
 @synthesize drawAllNodes = _drawAllNodes;
 @dynamic orangePlane;
@@ -352,16 +355,18 @@ extern int splitPosition[ 3];
     }
 }
 
-- (void)setClippingRangeMode:(CPRViewClippingRangeMode)mode
+- (void)setClippingRangeMode:(CPRProjectionMode)mode
 {
-    if (mode != _clippingRangeMode) {
-        _clippingRangeMode = mode;
-        
-        if (curDCM) {
-            [self setFusion:[[self class] _fusionModeForCPRViewClippingRangeMode:_clippingRangeMode] :self.curvedVolumeData.pixelsDeep];
-        }
-        [self _setNeedsNewRequest];
+    if (mode == _clippingRangeMode)
+        return;
+
+    _clippingRangeMode = mode;
+    
+    if (curDCM) {
+        [self setFusion:[[self class] _fusionModeForCPRViewClippingRangeMode:_clippingRangeMode] :self.curvedVolumeData.pixelsDeep];
     }
+
+    [self _setNeedsNewRequest];
 }
 
 - (void)setFrame:(NSRect)frameRect
@@ -369,7 +374,7 @@ extern int splitPosition[ 3];
     BOOL needsUpdate;
     
     needsUpdate = NO;
-	if( NSEqualRects( frameRect, [self frame]) == NO) {
+	if (NSEqualRects( frameRect, [self frame]) == NO) {
         needsUpdate = YES;
     }
     
@@ -387,7 +392,7 @@ extern int splitPosition[ 3];
 
 - (void) drawTextualData:(NSRect) size :(long) annotations
 {
-	if(_displayTransverseLines)
+	if (_displayTransverseLines)
 	{
 		float length = [_curvedPath.bezierPath length];
         
@@ -409,10 +414,13 @@ extern int splitPosition[ 3];
         [super drawTextualData: size :annotations];
 }
 
+#pragma mark -
+
 - (void)drawRect:(NSRect)rect
 {
-	if (rect.size.width > 10)
-	{
+	if (rect.size.width <= 10)
+        return;
+
 		_processingRequest = YES;
 		[self _sendNewRequestIfNeeded];
 		_processingRequest = NO;    
@@ -420,14 +428,12 @@ extern int splitPosition[ 3];
 //		[self _adjustROIs];
 		
 		[super drawRect: rect];
-	}
 }
 
 - (void)setNeedsDisplay:(BOOL)flag
 {
-    if (_processingRequest == NO) {
+    if (_processingRequest == NO)
         [super setNeedsDisplay:flag];
-    }
 }
 
 - (NSPoint) positionWithoutRotation: (NSPoint) tPt
@@ -443,13 +449,16 @@ extern int splitPosition[ 3];
     centeredRect.origin.y -= [self origin].y*ratio/scaleValue;
     centeredRect.origin.x -= - [self origin].x/scaleValue;
     
-    unrotatedRect.origin.x = centeredRect.origin.x*cos( -self.rotation*deg2rad) + centeredRect.origin.y*sin( -self.rotation*deg2rad)/ratio;
-    unrotatedRect.origin.y = -centeredRect.origin.x*sin( -self.rotation*deg2rad) + centeredRect.origin.y*cos( -self.rotation*deg2rad)/ratio;
+    unrotatedRect.origin.x = centeredRect.origin.x*cos( glm::radians(-self.rotation)) +
+                             centeredRect.origin.y*sin( glm::radians(-self.rotation))/ratio;
+
+    unrotatedRect.origin.y = -centeredRect.origin.x*sin( glm::radians(-self.rotation)) +
+                              centeredRect.origin.y*cos( glm::radians(-self.rotation))/ratio;
     
     unrotatedRect.origin.y *= ratio;
     
-    unrotatedRect.origin.y += [self origin].y*ratio/scaleValue;
-    unrotatedRect.origin.x += - [self origin].x/scaleValue;
+    unrotatedRect.origin.y += [self origin].y * ratio/scaleValue;
+    unrotatedRect.origin.x -= [self origin].x/scaleValue;
     
     tPt = NSMakePoint( unrotatedRect.origin.x, unrotatedRect.origin.y);
     tPt.x = (tPt.x)*scaleValue - unrotatedRect.size.width/2;
@@ -458,16 +467,16 @@ extern int splitPosition[ 3];
     return tPt;
 }
 
+#pragma mark -
+
 - (void)subDrawRect:(NSRect)rect
 {
     N3Vector endpoint;
-    N3BezierPath *centerline;
     NSString *planeName;
 	NSColor *planeColor;
-    N3AffineTransform pixToSubDrawRectTransform;
     N3Vector cursorVector;
     CGFloat relativePosition;
-
+    
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
@@ -483,63 +492,89 @@ extern int splitPosition[ 3];
     if ([curDCM pixelSpacingX] == 0)
         return;
     
-    centerline = [self centerlinePath];
-    pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
+    N3BezierPath *centerline = [self centerlinePath];
+    N3AffineTransform pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
 
     double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
 
+#ifdef WITH_OPENGL_32
+    #define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH
+    #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH
+    // Define a local model matrix and apply it locally without affecting the shader
+    glm::mat4 M = glm::make_mat4(pixToSubdrawRectOpenGLTransform);
+    #endif
+#else
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(pixToSubdrawRectOpenGLTransform);
-
-    // draw the centerline.
-    
-    glColor3f(0, 1, 0);
-    glLineWidth(1.0 * self.window.backingScaleFactor);
-    glBegin(GL_LINE_STRIP);
-    {
-        for (NSInteger i = 0; i < [centerline elementCount]; i++) {
-            [centerline elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
-            glVertex2d(endpoint.x, endpoint.y);
-        }
-    }
-    glEnd();
-    
-    glColor4d(0.0, 1.0, 0.0, 0.8);
-    
-    if ( [[self windowController] displayMousePosition] == YES && _displayInfo.mouseCursorHidden == NO)
-	{
-        cursorVector = [self _centerlinePixVectorForRelativePosition:_displayInfo.mouseCursorPosition];
-        
-#ifndef WITH_OPENGL_32
-        glEnable(GL_POINT_SMOOTH);
 #endif
+
+#pragma mark green centerline
+    
+    [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
+    renderer_set_rgb(0, 1, 0); // green
+
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (NSInteger i = 0; i < [centerline elementCount]; i++) {
+        [centerline elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
+        glm::vec2 a(endpoint.x, endpoint.y);
+        #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH
+        // Apply local matrix transformation
+        glm::vec4 pTemp = M*glm::vec4(a,0,1);
+        a = glm::vec2(pTemp.x, pTemp.y);
+        #endif
+        [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+    }
+
+    renderer_drawLine_xy([pArray copy], GL_LINE_STRIP);
+
+#pragma mark green (alpha 0.8) point mouse position
+
+    [self setShaderProgramOverlay_withMode_Point];
+    renderer_set_rgba(0.0, 1.0, 0.0, 0.8); // green
+
+    if ([[self windowController] displayMousePosition] == YES &&
+        _displayInfo.mouseCursorHidden == NO)
+	{
+        cursorVector = [self _centerlinePixVectorForRelativePosition: _displayInfo.mouseCursorPosition];
+
+        NSMutableArray *pArray = [NSMutableArray array];
+        glm::vec2 a(cursorVector.x, cursorVector.y);
+        #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH
+        // Apply local matrix transformation
+        glm::vec4 pTemp = M*glm::vec4(a,0,1);
+        a = glm::vec2(pTemp.x, pTemp.y);
+        #endif
+        [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+
         glPointSize(8 * self.window.backingScaleFactor);
-        
-        glBegin(GL_POINTS);
-        {
-            glVertex2f(cursorVector.x, cursorVector.y);
-        }
-        glEnd();
+        renderer_drawPoints([pArray copy]);
+
 #ifndef WITH_OPENGL_32
         glDisable(GL_POINT_SMOOTH);
 #endif
     }
     
+#ifndef WITH_OPENGL_32
     glPopMatrix();
+#endif
  
+#pragma mark cross lines
+
     if (_displayCrossLines) {
         for (planeName in _planes) {
             planeColor = [self valueForKey:[planeName stringByAppendingString:@"PlaneColor"]];
             
-            glLineWidth(2.0 * self.window.backingScaleFactor);
+            [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
+
             // draw planes
-            glColor4f ([planeColor redComponent], [planeColor greenComponent], [planeColor blueComponent], [planeColor alphaComponent]);
+            renderer_set_rgba([planeColor redComponent], [planeColor greenComponent], [planeColor blueComponent], [planeColor alphaComponent]);
             [self _drawPlaneRuns:[self valueForKey:[planeName stringByAppendingString:@"PlaneRuns"]]];
             [self _drawVerticalLines:[self valueForKey:[planeName stringByAppendingString:@"VerticalLines"]]];
             
-            glLineWidth(1.0 * self.window.backingScaleFactor);
+            [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
+
             [self _drawPlaneRuns:[self valueForKey:[planeName stringByAppendingString:@"TopPlaneRuns"]]];
             [self _drawPlaneRuns:[self valueForKey:[planeName stringByAppendingString:@"BottomPlaneRuns"]]];
             [self _drawVerticalLines:[self valueForKey:[planeName stringByAppendingString:@"TopVerticalLines"]]];
@@ -554,35 +589,34 @@ extern int splitPosition[ 3];
     {
         exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
     }
-    
+
+#pragma mark export transverse slice
+
     if (exportTransverseSliceInterval > 0)
 	{
-		glColor4d(1.0, 1.0, 0.0, 1.0);
+		renderer_set_rgba(1.0, 1.0, 0.0, 1.0); // yellow
 		
 		N3MutableBezierPath *flattenedPath = [[_curvedPath.bezierPath mutableCopy] autorelease];
 		[flattenedPath subdivide:N3BezierDefaultSubdivideSegmentLength];
 		[flattenedPath flatten:N3BezierDefaultFlatness];
 		
 		float curveLength = [flattenedPath length];
-		int noOfFrames = ( curveLength / exportTransverseSliceInterval);
+		int noOfFrames = (curveLength / exportTransverseSliceInterval);
 		noOfFrames++;
 		
 		float startingDistance = curveLength - (noOfFrames-1) * exportTransverseSliceInterval;
 		startingDistance /= 2;
 		
-        // we need to find the tangents to the curve at
-        N3VectorArray vectors;
-        N3VectorArray tangents;
-        
-        vectors = (N3VectorArray)malloc(noOfFrames * sizeof(N3Vector));
-        tangents = (N3VectorArray)malloc(noOfFrames * sizeof(N3Vector));
+        // We need to find the tangents to the curve at
+        N3VectorArray vectors = (N3VectorArray)malloc(noOfFrames * sizeof(N3Vector));
+        N3VectorArray tangents = (N3VectorArray)malloc(noOfFrames * sizeof(N3Vector));
         noOfFrames = N3BezierCoreGetVectorInfo([_curvedPath.bezierPath N3BezierCore], exportTransverseSliceInterval, startingDistance, N3VectorZero, vectors, tangents, NULL, noOfFrames);
         
         CPRTransverseView *t = [[self windowController] middleTransverseView];
         CGFloat transverseWidth = (float)t.curDCM.pwidth/t.pixelsPerMm;
         transverseWidth /= self.pixelSpacingY;
         
-		for( int i = 0; i < noOfFrames; i++)
+		for (int i = 0; i < noOfFrames; i++)
 		{
             _CPRStretchedViewPlaneRun *transverseRun;
             NSUInteger transverseIndex;
@@ -590,32 +624,38 @@ extern int splitPosition[ 3];
             relativePosition = (startingDistance + (exportTransverseSliceInterval * (CGFloat)i)) / curveLength;
             transverseRun = [self _limitedRunForRelativePosition:relativePosition verticalLineIndex:&transverseIndex lengthFromCenterline: transverseWidth];
             
-            glLineWidth(2.0 * self.window.backingScaleFactor);
+            [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
+#ifdef WITH_OPENGL_32
+            renderer_set_rgba(1.0, 1.0, 0.0, 1.0); // yellow
+#endif
 
             if (transverseRun)
                 [self _drawPlaneRuns:[NSArray arrayWithObject:transverseRun]];
             else
-                [self _drawVerticalLines:[NSArray arrayWithObject:[NSNumber numberWithUnsignedInteger:transverseIndex]] length: transverseWidth];
+                [self _drawVerticalLines:[NSArray arrayWithObject:[NSNumber numberWithUnsignedInteger:transverseIndex]]
+                                  length: transverseWidth];
 		}
 	}
-	else if(_displayTransverseLines)
+	else if (_displayTransverseLines)
 	{
         NSString *name;
         
-        if ([_transverseVerticalLines count] == 0) {
+        if ([_transverseVerticalLines count] == 0)
             [self _buildTransverseVerticalLinesAndPlaneRuns];
-        }
         
-        glColor4d(1.0, 1.0, 0.0, 1.0);
+        renderer_set_rgba(1.0, 1.0, 0.0, 1.0); // yellow
         
         for (name in _transverseVerticalLines) {
             NSArray *transverseVerticalLine = [_transverseVerticalLines objectForKey:name];
             
             if ([name isEqualToString:@"center"])
-                glLineWidth(2.0 * self.window.backingScaleFactor);
+                [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
             else
-                glLineWidth(1.0 * self.window.backingScaleFactor);
+                [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
             
+#ifdef WITH_OPENGL_32
+            renderer_set_rgba(1.0, 1.0, 0.0, 1.0); // yellow
+#endif
             [self _drawVerticalLines:transverseVerticalLine length:curDCM.pheight/3.0];
         }
         
@@ -623,10 +663,13 @@ extern int splitPosition[ 3];
             NSArray *transversePlaneRun = [_transversePlaneRuns objectForKey:name];
             
             if ([name isEqualToString:@"center"])
-                glLineWidth(2.0 * self.window.backingScaleFactor);
+                [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
             else
-                glLineWidth(1.0 * self.window.backingScaleFactor);
+                [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
             
+#ifdef WITH_OPENGL_32
+            renderer_set_rgba(1.0, 1.0, 0.0, 1.0); // yellow
+#endif
             [self _drawPlaneRuns:transversePlaneRun];
         }
         
@@ -638,16 +681,16 @@ extern int splitPosition[ 3];
         transverseIntersectionB = N3VectorApplyTransform(transverseIntersectionB, pixToSubDrawRectTransform);
         transverseIntersectionC = N3VectorApplyTransform(transverseIntersectionC, pixToSubDrawRectTransform);
 
-        
-		// --- Text
-		if( stanStringAttrib == nil)
+#pragma mark Text
+
+        if (stanStringAttrib == nil)
 		{
 			stanStringAttrib = [[NSMutableDictionary dictionary] retain];
 			[stanStringAttrib setObject:[NSFont fontWithName:@"Helvetica" size: 14.0] forKey:NSFontAttributeName];
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 		}
 		
-		if( stringTexA == nil)
+		if (stringTexA == nil)
 		{
 			stringTexA = [[StringTexture alloc] initWithString: @"A"
                                                 withAttributes:stanStringAttrib
@@ -657,7 +700,7 @@ extern int splitPosition[ 3];
 			[stringTexA setAntiAliasing: YES];
 		}
         
-		if( stringTexB == nil)
+		if (stringTexB == nil)
 		{
 			stringTexB = [[StringTexture alloc] initWithString: @"B"
                                                 withAttributes:stanStringAttrib
@@ -667,7 +710,7 @@ extern int splitPosition[ 3];
 			[stringTexB setAntiAliasing: YES];
 		}
         
-		if( stringTexC == nil)
+		if (stringTexC == nil)
 		{
 			stringTexC = [[StringTexture alloc] initWithString: @"C"
                                                 withAttributes:stanStringAttrib
@@ -677,21 +720,29 @@ extern int splitPosition[ 3];
 			[stringTexC setAntiAliasing: YES];
 		}
 		
-		glEnable (GL_TEXTURE_RECTANGLE_EXT);  // TODO: GLEW_EXT_texture_rectangle
+#ifdef WITH_OPENGL_32
+        NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+#else
+		glEnable(GL_TEXTURE_RECTANGLE_EXT);
+#endif
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		
         {
-            glPushMatrix();
-            
             float ratio = 1;
             
-            if( self.pixelSpacingX != 0 && self.pixelSpacingY != 0)
+            if (self.pixelSpacingX != 0 && self.pixelSpacingY != 0)
                 ratio = self.pixelSpacingX / self.pixelSpacingY;
             
-            glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+#ifdef WITH_OPENGL_32
+            // TODO:
+            NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+#else
+            glPushMatrix();
+            glLoadIdentity();
             glScalef (2.0f /([self xFlipped] ? -([self drawingFrameRect].size.width) : [self drawingFrameRect].size.width), -2.0f / ([self yFlipped] ? -([self drawingFrameRect].size.height) : [self drawingFrameRect].size.height), 1.0f); // scale to port per pixel scale
             glTranslatef( [self origin].x, -[self origin].y, 0.0f);
+#endif
             
             [stringTexA setFlippedX: [self xFlipped] Y:[self yFlipped]];
             [stringTexB setFlippedX: [self xFlipped] Y:[self yFlipped]];
@@ -700,55 +751,80 @@ extern int splitPosition[ 3];
             NSPoint tPt;
             
             tPt = [self positionWithoutRotation: NSMakePoint( transverseIntersectionA.x, transverseIntersectionA.y)];
-            glColor4f (0, 0, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
-            glColor4f (1, 1, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
+            renderer_set_rgba(0, 0, 0, 1);
+            [stringTexA drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
+            renderer_set_rgba(1, 1, 0, 1);
+            [stringTexA drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
             
             tPt = [self positionWithoutRotation: NSMakePoint( transverseIntersectionB.x, transverseIntersectionB.y)];
-            glColor4f (0, 0, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
-            glColor4f (1, 1, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
+            renderer_set_rgba(0, 0, 0, 1);
+            [stringTexB drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
+            renderer_set_rgba(1, 1, 0, 1);
+            [stringTexB drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
             
             tPt = [self positionWithoutRotation: NSMakePoint( transverseIntersectionC.x, transverseIntersectionC.y)];
-            glColor4f (0, 0, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
-            glColor4f (1, 1, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
-            
+            renderer_set_rgba(0, 0, 0, 1);
+            [stringTexC drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
+            renderer_set_rgba(1, 1, 0, 1);
+            [stringTexC drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
+
+#ifndef WITH_OPENGL_32
             glPopMatrix();
+#endif
         }
-				
-		glDisable (GL_TEXTURE_RECTANGLE_EXT);
+			
+#ifdef WITH_OPENGL_32
+        // TODO:
+#else
+		glDisable(GL_TEXTURE_RECTANGLE_EXT);
+#endif
 	}
     
-    if( [[self windowController] displayMousePosition] == YES)
+    if ([[self windowController] displayMousePosition] == YES)
 	{
-		// draw the point on the plane lines
-		for (planeName in _mousePlanePointsInPix) 
+#pragma mark  Points on the plane (plane color), size 8
+        
+#ifdef WITH_OPENGL_32
+        [self setShaderProgramOverlay_withMode_Point]; // Added
+#endif
+
+        for (planeName in _mousePlanePointsInPix)
 		{
 			planeColor = [self valueForKey:[NSString stringWithFormat:@"%@PlaneColor", planeName]];
-			glColor4f ([planeColor redComponent],
-                       [planeColor greenComponent],
-                       [planeColor blueComponent],
-                       [planeColor alphaComponent]);
+			renderer_set_rgba([planeColor redComponent],
+                              [planeColor greenComponent],
+                              [planeColor blueComponent],
+                              [planeColor alphaComponent]);
+            
 #ifndef WITH_OPENGL_32
             glEnable(GL_POINT_SMOOTH);
 #endif
 			glPointSize(8 * self.window.backingScaleFactor);
 			cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue], pixToSubDrawRectTransform);
 
+#ifdef WITH_OPENGL_32
+            NSMutableArray *pArray = [NSMutableArray array];
+            glm::vec2 a(cursorVector.x, cursorVector.y);
+            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+            renderer_drawPoints([pArray copy]);
+#else
             glBegin(GL_POINTS);
             {
                 glVertex2f(cursorVector.x, cursorVector.y);
             }
 			glEnd();
+#endif
 		}
         
-//        if (_displayInfo.mouseTransverseSection != CPRTransverseViewNoneSectionType) {
+//        if (_displayInfo.mouseTransverseSection != CPR_TRANSVERSE_VIEW_SECTION_NONE) {
 //            switch (_displayInfo.mouseTransverseSection) {
-//                case CPRTransverseViewLeftSectionType:
+//                case CPR_TRANSVERSE_VIEW_SECTION_LEFT:
 //                    relativePosition = _curvedPath.leftTransverseSectionPosition;
 //                    break;
-//                case CPRTransverseViewCenterSectionType:
+//                case CPR_TRANSVERSE_VIEW_SECTION_CENTER:
 //                    relativePosition = _curvedPath.transverseSectionPosition;
 //                    break;
-//                case CPRTransverseViewRightSectionType:
+//                case CPR_TRANSVERSE_VIEW_SECTION_RIGHT:
 //                    relativePosition = _curvedPath.rightTransverseSectionPosition;
 //                    break;
 //                default:
@@ -759,7 +835,7 @@ extern int splitPosition[ 3];
 //            cursorVector = N3VectorMake((CGFloat)curDCM.pwidth*relativePosition, ((CGFloat)curDCM.pheight/2.0)+(_displayInfo.mouseTransverseSectionDistance*pixelsPerMm), 0);
 //            cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
 //            
-//            glColor4d(1.0, 1.0, 0.0, 1.0);
+//            renderer_set_rgba(1.0, 1.0, 0.0, 1.0);
 //#ifndef WITH_OPENGL_32
 //            glEnable(GL_POINT_SMOOTH);
 //#endif
@@ -769,9 +845,14 @@ extern int splitPosition[ 3];
 //            glEnd();
 //        }
     }
-    
+
+#pragma mark all curved path nodes
+
     if (_drawAllNodes)
 	{
+#ifdef WITH_OPENGL_32
+        [self setShaderProgramOverlay_withMode_Point]; // Added
+#endif
         for (NSInteger i = 0; i < [_curvedPath.nodes count]; i++)
 		{
             relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
@@ -780,39 +861,68 @@ extern int splitPosition[ 3];
             cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
             
             if (_displayInfo.hoverNodeHidden == NO && _displayInfo.hoverNodeIndex == i)
-                glColor4d(1.0, 0.5, 0.0, 1.0);
+                renderer_set_rgba(1.0, 0.5, 0.0, 1.0);
             else
-                glColor4d(1.0, 0.0, 0.0, 1.0);
+                renderer_set_rgba(1.0, 0.0, 0.0, 1.0);
             
 #ifndef WITH_OPENGL_32
             glEnable(GL_POINT_SMOOTH);
 #endif
             glPointSize(8 * self.window.backingScaleFactor);
             
+#ifdef WITH_OPENGL_32
+            NSMutableArray *pArray = [NSMutableArray array];
+            glm::vec2 a(cursorVector.x, cursorVector.y);
+            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+            renderer_drawPoints([pArray copy]);
+#else
             glBegin(GL_POINTS);
             {
                 glVertex2f(cursorVector.x, cursorVector.y);
             }
             glEnd();
+#endif
         }
     }
 
-	// Red Square
-	if ( [[self window] firstResponder] == self && stringID == nil)
+#pragma mark Red box bounding the subview
+	if ([[self window] firstResponder] == self && stringID == nil)
 	{
-		glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+#ifdef WITH_OPENGL_32
+        NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+#else
+		glLoadIdentity();
 
         // scale to port per pixel scale
         glScalef (2.0f / (xFlipped ? -(drawingFrameRect.size.width)  : drawingFrameRect.size.width),
                  -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height),
-                  1.0f);
-		
-		glColor4d(1.0, 0, 0.0, 1.0);
-		
+                  1.0f);		
+#endif
+
 		float heighthalf = drawingFrameRect.size.height/2;
-		float widthhalf = drawingFrameRect.size.width/2;
+		float widthhalf  = drawingFrameRect.size.width/2;
 		
-		glLineWidth(8.0 * self.window.backingScaleFactor);
+        [self setShaderProgramForLineWidth: 8.0 * self.window.backingScaleFactor];
+        renderer_set_rgba(1.0, 0.0, 0.0, 1.0); // red
+
+#ifdef WITH_OPENGL_32
+        {
+            const int nPoints = 4;
+            glm::vec2 pA[nPoints];
+
+            pA[0] = glm::vec2( -widthhalf, -heighthalf);
+            pA[1] = glm::vec2( -widthhalf,  heighthalf);
+            pA[2] = glm::vec2(  widthhalf,  heighthalf);
+            pA[3] = glm::vec2(  widthhalf, -heighthalf);
+            
+            NSMutableArray *pArray = [NSMutableArray array];
+            for (int i=0; i<nPoints; i++) {
+                [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec2)]];
+            }
+
+            renderer_drawLine_xy([pArray copy], GL_LINE_LOOP);
+        }
+#else
 		glBegin(GL_LINE_LOOP);
         {
             glVertex2f(  -widthhalf, -heighthalf);
@@ -821,6 +931,7 @@ extern int splitPosition[ 3];
             glVertex2f(  widthhalf, -heighthalf);
         }
 		glEnd();
+#endif
 	}
 	
 	glDisable(GL_LINE_SMOOTH);
@@ -831,13 +942,17 @@ extern int splitPosition[ 3];
 	glDisable(GL_BLEND);	
 }
 
+#pragma mark -
+
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage
 {
 }
 
-- (void)generator:(CPRGenerator *)generator didGenerateVolume:(CPRVolumeData *)volume request:(CPRGeneratorRequest *)request
+- (void)generator:(CPRGenerator *)generator
+didGenerateVolume:(CPRVolumeData *)volume
+          request:(CPRGeneratorRequest *)request
 {
-	if( [self windowController] == nil)
+	if ([self windowController] == nil)
 		return;
     
     NSMutableArray *pixArray;
@@ -947,7 +1062,7 @@ extern int splitPosition[ 3];
 	[self _sendWillEditDisplayInfo];
     _displayInfo.mouseCursorHidden = YES;
 	[_displayInfo clearAllMouseVectors];
-    _displayInfo.mouseTransverseSection = CPRTransverseViewNoneSectionType;
+    _displayInfo.mouseTransverseSection = CPR_TRANSVERSE_VIEW_SECTION_NONE;
     _displayInfo.mouseTransverseSectionDistance = 0;
 	[self _sendDidEditDisplayInfo];
     [_mousePlanePointsInPix removeAllObjects];
@@ -989,24 +1104,24 @@ extern int splitPosition[ 3];
 			[self _updateMousePlanePointsForViewPoint:viewPoint];  // this will modify _mousePlanePointsInPix and _displayInfo
 			
             // test to see if the mouse is near a trasverse line
-//            _displayInfo.mouseTransverseSection = CPRTransverseViewNoneSectionType;
+//            _displayInfo.mouseTransverseSection = CPR_TRANSVERSE_VIEW_SECTION_NONE;
 //            _displayInfo.mouseTransverseSectionDistance = 0.0;
 //            if (_displayTransverseLines) {
 //                distance = ABS(pixVector.x - _curvedPath.leftTransverseSectionPosition*(CGFloat)curDCM.pwidth);
 //                minDistance = distance;
 //                if (distance < 20.0) {
-//                    _displayInfo.mouseTransverseSection = CPRTransverseViewLeftSectionType;
+//                    _displayInfo.mouseTransverseSection = CPR_TRANSVERSE_VIEW_SECTION_LEFT;
 //                    _displayInfo.mouseTransverseSectionDistance = (pixVector.y - ((CGFloat)curDCM.pheight/2.0))*([_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth);
 //                }
 //                distance = ABS(pixVector.x - _curvedPath.rightTransverseSectionPosition*(CGFloat)curDCM.pwidth);
 //                if (distance < 20.0 && distance < minDistance) {
-//                    _displayInfo.mouseTransverseSection = CPRTransverseViewRightSectionType;
+//                    _displayInfo.mouseTransverseSection = CPR_TRANSVERSE_VIEW_SECTION_RIGHT;
 //                    _displayInfo.mouseTransverseSectionDistance = (pixVector.y - ((CGFloat)curDCM.pheight/2.0))*([_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth);
 //                    minDistance = distance;
 //                }
 //                distance = ABS(pixVector.x - _curvedPath.transverseSectionPosition*(CGFloat)curDCM.pwidth);
 //                if (distance < 20.0 && distance < minDistance) {
-//                    _displayInfo.mouseTransverseSection = CPRTransverseViewCenterSectionType;
+//                    _displayInfo.mouseTransverseSection = CPR_TRANSVERSE_VIEW_SECTION_CENTER;
 //                    _displayInfo.mouseTransverseSectionDistance = (pixVector.y - ((CGFloat)curDCM.pheight/2.0))*([_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth);
 //                }
 //            }            
@@ -1224,9 +1339,10 @@ extern int splitPosition[ 3];
 				}
 				else if( frameZoomed == NO)
 				{
-					splitPosition[0] = [[windowController mprView1] frame].origin.x + [[windowController mprView1] frame].size.width;	// vert
-					splitPosition[1] = [[windowController mprView1] frame].origin.y + [[windowController mprView1] frame].size.height;	// hori12
-					splitPosition[2] = [[windowController mprView3] frame].origin.y + [[windowController mprView3] frame].size.height;	// horiz2
+					splitPosition[0] = NSMaxX([[windowController mprView1] frame]);	// vert
+
+                    splitPosition[1] = NSMaxY([[windowController mprView1] frame]);	// hori12
+					splitPosition[2] = NSMaxY([[windowController mprView3] frame]);	// horiz2
 					
 					frameZoomed = YES;
 					
@@ -1432,23 +1548,28 @@ extern int splitPosition[ 3];
 }
 
 
-+ (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRViewClippingRangeMode)clippingRangeMode
++ (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRProjectionMode)mode
 {
-    switch (clippingRangeMode) {
-        case CPRViewClippingRangeVRMode:
+    switch (mode)
+    {
+        case CPR_PROJECTION_MODE_VR:
             return 0; // not supported
             break;
-        case CPRViewClippingRangeMIPMode:
+
+        case CPR_PROJECTION_MODE_MIP:
             return 2;
             break;
-        case CPRViewClippingRangeMinIPMode:
+
+        case CPR_PROJECTION_MODE_MIN_IP:
             return 3;
             break;
-        case CPRViewClippingRangeMeanMode:
+
+        case CPR_PROJECTION_MODE_MEAN:
             return 1;
             break;
+
         default:
-            NSLog(@"%s asking for invalid clipping range mode: %d", __func__, (int) clippingRangeMode);
+            NSLog(@"%s asking for invalid clipping range mode: %d", __func__, (int) mode);
             return 0;
             break;
     }
@@ -1579,35 +1700,24 @@ extern int splitPosition[ 3];
 
 - (N3BezierPath *)_projectedBezierPathFromStretchedGeneratorRequest:(CPRStretchedGeneratorRequest *)generatorRequest
 {
-    NSInteger pixelsWide;
-    NSInteger pixelsHigh;
-    NSUInteger numVectors;
-    N3Vector midHeightPoint;
-    N3Vector projectionNormal;
-    N3BezierCoreRef flattenedBezierCore;
-    N3BezierCoreRef projectedBezierCore;
-    CGFloat projectedBezierLength;
-    CGFloat sampleSpacing;
-    N3VectorArray vectors;
-    CGFloat *relativePositions;
     N3MutableBezierPath *centerlinePath;
     N3Vector newPoint;
 
     // figure out how many horizonatal pixels we will have
-    pixelsWide = [generatorRequest pixelsWide];
-    pixelsHigh = [generatorRequest pixelsHigh];
-    projectionNormal = N3VectorNormalize(generatorRequest.projectionNormal);
-    midHeightPoint = generatorRequest.midHeightPoint;
+    NSInteger pixelsWide = [generatorRequest pixelsWide];
+    NSInteger pixelsHigh = [generatorRequest pixelsHigh];
+    N3Vector projectionNormal = N3VectorNormalize(generatorRequest.projectionNormal);
+    N3Vector midHeightPoint = generatorRequest.midHeightPoint;
     
-    flattenedBezierCore = N3BezierCoreCreateFlattenedCopy([generatorRequest.bezierPath N3BezierCore], N3BezierDefaultFlatness);
-    projectedBezierCore = N3BezierCoreCreateCopyProjectedToPlane(flattenedBezierCore, N3PlaneMake(N3VectorZero, projectionNormal));
-    projectedBezierLength = N3BezierCoreLength(projectedBezierCore);
-    sampleSpacing = projectedBezierLength / (CGFloat)pixelsWide;
+    N3BezierCoreRef flattenedBezierCore = N3BezierCoreCreateFlattenedCopy([generatorRequest.bezierPath N3BezierCore], N3BezierDefaultFlatness);
+    N3BezierCoreRef projectedBezierCore = N3BezierCoreCreateCopyProjectedToPlane(flattenedBezierCore, N3PlaneMake(N3VectorZero, projectionNormal));
+    CGFloat projectedBezierLength = N3BezierCoreLength(projectedBezierCore);
+    CGFloat sampleSpacing = projectedBezierLength / (CGFloat)pixelsWide;
 
-    vectors = (N3Vector *)malloc(sizeof(N3Vector) * pixelsWide);
-    relativePositions = (CGFloat *)malloc(sizeof(CGFloat) * pixelsWide);
+    N3VectorArray vectors = (N3Vector *)malloc(sizeof(N3Vector) * pixelsWide);
+    CGFloat *relativePositions = (CGFloat *)malloc(sizeof(CGFloat) * pixelsWide);
     
-    numVectors = N3BezierCoreGetProjectedVectorInfo(flattenedBezierCore, sampleSpacing, 0, projectionNormal, vectors, NULL, NULL, relativePositions, pixelsWide);
+    NSUInteger numVectors = N3BezierCoreGetProjectedVectorInfo(flattenedBezierCore, sampleSpacing, 0, projectionNormal, vectors, NULL, NULL, relativePositions, pixelsWide);
     
     if (numVectors > 0) {
         while (numVectors < pixelsWide) { // make sure that the full array is filled and that there is not a vector that did not get filled due to roundoff error
@@ -1657,99 +1767,205 @@ extern int splitPosition[ 3];
 
 - (void)_drawVerticalLines:(NSArray *)verticalLines
 {
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if ([verticalLines count] == 0)
+        return;
+
+    double pixToSubdrawRectOpenGLTransform[16];
+    N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+
+#ifdef WITH_OPENGL_32
+    #define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH4
+    #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH4
+    // Define a local model matrix and apply it locally without affecting the shader
+    glm::mat4 M = glm::make_mat4(pixToSubdrawRectOpenGLTransform);
+    #endif
+#else
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if( cgl_ctx == nil)
         return;
 
-    double pixToSubdrawRectOpenGLTransform[16];
-    N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
-
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-    glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
-	for (NSNumber *indexNumber in verticalLines) {
+    glMultMatrixd(pixToSubdrawRectOpenGLTransform);
+#endif
+
+#ifdef WITH_OPENGL_32
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (NSNumber *indexNumber in verticalLines) {
+        glm::vec2 lineStart([indexNumber doubleValue], 0);
+        #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH4
+        // Apply local matrix transformation
+        glm::vec4 pTemp = M*glm::vec4(lineStart,0,1);
+        lineStart = glm::vec2(pTemp.x, pTemp.y);
+        #endif
+        [pArray addObject: [NSValue valueWithBytes:&lineStart objCType:@encode(glm::vec2)]];
+
+        glm::vec2 lineEnd([indexNumber doubleValue], curDCM.pheight);
+        #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH4
+        // Apply local matrix transformation
+        pTemp = M*glm::vec4(lineEnd,0,1);
+        lineEnd = glm::vec2(pTemp.x, pTemp.y);
+        #endif
+        [pArray addObject: [NSValue valueWithBytes:&lineEnd objCType:@encode(glm::vec2)]];
+    }
+
+    renderer_drawLine_xy([pArray copy], GL_LINES);
+#else
+    for (NSNumber *indexNumber in verticalLines) {
 		N3Vector lineStart = N3VectorMake([indexNumber doubleValue], 0, 0);
         N3Vector lineEnd = N3VectorMake([indexNumber doubleValue], curDCM.pheight, 0);
-        glBegin(GL_LINE_STRIP);
+
+        glBegin(GL_LINE_STRIP); // A better way if all pairs of vertexes together with GL_LINES
         {
             glVertex2d(lineStart.x, lineStart.y);
             glVertex2d(lineEnd.x, lineEnd.y);
         }
         glEnd();
 	}
+#endif
 
+#ifndef WITH_OPENGL_32
     glPopMatrix();
+#endif
 }
 
-- (void)_drawVerticalLines:(NSArray *)verticalLines length:(CGFloat)length;
+- (void)_drawVerticalLines:(NSArray *)verticalLines
+                    length:(CGFloat)length;
 {
-	NSNumber *indexNumber;
-    CGFloat relativePostion;
-    N3Vector centerlineVector;
-	N3Vector lineStart;
-	N3Vector lineEnd;
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if (cgl_ctx == nil)
-        return;
-    
     double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+
+#ifdef WITH_OPENGL_32
+    #define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH5
+    #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH5
+    // Define a local model matrix and apply it locally without affecting the shader
+    glm::mat4 M = glm::make_mat4(pixToSubdrawRectOpenGLTransform);
+    #endif
+#else
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (cgl_ctx == nil)
+        return;
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-    glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
-	for (indexNumber in verticalLines) {
-        relativePostion = [self _relativePositionForIndex:[indexNumber integerValue]]; // this is dumb, just do one iteration! and do it in log(n) time while your at it to!
-        centerlineVector = [self _centerlinePixVectorForRelativePosition:relativePostion];
+    glMultMatrixd(pixToSubdrawRectOpenGLTransform);
+#endif
+
+#ifdef WITH_OPENGL_32
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (NSNumber *indexNumber in verticalLines) {
+        CGFloat relativePostion = [self _relativePositionForIndex:[indexNumber integerValue]];
+        N3Vector centerlineVector = [self _centerlinePixVectorForRelativePosition:relativePostion];
         
-		lineStart = N3VectorMake([indexNumber doubleValue], centerlineVector.y - length/2.0, 0);
-        lineEnd = N3VectorMake([indexNumber doubleValue], centerlineVector.y + length/2.0, 0);
-        glBegin(GL_LINE_STRIP);
+        glm::vec2 lineStart([indexNumber doubleValue],
+                            centerlineVector.y - length/2.0);
+        #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH5
+        // Apply local matrix transformation
+        glm::vec4 pTemp = M*glm::vec4(lineStart,0,1);
+        lineStart = glm::vec2(pTemp.x, pTemp.y);
+        #endif
+        [pArray addObject: [NSValue valueWithBytes:&lineStart objCType:@encode(glm::vec2)]];
+        
+        glm::vec2 lineEnd([indexNumber doubleValue],
+                          centerlineVector.y + length/2.0);
+        #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH5
+        // Apply local matrix transformation
+        pTemp = M*glm::vec4(lineEnd,0,1);
+        lineEnd = glm::vec2(pTemp.x, pTemp.y);
+        #endif
+        [pArray addObject: [NSValue valueWithBytes:&lineEnd objCType:@encode(glm::vec2)]];
+    }
+
+    renderer_drawLine_xy([pArray copy], GL_LINES);
+#else
+    for (NSNumber *indexNumber in verticalLines) {
+        CGFloat relativePostion = [self _relativePositionForIndex:[indexNumber integerValue]]; // this is dumb, just do one iteration! and do it in log(n) time while your at it to!
+        N3Vector centerlineVector = [self _centerlinePixVectorForRelativePosition:relativePostion];
+        
+		N3Vector lineStart = N3VectorMake([indexNumber doubleValue], centerlineVector.y - length/2.0, 0);
+        N3Vector lineEnd   = N3VectorMake([indexNumber doubleValue], centerlineVector.y + length/2.0, 0);
+
+        glBegin(GL_LINE_STRIP); // A better way if all pairs of vertexes together with GL_LINES
         {
             glVertex2d(lineStart.x, lineStart.y);
             glVertex2d(lineEnd.x, lineEnd.y);
         }
         glEnd();
 	}
+#endif
+
+#ifndef WITH_OPENGL_32
     glPopMatrix();
+#endif
 }
 
 - (void)_drawPlaneRuns:(NSArray*)planeRuns
 {
-	N3Vector planePointVector;
-	_CPRStretchedViewPlaneRun *planeRun;
-    CGFloat pheight_2;
-    
-    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-  	if (cgl_ctx == nil)
-        return;
-    
     if ([curDCM pixelSpacingX] == 0)
         return;
     
     CGFloat pixelsPerMm = 1.0/[curDCM pixelSpacingX];
-
-    pheight_2 = (CGFloat)curDCM.pheight/2.0;
+    CGFloat pheight_2 = (CGFloat)curDCM.pheight/2.0;
     
     double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
 
+#ifdef WITH_OPENGL_32
+    // Needed for the yellow lines
+    #define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH3
+    #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH3
+    // Define a local model matrix and apply it locally without affecting the shader
+    glm::mat4 M = glm::make_mat4(pixToSubdrawRectOpenGLTransform);
+    #endif
+#else
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (cgl_ctx == nil)
+        return;
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-    glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
-	for (planeRun in planeRuns) {
+    glMultMatrixd(pixToSubdrawRectOpenGLTransform);
+#endif
+    
+	for (_CPRStretchedViewPlaneRun *planeRun in planeRuns)
+    {
+#ifdef WITH_OPENGL_32
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (NSInteger i = 0; i < planeRun.range.length; i++)
+        {
+            N3Vector planePointVector = N3VectorMake(planeRun.range.location + i,
+                                            ([[planeRun.distances objectAtIndex:i] doubleValue] * pixelsPerMm) + pheight_2,
+                                            0);
+            glm::vec2 a(planePointVector.x, planePointVector.y);
+            #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH3
+            // Apply local matrix transformation
+            glm::vec4 pTemp = M*glm::vec4(a,0,1);
+            a = glm::vec2(pTemp.x, pTemp.y);
+            #endif
+            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+        }
+
+        renderer_drawLine_xy([pArray copy], GL_LINE_STRIP);
+#else
 		glBegin(GL_LINE_STRIP);
         {
             for (NSInteger i = 0; i < planeRun.range.length; i++)
             {
-                planePointVector = N3VectorMake(planeRun.range.location + i,
+                N3Vector planePointVector = N3VectorMake(planeRun.range.location + i,
                                                 ([[planeRun.distances objectAtIndex:i] doubleValue] * pixelsPerMm) + pheight_2,
                                                 0);
                 glVertex2d(planePointVector.x, planePointVector.y);
             }
         }
 		glEnd();
+#endif
 	}
+    
+#ifdef WITH_OPENGL_32
+    // TODO:
+#else
     glPopMatrix();
+#endif
 }
 
 - (_CPRStretchedViewPlaneRun *)_limitedRunForRelativePosition:(CGFloat)relativePosition verticalLineIndex:(NSUInteger *)verticalLinePointer lengthFromCenterline:(CGFloat)length
@@ -2084,11 +2300,13 @@ extern int splitPosition[ 3];
 						[planeRun.distances addObject:[NSNumber numberWithDouble:halfHeight]];
 					}
 				}
-				planeRun.range = range;
+
+                planeRun.range = range;
 				[runs addObject:planeRun];
 				[planeRun release];
 				planeRun = nil;
-			} else if (ABS(prevAboveOrBelow - aboveOrBelow) == 2) { // if we switched sides without ever getting any points, put in a vertical line
+			}
+            else if (ABS(prevAboveOrBelow - aboveOrBelow) == 2) { // if we switched sides without ever getting any points, put in a vertical line
 				[verticalLines addObject:[NSNumber numberWithInteger:i]];
 			}
 		}
@@ -2110,31 +2328,30 @@ extern int splitPosition[ 3];
 }
 
 
-- (void)_updateMousePlanePointsForViewPoint:(NSPoint)point // this will modify _mousePlanePointsInPix and _displayInfo
+// This function will modify _mousePlanePointsInPix and _displayInfo
+- (void)_updateMousePlanePointsForViewPoint:(NSPoint)point
 {
-	CGFloat lineDistance;
-	CGFloat runDistance;
-	N3Vector linePixVector;
-	N3Vector lineVolumeVector;
-	N3Vector runPixVector;
-	N3Vector runVolumeVector;
-    NSString *planeName;
-    NSArray *verticalLines;
-    NSArray *planeRuns;
-	
-	linePixVector = N3VectorZero;
-	lineVolumeVector = N3VectorZero;
-	runPixVector = N3VectorZero;
-	runVolumeVector = N3VectorZero;
+	N3Vector linePixVector = N3VectorZero;
+	N3Vector lineVolumeVector = N3VectorZero;
+	N3Vector runPixVector = N3VectorZero;
+	N3Vector runVolumeVector = N3VectorZero;
 	
 	[_displayInfo clearAllMouseVectors];
 	[_mousePlanePointsInPix removeAllObjects];
 	
-    for (planeName in _planes) {
-        verticalLines = [self valueForKey:[planeName stringByAppendingString:@"VerticalLines"]];
-        planeRuns = [self valueForKey:[planeName stringByAppendingString:@"PlaneRuns"]];
-        lineDistance = [self _distanceToPoint:point onVerticalLines:verticalLines pixVector:&linePixVector volumeVector:&lineVolumeVector];
-        runDistance = [self _distanceToPoint:point onPlaneRuns:planeRuns pixVector:&runPixVector volumeVector:&runVolumeVector];
+    for (NSString *planeName in _planes) {
+        NSArray *verticalLines = [self valueForKey:[planeName stringByAppendingString:@"VerticalLines"]];
+        NSArray *planeRuns = [self valueForKey:[planeName stringByAppendingString:@"PlaneRuns"]];
+        CGFloat lineDistance = [self _distanceToPoint:point
+                                      onVerticalLines:verticalLines
+                                            pixVector:&linePixVector
+                                         volumeVector:&lineVolumeVector];
+
+        CGFloat runDistance = [self _distanceToPoint:point
+                                         onPlaneRuns:planeRuns
+                                           pixVector:&runPixVector
+                                        volumeVector:&runVolumeVector];
+
         if (MIN(lineDistance, runDistance) < 30) {
             if (lineDistance < runDistance) {
                 [_mousePlanePointsInPix setObject:[NSValue valueWithN3Vector:linePixVector] forKey:planeName];
@@ -2238,10 +2455,8 @@ extern int splitPosition[ 3];
 - (void)_buildVerticalLinesAndPlaneRunsForPlaneFullName:(NSString *)planeFullName
 {
     NSString *planeName;
-    N3Plane plane;
     CGFloat slabThickness;
-    NSArray *planeRuns;
-    NSArray *vertialLines;
+    NSArray *vertLines;
     
     if ([planeFullName hasSuffix:@"Top"]) {
         planeName = [planeFullName substringToIndex:[planeFullName length] - 3];
@@ -2261,12 +2476,12 @@ extern int splitPosition[ 3];
         slabThickness = 0;
     }
     
-    plane = [[self valueForKey:[planeName stringByAppendingString:@"Plane"]] N3PlaneValue];
+    N3Plane plane = [[self valueForKey:[planeName stringByAppendingString:@"Plane"]] N3PlaneValue];
     if (N3PlaneIsValid(plane)) {
         plane.normal = N3VectorNormalize(plane.normal);
         plane.point = N3VectorAdd(plane.point, N3VectorScalarMultiply(plane.normal, slabThickness/2.0));
-        planeRuns = [self _runsForPlane:plane verticalLineIndexes:&vertialLines];
-        [_verticalLines setValue:vertialLines forKey:planeFullName];
+        NSArray *planeRuns = [self _runsForPlane:plane verticalLineIndexes:&vertLines];
+        [_verticalLines setValue:vertLines forKey:planeFullName];
         [_planeRuns setValue:planeRuns forKey:planeFullName];
     }
 }

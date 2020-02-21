@@ -45,7 +45,7 @@
 	// Blending
 	DCMView *blendedMprView1, *blendedMprView2, *blendedMprView3;
 	float blendingPercentage;
-	int blendingMode;
+//	BlendingMode2DType blendingMode;
 	BOOL blendingModeAvailable;
 	NSString *startingOpacityMenu;
 	
@@ -108,7 +108,8 @@
 
 @property (nonatomic) float clippingRangeThickness, dcmInterval, blendingPercentage, dcmIntervalMin, dcmIntervalMax;
 @property (nonatomic) int dcmmN, clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
-@property (nonatomic) int dcmFormat, curMovieIndex, maxMovieIndex, blendingMode;
+@property (nonatomic) int dcmFormat, curMovieIndex, maxMovieIndex;
+@property (nonatomic) BlendingMode2DType blendingMode; // custom setter
 @property (nonatomic, retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;
 @property (retain) NSString *dcmSeriesName;

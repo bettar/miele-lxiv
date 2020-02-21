@@ -77,8 +77,12 @@
 //	[textCell drawInteriorWithFrame:textFrame inView:controlView];
 }
 
-- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView{
-	NSRect textFrame = NSMakeRect(cellFrame.origin.x + cellFrame.size.width - 120, cellFrame.origin.y, 120 , cellFrame.size.height);
+- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
+{
+	NSRect textFrame = NSMakeRect(NSMaxX(cellFrame) - 120,
+                                  NSMinY(cellFrame),
+                                  120,
+                                  NSHeight(cellFrame));
 	NSLog(@"drawWithFrame:");
 	//[super drawWithFrame:buttonFrame inView:controlView];
 	[textCell drawWithFrame:textFrame inView:controlView];

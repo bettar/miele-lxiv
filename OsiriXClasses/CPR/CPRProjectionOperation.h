@@ -19,16 +19,7 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-
-enum _CPRProjectionMode {
-    CPRProjectionModeVR, // don't use this, it is not implemented
-    CPRProjectionModeMIP,
-    CPRProjectionModeMinIP,
-    CPRProjectionModeMean,
-	
-	CPRProjectionModeNone = 0xFFFFFF,
-};
-typedef NSInteger CPRProjectionMode;
+#import "cprTypes.h"
 
 @class CPRVolumeData;
 

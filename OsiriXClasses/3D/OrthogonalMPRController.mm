@@ -45,37 +45,39 @@
 
 - (void) applyOrientation
 {
-	switch( orientationVector)
+    NSLog(@"%s %d, class:%@, self:%p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
+
+    switch( orientationVector)
 	{
 		case eSagittalPos:
 		case eSagittalNeg:
 			[xReslicedView setXFlipped: YES];
-			if( [xReslicedView rotation] == 0)
+			if ([xReslicedView rotation] == 0)
                 [xReslicedView setRotation: 90];
 			
 			[yReslicedView setXFlipped: YES];
-			if( [yReslicedView rotation] == 0)
+			if ([yReslicedView rotation] == 0)
                 [yReslicedView setRotation: 90];
-		break;
+            break;
 		
 		case eCoronalPos:
 		case eCoronalNeg:
 			[xReslicedView setYFlipped: YES];
 			if( [yReslicedView rotation] == 0)
                 [yReslicedView setRotation: 90];
-		break;
+            break;
 		
 		case eAxialPos:
-		break;
+            break;
 		
 		case eAxialNeg: 
 			[xReslicedView setYFlipped: YES];
 			[yReslicedView setYFlipped: YES];
-		break;
+            break;
 		
 		default:
 			NSLog( @"Orientation Unknown: %d", (int) orientationVector);
-		break;
+            break;
 	}
 }
 
@@ -113,6 +115,7 @@
                                 :(ViewerController*)bC
                                 :(id)newViewer
 {
+    //NSLog(@"%s %d, class:%@, self:%p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
 	if (self = [super init])
 	{
 		// initialisations
@@ -134,10 +137,10 @@
 		[xReslicedView setMenu:[self contextualMenu]];
 		[yReslicedView setMenu:[self contextualMenu]];
 		
-		[[NSNotificationCenter defaultCenter]	addObserver: self
-												selector: @selector(changeWLWW:)
-												name: OsirixChangeWLWWNotification
-												object: nil];
+		[[NSNotificationCenter defaultCenter] addObserver: self
+                                                 selector: @selector(changeWLWW:)
+                                                     name: OsirixChangeWLWWNotification
+                                                   object: nil];
 		
 		orientationVector = [vC orientationVector];
 		[self applyOrientation];
@@ -165,18 +168,28 @@
 
 #pragma mark - Orthogonal reslice methods
 
-- (void) reslice: (long) x : (long) y : (OrthogonalMPRView*) sender
+- (void) reslice: (long) x
+                : (long) y
+                : (OrthogonalMPRView*) sender
 {
-	float originalScaleValue, xScaleValue, yScaleValue, originalRotation, xRotation, yRotation;
+    NSLog(@"%s %d, class:%@, self:%p", __FUNCTION__, __LINE__,
+          NSStringFromClass([self class]), self);
 
-	originalRotation = 0;
-	xRotation = 0;
-	yRotation = 0;
+    float originalScaleValue = 1.0f;  // TBC
+    float xScaleValue = 1.0f;  // TBC
+    float yScaleValue = 1.0f;  // TBC
+
+	float originalRotation = 0;
+	float xRotation = 0;
+	float yRotation = 0;
 	
-	NSPoint originalOrigin, xOrigin, yOrigin;
+    NSPoint originalOrigin = NSZeroPoint;
+    NSPoint xOrigin = NSZeroPoint;
+    NSPoint yOrigin = NSZeroPoint;
 	
-	BOOL originalOldValues, xOldValues, yOldValues;
-	originalOldValues = xOldValues = yOldValues = NO;
+    BOOL originalOldValues = NO;
+    BOOL xOldValues = NO;
+    BOOL yOldValues = NO;
 
 	if ([originalView dcmPixList] != nil)
 	{
@@ -223,11 +236,11 @@
             [yReslicedView adjustWLWW:wl :ww];
 		}
         
-		// move cross on the other views
+		// Move cross on the other views
 		[xReslicedView setCrossPositionX:x+0.5];
 		[yReslicedView setCrossPositionX:y+0.5];
-		NSInteger sliceIndex = [[originalView pixList] indexOfObject:[originalView curDCM]] + [[originalView curDCM] stack]/2;
-		NSInteger h = (sign>0)? [[originalView dcmPixList] count]-sliceIndex-1 : sliceIndex ;
+		NSUInteger sliceIndex = [[originalView pixList] indexOfObject:[originalView curDCM]] + [[originalView curDCM] stack]/2;
+		NSInteger h = (sign>0) ? [[originalView dcmPixList] count]-sliceIndex-1 : sliceIndex;
 
 		[xReslicedView setCrossPositionY:h+0.5];
 		[yReslicedView setCrossPositionY:h+0.5];
@@ -239,19 +252,18 @@
 //		stackCount /= 2;
 //		stackCount *= 2;
 		
-		// slice index on axial view
-		int sliceIndex = (sign>0)? stackCount-1 -y : y;
+		int sliceIndexAxialView = (sign>0) ? stackCount - 1 - y : y;
 		
-		sliceIndex = sliceIndex - thickSlab/2;
+		sliceIndexAxialView -= thickSlab/2;
 		
-		if( sliceIndex < 0)
-            sliceIndex = 0;
+		if (sliceIndexAxialView < 0)
+            sliceIndexAxialView = 0;
         
-		if( sliceIndex >= stackCount)
-            sliceIndex = stackCount-1;
+		if (sliceIndexAxialView >= stackCount)
+            sliceIndexAxialView = stackCount-1;
         
 		// update axial view
-		[originalView setIndex:sliceIndex];
+		[originalView setIndex:sliceIndexAxialView];
 		
 		if ([sender isEqual: xReslicedView])
 		{
@@ -540,9 +552,14 @@
 	}
 }
 
-- (void) setWLWW:(float) iwl :(float) iww
+- (void) setWLWW:(float) iwl
+                :(float) iww
 {
-	[viewerController setWL: iwl WW: iww];
+    NSLog(@"%s %d, self class:%@, viewerController class:%@", __FUNCTION__, __LINE__,
+          NSStringFromClass([self class]),
+          NSStringFromClass([viewerController class]));
+
+    [viewerController.imageView setWLWW: iwl : iww];
 	
 	[originalView adjustWLWW: iwl : iww];
 	[xReslicedView adjustWLWW: iwl : iww];
@@ -579,21 +596,21 @@
 
 - (void) resetImage
 {
-	[originalView setOrigin: NSMakePoint( 0, 0)];
+	[originalView setOrigin: NSZeroPoint];
 	[originalView scaleToFit];
 	[originalView setWLWW:[[originalView curDCM] savedWL] :[[originalView curDCM] savedWW]];
 	[originalView setRotation: 0];
 	[originalView setXFlipped:NO];
 	[originalView setYFlipped:NO];
 	
-	[xReslicedView setOrigin: NSMakePoint( 0, 0)];
+	[xReslicedView setOrigin: NSZeroPoint];
 	[xReslicedView scaleToFit];
 	[xReslicedView setWLWW:[[originalView curDCM] savedWL] :[[originalView curDCM] savedWW]];
 //	[xReslicedView setRotation: 0];
 //	[xReslicedView setXFlipped:NO];
 //	[xReslicedView setYFlipped:NO];
 		
-	[yReslicedView setOrigin: NSMakePoint( 0, 0)];
+	[yReslicedView setOrigin: NSZeroPoint];
 	[yReslicedView scaleToFit];
 	[yReslicedView setWLWW:[[originalView curDCM] savedWL] :[[originalView curDCM] savedWW]];
 //	[yReslicedView setRotation: 0];
@@ -978,7 +995,7 @@
                                                                    : NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
 					NSRect irect;
 					irect.origin.x = [[[aROI points] objectAtIndex:0] y];
-					long sliceIndex = (sign>0)? (long)[[originalView dcmPixList] count]-1 -i : i; // i is slice number
+					long sliceIndex = (sign>0) ? (long)[[originalView dcmPixList] count]-1 -i : i; // i is slice number
 					irect.origin.y = sliceIndex; // i is slice number
 					irect.size.width = irect.size.height = 0;
 					[new2DPointROI setROIRect:irect];
@@ -990,7 +1007,7 @@
 				}
 			}
             
-            if ( [aROI type] == tPlain)
+            if ([aROI type] == tPlain)
             {
                 if ( x >= aROI.textureUpLeftCornerX && x < aROI.textureDownRightCornerX)
                 {
@@ -1166,7 +1183,6 @@
 	[self loadROIonYReslicedView: x];
 }
 
-
 - (NSMenu *)contextualMenu{
 
 // if contextualMenuPath says @"default", recreate the default menu once and again
@@ -1176,10 +1192,10 @@
 	NSMenu *contextual;
 		//if([contextualDictionaryPath isEqualToString:@"default"]) // JF20070102
 		{
-			/******************* Tools menu ***************************/
+			/* ****************** Tools menu ***************************/
 			contextual =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)] autorelease];
 			NSMenuItem *item;
-			//Menu titles
+			// Menu titles
 			NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil),
 														NSLocalizedString(@"Move", nil), 
 														NSLocalizedString(@"Magnify", nil), 
@@ -1236,7 +1252,7 @@
 			
 			[contextual addItem:[NSMenuItem separatorItem]];
 			
-			/******************* WW/WL menu items **********************/
+			/* ****************** WW/WL menu items **********************/
 			NSMenu *menu = [[[[AppController sharedAppController] wlwwMenu] copy] autorelease];
 			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""] autorelease];
 			[item setSubmenu:menu];
@@ -1244,14 +1260,13 @@
 			
 			[contextual addItem:[NSMenuItem separatorItem]];
 			
-			/************* window resize Menu ****************/
-			
+			/* ************ window resize Menu ****************/
 			
 			NSMenu *submenu =  [[[NSMenu alloc] initWithTitle:@"Resize window"] autorelease];
 			
 			NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
 			i = 0;
-			NSString	*titleMenu;
+			NSString *titleMenu;
 			for (titleMenu in resizeWindowArray) {
 				int tag = i++;
 				item = [[[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""] autorelease];
@@ -1287,20 +1302,22 @@
 	return contextual;
 }
 
-- (IBAction) flipVertical: (id)sender{
+- (IBAction) flipVertical: (id)sender
+{
 	BOOL flipped = [sender yFlipped];
 	[originalView setYFlipped:flipped];
 	[xReslicedView setYFlipped:flipped];
 	[yReslicedView setYFlipped:flipped];
 }
 
-- (IBAction) flipHorizontal: (id)sender{
-   if (![sender isEqual:yReslicedView]) {
-		BOOL flipped = [sender xFlipped];
-		[originalView setXFlipped:flipped];
-		[xReslicedView setXFlipped:flipped];
-   }
-}
+- (IBAction) flipHorizontal: (id)sender
+{
+   if ([sender isEqual:yReslicedView])
+       return;
 
+    BOOL flipped = [sender xFlipped];
+    [originalView setXFlipped:flipped];
+    [xReslicedView setXFlipped:flipped];
+}
 
 @end

@@ -615,7 +615,7 @@
             if (status.good() && string)
                 document->setStudyDescription( string);
             
-            if( _DICOMSRDescription.length)
+            if (_DICOMSRDescription.length > 0)
             {
                 NSMutableData *data = [NSMutableData dataWithData: [_DICOMSRDescription dataUsingEncoding:encoding allowLossyConversion: YES]];
                 unsigned char zeroByte = 0;
@@ -625,7 +625,7 @@
                     document->setSeriesDescription( (char*) [data bytes]);
             }
             
-//            if ([[study valueForKey:@"studyName"] length])
+//            if ([[study valueForKey:@"studyName"] length] > 0)
 //            {
 //                NSMutableData *data = [NSMutableData dataWithData: [[study valueForKey:@"studyName"] dataUsingEncoding:encoding allowLossyConversion: YES]];
 //                unsigned char zeroByte = 0;

@@ -18,10 +18,8 @@
      PURPOSE.
 =========================================================================*/
 
-
 #import "NSView+N2.h"
 #import "N2Operators.h"
-
 
 @implementation NSView (N2)
 
@@ -35,6 +33,7 @@
 }
 
 -(id)initWithSize:(NSSize)size {
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	return [self initWithFrame:NSMakeRect(NSZeroPoint, size)];
 }
 

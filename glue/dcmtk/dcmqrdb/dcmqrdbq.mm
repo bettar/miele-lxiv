@@ -1078,11 +1078,13 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
         return (DcmQROsiriXDatabaseError) ;
     }
 	
+    // Value stored to 'qLevel' is never read
+    // Value stored to 'lLevel' is never read
 	switch (handle_->rootLevel)
     {
       case PATIENT_ROOT :
-        qLevel = PATIENT_LEVEL ;
-        lLevel = IMAGE_LEVEL ;
+        qLevel = PATIENT_LEVEL;
+        lLevel = IMAGE_LEVEL;
         break ;
       case STUDY_ROOT :
         qLevel = STUDY_LEVEL ;

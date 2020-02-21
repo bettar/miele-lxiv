@@ -184,7 +184,7 @@
         if (!succeeded && lastException)
             @throw lastException;
         
-        if (lastStdOut.length)
+        if (lastStdOut.length > 0)
             NSLog(@"%@", lastStdOut);
     }
 }

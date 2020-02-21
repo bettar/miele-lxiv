@@ -1192,7 +1192,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"4" forKey:@"MaximumSendControllerConcurrentThreads"];
     [defaultValues setObject:@"4" forKey:@"MaximumSendGlobalControllerConcurrentThreads"];
     [defaultValues setObject:@"1" forKey:@"COMMENTSAUTOFILLStudyLevel"];
-    [defaultValues setObject:@"1" forKey:@"ROIDrawPlainEdge"];
+    [defaultValues setObject:@YES forKey:@"ROIDrawPlainEdge"];
     [defaultValues setObject:@"1" forKey:@"PACSOnDemandForSearchField"];
     [defaultValues setObject:@"1" forKey:@"CloseAllWindowsBeforeXMLRPCOpen"];
     

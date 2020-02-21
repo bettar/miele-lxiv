@@ -43,6 +43,7 @@
 
 - (void) cprViewer:(id) sender
 {
+    NSLog(@"%s %d" , __FUNCTION__, __LINE__);
 	[[self viewer] cprViewer: sender];
 }
 
@@ -105,7 +106,7 @@
 	{
 		valid = YES;
 		
-		NSString	*str = nil;
+		NSString *str = nil;
 		
 		@try
 		{
@@ -121,12 +122,12 @@
 	}
 	else if ([item action] == @selector(showCLUTOpacityPanel:))
 	{
-		if([[[self pixList] objectAtIndex:0] isRGB] == NO)
+		if ([[[self pixList] objectAtIndex:0] isRGB] == NO)
             valid = YES;
 	}
 	else if ([item action] == @selector(loadAdvancedCLUTOpacity:))
 	{
-		if([[[self pixList] objectAtIndex:0] isRGB] == NO)
+		if ([[[self pixList] objectAtIndex:0] isRGB] == NO)
             valid = YES;
 	}
 	else if ([item action] == @selector(noAction:))
@@ -157,8 +158,8 @@
 }
 
 - (void)printOperationDidRun:(NSPrintOperation *)printOperation
-                success:(BOOL)success
-                contextInfo:(void*)info
+                     success:(BOOL)success
+                 contextInfo:(void*)info
 {
     if (success)
 	{

@@ -282,11 +282,11 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 					{
 						NSRange secondChar = [rtfString rangeOfString: @"»"];
 						
-						if( secondChar.location != NSNotFound)
+						if (secondChar.location != NSNotFound)
 						{
                             NSString *rawField = [rtfString substringWithRange: NSMakeRange( firstChar.location+firstChar.length, secondChar.location - (firstChar.location+firstChar.length))];
                             NSString *v = [self getDICOMStringValueForField: rawField inDICOMFile: [imagePathsArray objectAtIndex: 0]];
-                            if( v)
+                            if (v)
                                 [rtf replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1) withString: v];
                             else
                                 [rtf replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1) withString:@""];
@@ -300,7 +300,7 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
                         moreFields = NO;
 				}
                 
-				while( moreFields)
+				while (moreFields)
                     ;
 			}
 			
@@ -975,7 +975,8 @@ static BOOL Pages5orHigher = FALSE;
 
                 NSAppleScript* script = [[[NSAppleScript alloc] initWithSource:source] autorelease];
 #endif
-                id r = [script runWithArguments:args error:&errs];  // N2 category
+                //id r =
+                [script runWithArguments:args error:&errs];  // N2 category
                 //NSLog(@"%s:%d %@", __FUNCTION__, __LINE__, r);
                 if (errs)
                     NSLog(@"%s:%d %@", __FUNCTION__, __LINE__, errs); // Not authorized to send Apple events to Pages

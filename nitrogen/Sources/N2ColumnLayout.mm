@@ -331,7 +331,8 @@ typedef struct ConstrainedFloat {
 				origin.y += 0;
 			else
 				origin.y += extraSpace.height/2;
-			if (alignment&N2Right)
+
+            if (alignment&N2Right)
 				origin.x += extraSpace.width;
 			else if (alignment&N2Left)
 				origin.x += 0;

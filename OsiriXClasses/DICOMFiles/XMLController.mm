@@ -65,7 +65,6 @@ extern int delayedTileWindows;
 @synthesize viewer;
 
 // To be 'compatible' with TileWindows in AppController
-/////////////////////////////////////////////////
 - (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow animate: (BOOL) animate
 {
 	[AppController resizeWindowWithAnimation: [self window] newSize: rect];
@@ -80,8 +79,6 @@ extern int delayedTileWindows;
 {
 	return [NSArray arrayWithObject: imObj];
 }
-
-/////////////////////////////////////////////////
 
 - (NSString*) getPath:(NSXMLElement*) node
 {
@@ -922,7 +919,7 @@ extern int delayedTileWindows;
 	{
 		if ([[node childAtIndex: i] stringValue] && [[node childAtIndex: i] childCount] == 0)
 		{
-			if ([string length])
+			if ([string length] > 0)
                 [string appendFormat:@"\\%@", [[node childAtIndex: i] stringValue]];
 			else
                 [string appendString: [[node childAtIndex: i] stringValue]];
@@ -960,8 +957,8 @@ extern int delayedTileWindows;
         {
             if ([modifiedFields containsObject: [self getPath: item]])
                 return [modifiedValues objectAtIndex: [modifiedFields indexOfObject: [self getPath: item]]];
-			else
-                return [self stringsSeparatedForNode: item];
+
+            return [self stringsSeparatedForNode: item];
         }
 	}
     else
@@ -974,7 +971,8 @@ extern int delayedTileWindows;
         
         return [item valueForKey:identifier];
 	}	
-	return nil;
+
+    return nil;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
@@ -1506,9 +1504,10 @@ extern int delayedTileWindows;
 	{
        if ([selectedRowIndexes containsIndex:index])
 	   {
-			id	item = [table itemAtRow: index];
+			id item = [table itemAtRow: index];
 			
-			if ([copyString length]) [copyString appendString:@"\r"];
+			if ([copyString length] > 0)
+                [copyString appendString:@"\r"];
 			
 			if ([[item attributeForName:@"group"] stringValue] &&
                 [[item attributeForName:@"element"] stringValue])

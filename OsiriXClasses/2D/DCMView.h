@@ -30,12 +30,25 @@
 #import <Cocoa/Cocoa.h>
 
 #import "mieleTypes.h"
+#include "glm/glm.hpp"
 
 #define STAT_UPDATE					0.6f
 #define IMAGE_COUNT					1
 #define IMAGE_DEPTH					32
 
-// Tools.
+#define NUM_DISPLAY_LISTS           150
+
+#ifdef WITH_OPENGL_32
+struct _points {
+    GLuint programHandle;
+
+    GLint vertexAttribXY;
+    GLint vertexAttribRGB;
+    GLint vertexUniformProjection;
+};
+#endif // WITH_OPENGL_32
+
+#pragma mark - Tools
 
 extern NSString *pasteBoardOsiriX;
 extern NSString *pasteBoardOsiriXPlugin;
@@ -61,6 +74,16 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
     PETWindowingMode_CLASSIC = 0,   // X window width, Y window level
     PETWindowingMode_FIXED_MIN = 1, // X nothing, Y maximum with specified minimum
     PETWindowingMode_MAXIMUM = 2    // X minimum, Y maximum
+};
+
+// See also tags in some .xib files
+typedef NS_ENUM(NSInteger, BlendingMode2DType) {
+    BLENDING_MODE_LINEAR_FUSION = 0,
+    BLENDING_MODE_HIGH_LOW_HIGH = 1,
+    BLENDING_MODE_LOW_HIGH_LOW = 2,
+    BLENDING_MODE_LOG = 3,
+    BLENDING_MODE_LOG_INV = 4,
+    BLENDING_MODE_FLAT = 5
 };
 
 @class GLString;
@@ -100,21 +123,29 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 	BOOL			colorTransfer;
 	unsigned char   *colorBuf, *blendingColorBuf;
 	unsigned char   alphaTable[256], opaqueTable[256], redTable[256], greenTable[256], blueTable[256];
-	float			redFactor, greenFactor, blueFactor;
-	long			blendingMode;
+
+    float redFactor, greenFactor, blueFactor;
+
+    BlendingMode2DType blendingMode;
 	
-	float			sliceFromTo[ 2][ 3], sliceFromToS[ 2][ 3], sliceFromToE[ 2][ 3], sliceFromTo2[ 2][ 3], sliceFromToThickness;
+    float sliceFromTo[ 2][ 3];
+    float sliceFromToS[ 2][ 3];
+    float sliceFromToE[ 2][ 3];
+    float sliceFromTo2[ 2][ 3];
+    float sliceFromToThickness;
 	
-	float			sliceVector[ 3];
-	float			slicePoint3D[ 3];
-	float			syncRelativeDiff;
-	//long			syncSeriesIndex;
+	float sliceVector[ 3];
+	float slicePoint3D[ 3];
+	float syncRelativeDiff;
+
+    //long			syncSeriesIndex;
 	
-	float			mprVector[ 3], mprPoint[ 3];
+    float mprVector[ 3];
+    float mprPoint[ 3];
     
-    NSTimeInterval  timeIntervalForDrag;
+    NSTimeInterval timeIntervalForDrag;
 	
-	short			thickSlabMode, thickSlabStacks;
+	short thickSlabMode, thickSlabStacks;
 	
 	NSMutableArray	*rectArray;
 	
@@ -124,16 +155,16 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
     DCMPix			*curDCM;
 	DCMExportPlugin	*dcmExportPlugin;
 	
-    char            listType;
+    char listType;
     
-    short           curImage, startImage;
+    short curImage, startImage;
     
-    ToolMode        currentTool, currentToolRight, currentMouseEventTool;
+    ToolMode currentTool, currentToolRight, currentMouseEventTool;
     
-	BOOL			mouseDragging;
-	BOOL			suppress_labels; // keep from drawing the labels when command+shift is pressed
+	BOOL mouseDragging;
+	BOOL suppress_labels; // keep from drawing the labels when command+shift is pressed
 
-    NSPoint         start, originStart, previous;
+    NSPoint start, originStart, previous;
 	
     float			startWW, curWW, startMin, startMax;
     float			startWL, curWL;
@@ -147,12 +178,13 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
     NSSize          scaleStart, scaleInit;
     
 	double			resizeTotal;
+
     float           scaleValue;
     float           startScaleValue;
-    float           rotation;
-    float           rotationStart;
+    float           rotationStart;  // in degrees
     NSPoint			origin;
-	short			crossMove;
+
+    short			crossMove;
     
     NSMatrix        *matrix;
     
@@ -183,14 +215,14 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 	float			pixelMouseValue;
 	long			pixelMouseValueR, pixelMouseValueG, pixelMouseValueB;
     
-	float			blendingMouseXPos, blendingMouseYPos;
-	float			blendingPixelMouseValue;
-	long			blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB;
+	float blendingMouseXPos, blendingMouseYPos;
+	float blendingPixelMouseValue;
+	long blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB;
 	
     long			textureX, blendingTextureX;
     long			textureY, blendingTextureY;
-    GLuint			* pTextureName;
-	GLuint			* blendingTextureName;
+    GLuint			*pTextureName;  // texture ID
+	GLuint			*blendingTextureName;
     long			textureWidth, blendingTextureWidth;
     long			textureHeight, blendingTextureHeight;
     
@@ -202,38 +234,43 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 	
 	BOOL			cursorSet;
 	NSTrackingArea	*cursorTracking;
+
 #ifdef WITH_TRACKPAD
-	int             trackPadNumberOfFingers;
-    float           trackPadScaleAccumulator;
-    BOOL            trackPadMoved;
+	int trackPadNumberOfFingers;
+    float trackPadScaleAccumulator;
+    BOOL trackPadMoved;
 #endif
 
-	NSPoint			display2DPoint;
-    int             display2DPointIndex;
+	NSPoint display2DPoint;
+    int display2DPointIndex;
 	
-	NSMutableDictionary	*stringTextureCache;
+#define STRCAPACITY 800
+	NSMutableDictionary	*stringTextureDic; // cache ? similar to FreeType map, but for entire words
 	
-	BOOL           _dragInProgress; // Are we drag and dropping
-	NSTimer			*_mouseDownTimer; //Timer to check if mouseDown is Persisiting;
-	NSTimer			*_rightMouseDownTimer; //Checking For Right hold
-	NSImage			*destinationImage; //image will be dropping
+	BOOL _dragInProgress; // Are we drag and dropping
+	NSTimer *_mouseDownTimer; // Timer to check if mouseDown is Persisiting;
+	NSTimer *_rightMouseDownTimer; // Checking For Right hold
+	NSImage *destinationImage; // image will be dropping
 	
-	BOOL			_hasChanged, needToLoadTexture, showDescriptionInLarge;
+    BOOL _hasChanged;
+    BOOL needToLoadTexture;
 	
-	BOOL			scaleToFitNoReentry;
+	BOOL scaleToFitNoReentry;
 	
-	GLString		*showDescriptionInLargeText;
+    BOOL showDescriptionInLarge;
+	GLString *showDescriptionInLargeText;
+
 #ifdef WITH_RED_CAPTION
-    GLString		*warningNotice;
+    GLString *warningNotice;
 #endif
-    float           previousScalingFactor;
+    float previousScalingFactor;
 	
 #ifdef WITH_ICHAT
 	//Context for rendering to iChat
 	NSOpenGLContext *_alternateContext;
 #endif
     
-	BOOL			drawing;
+	BOOL drawing;
 	
 	int				repulsorRadius;
 	NSPoint			repulsorPosition;
@@ -267,7 +304,8 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 //	long			iChatFontListGLSize[ 256];
 //	NSMutableDictionary	*iChatStringTextureCache;
 //	NSSize			iChatStringSize;
-	NSRect			drawingFrameRect, screenCaptureRect;
+    NSRect			drawingFrameRect;
+    NSRect          screenCaptureRect;
 	
 	BOOL			exceptionDisplayed;
 	BOOL			COPYSETTINGSINSERIES;
@@ -283,13 +321,26 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 	BOOL TextureComputed32bitPipeline;
     
 //    BOOL iChatRunning;
-	
-	NSImage *loupeImage, *loupeMaskImage;
-	GLuint loupeTextureID, loupeTextureWidth, loupeTextureHeight;
-	GLubyte *loupeTextureBuffer;
-	GLuint loupeMaskTextureID, loupeMaskTextureWidth, loupeMaskTextureHeight;
-	GLubyte *loupeMaskTextureBuffer;
-	float studyColorR, studyColorG, studyColorB;
+
+#define DRAW_LOUPE_RING
+#ifdef DRAW_LOUPE_RING
+    // The ring, drawn without multi-texturing
+    NSImage *loupeRingImage;
+    GLubyte *loupeTextureBuffer;
+    GLuint loupeRingTextureID;
+    GLuint loupeTextureWidth;
+    GLuint loupeTextureHeight;
+#endif
+
+    // Loupe mask
+    // The inside disk where the magnified image is shown through, drawn with multi-texturing
+    NSImage *loupeMaskImage;
+    GLubyte *loupeMaskTextureBuffer;
+    GLuint loupeMaskTextureID;
+    GLuint loupeMaskTextureWidth;
+    GLuint loupeMaskTextureHeight;
+
+    float studyColorR, studyColorG, studyColorB;
     NSUInteger studyDateIndex;
 //	LoupeController *loupeController;
     
@@ -302,9 +353,14 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
     NSString *mousePosUSRegion;
 }
 
+#if 0 //def WITH_OPENGL_32
+@property (readwrite,retain) NSMutableArray *m_buffers; // VBOs
+#endif
+
 @property NSRect drawingFrameRect;
 @property (retain) NSArray *cleanedOutDcmPixArray;
-@property (readonly) NSMutableArray *rectArray, *curRoiList;
+@property (readonly) NSMutableArray *rectArray;
+@property (readonly) NSMutableArray *curRoiList;
 @property BOOL COPYSETTINGSINSERIES;
 @property BOOL flippedData;
 @property BOOL showDescriptionInLarge;
@@ -313,21 +369,22 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 @property (readonly) NSArray *dcmFilesList;
 @property long syncSeriesIndex;
 @property (nonatomic)float syncRelativeDiff, studyColorR, studyColorG, studyColorB;
-@property (nonatomic) long blendingMode;
+@property (nonatomic) BlendingMode2DType blendingMode; // custom setter
 @property (nonatomic) NSUInteger studyDateIndex;
 @property (retain,setter=setBlending:) DCMView *blendingView;
 @property (readonly) float blendingFactor;
 @property (nonatomic) BOOL xFlipped, yFlipped;
-@property (retain) NSString *stringID, *mousePosUSRegion;
+@property (retain) NSString *stringID;
+@property (retain) NSString *mousePosUSRegion;
 @property (nonatomic) ToolMode currentTool;
-@property (setter=setRightTool:) ToolMode currentToolRight;
+@property (setter=setRightTool:) ToolMode currentToolRight; // custom setter
 @property (readonly) short curImage;
 @property (retain) NSMatrix *theMatrix;
 @property (readonly) BOOL suppressLabels;
 
-@property (nonatomic) float scaleValue;
-@property (nonatomic) float rotation;
 @property (nonatomic) NSPoint origin;
+@property (nonatomic) float scaleValue;
+@property (nonatomic) float rotation;  // in degrees, custom setter, getter seems to be displayedRotation
 
 @property (readonly) double pixelSpacing, pixelSpacingX, pixelSpacingY;
 @property (readonly) DCMPix *curDCM;
@@ -388,6 +445,7 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 - (IBAction)realSize:(id)sender;
 - (IBAction)scaleToFit:(id)sender;
 - (IBAction)actualSize:(id)sender;
+- (IBAction)resizeWindow:(id)sender;
 
 #pragma mark - Instance methods
 
@@ -396,12 +454,27 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 
 - (BOOL) softwareInterpolation;
 - (void) applyImageTransformation __deprecated;
-- (void) loadOpenGLIdentityForDrawingFrame: (NSRect) r;
+//- (void) loadOpenGLIdentityForDrawingFrame: (NSRect) r;
 - (void) gClickCountSetReset;
-- (int) findPlaneAndPoint:(float*) pt :(float*) location;
-- (int) findPlaneForPoint:(float*) pt localPoint:(float*) location distanceWithPlane: (float*) distanceResult;
-- (int) findPlaneForPoint:(float*) pt preferParallelTo:(float*)parto localPoint:(float*) location distanceWithPlane: (float*) distanceResult;
-- (int) findPlaneForPoint:(float*) pt preferParallelTo:(float*)parto localPoint:(float*) location distanceWithPlane: (float*) distanceResult limitWithSliceThickness: (BOOL) limitWithSliceThickness;
+
+- (NSUInteger) findPlaneAndPoint:(float*) pt
+                                :(float*) location;
+
+- (NSUInteger) findPlaneForPoint:(float*) pt
+                      localPoint:(float*) location
+               distanceWithPlane:(float*) distanceResult;
+
+- (NSUInteger) findPlaneForPoint:(float*) pt
+                preferParallelTo:(float*) parto
+                      localPoint:(float*) location
+               distanceWithPlane:(float*) distanceResult;
+
+- (NSUInteger) findPlaneForPoint:(float*) pt
+                preferParallelTo:(float*) parto
+                      localPoint:(float*) location
+               distanceWithPlane:(float*) distanceResult
+         limitWithSliceThickness:(BOOL) limitWithSliceThickness;
+
 - (unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
 
 - (unsigned char*) getRawPixelsWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allTiles:(BOOL) allTiles allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing;
@@ -506,6 +579,8 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 
 - (void) sync:(NSNotification*)note;
 
+- (instancetype)createOpenGLView:(NSRect)frameRect;
+
 - (instancetype)initWithFrame:(NSRect)frame
                     imageRows:(int)rows
                  imageColumns:(int)columns;
@@ -554,7 +629,7 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 - (void) deleteInvalidROIs;
 - (void) computeMagnifyLens:(NSPoint) p;
 
-- (void) makeTextureFromImage:(NSImage*)image
+- (void) makeTextureObjectFromImage:(NSImage*)image
                    forTexture:(GLuint*)texName
                        buffer:(GLubyte*)buffer
                   textureUnit:(GLuint)textureUnit;
@@ -592,7 +667,7 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 - (id)windowController;
 - (BOOL)is2DViewer;
 - (NSPoint) positionWithoutRotation: (NSPoint) tPt;
-- (void) drawOrientation:(NSRect) size;
+- (void) drawOrientations:(NSRect) aRect;
 - (void) setCOPYSETTINGSINSERIESdirectly: (BOOL) b;
 - (BOOL)actionForHotKey:(NSString *)hotKey;
 - (void) delete3DROIsAliases;
@@ -617,13 +692,25 @@ typedef NS_ENUM(NSUInteger, PETWindowingMode) {
 - (void)mouseDraggedRepulsor:(NSEvent *)event;
 - (void)mouseDraggedROISelector:(NSEvent *)event;
 
-- (void) computeColor;
+- (void)computeStudyColor;
 - (void)setIsLUT12Bit:(BOOL)boo;
 - (BOOL)isLUT12Bit;
 
 //- (void)displayLoupe;
 //- (void)displayLoupeWithCenter:(NSPoint)center;
 //- (void)hideLoupe;
+
+- (void) setShaderProgramForLineWidth:(GLfloat) w;
+
+- (void) setShaderProgramFont;
+- (void) setShaderProgramImage;
+- (void) setShaderProgramOverlay;
+- (void) setShaderProgramOverlayLine;
+
+- (void) setShaderProgramOverlay_withMode_Normal;
+- (void) setShaderProgramOverlay_withMode_Point;
+- (void) setShaderProgramOverlay_withMode_TextureRgba;
+- (void) setShaderProgramOverlay_withMode_TextureLuminosity;
 
 @end
 #endif

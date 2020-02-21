@@ -45,6 +45,7 @@
     for (DicomSeries* iseries in study.series)
         if ([iseries.name isEqualToString:O2ScreenCapturesSeriesName])
             series = iseries;
+
     if (series) {
         DcmFileFormat dfile;
         if (dfile.loadFile(path.fileSystemRepresentation).good()) {
@@ -70,7 +71,7 @@
         }
     }
     
-    // import the file into our DB
+    // Import the file into our DB
     DicomDatabase* database = [DicomDatabase databaseForContext:study.managedObjectContext];
     NSArray* imageIDs = [database addFilesAtPaths:[NSArray arrayWithObject:path]
                                 postNotifications:YES
@@ -78,7 +79,7 @@
                               rereadExistingItems:YES
                                 generatedByOsiriX:YES];
     
-    // upload the new file to the DICOM node
+    // Upload the new file to the DICOM node
     /*if (NO)
         [NSThread performBlockInBackground: ^{
             NSString* myAET = [NSUserDefaults.standardUserDefaults stringForKey:@"AETITLE"];
@@ -102,7 +103,7 @@
             [storescu run: nil];
         }];*/
     
-    // set the new images as key images
+    // Set the new images as key images
     for (Dicom_Image* imageID in imageIDs)
         [[database objectWithID:imageID] setIsKeyImage:@YES];
 }

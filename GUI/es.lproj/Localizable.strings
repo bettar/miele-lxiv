@@ -401,7 +401,7 @@
 "A 3D Scissor State already exists. Do you want to replace it with curent state?" = "Ya existe un estado de tijeras en 3D. ¿Desea sustituirlo por el estado actual?";
 
 /* No comment provided by engineer. */
-"A burn session is already opened. Close it to burn a new study." = "Una sesión de grabación ya está abierta. Ciérrala para quemar un nuevo estudio.";
+"A burn session is already open. Close it to burn a new study." = "Una sesión de grabación ya está abierta. Ciérrala para quemar un nuevo estudio.";
 
 /* No comment provided by engineer. */
 "A disc named %@, containing %d DICOM files, was mounted. What do you want to do with these files?" = "Un disco llamado %1$@, conteniendo %2$d de archivos DICOM, fue montado. ¿Qué quieres hacer con estos archivos?";
@@ -1208,16 +1208,16 @@
 "cm/sec" = "cm/s";
 
 /* cm2 */
-"cm²" = "cm²";
+"cm\u00B2" = "cm²";
 
 /* cm2/sec */
-"cm²/sec" = "cm²/s";
+"cm\u00B2/sec" = "cm²/s";
 
 /* cm3 */
-"cm³" = "cm³";
+"cm\u00B3" = "cm³";
 
 /* cm3/sec */
-"cm³/sec" = "cm³/s";
+"cm\u00B3/sec" = "cm³/s";
 
 /* No comment provided by engineer. */
 "Cobb" = "Cobb";
@@ -3497,9 +3497,6 @@
 "PITUITARY" = "PITUITARIOS";
 
 /* No comment provided by engineer. */
-"Pixmeo Web site" = "Sitio web de Miele-LXIV";
-
-/* No comment provided by engineer. */
 "Play" = "Reproducir";
 
 /* No comment provided by engineer. */
@@ -4490,7 +4487,10 @@
 "Sorted by Value" = "Ordenado por Valor";
 
 /* No comment provided by engineer. */
-"Sources" = "软件源";
+"Source Code Repository" = "Repositorio de código fuente";
+
+/* No comment provided by engineer. */
+"Sources" = "Fuentes";
 
 /* No comment provided by engineer. */
 "Spline Interpolation Error" = "Error de interpolación de splines";

@@ -73,8 +73,8 @@
 	NSRect frame = [[self window] frame];
 	NSPoint origin;
 	
-	origin.x = center.x-frame.size.width*0.5;
-	origin.y = center.y-frame.size.height*0.5;
+	origin.x = center.x - frame.size.width*0.5;
+	origin.y = center.y - frame.size.height*0.5;
 	
 	//[[self window] setFrameOrigin:origin];
 	[[self window] setFrame:NSMakeRect(origin.x, origin.y, frame.size.width, frame.size.height) display:NO];

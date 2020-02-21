@@ -16,6 +16,7 @@
 #import <Cocoa/Cocoa.h>
 #import "N3Geometry.h"
 #import "CPRMPRDCMView.h"
+#import "cprTypes.h"
 
 @class CPRStraightenedView;
 @class CPRStretchedView;
@@ -26,23 +27,22 @@
 
 @protocol CPRViewDelegate;
 
-enum _CPRViewReformationType { 
-    CPRViewStraightenedReformationType = 0,
-    CPRViewStretchedReformationType = 1,
-};
-typedef NSInteger CPRViewReformationType;
+//typedef NS_ENUM(NSInteger, CPRViewReformationType) {
+//    CPR_VIEW_REFORMATION_STRAIGHTENED = 0,
+//    CPR_VIEW_REFORMATION_STRETCHED = 1
+//};
 
 #pragma mark -
 
 @interface CPRView : NSView
 {
-    CPRViewReformationType _reformationType;
+//    CPRType _reformationType;
         
     CPRStraightenedView *_straightenedView;
     CPRStretchedView *_stretchedView;
 }
 
-@property (nonatomic, readwrite, assign) CPRViewReformationType reformationType;
+@property (nonatomic, readwrite, assign) CPRType reformationType;
 
 - (id)reformationView; // returns the actual view that does the reformation. I expect hacky calls that do and do screen grabs and such will need this
 - (void)waitUntilPixUpdate; // returns once the refomration view's DCM pix object has been updated to reflect any changes made to the view.
@@ -63,7 +63,7 @@ typedef NSInteger CPRViewReformationType;
 @property (nonatomic, readwrite, retain) CPRVolumeData *volumeData; // the volume data of the original data
 @property (nonatomic, readwrite, copy) CPRCurvedPath *curvedPath;
 @property (nonatomic, readwrite, copy) CPRDisplayInfo *displayInfo;
-@property (nonatomic, readwrite, assign) CPRViewClippingRangeMode clippingRangeMode;
+@property (nonatomic, readwrite, assign) CPRProjectionMode clippingRangeMode; // custom getter and setter
 
 @property (nonatomic, readwrite, assign) N3Plane orangePlane; // set these to N3PlaneInvalid to keep the plane from appearing
 @property (nonatomic, readwrite, assign) N3Plane purplePlane;
@@ -83,7 +83,7 @@ typedef NSInteger CPRViewReformationType;
 @property (nonatomic) BOOL displayTransverseLines;
 @property (nonatomic, readwrite, assign) BOOL displayCrossLines;
 
-@property (nonatomic, readwrite, assign) float rotation, scaleValue;
-
+@property (nonatomic, readwrite, assign) float rotation;
+@property (nonatomic, readwrite, assign) float scaleValue;
 
 @end

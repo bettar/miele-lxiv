@@ -178,7 +178,7 @@
 	NSMutableString *tempSeriesList = [NSMutableString stringWithCapacity:0];
 	NSMutableString *tempListItemTemplate, *tempStudyBlockStart;
 
-	int i, imagesCount = 0;
+	int imagesCount = 0;
 	
 	NSMutableString *fileName, *htmlName;
 	NSString *studyDate, *studyTime, *seriesName;
@@ -188,10 +188,10 @@
 	
 	uniqueSeriesID = 0;
 	
-	for(i=0; i<[series count]; i++)
+	for (int i=0; i<[series count]; i++)
 	{
 		imagesCount++;
-		if( i == (long)[series count]-1)
+		if (i == (long)[series count]-1)
 			lastImageOfSeries = YES;
 		else if([[[series objectAtIndex:i] valueForKey: @"id"] intValue] != [[[series objectAtIndex:i+1] valueForKey: @"id"] intValue])
 			lastImageOfSeries = YES;
@@ -202,7 +202,7 @@
 		else
 			lastImageOfSeries = NO;
 		
-		if( lastImageOfSeries)
+		if (lastImageOfSeries)
 		{
 			uniqueSeriesID++;
 			
@@ -226,7 +226,7 @@
 			tempListItemTemplate = [NSMutableString stringWithString:listItemTemplate];
 			extension = (imagesCount>1)? @"mp4": @"jpg";
 			
-			if( [DCMAbstractSyntaxUID isPDF: [[series objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]])
+			if ([DCMAbstractSyntaxUID isPDF: [[series objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]])
 			{
 				extension = @"pdf";
 				NSString* tempPdfPath = [[[self imagePathForSeriesId:[iId intValue] kind:extension] mutableCopy] autorelease];
@@ -238,7 +238,7 @@
 				[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:[QTExportHTMLSummary nonNilString: fileName] options:NSLiteralSearch range:tempListItemTemplate.range];
 			
 			}
-			else if( [DCMAbstractSyntaxUID isStructuredReport: [[series objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]])
+			else if ([DCMAbstractSyntaxUID isStructuredReport: [[series objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]])
 			{
 				extension = @"pdf";
 				NSString* tempPdfPath = [[[self imagePathForSeriesId:[iId intValue] kind:extension] mutableCopy] autorelease];
@@ -268,23 +268,23 @@
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_images_count%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%d",imagesCount]] options:NSLiteralSearch range:tempListItemTemplate.range];
 			[tempSeriesList appendString:tempListItemTemplate];
 			
-			if( [extension isEqualToString: @"pdf"] == NO)
+			if ([extension isEqualToString: @"pdf"] == NO)
 				[self createHTMLSeriesPage:[series objectAtIndex:i] numberOfImages:imagesCount outPutFileName:htmlName];
 			
 			imagesCount = 0;
 			
-			if(i==(long)[series count]-1)
+			if (i==(long)[series count]-1)
 				lastImageOfStudy = YES;
-			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.studyInstanceUID"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.studyInstanceUID"]] == NO)
+			else if ([[[series objectAtIndex:i] valueForKeyPath: @"study.studyInstanceUID"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.studyInstanceUID"]] == NO)
 				lastImageOfStudy = YES;
-			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.patientUID"] compare: [[series objectAtIndex:i+1] valueForKeyPath: @"study.patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
+			else if ([[[series objectAtIndex:i] valueForKeyPath: @"study.patientUID"] compare: [[series objectAtIndex:i+1] valueForKeyPath: @"study.patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 				lastImageOfStudy = YES;
 			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.studyName"]isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.studyName"]] == NO)
 				lastImageOfStudy = YES;
 			else
 				lastImageOfStudy = NO;
 				
-			if(lastImageOfStudy)
+			if (lastImageOfStudy)
 			{
 				uniqueSeriesID = 0;
 				tempStudyBlockStart = [NSMutableString stringWithString:studyBlockStart];

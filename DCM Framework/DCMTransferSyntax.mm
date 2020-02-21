@@ -109,13 +109,14 @@ static NSMutableDictionary *gTransferSyntaxes = nil;
 
 - (id)initWithTS:(NSString *)ts
 {
-    if( ts.length == 0)
+    if (ts.length == 0)
     {
         [self autorelease];
         return nil;
     }
     
-	if (self = [super init])
+    self = [super init];
+	if (self)
     {
         if( !gTransferSyntaxes)
         {

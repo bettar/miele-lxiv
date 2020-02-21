@@ -229,7 +229,7 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
         else if (newXfer == EXS_JPEGLSLossy)
             params = &JP2KParams;
         
-        if( params)
+        if (params)
         {
             // this causes the lossless JPEG version of the dataset to be created
             dataset->chooseRepresentation(newXfer, params);
@@ -390,7 +390,7 @@ void DcmQueryRetrieveGetOurContext::getNextImage(DcmQueryRetrieveDatabaseStatus 
                     
                     status = compressFileFormat( fileformatDecompress, subImgFileName, outfname, xferSyntax);
                     
-                    if( status)
+                    if (status)
                         strcpy( subImgFileName, outfname);
                 }
             }

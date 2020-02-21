@@ -108,7 +108,7 @@
 	BOOL isExplicit = [[dicomData transferSyntaxInUse] isExplicit];
 	BOOL forImplicitUseOW = NO;
 	
-	// keep track of pixel data size in case need Vl for encapsulated data ...
+	// Keep track of pixel data size in case need VL for encapsulated data ...
 	int rows = 0;
 	int columns = 0;
 	int frames = 1;
@@ -128,7 +128,7 @@
                 int group = [self getGroup:dicomData];
                 int element = [self getElement:dicomData];
                 if (group > 0x0002) {
-                    //NSLog(@"start reading dataset");
+                    //NSLog(@"Start reading dataset");
                     [dicomData startReadingDataSet];
                 }
                 
@@ -139,7 +139,7 @@
                 //if (DCMDEBUG)
                 //		NSLog(@"byteoffset before VR %d",*byteOffset);
                 if (DCMDEBUG)
-                    NSLog(@"Tag: %@  group: 0x%4000x  word 0x%4000x", [tag description], group, element);
+                    NSLog(@"Tag: %@  gr: 0x%04x, el: 0x%04x", [tag description], group, element);
                 
                 if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"ItemDelimitationItem"]]) {
                     // Read and discard value length
@@ -159,12 +159,12 @@
                     *byteOffset+=4;
                     if (DCMDEBUG)
                         NSLog(@"Ignoring bad Item at %d  %@ VL=<0x%x", *byteOffset, [tag stringValue], (unsigned int) vl);
-                    // let's just ignore it for now
+                    // Let's just ignore it for now
                     //continue;
                 }
                 // get tag Values
                 else {
-                // get vr
+                // Get vr
 
                     NSString *vr;
                     long vl = 0;
@@ -178,8 +178,8 @@
                             vr = [tag vr];
                     }
                     
-                    //implicit
-                    else{
+                    // Implicit
+                    else {
                         //NSDictionary *tagValues = [sharedTagDictionary objectForKey:[tag stringValue]];
 
                         //vr = [tagValues objectForKey:@"VR"];
@@ -274,13 +274,15 @@
                     else if (vl == 0xFFFFFFFF && [[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"PixelData"]] && [[dicomData transferSyntaxInUse] isEncapsulated]) {
                     }
                     */
+
                     if (DCMDEBUG)
                         NSLog(@"Attr: %@", [attr description]);
                     
                     if (attr)
                         [attributes setObject:attr forKey:[tag stringValue]];
                     
-                    if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"MetaElementGroupLength"]])  {
+                    if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"MetaElementGroupLength"]])
+                    {
                         readingMetaHeader = YES;
                         if (DCMDEBUG)
                             NSLog(@"metaheader length : %d", [[attr value] intValue]);
@@ -288,8 +290,9 @@
                         endMetaHeaderPosition = [[attr value] intValue] + *byteOffset;
                         [dicomData startReadingMetaHeader];
                     }
-                    if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"TransferSyntaxUID"]]) {
-                            
+
+                    if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"TransferSyntaxUID"]])
+                    {
                         DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS:[attr value]] autorelease];
                         [transferSyntax release];
                         transferSyntax = [ts retain];
@@ -298,8 +301,8 @@
                         //	NSLog(@"NEW TS: %@", [ts description]);
                     }
                     
-                    if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"SpecificCharacterSet"]]){
-
+                    if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"SpecificCharacterSet"]])
+                    {
                         [specificCharacterSet release];
                         specificCharacterSet = [[DCMCharacterSet alloc] initWithCode:[attr value]];
                     }
@@ -311,12 +314,13 @@
                         columns = [[attr value] intValue];
                         
                     if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"NumberOfFrames"]]) 
-                        frames = [[attr value] intValue];
+                        frames = [[attr value] intValue];  // Issue i26
                         
                     if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"SamplesPerPixel"]]) 
                         samplesPerPixel = [[attr value] intValue];
                         
-                    if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"BitsAllocated"]]) {
+                    if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"BitsAllocated"]])
+                    {
                         bytesPerSample = ([[attr value] intValue] - 1)/8 + 1;
                         if (bytesPerSample > 1)
                             isShort = YES;

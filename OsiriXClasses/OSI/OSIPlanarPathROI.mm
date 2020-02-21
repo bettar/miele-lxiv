@@ -20,6 +20,12 @@
 
 #import "mgl.h" // include first
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
+#import "GLRenderer.h"
+
 #import "OSIPlanarPathROI.h"
 #import "N3BezierPath.h"
 #import "ROI.h"
@@ -57,7 +63,7 @@
 			point = [roi pointAtIndex:1];
 			[_bezierPath lineToVector:N3VectorApplyTransform(N3VectorMakeFromNSPoint(point), pixToDICOMTransfrom)];
 		}
-        else if ([roi type] == tOPolygon) {
+        else if ([roi type] == tOpenPolygon) {
 			pointArray = [roi points];
             
 //            if ([pointArray count] <= 1 || [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
@@ -75,7 +81,7 @@
             [_bezierPath applyAffineTransform:pixToDICOMTransfrom];
 			[nodes release];
 		}
-        else if ([roi type] == tCPolygon || [roi type] == tOval || [roi type] == tPencil) {
+        else if ([roi type] == tClosedPolygon || [roi type] == tOval || [roi type] == tPencil) {
 			pointArray = [roi points];
             
             if ([roi type] == tOval && [pointArray count] >= 2 && [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
@@ -301,34 +307,62 @@
      pixelFormat:(CGLPixelFormatObj)pixelFormat
 dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
 {
-	N3Vector endpoint;
-    N3BezierPath *flattenedPath;
-	
 	if (OSISlabContainsPlane(slab, _plane) == NO)
 		return; // this ROI does not live on this slice
 
     double dicomToPixGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
 	
-    flattenedPath = [_bezierPath bezierPathByFlattening:N3BezierDefaultFlatness/5.0];
+    N3BezierPath *flattenedPath = [_bezierPath bezierPathByFlattening:N3BezierDefaultFlatness/5.0];
     
+#ifdef WITH_OPENGL_32
+    // TODO: To be tested
+    #define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_OSI_PLANAR_PATH_ROI
+    #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_OSI_PLANAR_PATH_ROI
+    // Define a local model matrix and apply it locally without affecting the shader
+    glm::mat4 M = glm::make_mat4(dicomToPixGLTransform);
+    #endif
+#else
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(dicomToPixGLTransform);
-    
-    glLineWidth(3.0);
-    glColor3f(1, 0, 0);
+#endif
+
+    renderer_setLineWidth(3.0);
+    renderer_set_rgb(1, 0, 0);
+
+#ifdef WITH_OPENGL_32
+    const int nPoints = [flattenedPath elementCount];
+    glm::vec3 pA[nPoints];
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (NSInteger i = 0; i < [flattenedPath elementCount]; i++)
+    {
+        N3Vector endpoint;
+        [flattenedPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
+        pA[i] = glm::vec3(endpoint.x, endpoint.y, endpoint.z);
+        #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_OSI_PLANAR_PATH_ROI
+        // Apply local matrix transformation
+        glm::vec4 pTemp = M*glm::vec4(pA[i],1);
+        pA[i] = glm::vec3(pTemp.x, pTemp.y, pTemp.z);
+        #endif
+        [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec3)]];
+    }
+
+    renderer_drawLine_xyz([pArray copy], GL_LINE_STRIP);
+#else
     glBegin(GL_LINE_STRIP);
     {
-        for (NSInteger i = 0; i < [flattenedPath elementCount]; i++) {
+        for (NSInteger i = 0; i < [flattenedPath elementCount]; i++)
+        {
+            N3Vector endpoint;
             [flattenedPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
             glVertex3d(endpoint.x, endpoint.y, endpoint.z);
         }
     }
     glEnd();
+#endif
     
-    
-    // let's try drawing some the mask
+    // Let's try drawing some the mask
     OSIROIMask *mask;
     NSArray *maskRuns;
     OSIROIMaskRun maskRun;
@@ -348,9 +382,14 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
 
     inverseVolumeTransform = N3AffineTransformInvert([volumeData volumeTransform]);
     mask = [self ROIMaskForFloatVolumeData:volumeData];
-    maskRuns = [mask maskRuns];
+    maskRuns = [mask maskRuns]; // Value stored to 'maskRuns' is never read
 
-    glColor3f(1, 0, 1);
+    renderer_set_rgb(1, 0, 1);
+
+#ifdef WITH_OPENGL_32
+    // TODO: renderer_drawLines([pArray copy]); Note: XYZ
+    NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+#else
     glBegin(GL_LINES);
     {
         for (maskRunValue in maskRuns) {
@@ -369,6 +408,7 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
     glEnd();
     
     glPopMatrix();
+#endif
 }
 
 @end

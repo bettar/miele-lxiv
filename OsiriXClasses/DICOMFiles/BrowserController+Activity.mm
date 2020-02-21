@@ -198,7 +198,11 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
     return 0;
 }
 
--(void)tableView:(NSTableView*)tableView willDisplayCell:(ThreadCell*)cell forTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row {
+-(void)tableView:(NSTableView*)tableView
+ willDisplayCell:(ThreadCell*)cell
+  forTableColumn:(NSTableColumn*)tableColumn
+             row:(NSInteger)row
+{
 	NSRect frame;
 	if (tableColumn)
         frame = [tableView frameOfCellAtColumn:[tableView.tableColumns indexOfObject:tableColumn] row:row];
@@ -207,7 +211,7 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
 	
     @synchronized (ThreadsManager.defaultManager.threadsController)
     {
-        if( [_cells containsObject: cell])
+        if ([_cells containsObject: cell])
         {
             // cancel
             if (![cell.cancelButton superview])

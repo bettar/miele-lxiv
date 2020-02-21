@@ -113,7 +113,8 @@ typedef NS_ENUM(NSInteger, AnnotationsType) {
     ANNOTATIONS_NONE = 0,
     ANNOTATIONS_GRAPHICS,
     ANNOTATIONS_BASE,
-    ANNOTATIONS_FULL
+    ANNOTATIONS_FULL,
+    ANNOTATIONS_PLUGIN_ONLY  // is it actually possible to set this type ?
 };
 
 #define CLUTBARS_KEY            @"CLUTBARS"
@@ -138,6 +139,12 @@ typedef NS_ENUM(NSInteger, Intersection3DType) {
     INTERSECT_3D_NONE = 0,          // disjoint (no intersection)
     INTERSECT_3D_ONE_POINT,         // intersection in the unique point *I0
     INTERSECT_3D_SEGMENT_ON_PLANE   // the segment lies in the plane
+};
+
+typedef NS_ENUM(NSInteger, FontType) {
+    FONT_TYPE_0 = 0,
+    FONT_TYPE_PREVIEW = 1,
+    FONT_TYPE_ROI = 2
 };
 
 #endif /* mieleTypes_h */

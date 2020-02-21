@@ -67,7 +67,8 @@ void signal_EXC(int sig_num)
 	return [[[DCMDataContainer alloc] initWithContentsOfURL:aURL] autorelease];
 }
 
-+ (id)dataContainerWithData:(NSData *)aData{
++ (id)dataContainerWithData:(NSData *)aData
+{
 	return [[[DCMDataContainer alloc] initWithData:aData] autorelease];
 }
 
@@ -92,7 +93,7 @@ void signal_EXC(int sig_num)
             signal( SIGBUS , signal_EXC);
             signal( SIGFPE , signal_EXC);
             
-            if( sigsetjmp( mark, 1) != 0)
+            if (sigsetjmp( mark, 1) != 0)
             {
                 // signal catch
                 NSLog( @"%@", [NSThread callStackSymbols]);
@@ -100,12 +101,12 @@ void signal_EXC(int sig_num)
             else
             {        
                 void *ptr = malloc( data.length);
-                if( ptr)
+                if (ptr)
                 {
                     memcpy( ptr, data.bytes, data.length);
                     
                     void *tempPtr = malloc( data.length);
-                    if( tempPtr)
+                    if (tempPtr)
                     {
                         free( tempPtr);
                         
@@ -127,7 +128,7 @@ void signal_EXC(int sig_num)
         }
 	}
     
-    if( object == nil)
+    if (object == nil)
         [self autorelease];
     
     return object;
@@ -179,8 +180,10 @@ void signal_EXC(int sig_num)
 #endif
 }
 
-- (id)initWithBytes:(const void *)bytes length:(NSUInteger)length{
-	if (self = [super init]) {
+- (id)initWithBytes:(const void *)bytes length:(NSUInteger)length
+{
+	if (self = [super init])
+    {
 		dicomData = [[NSMutableData dataWithBytes:bytes length:length] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
 		if (![self determineTransferSyntax])
@@ -192,7 +195,8 @@ void signal_EXC(int sig_num)
 	return self;
 }
 
-- (id)initWithBytesNoCopy:(void *)bytes length:(NSUInteger)length{
+- (id)initWithBytesNoCopy:(void *)bytes length:(NSUInteger)length
+{
 	if (self = [super init]) {
 		dicomData = [[NSMutableData dataWithBytesNoCopy:bytes length:length] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
@@ -206,7 +210,10 @@ void signal_EXC(int sig_num)
 	return self;
 }
 
- - (id)initWithBytesNoCopy:(void *)bytes length:(NSUInteger)length freeWhenDone:(BOOL)flag{
+ - (id)initWithBytesNoCopy:(void *)bytes
+                    length:(NSUInteger)length
+              freeWhenDone:(BOOL)flag
+{
 	if (self = [super init]) {
 		dicomData = [[NSMutableData dataWithBytesNoCopy:bytes length:length freeWhenDone:flag] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
@@ -441,10 +448,9 @@ void signal_EXC(int sig_num)
 	return 0;
 }
 
-
 - (NSString *)nextStringWithLength:(int)length
 {
-	NSException *exception = [self testForLength:length];
+    NSException *exception = [self testForLength:length];
 	if (!exception)
 	{
 		if (stringEncoding == 0)
@@ -524,7 +530,7 @@ void signal_EXC(int sig_num)
 			NSArray *dateArray = [string componentsSeparatedByString:@"\\"];
 			for ( NSString *dateString in dateArray ) {
 				DCMCalendarDate *dcmDate = [DCMCalendarDate dicomDate:dateString];
-				if( dcmDate )
+				if (dcmDate )
 					[dates addObject:dcmDate];
 				
 			}
@@ -562,10 +568,12 @@ void signal_EXC(int sig_num)
 	return nil;
 }
 
-- (NSMutableArray *)nextTimesWithLength:(int)length{
+- (NSMutableArray *)nextTimesWithLength:(int)length
+{
 	if (DCMDEBUG)
-		NSLog(@"Next time with length: %d", length);
-	NSException *exception = [self testForLength:length];
+		NSLog(@"%s, length: %d", __FUNCTION__, length);
+
+    NSException *exception = [self testForLength:length];
 
 	NSMutableArray *times = [NSMutableArray array];
 	if (!exception) {
@@ -655,18 +663,18 @@ void signal_EXC(int sig_num)
     {
         NSMutableData *aData = nil;
         void *ptr = malloc( length);
-        if( ptr)
+        if (ptr)
         {
             memcpy( ptr, (uint8_t *)dicomData.bytes + position, length);
             
             void *tempPtr = malloc( length);
-            if( tempPtr)
+            if (tempPtr)
             {
                 free( tempPtr);
                 
                 aData = [NSMutableData dataWithBytesNoCopy: ptr length: length freeWhenDone: YES];
             
-                if( aData == nil)
+                if (aData == nil)
                     free( ptr);
             }
             else
@@ -863,20 +871,20 @@ void signal_EXC(int sig_num)
 //	{
 //		c = [string characterAtIndex: i];
 //		
-//		if( c == 0x1b)
+//		if (c == 0x1b)
 //		{
 //			NSRange range = NSMakeRange( from, i-from);
 //			
 //			NSData *s = [[string substringWithRange: range] dataUsingEncoding: encodings[ index]];
 //			
-//			if( s)
+//			if (s)
 //				[result appendData: s];
 //			
 //			from = i;
-//			if( index < 9)
+//			if (index < 9)
 //			{
 //				index++;
-//				if( encodings[ index] == 0)
+//				if (encodings[ index] == 0)
 //					index--;
 //			}
 //		}
@@ -943,10 +951,12 @@ void signal_EXC(int sig_num)
 	return transferSyntaxInUse;
 }
 
-- (void)setTransferSyntaxForDataset:(DCMTransferSyntax *)ts{
+- (void)setTransferSyntaxForDataset:(DCMTransferSyntax *)ts
+{
 	if (DCMDEBUG)
 		NSLog(@"setTransferSyntaxForDataset:%@", [ts description]);
-	[transferSyntaxForDataset release];
+
+    [transferSyntaxForDataset release];
 	transferSyntaxForDataset = [ts retain];
 }
 
@@ -965,7 +975,7 @@ void signal_EXC(int sig_num)
 
 - (BOOL)determineTransferSyntax
 {
-	[transferSyntaxInUse release];
+    [transferSyntaxInUse release];
 	transferSyntaxInUse = [[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] retain];
 	NSException* exception;
 	position = 128;
@@ -993,13 +1003,13 @@ void signal_EXC(int sig_num)
 		if ([DCMValueRepresentation isValidVR:vr]) {
 			[transferSyntaxForMetaheader release];
 			transferSyntaxForMetaheader = [[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] retain];
-			
 		}
 		else {
 			[transferSyntaxForMetaheader release];
 			transferSyntaxForMetaheader = [[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] retain];
 		}
-		[transferSyntaxInUse release];
+
+        [transferSyntaxInUse release];
 		transferSyntaxInUse = [transferSyntaxForMetaheader retain];
 		offset = 132;
 		position = 132;
@@ -1109,10 +1119,10 @@ void signal_EXC(int sig_num)
                                      userInfo:userInfo];
 	}
     
-    if( elementLength > 100)
+    if (elementLength > 100)
     {
         void *ptr = malloc( elementLength + 1024);
-        if( ptr == nil)
+        if (ptr == nil)
         {
             NSLog(@"%s:%i %s", __FILE__, __LINE__, MALLOC_ERROR_MESSAGE);
             return [NSException exceptionWithName:@"Not Enough Memory"

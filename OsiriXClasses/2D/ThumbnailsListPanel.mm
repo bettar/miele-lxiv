@@ -69,13 +69,13 @@ static 	NSMutableDictionary *associatedScreen = nil;
 	dstframe.origin.y = screenRect.origin.y;
     dstframe.size.height -= [ToolbarPanelController exposedHeight];
     
-    if( NavigatorWindowController.navigatorWindowController.window.screen == self.window.screen)
+    if (NavigatorWindowController.navigatorWindowController.window.screen == self.window.screen)
     {
         dstframe.origin.y += NavigatorWindowController.navigatorWindowController.window.frame.size.height;
         dstframe.size.height -= NavigatorWindowController.navigatorWindowController.window.frame.size.height;
     }
     
-    if( NSEqualRects(self.window.frame, dstframe) == NO)
+    if (NSEqualRects(self.window.frame, dstframe) == NO)
         [[self window] setFrame:dstframe display:YES];
 }
 
@@ -105,7 +105,7 @@ static 	NSMutableDictionary *associatedScreen = nil;
         
         [self.window safelySetMovable:NO];
         
-        if( self.window == nil)
+        if (self.window == nil)
             [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseFloatingThumbnailsList"];
 	}
     
@@ -123,23 +123,23 @@ static 	NSMutableDictionary *associatedScreen = nil;
 
 - (void)windowDidResignKey:(NSNotification *)aNotification
 {
-	if( [aNotification object] == [self window])
+	if ([aNotification object] == [self window])
 	{
-		if( [[self window] isVisible] && viewer)
+		if ([[self window] isVisible] && viewer)
             [[self window] orderWindow: NSWindowAbove relativeTo: [[viewer window] windowNumber]];
 	}
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)aNotification
 {
-	if( [aNotification object] == [self window])
+	if ([aNotification object] == [self window])
 	{
-		if( [[self window] isVisible])
+		if ([[self window] isVisible])
 		{
-			if( [[viewer window] isVisible])
+			if ([[viewer window] isVisible])
 				[[viewer window] makeKeyAndOrderFront: self];
             
-            if( viewer && viewer.window.windowNumber > 0)
+            if (viewer && viewer.window.windowNumber > 0)
                 [[self window] orderWindow: NSWindowAbove relativeTo: viewer.window.windowNumber];
             else
             {
@@ -151,29 +151,29 @@ static 	NSMutableDictionary *associatedScreen = nil;
 
 - (void)windowDidResignMain:(NSNotification *)aNotification
 {
-	if( [aNotification object] == [self window])
+	if ([aNotification object] == [self window])
 	{
-		if( [[self window] isVisible] && viewer)
+		if ([[self window] isVisible] && viewer)
             [[self window] orderWindow: NSWindowAbove relativeTo: viewer.window.windowNumber];
 	}
 }
 
 - (void)windowDidBecomeMain:(NSNotification *)aNotification
 {
-	if( [aNotification object] == [self window])
+	if ([aNotification object] == [self window])
 	{
 		[[viewer window] makeKeyAndOrderFront: self];
         
-		if( [[self window] isVisible] && viewer)
+		if ([[self window] isVisible] && viewer)
             [[self window] orderWindow: NSWindowAbove relativeTo: viewer.window.windowNumber];
         
 		return;
 	}
 	
-	if( [(NSWindow*)[aNotification object] level] != NSNormalWindowLevel)
+	if ([(NSWindow*)[aNotification object] level] != NSNormalWindowLevel)
         return;
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
 	{
 		[[self window] orderOut:self];
 		return;
@@ -182,13 +182,13 @@ static 	NSMutableDictionary *associatedScreen = nil;
 	//[self checkPosition];
 	
     NSWindow *window = [aNotification object];
-	if( [[window windowController] isKindOfClass:[ViewerController class]] && window.isVisible)
+	if ([[window windowController] isKindOfClass:[ViewerController class]] && window.isVisible)
 	{
-		if( [[NSScreen screens] count] > screen)
+		if ([[NSScreen screens] count] > screen)
 		{
-			if( [window screen] == [[NSScreen screens] objectAtIndex: screen])
+			if ([window screen] == [[NSScreen screens] objectAtIndex: screen])
 			{
-                if( viewer && viewer.window.windowNumber > 0)
+                if (viewer && viewer.window.windowNumber > 0)
                     [[self window] orderWindow: NSWindowAbove relativeTo: viewer.window.windowNumber];
 			}
 			else
@@ -201,11 +201,11 @@ static 	NSMutableDictionary *associatedScreen = nil;
 
 - (void) thumbnailsListWillClose :(NSView*) tb
 {
-	if( thumbnailsView == tb)
+	if (thumbnailsView == tb)
 	{
 		[[self window] orderOut: self];
 		
-		if( [[self window] screen])
+		if ([[self window] screen])
 			[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: thumbnailsView]];
 		else
 			[associatedScreen removeObjectForKey: [NSValue valueWithPointer: thumbnailsView]];
@@ -222,7 +222,7 @@ static 	NSMutableDictionary *associatedScreen = nil;
 
 - (void) viewerWillClose: (NSNotification*) n
 {
-    if( [n object] == viewer)
+    if ([n object] == viewer)
     {
         [self setThumbnailsView: nil viewer: nil];
     }
@@ -235,28 +235,33 @@ static 	NSMutableDictionary *associatedScreen = nil;
 
 - (void) setThumbnailsView:(NSView*) tb viewer:(ViewerController*) v
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
         return;
     
-	if( associatedScreen == nil) associatedScreen = [[NSMutableDictionary alloc] init];
+	if (associatedScreen == nil)
+        associatedScreen = [[NSMutableDictionary alloc] init];
 	
     NSDisableScreenUpdates();
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"] == NO)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"] == NO)
         tb = nil;
     
     @try
     {
-        if( tb == thumbnailsView)
+        if (tb == thumbnailsView)
         {
-            if( tb && v && v.window.windowNumber > 0)
-                [[self window] orderWindow: NSWindowAbove relativeTo: [[v window] windowNumber]];
-        
-            if( tb)
+            if (tb &&
+                v &&
+                v.window.windowNumber > 0)
             {
-                if( [associatedScreen objectForKey: [NSValue valueWithPointer: tb]] != [[self window] screen])
+                [[self window] orderWindow: NSWindowAbove relativeTo: [[v window] windowNumber]];
+            }
+        
+            if (tb)
+            {
+                if ([associatedScreen objectForKey: [NSValue valueWithPointer: tb]] != [[self window] screen])
                 {
-                    if( [[self window] screen])
+                    if ([[self window] screen])
                         [associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: tb]];
                     else
                         [associatedScreen removeObjectForKey: [NSValue valueWithPointer: tb]];
@@ -264,7 +269,7 @@ static 	NSMutableDictionary *associatedScreen = nil;
             }
             else
             {
-                if( self.window.isVisible)
+                if (self.window.isVisible)
                     [self.window orderOut: self];
             }
             
@@ -274,7 +279,7 @@ static 	NSMutableDictionary *associatedScreen = nil;
         [viewer release];
         viewer = [v retain];
         
-        if( thumbnailsView != tb)
+        if (thumbnailsView != tb)
         {
             [superView addSubview: thumbnailsView];
             
@@ -288,19 +293,19 @@ static 	NSMutableDictionary *associatedScreen = nil;
             [thumbnailsView setFrameSize: thumbnailsView.superview.frame.size];
         }
         
-        if( thumbnailsView)
+        if (thumbnailsView)
         {
             @try
             {
-                if( [associatedScreen objectForKey: [NSValue valueWithPointer: thumbnailsView]] != [[self window] screen])
+                if ([associatedScreen objectForKey: [NSValue valueWithPointer: thumbnailsView]] != [[self window] screen])
                 {
-                    if( [[self window] screen])
+                    if ([[self window] screen])
                         [associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: thumbnailsView]];
                     else
                         [associatedScreen removeObjectForKey: [NSValue valueWithPointer: thumbnailsView]];
                 }
                 
-                if( [[viewer window] isKeyWindow])
+                if ([[viewer window] isKeyWindow])
                     [[self window] orderBack: self];
             }
             @catch (NSException *exception) {
@@ -309,15 +314,15 @@ static 	NSMutableDictionary *associatedScreen = nil;
         }
         else
         {
-            if( self.window.isVisible)
+            if (self.window.isVisible)
                 [self.window orderOut: self];
         }
         
-        if( thumbnailsView && viewer)
+        if (thumbnailsView && viewer)
         {
             [self applicationDidChangeScreenParameters:nil];
             
-            if( [[viewer window] isKeyWindow])
+            if ([[viewer window] isKeyWindow])
                 [[self window] orderWindow: NSWindowAbove relativeTo: [[viewer window] windowNumber]];
         }
             

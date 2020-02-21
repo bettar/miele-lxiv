@@ -76,7 +76,10 @@
         for (NSScreen* screen in screens) {
             NSRect screenFrame = [screen frame];
             NSRect frame = NSIntegralRect(NSMakeRect(bounds.origin.x+(screenFrame.origin.x-desktopBounds.origin.x)/desktopBounds.size.width*width, bounds.origin.y+(screenFrame.origin.y-desktopBounds.origin.y)/desktopBounds.size.height*height, screenFrame.size.width/desktopBounds.size.width*width, screenFrame.size.height/desktopBounds.size.height*height));
-            frame.origin.x += 0.5; frame.origin.y += 0.5; frame.size.width -= 1; frame.size.height -= 1;
+            frame.origin.x += 0.5;
+            frame.origin.y += 0.5;
+            frame.size.width -= 1;
+            frame.size.height -= 1;
             
             if (self.isFlipped)
                 frame = N2FlipRect(frame, bounds);

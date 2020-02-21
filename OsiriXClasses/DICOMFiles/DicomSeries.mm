@@ -390,7 +390,7 @@
                         }
                         else if( [DCMAbstractSyntaxUID isImageStorage: seriesSOPClassUID] || [DCMAbstractSyntaxUID isRadiotherapy: seriesSOPClassUID] || [seriesSOPClassUID length] == 0)
                         {
-                            DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour: [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] imageObj:image];
+                            DCMPix *dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour: [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] imageObj:image];
                             [dcmPix CheckLoad];
                             
                             //Set the default series level window-width&level
@@ -490,7 +490,7 @@
 	{
 		int v = [[[self.images anyObject] valueForKey:@"numberOfFrames"] intValue];
 		
-		if( v > 1)
+		if (v > 1)
 			no = [NSNumber numberWithInt: [self.images count] - v + 1];
 		else
 			no = [NSNumber numberWithInt: [self.images count]];
@@ -607,10 +607,8 @@
 - (DicomSeries*) previousSeries
 {
     NSArray *series = self.study.imageSeries;
-    
     NSUInteger index = [series indexOfObject: self];
-    
-    if( index != NSNotFound && index > 0)
+    if (index != NSNotFound && index > 0)
         return [series objectAtIndex: index-1];
     
     return nil;
@@ -619,10 +617,8 @@
 - (DicomSeries*) nextSeries
 {
     NSArray *series = self.study.imageSeries;
-    
     NSUInteger index = [series indexOfObject: self];
-    
-    if( index != NSNotFound && index < (long)series.count-1)
+    if (index != NSNotFound && index < (long)series.count-1)
         return [series objectAtIndex: index+1];
     
     return nil;

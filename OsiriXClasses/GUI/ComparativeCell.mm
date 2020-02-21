@@ -106,13 +106,13 @@
         NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
         
         NSString* text = self.leftTextFirstLine;
-        if (!text.length) {
+        if (text.length == 0) {
             NSColor* color = [attributes valueForKey:NSForegroundColorAttributeName];
             text = @"Unnamed";
             [attributes setObject:[color blendedColorWithFraction:0.4 ofColor:[NSColor colorWithCalibratedWhite:0.5 alpha:1]] forKey:NSForegroundColorAttributeName];
         }
         
-        if (self.leftTextSecondLine.length)
+        if (self.leftTextSecondLine.length > 0)
         {
             NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
             NSMutableParagraphStyle* leftAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
@@ -138,7 +138,7 @@
         
         frame.origin.x += 330;
         
-        if (self.rightTextSecondLine.length)
+        if (self.rightTextSecondLine.length > 0)
         {
             NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
             NSMutableParagraphStyle* rightAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
@@ -191,7 +191,7 @@
             NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
             
             NSString* text = self.leftTextFirstLine;
-            if (!text.length) {
+            if (text.length == 0) {
                 NSColor* color = [attributes valueForKey:NSForegroundColorAttributeName];
                 text = @"Unnamed";
                 [attributes setObject:[color blendedColorWithFraction:0.4 ofColor:[NSColor colorWithCalibratedWhite:0.5 alpha:1]] forKey:NSForegroundColorAttributeName];
@@ -210,7 +210,7 @@
         // Second Line
         frame = initialFrame;
         
-        if (self.rightTextSecondLine.length)
+        if (self.rightTextSecondLine.length > 0)
         {
             NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
             NSMutableParagraphStyle* rightAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
@@ -225,7 +225,7 @@
             frame.size.width -= w + spacer;
         }
         
-        if (self.leftTextSecondLine.length)
+        if (self.leftTextSecondLine.length > 0)
         {
             NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
             NSMutableParagraphStyle* leftAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];

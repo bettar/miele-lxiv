@@ -26,6 +26,7 @@ NSString* N2StepsDidAddStepNotification = @"N2StepsDidAddStepNotification";
 NSString* N2StepsWillRemoveStepNotification = @"N2StepsWillRemoveStepNotification";
 NSString* N2StepsNotificationStep = @"N2StepsNotificationStep";
 
+// 'N2Steps' lacks a 'dealloc' instance method but must release '_delegate'
 @implementation N2Steps
 @synthesize delegate = _delegate, currentStep = _currentStep;//, view = _view;
 

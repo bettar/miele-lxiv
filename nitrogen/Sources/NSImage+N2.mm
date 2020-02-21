@@ -356,9 +356,13 @@ end_size_y:
 			
 			if( NSEqualSizes( imageSize, targetSize) == NO)
 			{
+                // Value stored to 'scaledWidth' during its initialization is never read
                 float scaledWidth  = targetWidth;
+                
+                // Value stored to 'scaledHeight' during its initialization is never read
                 float scaledHeight = targetHeight;
-				float widthFactor  = targetWidth / width;
+
+                float widthFactor  = targetWidth / width;
 				float heightFactor = targetHeight / height;
 				
 				if ( widthFactor < heightFactor )

@@ -119,7 +119,10 @@ static SyncSeriesScope globalSyncSeriesScope;
 
 - (void) awakeFromNib
 {
-	NSScreen *s = [viewer get3DViewerScreen: viewer];
+    NSLog(@"%s %d, class:%@, self:%p", __FUNCTION__, __LINE__,
+          NSStringFromClass([self class]), self);
+
+    NSScreen *s = [viewer get3DViewerScreen: viewer];
 	
 	if ([s frame].size.height > [s frame].size.width)
 		[splitView setVertical: NO];
@@ -132,9 +135,16 @@ static SyncSeriesScope globalSyncSeriesScope;
 																 context: NULL];
 }
 
--(id)initWithPixList:(NSMutableArray*)pix :(NSArray*)files :(NSData*)vData :(ViewerController*)vC :(ViewerController*)bC
+-(instancetype)initWithPixList:(NSMutableArray*)pix
+                              :(NSArray*)files
+                              :(NSData*)vData
+                              :(ViewerController*)vC
+                              :(ViewerController*)bC
 {
-	viewer = [vC retain];
+    NSLog(@"OrthogonalMPRViewer.mm %d, initWithDCMPixList, class:%@, self:%p, pix count: %lu", __LINE__,
+          NSStringFromClass([self class]), self, (unsigned long)pix.count);
+
+    viewer = [vC retain];
 	
 	self = [super initWithWindowNibName:@"OrthogonalMPR"];
     
@@ -1372,12 +1382,10 @@ return YES;
 - (void) exportJPEG:(id) sender
 {
 	BOOL all = NO;
-	//int i;
 	NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-	
-	long deltaX, deltaY, x, y, oldX, oldY, max;
-	OrthogonalMPRView *view;
-	
+    OrthogonalMPRView *view;
+
+	long deltaX, deltaY, x, y, oldX, oldY, max;	
     deltaX = deltaY = x = y = oldX = oldY = max = 0;
     
     NSSavePanel *panel = [NSSavePanel savePanel];
@@ -2282,7 +2290,7 @@ return YES;
 
 + (void) synchronizeViewer:(id)currentViewer {
     
-    // Evaluate all opened MPRviewers and update currentViewer's syncSeries Properties according to them
+    // Evaluate all open MPRviewers and update currentViewer's syncSeries Properties according to them
     // It will be updated to values matching thoses for which another MPRviewer has the currentViewer within its scope
     
     // Note that currentViewer's position may be changed in order to be in sync with other enabled viewers within the same scope when position change is in absolute mode
@@ -2581,8 +2589,8 @@ return YES;
     return viewerApps;
 }
 
-+ (bool) isMPRViewer:(id) viewer{
-    
++ (bool) isMPRViewer:(id) viewer
+{    
     return [viewer isKindOfClass:[OrthogonalMPRViewer class]]
 #ifndef MIELE_LIGHT
     || [viewer isKindOfClass:[OrthogonalMPRPETCTViewer class]]

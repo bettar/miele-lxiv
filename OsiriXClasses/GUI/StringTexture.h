@@ -33,7 +33,7 @@
 	BOOL xFlipped;
 	BOOL yFlipped;
 	
-	NSAttributedString * string;
+	NSAttributedString * attrString;
 	NSColor * textColor; // default is opaque white
 	NSColor * boxColor; // default transparent or none
 	NSColor * borderColor; // default transparent or none
@@ -48,12 +48,21 @@
 // the same context should be current for all method calls for a particular object instance
 
 // designated initializer
-- (id) initWithAttributedString:(NSAttributedString *)attributedString withTextColor:(NSColor *)color withBoxColor:(NSColor *)color withBorderColor:(NSColor *)color;
+- (id) initWithAttributedString:(NSAttributedString *)attributedString
+                  withTextColor:(NSColor *)color
+                   withBoxColor:(NSColor *)color
+                withBorderColor:(NSColor *)color;
 
-- (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs withTextColor:(NSColor *)color withBoxColor:(NSColor *)color withBorderColor:(NSColor *)color;
+- (id) initWithString:(NSString *)str
+       withAttributes:(NSDictionary *)attribs
+        withTextColor:(NSColor *)color
+         withBoxColor:(NSColor *)color
+      withBorderColor:(NSColor *)color;
 
 // basic methods that pick up defaults
-- (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs;
+- (id) initWithString:(NSString *)str
+       withAttributes:(NSDictionary *)attribs;
+
 - (id) initWithAttributedString:(NSAttributedString *)attributedString;
 
 - (void) dealloc;
@@ -81,11 +90,11 @@
 // these will force the texture to be regenerated at the next draw
 
 - (void) setString:(NSAttributedString *)attributedString; // set string after initial creation
-- (void) setString:(NSString *)aString withAttributes:(NSDictionary *)attribs; // set string after initial creation
+- (void) setString:(NSString *)str
+    withAttributes:(NSDictionary *)attribs; // set string after initial creation
 
 - (void) setTextColor:(NSColor *)color; // set default text color
 - (void) setBoxColor:(NSColor *)color; // set default text color
 - (void) setBorderColor:(NSColor *)color; // set default text color
 - (void) setAntiAliasing:(BOOL) a;
 @end
-

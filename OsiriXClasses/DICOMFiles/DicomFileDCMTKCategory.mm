@@ -305,8 +305,8 @@ extern NSRecursiveLock *Papyrus_Lock;
     if (fileformat.getMetaInfo()->findAndGetString(DCM_TransferSyntaxUID, string, OFFalse).good() && string != NULL
         && [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] isEqualToString:@"1.2.840.10008.1.2.4.100"])
     {
-            fileType = [@"DICOMMPEG2" retain];
-            [dicomElements setObject:fileType forKey:@"fileType"];
+        fileType = [@"DICOMMPEG2" retain];
+        [dicomElements setObject:fileType forKey:@"fileType"];
     }
     else
     {
@@ -834,9 +834,17 @@ extern NSRecursiveLock *Papyrus_Lock;
         width = columns;
     
     if (dataset->findAndGetString(DCM_NumberOfFrames, string, OFFalse).good() && string != NULL)
+    {
         NoOfFrames = atoi(string);
+#if 1   // Issue i26
+        if (NoOfFrames == -1) {
+            NoOfFrames = 1;
+            dataset->remove(DCM_NumberOfFrames);
+        }
+#endif
+    }
     
-    // Is it a multi frame DICOM files? We need to parse these sequences for the correct sliceLocation value !
+    // Is it a multi frame DICOM file ? We need to parse these sequences for the correct sliceLocation value !
     int i = 0;
     DcmItem *ditem = NULL;
     NSMutableArray *sliceLocationArray = [NSMutableArray array];
@@ -1055,7 +1063,12 @@ extern NSRecursiveLock *Papyrus_Lock;
     if (NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
         self.serieID = [NSString stringWithFormat:@"%@-%@-%@", self.serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
     
-    if (NoOfFrames <= 1 && [self noLocalizer] && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]) && [DCMAbstractSyntaxUID isImageStorage: sopClassUID])
+    if (NoOfFrames <= 1 &&
+        [self noLocalizer] &&
+        ([self containsString: @"LOCALIZER" inArray: imageTypeArray] ||
+         [self containsString: @"REF" inArray: imageTypeArray] ||
+         [self containsLocalizerInString: serie]) &&
+        [DCMAbstractSyntaxUID isImageStorage: sopClassUID])
     {
         self.serieID = @"LOCALIZER";
         

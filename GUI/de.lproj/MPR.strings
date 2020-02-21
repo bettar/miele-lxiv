@@ -295,7 +295,7 @@
 /* Class = "NSMenuItem"; title = "Oval"; ObjectID = "716"; */
 "716.title" = "Oval";
 
-/* Class = "NSMenuItem"; title = "Opened Polygon"; ObjectID = "717"; */
+/* Class = "NSMenuItem"; title = "Open Polygon"; ObjectID = "717"; */
 "717.title" = "Polygon eröffnet";
 
 /* Class = "NSMenuItem"; title = "Closed Polygon"; ObjectID = "718"; */

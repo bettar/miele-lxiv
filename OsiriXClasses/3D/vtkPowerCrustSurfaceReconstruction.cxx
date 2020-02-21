@@ -4931,11 +4931,6 @@ void printtree(Tree * t, int d) {
     printtree(t->left, d+1);
 }
 
-
-
-
-
-
 fg *faces_gr_t;
 
 STORAGE(fg)

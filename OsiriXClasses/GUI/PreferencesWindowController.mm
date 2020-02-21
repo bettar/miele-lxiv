@@ -635,7 +635,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	return animation;
 }
 
--(IBAction)navigationAction:(id)sender {
+-(IBAction)navigationAction:(id)sender
+{
 	NSInteger index = -1;
 	if (currentContext)
 		index = [panesListView indexOfItemWithContext:currentContext];

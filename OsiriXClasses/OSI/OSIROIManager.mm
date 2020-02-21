@@ -20,6 +20,10 @@
 
 #import "mgl.h" // include first
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 #import "OSIROIManager.h"
 #import "OSIROIManager+Private.h"
 #import "OSIVolumeWindow.h"
@@ -328,19 +332,30 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 
     for (OSIROI * roi in [self ROIs]) {
         if ([[roi osiriXROIs] count] == 0) { //if this OSIROI is backed by old style ROI, don't draw it
-            if ([roi respondsToSelector:@selector(drawSlab:inCGLContext:pixelFormat:dicomToPixTransform:)]) {
+            if ([roi respondsToSelector:@selector(drawSlab:inCGLContext:pixelFormat:dicomToPixTransform:)])
+            {
+#ifdef WITH_OPENGL_32
+                // TODO: To be tested
+                #define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_OSI_ROI_MAN1
+                #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_OSI_ROI_MAN1
+                // Define a local model matrix and apply it locally without affecting the shader
+                glm::mat4 M = glm::make_mat4(pixToSubdrawRectOpenGLTransform);
+                #endif
+#else
                 glMatrixMode(GL_MODELVIEW);
                 glPushMatrix();
                 glMultMatrixd(pixToSubdrawRectOpenGLTransform);
+#endif
 
                 [roi drawRect:NSMakeRect(0, 0, 1024, 1024) inSlab:slab inCGLContext:cgl_ctx pixelFormat:pixelFormatObj dicomToPixTransform:dicomToPixTransform];
                 
+#ifndef WITH_OPENGL_32
                 glMatrixMode(GL_MODELVIEW);
                 glPopMatrix();
+#endif
             }
         }
     }
-    
 }
 
 - (BOOL)_isROIManaged:(ROI *)roi
@@ -575,15 +590,27 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 	
     for (OSIROI *roi in [self ROIs]) {
 //    if ([[roi osiriXROIs] count] == 0) { //if this OSIROI is backed by old style ROI, don't draw it
-        if ([roi respondsToSelector:@selector(drawRect:inSlab:inCGLContext:pixelFormat:dicomToPixTransform:)]) {
+        if ([roi respondsToSelector:@selector(drawRect:inSlab:inCGLContext:pixelFormat:dicomToPixTransform:)])
+        {
+#ifdef WITH_OPENGL_32
+            // TODO: To be tested
+            #define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_OSI_ROI_MAN2
+            #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_OSI_ROI_MAN2
+            // Define a local model matrix and apply it locally without affecting the shader
+            glm::mat4 M = glm::make_mat4(pixToSubdrawRectOpenGLTransform);
+            #endif
+#else
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glMultMatrixd(pixToSubdrawRectOpenGLTransform);
+#endif
             
             [roi drawRect:NSMakeRect(0, 0, 1024, 1024) inSlab:slab inCGLContext:cgl_ctx pixelFormat:pixelFormatObj dicomToPixTransform:dicomToPixTransform];
             
+#ifndef WITH_OPENGL_32
             glMatrixMode(GL_MODELVIEW);
             glPopMatrix();
+#endif
         }
 //    }
     }

@@ -26,6 +26,8 @@ extern "C" {
 
 @class DCMWaveformSequence;
 
+#pragma mark -
+
 @interface DCMWaveform : NSObject {
     NSMutableArray* _sequences;
 }
@@ -34,13 +36,15 @@ extern "C" {
 - (NSArray*)sequences;
 
 @end
-    
+
+#pragma mark -
+
 typedef enum {
     DCMWaveformOriginalityOriginal,
     DCMWaveformOriginalityDerived
 } DCMWaveformOriginality;
 
-@class DCMWaveformChannelDefinition;
+@class DCMWaveformChannelDefinition; // defined below
 
 typedef enum {
     DCMWaveformSampleInterpretationSB,
@@ -91,7 +95,9 @@ typedef enum {
 - (CGFloat*)getValues:(NSUInteger*)numberOfValues;
 
 @end
-    
+
+#pragma mark -
+
 typedef enum {
     DCMWaveformChannelStatusOk,
     DCMWaveformChannelStatusTestData,
@@ -106,7 +112,7 @@ typedef enum {
 @class DCMWaveformChannelSourceModifier;
 @class DCMWaveformSourceWaveform;
 @class DCMWaveformChannelSensitivityUnit;
-    
+
 @interface DCMWaveformChannelDefinition : NSObject {
     NSInteger _waveformChannelNumber;                           // (003A,0202) WaveformChannelNumber 3 IS [1]
     NSString* _channelLabel;                                    // (003A,0203) ChannelLabel 3 SH [1]
@@ -167,6 +173,8 @@ typedef enum {
 
 @end
 
+#pragma mark -
+
 typedef enum {
     DCMMappingResourceDCMR, // DICOM Content Mapping Resource
     DCMMappingResourceSDM // SNOMED DICOM Microglossary (Retired)
@@ -205,8 +213,9 @@ typedef enum {
 
 - (void)setMappingResourceCS:(char*)cs;
 - (void)setContextGroupExtensionFlagCS:(char*)cs;
-
 @end
+
+#pragma mark -
     
 @interface DCMSOPInstanceReferenceMacro : NSObject {
     NSString* _referencedSOPClassUID; // (0008,1150) ReferencedSOPClassUID 1 UI [1]
@@ -218,30 +227,28 @@ typedef enum {
 
 @end
 
-@interface DCMWaveformChannelSource : DCMCodeSequenceMacro {
-    
-}
+#pragma mark -
 
+@interface DCMWaveformChannelSource : DCMCodeSequenceMacro
 @end
     
-@interface DCMWaveformChannelSourceModifier : DCMCodeSequenceMacro {
-    
-}
+#pragma mark -
 
+@interface DCMWaveformChannelSourceModifier : DCMCodeSequenceMacro
 @end
+
+#pragma mark -
 
 @interface DCMWaveformSourceWaveform : DCMSOPInstanceReferenceMacro {
     unsigned short _referencedWaveformChannels; // (0040,A0B0) ReferencedWaveformChannels 1 US [2-2n]
 }
 
 @property unsigned short referencedWaveformChannels;
-
 @end
     
-@interface DCMWaveformChannelSensitivityUnit : DCMCodeSequenceMacro {
-    
-}
+#pragma mark -
 
+@interface DCMWaveformChannelSensitivityUnit : DCMCodeSequenceMacro
 @end
     
 #ifdef __cplusplus

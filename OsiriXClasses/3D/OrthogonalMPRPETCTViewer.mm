@@ -380,9 +380,14 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 
 - (void) setWLWW:(float) iwl :(float) iww :(id) sender
 {
-	if ([sender isEqual: CTController])
+    // Issue #i19
+    NSLog(@"%s %d, self class:%@, viewer class:%@", __FUNCTION__, __LINE__,
+          NSStringFromClass([self class]),
+          NSStringFromClass([viewer class]));
+
+    if ([sender isEqual: CTController])
 	{
-		[viewer setWL: iwl WW: iww];
+		[viewer.imageView setWLWW: iwl : iww];
 		
 		[CTController superSetWLWW: iwl : iww];
 		[PETCTController superSetWLWW: iwl : iww];
@@ -392,7 +397,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	}
 	else if ([sender isEqual: PETController])
 	{
-		[blendingViewerController setWL: iwl WW: iww];
+		[blendingViewerController.imageView setWLWW: iwl : iww];
 		
 		[PETController superSetWLWW: iwl : iww];
 		
@@ -921,7 +926,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 
 - (IBAction) blendingMode:(id) sender
 {
-	[PETCTController setBlendingMode: [sender tag]];
+	[PETCTController setBlendingMode: (BlendingMode2DType)[sender tag]];
 }
 
 - (void) setBlendingMode: (long) m

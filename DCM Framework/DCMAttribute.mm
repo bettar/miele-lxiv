@@ -66,9 +66,9 @@
 			data:(DCMDataContainer *)dicomData 
 			specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
 			isExplicit:(BOOL) explicitValue
-			forImplicitUseOW:(BOOL)forImplicitUseOW{
-
-	if (self = [super init])
+			forImplicitUseOW:(BOOL)forImplicitUseOW
+{
+    if (self = [super init])
 	{
 		_vr = [vr retain];
 		
@@ -347,7 +347,7 @@
 	//write length
     if ([ts isExplicit])
     {
-        //write VR is explicit
+        // Write VR is explicit
         if (DCMDEBUG)
             NSLog(@"Write VR: %@", _vr);
         

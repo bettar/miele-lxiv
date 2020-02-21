@@ -114,7 +114,7 @@
 -(void)setContentView:(NSView*)view {
 	NSMutableArray* animations = NULL;
 	if ([self.window.windowController respondsToSelector:@selector(animations)])
-		animations = [self.window.windowController valueForKey:@"animations"];
+		animations = [self.window.windowController valueForKey:@"animations"]; // Value stored to 'animations' is never read
 	
 	idealContentSize = view.frame.size;
 	/*[animations addObject:[NSDictionary dictionaryWithObjectsAndKeys:

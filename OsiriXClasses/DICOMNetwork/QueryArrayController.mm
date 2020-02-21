@@ -202,7 +202,8 @@
                                 NSUInteger index1 = [uidsArray indexOfObject: s];
                                 NSUInteger index2 = [uidsArray indexOfObject: lastString];
                                 
-                                if( index1 != NSNotFound && index2 != NSNotFound)
+                                if (index1 != NSNotFound &&
+                                    index2 != NSNotFound)
                                 {
                                     if( [[[tempResult objectAtIndex: index1] numberImages] intValue] < [[[tempResult objectAtIndex: index2] numberImages] intValue])
                                     {

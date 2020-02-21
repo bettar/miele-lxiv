@@ -11,8 +11,13 @@
 #ifndef mgl_h
 #define mgl_h
 
-//#define WITH_OPENGL_32 // core profile
+#define WITH_OPENGL_32 // core profile
 //#define WITH_GLEW
+
+#ifdef WITH_OPENGL_32
+//#define WITH_OPENGL_32_STEP2   2  // overlay program with only 2D points
+//#define WITH_OPENGL_32_STEP3   3  // overlay program with renderer call
+#endif
 
 #pragma mark -
 
@@ -27,9 +32,6 @@
 #ifdef WITH_OPENGL_32
 #import <OpenGL/gl3.h>
 #import <OpenGL/gl3ext.h>
-#define GL_INTENSITY8               0x804B
-#define GL_LUMINANCE                0x1909
-#define GL_LUMINANCE_FLOAT32_APPLE  0x8818 // GLEW_APPLE_float_pixels
 #else
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/CGLCurrent.h>

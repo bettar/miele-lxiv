@@ -73,15 +73,15 @@ PURPOSE.
 	{
 		if ([theEvent modifierFlags] & NSEventModifierFlagShift)
 		{
-			NSInteger start = [[self cells] indexOfObject: [[self selectedCells] objectAtIndex: 0]];
-			NSInteger end = [[self cells] indexOfObject: [self cellAtRow:row column:column]];
+			NSUInteger start = [[self cells] indexOfObject: [[self selectedCells] objectAtIndex: 0]];
+			NSUInteger end = [[self cells] indexOfObject: [self cellAtRow:row column:column]];
 			
 			[self setSelectionFrom:start to:end anchor:start highlight: YES];
 			
 		}
 		else if( [theEvent modifierFlags] & NSEventModifierFlagCommand )
 		{
-			NSInteger end = [[self cells] indexOfObject: [self cellAtRow:row column:column]];
+			NSUInteger end = [[self cells] indexOfObject: [self cellAtRow:row column:column]];
 			
 			if( [[self selectedCells] containsObject:[self cellAtRow:row column:column]])
 				[self setSelectionFrom:end to:end anchor:end highlight: NO];
@@ -110,20 +110,20 @@ PURPOSE.
 	
 	NSArray *cells = [self selectedCells];
 	
-	if( [cells count])
+	if ([cells count])
 	{
         NSArray *subArray = cells;
         
-        if( subArray.count > 20)
+        if (subArray.count > 20)
             subArray = [cells subarrayWithRange: NSMakeRange( 0, 20)];
         
-		int i, width = 0;
+		int width = 0;
 		NSImage	*firstCell = [[subArray objectAtIndex: 0] image];
 		
-		#define MARGIN 3
+#define MARGIN 3
 		
 		width += MARGIN;
-		for( i = 0; i < [subArray count]; i++)
+		for (int i = 0; i < [subArray count]; i++)
 		{
 			width += [[[subArray objectAtIndex: i] image] size].width;
 			width += MARGIN;
@@ -131,7 +131,7 @@ PURPOSE.
 		
 		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( width, 70+6)] autorelease];
 		
-		if( [thumbnail size].width > 0 && [thumbnail size].height > 0)
+		if ([thumbnail size].width > 0 && [thumbnail size].height > 0)
 		{
 			[thumbnail lockFocus];
 			
@@ -140,7 +140,7 @@ PURPOSE.
 			
 			width = 0;
 			width += MARGIN;
-			for( i = 0; i < [subArray count]; i++)
+			for (int i = 0; i < [subArray count]; i++)
 			{
 				NSRectFill( NSMakeRect( width, 0, [firstCell size].width, [firstCell size].height));
 				
@@ -172,7 +172,7 @@ PURPOSE.
                         forType:(__bridge NSString *)kPasteboardTypeFileURLPromise];
 
 		NSMutableArray* objects = [NSMutableArray array];
-		for( i = 0; i < [cells count]; i++)
+		for (int i = 0; i < [cells count]; i++)
 			[objects addObject:[[[BrowserController currentBrowser] matrixViewArray] objectAtIndex:[[cells objectAtIndex: i] tag]]];
 
         [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[objects valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:DatabaseXID_DragType];

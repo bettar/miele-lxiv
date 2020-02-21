@@ -21,6 +21,12 @@
 #import "options.h"
 #import "mgl.h" // include first
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
+#import "GLRenderer.h"
+
 #import "MPRDCMView.h"
 #import "VRController.h"
 #import "VRView.h"
@@ -33,8 +39,6 @@
 #import "OSIGeometry.h"
 #import "vtkMath.h"
 
-static float deg2rad = M_PI/180.0;
-		  
 BOOL arePlanesParallel( float *Pn1, float *Pn2)
 {
 	float u[ 3];
@@ -51,10 +55,8 @@ BOOL arePlanesParallel( float *Pn1, float *Pn2)
     return NO;
 }
 
-#define VIEW_COLOR_LABEL_SIZE 25
-
-static	int splitPosition[ 2];
-static	BOOL frameZoomed = NO;
+static int splitPosition[ 2];
+static BOOL frameZoomed = NO;
 unsigned int minimumStep;
 
 #pragma mark -
@@ -101,8 +103,8 @@ unsigned int minimumStep;
 		case tMeasure:
 		case tROI:
 		case tOval:
-		case tOPolygon:
-		case tCPolygon:
+		case tOpenPolygon:
+		case tClosedPolygon:
 		case tAngle:
 		case tArrow:
 		case tText:
@@ -130,7 +132,7 @@ unsigned int minimumStep;
 											object: nil];
 
 
-	rotation = 0;
+	self.rotation = 0;
 	
 	pix = [pixList lastObject];
 	
@@ -642,43 +644,58 @@ unsigned int minimumStep;
     if (cgl_ctx == nil)
         return;
     
-	switch( v)
+//#ifdef WITH_OPENGL_32
+//        [self setShaderProgramOverlay_withMode_Normal];
+//#endif
+	switch (v)
 	{
 		case 1:
-			//glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
-			glColor4f ([windowController.colorAxis1 redComponent], [windowController.colorAxis1 greenComponent], [windowController.colorAxis1 blueComponent], [windowController.colorAxis1 alphaComponent]);
-		break;
+			//renderer_set_rgba(VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
+			renderer_set_rgba([windowController.colorAxis1 redComponent],
+                              [windowController.colorAxis1 greenComponent],
+                              [windowController.colorAxis1 blueComponent],
+                              [windowController.colorAxis1 alphaComponent]);
+            break;
 		
 		case 2:
-			//glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
-			glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
-		break;
+			//renderer_set_rgba(VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
+			renderer_set_rgba([windowController.colorAxis2 redComponent],
+                              [windowController.colorAxis2 greenComponent],
+                              [windowController.colorAxis2 blueComponent],
+                              [windowController.colorAxis2 alphaComponent]);
+            break;
 		
 		case 3:
-			//glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
-			glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
-		break;
+			//renderer_set_rgba(VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
+			renderer_set_rgba([windowController.colorAxis3 redComponent],
+                              [windowController.colorAxis3 greenComponent],
+                              [windowController.colorAxis3 blueComponent],
+                              [windowController.colorAxis3 alphaComponent]);
+            break;
 	}
 }
 
-- (void) drawLine: (float[2][3]) sft thickness: (float) thickness
+- (void) drawLine: (float[2][3]) sft
+        thickness: (float) thickness
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
     
-	if (thickness > 2)
+    //[self setShaderProgramOverlayLine];
+
+    if (thickness > 2)
 	{
-		glLineWidth(2.0 * self.window.backingScaleFactor);
+        [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: 0];
 		
-		glLineWidth(1.0 * self.window.backingScaleFactor);
+        [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: -thickness/2.];
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: thickness/2.];
 	}
 	else
 	{
-		glLineWidth(2.0 * self.window.backingScaleFactor);
+        [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: 0];
 	}
 }
@@ -689,11 +706,11 @@ unsigned int minimumStep;
     if (cgl_ctx == nil)
         return;
     
-	glLineWidth(1.0 * self.window.backingScaleFactor);
+    [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
 						
 	if (fromIntervalExport > 0)
 	{
-		for( int i = 1; i <= fromIntervalExport; i++)
+		for (int i = 1; i <= fromIntervalExport; i++)
 			[self drawCrossLines: sft ctx: cgl_ctx withShift: -i * [windowController dcmInterval]];
 	}
 	
@@ -702,7 +719,7 @@ unsigned int minimumStep;
 	
 	if (toIntervalExport > 0)
 	{
-		for( int i = 1; i <= toIntervalExport; i++)
+		for (int i = 1; i <= toIntervalExport; i++)
 			[self drawCrossLines: sft ctx: cgl_ctx withShift: i * [windowController dcmInterval]];
 	}
 	
@@ -716,11 +733,28 @@ unsigned int minimumStep;
     if (cgl_ctx == nil)
         return;
     
-	for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
+	for (int i = 1; i < windowController.dcmNumberOfFrames; i++)
 	{
-		glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
-		[self drawCrossLines: sft ctx: cgl_ctx perpendicular: NO withShift: 0 half: YES];
-		glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
+        GLfloat angle = (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames;
+#ifdef WITH_OPENGL_32
+        // TODO:
+        NSLog(@"%s %d", __FUNCTION__, __LINE__);
+#else
+		glRotatef( angle, 0, 0, 1);
+#endif
+
+        [self drawCrossLines: sft
+                         ctx: cgl_ctx // do we really need this ?
+               perpendicular: NO
+                   withShift: 0
+                        half: YES];
+
+#ifdef WITH_OPENGL_32
+        // TODO:
+        NSLog(@"%s %d", __FUNCTION__, __LINE__);
+#else
+		glRotatef( -angle, 0, 0, 1);
+#endif
 	}
 }
 
@@ -732,6 +766,8 @@ unsigned int minimumStep;
 	scaleValue = copyScale;
 }
 
+#pragma mark -
+
 - (void) subDrawRect: (NSRect) r
 {
 	if ([stringID isEqualToString: @"export"] &&
@@ -741,7 +777,7 @@ unsigned int minimumStep;
 		return;
     }
 	
-	rotation = 0;
+	self.rotation = 0;
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil) {
@@ -759,20 +795,25 @@ unsigned int minimumStep;
 	
     //NSLog(@"%s %d, %@, %p, ID:%d", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, viewID);
 
-	if (displayCrossLines && frameZoomed == NO)
+#pragma mark crosslines
+
+    if (displayCrossLines && frameZoomed == NO)
 	{
 		// All pix have the same thickness
 		float thickness = [pix sliceThickness];
         //NSLog(@"%s %d, %@, %p, ID:%d", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, viewID);
-		
-		switch( viewID)
+
+#ifdef WITH_OPENGL_32
+        [self setShaderProgramOverlay_withMode_Normal];
+#endif
+		switch (viewID)
 		{
 			case 1:
-				glColor4f([windowController.colorAxis2 redComponent],
-                          [windowController.colorAxis2 greenComponent],
-                          [windowController.colorAxis2 blueComponent],
-                          [windowController.colorAxis2 alphaComponent]);
-				if (crossLinesA[ 0][ 0] != HUGE_VALF)
+				renderer_set_rgba([windowController.colorAxis2 redComponent],
+                                  [windowController.colorAxis2 greenComponent],
+                                  [windowController.colorAxis2 blueComponent],
+                                  [windowController.colorAxis2 alphaComponent]);
+                if (crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesA thickness: thickness];
 					
@@ -782,11 +823,13 @@ unsigned int minimumStep;
 					if (viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
 						[self drawRotationLines: crossLinesA];
 				}
-				glColor4f([windowController.colorAxis3 redComponent],
-                          [windowController.colorAxis3 greenComponent],
-                          [windowController.colorAxis3 blueComponent],
-                          [windowController.colorAxis3 alphaComponent]);
-				if (crossLinesB[ 0][ 0] != HUGE_VALF)
+
+                renderer_set_rgba([windowController.colorAxis3 redComponent],
+                                  [windowController.colorAxis3 greenComponent],
+                                  [windowController.colorAxis3 blueComponent],
+                                  [windowController.colorAxis3 alphaComponent]);
+
+                if (crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesB thickness: thickness];
 					
@@ -799,10 +842,10 @@ unsigned int minimumStep;
 			break;
 			
 			case 2:
-				glColor4f([windowController.colorAxis1 redComponent],
-                          [windowController.colorAxis1 greenComponent],
-                          [windowController.colorAxis1 blueComponent],
-                          [windowController.colorAxis1 alphaComponent]);
+				renderer_set_rgba([windowController.colorAxis1 redComponent],
+                                  [windowController.colorAxis1 greenComponent],
+                                  [windowController.colorAxis1 blueComponent],
+                                  [windowController.colorAxis1 alphaComponent]);
 				if (crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesA thickness: thickness];
@@ -814,10 +857,10 @@ unsigned int minimumStep;
 						[self drawRotationLines: crossLinesA];
 				}
 				
-				glColor4f([windowController.colorAxis3 redComponent],
-                          [windowController.colorAxis3 greenComponent],
-                          [windowController.colorAxis3 blueComponent],
-                          [windowController.colorAxis3 alphaComponent]);
+				renderer_set_rgba([windowController.colorAxis3 redComponent],
+                                  [windowController.colorAxis3 greenComponent],
+                                  [windowController.colorAxis3 blueComponent],
+                                  [windowController.colorAxis3 alphaComponent]);
 				if (crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesB thickness: thickness];
@@ -831,10 +874,10 @@ unsigned int minimumStep;
 			break;
 			
 			case 3:
-				glColor4f([windowController.colorAxis1 redComponent],
-                          [windowController.colorAxis1 greenComponent],
-                          [windowController.colorAxis1 blueComponent],
-                          [windowController.colorAxis1 alphaComponent]);
+				renderer_set_rgba([windowController.colorAxis1 redComponent],
+                                  [windowController.colorAxis1 greenComponent],
+                                  [windowController.colorAxis1 blueComponent],
+                                  [windowController.colorAxis1 alphaComponent]);
 				if (crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesA thickness: thickness];
@@ -845,11 +888,11 @@ unsigned int minimumStep;
 					if (viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
 						[self drawRotationLines: crossLinesA];
 				}
-				
-				glColor4f([windowController.colorAxis2 redComponent],
-                          [windowController.colorAxis2 greenComponent],
-                          [windowController.colorAxis2 blueComponent],
-                          [windowController.colorAxis2 alphaComponent]);
+
+				renderer_set_rgba([windowController.colorAxis2 redComponent],
+                                  [windowController.colorAxis2 greenComponent],
+                                  [windowController.colorAxis2 blueComponent],
+                                  [windowController.colorAxis2 alphaComponent]);
 				if (crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesB thickness: thickness];
@@ -867,9 +910,12 @@ unsigned int minimumStep;
 	
     if ([stringID isEqualToString: @"export"]) {
         NSLog(@"%s %d, %@, %p, ID:%d early return", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, viewID);
-		return;
+
+        return;
     }
 	
+#pragma mark colored bounding box
+
     //NSLog(@"%s %d, %@, %p, ID:%d", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, viewID);
 
 	float heighthalf = [self convertSizeToBacking: self.frame.size].height/2;
@@ -877,21 +923,62 @@ unsigned int minimumStep;
 	
 	[self colorForView: viewID];
 	
-	// Red Square
-	if ([[self window] firstResponder] == self && frameZoomed == NO)
+    if ([[self window] firstResponder] == self && frameZoomed == NO)
 	{
-		glLineWidth(8.0 * self.window.backingScaleFactor);
+        [self setShaderProgramForLineWidth: 8.0 * self.window.backingScaleFactor];
+#ifdef WITH_OPENGL_32
+        const int nPoints = 4;
+        glm::vec2 pA[nPoints];
+        pA[0] = glm::vec2( -widthhalf, -heighthalf);
+        pA[1] = glm::vec2( -widthhalf,  heighthalf);
+        pA[2] = glm::vec2(  widthhalf,  heighthalf);
+        pA[3] = glm::vec2(  widthhalf, -heighthalf);
+
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (int i=0; i<nPoints; i++)
+            [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec2)]];
+        
+        renderer_drawLine_xy([pArray copy], GL_LINE_LOOP);
+#else
 		glBegin(GL_LINE_LOOP);
         {
-			glVertex2f(  -widthhalf, -heighthalf);
-			glVertex2f(  -widthhalf, heighthalf);
-			glVertex2f(  widthhalf, heighthalf);
+			glVertex2f( -widthhalf, -heighthalf);
+			glVertex2f( -widthhalf,  heighthalf);
+			glVertex2f(  widthhalf,  heighthalf);
 			glVertex2f(  widthhalf, -heighthalf);
         }
 		glEnd();
+#endif
 	}
 	
-	glLineWidth(2.0 * self.window.backingScaleFactor);
+#pragma mark color label
+    // Small colored box identifying the subview in the top right corner
+
+#define VIEW_COLOR_LABEL_SIZE 25
+
+#ifdef WITH_OPENGL_32
+    // We don't need to set the line width, it's filled anyway
+    [self setShaderProgramOverlay_withMode_Normal];
+#else
+    [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
+#endif
+
+#ifdef WITH_OPENGL_32
+    {
+        const int nPoints = 4;
+        glm::vec2 pA[nPoints];
+        pA[0] = glm::vec2(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
+        pA[1] = glm::vec2(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
+        pA[2] = glm::vec2(widthhalf, -heighthalf);
+        pA[3] = glm::vec2(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
+        
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (int i=0; i<nPoints; i++)
+            [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec2)]];
+        
+        renderer_drawPolygon([pArray copy]); // GL_TRIANGLE_FAN
+    }
+#else
 	glBegin(GL_POLYGON);
     {
 		glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
@@ -900,9 +987,14 @@ unsigned int minimumStep;
 		glVertex2f(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
     }
 	glEnd();
-	glLineWidth(1.0 * self.window.backingScaleFactor);
+#endif
+    
+    // Maybe we don't need this with Core profile
+    [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
 	
-	if (displayCrossLines &&
+#pragma mark mouse position (points)
+
+    if (displayCrossLines &&
         frameZoomed == NO &&
         windowController.displayMousePosition &&
         !windowController.mprView1.rotateLines &&
@@ -926,13 +1018,15 @@ unsigned int minimumStep;
 					viewIDA = 2;
 					viewIDB = 3;
 					break;
-				case 2:
+
+                case 2:
 					pixA = [windowController.mprView1 pix];
 					pixB = [windowController.mprView3 pix];
 					viewIDA = 1;
 					viewIDB = 3;					
 					break;
-				case 3:
+
+                case 3:
 					pixA = [windowController.mprView1 pix];
 					pixB = [windowController.mprView2 pix];
 					viewIDA = 1;
@@ -940,12 +1034,20 @@ unsigned int minimumStep;
 					break;		
 			}
 			
-			[self colorForView:viewIDA];
+#ifdef WITH_OPENGL_32
+            [self setShaderProgramOverlay_withMode_Point]; // Added
+#endif
+
+            [self colorForView:viewIDA];
 			Point3D *pt = windowController.mousePosition;
-			float sc[ 3], dc[ 3] = { pt.x, pt.y, pt.z}, location[ 3];
+            float dc[ 3] = { pt.x, pt.y, pt.z};
+            float sc[ 3];
 			[pixA convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
-			sc[0] = sc[ 0] / pixA.pixelSpacingX;
+
+            sc[0] = sc[ 0] / pixA.pixelSpacingX;
 			sc[1] = sc[ 1] / pixA.pixelSpacingY;
+
+            float location[ 3];
 			[pixA convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
 			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
 			
@@ -953,12 +1055,22 @@ unsigned int minimumStep;
             sc[1] = sc[ 1] / curDCM.pixelSpacingY;
             sc[0] -= curDCM.pwidth * 0.5f;
             sc[1] -= curDCM.pheight * 0.5f;
-			glPointSize( 10 * self.window.backingScaleFactor);
+
+            glPointSize( 10 * self.window.backingScaleFactor);
+#ifdef WITH_OPENGL_32
+            {
+            NSMutableArray *pArray = [NSMutableArray array];
+            glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+            renderer_drawPoints([pArray copy]);
+            }
+#else
 			glBegin( GL_POINTS);
             {
                 glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
             }
 			glEnd();
+#endif
 			
 			[self colorForView:viewIDB];
 			pt = windowController.mousePosition;
@@ -976,12 +1088,23 @@ unsigned int minimumStep;
             sc[0] -= curDCM.pwidth * 0.5f;
             sc[1] -= curDCM.pheight * 0.5f;
 			glPointSize( 10 * self.window.backingScaleFactor);
+#ifdef WITH_OPENGL_32
+            {
+            NSMutableArray *pArray = [NSMutableArray array];
+            glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+            renderer_drawPoints([pArray copy]);
+            }
+#else
 			glBegin( GL_POINTS);
             {
                 glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
             }
 			glEnd();
+#endif
 		}
+        
+#pragma mark points
 
         if (viewID != windowController.mouseViewID)
 		{
@@ -997,15 +1120,30 @@ unsigned int minimumStep;
             sc[1] = sc[ 1] / curDCM.pixelSpacingY;
             sc[0] -= curDCM.pwidth * 0.5f;
             sc[1] -= curDCM.pheight * 0.5f;
+            
+#ifdef WITH_OPENGL_32
+            [self setShaderProgramOverlay_withMode_Point]; // Added
+#endif
 			glPointSize( 10 * self.window.backingScaleFactor);
+#ifdef WITH_OPENGL_32
+            {
+            NSMutableArray *pArray = [NSMutableArray array];
+            glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+            renderer_drawPoints([pArray copy]);
+            }
+#else
 			glBegin( GL_POINTS);
             {
                 glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
             }
 			glEnd();
+#endif
 		}
 	}
     
+#pragma mark OSIROIs
+
     [self drawOSIROIs];
 	
 	glDisable(GL_LINE_SMOOTH);
@@ -1015,6 +1153,8 @@ unsigned int minimumStep;
 #endif
 	glDisable(GL_BLEND);
 }
+
+#pragma mark -
 
 - (void) setCrossReferenceLines: (float[2][3]) a
                         andLine: (float[2][3]) b
@@ -1252,7 +1392,7 @@ unsigned int minimumStep;
                 // Is this point in our plane?
                 
                 float vectors[ 9], orig[ 3], locationTemp[ 3];
-                float distance = 999999;
+                float distance = FLT_MAX;
                 
                 orig[ 0] = [pix originX];
                 orig[ 1] = [pix originY];
@@ -1361,17 +1501,18 @@ unsigned int minimumStep;
 
 #define BS 10.
 
-- (float) angleBetween:(NSPoint) mouseLocation center:(NSPoint) center
+- (float) angleBetween:(NSPoint) mouseLocation
+                center:(NSPoint) center
 {
 	mouseLocation.x -= center.x;
 	mouseLocation.y -= center.y;
 	
-    return -atan2( mouseLocation.x, mouseLocation.y) / deg2rad;
+    return glm::degrees(-atan2(mouseLocation.x, mouseLocation.y));
 }
 
 - (NSPoint) centerLines
 {
-    NSPoint r = NSMakePoint( 0, 0);
+    NSPoint r = NSZeroPoint;
     
     // One line or no lines : find the middle of the line
     if (crossLinesB[ 0][ 0] == HUGE_VALF)
@@ -2047,17 +2188,30 @@ unsigned int minimumStep;
     double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
     
-    for (OSIROI *roi in [[self ROIManager] ROIs]) {
+    for (OSIROI *roi in [[self ROIManager] ROIs])
+    {
+#ifdef WITH_OPENGL_32
+        // TODO: To be tested
+        #define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_MPRDCM1
+        #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_MPRDCM1
+        // Define a local model matrix and apply it locally without affecting the shader
+        glm::mat4 M = glm::make_mat4(pixToSubdrawRectOpenGLTransform);
+        #endif
+#else
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glMultMatrixd(pixToSubdrawRectOpenGLTransform);
+#endif
         
-        [roi drawSlab:OSISlabMake([self plane], 0) inCGLContext:cgl_ctx pixelFormat:(CGLPixelFormatObj)[[self pixelFormat] CGLPixelFormatObj]
-                dicomToPixTransform:N3AffineTransformInvert([self pixToDicomTransform])];
+        [roi drawSlab: OSISlabMake([self plane], 0)
+         inCGLContext: cgl_ctx
+          pixelFormat: (CGLPixelFormatObj)[[self pixelFormat] CGLPixelFormatObj]
+  dicomToPixTransform: N3AffineTransformInvert([self pixToDicomTransform])];
         
+#ifndef WITH_OPENGL_32
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
-        
+#endif        
     }
 }
 

@@ -84,6 +84,8 @@
 
 @end
 
+#pragma mark -
+
 @implementation CPRStraightenedGeneratorRequest
 
 @synthesize bezierPath = _bezierPath;
@@ -95,7 +97,7 @@
 - (id)init
 {
     if ( (self = [super init]) ) {
-        _projectionMode = CPRProjectionModeNone;
+        _projectionMode = CPR_PROJECTION_MODE_NONE;
     }
     return self;
 }
@@ -134,7 +136,6 @@
     return [super hash] ^ [_bezierPath hash] ^ (NSUInteger)N3VectorLength(_initialNormal) ^ (NSUInteger)_projectionMode /* ^ (NSUInteger)_vertical */;
 }
 
-
 - (void)dealloc
 {
     [_bezierPath release];
@@ -149,6 +150,8 @@
 
 @end
 
+#pragma mark -
+
 @implementation CPRStretchedGeneratorRequest
 
 @synthesize bezierPath = _bezierPath;
@@ -160,7 +163,7 @@
 - (id)init
 {
     if ( (self = [super init]) ) {
-        _projectionMode = CPRProjectionModeNone;
+        _projectionMode = CPR_PROJECTION_MODE_NONE;
     }
     return self;
 }
@@ -215,6 +218,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation CPRObliqueSliceGeneratorRequest : CPRGeneratorRequest
 
@@ -274,7 +278,7 @@
 - (id)init
 {
     if ( (self = [super init]) ) {
-        _projectionMode = CPRProjectionModeNone;
+        _projectionMode = CPR_PROJECTION_MODE_NONE;
     }
     return self;
 }
@@ -297,7 +301,7 @@
 
         _origin = N3VectorAdd(N3VectorAdd(center, N3VectorScalarMultiply(xBasis, (CGFloat)pixelsWide/-2.0)), N3VectorScalarMultiply(yBasis, (CGFloat)pixelsHigh/-2.0));
         
-        _projectionMode = CPRProjectionModeNone;
+        _projectionMode = CPR_PROJECTION_MODE_NONE;
     }
     return self;
 }

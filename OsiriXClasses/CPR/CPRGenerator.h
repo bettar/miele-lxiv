@@ -51,6 +51,7 @@
 
 @end
 
+#pragma mark -
 
 @protocol CPRGeneratorDelegate <NSObject>
 @required

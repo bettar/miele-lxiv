@@ -75,7 +75,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
     for( int i = 0; i < cachedObjects.count; i++)
     {
-        if( [[cachedObjects objectAtIndex: i] isKindOfClass: [DCMTKStudyQueryNode class]] == NO)
+        if ([[cachedObjects objectAtIndex: i] isKindOfClass: [DCMTKStudyQueryNode class]] == NO)
             [cachedObjects replaceObjectAtIndex: i withObject: [[cachedObjects objectAtIndex: i] objectID]];
     }
     
@@ -84,7 +84,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
                                  
 - (void) generatePassword
 {
-	if( generator == nil)
+	if (generator == nil)
 		generator = [[PSGenerator alloc] initWithSourceString: @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" minLength: 12 maxLength: 12];
 	
 	[self setValue: [[generator generate: 1] lastObject] forKey: @"password"];
@@ -92,7 +92,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
 - (NSString*) email
 {
-	if( [self primitiveValueForKey: @"email"] == nil)
+	if ([self primitiveValueForKey: @"email"] == nil)
 		return @"";
 	
 	return [self primitiveValueForKey: @"email"];
@@ -100,7 +100,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
 - (NSString*) phone
 {
-	if( [self primitiveValueForKey: @"phone"] == nil)
+	if ([self primitiveValueForKey: @"phone"] == nil)
 		return @"";
 	
 	return [self primitiveValueForKey: @"phone"];
@@ -108,7 +108,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
 - (NSString*) address
 {
-	if( [self primitiveValueForKey: @"address"] == nil)
+	if ([self primitiveValueForKey: @"address"] == nil)
 		return @"";
 	
 	return [self primitiveValueForKey: @"address"];
@@ -118,16 +118,16 @@ static NSMutableDictionary *studiesForUserCache = nil;
 {
 	[super awakeFromInsert];
 	
-	if( [self primitiveValueForKey: @"passwordCreationDate"] == nil)
+	if ([self primitiveValueForKey: @"passwordCreationDate"] == nil)
 		[self setPrimitiveValue: [NSDate date] forKey: @"passwordCreationDate"];
 	
-	if( [self primitiveValueForKey: @"creationDate"] == nil)
+	if ([self primitiveValueForKey: @"creationDate"] == nil)
 		[self setPrimitiveValue: [NSDate date] forKey: @"creationDate"];
 	
-	if( [self primitiveValueForKey: @"dateAdded"] == nil)
+	if ([self primitiveValueForKey: @"dateAdded"] == nil)
 		[self setPrimitiveValue: [NSDate date] forKey: @"dateAdded"];
 
-	if( [self primitiveValueForKey: @"studyPredicate"] == nil)
+	if ([self primitiveValueForKey: @"studyPredicate"] == nil)
 		[self setPrimitiveValue: @"(YES == NO)" forKey: @"studyPredicate"];
 	
 	[self generatePassword];
@@ -143,20 +143,21 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
 - (void) setAutoDelete: (NSNumber*) v
 {
-	if( [v boolValue])
+	if ([v boolValue])
 	{
 		[self setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [NSDate timeIntervalSinceReferenceDate] + [[NSUserDefaults standardUserDefaults] integerForKey: @"temporaryUserDuration"] * 60L*60L*24L] forKey: @"deletionDate"];
 	}
-	[self willChangeValueForKey: @"autoDelete"];
+
+    [self willChangeValueForKey: @"autoDelete"];
 	[self setPrimitiveValue: v forKey: @"autoDelete"];
     [self didChangeValueForKey: @"autoDelete"];
 }
 
 - (void) setName: (NSString*) newName
 {
-    if( [newName isEqualToString: self.name] == NO)
+    if ([newName isEqualToString: self.name] == NO)
     {
-        if( [self.password length] > 0 && [self.password isEqualToString: HASHPASSWORD] == NO)
+        if ([self.password length] > 0 && [self.password isEqualToString: HASHPASSWORD] == NO)
         {
             
         }
@@ -214,36 +215,36 @@ static NSMutableDictionary *studiesForUserCache = nil;
 {
     NSString *password2validate = *value;
     
-    if( [password2validate isEqualToString: HASHPASSWORD] == NO)
+    if ([password2validate isEqualToString: HASHPASSWORD] == NO)
     {
-        if( [[password2validate stringByReplacingOccurrencesOfString: @"*" withString: @""] length] == 0)
+        if ([[password2validate stringByReplacingOccurrencesOfString: @"*" withString: @""] length] == 0)
         {
             if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password cannot contain only '*' characters.", NULL)];
             return NO;
         }
 	    
-        if( [password2validate length] < 4)
+        if ([password2validate length] < 4)
         {
             if (error)
                 *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password needs to be at least 4 characters long.", NULL)];
             return NO;
         }
         
-        if( [password2validate stringByTrimmingCharactersInSet: [NSCharacterSet decimalDigitCharacterSet]].length == 0)
+        if ([password2validate stringByTrimmingCharactersInSet: [NSCharacterSet decimalDigitCharacterSet]].length == 0)
         {
             if (error)
                 *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password cannot contain only numbers: add letters.", NULL)];
             return NO;
         }
         
-        if( [password2validate stringByReplacingOccurrencesOfString: [password2validate substringToIndex: 1] withString: @""].length == 0)
+        if ([password2validate stringByReplacingOccurrencesOfString: [password2validate substringToIndex: 1] withString: @""].length == 0)
         {
             if (error)
                 *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password cannot contain only the same character.", NULL)];
             return NO;
         }
         
-        if( [password2validate length] - [[password2validate commonPrefixWithString: self.name options: NSCaseInsensitiveSearch] length] < 4)
+        if ([password2validate length] - [[password2validate commonPrefixWithString: self.name options: NSCaseInsensitiveSearch] length] < 4)
         {
             if (error)
                 *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password needs to be different from the user name.", NULL)];
@@ -255,14 +256,14 @@ static NSMutableDictionary *studiesForUserCache = nil;
         for( int i = 0; i < [password2validate length]; i++)
         {
             NSString *character = [password2validate substringWithRange: NSMakeRange( i, 1)];
-            if( [array containsObject: character] == NO)
+            if ([array containsObject: character] == NO)
             {
                 invidualCharacters++;
                 [array addObject: character];
             }
         }
         
-        if( invidualCharacters < 3)
+        if (invidualCharacters < 3)
         {
             if (error)
                 *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password needs to have at least 3 different characters.", NULL)];
@@ -334,29 +335,31 @@ static NSMutableDictionary *studiesForUserCache = nil;
 {
 	NSMutableArray *specificArray = nil;
 	
-    if( array == nil)
+    if (array == nil)
         array = [NSArray array];
     
 	@try
 	{
 		NSArray* userStudies = self.studies.allObjects;
 		
-		if( userStudies.count == 0)
+		if (userStudies.count == 0)
 			return array;
         
         NSString *userID = [self.name stringByAppendingString: @" specificStudies"];
         
         @synchronized( studiesForUserCache)
         {
-            if( userID && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT) // one hour
+            if (userID &&
+                [studiesForUserCache objectForKey: userID] &&
+                [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT) // one hour
             {
                 DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
                 
                 NSMutableArray *cachedObjects = [NSMutableArray arrayWithArray: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]];
                 
-                for( int i = 0; i < cachedObjects.count; i++)
+                for (int i = 0; i < cachedObjects.count; i++)
                 {
-                    if( [[cachedObjects objectAtIndex: i] isKindOfClass: [NSManagedObjectID class]])
+                    if ([[cachedObjects objectAtIndex: i] isKindOfClass: [NSManagedObjectID class]])
                         [cachedObjects replaceObjectAtIndex: i withObject: [dicomDBContext objectWithID: [cachedObjects objectAtIndex: i]]];
                 }
                 
@@ -364,21 +367,22 @@ static NSMutableDictionary *studiesForUserCache = nil;
             }
         }
         
-        if( specificArray == nil)
+        if (specificArray == nil)
         {
             NSArray* studiesArray = nil;
             
             @synchronized( studiesForUserCache)
             {
-                if( [studiesForUserCache objectForKey: @"all DB studies"] && [[[studiesForUserCache objectForKey: @"all DB studies"] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT)
+                if ([studiesForUserCache objectForKey: @"all DB studies"] &&
+                    [[[studiesForUserCache objectForKey: @"all DB studies"] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT)
                 {
                     DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
                     
                     NSMutableArray *cachedObjects = [NSMutableArray arrayWithArray: [[studiesForUserCache objectForKey: @"all DB studies"] objectForKey: @"array"]];
                     
-                    for( int i = 0; i < cachedObjects.count; i++)
+                    for (int i = 0; i < cachedObjects.count; i++)
                     {
-                        if( [[cachedObjects objectAtIndex: i] isKindOfClass: [NSManagedObjectID class]])
+                        if ([[cachedObjects objectAtIndex: i] isKindOfClass: [NSManagedObjectID class]])
                             [cachedObjects replaceObjectAtIndex: i withObject: [dicomDBContext objectWithID: [cachedObjects objectAtIndex: i]]];
                     }
                     
@@ -386,7 +390,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 }
             }
             
-            if( studiesArray == nil)
+            if (studiesArray == nil)
             {
                 DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
                 
@@ -400,7 +404,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 
                 @synchronized( studiesForUserCache)
                 {
-                    if( studiesArray)
+                    if (studiesArray)
                         [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys:
                                                          [WebPortalUser cachedArrayForArray: studiesArray], @"array",
                                                          [NSDate date], @"date",
@@ -441,7 +445,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
             
             @synchronized( studiesForUserCache)
             {
-                if( userID)
+                if (userID)
                     [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys:
                                                      [WebPortalUser cachedArrayForArray: specificArray], @"array",
                                                      [NSDate date], @"date",
@@ -499,14 +503,14 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext: dicomDBContext.managedObjectContext];
 		
 		BOOL allStudies = NO;
-		if( user.studyPredicate.length == 0)
+		if (user.studyPredicate.length == 0)
 			allStudies = YES;
 		
-		if( allStudies == NO)
+		if (allStudies == NO)
 		{
             req.predicate = [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate];
 			
-            if( studiesForUserCache == nil && user)
+            if (studiesForUserCache == nil && user)
             {
                 studiesForUserCache = [[NSMutableDictionary alloc] init];
                 [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(managedObjectChangedNotificationReceived:) name: NSManagedObjectContextObjectsDidChangeNotification object: nil];
@@ -516,13 +520,13 @@ static NSMutableDictionary *studiesForUserCache = nil;
             
             @synchronized( studiesForUserCache)
             {
-                if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT)
+                if (user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT)
                 {
                     NSMutableArray *cachedObjects = [NSMutableArray arrayWithArray: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]];
                     
                     for( int i = 0; i < cachedObjects.count; i++)
                     {
-                        if( [[cachedObjects objectAtIndex: i] isKindOfClass: [NSManagedObjectID class]])
+                        if ([[cachedObjects objectAtIndex: i] isKindOfClass: [NSManagedObjectID class]])
                             [cachedObjects replaceObjectAtIndex: i withObject: [dicomDBContext objectWithID: [cachedObjects objectAtIndex: i]]];
                     }
                     
@@ -530,13 +534,13 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 }
             }
             
-            if( studiesArray == nil)
+            if (studiesArray == nil)
             {
                 studiesArray = [dicomDBContext.managedObjectContext executeFetchRequest:req error:NULL];
                 
                 @synchronized( studiesForUserCache)
                 {
-                    if( user && studiesArray)
+                    if (user && studiesArray)
                         [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys:
                                                          [WebPortalUser cachedArrayForArray: studiesArray], @"array",
                                                          [NSDate date], @"date",
@@ -545,13 +549,13 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 }
             }
             
-            if( user && user.studyPredicate.length > 0)
+            if (user && user.studyPredicate.length > 0)
 				studiesArray = [user arrayByAddingSpecificStudiesToArray: studiesArray];
             
-            if( predicate)
+            if (predicate)
                 studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
             
-			if( user.canAccessPatientsOtherStudies.boolValue)
+			if (user.canAccessPatientsOtherStudies.boolValue)
 			{
 				NSFetchRequest* req = [[NSFetchRequest alloc] init];
 				req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext: dicomDBContext.managedObjectContext];
@@ -561,7 +565,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 				
 				studiesArray = [dicomDBContext.managedObjectContext executeFetchRequest:req error:NULL];
 				
-				if( predicate && studiesArray.count != previousStudiesArrayCount)
+				if (predicate && studiesArray.count != previousStudiesArrayCount)
 					studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
 				
 				[req release];
@@ -569,7 +573,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		}
 		else
 		{
-			if( predicate == nil)
+			if (predicate == nil)
 				predicate = [NSPredicate predicateWithValue: YES];
 			
 			req.predicate = predicate;
@@ -577,25 +581,25 @@ static NSMutableDictionary *studiesForUserCache = nil;
 			studiesArray = [dicomDBContext.managedObjectContext executeFetchRequest:req error:NULL];
 		}
         
-        if( [sortValue length])
+        if ([sortValue length] > 0)
 		{
-			if( [sortValue rangeOfString: @"date"].location == NSNotFound)
+			if ([sortValue rangeOfString: @"date"].location == NSNotFound)
 				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: sortValue ascending: YES selector: @selector(caseInsensitiveCompare:)]]];
 			else
 				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: sortValue ascending: NO]]];
 		}
         
-		if( numberOfStudies)
+		if (numberOfStudies)
 			*numberOfStudies = studiesArray.count;
 		
-        if( fetchLimit)
+        if (fetchLimit)
         {
             NSRange range = NSMakeRange( fetchOffset, fetchLimit);
             
-            if( range.location > studiesArray.count)
+            if (range.location > studiesArray.count)
                 range.location = studiesArray.count;
             
-            if( range.location + range.length > studiesArray.count)
+            if (range.location + range.length > studiesArray.count)
                 range.length = studiesArray.count - range.location;
             
             studiesArray = [studiesArray subarrayWithRange: range];
@@ -605,7 +609,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		NSLog(@"Error: [WebPortal studiesForUser:predicate:sortBy:] %@", e);
 	}
 	
-    if( studiesArray == nil)
+    if (studiesArray == nil)
         studiesArray = [NSArray array];
     
 	return studiesArray;
@@ -642,15 +646,17 @@ static NSMutableDictionary *studiesForUserCache = nil;
     {
         NSMutableSet *set = [NSMutableSet set];
         
-        if( [n.userInfo objectForKey: NSInsertedObjectsKey])
+        if ([n.userInfo objectForKey: NSInsertedObjectsKey])
             [set unionSet: [n.userInfo objectForKey: NSInsertedObjectsKey]];
         
-        if( [n.userInfo objectForKey: NSDeletedObjectsKey])
+        if ([n.userInfo objectForKey: NSDeletedObjectsKey])
             [set unionSet: [n.userInfo objectForKey: NSDeletedObjectsKey]];
         
         for( NSManagedObject *object in set)
         {
-            if( [object isKindOfClass: [DicomStudy class]] || [object isKindOfClass: [WebPortalUser class]] || [object isKindOfClass: [WebPortalStudy class]])
+            if ([object isKindOfClass: [DicomStudy class]] ||
+                [object isKindOfClass: [WebPortalUser class]] ||
+                [object isKindOfClass: [WebPortalStudy class]])
             {
                 [studiesForUserCache removeAllObjects];
                 [DicomStudyTransformer clearOtherStudiesForThisPatientCache];
@@ -662,12 +668,12 @@ static NSMutableDictionary *studiesForUserCache = nil;
         
         set = [NSMutableSet set];
         
-        if( [n.userInfo objectForKey: NSUpdatedObjectsKey])
+        if ([n.userInfo objectForKey: NSUpdatedObjectsKey])
             [set unionSet: [n.userInfo objectForKey: NSUpdatedObjectsKey]];
         
         for( NSManagedObject *object in set)
         {
-            if( [object isKindOfClass: [WebPortalUser class]])
+            if ([object isKindOfClass: [WebPortalUser class]])
             {
                 [studiesForUserCache removeAllObjects];
                 [DicomStudyTransformer clearOtherStudiesForThisPatientCache];
@@ -681,7 +687,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 {
 	NSArray *studiesArray = nil, *albumArray = nil;
 	
-    if( studiesForUserCache == nil && user)
+    if (studiesForUserCache == nil && user)
     {
         studiesForUserCache = [[NSMutableDictionary alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(managedObjectChangedNotificationReceived:) name: NSManagedObjectContextObjectsDidChangeNotification object: nil];
@@ -691,15 +697,17 @@ static NSMutableDictionary *studiesForUserCache = nil;
     
     @synchronized( studiesForUserCache)
     {
-        if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT)
+        if (user &&
+            [studiesForUserCache objectForKey: userID] &&
+            [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT)
         {
             DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
             
             NSMutableArray *cachedObjects = [NSMutableArray arrayWithArray: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]];
             
-            for( int i = 0; i < cachedObjects.count; i++)
+            for (int i = 0; i < cachedObjects.count; i++)
             {
-                if( [[cachedObjects objectAtIndex: i] isKindOfClass: [NSManagedObjectID class]])
+                if ([[cachedObjects objectAtIndex: i] isKindOfClass: [NSManagedObjectID class]])
                     [cachedObjects replaceObjectAtIndex: i withObject: [dicomDBContext objectWithID: [cachedObjects objectAtIndex: i]]];
             }
             
@@ -712,7 +720,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
         }
     }
     
-    if( studiesArray == nil)
+    if (studiesArray == nil)
     {
         DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
         
@@ -743,9 +751,9 @@ static NSMutableDictionary *studiesForUserCache = nil;
             pred = [pred stringByReplacingOccurrencesOfString:@" " withString: @""];
             pred = [pred stringByReplacingOccurrencesOfString:@"(" withString: @""];
             pred = [pred stringByReplacingOccurrencesOfString:@")" withString: @""];
-            if( user == nil || pred.length == 0 || [pred isEqualToString: @"YES==YES"])
+            if (user == nil || pred.length == 0 || [pred isEqualToString: @"YES==YES"])
             {
-                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalAlbums"])
+                if ([[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalAlbums"])
                 {
 //                    BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
 //                    BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
@@ -754,32 +762,33 @@ static NSMutableDictionary *studiesForUserCache = nil;
                     // Servers
                     NSArray *servers = [BrowserController comparativeServers];
                     
-                    if( servers.count)
+                    if (servers.count)
                     {
                         // Distant studies
                         // In current versions, two filters exist: modality & date
                         NSArray *distantStudies = nil;
-                        for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
+                        for (NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
                         {
-                            if( [[d valueForKey: @"activated"] boolValue] && [albumName isEqualToString: [d valueForKey: @"name"]])
+                            if ([[d valueForKey: @"activated"] boolValue] && [albumName isEqualToString: [d valueForKey: @"name"]])
                                 distantStudies = [QueryController queryStudiesForFilters: d servers: servers showErrors: NO];
                         }
                         
-                        if( distantStudies.count)
+                        if (distantStudies.count > 0)
                         {
                             NSMutableArray *mutableStudiesArray = [NSMutableArray arrayWithArray: studiesArray];
                             
                             // Merge local and distant studies
                             for( DCMTKStudyQueryNode *distantStudy in distantStudies)
                             {
-                                if( [[mutableStudiesArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                                if ([[mutableStudiesArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
                                     [mutableStudiesArray addObject: distantStudy];
                                 
-                                else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
+                                else if ([[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
                                 {
                                     NSUInteger index = [[mutableStudiesArray valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
                                     
-                                    if( index != NSNotFound && [[[mutableStudiesArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
+                                    if (index != NSNotFound &&
+                                        [[[mutableStudiesArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
                                     {
                                         [mutableStudiesArray replaceObjectAtIndex: index withObject: distantStudy];
                                     }
@@ -796,7 +805,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
         {
             NSArray *originalAlbum = [[album valueForKey:@"studies"] allObjects];
             
-            if( user.studyPredicate.length)
+            if (user.studyPredicate.length > 0)
             {
                 @try
                 {
@@ -831,7 +840,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
         
         @synchronized( studiesForUserCache)
         {
-            if( user && studiesArray)
+            if (user && studiesArray)
             {
                 [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys:
                                                  [WebPortalUser cachedArrayForArray: studiesArray], @"array",
@@ -842,17 +851,17 @@ static NSMutableDictionary *studiesForUserCache = nil;
         }
     }
         
-    if( numberOfStudies)
+    if (numberOfStudies)
         *numberOfStudies = studiesArray.count;
     
-    if( fetchLimit)
+    if (fetchLimit)
     {
         NSRange range = NSMakeRange( fetchOffset, fetchLimit);
         
-        if( range.location > studiesArray.count)
+        if (range.location > studiesArray.count)
             range.location = studiesArray.count;
         
-        if( range.location + range.length > studiesArray.count)
+        if (range.location + range.length > studiesArray.count)
             range.length = studiesArray.count - range.location;
         
         studiesArray = [studiesArray subarrayWithRange: range];
@@ -869,13 +878,13 @@ static NSMutableDictionary *studiesForUserCache = nil;
     
     NSSet *recentStudies = [self.recentStudies filteredSetUsingPredicate:[NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [oldestDate timeIntervalSinceReferenceDate]]];
     
-    for( NSString *patientUID in [[NSSet setWithArray: [recentStudies.allObjects valueForKey: @"patientUID"]] allObjects])
+    for (NSString *patientUID in [[NSSet setWithArray: [recentStudies.allObjects valueForKey: @"patientUID"]] allObjects])
     {
         DicomDatabase* ddb = [[[WebPortal defaultWebPortal] dicomDatabase] independentDatabase];
         
         NSArray *studies = [ddb objectsForEntity: @"Study" predicate: [NSPredicate predicateWithFormat: @"patientUID == %@", patientUID]];
         
-        if( studies.count)
+        if (studies.count > 0)
         {
             //take the most recent study
             [recentPatients addObject: [[studies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: YES]]] lastObject]];

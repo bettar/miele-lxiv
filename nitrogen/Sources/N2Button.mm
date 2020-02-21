@@ -20,6 +20,7 @@
 
 #import "N2Button.h"
 
+// 'N2Button' lacks a 'dealloc' instance method but must release '_representedObject'
 @implementation N2Button
 @synthesize representedObject = _representedObject;
 

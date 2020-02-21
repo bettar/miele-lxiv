@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -28,10 +28,10 @@
                         <rect key="frame" x="10" y="49" width="137" height="19"/>
                         <buttonCell key="cell" type="squareTextured" title="Visit Miele-LXIV web site" bezelStyle="texturedSquare" alignment="center" controlSize="small" borderStyle="border" inset="2" id="30">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="label" size="11"/>
                         </buttonCell>
                         <connections>
-                            <action selector="openOsirixWebPage:" target="-1" id="19"/>
+                            <action selector="openMieleLXIVWebPage:" target="-1" id="19"/>
                         </connections>
                     </button>
                     <imageView translatesAutoresizingMaskIntoConstraints="NO" id="22">
@@ -46,7 +46,7 @@
                         <rect key="frame" x="435" y="54" width="89" height="14"/>
                         <buttonCell key="cell" type="square" title="Version Number" bezelStyle="shadowlessSquare" alignment="right" inset="2" id="32">
                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="label" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="switchVersion:" target="-2" id="27"/>
@@ -55,7 +55,7 @@
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="33">
                         <rect key="frame" x="160" y="15" width="217" height="28"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" id="34">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="label" size="11"/>
                             <string key="title">This is not the Pixmeo version of OsiriX.
 This is a 64-bit free version.</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -77,6 +77,7 @@ This is a 64-bit free version.</string>
                 </constraints>
             </view>
             <contentBorderThickness minY="0.0" maxY="0.0"/>
+            <point key="canvasLocation" x="140" y="151"/>
         </window>
     </objects>
     <resources>

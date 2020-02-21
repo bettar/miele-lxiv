@@ -717,6 +717,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
      *   fname - [in] Name of the file which shall be processed.
      */
 {
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
     DIC_US msgId = assoc->nextMsgID++;
     T_ASC_PresentationContextID presId;
     T_DIMSE_C_StoreRQ req;
@@ -945,6 +946,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
      *   fname - [in] Name of the file which shall be processed.
      */
 {
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
     OFCondition cond = EC_Normal;
 	
     /* opt_repeatCount specifies how many times a certain file shall be processed */
@@ -960,6 +962,8 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
     /* return result value */
     return cond;
 }
+
+#pragma mark -
 
 @implementation DCMTKStoreSCU
 
@@ -1736,11 +1740,12 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
             
             [self updateLogEntry: userInfo];
             
-            if( [[userInfo objectForKey: @"SendTotal"] floatValue] >= 1)
+            if ([[userInfo objectForKey: @"SendTotal"] floatValue] >= 1)
             {
                 NSString *extraInfo = @"";
-                if( _secureConnection)
+                if ( _secureConnection)
                     extraInfo = NSLocalizedString(@" (TLS)", @"don't remove leading space");
+
                 NSInteger theNumber = [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue];
                 [NSThread currentThread].status = [NSString stringWithFormat:@"%d %@%@", (int) theNumber, (theNumber != 1? NSLocalizedString(@"files", nil) : NSLocalizedString(@"file", nil)), extraInfo];
                 [NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
@@ -1942,7 +1947,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 		if( [[userInfo objectForKey: @"SendTotal"] floatValue] >= 1)
 		{
             NSString *extraInfo = @"";
-            if( _secureConnection)
+            if ( _secureConnection)
                 extraInfo = @" (TLS Activated)";
             
 			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%@%@", nil), N2LocalizedSingularPluralCount( [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil)), extraInfo];

@@ -203,8 +203,12 @@ extern AppController* OsiriX;
 
 //===============HELP==========================
 - (IBAction) sendEmail: (id) sender;   /**< Send email to lead developer */
-- (IBAction) openOsirixWebPage: (id) sender;  /**<  Open OsiriX web page */
-- (IBAction) openOsirixDiscussion: (id) sender; /**< Open OsiriX discussion web page */
+
+// "Open" means open in web browser
+- (IBAction) openMieleLXIVWebPage: (id) sender;
+- (IBAction) openMieleLXIVSourceCode: (id) sender;
+- (IBAction) openMieleLXIVDiscussion: (id) sender;
+
 //- (IBAction) osirix64bit: (id) sender;
 - (IBAction) userManual: (id) sender;
 - (IBAction) conformanceStatement: (id) sender;
@@ -240,7 +244,7 @@ extern AppController* OsiriX;
 + (void) checkForPreferencesUpdate: (BOOL) b;
 + (BOOL) USETOOLBARPANEL;
 + (void) setUSETOOLBARPANEL: (BOOL) b;
-+ (NSRect) usefullRectForScreen: (NSScreen*) screen;
++ (NSRect) usefulRectForScreen: (NSScreen*) screen;
 
 - (void) addStudyToRecentStudiesMenu: (NSManagedObjectID*) studyID;
 - (void) loadRecentStudy: (id) sender;

@@ -263,9 +263,10 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 				NSArray* conditionPartsOp = [condition componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"=<>"]];
 				NSMutableArray* conditionPartsOp2 = [NSMutableArray array];
 				for (NSString* s in conditionPartsOp)
-					if (s.length)
+					if (s.length > 0)
 						[conditionPartsOp2 addObject:s];
-				if (conditionPartsOp2.count == 2) {
+
+                if (conditionPartsOp2.count == 2) {
 					NSString* sl = [conditionPartsOp2 objectAtIndex:0];
 					unichar sl0 = [sl characterAtIndex:0];
 					NSObject* vl = NULL;
@@ -325,7 +326,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		NSString* bodyYes;
 		NSString* bodyNo = NULL;
 		NSRange elseRange = [body rangeOfString:[NSString stringWithFormat:@"%%ELSE:%@%@%%", [parts objectAtIndex:1], tokenStrExtras]];
-		if (elseRange.length) {
+		if (elseRange.length > 0) {
 			bodyYes = [body substringToIndex:elseRange.location];
 			bodyNo = [body substringFromIndex:elseRange.location+elseRange.length];
 		}
@@ -398,7 +399,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		// is it a token, or just a random percentage?
 		NSRange occ2 = [string rangeOfString:@"%" options:NSLiteralSearch range:NSMakeRange(occ.location+1, string.length-occ.location-1)];
 		
-		if (!occ2.length)
+		if (occ2.length == 0)
 			isToken = NO;
 		else if ([string rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\n\r"] options:0 range:NSMakeRange(occ.location+1, occ2.location-occ.location-1)].length)
 			isToken = NO;
@@ -651,7 +652,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 			for (rest in [rest componentsSeparatedByString:@","]) {
 				NSArray* set = [rest componentsSeparatedByString:@"="];
 				if (set.count == 2) {
-					if ([[set objectAtIndex:1] length])
+					if ([[set objectAtIndex:1] length] > 0)
 						[vars setObject:[set objectAtIndex:1] forKey:[set objectAtIndex:0]];
 					else
                         [vars removeObjectForKey:[set objectAtIndex:0]];

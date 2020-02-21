@@ -20,6 +20,8 @@
 
 #import "mgl.h" // include first
 
+#import "GLRenderer.h"
+
 #import "OrthogonalMPRController.h"
 #import "OrthogonalMPRView.h"
 #import "DCMPix.h"
@@ -63,29 +65,30 @@
 {
 	float reverseScrollWheel;
 	
-	if( curImage < 0) return;
-	if( !drawing) return;
-	if( [[self window] isVisible] == NO) return;
-	if( [self is2DViewer] == YES)
+	if (curImage < 0) return;
+	if (!drawing) return;
+	if ([[self window] isVisible] == NO) return;
+
+    if ([self is2DViewer] == YES)
 	{
-		if( [[self windowController] windowWillClose])
+		if ([[self windowController] windowWillClose])
             return;
 	}
 	
 	BOOL SelectWindowScrollWheel = [[NSUserDefaults standardUserDefaults] boolForKey: @"SelectWindowScrollWheel"];
 	
-	if( [theEvent modifierFlags] & NSEventModifierFlagCapsLock)
+	if ([theEvent modifierFlags] & NSEventModifierFlagCapsLock)
 		SelectWindowScrollWheel = !SelectWindowScrollWheel;
 	
-	if( SelectWindowScrollWheel)
+	if (SelectWindowScrollWheel)
 	{
-		if( [[self window] isMainWindow] == NO)
+		if ([[self window] isMainWindow] == NO)
 			[[self window] makeKeyAndOrderFront: self];
 	}
 	
 	float deltaX = [theEvent deltaX];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ZoomWithHorizonScroll"] == NO)
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"ZoomWithHorizonScroll"] == NO)
         deltaX = 0;
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
@@ -114,15 +117,16 @@
 					[self setBlendingFactor: blendingFactor];
 				}
 			}
-			else if( [theEvent modifierFlags] & NSEventModifierFlagOption)
+			else if ([theEvent modifierFlags] & NSEventModifierFlagOption)
 			{
 				// 4D Direction scroll - Cardiac CT eg	
 				float change = [theEvent deltaY] / -2.5f;
 				
-				if( change > 0)
+				if (change > 0)
 				{
 					change = ceil( change);
-					if( change < 1) change = 1;
+					if (change < 1)
+                        change = 1;
 					
 					change += [[self windowController] curMovieIndex];
 					while( change >= [[self windowController] maxMovieIndex]) change -= [[self windowController] maxMovieIndex];
@@ -130,7 +134,8 @@
 				else
 				{
 					change = floor( change);
-					if( change > -1) change = -1;
+					if (change > -1)
+                        change = -1;
 					
 					change += [[self windowController] curMovieIndex];
 					while( change < 0) change += [[self windowController] maxMovieIndex];
@@ -141,15 +146,17 @@
 			else
 			{
 				change = reverseScrollWheel * [theEvent deltaY];
-				if( change > 0)
+				if (change > 0)
 				{
 					change = ceil( change);
-					if( change < 1) change = 1;
+					if (change < 1)
+                        change = 1;
 				}
 				else
 				{
 					change = floor( change);
-					if( change > -1) change = -1;		
+					if (change > -1)
+                        change = -1;
 				}
 				
 				if ( [self isKindOfClass: [OrthogonalMPRView class]] )
@@ -158,18 +165,20 @@
 				}
 			}
 		}
-		else if( deltaX != 0)
+		else if (deltaX != 0)
 		{
 			change = reverseScrollWheel * deltaX;
-			if( change >= 0)
+			if (change >= 0)
 			{
 				change = ceil( change);
-				if( change < 1) change = 1;
+				if (change < 1)
+                    change = 1;
 			}
 			else
 			{
 				change = floor( change);
-				if( change > -1) change = -1;		
+				if (change > -1)
+                    change = -1;
 			}
 			
 			if ( [self isKindOfClass: [OrthogonalMPRView class]] )
@@ -184,7 +193,10 @@
 
 - (id)initWithFrame:(NSRect)frameRect
 {
-	self = [super initWithFrame:frameRect];
+    NSLog(@"%s %d, class:%@, self:%p", __FUNCTION__, __LINE__,
+          NSStringFromClass([self class]), self);
+
+    self = [super initWithFrame:frameRect];
 	
 	displayResliceAxes = 1;
 	controller = nil;
@@ -230,22 +242,22 @@
 
 - (void) setPixList: (NSMutableArray*) pix :(NSArray*) files :(NSMutableArray*) rois
 {
-	long i;
+    NSLog(@"%s %d, class:%@, self:%p, pix count: %lu", __FUNCTION__, __LINE__,
+          NSStringFromClass([self class]), self, (unsigned long)pix.count);
 	
 	[self setPixels:pix files:files rois:rois firstImage:0 level:'i' reset:NO];
 	
-	//if( [[[[self window] windowController] windowNibName] isEqualToString:@"OrthogonalMPR"])
-	if(![[[[self window] windowController] windowNibName] isEqualToString:@"PETCT"])
+	//if ([[[[self window] windowController] windowNibName] isEqualToString:@"OrthogonalMPR"])
+	if (![[[[self window] windowController] windowNibName] isEqualToString:@"PETCT"])
 	{
 		// Prepare pixList for image thick slab - DO IT ONLY FOR NON - PET-CT VIEWER !!!!!!! ROI CRASH - Antoine
-		for( i = 0; i < [pix count]; i++)
+		for (long i = 0; i < [pix count]; i++)
 		{
 			[[pix objectAtIndex: i] setArrayPix: pix :i];
 		}
 	}
 	
-	[self setIndex:0];
-	
+	[self setIndex:0];	
 }
 
 - (void) setPixList: (NSMutableArray*) pix :(NSArray*) files
@@ -270,7 +282,7 @@
 
 - (void) setCurRoiList: (NSMutableArray*) rois
 {
-	if( rois != curRoiList)
+	if (rois != curRoiList)
 	{
 		[curRoiList release];
 		curRoiList = [rois retain];
@@ -287,7 +299,7 @@
 
 - (void) setController: (OrthogonalMPRController*) newController
 {
-	if( controller != newController)
+	if (controller != newController)
 	{
 		[controller release];
 		controller = [newController retain];
@@ -301,7 +313,7 @@
 
 - (void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) location 
 {
-    if( curDCM.stack > 1) {
+    if (curDCM.stack > 1) {
         long stackImageIndex;
         
         if (self.flippedData)
@@ -309,10 +321,10 @@
         else
             stackImageIndex = curImage+(curDCM.stack-1)/2;
         
-        if( stackImageIndex < 0)
+        if (stackImageIndex < 0)
             stackImageIndex = 0;
         
-        if( stackImageIndex >= [dcmPixList count])
+        if (stackImageIndex >= [dcmPixList count])
             stackImageIndex = (long)[dcmPixList count]-1;
         
         [[dcmPixList objectAtIndex: stackImageIndex] convertPixX: x
@@ -337,20 +349,20 @@
 
 - (void) setCrossPosition: (float) x : (float) y withNotification:(BOOL) doNotifychange
 {
-    if(crossPositionX == x && crossPositionY == y)
+    if (crossPositionX == x && crossPositionY == y)
 		return;
     
 	[self setCrossPositionX: x];
 	[self setCrossPositionY: y];
     [controller setCrossPosition: x:  y: self];
     
-    if(doNotifychange)
+    if (doNotifychange)
         [controller notifyPositionChange];
 }
 
 - (void) setCrossPositionX: (float) x
 {
-	if(crossPositionX == x)
+	if (crossPositionX == x)
 		return;
     
 	x = (x<0)? 0 : x;
@@ -360,7 +372,7 @@
 
 - (void) setCrossPositionY: (float) y
 {
-	if(crossPositionY == y)
+	if (crossPositionY == y)
 		return;
     
 	y = (y<0)? 0 : y;
@@ -392,27 +404,33 @@
 
 - (void) getWLWW:(float*) wl :(float*) ww
 {
-	if( curDCM == nil) NSLog(@"OrthogonalMPRView getWLWW : curDCM nil");
+    NSLog(@"%s %d, self:%p", __FUNCTION__, __LINE__, self);
+
+	if (curDCM == nil)
+        NSLog(@"OrthogonalMPRView getWLWW : curDCM nil");
 	else
 	{
-		if(wl) *wl = [curDCM wl];
-		if(ww) *ww = [curDCM ww];
+		if (wl)
+            *wl = [curDCM wl];
+        
+		if (ww)
+            *ww = [curDCM ww];
 	}
 }
 
 - (void) setScaleValue:(float) x
 {
-	if( [self pixelSpacingX] != 0 && [[controller originalView] pixelSpacingX] != 0)
+	if ([self pixelSpacingX] != 0 && [[controller originalView] pixelSpacingX] != 0)
 	{
-		if( [controller originalView] == self)
+		if ([controller originalView] == self)
         {
             [[self controller] setScaleValue: x ];
         }
-		else if( [controller yReslicedView] == self)
+		else if ([controller yReslicedView] == self)
         {
             [[self controller] setScaleValue: x  * [[controller originalView] pixelSpacingX] / [self pixelSpacingX]];
         }
-		else if( [controller xReslicedView] == self)
+		else if ([controller xReslicedView] == self)
         {
             [[self controller] setScaleValue: x  * [[controller originalView] pixelSpacingX] / [self pixelSpacingX]];
         }
@@ -440,7 +458,7 @@
 
 - (void) drawTextualData:(NSRect) size annotationsLevel:(long) annotations fullText: (BOOL) fullText onlyOrientation: (BOOL) onlyOrientation
 {
-	if( isKeyView == NO)
+	if (isKeyView == NO)
 		[super drawTextualData: size annotationsLevel: annotations fullText: NO onlyOrientation: YES];
 	else
 		[super drawTextualData: size annotationsLevel: annotations fullText: NO onlyOrientation: NO];
@@ -478,9 +496,47 @@
 	//	xAxeLength = viewportSizeX;
 	//	yAxeLength = viewportSizeY;
 		
-		glColor3f (0.0f, 1.0f, 0.0f);
-		glLineWidth(1.0 * self.window.backingScaleFactor);
+        [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
+        renderer_set_rgb(0.0f, 1.0f, 0.0f); // green
 
+        // Draw green cross-hair lines emanating from clicked point
+#ifdef WITH_OPENGL_32
+        {
+#define MAX_NUM_PP_FOR_GREEN_AXIS    12
+        glm::vec2 pp[MAX_NUM_PP_FOR_GREEN_AXIS];
+        int nPoints=0;
+        
+        // vertical axis
+        pp[nPoints++] = glm::vec2(xCrossCenter,-4000);
+        pp[nPoints++] = glm::vec2(xCrossCenter,yCrossCenter -50.0/curDCM.pixelRatio);
+    
+        if (displayResliceAxes == 2) {
+            pp[nPoints++] = glm::vec2(xCrossCenter,yCrossCenter -10.0/curDCM.pixelRatio);
+            pp[nPoints++] = glm::vec2(xCrossCenter,yCrossCenter +10.0/curDCM.pixelRatio);
+        }
+        
+        pp[nPoints++] = glm::vec2(xCrossCenter,yCrossCenter +50.0/curDCM.pixelRatio);
+        pp[nPoints++] = glm::vec2(xCrossCenter,4000);
+        
+        // horizontal axis
+        pp[nPoints++] = glm::vec2(-4000,yCrossCenter);
+        pp[nPoints++] = glm::vec2(xCrossCenter-50.0,yCrossCenter);
+    
+        if (displayResliceAxes == 2) {
+            pp[nPoints++] = glm::vec2(xCrossCenter-10.0,yCrossCenter);
+            pp[nPoints++] = glm::vec2(xCrossCenter+10.0,yCrossCenter);
+        }
+        
+        pp[nPoints++] = glm::vec2(xCrossCenter+50.0,yCrossCenter);
+        pp[nPoints++] = glm::vec2(4000,yCrossCenter);
+
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (int i=0; i<nPoints; i++)
+            [pArray addObject: [NSValue valueWithBytes:&pp[i] objCType:@encode(glm::vec2)]];
+
+        renderer_drawLine_xy([pArray copy], GL_LINES);
+        }
+#else
         // vertical axis
         glBegin(GL_LINES);
         {
@@ -493,7 +549,7 @@
                 glVertex2f(xCrossCenter,yCrossCenter +10.0/curDCM.pixelRatio);
             }
             
-            glColor3f (0.0f, 1.0f, 0.0f);
+            glColor3f(0.0f, 1.0f, 0.0f); // green (redundant)
             glVertex2f(xCrossCenter,yCrossCenter +50.0/curDCM.pixelRatio);
             glVertex2f(xCrossCenter,4000);
         }
@@ -511,18 +567,41 @@
                 glVertex2f(xCrossCenter+10.0,yCrossCenter);
             }
             
-            glColor3f (0.0f, 1.0f, 0.0f);
+            glColor3f(0.0f, 1.0f, 0.0f); // green (redundant)
             glVertex2f(xCrossCenter+50.0,yCrossCenter);
             glVertex2f(4000,yCrossCenter);
         }
         glEnd();
+#endif
+        
+        // Blue axis, X and Y
+#ifdef WITH_OPENGL_32
+#define MAX_NUM_PP_FOR_BLUE_AXIS    (8+8)
+        glm::vec2 pp[MAX_NUM_PP_FOR_BLUE_AXIS];
+        int nPoints=0;
+        NSMutableArray *pArray = [NSMutableArray array];
+#endif // WITH_OPENGL_32
 
-        if (thickSlabX > 0)
-        {
+        if (thickSlabX > 0) {
+            float shift = (float)thickSlabX / 2.0 * scaleValue;
+            renderer_set_rgb(0.0f, 0.0f, 1.0f); // blue
+
+#ifdef WITH_OPENGL_32            
+            pp[nPoints++] = glm::vec2(xCrossCenter-shift, -4000);
+            pp[nPoints++] = glm::vec2(xCrossCenter-shift, yCrossCenter -50.0/curDCM.pixelRatio);
+            
+            pp[nPoints++] = glm::vec2(xCrossCenter-shift, yCrossCenter +50.0/curDCM.pixelRatio);
+            pp[nPoints++] = glm::vec2(xCrossCenter-shift, 4000);
+            
+            pp[nPoints++] = glm::vec2(xCrossCenter+shift, -4000);
+            pp[nPoints++] = glm::vec2(xCrossCenter+shift, yCrossCenter -50.0/curDCM.pixelRatio);
+            
+            pp[nPoints++] = glm::vec2(xCrossCenter+shift, yCrossCenter +50.0/curDCM.pixelRatio);
+            pp[nPoints++] = glm::vec2(xCrossCenter+shift, 4000);
+#else
+            glColor3f(0.0f, 0.0f, 1.0f); // blue
             glBegin(GL_LINES);
             {
-                float shift = (float)thickSlabX / 2.0 * scaleValue;
-                glColor3f (0.0f, 0.0f, 1.0f);
                 glVertex2f(xCrossCenter-shift,-4000);
                 glVertex2f(xCrossCenter-shift,yCrossCenter -50.0/curDCM.pixelRatio);
                 
@@ -536,21 +615,33 @@
                 glVertex2f(xCrossCenter+shift,4000);
             }
             glEnd();
+#endif
         }
 
-        if (thickSlabY > 0)
-        {
+        if (thickSlabY > 0) {
+            float shift = (float)thickSlabY / 2.0 * scaleValue;
+#ifdef WITH_OPENGL_32
+            pp[nPoints++] = glm::vec2(-4000,yCrossCenter-shift);
+            pp[nPoints++] = glm::vec2(xCrossCenter-50.0,yCrossCenter-shift);
+            
+            pp[nPoints++] = glm::vec2(xCrossCenter+50.0,yCrossCenter-shift);
+            pp[nPoints++] = glm::vec2(4000,yCrossCenter-shift);
+
+            pp[nPoints++] = glm::vec2(-4000,yCrossCenter+shift);
+            pp[nPoints++] = glm::vec2(xCrossCenter-50.0,yCrossCenter+shift);
+            
+            pp[nPoints++] = glm::vec2(xCrossCenter+50.0,yCrossCenter+shift);
+            pp[nPoints++] = glm::vec2(4000,yCrossCenter+shift);
+#else
+            glColor3f(0.0f, 0.0f, 1.0f); // blue
             glBegin(GL_LINES);
             {
-                float shift = (float)thickSlabY / 2.0 * scaleValue;
-                glColor3f (0.0f, 0.0f, 1.0f);
                 glVertex2f(-4000,yCrossCenter-shift);
                 glVertex2f(xCrossCenter-50.0,yCrossCenter-shift);
                 
                 glVertex2f(xCrossCenter+50.0,yCrossCenter-shift);
                 glVertex2f(4000,yCrossCenter-shift);
-                
-                
+
                 glVertex2f(-4000,yCrossCenter+shift);
                 glVertex2f(xCrossCenter-50.0,yCrossCenter+shift);
                 
@@ -558,7 +649,18 @@
                 glVertex2f(4000,yCrossCenter+shift);
             }
             glEnd();
+#endif
         }
+
+#ifdef WITH_OPENGL_32
+        if ([pArray count] > 0) {
+            for (int i=0; i<nPoints; i++)
+                [pArray addObject: [NSValue valueWithBytes:&pp[i] objCType:@encode(glm::vec2)]];
+
+            renderer_set_rgb(0.0f, 0.0f, 1.0f); // blue
+            renderer_drawLine_xy([pArray copy], GL_LINES);
+        }
+#endif
 		
 		glDisable(GL_LINE_SMOOTH);
 		glDisable(GL_POLYGON_SMOOTH);
@@ -568,33 +670,34 @@
 		glDisable(GL_BLEND);
 	}
 	
-	if (annotationType != ANNOTATIONS_NONE && stringID == nil)
+    // Draw red line around key view
+	if (annotationType != ANNOTATIONS_NONE &&
+        stringID == nil &&
+        isKeyView &&
+        [[self windowController] FullScreenON] == FALSE)
 	{
-		glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-		glScalef ( 2.0f / (xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width),
-                  -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height),
-                  1.0f); // scale to port per pixel scale
-		
-		// draw line around key View
-		
-		if ( isKeyView && [[self windowController] FullScreenON] == FALSE)
-		{
-			float heighthalf = drawingFrameRect.size.height/2;
-			float widthhalf = drawingFrameRect.size.width/2;
-			
-			// red square
-			glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
-			glLineWidth(8.0 * self.window.backingScaleFactor);
-			glBegin(GL_LINE_LOOP);
-            {
-                glVertex2f(  -widthhalf, -heighthalf);
-                glVertex2f(  -widthhalf, heighthalf);
-                glVertex2f(  widthhalf, heighthalf);
-                glVertex2f(  widthhalf, -heighthalf);
-            }
-			glEnd();
-			glLineWidth(1.0 * self.window.backingScaleFactor);
-		}
+        float heighthalf = drawingFrameRect.size.height/2;
+        float widthhalf = drawingFrameRect.size.width/2;
+
+        const int nPoints = 4;
+        glm::vec2 pRedBox[nPoints];
+        pRedBox[0] = glm::vec2( -widthhalf, -heighthalf);
+        pRedBox[1] = glm::vec2( -widthhalf,  heighthalf);
+        pRedBox[2] = glm::vec2(  widthhalf,  heighthalf);
+        pRedBox[3] = glm::vec2(  widthhalf, -heighthalf);
+        
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (int i=0; i<nPoints; i++)
+             [pArray addObject: [NSValue valueWithBytes:&pRedBox[i] objCType:@encode(glm::vec2)]];
+
+        [self setShaderProgramForLineWidth: 8.0 * self.window.backingScaleFactor];
+        // TODO: set all overlay MV, just in case
+        renderer_reset_scale_MV(drawingFrameRect.size, xFlipped, yFlipped, __LINE__);
+        renderer_set_rgba(1.0f, 0.0f, 0.0f, 0.8f);
+        renderer_drawLine_xy([pArray copy], GL_LINE_LOOP);
+
+        // Restore (superfluous ?)
+        [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
 	}
 }
 
@@ -605,11 +708,11 @@
 
 - (void) keyDown:(NSEvent *)event
 {
-    if( [[event characters] length] == 0)
+    if ([[event characters] length] == 0)
         return;
     
 	unichar	c = [[event characters] characterAtIndex:0];	
-	if( c == ' ')
+	if (c == ' ')
 	{
 		[controller toggleDisplayResliceAxes: self];
 	}
@@ -624,7 +727,7 @@
 		[controller saveCrossPositions];
 		[self blendingPropagate];
 	}
-	else if(c ==  NSRightArrowFunctionKey)
+	else if (c ==  NSRightArrowFunctionKey)
 	{
 		[controller saveCrossPositions];
 		[self scrollTool: 0 : 1];
@@ -636,7 +739,7 @@
 		[self setScaleValue:(scaleValue+1./50.)];
 		[self blendingPropagate];
 	}
-	else if(c ==  NSDownArrowFunctionKey)
+	else if (c ==  NSDownArrowFunctionKey)
 	{
 		[self setScaleValue:(scaleValue-1./50.)];
 		[self blendingPropagate];
@@ -651,7 +754,7 @@
 - (void) toggleDisplayResliceAxes
 {
 	displayResliceAxes++;
-	if( displayResliceAxes >= 3)
+	if (displayResliceAxes >= 3)
         displayResliceAxes = 0;
     
 	[self setNeedsDisplay:YES];
@@ -719,7 +822,7 @@
 
 - (void) setCurWLWWMenu:(NSString*) str
 {
-	if( str != curWLWWMenu)
+	if (str != curWLWWMenu)
 	{
 		[curWLWWMenu release];
 		curWLWWMenu = [str retain];
@@ -733,7 +836,7 @@
 
 - (void) setCurOpacityMenu:(NSString*) o
 {
-	if( o != curOpacityMenu)
+	if (o != curOpacityMenu)
 	{
 		[curOpacityMenu release];
 		curOpacityMenu = [o retain];
@@ -751,14 +854,15 @@
 	DCMView *sender = [note object];
 	ROI *addedROI = [[note userInfo] objectForKey:@"ROI"];
 	
-	if( [addedROI type] != t2DPoint) return;
+	if ([addedROI type] != t2DPoint)
+        return;
 	
 	if (![self isEqualTo:sender])// && ![self isEqualTo:[controller xReslicedView]] && ![self isEqualTo:[controller yReslicedView]])
 	{
 		if (([[controller xReslicedView] isEqualTo:sender] || [[controller yReslicedView] isEqualTo:sender]) &&
             [[controller originalView] isEqualTo:self])
 		{
-			if([addedROI type]==t2DPoint)
+			if ([addedROI type]==t2DPoint)
 			{
 				ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint
                                                                : [[controller originalView] pixelSpacingX]
@@ -767,7 +871,7 @@
                                                                              [[controller originalView] origin].y)] autorelease];
 
 				NSRect irect;
-				if([[controller xReslicedView] isEqualTo:sender])
+				if ([[controller xReslicedView] isEqualTo:sender])
 				{
 					irect.origin.x = [[[addedROI points] objectAtIndex:0] x];
 					irect.origin.y = [[controller originalView] crossPositionY];
@@ -803,7 +907,7 @@
 					{
 						for( int x = 0; x < [[[[controller originalView] dcmRoiList] objectAtIndex: i] count]; x++)
 						{
-							if([[[[[[controller originalView] dcmRoiList] objectAtIndex:i] objectAtIndex:x] name] isEqualToString:finalName])
+							if ([[[[[[controller originalView] dcmRoiList] objectAtIndex:i] objectAtIndex:x] name] isEqualToString:finalName])
 								existsAlready = YES;
 						}
 					}
@@ -814,10 +918,10 @@
 				// add the 2D Point ROI to the ROI list
 				long slice = ([controller sign]>0) ? (long)[[[controller originalView] dcmPixList] count]-1 -[[[addedROI points] objectAtIndex:0] y] : [[[addedROI points] objectAtIndex:0] y];
 				
-				if( slice < 0)
+				if (slice < 0)
                     slice = 0;
                 
-				if( slice >= [[[controller originalView] dcmRoiList] count])
+				if (slice >= [[[controller originalView] dcmRoiList] count])
                     slice = (long)[[[controller originalView] dcmRoiList] count]-1;
 				
 				[[[[controller originalView] dcmRoiList] objectAtIndex: slice] addObject: new2DPointROI];
@@ -834,20 +938,20 @@
 	
 	[super roiChange:note];
 	
-	if( [roi type] != t2DPoint)
+	if ([roi type] != t2DPoint)
         return;
 	
 	if ([[[note userInfo] valueForKey:@"action"] isEqualToString:@"mouseUp"] &&
         [[self window] firstResponder] == self)
 	{
-		if([roi parentROI])
+		if ([roi parentROI])
 		{
 			int	reslicedview = 0;
 			
 			// the ROI has a parent. Thus it is on a resliced view. Which one?
 			NSLog(@"roi is 2D Point and has parent");
 			NSRect irect;
-			if([[[controller xReslicedView] curRoiList] containsObject:roi])
+			if ([[[controller xReslicedView] curRoiList] containsObject:roi])
 			{
 				reslicedview = 1;
 				
@@ -855,7 +959,7 @@
 				irect.origin.x = [[[roi points] objectAtIndex:0] x];
 				irect.origin.y = [[controller originalView] crossPositionY];
 			}
-			else if([[[controller yReslicedView] curRoiList] containsObject:roi])
+			else if ([[[controller yReslicedView] curRoiList] containsObject:roi])
 			{
 				reslicedview = 2;
 				
@@ -877,7 +981,7 @@
 			// remove the parent ROI on original view. (will be replaced by the new one)
 			for(int i=0; i<[[[controller originalView] dcmRoiList] count]; i++)
 			{
-				if([[[[controller originalView] dcmRoiList] objectAtIndex:i] containsObject:[roi parentROI]])
+				if ([[[[controller originalView] dcmRoiList] objectAtIndex:i] containsObject:[roi parentROI]])
 				{
 					NSLog(@"Point removed in originalView");
 					[[[[controller originalView] dcmRoiList] objectAtIndex:i] removeObject:[roi parentROI]];
@@ -895,10 +999,10 @@
 			// add the 2D Point ROI to the ROI list
 			long slice = ([controller sign]>0) ? (long)[[[controller originalView] dcmPixList] count]-1 -[[[roi points] objectAtIndex:0] y] : [[[roi points] objectAtIndex:0] y];
 			
-			if( slice < 0)
+			if (slice < 0)
                 slice = 0;
             
-			if( slice >= [[[controller originalView] dcmRoiList] count])
+			if (slice >= [[[controller originalView] dcmRoiList] count])
                 slice = (long)[[[controller originalView] dcmRoiList] count]-1;
 			
 			NSLog(@"slice : %d", (int) slice);
@@ -925,15 +1029,15 @@
 
 - (void) removeROI: (NSNotification*) note
 {
-	if( [[self window] firstResponder] == self)
+	if ([[self window] firstResponder] == self)
 	{
 		ROI *roi = [note object];
 		
-		if( [roi parentROI])
+		if ([roi parentROI])
 		{
 			for (int i=0; i<[[[controller originalView] dcmRoiList] count]; i++)
 			{
-				if([[[[controller originalView] dcmRoiList] objectAtIndex:i] containsObject:[roi parentROI]])
+				if ([[[[controller originalView] dcmRoiList] objectAtIndex:i] containsObject:[roi parentROI]])
 				{
 					NSLog(@"parent of removed ROI is on original view");
 					[[[[controller originalView] dcmRoiList] objectAtIndex:i] removeObject:[roi parentROI]];
@@ -945,9 +1049,14 @@
 
 - (void) roiRemovedFromArray :(NSNotification*) note
 {
-	if( [controller yReslicedView] == self) [controller loadROIonYReslicedView: [[controller originalView] crossPositionX]];
-	if( [controller xReslicedView] == self) [controller loadROIonXReslicedView: [[controller originalView] crossPositionY]];
-	if( [controller originalView] == self) [[controller originalView] setNeedsDisplay:YES];
+	if ([controller yReslicedView] == self)
+        [controller loadROIonYReslicedView: [[controller originalView] crossPositionX]];
+
+    if ([controller xReslicedView] == self)
+        [controller loadROIonXReslicedView: [[controller originalView] crossPositionY]];
+
+    if ([controller originalView] == self)
+        [[controller originalView] setNeedsDisplay:YES];
 }
 
 - (BOOL)is2DViewer{
@@ -969,7 +1078,7 @@
         
 		hotKey = [hotKey lowercaseString];
 		unichar key = [hotKey characterAtIndex:0];
-		if( [[DCMView hotKeyDictionary] objectForKey:hotKey])
+		if ([[DCMView hotKeyDictionary] objectForKey:hotKey])
 		{
 			key = [[[DCMView hotKeyDictionary] objectForKey:hotKey] intValue];
 			OrthogonalMPRViewer *windowController = (OrthogonalMPRViewer *)[self  windowController];
@@ -997,7 +1106,7 @@
 				case Preset7WWWLHotKeyAction:
 				case Preset8WWWLHotKeyAction:
 				case Preset9WWWLHotKeyAction:
-					if([wwwlValues count] > key-Preset1WWWLHotKeyAction)
+					if ([wwwlValues count] > key-Preset1WWWLHotKeyAction)
 					{
 						wwwlMenuString = [wwwlValues objectAtIndex:key-Preset1WWWLHotKeyAction];
 						[windowController applyWLWWForString:wwwlMenuString];
@@ -1014,13 +1123,13 @@
 				case Preset7OpacityHotKeyAction:
 				case Preset8OpacityHotKeyAction:
 				case Preset9OpacityHotKeyAction:
-					if([opacityValues count] >= key-Preset1OpacityHotKeyAction)
+					if ([opacityValues count] >= key-Preset1OpacityHotKeyAction)
 					{
                         int index = key-Preset1OpacityHotKeyAction-1;
                         
                         NSString *opacityMenuString;
                         
-                        if( index < 0)
+                        if (index < 0)
                             opacityMenuString = NSLocalizedString(@"Linear Table", nil);
 						else
                             opacityMenuString = [opacityValues objectAtIndex: index];
@@ -1046,11 +1155,11 @@
 				case AngleHotKeyAction:
 				case ThreeDPointHotKeyAction:
 				case OrthoMPRCrossHotKeyAction:
-					if( [ViewerController getToolEquivalentToHotKey: key] >= 0)
+					if ([ViewerController getToolEquivalentToHotKey: key] >= 0)
 					{
                         ToolMode tool = [ViewerController getToolEquivalentToHotKey: key];
                         
-                        if( tool == t2DPoint)
+                        if (tool == t2DPoint)
                             tool = t3Dpoint;
                         
 						[windowController setCurrentTool: tool];
@@ -1105,7 +1214,7 @@
             if (fabs( start.y - current.y) > 3)
                 scrollMode = MY_SCROLL_MODE_VER;
         }
-        else if( fabs( start.x - current.x) >= fabs( start.y - current.y))
+        else if (fabs( start.x - current.x) >= fabs( start.y - current.y))
         {
             prev = start.x/2;
             now = current.x/2;
@@ -1119,12 +1228,12 @@
     if (movie4Dmove == NO)
     {
         long from, to;
-        if( scrollMode == MY_SCROLL_MODE_HOR)
+        if (scrollMode == MY_SCROLL_MODE_HOR)
         {
             from = current.x;
             to = start.x;
         }
-        else if( scrollMode == MY_SCROLL_MODE_VER)
+        else if (scrollMode == MY_SCROLL_MODE_VER)
         {
             from = start.y;
             to = current.y;
@@ -1151,18 +1260,19 @@
 {
     NSPoint current = [self convertPoint: event.locationInWindow fromView: nil];
 
-	if( blendingView == nil)
+	if (blendingView == nil)
 	{
 		float WWAdapter = startWW / 100.0;
 		
-		if( WWAdapter < 0.001) WWAdapter = 0.001;
+		if (WWAdapter < 0.001)
+            WWAdapter = 0.001;
 		
-		if( [self is2DViewer] == YES)
+		if ([self is2DViewer] == YES)
 		{
 			[[[self windowController] thickSlabController] setLowQuality: YES];
 		}
 		
-		if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"]))
+		if ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"]))
 		{
 			float startlevel;
 			float endlevel;
@@ -1175,7 +1285,8 @@
                     eWL = startWL + (current.y -  start.y)*WWAdapter;
                     eWW = startWW + (current.x -  start.x)*WWAdapter;
                     
-                    if( eWW < 0.1) eWW = 0.1;
+                    if (eWW < 0.1)
+                        eWW = 0.1;
                     break;
                     
                 case PETWindowingMode_FIXED_MIN:
@@ -1184,21 +1295,28 @@
                     eWL = (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
                     eWW = endlevel - startMin;
                     
-                    if( eWW < 0.1) eWW = 0.1;
-                    if( eWL - eWW/2 < 0) eWL = eWW/2;
+                    if (eWW < 0.1)
+                        eWW = 0.1;
+
+                    if (eWL - eWW/2 < 0)
+                        eWL = eWW/2;
                     break;
                     
                 case PETWindowingMode_MAXIMUM:
                     endlevel = startMax + (current.y -  start.y) * WWAdapter ;
                     startlevel = startMin + (current.x -  start.x) * WWAdapter ;
                     
-                    if( startlevel < 0) startlevel = 0;
+                    if (startlevel < 0)
+                        startlevel = 0;
                     
                     eWL = startlevel + (endlevel - startlevel) / 2;
                     eWW = endlevel - startlevel;
                     
-                    if( eWW < 0.1) eWW = 0.1;
-                    if( eWL - eWW/2 < 0) eWL = eWW/2;
+                    if (eWW < 0.1)
+                        eWW = 0.1;
+                    
+                    if (eWL - eWW/2 < 0)
+                        eWL = eWW/2;
                     break;
             }
 			
@@ -1229,7 +1347,7 @@
 		}
 		else
 		{
-			if( [self is2DViewer] == YES)
+			if ([self is2DViewer] == YES)
 			{
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
@@ -1243,8 +1361,8 @@
 		// change blending value
 		blendingFactor = blendingFactorStart + (current.x - start.x);
 			
-		if( blendingFactor < -256.0) blendingFactor = -256.0;
-		if( blendingFactor > 256.0) blendingFactor = 256.0;
+		if (blendingFactor < -256.0) blendingFactor = -256.0;
+		if (blendingFactor > 256.0) blendingFactor = 256.0;
 		
 		[self setBlendingFactor: blendingFactor];
 	}

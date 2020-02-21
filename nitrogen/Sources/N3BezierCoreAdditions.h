@@ -28,8 +28,8 @@
 CF_EXTERN_C_BEGIN
 
 enum N3BezierNodeStyle {
-    N3BezierNodeOpenEndsStyle, // the direction of the end segements point out. this is the style used by the CPR View
-    N3BezierNodeEndsMeetStyle, // the direction of the end segements point to each other. this is the style that mimics what open ROIs do
+    N3BezierNodeOpenEndsStyle, // the direction of the end segments point out. this is the style used by the CPR View
+    N3BezierNodeEndsMeetStyle, // the direction of the end segments point to each other. this is the style that mimics what open ROIs do
 };
 typedef enum N3BezierNodeStyle N3BezierNodeStyle;
 

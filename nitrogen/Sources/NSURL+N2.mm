@@ -20,6 +20,7 @@
 
 #import "NSURL+N2.h"
 
+// 'N2URLParts' lacks a 'dealloc' instance method but must release '_protocol' and others
 @implementation N2URLParts
 @synthesize protocol = _protocol, address = _address, port = _port, path = _path, params = _params;
 

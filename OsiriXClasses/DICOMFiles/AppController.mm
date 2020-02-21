@@ -123,8 +123,8 @@
 
 #import <Foundation/Foundation.h>
 
-#define BUILTIN_DCMTK YES
-#define MAXSCREENS 10
+#define BUILTIN_DCMTK_SERVER    YES
+#define MAXSCREENS              10
 
 //ToolbarPanelController *toolbarPanel[ MAXSCREENS] = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil};
 ThumbnailsListPanel *thumbnailsListPanel[ MAXSCREENS] = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil};
@@ -192,24 +192,27 @@ extern "C"
 #endif /*cplusplus*/
 const char *GetPrivateIP()
 {
-	if (privateIPstring == nil)
+	if (privateIPstring == nil)  // do it once only
 	{
-		struct			hostent *h;
-		static char		hostname[ 100];
+#define HOSTNAME_MAX_SIZE   100
+        privateIPstring = (char*) malloc( HOSTNAME_MAX_SIZE);
+
+        static char hostname[ HOSTNAME_MAX_SIZE];
+		gethostname(hostname, HOSTNAME_MAX_SIZE-1);
 		
-		gethostname(hostname, 99);
-		
-		if ((h=gethostbyname(hostname)) == NULL)
+        struct hostent *h = gethostbyname(hostname);
+		if (h == NULL)
 		{
 			NSLog( @"**** Cannot GetPrivateIP -> will use hostname");
-			
-			privateIPstring = (char*) malloc( 100);
-			strcpy( privateIPstring, hostname);
+            //strcpy( privateIPstring, hostname);
+            strncpy( privateIPstring, hostname, HOSTNAME_MAX_SIZE);
 		}
 		else
 		{
-			privateIPstring = (char*) malloc( 100);
-			strcpy( privateIPstring, (char*) inet_ntoa(*((struct in_addr *)h->h_addr)));
+            //strcpy( privateIPstring, (char*) inet_ntoa(*((struct in_addr *)h->h_addr)));
+            strncpy(privateIPstring,
+                    (char*) inet_ntoa(*((struct in_addr *)h->h_addr)),
+                    HOSTNAME_MAX_SIZE);
 		}
 	}
 	
@@ -738,7 +741,7 @@ static NSDate *lastWarningDate = nil;
 
 -(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
 {
-    NSLog( @"--- applicationDidChangeScreenParameters");
+    //NSLog( @"--- applicationDidChangeScreenParameters");
     [[AppController sharedAppController] closeAllViewers: self];
     
     [AppController resetThumbnailsList];
@@ -1050,7 +1053,7 @@ static NSDate *lastWarningDate = nil;
 	}
 	
 	pluginNames = [NSMutableString stringWithString: [pluginNames substringToIndex:[pluginNames length]-2]];
-	if ([replacingPlugins length])
+	if ([replacingPlugins length] > 0)
         replacingPlugins = [NSMutableString stringWithString:[replacingPlugins substringToIndex:[replacingPlugins length]-2]];
 	
 	NSString *msg;
@@ -1061,7 +1064,7 @@ static NSDate *lastWarningDate = nil;
 	else
 		msg = [NSString stringWithFormat:NSLocalizedString(@"%@ the following plugins : %@ ?", @""), areYouSure, pluginNames];
 	
-	if ([replacingPlugins length])
+	if ([replacingPlugins length] > 0)
 		msg = [NSString stringWithFormat:@"%@\n\n%@", msg, replacingPlugins];
 	
 	NSInteger res = NSRunAlertPanel(NSLocalizedString(@"Plugins Installation", @""),
@@ -1141,9 +1144,14 @@ static NSDate *lastWarningDate = nil;
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:" URL_EMAIL]];
 }
 
--(IBAction)openOsirixWebPage:(id)sender
+-(IBAction)openMieleLXIVWebPage:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_SOURCES]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_WEB_PAGE]];
+}
+
+- (IBAction) openMieleLXIVSourceCode: (id) sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_SOURCES]];
 }
 
 -(IBAction)help:(id)sender
@@ -1151,9 +1159,9 @@ static NSDate *lastWarningDate = nil;
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_LEARNING]];
 }
 
--(IBAction)openOsirixDiscussion:(id)sender
+-(IBAction)openMieleLXIVDiscussion:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://groups.yahoo.com/group/osirix/"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_DISCUSSION]];
 }
 
 -(IBAction)userManual:(id)sender
@@ -2227,8 +2235,8 @@ static NSDate *lastWarningDate = nil;
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
 		{
 			// Kill DCMTK listener
-			// built in dcmtk serve testing
-			if (BUILTIN_DCMTK == YES)
+			// built in dcmtk server testing
+			if (BUILTIN_DCMTK_SERVER)
 			{
 				[dcmtkQRSCP release];
 				dcmtkQRSCP = nil;
@@ -2685,7 +2693,8 @@ static BOOL firstCall = YES;
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) // Server mode
 	{
-		if ([[[BrowserController currentBrowser] window] isMiniaturized] == YES || [[[BrowserController currentBrowser] window] isVisible] == NO)
+		if ([[[BrowserController currentBrowser] window] isMiniaturized] == YES ||
+            [[[BrowserController currentBrowser] window] isVisible] == NO)
 		{
 			NSArray *winList = [NSApp windows];
             
@@ -2771,7 +2780,7 @@ static BOOL firstCall = YES;
 
     quitting = YES;
 	
-//	if (BUILTIN_DCMTK == YES)
+//	if (BUILTIN_DCMTK_SERVER)
 //	{
 //		[dcmtkQRSCP release];
 //		dcmtkQRSCP = nil;
@@ -2881,7 +2890,9 @@ static BOOL firstCall = YES;
 #endif
 	
     NSTimeInterval t = [NSDate timeIntervalSinceReferenceDate];
-    while ([[[ThreadsManager defaultManager] threads] count] && [NSDate timeIntervalSinceReferenceDate]-t < 10) { // give declared background threads 10 secs to cancel
+    while ([[[ThreadsManager defaultManager] threads] count] &&
+           [NSDate timeIntervalSinceReferenceDate]-t < 10) // give declared background threads 10s to cancel
+    {
         for (NSThread* thread in [[ThreadsManager defaultManager] threads])
             if (![thread isCancelled])
                 [thread cancel];
@@ -3038,6 +3049,8 @@ static BOOL initialized = NO;
                 NSString *tiffVersion = [NSString stringWithFormat:@"%s", TIFFGetVersion()];
                 NSArray *tiffLines = [tiffVersion componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
                 NSLog(@"%@", tiffLines[0]);
+
+                NSLog(@"GLM %d.%d.%d.%d", GLM_VERSION_MAJOR, GLM_VERSION_MINOR, GLM_VERSION_PATCH, GLM_VERSION_REVISION);
 
                 NSMutableArray *components = [[[NSBundle mainBundle] localizations] mutableCopy];
                 if ([components containsObject:@"Base"])
@@ -3812,8 +3825,9 @@ static BOOL initialized = NO;
     {
 //        int verMajor = MAC_OS_X_VERSION_MIN_REQUIRED / 100;
 //        int verMinor = MAC_OS_X_VERSION_MIN_REQUIRED % 100;
+        NSString *msgFormat = [NSString stringWithFormat:NSLocalizedString(@"This app requires macOS %@.%@ or higher. Please update your OS: Apple Menu - Software Update...", nil), 10, 9];
         NSRunCriticalAlertPanel(NSLocalizedString(@"macOS version", nil),
-                                [NSString stringWithFormat:NSLocalizedString(@"This app requires macOS %@.%@ or higher. Please update your OS: Apple Menu - Software Update...", nil), 10, 9],
+                                msgFormat,
                                 NSLocalizedString(@"Quit", nil),
                                 nil,
                                 nil);
@@ -3841,15 +3855,15 @@ static BOOL initialized = NO;
     }
 #endif
     
-    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if (cgl_ctx) {
-        const GLubyte *strVersion = glGetString (GL_VERSION); // get version string
-        NSLog(@"OpenGL version: %s", strVersion);
-#if 0 //ndef NDEBUG
-        const GLubyte *strExtension = glGetString (GL_EXTENSIONS);    // get extension string
-        NSLog(@"OpenGL extension: %s", strExtension);
-#endif
-    }
+//    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+//    if (cgl_ctx) {
+//        const GLubyte *strVersion = glGetString (GL_VERSION); // get version string
+//        NSLog(@"OpenGL version: %s", strVersion);
+//#if 0 //ndef NDEBUG
+//        const GLubyte *strExtension = glGetString (GL_EXTENSIONS);    // get extension string
+//        NSLog(@"OpenGL extension: %s", strExtension);
+//#endif
+//    }
 }
 
 - (void) checkForOsirixMimeType
@@ -4071,7 +4085,7 @@ static BOOL initialized = NO;
 	
 	CGFloat delta = 0;
 	for (int i = 0; i < size2; ++i)
-		delta += fabsf((float)gray_1[i]-(float)gray_2[i]);
+		delta += fabsf((float)gray_1[i] - (float)gray_2[i]);
 
     BOOL has32bitPipeline = delta > 1000.0F; // we may want to raise this..
 	
@@ -4660,10 +4674,9 @@ static BOOL initialized = NO;
     [super dealloc];
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
 - (id) FindViewer:(NSString*) nibName :(NSArray*) pixList
 {
+    NSLog(@"%s %d, class:%@" , __FUNCTION__, __LINE__, NSStringFromClass([self class]));
 	for (id loopItem in [NSApp windows])
 	{
 		if ([[[loopItem windowController] windowNibName] isEqualToString: nibName])
@@ -4720,8 +4733,8 @@ static BOOL initialized = NO;
     [screens sortUsingComparator:^NSComparisonResult(id o1, id o2) {
         NSRect f1 = ((NSScreen*)o1).frame;
         NSRect f2 = ((NSScreen*)o2).frame;
-        CGFloat c1 = f1.origin.x + f1.size.width/2;
-        CGFloat c2 = f2.origin.x + f2.size.width/2;
+        CGFloat c1 = NSMidX(f1);
+        CGFloat c2 = NSMidX(f2);
         if (c1 < c2)
             return NSOrderedAscending;
         
@@ -4815,7 +4828,7 @@ static BOOL initialized = NO;
 		int row = posInScreen / columnsPerScreen;
 		int column = posInScreen % columnsPerScreen;
 		
-		NSRect frame = [AppController usefullRectForScreen: [screens objectAtIndex: monitorIndex]];
+		NSRect frame = [AppController usefulRectForScreen: [screens objectAtIndex: monitorIndex]];
         
 		int temp;
 
@@ -4881,9 +4894,10 @@ static BOOL initialized = NO;
 - (int) currentRowForViewer: (ViewerController*) v
 {
 	NSUInteger i = [[self orderedScreens] indexOfObject: [[v window] screen]];
-	if (i == NSNotFound) i = 0;
-	i++;
-	
+	if (i == NSNotFound)
+        i = 0;
+
+    i++;
 	i *= 3000;
 	
 	return i - ([[v window] frame].origin.y + (3*[[v window] frame].size.height)/4 - [[[v window] screen] visibleFrame].origin.y);
@@ -4900,12 +4914,14 @@ static BOOL initialized = NO;
 - (NSPoint) windowCenter: (NSWindow*) w
 {
 	NSUInteger i = [[self orderedScreens] indexOfObject: [w screen]];
-	if (i == NSNotFound) i = 0;
-	i++;
-	
+	if (i == NSNotFound)
+        i = 0;
+
+    i++;
 	i *= 3000;
 	
-	return NSMakePoint( i + [w frame].origin.x + [w frame].size.width/2, i + [w frame].origin.y + [w frame].size.height/2);
+	return NSMakePoint(i + NSMidX([w frame]),
+                       i + NSMidY([w frame]));
 }
 
 #pragma mark -
@@ -4968,16 +4984,16 @@ static BOOL initialized = NO;
         {
             NSMutableArray* components = [NSMutableArray array];
             
-            if (study.name.length)
+            if (study.name.length > 0)
                 [components addObject: study.name];
             
             if (study.date)
                 [components addObject: [[NSUserDefaults dateTimeFormatter] stringFromDate: study.date]];
             
-            if (study.studyName.length)
+            if (study.studyName.length > 0)
                 [components addObject: study.studyName];
             
-            if (study.modality.length)
+            if (study.modality.length > 0)
                 [components addObject: study.modality];
             
             NSAttributedString *title = [[[NSAttributedString alloc] initWithString: [components componentsJoinedByString:@" / "] attributes: [NSDictionary dictionaryWithObject: [NSFont boldSystemFontOfSize: 14] forKey: NSFontAttributeName]] autorelease];
@@ -5087,12 +5103,12 @@ static BOOL initialized = NO;
     return YES;
 }
 
-+ (NSRect) usefullRectForScreen: (NSScreen*) screen
++ (NSRect) usefulRectForScreen: (NSScreen*) screen
 {
-    return [AppController usefullRectForScreen: screen showFloatingWindows: YES];
+    return [AppController usefulRectForScreen: screen showFloatingWindows: YES];
 }
 
-+ (NSRect) usefullRectForScreen: (NSScreen*) screen showFloatingWindows: (BOOL) showFloatingWindows
++ (NSRect) usefulRectForScreen: (NSScreen*) screen showFloatingWindows: (BOOL) showFloatingWindows
 {
     NSRect screenFrame = screen.visibleFrame;
     
@@ -5244,7 +5260,7 @@ static BOOL initialized = NO;
 	}
 	@catch ( NSException *e)
 	{
-		NSLog( @"***** 1: %@", e);
+        NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, e); // 1
 	}
 	
 	NSMutableArray *hiddenWindows = [NSMutableArray array];
@@ -5337,9 +5353,9 @@ static BOOL initialized = NO;
 		else
             keepSameStudyOnSameScreen = NO;
 	}
-	@catch ( NSException *e)
+	@catch (NSException *e)
 	{
-		NSLog( @"***** 2: %@", e);
+        NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, e); // 2
 	}
 	
 	int viewerCount = [viewersList count];
@@ -5597,9 +5613,9 @@ static BOOL initialized = NO;
 			}
 			
 		}
-		@catch ( NSException *e)
+		@catch (NSException *e)
 		{
-			NSLog( @"***** 3: %@", e);
+            NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, e); // 3
 		}
 	}
 	
@@ -5611,7 +5627,7 @@ static BOOL initialized = NO;
 		
 		for (int i = 0; i < count; i++)
 		{
-			NSRect frame = [AppController usefullRectForScreen: [screens objectAtIndex:i] showFloatingWindows: display2DViewerToolbar];
+			NSRect frame = [AppController usefulRectForScreen: [screens objectAtIndex:i] showFloatingWindows: display2DViewerToolbar];
 			
 			[[viewersList objectAtIndex:i] setWindowFrame: frame showWindow:YES animate: YES];			
 		}
@@ -5631,7 +5647,7 @@ static BOOL initialized = NO;
 		{
 			int index = (int) i/viewersPerScreen;
 			int viewerPosition = i % viewersPerScreen;
-			NSRect frame = [AppController usefullRectForScreen: [screens objectAtIndex:index] showFloatingWindows: display2DViewerToolbar];
+			NSRect frame = [AppController usefulRectForScreen: [screens objectAtIndex:index] showFloatingWindows: display2DViewerToolbar];
 			
 			frame.size.width /= viewersPerScreen;
 			frame.origin.x += (frame.size.width * viewerPosition);
@@ -5653,7 +5669,7 @@ static BOOL initialized = NO;
 			int monitorIndex = (int) i /columnsPerScreen;
 			int viewerPosition = i % columnsPerScreen;
 			NSScreen *screen = [screens objectAtIndex: monitorIndex];
-			NSRect frame = [AppController usefullRectForScreen: screen showFloatingWindows: display2DViewerToolbar];
+			NSRect frame = [AppController usefulRectForScreen: screen showFloatingWindows: display2DViewerToolbar];
 			
 			if (monitorIndex < extraViewers) 
 				frame.size.width /= columnsPerScreen;
@@ -5876,9 +5892,9 @@ static BOOL initialized = NO;
 {
     @try
     {
-        #ifndef MIELE_LIGHT
+#ifndef MIELE_LIGHT
         return [[[WebPortal defaultWebPortal] database] managedObjectContext];
-        #endif
+#endif
     }
     @catch (NSException *e) {
         NSLog( @"***** defaultWebPortalManagedObjectContext : %@", e);
@@ -5895,12 +5911,13 @@ static BOOL initialized = NO;
     return fakeContext;
 }
 
--(WebPortal*)defaultWebPortal {
-	#ifndef MIELE_LIGHT
+-(WebPortal*)defaultWebPortal
+{
+#ifndef MIELE_LIGHT
 	return [WebPortal defaultWebPortal];
-	#else
+#else
 	return nil;
-	#endif
+#endif
 }
 
 #ifndef MIELE_LIGHT

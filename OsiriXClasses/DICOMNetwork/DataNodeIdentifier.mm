@@ -101,13 +101,14 @@
 	return nil;
 }
 
--(NSString*)toolTip {
+-(NSString*)toolTip
+{
     NSString *tip = self.location;
     
-    if( self.port > 0)
+    if (self.port > 0)
         tip = [tip stringByAppendingFormat: @" - %d", (int) self.port];
     
-    if( self.aetitle.length)
+    if (self.aetitle.length > 0)
         tip = [tip stringByAppendingFormat: @" - %@", self.aetitle];
     
 	return tip;

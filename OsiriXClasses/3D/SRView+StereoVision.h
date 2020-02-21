@@ -21,11 +21,12 @@
 // PURPOSE.
 // =========================================================================
 
-#ifdef _STEREO_VISION_
 #import <Cocoa/Cocoa.h>
 #import "SRView.h"
 
 #import <AppKit/AppKit.h>
+
+#ifdef _STEREO_VISION_
 
 #import "DCMPix.h"
 #import "Camera.h"
@@ -120,7 +121,11 @@ class vtkMyCallback;
 @class SRController;
 @class DICOMExport;
 
+#endif // _STEREO_VISION_
+
 @interface SRView ( StereoVision )
+
+#ifdef _STEREO_VISION_
 
 - (id) initWithFrame:(NSRect)frame;
 - (void) LeftRightSingleScreen;
@@ -146,10 +151,13 @@ class vtkMyCallback;
 - (void) add3DPointActor: (vtkActor*) actor;
 - (void)mouseDragged:(NSEvent *)theEvent;
 - (void)rightMouseDragged:(NSEvent *)theEvent;
-- (IBAction) invertedSides :(id) sender;
 - (void) updateStereoLeftRight;
 - (void) setNewGeometry: (double) screenHeight: (double) screenDistance: (double) eyeDistance;
 
+#endif // _STEREO_VISION_
+
+//- (IBAction) SwitchStereoMode :(id) sender;
+- (IBAction) invertedSides :(id) sender;
+
 @end
 
-#endif

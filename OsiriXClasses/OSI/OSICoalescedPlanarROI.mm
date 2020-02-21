@@ -20,6 +20,8 @@
 
 #import "mgl.h" // include first
 
+#import "GLRenderer.h"
+
 #import "OSICoalescedPlanarROI.h"
 #import "OSIFloatVolumeData.h"
 #import "OSIROIMask.h"
@@ -71,66 +73,52 @@
 
 - (NSArray *)convexHull
 {
-    NSMutableArray *hull;
-    OSIROI *roi;
+    NSMutableArray *hull = [NSMutableArray array];
     
-    hull = [NSMutableArray array];
-    
-    for (roi in _sourceROIs) {
+    for (OSIROI *roi in _sourceROIs)
         [hull addObjectsFromArray:[roi convexHull]];
-    }
     
     return hull;
 }
 
 - (OSIROIMask *)ROIMaskForFloatVolumeData:(OSIFloatVolumeData *)floatVolume
 {
-    NSMutableArray *maskRuns;
-    OSIFloatVolumeData *coalescedROIMaskVolume;
-    CPRObliqueSliceGeneratorRequest *sliceRequest;
-    CPRVolumeData *resampledVolume;
-    OSIROIMask *resampledMask;
-    OSIROI *roi;
-
-    maskRuns = [NSMutableArray array];
+    NSMutableArray *maskRuns = [NSMutableArray array];
     
-    if (N3AffineTransformEqualToTransform(floatVolume.volumeTransform, self.volumeTransform)) {
-        for (roi in _sourceROIs) {
+    if (N3AffineTransformEqualToTransform(floatVolume.volumeTransform, self.volumeTransform))
+    {
+        for (OSIROI *roi in _sourceROIs)
             [maskRuns addObjectsFromArray:[[roi ROIMaskForFloatVolumeData:floatVolume] maskRuns]];
-        }
         
         return [[[OSIROIMask alloc] initWithMaskRuns:maskRuns] autorelease];
     }
-    else { // we need to create a
-        coalescedROIMaskVolume = self.coalescedROIMaskVolumeData;
-        
-        sliceRequest = [[[CPRObliqueSliceGeneratorRequest alloc] init] autorelease];
-        sliceRequest.pixelsWide = floatVolume.pixelsWide;
-        sliceRequest.pixelsHigh = floatVolume.pixelsHigh;
-        sliceRequest.slabSampleDistance = floatVolume.pixelSpacingZ;
-        sliceRequest.slabWidth = floatVolume.pixelSpacingZ * floatVolume.pixelsDeep;
-        sliceRequest.sliceToDicomTransform = N3AffineTransformInvert(N3AffineTransformConcat(floatVolume.volumeTransform, N3AffineTransformMakeTranslation(0, 0, (float)floatVolume.pixelsDeep/2.0)));
-        
-        resampledVolume = [CPRGenerator synchronousRequestVolume:sliceRequest volumeData:coalescedROIMaskVolume];
-        
-        assert(floatVolume.pixelsWide == resampledVolume.pixelsWide);
-        assert(floatVolume.pixelsHigh == resampledVolume.pixelsHigh);
-        assert(floatVolume.pixelsDeep == resampledVolume.pixelsDeep);
-        
-        resampledMask = [OSIROIMask ROIMaskFromVolumeData:(OSIFloatVolumeData *)resampledVolume volumeTransform:NULL];
-        
-        return resampledMask;
-    }
+
+    // we need to create a
+    OSIFloatVolumeData *coalescedROIMaskVolume = self.coalescedROIMaskVolumeData;
+    
+    CPRObliqueSliceGeneratorRequest *sliceRequest = [[[CPRObliqueSliceGeneratorRequest alloc] init] autorelease];
+    sliceRequest.pixelsWide = floatVolume.pixelsWide;
+    sliceRequest.pixelsHigh = floatVolume.pixelsHigh;
+    sliceRequest.slabSampleDistance = floatVolume.pixelSpacingZ;
+    sliceRequest.slabWidth = floatVolume.pixelSpacingZ * floatVolume.pixelsDeep;
+    sliceRequest.sliceToDicomTransform = N3AffineTransformInvert(N3AffineTransformConcat(floatVolume.volumeTransform, N3AffineTransformMakeTranslation(0, 0, (float)floatVolume.pixelsDeep/2.0)));
+    
+    CPRVolumeData *resampledVolume = [CPRGenerator synchronousRequestVolume:sliceRequest volumeData:coalescedROIMaskVolume];
+    
+    assert(floatVolume.pixelsWide == resampledVolume.pixelsWide);
+    assert(floatVolume.pixelsHigh == resampledVolume.pixelsHigh);
+    assert(floatVolume.pixelsDeep == resampledVolume.pixelsDeep);
+    
+    OSIROIMask *resampledMask = [OSIROIMask ROIMaskFromVolumeData:(OSIFloatVolumeData *)resampledVolume volumeTransform:NULL];
+    
+    return resampledMask;
 }
 
 - (NSSet *)osiriXROIs
 {
-    OSIROI *roi;
-    NSMutableSet *osirixROIs;
+    NSMutableSet *osirixROIs = [NSMutableSet setWithCapacity:[_sourceROIs count]];
     
-    osirixROIs = [NSMutableSet setWithCapacity:[_sourceROIs count]];
-    
-    for (roi in _sourceROIs) {
+    for (OSIROI *roi in _sourceROIs) {
         [osirixROIs unionSet:[roi osiriXROIs]];
     }
     
@@ -142,15 +130,8 @@
      pixelFormat:(CGLPixelFormatObj)pixelFormat
 dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
-    OSIROIMaskRun maskRun;
     NSData *maskRunsData;
     N3Vector minCorner;
-    NSInteger runsCount;
-    const OSIROIMaskRun *maskRunsBytes;
-    double widthIndex;
-    double maxWidthIndex;
-    double heightIndex;
-    double depthIndex;
     
     if (_cachedMaskRunsData && OSISlabEqualTo(slab, _cachedSlab) && N3AffineTransformEqualToTransform(dicomToPixTransform, _cachedDicomToPixTransform)) {
         maskRunsData = _cachedMaskRunsData;
@@ -165,54 +146,48 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
         minCorner = _cachedMinCorner;
     }
 
-    glLineWidth(3.0);
-    glColor4f(1, 0, 0, .4);
+    NSInteger runsCount = [maskRunsData length] / sizeof(OSIROIMaskRun);
+    const OSIROIMaskRun *maskRunsBytes = (const OSIROIMaskRun *)[maskRunsData bytes];
+    
+    const int nPoints = 4 * runsCount;
+    glm::vec3 pA[nPoints];
+    int idx = 0;
+    for (NSInteger i = 0; i < runsCount; i++) {
+        OSIROIMaskRun maskRun = maskRunsBytes[i];
 
-    runsCount = [maskRunsData length] / sizeof(OSIROIMaskRun);
-    maskRunsBytes = (const OSIROIMaskRun *)[maskRunsData bytes];
+        double widthIndex = (double)maskRun.widthRange.location + minCorner.x;
+        double maxWidthIndex = widthIndex + (double)maskRun.widthRange.length;
+        double heightIndex = (double)maskRun.heightIndex + minCorner.y;
+        double depthIndex = maskRun.depthIndex;
 
-    glBegin(GL_QUADS);
-    {
-        for (NSInteger i = 0; i < runsCount; i++) {
-            maskRun = maskRunsBytes[i];
-            widthIndex = (double)maskRun.widthRange.location + minCorner.x;
-            maxWidthIndex = widthIndex + (double)maskRun.widthRange.length;
-            heightIndex = (double)maskRun.heightIndex + minCorner.y;
-            depthIndex = maskRun.depthIndex;
-
-            glVertex3d(widthIndex, heightIndex, depthIndex);
-            glVertex3d(maxWidthIndex, heightIndex, depthIndex);
-            glVertex3d(maxWidthIndex, heightIndex + 1.0, depthIndex);
-            glVertex3d(widthIndex, heightIndex + 1.0, depthIndex);
-        }
+        pA[idx++] = glm::vec3(widthIndex, heightIndex, depthIndex);
+        pA[idx++] = glm::vec3(maxWidthIndex, heightIndex, depthIndex);
+        pA[idx++] = glm::vec3(maxWidthIndex, heightIndex + 1.0, depthIndex);
+        pA[idx++] = glm::vec3(widthIndex, heightIndex + 1.0, depthIndex);
     }
-    glEnd();
+    assert(idx == nPoints);
+
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (int i=0; i<nPoints; i++)
+        [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec3)]];
+
+    renderer_setLineWidth(3.0);
+    renderer_set_rgba(1, 0, 0, .4);
+    renderer_drawQuads_xyz([pArray copy]);
 }
 
+// Accessor method
 - (OSIFloatVolumeData *)coalescedROIMaskVolumeData
 {
-    N3Vector minCorner;
-    N3Vector maxCorner;
-    OSIROI *roi;
-    NSValue *hullPointValue;
-    N3Vector hullPoint;
-    NSInteger width;
-    NSInteger height;
-    NSInteger depth;
-    N3AffineTransform coalescedROIMaskVolumeTransform;
-    float *bytesPtr;
-    OSIROIMask *coalescedMask;
-    OSIROIMaskRun maskRun;
-    NSValue *maskRunValue;
-
-
     if (_coalescedROIMaskVolumeData == nil) {
-        minCorner = N3VectorMake(CGFLOAT_MAX, CGFLOAT_MAX, CGFLOAT_MAX);
-        maxCorner = N3VectorMake(-CGFLOAT_MAX, -CGFLOAT_MAX, -CGFLOAT_MAX);
+        N3Vector minCorner = N3VectorMake( CGFLOAT_MAX,  CGFLOAT_MAX,  CGFLOAT_MAX);
+        N3Vector maxCorner = N3VectorMake(-CGFLOAT_MAX, -CGFLOAT_MAX, -CGFLOAT_MAX);
         
-        for (roi in _sourceROIs) {
-            for (hullPointValue in [roi convexHull]) {
-                hullPoint = N3VectorApplyTransform([hullPointValue N3VectorValue], self.volumeTransform);
+        for (OSIROI *roi in _sourceROIs)
+        {
+            for (NSValue *hullPointValue in [roi convexHull])
+            {
+                N3Vector hullPoint = N3VectorApplyTransform([hullPointValue N3VectorValue], self.volumeTransform);
                 
                 minCorner.x = MIN(minCorner.x, hullPoint.x);
                 minCorner.y = MIN(minCorner.y, hullPoint.y);
@@ -230,26 +205,30 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
         maxCorner.y = ceil(maxCorner.y) + 1;
         maxCorner.z = ceil(maxCorner.z) + 1;
         
-        width = maxCorner.x - minCorner.x;
-        height = maxCorner.y - minCorner.y;
-        depth = maxCorner.z - minCorner.z;
+        NSInteger width = maxCorner.x - minCorner.x;
+        NSInteger height = maxCorner.y - minCorner.y;
+        NSInteger depth = maxCorner.z - minCorner.z;
         
-        coalescedROIMaskVolumeTransform = N3AffineTransformConcat(self.volumeTransform, N3AffineTransformMakeTranslation(-minCorner.x, -minCorner.y, -minCorner.z));
+        N3AffineTransform coalescedROIMaskVolumeTransform = N3AffineTransformConcat(self.volumeTransform, N3AffineTransformMakeTranslation(-minCorner.x, -minCorner.y, -minCorner.z));
         
         float *coalescedROIMaskVolumeBytes = (float *)calloc(1, width * height * depth * sizeof(float));
         assert(coalescedROIMaskVolumeBytes);
 
         _coalescedROIMaskVolumeData = [[OSIFloatVolumeData alloc] initWithFloatBytesNoCopy:coalescedROIMaskVolumeBytes pixelsWide:width pixelsHigh:height pixelsDeep:depth volumeTransform:coalescedROIMaskVolumeTransform outOfBoundsValue:0 freeWhenDone:YES];
         
-        for (roi in _sourceROIs) {
-            coalescedMask = [roi ROIMaskForFloatVolumeData:_coalescedROIMaskVolumeData];
+        for (OSIROI *roi in _sourceROIs)
+        {
+            OSIROIMask *coalescedMask = [roi ROIMaskForFloatVolumeData:_coalescedROIMaskVolumeData];
             assert([_coalescedROIMaskVolumeData checkDebugROIMask:coalescedMask]);
             
-            for (maskRunValue in [coalescedMask maskRuns]) {
-                maskRun = [maskRunValue OSIROIMaskRunValue];
+            for (NSValue *maskRunValue in [coalescedMask maskRuns])
+            {
+                OSIROIMaskRun maskRun = [maskRunValue OSIROIMaskRunValue];
                 
-                for (NSInteger i = maskRun.widthRange.location; i < NSMaxRange(maskRun.widthRange); i++) {
-                    bytesPtr = &(coalescedROIMaskVolumeBytes[maskRun.depthIndex * width * height + maskRun.heightIndex * width + i]);
+                for (NSInteger i = maskRun.widthRange.location; i < NSMaxRange(maskRun.widthRange); i++)
+                {
+                    float *bytesPtr = &(coalescedROIMaskVolumeBytes[maskRun.depthIndex * width * height + maskRun.heightIndex * width + i]);
+
                     *bytesPtr = MAX(*bytesPtr, maskRun.intensity);
                 }
             }
@@ -315,7 +294,7 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
     sliceRequest.pixelsWide = width;
     sliceRequest.pixelsHigh = height;
     sliceRequest.slabWidth = slab.thickness;
-    sliceRequest.projectionMode = CPRProjectionModeMIP;
+    sliceRequest.projectionMode = CPR_PROJECTION_MODE_MIP;
     
     sliceRequest.sliceToDicomTransform = N3AffineTransformConcat(N3AffineTransformMakeTranslation(minCorner.x, minCorner.y, 0), N3AffineTransformInvert(dicomToPixTransform));
     

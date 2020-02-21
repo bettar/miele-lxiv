@@ -177,7 +177,9 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 	return _aeTitle;
 }
 
-- (id)initWithPort:(int)port aeTitle:(NSString *)aeTitle  extraParameters:(NSDictionary *)params
+- (id)initWithPort:(int)port
+           aeTitle:(NSString *)aeTitle
+   extraParameters:(NSDictionary *)params
 {
 	if (self = [super init]) {
 		_port = port;
@@ -258,7 +260,7 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
     
     if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMConnectionTimeout"] > 0)
     {
-        NSLog( @"--- DICOMConnectionTimeout: %d", (int) [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMConnectionTimeout"]);
+        //NSLog( @"--- DICOMConnectionTimeout: %d", (int) [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMConnectionTimeout"]);
         dcmConnectionTimeout.set( (Sint32) [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMConnectionTimeout"]);
     }
     else
@@ -338,13 +340,14 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
         globalDataDict.clear();        // clear out any preloaded dictionary
         globalDataDict.loadDictionary([dicPath UTF8String], OFFalse);
         dcmDataDict.rdunlock();
-        if (dcmDataDict.isDictionaryLoaded()) {  // Check again
-            fprintf(stderr, "Data dictionary loaded from resources\n");
-        }
-        else {
+        if (!dcmDataDict.isDictionaryLoaded()) {  // Check again
             fprintf(stderr, "Warning: data dictionary not loaded from resources\n");
             return;
         }
+#ifndef NDEBUG
+        else
+            fprintf(stderr, "Data dictionary loaded from resources\n");
+#endif
     }
 
 	// Init the network
@@ -596,7 +599,7 @@ DcmQueryRetrieveConfig config;
 			{
 				try
 				{
-					if( _abort == NO)
+					if (_abort == NO)
 						cond = localSCP->waitForAssociation(options.net_);
 				}
 				catch(...)
@@ -615,10 +618,10 @@ DcmQueryRetrieveConfig config;
     [ContextCleaner waitForHandledAssociations];
     [NSThread sleepForTimeInterval: 1];
     
-	if( _abort)
+	if (_abort)
 		NSLog( @"---- store-SCP aborted");
     
-	if( localSCP)
+	if (localSCP)
 		delete localSCP;
 	
 	localSCP = NULL;
@@ -650,7 +653,9 @@ DcmQueryRetrieveConfig config;
 
 -(void)abort
 {
+#ifndef NDEBUG
 	NSLog( @"---- store-SCP abort !");
+#endif
 	_abort = YES;
 }
 

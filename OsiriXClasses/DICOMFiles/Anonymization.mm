@@ -362,9 +362,11 @@ static NSString *templateDicomFile = nil;
 			
 			@try
 			{
-				NSString* ext = [filePath pathExtension];
-				if (!ext.length) ext = @"dcm";
-				NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", (int) fileIndex, ext];
+				NSString *ext = [filePath pathExtension];
+				if (ext.length == 0)
+                    ext = @"dcm";
+
+                NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", (int) fileIndex, ext];
 				NSString* tempFilePath = [tempDirPath stringByAppendingPathComponent:tempFileName];
 				
 				[[NSFileManager defaultManager] copyItemAtPath: filePath toPath: tempFilePath byReplacingExisting: YES error: nil];
@@ -425,8 +427,10 @@ static NSString *templateDicomFile = nil;
 			@try
 			{
 				NSString* ext = [filePath pathExtension];
-				if (!ext.length) ext = @"dcm";
-				NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", (int) fileIndex, ext];
+				if (ext.length == 0)
+                    ext = @"dcm";
+
+                NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", (int) fileIndex, ext];
 				NSString* tempFilePath = [tempDirPath stringByAppendingPathComponent:tempFileName];
 				[DCMObject anonymizeContentsOfFile:filePath tags:tags writingToFile:tempFilePath];
 				[filenameTranslation setObject:tempFilePath forKey:filePath];
@@ -443,14 +447,14 @@ static NSString *templateDicomFile = nil;
 			
 			[pool release];
 			
-			if ([splash aborted]) break;
+			if ([splash aborted])
+                break;
 		}
 	}
 	
 	if ([producedFiles count] != [dicomImages count])
 	{
-		NSLog( @"***** anonymizeFiles [producedFiles count] != [dicomImages count]");
-        
+		NSLog( @"***** anonymizeFiles [producedFiles count] != [dicomImages count]");        
         filenameTranslation = nil;
 	}
 	else

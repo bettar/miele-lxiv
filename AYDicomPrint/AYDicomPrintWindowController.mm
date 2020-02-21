@@ -136,7 +136,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
             [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
             
             windowFrameToRestore = m_CurrentViewer.window.frame;
-            NSRect newFrame = [AppController usefullRectForScreen: m_CurrentViewer.window.screen];
+            NSRect newFrame = [AppController usefulRectForScreen: m_CurrentViewer.window.screen];
             
             if (newFrame.size.width < newFrame.size.height)
                 newFrame.size.height = newFrame.size.width;

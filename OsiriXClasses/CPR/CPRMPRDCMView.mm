@@ -21,6 +21,12 @@
 #import "options.h"
 #import "mgl.h" // include first
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
+#import "GLRenderer.h"
+
 #import "CPRController.h"
 #import "CPRMPRDCMView.h"
 #import "VRController.h"
@@ -39,7 +45,6 @@
 #include "N3Geometry.h"
 #import "vtkMath.h"
 
-static float deg2rad = M_PI / 180.0; 
 extern unsigned int minimumStep;
 
 static BOOL arePlanesParallel( float *Pn1, float *Pn2)
@@ -90,7 +95,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 @synthesize curvedPath;
 @synthesize displayInfo;
 @synthesize dontUseAutoLOD, pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter, displayCrossLines, LOD;
-@synthesize CPRType = _CPRType;
 
 - (BOOL)becomeFirstResponder
 {
@@ -122,8 +126,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		case tMeasure:
 		case tROI:
 		case tOval:
-		case tOPolygon:
-		case tCPolygon:
+		case tOpenPolygon:
+		case tClosedPolygon:
 		case tAngle:
 		case tArrow:
 		case tText:
@@ -143,22 +147,22 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	return NO;
 }
 
-- (void) setDCMPixList:(NSMutableArray*)pixList
-             filesList:(NSArray*)files
-               roiList:(NSMutableArray*)rois
-            firstImage:(short)firstImage
-                  type:(char)type
-                 reset:(BOOL)reset;
+- (void) setDCMPixList: (NSMutableArray*) pixList
+             filesList: (NSArray*) files
+               roiList: (NSMutableArray*) rois
+            firstImage: (short) firstImage
+                  type: (char) type
+                 reset: (BOOL) reset;
 {
 	[super setPixels:pixList files:files rois:rois firstImage:firstImage level:type reset:reset];
     
-	[[NSNotificationCenter defaultCenter]	addObserver: self
+	[[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector(removeROI:)
                                                  name: OsirixRemoveROINotification
                                                object: nil];
     
     
-	rotation = 0;
+	self.rotation = 0;
 	
 	pix = [pixList lastObject];
 	
@@ -231,10 +235,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     }
 }
 
- -(void)setCPRType:(CPRMPRDCMViewCPRType)type
+ -(void)setViewCprType:(CPRType)type
 {
-    if (type != _CPRType) {
-        _CPRType = type;
+    if (type != _viewCprType) {
+        _viewCprType = type;
         [self setNeedsDisplay:YES];
     }
 }
@@ -333,7 +337,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 -(void) updateViewMPR
 {
-	[self updateViewMPR: YES];
+	[self updateViewMPR: YES];  // #i18 stack 7
 }
 
 - (void) setLOD: (float) l
@@ -426,7 +430,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			else
                 lastRenderingWasMoveCenter = NO;
 			
-			[vrView render];
+			[vrView render];    // #i18 stack 6
 		}
 		
 		float *imagePtr = nil;
@@ -641,56 +645,56 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	if (cgl_ctx == nil)
         return;
     
-#ifdef WITH_OPENGL_32
-    // TODO: replacement code
-#else
 	switch( v)
 	{
 		case 1:
-			//glColor4f (VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
-			glColor4f ([windowController.colorAxis1 redComponent],
-                       [windowController.colorAxis1 greenComponent],
-                       [windowController.colorAxis1 blueComponent],
-                       [windowController.colorAxis1 alphaComponent]);
+			//renderer_set_rgba(VIEW_1_RED, VIEW_1_GREEN, VIEW_1_BLUE, VIEW_1_ALPHA);
+			renderer_set_rgba([windowController.colorAxis1 redComponent],
+                              [windowController.colorAxis1 greenComponent],
+                              [windowController.colorAxis1 blueComponent],
+                              [windowController.colorAxis1 alphaComponent]);
             break;
             
 		case 2:
-			//glColor4f (VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
-			glColor4f ([windowController.colorAxis2 redComponent],
-                       [windowController.colorAxis2 greenComponent],
-                       [windowController.colorAxis2 blueComponent],
-                       [windowController.colorAxis2 alphaComponent]);
+			//renderer_set_rgba(VIEW_2_RED, VIEW_2_GREEN, VIEW_2_BLUE, VIEW_2_ALPHA);
+			renderer_set_rgba([windowController.colorAxis2 redComponent],
+                              [windowController.colorAxis2 greenComponent],
+                              [windowController.colorAxis2 blueComponent],
+                              [windowController.colorAxis2 alphaComponent]);
             break;
             
 		case 3:
-			//glColor4f (VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
-			glColor4f ([windowController.colorAxis3 redComponent],
-                       [windowController.colorAxis3 greenComponent],
-                       [windowController.colorAxis3 blueComponent],
-                       [windowController.colorAxis3 alphaComponent]);
+			//renderer_set_rgba(VIEW_3_RED, VIEW_3_GREEN, VIEW_3_BLUE, VIEW_3_ALPHA);
+			renderer_set_rgba([windowController.colorAxis3 redComponent],
+                              [windowController.colorAxis3 greenComponent],
+                              [windowController.colorAxis3 blueComponent],
+                              [windowController.colorAxis3 alphaComponent]);
             break;
 	}
-#endif
 }
 
-- (void) drawLine: (float[2][3]) sft thickness: (float) thickness
+- (void) drawLine: (float[2][3]) sft
+        thickness: (float) thickness
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if (cgl_ctx == nil)
         return;
     
+    //[self setShaderProgramOverlayLine];
+
 	if (thickness > 2)
 	{
-		glLineWidth(2.0 * self.window.backingScaleFactor);
+        // Issue #i23 ?
+        [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: 0];
 		
-		glLineWidth(1.0 * self.window.backingScaleFactor);
+        [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: -thickness/2.];
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: thickness/2.];
 	}
 	else
 	{
-		glLineWidth(2.0 * self.window.backingScaleFactor);
+        [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: 0];
 	}
 }
@@ -699,7 +703,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 {
 //	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //	
-//	glLineWidth(1.0 * self.window.backingScaleFactor);
+//	renderer_setLineWidth(1.0 * self.window.backingScaleFactor);
 //    
 //	if (fromIntervalExport > 0)
 //	{
@@ -740,19 +744,27 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	scaleValue = copyScale;
 }
 
+#pragma mark -
+
 - (void) subDrawRect: (NSRect) r
 {
+    NSLog(@"%s %d, self:%p", __FUNCTION__, __LINE__, self);
+
 	if ([stringID isEqualToString: @"export"])
 		return;
 		
 	if (r.size.height < 10 || r.size.width < 10)
 		return;
 	
-	rotation = 0;
+	self.rotation = 0;
 	
+#ifdef WITH_OPENGL_32
+    [self setShaderProgramOverlay_withMode_Normal]; // Added
+#else
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if (cgl_ctx == nil)
         return;
+#endif
     
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable(GL_BLEND);
@@ -761,96 +773,69 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 #endif
 	glEnable(GL_LINE_SMOOTH);
 	glPointSize( 12 * self.window.backingScaleFactor);
-	
+
 	if (displayCrossLines && frameZoomed == NO)
 	{
 		// All pix have the same thickness
 		float thickness = [pix sliceThickness];
 		
-		switch( viewID)
+		switch (viewID)
 		{
 			case 1:
-#ifdef WITH_OPENGL_32
-                // TODO: replacement code
-#else
-				glColor4f ([windowController.colorAxis2 redComponent],
-                           [windowController.colorAxis2 greenComponent],
-                           [windowController.colorAxis2 blueComponent],
-                           [windowController.colorAxis2 alphaComponent]);
-#endif
-				if (crossLinesA[ 0][ 0] != HUGE_VALF)
-				{
-					[self drawLine: crossLinesA thickness: thickness];
-				}
+				renderer_set_rgba([windowController.colorAxis2 redComponent],
+                                  [windowController.colorAxis2 greenComponent],
+                                  [windowController.colorAxis2 blueComponent],
+                                  [windowController.colorAxis2 alphaComponent]);
 
-#ifdef WITH_OPENGL_32
-                // TODO: replacement code
-#else
-                glColor4f ([windowController.colorAxis3 redComponent],
-                           [windowController.colorAxis3 greenComponent],
-                           [windowController.colorAxis3 blueComponent],
-                           [windowController.colorAxis3 alphaComponent]);
-#endif
-				if (crossLinesB[ 0][ 0] != HUGE_VALF)
-				{
+                if (crossLinesA[ 0][ 0] != HUGE_VALF)
+					[self drawLine: crossLinesA thickness: thickness];
+
+                renderer_set_rgba([windowController.colorAxis3 redComponent],
+                                  [windowController.colorAxis3 greenComponent],
+                                  [windowController.colorAxis3 blueComponent],
+                                  [windowController.colorAxis3 alphaComponent]);
+
+                if (crossLinesB[ 0][ 0] != HUGE_VALF)
 					[self drawLine: crossLinesB thickness: thickness];
-				}
+
                 break;
                 
 			case 2:
-#ifdef WITH_OPENGL_32
-                // TODO: replacement code
-#else
-				glColor4f ([windowController.colorAxis1 redComponent],
-                           [windowController.colorAxis1 greenComponent],
-                           [windowController.colorAxis1 blueComponent],
-                           [windowController.colorAxis1 alphaComponent]);
-#endif
-				if (crossLinesA[ 0][ 0] != HUGE_VALF)
-				{
+				renderer_set_rgba([windowController.colorAxis1 redComponent],
+                                  [windowController.colorAxis1 greenComponent],
+                                  [windowController.colorAxis1 blueComponent],
+                                  [windowController.colorAxis1 alphaComponent]);
+
+                if (crossLinesA[ 0][ 0] != HUGE_VALF)
 					[self drawLine: crossLinesA thickness: thickness];
-				}
 				
-#ifdef WITH_OPENGL_32
-                // TODO: replacement code
-#else
-				glColor4f ([windowController.colorAxis3 redComponent],
-                           [windowController.colorAxis3 greenComponent],
-                           [windowController.colorAxis3 blueComponent],
-                           [windowController.colorAxis3 alphaComponent]);
-#endif
-				if (crossLinesB[ 0][ 0] != HUGE_VALF)
-				{
+				renderer_set_rgba([windowController.colorAxis3 redComponent],
+                                  [windowController.colorAxis3 greenComponent],
+                                  [windowController.colorAxis3 blueComponent],
+                                  [windowController.colorAxis3 alphaComponent]);
+
+                if (crossLinesB[ 0][ 0] != HUGE_VALF)
 					[self drawLine: crossLinesB thickness: thickness];
-				}
+
                 break;
                 
 			case 3:
-#ifdef WITH_OPENGL_32
-                // TODO: replacement code
-#else
-				glColor4f ([windowController.colorAxis1 redComponent],
-                           [windowController.colorAxis1 greenComponent],
-                           [windowController.colorAxis1 blueComponent],
-                           [windowController.colorAxis1 alphaComponent]);
-#endif
-				if (crossLinesA[ 0][ 0] != HUGE_VALF)
-				{
+				renderer_set_rgba([windowController.colorAxis1 redComponent],
+                                  [windowController.colorAxis1 greenComponent],
+                                  [windowController.colorAxis1 blueComponent],
+                                  [windowController.colorAxis1 alphaComponent]);
+
+                if (crossLinesA[ 0][ 0] != HUGE_VALF)
 					[self drawLine: crossLinesA thickness: thickness];
-				}
 				
-#ifdef WITH_OPENGL_32
-                // TODO: replacement code
-#else
-				glColor4f ([windowController.colorAxis2 redComponent],
-                           [windowController.colorAxis2 greenComponent],
-                           [windowController.colorAxis2 blueComponent],
-                           [windowController.colorAxis2 alphaComponent]);
-#endif
-				if (crossLinesB[ 0][ 0] != HUGE_VALF)
-				{
+				renderer_set_rgba([windowController.colorAxis2 redComponent],
+                                  [windowController.colorAxis2 greenComponent],
+                                  [windowController.colorAxis2 blueComponent],
+                                  [windowController.colorAxis2 alphaComponent]);
+
+                if (crossLinesB[ 0][ 0] != HUGE_VALF)
 					[self drawLine: crossLinesB thickness: thickness];
-				}
+
                 break;
 		}
 	}
@@ -859,31 +844,56 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	float widthhalf = [self convertSizeToBacking: self.frame.size].width/2;
 	
 	[self colorForView: viewID];
-	
-	// Red Square
-	if ([[self window] firstResponder] == self && stringID == nil && frameZoomed == NO)
+
+#pragma mark bounding box for the subview, color coded for the view ID
+
+    if ([[self window] firstResponder] == self &&
+        stringID == nil &&
+        frameZoomed == NO)
 	{
-		glLineWidth(8.0 * self.window.backingScaleFactor);
-		glBegin(GL_LINE_LOOP);
-        {
-            glVertex2f(  -widthhalf, -heighthalf);
-            glVertex2f(  -widthhalf, heighthalf);
-            glVertex2f(  widthhalf, heighthalf);
-            glVertex2f(  widthhalf, -heighthalf);
-        }
-		glEnd();
+        const int nPoints = 4;
+        glm::vec2 pA[nPoints];
+        pA[0] = glm::vec2(-widthhalf, -heighthalf);
+        pA[1] = glm::vec2(-widthhalf,  heighthalf);
+        pA[2] = glm::vec2( widthhalf,  heighthalf);
+        pA[3] = glm::vec2( widthhalf, -heighthalf);
+
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (int i=0; i<nPoints; i++)
+            [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec2)]];
+
+        [self setShaderProgramForLineWidth: 8.0 * self.window.backingScaleFactor];
+        renderer_drawLine_xy([pArray copy], GL_LINE_LOOP);
 	}
 	
-	glLineWidth(2.0 * self.window.backingScaleFactor);
-	glBegin(GL_POLYGON);
-    {
-        glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
-        glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
-        glVertex2f(widthhalf, -heighthalf);
-        glVertex2f(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
-    }
-	glEnd();
-	glLineWidth(1.0 * self.window.backingScaleFactor);
+#pragma mark small colored box identifying the view
+
+#ifdef WITH_OPENGL_32
+    // For Polygons we use "overlay" program, so get it by specifying a line width of 1
+    [self setShaderProgramForLineWidth: 1.0];
+    [self colorForView: viewID];
+#else
+    // Why width 2 ? The polygon is filled anyway
+    [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
+#endif
+
+    const int nPoints = 4;
+    glm::vec2 pA[nPoints];
+    pA[0] = glm::vec2(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
+    pA[1] = glm::vec2(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
+    pA[2] = glm::vec2(widthhalf, -heighthalf);
+    pA[3] = glm::vec2(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
+            
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (int i=0; i<nPoints; i++)
+        [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec2)]];
+
+    renderer_drawPolygon([pArray copy]); // GL_TRIANGLE_FAN
+
+#pragma mark cross lines
+
+    // Restore line width (unnecessary ?)
+    [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
 	
 	if (displayCrossLines &&
         frameZoomed == NO &&
@@ -940,12 +950,16 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
             sc[1] = sc[ 1] / curDCM.pixelSpacingY;
             sc[0] -= curDCM.pwidth * 0.5f;
             sc[1] -= curDCM.pheight * 0.5f;
-			glPointSize( 10 * self.window.backingScaleFactor);
-			glBegin( GL_POINTS);
-            {
-                glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
-            }
-			glEnd();
+
+            NSMutableArray *pArray = [NSMutableArray array];
+            glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+            
+#ifdef WITH_OPENGL_32
+            [self setShaderProgramOverlay_withMode_Point]; // Added
+#endif
+            glPointSize( 10 * self.window.backingScaleFactor);
+            renderer_drawPoints([pArray copy]);
             
 			[self colorForView:viewIDB];
 			[pixB convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
@@ -966,22 +980,31 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         sc[1] = sc[ 1] / curDCM.pixelSpacingY;
         sc[0] -= curDCM.pwidth * 0.5f;
         sc[1] -= curDCM.pheight * 0.5f;
+
+        NSMutableArray *pArray = [NSMutableArray array];
+        glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
+        [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+
+        [self setShaderProgramOverlay_withMode_Point];
         glPointSize( 10 * self.window.backingScaleFactor);
-        glBegin( GL_POINTS);
-        {
-            glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
-        }
-        glEnd();
+        renderer_drawPoints([pArray copy]);
     }
-	
-	[self drawCurvedPathInGL];
+
+#pragma mark CurvedPathInGL, OSIROI
+
+    [self drawCurvedPathInGL];
     [self drawOSIROIs];
-	
+
+#pragma mark mouse position
+
 	if (windowController.displayMousePosition)
 	{
+#ifdef WITH_OPENGL_32
+        [self setShaderProgramOverlay_withMode_Point]; // Added
+#endif
 		NSString *planeName;
 		for (planeName in [displayInfo planesWithMouseVectors]) {
-			if ([planeName  isEqualToString:[self planeName]]) {
+			if ([planeName isEqualToString:[self planeName]]) {
 				N3Vector cursorVector;
 				N3AffineTransform transform;
 				[self colorForView:viewID];
@@ -989,17 +1012,18 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
                 glEnable(GL_POINT_SMOOTH);
 #endif
 				glPointSize(8 * self.window.backingScaleFactor);
-				transform = N3AffineTransformConcat(N3AffineTransformInvert([self pixToDicomTransform]), [self pixToSubDrawRectTransform]);
+
+                transform = N3AffineTransformConcat(N3AffineTransformInvert([self pixToDicomTransform]), [self pixToSubDrawRectTransform]);
 				cursorVector = N3VectorApplyTransform([displayInfo mouseVectorForPlane:planeName], transform);
 
-                glBegin(GL_POINTS);
-                {
-                    glVertex2f(cursorVector.x, cursorVector.y);
-                }
-				glEnd();
+                NSMutableArray *pArray = [NSMutableArray array];
+                glm::vec2 a(cursorVector.x, cursorVector.y);
+                [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+
+                renderer_drawPoints([pArray copy]);
 			}
 		}
-	}
+	} // mouse position
 	
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
@@ -1008,6 +1032,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 #endif
 	glDisable(GL_BLEND);
 }
+
+#pragma mark -
 
 - (void) setCrossReferenceLines: (float[2][3]) a
                         andLine: (float[2][3]) b
@@ -1255,7 +1281,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
                 // Is this point in our plane?
                 
                 float vectors[ 9], orig[ 3], locationTemp[ 3];
-                float distance = 999999;
+                float distance = FLT_MAX;
                 
                 orig[ 0] = [pix originX];
                 orig[ 1] = [pix originY];
@@ -1377,17 +1403,19 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 #define BS 10.
 
-- (float) angleBetween:(NSPoint) mouseLocation center:(NSPoint) center
+// Returns angle in degrees
+- (float) angleBetween:(NSPoint) mouseLocation
+                center:(NSPoint) center
 {
 	mouseLocation.x -= center.x;
 	mouseLocation.y -= center.y;
 	
-	return -atan2( mouseLocation.x, mouseLocation.y) / deg2rad;
+	return glm::degrees(-atan2(mouseLocation.x, mouseLocation.y));
 }
 
 - (NSPoint) centerLines
 {
-    NSPoint r = NSMakePoint( 0, 0);
+    NSPoint r = NSZeroPoint;
     
     // One line or no lines : find the middle of the line
     if (crossLinesB[ 0][ 0] == HUGE_VALF)
@@ -1662,12 +1690,14 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		{
 			if (frameZoomed == NO)
 			{
-				splitPosition[0] = [[windowController mprView1] frame].origin.x + [[windowController mprView1] frame].size.width; // vert
-				splitPosition[1] = [[windowController mprView1] frame].origin.y + [[windowController mprView1] frame].size.height; // hori12
-				splitPosition[2] = [[windowController mprView3] frame].origin.y + [[windowController mprView3] frame].size.height; // horiz2
+				splitPosition[0] = NSMaxX([[windowController mprView1] frame]); // vert
+
+                splitPosition[1] = NSMaxY([[windowController mprView1] frame]); // hori12
+				splitPosition[2] = NSMaxY([[windowController mprView3] frame]); // horiz2
 				
 				frameZoomed = YES;
-				switch( viewID)
+
+                switch (viewID)
 				{
 					case 1:
 						[windowController.verticalSplit setPosition: [windowController.verticalSplit maxPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
@@ -2463,18 +2493,20 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         normals[i] = N3VectorApplyTransform(N3VectorAdd(vectors[i], N3VectorScalarMultiply(normals[i], 10)), transform);
         vectors[i] = N3VectorApplyTransform(vectors[i], transform);
         
-		glColor4d(1.0, 1.0, 1.0, 1.0);
+        renderer_set_rgba(1.0, 1.0, 1.0, 1.0); // white
         [self drawCircleAtPoint:NSPointFromN3Vector(vectors[i])];
-        
-		glColor4d(1.0, 0.0, 1.0, 1.0);
-        glBegin(GL_LINES);
-        {
-            glVertex2f(vectors[i].x, vectors[i].y);
-            glVertex2f(normals[i].x, normals[i].y);
-        }
-        glEnd();
+
+        // TODO: badly needs optimization
+        glm::vec2 pV(vectors[i].x, vectors[i].y);
+        glm::vec2 pN(normals[i].x, normals[i].y);
+
+        NSMutableArray *pArray = [NSMutableArray array];
+        [pArray addObject: [NSValue valueWithBytes:&pV objCType:@encode(glm::vec2)]];
+        [pArray addObject: [NSValue valueWithBytes:&pN objCType:@encode(glm::vec2)]];
+
+        renderer_set_rgba(1.0, 0.0, 1.0, 1.0); // magenta
+        renderer_drawLine_xy([pArray copy], GL_LINES);
     }
-    
 }
 
 - (void)drawCurvedPathInGL
@@ -2495,7 +2527,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     if (cgl_ctx == nil)
         return;
     
-	if (isnan( curDCM.pixelSpacingX) || isnan( curDCM.pixelSpacingY) || curDCM.pixelSpacingX <= 0 || curDCM.pixelSpacingY <= 0 || curDCM.pixelSpacingX > 1000 || curDCM.pixelSpacingY > 1000)
+	if (isnan( curDCM.pixelSpacingX) ||
+        isnan( curDCM.pixelSpacingY) ||
+        curDCM.pixelSpacingX <= 0 ||
+        curDCM.pixelSpacingY <= 0 ||
+        curDCM.pixelSpacingX > 1000 ||
+        curDCM.pixelSpacingY > 1000)
 	{
 		return;
 	}
@@ -2527,9 +2564,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	if (curvedPath.nodes.count == 1)
 	{
         cursorVector = N3VectorApplyTransform([[curvedPath.nodes objectAtIndex: 0] N3VectorValue], transform);
-		glColor4d(1.0, 0.0, 0.0, 1.0);
+
+        [self setShaderProgramOverlay];
+        renderer_set_rgba(1.0, 0.0, 0.0, 1.0); // red
         [self drawCircleAtPoint:NSPointFromN3Vector(cursorVector)];
-		
 		return;
 	}
 	
@@ -2542,32 +2580,40 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     [flattenedBezierPath addEndpointsAtIntersectionsWithPlane:N3PlaneMake(N3VectorMake(0, 0, -0.5), N3VectorMake(0, 0, 1))];
     [flattenedBezierPath addEndpointsAtIntersectionsWithPlane:N3PlaneMake(N3VectorMake(0, 0, -1.0), N3VectorMake(0, 0, 1))];
     
-    glLineWidth(2.0 * self.window.backingScaleFactor);
-    glBegin(GL_LINE_STRIP);
+    // draw the line segments
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (NSInteger i = 0; i < [flattenedBezierPath elementCount]; i++)
     {
-        for (NSInteger i = 0; i < [flattenedBezierPath elementCount]; i++) { // draw the line segments
-            [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
-            
-            if (ABS(vector.z) <= 0.5) {
-                glColor4d( pathRed, pathGreen, pathBlue, 1.0);
-            }
-            else if(ABS(vector.z) >= 1.0){
-                glColor4d( pathRed, pathGreen, pathBlue, 0.2);
-            }
-            else {
-                glColor4d( pathRed, pathGreen, pathBlue, ABS(vector.z)*-1.6 + 1.8);
-            }
-                    
-            glVertex2d(vector.x, vector.y);
+        [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
+        
+        Point_xy_rgba pc;
+        if (ABS(vector.z) <= 0.5) {
+            pc.c = glm::vec4( pathRed, pathGreen, pathBlue, 1.0);
         }
+        else if(ABS(vector.z) >= 1.0){
+            pc.c = glm::vec4( pathRed, pathGreen, pathBlue, 0.2);
+        }
+        else {
+            pc.c = glm::vec4( pathRed, pathGreen, pathBlue, ABS(vector.z)*-1.6 + 1.8);
+        }
+                
+        pc.p = glm::vec2(vector.x, vector.y);
+        
+        [pArray addObject: [NSValue valueWithBytes:&pc
+                                          objCType:@encode(Point_xy_rgba)]];
     }
-    glEnd();
+
+    [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
+    renderer_drawLineStrip_xy_rgba([pArray copy]);
     
-    // draw the thick slab outline
-    if ([bezierPath elementCount] >= 2 && curvedPath.thickness > 2.0 && length > 3.0)
+    // Draw the thick slab outline
+    if ([bezierPath elementCount] >= 2 &&
+        curvedPath.thickness > 2.0 &&
+        length > 3.0)
 	{
-        glLineWidth(1.0 * self.window.backingScaleFactor);
-        if (_CPRType == CPRMPRDCMViewCPRStraightenedType) {
+        [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
+
+        if (_viewCprType == CPRStraightenedType) {
             outlinePath = [[bezierPath outlineBezierPathAtDistance:curvedPath.thickness / 2.0 initialNormal:N3VectorCrossProduct(curvedPath.initialNormal, [flattenedBezierPath tangentAtStart]) spacing:1.0] mutableCopy];
         }
         else {
@@ -2575,56 +2621,63 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         }
         
         [outlinePath applyAffineTransform:transform];
-        glColor4d(0.0, 1.0, 0.0, 1.0); 
-        glBegin(GL_LINE_STRIP);
+        renderer_set_rgba(0.0, 1.0, 0.0, 1.0); // green
+
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (NSInteger i = 0; i < [outlinePath elementCount]; i++)
         {
-            for (NSInteger i = 0; i < [outlinePath elementCount]; i++) {
-                if ([outlinePath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector] == N3LineToBezierPathElement) {
-                    glVertex2d(vector.x, vector.y);
-                }
-                else {
-                    glEnd();
-                    glBegin(GL_LINE_STRIP);
-                    glVertex2d(vector.x, vector.y);
-                }
+            if ([outlinePath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector] != N3LineToBezierPathElement)   // end of strip
+            {
+                renderer_drawLine_xy([pArray copy], GL_LINE_STRIP);
+                [pArray removeAllObjects];
             }
+
+            glm::vec2 pA(vector.x, vector.y);
+            [pArray addObject: [NSValue valueWithBytes:&pA objCType:@encode(glm::vec2)]];
         }
-        glEnd();
+
+        renderer_drawLine_xy([pArray copy], GL_LINE_STRIP);
+
         [outlinePath release];
         outlinePath = nil;
     }
 	
 	if ([[self windowController] exportSlabThickness] > 0)
 	{
-		glLineWidth(1.0 * self.window.backingScaleFactor);
-        if (_CPRType == CPRMPRDCMViewCPRStraightenedType) {
+        [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
+
+        if (_viewCprType == CPRStraightenedType) {
             outlinePath = [[bezierPath outlineBezierPathAtDistance: [[self windowController] exportSlabThickness] / 2.0 initialNormal:N3VectorCrossProduct(curvedPath.initialNormal, [flattenedBezierPath tangentAtStart]) spacing:1.0] mutableCopy];
         }
         else {
             outlinePath = [[bezierPath outlineBezierPathAtDistance: [[self windowController] exportSlabThickness] / 2.0 projectionNormal:[curvedPath stretchedProjectionNormal] spacing:1.0] mutableCopy];
         }
         [outlinePath applyAffineTransform:transform];
-        glColor4d(0.0, 1.0, 0.0, 1.0); 
-        glBegin(GL_LINE_STRIP);
-        for (NSInteger i = 0; i < [outlinePath elementCount]; i++) {
-            if ([outlinePath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector] == N3LineToBezierPathElement) {
-                glVertex2d(vector.x, vector.y);
-            }
-            else {
-                glEnd();
 
-                glBegin(GL_LINE_STRIP);
-                glVertex2d(vector.x, vector.y);
+        [self setShaderProgramOverlayLine];
+        renderer_set_rgba(0.0, 1.0, 0.0, 1.0);
+
+        NSMutableArray *pArray = [NSMutableArray array];
+        
+        for (NSInteger i = 0; i < [outlinePath elementCount]; i++)
+        {
+            if ([outlinePath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector] != N3LineToBezierPathElement)  // end of of strip
+            {
+                renderer_drawLine_xy([pArray copy], GL_LINE_STRIP);
+                [pArray removeAllObjects];
             }
-			
+
+            glm::vec2 pA(vector.x, vector.y);
+            [pArray addObject: [NSValue valueWithBytes:&pA objCType:@encode(glm::vec2)]];
         }
-        glEnd();
+        
+        renderer_drawLine_xy([pArray copy], GL_LINE_STRIP);
+
         [outlinePath release];
         outlinePath = nil;
 	}
-	
-    
-//    glColor4d(1.0, 0.0, 1.0, 1.0); // draw the normal lines
+	    
+//    renderer_set_rgba(1.0, 0.0, 1.0, 1.0); // draw the normal lines
 //    glBegin(GL_LINES);
 //    for (i = 0; i < numVectors; i++) {
 //        N3Vector start = N3VectorApplyTransform(N3VectorAdd(vectors[i], N3VectorScalarMultiply(normals[i], 10)), transform);
@@ -2634,33 +2687,38 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 //    }
 //    glEnd();
     
-    
-    glColor4d(1.0, 0.0, 0.0, 1.0); // draw the ends of the line segements
-    for (NSInteger i = 0; i < [transformedBezierPath elementCount]; i++) {
+    [self setShaderProgramOverlay];
+    renderer_set_rgba(1.0, 0.0, 0.0, 1.0); // draw the ends of the line segments
+    for (NSInteger i = 0; i < [transformedBezierPath elementCount]; i++)
+    {
         [transformedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
 		
 		if (fabs( vector.z) <= 0.5)
-			glColor4d( pathRed, pathGreen, pathBlue, 1.0);
+			renderer_set_rgba( pathRed, pathGreen, pathBlue, 1.0);
 		else
-			glColor4d( pathRed, pathGreen, pathBlue, 0.2);
+			renderer_set_rgba( pathRed, pathGreen, pathBlue, 0.2);
 
         [self drawCircleAtPoint:NSMakePoint(vector.x, vector.y)];
     }
-    
 	
 	// draw the cursor positions
 
-    if (displayInfo.mouseCursorHidden == NO) {
+    if (displayInfo.mouseCursorHidden == NO)
+    {
         cursorVector = N3VectorApplyTransform([flattenedNotTransformedBezierPath vectorAtRelativePosition:displayInfo.mouseCursorPosition], transform);
-        glColor4d(0.0, 1.0, 0.0, 1.0);
+
+        renderer_set_rgba(0.0, 1.0, 0.0, 1.0);
         [self drawCircleAtPoint:NSPointFromN3Vector(cursorVector)];
     }
     
 	// draw the cursor positions
 
-    if (displayInfo.hoverNodeHidden == NO && displayInfo.hoverNodeIndex < [curvedPath.nodes count]) {
+    if (displayInfo.hoverNodeHidden == NO &&
+        displayInfo.hoverNodeIndex < [curvedPath.nodes count])
+    {
         cursorVector = N3VectorApplyTransform([[curvedPath.nodes objectAtIndex:displayInfo.hoverNodeIndex] N3VectorValue], transform);
-        glColor4d(1.0, 0.5, 0.0, 1.0);
+
+        renderer_set_rgba(1.0, 0.5, 0.0, 1.0);
         [self drawCircleAtPoint:NSPointFromN3Vector(cursorVector)];
     }
     
@@ -2668,25 +2726,28 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	{
 		// draw the transverse positions
 		cursorVector = N3VectorApplyTransform([flattenedNotTransformedBezierPath vectorAtRelativePosition:curvedPath.transverseSectionPosition], transform);
-		glColor4d(1.0, 1.0, 0.0, 1.0);
+
+        renderer_set_rgba(1.0, 1.0, 0.0, 1.0);
 		[self drawCircleAtPoint:NSPointFromN3Vector(cursorVector)];
 		
 		cursorVector = N3VectorApplyTransform([flattenedNotTransformedBezierPath vectorAtRelativePosition:curvedPath.leftTransverseSectionPosition], transform);
-		glColor4d(1.0, 1.0, 0.0, 1.0);
+
+        renderer_set_rgba(1.0, 1.0, 0.0, 1.0);
 		[self drawCircleAtPoint:NSPointFromN3Vector(cursorVector) pointSize:4];
 		
 		cursorVector = N3VectorApplyTransform([flattenedNotTransformedBezierPath vectorAtRelativePosition:curvedPath.rightTransverseSectionPosition], transform);
-		glColor4d(1.0, 1.0, 0.0, 1.0);
+
+        renderer_set_rgba(1.0, 1.0, 0.0, 1.0);
 		[self drawCircleAtPoint:NSPointFromN3Vector(cursorVector) pointSize:4];
 	}
 
-//    glColor4d(1.0, 1.0, 0.0, 1.0); // draw the endpoints
+//    renderer_set_rgba(1.0, 1.0, 0.0, 1.0); // draw the endpoints
 //    for (i = 0; i < [flattenedBezierPath elementCount]; i++) {
 //        [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
 //        [self drawCircleAtPoint:NSMakePoint(vector.x, vector.y)];
 //    }
 
-//    glColor4d(0.0, 1.0, 1.0, 1.0); // draw the control points
+//    renderer_set_rgba(0.0, 1.0, 1.0, 1.0); // draw the control points
 //    for (i = 0; i < [transformedBezierPath elementCount]; i++) {
 //        if ([transformedBezierPath elementAtIndex:i control1:&control1 control2:&control2 endpoint:&vector] == N3CurveToBezierPathElement) {
 //            [self drawCircleAtPoint:NSMakePoint(control1.x, control1.y)];
@@ -2710,19 +2771,31 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
 
-    OSIROI *roi;
-    for (roi in [[self ROIManager] ROIs]) {
+    OSIROI *osiroi;
+    for (osiroi in [[self ROIManager] ROIs])
+    {
+#ifdef WITH_OPENGL_32
+        // TODO: To be tested
+        #define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPRMPRDCM
+        #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPRMPRDCM
+        // Define a local model matrix and apply it locally without affecting the shader
+        glm::mat4 M = glm::make_mat4(pixToSubdrawRectOpenGLTransform);
+        #endif
+#else
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glMultMatrixd(pixToSubdrawRectOpenGLTransform);
+#endif
                 
-        [roi drawSlab:OSISlabMake([self plane], 0)
-         inCGLContext:cgl_ctx
-          pixelFormat:(CGLPixelFormatObj)[[self pixelFormat] CGLPixelFormatObj]
-  dicomToPixTransform:N3AffineTransformInvert([self pixToDicomTransform])];
+        [osiroi drawSlab: OSISlabMake([self plane], 0)
+            inCGLContext: cgl_ctx
+             pixelFormat: (CGLPixelFormatObj)[[self pixelFormat] CGLPixelFormatObj]
+     dicomToPixTransform: N3AffineTransformInvert([self pixToDicomTransform])];
     
+#ifndef WITH_OPENGL_32
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
+#endif
     }
 }
 
@@ -2743,7 +2816,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     return _ROIManager;
 }
 
-- (void)drawCircleAtPoint:(NSPoint)point pointSize:(CGFloat)pointSize
+- (void)drawCircleAtPoint:(NSPoint)point
+                pointSize:(CGFloat)pointSize
 {
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
@@ -2752,13 +2826,16 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 #ifndef WITH_OPENGL_32
     glEnable(GL_POINT_SMOOTH);
 #endif
-    glPointSize( pointSize * self.window.backingScaleFactor);
     
-    glBegin(GL_POINTS);
-    {
-        glVertex2f(point.x, point.y);
-    }
-    glEnd();    
+    NSMutableArray *pArray = [NSMutableArray array];
+    glm::vec2 a(point.x, point.y);
+    [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+    
+#ifdef WITH_OPENGL_32
+    [self setShaderProgramOverlay_withMode_Point]; // Added
+#endif
+    glPointSize(pointSize * self.window.backingScaleFactor);
+    renderer_drawPoints([pArray copy]);
 }
 
 
@@ -2767,13 +2844,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     [self drawCircleAtPoint:point pointSize:8];
 }
 
-
 - (N3AffineTransform)pixToDicomTransform // converts points in the DCMPix's coordinate space ("Slice Coordinates") into the DICOM space (patient space with mm units)
 {
     N3AffineTransform pixToDicomTransform;
     double spacingX;
     double spacingY;
-    //    double spacingZ;
+    //double spacingZ;
     double orientation[9];
     
     memset(orientation, 0, sizeof(double) * 9);
@@ -2872,7 +2948,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     NSPoint xBasis;
     NSPoint yBasis;
     
-    orginBasis = [self ConvertFromNSView2GL:NSMakePoint(0, 0)];
+    orginBasis = [self ConvertFromNSView2GL:NSZeroPoint];
     xBasis = [self ConvertFromNSView2GL:NSMakePoint(1, 0)];
     yBasis = [self ConvertFromNSView2GL:NSMakePoint(0, 1)];
     

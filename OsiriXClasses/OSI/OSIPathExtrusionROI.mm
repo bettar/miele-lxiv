@@ -16,6 +16,12 @@
 
 #import "mgl.h" // include first
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
+#import "GLRenderer.h"
+
 #import "OSIPathExtrusionROI.h"
 #import "OSIFloatVolumeData.h"
 #import "OSIROIMask.h"
@@ -31,6 +37,7 @@
 //- (NSData *)_maskRunsDataForSlab:(OSISlab)slab dicomToPixTransform:(N3AffineTransform)dicomToPixTransform minCorner:(N3VectorPointer)minCornerPtr;
 @end
 
+#pragma mark -
 
 @implementation OSIPathExtrusionROI
 
@@ -83,12 +90,14 @@
 			case N3LineToBezierPathElement:
 				[convexHull addObject:[NSValue valueWithN3Vector:N3VectorAdd(endpoint, halfNormal)]];
 				break;
-			case N3CurveToBezierPathElement:
+
+            case N3CurveToBezierPathElement:
 				[convexHull addObject:[NSValue valueWithN3Vector:N3VectorAdd(control1, halfNormal)]];
 				[convexHull addObject:[NSValue valueWithN3Vector:N3VectorAdd(control2, halfNormal)]];
 				[convexHull addObject:[NSValue valueWithN3Vector:N3VectorAdd(endpoint, halfNormal)]];
 				break;
-			default:
+
+            default:
 				break;
 		}
 	}
@@ -102,12 +111,14 @@
 			case N3LineToBezierPathElement:
 				[convexHull addObject:[NSValue valueWithN3Vector:N3VectorAdd(endpoint, halfNormal)]];
 				break;
-			case N3CurveToBezierPathElement:
+
+            case N3CurveToBezierPathElement:
 				[convexHull addObject:[NSValue valueWithN3Vector:N3VectorAdd(control1, halfNormal)]];
 				[convexHull addObject:[NSValue valueWithN3Vector:N3VectorAdd(control2, halfNormal)]];
 				[convexHull addObject:[NSValue valueWithN3Vector:N3VectorAdd(endpoint, halfNormal)]];
 				break;
-			default:
+
+            default:
 				break;
 		}
 	}
@@ -224,12 +235,13 @@
     return mask;
 }
 
+// Implementing deprecated method
 - (void)drawSlab:(OSISlab)slab
     inCGLContext:(CGLContextObj)cgl_ctx
      pixelFormat:(CGLPixelFormatObj)pixelFormat
 dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
-	N3Vector endpoint;
+	N3Vector endpoint; // Unused variable 'endpoint'
     N3BezierPath *flattenedPath;
     NSColor *deviceStrokeColor = [self.strokeColor colorUsingColorSpaceName:NSDeviceRGBColorSpace];
     
@@ -245,29 +257,50 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
-        glLineWidth(self.strokeThickness);
-        glColor4f((float)[deviceStrokeColor redComponent],
-                  (float)[deviceStrokeColor greenComponent],
-                  (float)[deviceStrokeColor blueComponent],
-                  (float)[deviceStrokeColor alphaComponent]);
+        renderer_setLineWidth(self.strokeThickness);
+        renderer_set_rgba((float)[deviceStrokeColor redComponent],
+                          (float)[deviceStrokeColor greenComponent],
+                          (float)[deviceStrokeColor blueComponent],
+                          (float)[deviceStrokeColor alphaComponent]);
 
         N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);  // redundant ?
         
+#ifdef WITH_OPENGL_32
+        // TODO: To be tested
+        #define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_OSI_PLANAR_PATH_EXTR
+        #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_OSI_PLANAR_PATH_EXTR
+        // Define a local model matrix and apply it locally without affecting the shader
+        glm::mat4 M = glm::make_mat4(dicomToPixGLTransform);
+        #endif
+#else
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glMultMatrixd(dicomToPixGLTransform);
+#endif
         
         flattenedPath = [_path bezierPathByFlattening:N3BezierDefaultFlatness/5.0];
-        glBegin(GL_LINE_STRIP);
-        {
-            for (NSInteger i = 0; i < [flattenedPath elementCount]; i++) {
-                [flattenedPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
-                glVertex3d(endpoint.x, endpoint.y, endpoint.z);
-            }
+
+        const int nPoints = [flattenedPath elementCount];
+        glm::vec3 pA[nPoints];
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (NSInteger i = 0; i < [flattenedPath elementCount]; i++) {
+            [flattenedPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
+
+            pA[i] = glm::vec3(endpoint.x, endpoint.y, endpoint.z);
+            #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_OSI_PLANAR_PATH_EXTR
+            // Apply local matrix transformation
+            glm::vec4 pTemp = M*glm::vec4(pA[i],1);
+            pA[i] = glm::vec3(pTemp.x, pTemp.y, pTemp.z);
+            #endif
+                         
+            [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec3)]];
         }
-        glEnd();
+
+        renderer_drawLine_xyz([pArray copy], GL_LINE_STRIP);
         
+#ifndef WITH_OPENGL_32
         glPopMatrix();
+#endif
         
         glDisable(GL_LINE_SMOOTH);
         glDisable(GL_POLYGON_SMOOTH);

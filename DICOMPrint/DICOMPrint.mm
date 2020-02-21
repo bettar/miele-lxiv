@@ -61,7 +61,7 @@ int main(int argc, const char *argv[])
     std::list<std::string> images;
     // See GingkoCAD pacscontroller.cpp line 459 PACSController::Print()
 
-    ////////////////////////////////////////////////////////////////////////////
+
     NSDictionary *filmSessionDict = [jsonDict valueForKeyPath:@"association.filmsession"];
     //NSLog(@"film session Dict: %@", filmSessionDict);
 

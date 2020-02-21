@@ -119,17 +119,17 @@ ss
         }
         @catch (NSException *e) { N2LogExceptionWithStackTrace(e);}
         
-        if( studyArray.count > 1)
+        if (studyArray.count > 1)
 			NSLog( @"****** WADO Server : more than 1 study with same uid : %d", (int) studyArray.count);
         
-        if( studyArray.count > 0)
+        if (studyArray.count > 0)
             return [studyArray lastObject];
         
         // Find it on a distant server
         
         NSArray *studies = nil;
         
-        if( ss)
+        if (ss)
             studies = [QueryController queryStudyInstanceUID: uid
                                                       server: ss
                                                   showErrors: NO];
@@ -138,7 +138,7 @@ ss
                                                       servers: [BrowserController comparativeServers]
                                                    showErrors: NO];
         
-        if( studies.count)
+        if (studies.count)
         {
             [QueryController retrieveStudies: studies showErrors: NO checkForPreviousAutoRetrieve: YES];
             
@@ -172,7 +172,7 @@ ss
             }
             while( ([studyArray count] == 0 || lastNumberOfImages != currentNumberOfImages) && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
             
-            if( studyArray.count == 0)
+            if (studyArray.count == 0)
                 N2LogStackTrace( @"---- failed to retrieve distant study");
         }
         else
@@ -189,7 +189,7 @@ ss
 {
     NSManagedObject* o = nil;
     
-    if( [xid hasPrefix: @"POD:"]) // PACS On Demand object
+    if ([xid hasPrefix: @"POD:"]) // PACS On Demand object
     {
         NSArray* axid = [xid componentsSeparatedByString:@":"];
         
@@ -204,16 +204,16 @@ ss
             
             for( NSDictionary *aServer in serversArray)
             {
-                if( [[aServer objectForKey:@"Activated"] boolValue] && [[aServer objectForKey:@"Address"] isEqualToString: [axid objectAtIndex: 1]] && [[aServer objectForKey:@"Port"] intValue] == [[axid objectAtIndex: 2] intValue])
+                if ([[aServer objectForKey:@"Activated"] boolValue] && [[aServer objectForKey:@"Address"] isEqualToString: [axid objectAtIndex: 1]] && [[aServer objectForKey:@"Port"] intValue] == [[axid objectAtIndex: 2] intValue])
                 {
                     s = aServer;
                     break;
                 }
             }
             
-            if( s)
+            if (s)
             {
-                if( [[axid objectAtIndex: 3] isEqualToString: @"STUDY"])
+                if ([[axid objectAtIndex: 3] isEqualToString: @"STUDY"])
                     o = [self studyForStudyInstanceUID: [axid objectAtIndex: 4] server: s];
                 else
                     N2LogStackTrace( @"**** XID POD at non-study level??");
@@ -225,7 +225,7 @@ ss
         NSArray* axid = [xid componentsSeparatedByString:@"/"];
         
         if (axid.count != 3) {
-            N2LogStackTrace(@"****** ERROR: unexpected CoreData ID format, please contact dev team");
+            N2LogStackTrace(@"%s %d, ERROR: unexpected CoreData ID format, please contact dev team", __FUNCTION__, __LINE__);
             return nil;
         }
         
@@ -262,7 +262,7 @@ ss
         
         NSArray *studies = [WebPortalUser studiesForUser: user predicate: [NSPredicate predicateWithFormat: @"patientUID BEGINSWITH[cd] %@", s.patientUID]];
         
-        if( [[studies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", s.studyInstanceUID]] count] == 0)
+        if ([[studies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", s.studyInstanceUID]] count] == 0)
         {
             NSLog( @"**** study not found for this user (%@) : %@", user, s);
             return nil;
@@ -270,18 +270,20 @@ ss
     }
     
     // Distant study with more images?
-    if( [o isKindOfClass: [DicomStudy class]] && [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"automaticallyRetrievePartialStudies"])
+    if ([o isKindOfClass: [DicomStudy class]] &&
+        [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] &&
+        [[NSUserDefaults standardUserDefaults] boolForKey: @"automaticallyRetrievePartialStudies"])
     {
         // Servers
         NSArray *servers = [BrowserController comparativeServers];
         DicomStudy *localStudy = (DicomStudy*) o;
         
-        if( servers.count)
+        if (servers.count)
         {
             // Distant study
             DicomStudy *distantStudy = [[QueryController queryStudiesForFilters: [NSDictionary dictionaryWithObject: [o valueForKey: @"studyInstanceUID"] forKey: @"StudyInstanceUID"] servers: servers showErrors: NO] lastObject];
             
-            if( [[localStudy rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
+            if ([[localStudy rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
             {
                 [QueryController retrieveStudies: [NSArray arrayWithObject: distantStudy] showErrors: NO checkForPreviousAutoRetrieve: YES];
                 
@@ -329,7 +331,7 @@ ss
         [self.session setObject:@"date" forKey:@"StudiesSortKey"];
     
 	NSString* albumReq = [parameters objectForKey:@"album"];
-	if (albumReq.length)
+	if (albumReq.length > 0)
     {
 		*title = [NSString stringWithFormat:NSLocalizedString(@"Album: %@", @"Web portal, study list, title format (%@ is album name)"), albumReq];
 		result = [WebPortalUser studiesForUser: user album:albumReq sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
@@ -390,7 +392,7 @@ ss
             
             [search appendFormat:@"name BEGINSWITH[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
             
-            if( searchString.length >= 2)
+            if (searchString.length >= 2)
                 [PODFilter setObject: [searchString stringByAppendingString:@"*"] forKey: @"PatientsName"];
             
             //
@@ -416,7 +418,7 @@ ss
             [search appendFormat:@"patientID BEGINSWITH[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
             browsePredicate = [NSPredicate predicateWithFormat:search];
             
-            if( searchString.length >= 2)
+            if (searchString.length >= 2)
                 [PODFilter setObject: [searchString stringByAppendingString:@"*"] forKey: @"PatientID"];
         }
         else if ([parameters objectForKey:@"searchAccessionNumber"])
@@ -438,7 +440,7 @@ ss
             [search appendFormat:@"accessionNumber BEGINSWITH[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
             browsePredicate = [NSPredicate predicateWithFormat:search];
             
-            if( searchString.length >= 2)
+            if (searchString.length >= 2)
                 [PODFilter setObject: [searchString stringByAppendingString:@"*"] forKey: @"AccessionNumber"];
         }
         
@@ -455,9 +457,13 @@ ss
         pred = [pred stringByReplacingOccurrencesOfString:@" " withString: @""];
         pred = [pred stringByReplacingOccurrencesOfString:@"(" withString: @""];
         pred = [pred stringByReplacingOccurrencesOfString:@")" withString: @""];
-        if( user == nil || pred.length == 0 || [pred isEqualToString: @"YES==YES"])
+        if (user == nil ||
+            pred.length == 0 ||
+            [pred isEqualToString: @"YES==YES"])
         {
-            if( PODFilter.count >= 1 && [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalSearch"])
+            if (PODFilter.count >= 1 &&
+                [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] &&
+                [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalSearch"])
             {
 //                BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
 //                BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
@@ -466,11 +472,11 @@ ss
                 // Servers
                 NSArray *servers = [BrowserController comparativeServers];
                 
-                if( servers.count)
+                if (servers.count)
                 {
                     NSArray *distantStudies = [QueryController queryStudiesForFilters: PODFilter servers: servers showErrors: NO];
                     
-                    if( [[[PODFilter valueForKey: @"PatientsName"] componentsSeparatedByString: @" "] count] > 1) // For patient name, if several components, try with ^ separator, and add missing results
+                    if ([[[PODFilter valueForKey: @"PatientsName"] componentsSeparatedByString: @" "] count] > 1) // For patient name, if several components, try with ^ separator, and add missing results
                     {
                         NSString *s = [PODFilter valueForKey: @"PatientsName"];
                         
@@ -483,26 +489,26 @@ ss
                         
                         for( DCMTKQueryNode *n in subResult)
                         {
-                            if( [resultUIDs containsObject: n.uid] == NO)
+                            if ([resultUIDs containsObject: n.uid] == NO)
                                 distantStudies = [distantStudies arrayByAddingObject: n];
                         }
                     }
                     
-                    if( distantStudies.count)
+                    if (distantStudies.count)
                     {
                         NSMutableArray *mutableStudiesArray = [NSMutableArray arrayWithArray: result];
                         
                         // Merge local and distant studies
                         for( DCMTKStudyQueryNode *distantStudy in distantStudies)
                         {
-                            if( [[mutableStudiesArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                            if ([[mutableStudiesArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
                                 [mutableStudiesArray addObject: distantStudy];
                             
-                            else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
+                            else if ([[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
                             {
                                 NSUInteger index = [[mutableStudiesArray valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
                                 
-                                if( index != NSNotFound && [[[mutableStudiesArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
+                                if (index != NSNotFound && [[[mutableStudiesArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
                                 {
                                     [mutableStudiesArray replaceObjectAtIndex: index withObject: distantStudy];
                                 }
@@ -517,9 +523,9 @@ ss
         
         NSString *sortValue = [self.session objectForKey:@"StudiesSortKey"];
         
-        if( [sortValue length])
+        if ([sortValue length] > 0)
 		{
-			if( [sortValue rangeOfString: @"date"].location == NSNotFound)
+			if ([sortValue rangeOfString: @"date"].location == NSNotFound)
 				result = [result sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: sortValue ascending: YES selector: @selector(caseInsensitiveCompare:)]]];
 			else
 				result = [result sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: sortValue ascending: NO]]];
@@ -527,28 +533,28 @@ ss
         
         numberOfStudies = result.count;
 		
-        if( fetchLimitPerPage)
+        if (fetchLimitPerPage)
         {
             NSRange range = NSMakeRange( page*fetchLimitPerPage, fetchLimitPerPage);
             
-            if( range.location > result.count)
+            if (range.location > result.count)
                 range.location = result.count;
             
-            if( range.location + range.length > result.count)
+            if (range.location + range.length > result.count)
                 range.length = result.count - range.location;
             
             result = [result subarrayWithRange: range];
         }
     }
     
-    if( [parameters objectForKey:@"page"])
+    if ([parameters objectForKey:@"page"])
         [self.session setObject: [parameters objectForKey:@"page"] forKey:@"Page"];
     else
         [self.session setObject: @0 forKey:@"Page"];
     
     [self.session setObject: [NSNumber numberWithInt: numberOfStudies] forKey:@"NumberOfStudies"];
     
-    if( numberOfStudies%fetchLimitPerPage == 0)
+    if (numberOfStudies%fetchLimitPerPage == 0)
         [self.session setObject: [NSNumber numberWithInt: (numberOfStudies/fetchLimitPerPage)] forKey:@"NumberOfPages"];
     else
         [self.session setObject: [NSNumber numberWithInt: 1 + (numberOfStudies/fetchLimitPerPage)] forKey:@"NumberOfPages"];
@@ -601,7 +607,7 @@ ss
 
 -(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)images {
     
-    if( images.count > 4)
+    if (images.count > 4)
         [self getWidth:width height:height fromImagesArray:images minSize:NSMakeSize( [[NSUserDefaults standardUserDefaults] floatForKey: @"WebServerMinWidthForMovie"]) maxSize:NSMakeSize( [[NSUserDefaults standardUserDefaults] floatForKey: @"WebServerMaxWidthForMovie"])];
     else
         [self getWidth:width height:height fromImagesArray:images minSize:NSMakeSize( [[NSUserDefaults standardUserDefaults] floatForKey: @"WebServerMinWidthForMovie"]) maxSize:NSMakeSize( [[NSUserDefaults standardUserDefaults] floatForKey: @"WebServerMaxWidthForStillImage"])];
@@ -708,7 +714,7 @@ ss
                     
                     NSImage *newImage;
                     
-                    if( ([dcmPix pwidth] != width || [dcmPix pheight] != height) && [dcmPix pheight] > 0 && [dcmPix pwidth] > 0 && width > 0 && height > 0)
+                    if (([dcmPix pwidth] != width || [dcmPix pheight] != height) && [dcmPix pheight] > 0 && [dcmPix pwidth] > 0 && width > 0 && height > 0)
                         newImage = [[dcmPix image] imageByScalingProportionallyToSize: NSMakeSize( width, height)];
                     else
                         newImage = [dcmPix image];
@@ -756,7 +762,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
     int MaxNumberOfFramesForWebPortalMovies = [[NSUserDefaults standardUserDefaults] integerForKey: @"MaxNumberOfFramesForWebPortalMovies"];
     
-    if( MaxNumberOfFramesForWebPortalMovies > 2 && dicomImageArray.count >= MaxNumberOfFramesForWebPortalMovies)
+    if (MaxNumberOfFramesForWebPortalMovies > 2 && dicomImageArray.count >= MaxNumberOfFramesForWebPortalMovies)
     {
         do
         {
@@ -784,12 +790,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		{
 			int noOfThreads = [[NSProcessInfo processInfo] processorCount];
 			
-            if( noOfThreads > 12)
+            if (noOfThreads > 12)
                 noOfThreads = 12;
             
 			NSRange range = NSMakeRange( 0, 1+ ([dicomImageArray count] / noOfThreads));
             
-			if( DCMPixLoadingLock == nil)
+			if (DCMPixLoadingLock == nil)
 				DCMPixLoadingLock = [[NSRecursiveLock alloc] init];
 			
 			[DCMPixLoadingLock lock];
@@ -821,7 +827,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				DCMPixLoadingThreads = 0;
 				for( int i = 0 ; i < noOfThreads; i++)
 				{
-					if( range.length > 0)
+					if (range.length > 0)
 					{
 						@synchronized( self)
 						{
@@ -842,7 +848,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					}
 					
 					range.location += range.length;
-					if( range.location + range.length > [dicomImageArray count])
+					if (range.location + range.length > [dicomImageArray count])
 						range.length = [dicomImageArray count] - range.location;
 				}
 				
@@ -865,7 +871,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             
 			NSLog( @"generateMovie: start writeMovie process");
             
-            if( [outFile hasSuffix:@".swf"]) // FLASH
+            if ([outFile hasSuffix:@".swf"]) // FLASH
             {
                 @try
                 {
@@ -904,11 +910,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                     {
                         double bitsPerSecond = width * height * fps * 4;
                         
-                        if( bitsPerSecond > 0)
+                        if (bitsPerSecond > 0)
                         {
                             NSDictionary *videoSettings = nil;
                             
-                            if( self.requestIsIOS) // AVVideoCodecH264
+                            if (self.requestIsIOS) // AVVideoCodecH264
                             {
                                 videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                                  AVVideoCodecH264, AVVideoCodecKey,
@@ -931,7 +937,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                             // Instantiate the AVAssetWriterInput
                             AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
                             
-                            if( writerInput == nil)
+                            if (writerInput == nil)
                                 N2LogStackTrace( @"**** writerInput == nil : %@", videoSettings);
                             
                             // Instantiate the AVAssetWriterInputPixelBufferAdaptor to be connected to the writer input
@@ -954,14 +960,15 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                                 
                                 {
                                     NSImage *im = [[NSImage alloc] initWithContentsOfFile: [root stringByAppendingPathComponent: file]];
-                                    if( im)
+                                    if (im)
                                         buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
+
                                     [im release];
                                 }
                                 
                                 [pool release];
                                 
-                                if( buffer)
+                                if (buffer)
                                 {
                                     CVPixelBufferLockBaseAddress(buffer, 0);
                                     while( writerInput && [writerInput isReadyForMoreMediaData] == NO)
@@ -1107,7 +1114,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 
                 [WebPortalUser studiesForUser: user album: album.name sortBy: nil fetchLimit: 1 fetchOffset: 0 numberOfStudies: &numberOfStudies];
                 
-                if( numberOfStudies >= 1)
+                if (numberOfStudies >= 1)
                     [albums addObject:album];
                 
                 album.numberOfStudies = numberOfStudies;
@@ -1123,7 +1130,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 - (BOOL) processDeleteObject:(NSString*) XID
 {
-    if( [XID hasPrefix: @"POD:"])
+    if ([XID hasPrefix: @"POD:"])
     {
         NSLog( @"-- Cannot delete a distant study: %@", XID);
         return NO;
@@ -1134,24 +1141,24 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     DicomStudy *study = nil;
     DicomSeries *series = nil;
     
-    if( [dbObject isKindOfClass: [DicomStudy class]])
+    if ([dbObject isKindOfClass: [DicomStudy class]])
         study = (DicomStudy*) dbObject;
     
-    if( [dbObject isKindOfClass: [DicomSeries class]])
+    if ([dbObject isKindOfClass: [DicomSeries class]])
     {
         study = [dbObject valueForKey: @"study"];
         series = (DicomSeries*) dbObject;
     }
     
-    if( study)
+    if (study)
     {
         [response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Images successfully deleted.", nil)]];
         [self.portal updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Images deleted"] forUser:user.name ip:asyncSocket.connectedHost];
         
-        if( series)
+        if (series)
         {
             [series.managedObjectContext deleteObject: series];
-            if( study.imageSeries.count == 0)
+            if (study.imageSeries.count == 0)
                 [study.managedObjectContext deleteObject: study];
         }
         else
@@ -1185,12 +1192,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	for (NSString* selectedXID in [WebPortalConnection MakeArray:[parameters objectForKey:@"selected"]])
 		[selectedSeries addObject:[self objectWithXID:selectedXID]];
 	
-    if( study && user)
+    if (study && user)
     {
         //save this study in recent studies list, if not already here
         WebPortalStudy *studyLink = [[user.recentStudies filteredSetUsingPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", study.studyInstanceUID]] anyObject];
         
-        if( !studyLink)
+        if (!studyLink)
         {
             studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"RecentStudy" inManagedObjectContext: user.managedObjectContext];
             
@@ -1202,7 +1209,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         studyLink.dateAdded = [NSDate date];
         
         NSMutableSet *recentStudies = [user mutableSetValueForKey: @"recentStudies"];
-        if( recentStudies.count > [[NSUserDefaults standardUserDefaults] integerForKey: @"WebPortalMaximumNumberOfRecentStudies"])
+        if (recentStudies.count > [[NSUserDefaults standardUserDefaults] integerForKey: @"WebPortalMaximumNumberOfRecentStudies"])
         {
             NSMutableArray *array = [NSMutableArray arrayWithArray: recentStudies.allObjects];
             [array sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"dateAdded" ascending: NO]]];
@@ -1215,7 +1222,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         [user.managedObjectContext save: nil];
     }
     
-	if( [parameters objectForKey:@"dicomSend"] && study)
+	if ([parameters objectForKey:@"dicomSend"] && study)
     {
 		NSArray* dicomDestinationArray = [[parameters objectForKey:@"dicomDestination"] componentsSeparatedByString:@":"];
 		if (dicomDestinationArray.count >= 4) {
@@ -1226,7 +1233,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:(long)dicomDestinationArray.count-1] forKey:@"TransferSyntax"];
 			
             NSMutableArray* selectedImages = [NSMutableArray array];
-            if( selectedSeries.count)
+            if (selectedSeries.count)
                 for (DicomSeries* s in selectedSeries)
                     [selectedImages addObjectsFromArray:s.sortedImages];
             else
@@ -1242,7 +1249,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[response.tokens addError: NSLocalizedString(@"Dicom send failed: cannot identify node.", @"Web Portal, study, dicom send, error")];
 	}
 	
-	if( [parameters objectForKey:@"WADOURLsRetrieve"] && study && [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"])
+	if ([parameters objectForKey:@"WADOURLsRetrieve"] &&
+       study &&
+       [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"])
 	{
 		NSMutableArray* selectedImages = [NSMutableArray array];
 		for (DicomSeries* s in selectedSeries)
@@ -1253,7 +1262,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 //			NSString *protocol = [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"] ? @"https" : @"http";
 			NSString *wadoSubUrl = @"wado"; // See Web Server Preferences
 			
-			if( [wadoSubUrl hasPrefix: @"/"])
+			if ([wadoSubUrl hasPrefix: @"/"])
 				wadoSubUrl = [wadoSubUrl substringFromIndex: 1];
 			
 			NSString *baseURL = [NSString stringWithFormat: @"%@/%@?requestType=WADO", self.portalURL, wadoSubUrl];
@@ -1278,7 +1287,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[response.tokens addError: NSLocalizedString(@"WADO URL Retrieve failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")];
 	}
 	
-    if( [[parameters objectForKey:@"message"] isEqualToString: @"delete"] && [parameters objectForKey:@"seriesToDelete"] && study)
+    if ([[parameters objectForKey:@"message"] isEqualToString: @"delete"] &&
+       [parameters objectForKey:@"seriesToDelete"] &&
+       study)
     {
         if (!user.isAdmin.boolValue)
         {
@@ -1287,21 +1298,22 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         }
         else
         {
-            if( [self processDeleteObject: [parameters objectForKey:@"seriesToDelete"]])
+            if ([self processDeleteObject: [parameters objectForKey:@"seriesToDelete"]])
                 study = nil;
         }
     }
     
-	if( [parameters objectForKey:@"shareStudy"] && study)
+	if ([parameters objectForKey:@"shareStudy"] &&
+        study)
     {
-        if( !user || user.shareStudyWithUser.boolValue)
+        if (!user || user.shareStudyWithUser.boolValue)
         {
             NSString* shareStudyDestination = [parameters objectForKey:@"shareStudyDestination"];
             WebPortalUser* destUser = NULL;
             
             if ([shareStudyDestination isEqualToString:@"NEW"])
             {
-                if( !user || user.createTemporaryUser.boolValue)
+                if (!user || user.createTemporaryUser.boolValue)
                 {
                     @try
                     {
@@ -1345,7 +1357,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             [response.tokens addError: NSLocalizedString(@"Study share failed: not authorized.", @"Web Portal, study, share, error")];
 	}
 	
-    if( study)
+    if (study)
     {
         [response.tokens setObject:[WebPortalProxy createWithObject:study transformer:DicomStudyTransformer.create] forKey:@"Study"];
         [response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"%@ - %@ - %@", @"Web Portal, study, title format (1st %@ is study.name, 2nd is study.studyName, 3rd date)"), study.name, study.studyName, [NSUserDefaults.dateTimeFormatter stringFromDate:study.date]] forKey:@"PageTitle"];
@@ -1360,16 +1372,16 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		NSString* search = [parameters objectForKey:@"search"];
 		NSString* album = [parameters objectForKey:@"album"];
 		NSString* studyListLinkLabel = NSLocalizedString(@"Study list", nil);
-		if (search.length)
+		if (search.length > 0)
 			studyListLinkLabel = [NSString stringWithFormat:NSLocalizedString(@"Search results for: %@", nil), search];
-		else if (album.length)
+		else if (album.length > 0)
 			studyListLinkLabel = [NSString stringWithFormat:NSLocalizedString(@"Album: %@", nil), album];
 		else if ([browse isEqualToString:@"6hours"])
 			studyListLinkLabel = NSLocalizedString(@"Last 6 Hours", nil);
 		else if ([browse isEqualToString:@"today"])
 			studyListLinkLabel = NSLocalizedString(@"Today", nil);
         
-        if( [[parameters objectForKey: @"back"] isEqualToString: @"main"])
+        if ([[parameters objectForKey: @"back"] isEqualToString: @"main"])
         {
             studyListLinkLabel= NSLocalizedString(@"Home", nil);
             [response.tokens setObject:@"main" forKey:@"backLink"];
@@ -1442,7 +1454,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     
     NSArray *logsArray = nil;
     
-    if( [parameters objectForKey:@"externalIPs"])
+    if ([parameters objectForKey:@"externalIPs"])
     {
         [response.tokens setObject: NSLocalizedString( @"Logs - External IPs", nil) forKey:@"PageTitle"];
         
@@ -1463,7 +1475,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 -(void)processStudyListHtml
 {
-    if( [parameters objectForKey:@"delete"])
+    if ([parameters objectForKey:@"delete"])
     {
         if (!user.isAdmin.boolValue)
         {
@@ -1492,7 +1504,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     {
         study = (DicomStudy*) oxid;
         
-        if( study == nil)
+        if (study == nil)
             return;
         
         [response.tokens setObject: [WebPortalProxy createWithObject:study transformer:[DicomStudyTransformer create]] forKey:@"Study"];
@@ -1513,7 +1525,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     {
         series = (DicomSeries*) oxid;
         
-        if( series == nil)
+        if (series == nil)
             return;
         
         [response.tokens setObject:[WebPortalProxy createWithObject:series transformer:[DicomSeriesTransformer create]] forKey:@"Series"];
@@ -1576,7 +1588,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 						[u generatePassword];
 						
                         NSString *webPortalDefaultTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"WebPortalTitle"];
-                        if( webPortalDefaultTitle.length == 0)
+                        if (webPortalDefaultTitle.length == 0)
                             webPortalDefaultTitle = NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title");
                         
                         [emailMessage appendString: webPortalDefaultTitle];
@@ -1650,7 +1662,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         
         NSString* sha1internal = user.passwordHash;
         
-        if( [sha1internal length] > 0 && [sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame)
+        if ([sha1internal length] > 0 &&
+            [sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame)
         {
 			if ([[parameters valueForKey:@"password"] isEqualToString:[parameters valueForKey:@"password2"]])
 			{
@@ -1661,7 +1674,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 {
 					// We can update the user password
 					
-                    //					if( [previouspassword isEqualToString: @"public"] && [self.user.name isEqualToString:@"public"])
+                    //					if ([previouspassword isEqualToString: @"public"] && [self.user.name isEqualToString:@"public"])
                     //					{
                     //						// public / public demo account not editable
                     //						[response.tokens addMessage:NSLocalizedString(@"Public account not editable!", nil)];
@@ -1772,28 +1785,28 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             NSString* studyPredicate = [parameters objectForKey:@"studyPredicate"];
 			NSNumber* downloadZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"downloadZIP"] isEqualToString:@"on"]];
 			
-			NSError* err;
-			
-			err = NULL;
+			NSError *err = NULL;
 			if (![webUser validateName:&name error:&err])
 				[response.tokens addError:err.localizedDescription];
-			err = NULL;
-            
+
+            err = NULL;
 			if ( newPassword.length > 0 && ![webUser validatePassword:&newPassword error:&err])
 				[response.tokens addError:err.localizedDescription];
-			err = NULL;
+
+            err = NULL;
 			if (![webUser validateStudyPredicate:&studyPredicate error:&err])
 				[response.tokens addError:err.localizedDescription];
-			err = NULL;
-			
-            if( newPassword.length > 0 && [newPassword isEqualToString: newPassword2] == NO)
+
+            err = NULL;
+            if (newPassword.length > 0 && [newPassword isEqualToString: newPassword2] == NO)
                 [response.tokens addError: NSLocalizedString( @"Passwords are not identical.", nil)];
             
 			if (!response.tokens.errors.count)
             {
-                if( newPassword.length > 0 && [newPassword isEqualToString: newPassword2])
+                if (newPassword.length > 0 &&
+                   [newPassword isEqualToString: newPassword2])
                 {
-                    if( [webUser.name isEqualToString: name] == NO)
+                    if ([webUser.name isEqualToString: name] == NO)
                         webUser.name = name;
                     
                     webUser.password = newPassword;
@@ -1801,7 +1814,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 }
                 else
                 {
-                    if( [webUser.name isEqualToString: name] == NO)
+                    if ([webUser.name isEqualToString: name] == NO)
                     {
                         webUser.name = name;
                         [response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"User's name has changed. The password has been reset to a new password: %@", nil), webUser.password]];
@@ -1837,7 +1850,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 {
 					studyXid = [studyXid.stringByTrimmingStartAndEnd stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 					
-                    if( studyXid.length)
+                    if (studyXid.length > 0)
                     {
                         WebPortalStudy* wpStudy = NULL;
                         // this is Mac OS X 10.6 SnowLeopard only // wpStudy = [webUser.managedObjectContext existingObjectWithID:[webUser.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:studyObjectID]] error:NULL];
@@ -2055,7 +2068,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		return;
 	}
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoRequestRequireValidToken"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"wadoRequestRequireValidToken"])
     {
         NSString* token = [parameters objectForKey:@"token"];
         
@@ -2063,16 +2076,16 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         
         for (WebPortalSession* isession in [self.portal sessions])
         {
-            if( [isession containsToken:token])
+            if ([isession containsToken:token])
             {
                 tokenFound = YES;
                 break;
             }
         }
         
-        if( tokenFound == NO)
+        if (tokenFound == NO)
         {
-            if( [[parameters objectForKey:@"studyUID"] length] == 0 || [[parameters objectForKey:@"seriesUID"] length] == 0 || [[parameters objectForKey:@"objectUID"] length] == 0)
+            if ([[parameters objectForKey:@"studyUID"] length] == 0 || [[parameters objectForKey:@"seriesUID"] length] == 0 || [[parameters objectForKey:@"objectUID"] length] == 0)
             {
                 [NSThread sleepForTimeInterval: 1];
                 self.response.statusCode = 401;
@@ -2099,7 +2112,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		for ( id series in allSeries)
 			allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
 		
-		if( allImages.count > 0)
+		if (allImages.count > 0)
 		{
 			// Zip them
 			
@@ -2176,7 +2189,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         
         @synchronized( self.wadoSOPInstanceUIDCache)
         {
-            if( self.wadoSOPInstanceUIDCache.count > WadoSOPInstanceUIDCacheSize)
+            if (self.wadoSOPInstanceUIDCache.count > WadoSOPInstanceUIDCacheSize)
                 [self.wadoSOPInstanceUIDCache removeAllObjects];
 		}
         
@@ -2189,7 +2202,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 imageCache = [self.wadoCache objectForKey:[objectUID stringByAppendingFormat:@"%d", frameNumber]];
             }
         }
-		else if( [contentType isEqualToString: @"application/dicom"])
+		else if ([contentType isEqualToString: @"application/dicom"])
         {
 			@synchronized( self.wadoSOPInstanceUIDCache)
             {
@@ -2260,7 +2273,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 {
                     DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS: transferSyntax] autorelease];
                     
-                    if( [useOrig boolValue] == 1 || ts == nil || [ts.name isEqualToString: @"Unknown Syntax"])
+                    if ([useOrig boolValue] == 1 ||
+                        ts == nil ||
+                        [ts.name isEqualToString: @"Unknown Syntax"])
                     {
                         response.data = [NSData dataWithContentsOfFile: cachedPathForSOPInstanceUID];
                     }
@@ -2401,7 +2416,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					
 					self.response.data = [imageCache objectForKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
 					
-					if (!self.response.data.length)
+					if (self.response.data.length == 0)
 					{
 						[dcmPix checkImageAvailble: curWW :curWL];
 						
@@ -2450,7 +2465,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 						[imageCache setObject:self.response.data forKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
 					}
 					
-					if( contentType)
+					if (contentType)
 						[self.response setMimeType: contentType];
 					
 					// Alessandro: I'm not sure here, from Joris' code it seems WADO must always return HTTP 200, eventually with length 0..
@@ -2527,25 +2542,25 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	}
 	
 	// filter by user rights
-	if( self.user)
+	if (self.user)
     {
         NSArray *authorizedStudies = [WebPortalUser studiesForUser: self.user predicate:nil sortBy:nil];
         
-        for( int i = (long)studies.count-1; i >= 0; i--)
+        for (int i = (long)studies.count-1; i >= 0; i--)
         {
             BOOL authorized = NO;
             DicomStudy *currentStudy = [studies objectAtIndex: i];
             
-            for( DicomStudy *s in authorizedStudies)
+            for (DicomStudy *s in authorizedStudies)
             {
-                if( [[s XID] isEqualToString: currentStudy.XID])
+                if ([[s XID] isEqualToString: currentStudy.XID])
                 {
                     authorized = YES;
                     break;
                 }
             }
             
-            if( authorized == NO)
+            if (authorized == NO)
             {
                 NSLog( @"******** Trying to load a not authorized study through a Weasis JNLP request? %@", [studies objectAtIndex: i]);
                 [studies removeObjectAtIndex: i];
@@ -2573,30 +2588,35 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     {
         DicomFile *dcmFile = [[[DicomFile alloc] init: path DICOMOnly: YES] autorelease];
         
-        if( dcmFile)
+        if (dcmFile)
         {
             [dcmFiles addObject: dcmFile];
-            
-            NSMutableDictionary *patient = nil;
-            NSMutableDictionary *study = nil;
-            NSMutableDictionary *series = nil;
-            
-            if( [dcmFile elementForKey: @"patientID"] && [patientDictionary objectForKey: [dcmFile elementForKey: @"patientID"]] == nil)
+                        
+            if ([dcmFile elementForKey: @"patientID"] &&
+                [patientDictionary objectForKey: [dcmFile elementForKey: @"patientID"]] == nil)
+            {
                 [patientDictionary setObject: [NSMutableDictionary dictionary] forKey: [dcmFile elementForKey: @"patientID"]];
+            }
             
-            patient = [patientDictionary objectForKey: [dcmFile elementForKey: @"patientID"]];
+            NSMutableDictionary *patient = [patientDictionary objectForKey: [dcmFile elementForKey: @"patientID"]];
             
-            if( [dcmFile elementForKey: @"studyID"] && [patient objectForKey: [dcmFile elementForKey: @"studyID"]] == nil)
+            if ([dcmFile elementForKey: @"studyID"] &&
+                [patient objectForKey: [dcmFile elementForKey: @"studyID"]] == nil)
+            {
                 [patient setObject: [NSMutableDictionary dictionary] forKey: [dcmFile elementForKey: @"studyID"]];
+            }
             
-            study = [patient objectForKey: [dcmFile elementForKey: @"studyID"]];
+            NSMutableDictionary *study = [patient objectForKey: [dcmFile elementForKey: @"studyID"]];
             
-            if( [dcmFile elementForKey: @"seriesDICOMUID"] && [study objectForKey: [dcmFile elementForKey: @"seriesDICOMUID"]] == nil)
+            if ([dcmFile elementForKey: @"seriesDICOMUID"] &&
+                [study objectForKey: [dcmFile elementForKey: @"seriesDICOMUID"]] == nil)
+            {
                 [study setObject: [NSMutableDictionary dictionary] forKey: [dcmFile elementForKey: @"seriesDICOMUID"]];
+            }
             
-            series = [study objectForKey: [dcmFile elementForKey: @"seriesDICOMUID"]];
+            NSMutableDictionary *series = [study objectForKey: [dcmFile elementForKey: @"seriesDICOMUID"]];
             
-            if( [dcmFile elementForKey: @"SOPUID"])
+            if ([dcmFile elementForKey: @"SOPUID"])
                 [series setObject: dcmFile forKey: [dcmFile elementForKey: @"SOPUID"]];
         }
     }
@@ -2604,7 +2624,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	// produce XML
 	NSString* baseXML = nil;
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoOnlyServer"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"wadoOnlyServer"])
         baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?><wado_query xmlns=\"http://www.weasis.org/xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" wadoURL=\"%@/wado\"></wado_query>", [[WebPortal wadoOnlyWebPortal] URL]];
     else
         baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?><wado_query xmlns=\"http://www.weasis.org/xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" wadoURL=\"%@/wado\"></wado_query>", self.portalURL];
@@ -2778,7 +2798,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         {
 #define MAX_ThumbnailsCacheSize 400
             
-            if( [self.thumbnailsCache count] > MAX_ThumbnailsCacheSize)
+            if ([self.thumbnailsCache count] > MAX_ThumbnailsCacheSize)
                 [self.thumbnailsCache removeAllObjects];
             
             [self.thumbnailsCache setObject:data forKey:xid];
@@ -2914,7 +2934,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 - (void) saveImageAsScreenCapture: (NSString*) XID
 {
-    if( [NSThread isMainThread] == NO)
+    if ([NSThread isMainThread] == NO)
         NSLog( @"****** we should be on MAIN thread");
     
     Dicom_Image *dicomImage = [self objectWithXID:[parameters objectForKey:@"xid"]];
@@ -2958,7 +2978,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	Dicom_Image* dicomImage = images.count == 1 ? [images lastObject] : [images objectAtIndex:images.count/2];
 	
-    if( asDisplayed)
+    if (asDisplayed)
     {
         if ([requestedPath.pathExtension isEqualToString:@"jpg"])
         {
@@ -3010,7 +3030,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		[image unlockFocus];
 	}
     
-    if( asDisplayed == NO)
+    if (asDisplayed == NO)
     {
         NSArray *seriesImages = dicomImage.series.sortedImages;
         [image lockFocus];

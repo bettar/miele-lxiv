@@ -155,7 +155,7 @@ extern BOOL FULL32BITPIPELINE;
     NSMutableArray *images = [NSMutableArray array];
 	NSArray *fileList = [currentViewer fileList];
 	
-	if( [[options valueForKey:@"mode"] intValue] == eCurrentImage)
+	if ([[options valueForKey:@"mode"] intValue] == eCurrentImage)
 	{
 		int i;
 		
@@ -294,10 +294,10 @@ extern BOOL FULL32BITPIPELINE;
 		else
             scaleFactor = 1.0;
 		
-		if( fontSizeCopy * inc * scaleFactor * 1.2 != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
+		if (fontSizeCopy * inc * scaleFactor * 1.2 != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
 		{
 			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor * 1.2 forKey: @"FONTSIZE"];
-			[NSFont resetFont: 0];
+			[NSFont resetFont: FONT_TYPE_0];
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixGLFontChangeNotification object: currentViewer];
 		}
 		
@@ -306,7 +306,7 @@ extern BOOL FULL32BITPIPELINE;
                                                            asColorPrint: colorPrint
                                                         withAnnotations: annotations]];
 		
-		if( windowSizeChanged)
+		if (windowSizeChanged)
 			[[currentViewer window] setFrame: NSMakeRect( o.x, o.y, rf.size.width, rf.size.height) display: YES];
 		
 		[pool release];
@@ -335,7 +335,7 @@ extern BOOL FULL32BITPIPELINE;
 	[OSIWindowController setDontEnterMagneticFunctions: NO];
 	[OSIWindowController setDontEnterWindowDidChangeScreen: NO];
 	
-	/////// ****************
+	///
 	
 	[[currentViewer imageView] setIndex: currentImageIndex];
 	[[currentViewer imageView] sendSyncMessage:0];
@@ -344,8 +344,10 @@ extern BOOL FULL32BITPIPELINE;
 	return dicomFilePathList;
 }
 
-//********************************************************************************************
-- (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer toDestinationPath: (NSString *) destPath asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations
+- (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer
+                         toDestinationPath: (NSString *) destPath
+                              asColorPrint: (BOOL) colorPrint
+                           withAnnotations: (BOOL) annotations
 {
 	NSImage *currentImage = [[viewer imageView] nsimage];
 	

@@ -274,6 +274,7 @@ extern "C"
             [NSThread currentThread].status = [NSString stringWithFormat: @"%@ - %@", object.name, object.theDescription];
         else
             [NSThread currentThread].status = [NSString stringWithFormat: @"%@", object.name];
+
         if ([NSThread currentThread].isCancelled)
             break;
         
@@ -466,7 +467,7 @@ extern "C"
                     {
                         NSUInteger index = [uidArray indexOfObject: [s valueForKey:@"uid"]];
                         
-                        if (index == NSNotFound) // not found
+                        if (index == NSNotFound)
                             [studies addObject: s];
                         else 
                         {
@@ -561,7 +562,9 @@ extern "C"
 	return currentAutoQueryController;
 }
 
-+ (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet
++ (BOOL) echo: (NSString*) address
+         port: (int) port
+          AET: (NSString*) aet
 {
 	return [QueryController echoServer:[NSDictionary dictionaryWithObjectsAndKeys:
                                         address, @"Address",
@@ -588,43 +591,48 @@ extern "C"
             NSLog(@"%s %d file doesn't exist:%@", __FUNCTION__, __LINE__, launchPath);
 			return YES;
         }
-		
+
+#ifndef NDEBUG
+        //NSLog(@"%s %d, launchPath: %@", __FUNCTION__, __LINE__, launchPath);
+        NSFileManager *fm = [NSFileManager defaultManager];
+        assert([fm fileExistsAtPath:launchPath]);
+#endif
+
 		[theTask setLaunchPath: launchPath];
 		
         NSString *dicPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"dicom.dic"];
         [theTask setEnvironment:[NSDictionary dictionaryWithObject:dicPath forKey:@"DCMDICTPATH"]];
-		
-//		NSArray *args = [NSArray arrayWithObjects:
-//                         address,
-//                         [NSString stringWithFormat:@"%d", port],
-//                         @"-aet", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"],
-//                         @"-aec", aet,
-//                         @"-to", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"],
-//                         @"-ta", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"],
-//                         @"-td", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"],
-//                         nil];
-		
+				
 		NSMutableArray *args = [NSMutableArray array];
-		[args addObject: address];
-		[args addObject: [NSString stringWithFormat:@"%d", [port intValue]]];
-		[args addObject: @"-aet"]; // set my calling AE title
-		[args addObject: [NSUserDefaults defaultAETitle]]; 
-		[args addObject: @"-aec"]; // set called AE title of peer
-		[args addObject: aet];
-		[args addObject: @"-to"]; // timeout for connection requests
-		[args addObject: [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
-		[args addObject: @"-ta"]; // timeout for ACSE messages
-		[args addObject: [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
-		[args addObject: @"-td"]; // timeout for DIMSE messages
-		[args addObject: [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
-		
-		if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
+        {
+            // Timeout for connection requests
+            [args addObject: @"-to"];
+            [args addObject: [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
+
+            // Timeout for ACSE messages
+            [args addObject: @"-ta"];
+            [args addObject: [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
+
+            // Timeout for DIMSE messages
+            [args addObject: @"-td"];
+            [args addObject: [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
+
+            // My calling AE title
+            [args addObject: @"-aet"];
+            [args addObject: [NSUserDefaults defaultAETitle]];
+
+            // Called AE title of peer
+            [args addObject: @"-aec"];
+            [args addObject: aet];
+        }
+
+		if ([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
 		{
 			//[DDKeychain lockTmpFiles];
 			
 			// TLS support. Options listed here http://support.dcmtk.org/docs/echoscu.html
 			
-			if([[serverParameters objectForKey:@"TLSAuthenticated"] boolValue])
+			if ([[serverParameters objectForKey:@"TLSAuthenticated"] boolValue])
 			{
 				[args addObject:@"--enable-tls"]; // use authenticated secure TLS connection
 
@@ -651,7 +659,7 @@ extern "C"
 				}
 			}
 			
-			if([[serverParameters objectForKey:@"TLSUseDHParameterFileURL"] boolValue])
+			if ([[serverParameters objectForKey:@"TLSUseDHParameterFileURL"] boolValue])
 			{
 				[args addObject:@"--dhparam"]; // read DH parameters for DH/DSS ciphersuites
 				[args addObject:[serverParameters objectForKey:@"TLSDHParameterFileURL"]];
@@ -659,15 +667,16 @@ extern "C"
 			
 			// peer authentication options:
 			TLSCertificateVerificationType verification = (TLSCertificateVerificationType)[[serverParameters objectForKey:@"TLSCertificateVerification"] intValue];
-			if(verification==RequirePeerCertificate)
+			if (verification == RequirePeerCertificate)
 				[args addObject:@"--require-peer-cert"]; //verify peer certificate, fail if absent (default)
-			else if(verification==VerifyPeerCertificate)
+			else if (verification == VerifyPeerCertificate)
 				[args addObject:@"--verify-peer-cert"]; //verify peer certificate if present
 			else //IgnorePeerCertificate
 				[args addObject:@"--ignore-peer-cert"]; //don't verify peer certificate	
 			
 			// certification authority options:
-			if(verification==RequirePeerCertificate || verification==VerifyPeerCertificate)
+			if (verification == RequirePeerCertificate ||
+                verification == VerifyPeerCertificate)
 			{
 				NSString *trustedCertificatesDir = [NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID];
 				[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:trustedCertificatesDir];
@@ -688,10 +697,16 @@ extern "C"
 			[args addObject:@"--seed"]; // seed random generator with contents of f
 			[args addObject:TLS_SEED_FILE];		
 		}
-		
-		[theTask setArguments:args];
-		[theTask launch];
         
+        //NSLog(@"%s %d, main thread:%d, args:%@", __FUNCTION__, __LINE__, [NSThread isMainThread], args);
+		
+        // Finally add optionless parameters to command line
+        [args addObject: address];
+        [args addObject: [NSString stringWithFormat:@"%d", [port intValue]]];
+
+        [theTask setArguments:args];
+		[theTask launch];
+
         WaitRendering *wait = nil;
         
         if ([NSThread isMainThread])
@@ -708,7 +723,7 @@ extern "C"
         [wait showWindow:self];
         [wait start];
         
-        while( [theTask isRunning])
+        while ([theTask isRunning])
         {
             [NSThread sleepForTimeInterval: 0.1];
             
@@ -732,8 +747,8 @@ extern "C"
         
 		if ([theTask terminationStatus] == EXIT_SUCCESS)
             return YES;
-		else
-            return NO;
+
+        return NO;
 	}
 	@catch (NSException * e)
 	{
@@ -2006,7 +2021,8 @@ extern "C"
 					if ([[item valueForKey:@"numberImages"] floatValue] != 0.0)
 						percentage = [[[studyArray objectAtIndex: 0] valueForKey: @"rawNoFiles"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
 						
-					if(percentage > 1.0) percentage = 1.0;
+					if (percentage > 1.0)
+                        percentage = 1.0;
 
 					[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
 				}
@@ -2026,7 +2042,8 @@ extern "C"
 					if ([[item valueForKey:@"numberImages"] floatValue] != 0.0)
 						percentage = [[[seriesArray objectAtIndex: 0] valueForKey: @"rawNoFiles"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
 						
-					if(percentage > 1.0) percentage = 1.0;
+					if (percentage > 1.0)
+                        percentage = 1.0;
 					
 					[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
 				}
@@ -2214,8 +2231,12 @@ extern "C"
 {
 	id item = [outlineView itemAtRow: [outlineView selectedRow]];
 	
-	[resultArray sortUsingDescriptors: [self sortArray]];
-	[outlineView reloadData];
+    if ([NSThread isMainThread])
+        [resultArray sortUsingDescriptors: [self sortArray]];
+    else
+        [resultArray performSelectorOnMainThread:@selector(sortUsingDescriptors:) withObject: [self sortArray] waitUntilDone: YES];
+
+    [outlineView reloadData];
 	
 	NSArray *s = [outlineView sortDescriptors];
 	
@@ -2353,7 +2374,19 @@ extern "C"
 {
     if ([notification object] == [queryManager rootNode] && temporaryCFindResultArray)
     {
-        if ([[self window] isVisible] && [[NSDate date] timeIntervalSinceReferenceDate] - lastTemporaryCFindResultUpdate > 1)
+        //NSLog(@"%s %d, main thread:%d", __FUNCTION__, __LINE__, [NSThread isMainThread]);
+        
+        __block BOOL visible = FALSE;
+        if ([NSThread isMainThread])
+            visible = [[self window] isVisible];
+        else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                visible = [[self window] isVisible];
+            });
+        }
+
+        if (visible &&
+            [[NSDate date] timeIntervalSinceReferenceDate] - lastTemporaryCFindResultUpdate > 1)
         {            
             NSArray	*curResult = [[notification object] children];
             
@@ -2368,11 +2401,11 @@ extern "C"
                 {
                     NSArray *uidArray = [temporaryCFindResultArray valueForKey: @"uid"];
                     
-                    for (NSUInteger x = 0 ; x < [curResult count] ; x++)
+                    for (NSUInteger x = 0 ; x < [curResult count]; x++)
                     {
                         NSUInteger index = [uidArray indexOfObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
                         
-                        if (index == NSNotFound) // not found
+                        if (index == NSNotFound)
                             [temporaryCFindResultArray addObject: [curResult objectAtIndex: x]];
                         else 
                         {
@@ -2388,7 +2421,16 @@ extern "C"
                 }
                 
                 if ([temporaryCFindResultArray count])
-                    [temporaryCFindResultArray sortUsingDescriptors: [self sortArray]];
+                {
+                    if ([NSThread isMainThread])
+                        [temporaryCFindResultArray sortUsingDescriptors: [self sortArray]];
+                    else {
+                        //[temporaryCFindResultArray performSelectorOnMainThread:@selector(sortUsingDescriptors:) withObject: [self sortArray] waitUntilDone: YES];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [temporaryCFindResultArray sortUsingDescriptors: [self sortArray]];
+                        });
+                    }
+                }
                 
                 if ([NSThread isMainThread])
                     [self refreshList: temporaryCFindResultArray];
@@ -2943,7 +2985,7 @@ extern "C"
                 {
                     NSUInteger index = [uidArray indexOfObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
                     
-                    if (index == NSNotFound) // not found
+                    if (index == NSNotFound)
                         [tempResultArray addObject: [curResult objectAtIndex: x]];
                     else 
                     {
@@ -2965,12 +3007,15 @@ extern "C"
 //					
 //					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
 //				}
-        
-            
         }
 		
 		if ([tempResultArray count])
-			[tempResultArray sortUsingDescriptors: [self sortArray]];
+        {
+            if ([NSThread isMainThread])
+                [tempResultArray sortUsingDescriptors: [self sortArray]];
+            else
+                [tempResultArray performSelectorOnMainThread:@selector(sortUsingDescriptors:) withObject: [self sortArray] waitUntilDone: YES];
+        }
         
         firstServerRealtimeResults = YES;
 		
@@ -3136,8 +3181,7 @@ extern "C"
         if ([sender isKindOfClass:[NSSearchField class]])
         {
             NSString *chars = [[NSApp currentEvent] characters];
-            
-            if ([chars length])
+            if ([chars length] > 0)
             {
                 if ([chars characterAtIndex:0] != 13 &&
                     [chars characterAtIndex:0] != 3)
@@ -3154,7 +3198,7 @@ extern "C"
         if ([sender isKindOfClass:[NSSearchField class]])
             [sender selectText: self];
     }
-    @catch ( NSException *e) {
+    @catch (NSException *e) {
         N2LogException( e);
     }
 }
@@ -3197,7 +3241,9 @@ extern "C"
         @synchronized( self)
         {
             if ([NSThread isMainThread] == NO)
-                [progressIndicator performSelectorOnMainThread: @selector(stopAnimation:) withObject:nil waitUntilDone: NO];
+                [progressIndicator performSelectorOnMainThread: @selector(stopAnimation:)
+                                                    withObject: nil
+                                                 waitUntilDone: NO];
             else
                 [progressIndicator stopAnimation:nil];
             
@@ -3654,21 +3700,26 @@ extern "C"
 	[pb setString: string forType:NSPasteboardTypeString];
 }
 
--(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable forViewing: (BOOL) forViewing items:(NSArray*) items showGUI:(BOOL) showGUI
+- (void)  retrieve: (id) sender
+onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
+        forViewing: (BOOL) forViewing
+             items: (NSArray*) items
+           showGUI: (BOOL) showGUI
 {
-	NSMutableArray	*selectedItems = [NSMutableArray array];
+	NSMutableArray *selectedItems = [NSMutableArray array];
 	
     if ([NSThread isMainThread] == NO)
         showGUI = NO;
     
-	if([items count])
-	{
-		for (id item in items)
-		{
-			[item setShowErrorMessage: showGUI];
-			
-			if (onlyIfNotAvailable)
-			{
+	if ([items count] == 0)
+        return;
+ 
+    for (id item in items)
+    {
+        [item setShowErrorMessage: showGUI];
+        
+        if (onlyIfNotAvailable)
+        {
 //				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"RetrieveOnlyMissingUID"])
 //				{
 //					DicomStudy *localStudy = nil;
@@ -3725,120 +3776,139 @@ extern "C"
 //					}
 //				}
 //				else
-				{
-					int localNumber = 0;
-					NSArray *array = 0L;
-					
-					if ([item isMemberOfClass: [DCMTKSeriesQueryNode class]])
-						array = [self localSeries: item context: nil];
-					else
-						array = [self localStudy: item context: nil];
-					
-					if ([array count])
-						localNumber = [[[array objectAtIndex: 0] valueForKey: @"rawNoFiles"] intValue];
-					
-					if (localNumber < [[item valueForKey:@"numberImages"] intValue] || [[item valueForKey:@"numberImages"] intValue] == 0)
-					{
-						NSString *stringID = [QueryController stringIDForStudy: item];
-			
-						@synchronized( previousAutoRetrieve)
-						{
-							NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
-				
-							// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
-							
-							if ([previousNumberOfFiles intValue] != [[item valueForKey:@"numberImages"] intValue] || [[item valueForKey:@"numberImages"] intValue] == 0)
-							{
-								[selectedItems addObject: item];
-								[previousAutoRetrieve setValue: [NSNumber numberWithInt: [[item valueForKey:@"numberImages"] intValue]] forKey: stringID];
-							}
-							else
-                                NSLog( @"Already in transfer.... We don't need to download it...");
-						}
-					}
-					else
-						NSLog( @"Already here! We don't need to download it...");
-				}
-			}
-			else
-			{
-				NSString *stringID = [QueryController stringIDForStudy: item];
-				
-				@synchronized( previousAutoRetrieve)
-				{
-					NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
-					
-					// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
-					
-					if ([previousNumberOfFiles intValue] != [[item valueForKey:@"numberImages"] intValue] || [[item valueForKey:@"numberImages"] intValue] == 0)
-					{
-						[selectedItems addObject: item];
-						[previousAutoRetrieve setValue: [NSNumber numberWithInt: [[item valueForKey:@"numberImages"] intValue]] forKey: stringID];
-					}
-					else
-                        NSLog( @"Already in transfer.... We don't need to download it...");
-				}
-			}
-		}
-		
-		if ([selectedItems count] > 0)
-		{
-			if ([sendToPopup indexOfSelectedItem] != 0 && forViewing == YES)
-			{
-				if (showGUI)
-					NSRunCriticalAlertPanel(NSLocalizedString( @"DICOM Query & Retrieve",nil),
-                                            NSLocalizedString( @"If you want to retrieve & view these images, change the destination to this computer ('retrieve to' menu).",nil),
-                                            NSLocalizedString( @"OK",nil),
-                                            nil,
-                                            nil);
-			}
-			else
-			{
-				WaitRendering *wait = nil;
-				
-				if (showGUI)
-				{
-					wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Retrieving...", nil)];
-					[wait showWindow:self];
-				}
-				
-				checkAndViewTry = -1;
-				
-				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(performRetrieve:) object: selectedItems] autorelease];
-				t.name = NSLocalizedString( @"Retrieving images...", nil);
-                t.status = N2LocalizedSingularPluralCount(selectedItems.count, NSLocalizedString(@"study", nil), NSLocalizedString(@"studies", nil));
-                if ([selectedItems count] > 1)
-                    t.progress = 0;
-				
-				t.supportsCancel = YES;
-				[[ThreadsManager defaultManager] addThreadAndStart: t];
-				
-				if (showGUI)
-				{
-					[NSThread sleepForTimeInterval: 0.2];
-				
-					[wait close];
-					[wait autorelease];
-				}
-			}
-		}
-	}
+            {
+                int localNumber = 0;
+                NSArray *array = 0L;
+                
+                if ([item isMemberOfClass: [DCMTKSeriesQueryNode class]])
+                    array = [self localSeries: item context: nil];
+                else
+                    array = [self localStudy: item context: nil];
+                
+                if ([array count])
+                    localNumber = [[[array objectAtIndex: 0] valueForKey: @"rawNoFiles"] intValue];
+                
+                if (localNumber < [[item valueForKey:@"numberImages"] intValue] || [[item valueForKey:@"numberImages"] intValue] == 0)
+                {
+                    NSString *stringID = [QueryController stringIDForStudy: item];
+        
+                    @synchronized( previousAutoRetrieve)
+                    {
+                        NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
+            
+                        // We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
+                        
+                        if ([previousNumberOfFiles intValue] != [[item valueForKey:@"numberImages"] intValue] ||
+                            [[item valueForKey:@"numberImages"] intValue] == 0)
+                        {
+                            [selectedItems addObject: item];
+                            [previousAutoRetrieve setValue: [NSNumber numberWithInt: [[item valueForKey:@"numberImages"] intValue]] forKey: stringID];
+                        }
+                        else
+                            NSLog( @"Already in transfer.... We don't need to download it...");
+                    }
+                }
+                else
+                    NSLog( @"Already here! We don't need to download it...");
+            }
+        }
+        else
+        {
+            NSString *stringID = [QueryController stringIDForStudy: item];
+            
+            @synchronized( previousAutoRetrieve)
+            {
+                NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
+                
+                // We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
+                
+                if ([previousNumberOfFiles intValue] != [[item valueForKey:@"numberImages"] intValue] ||
+                    [[item valueForKey:@"numberImages"] intValue] == 0)
+                {
+                    [selectedItems addObject: item];
+                    [previousAutoRetrieve setValue: [NSNumber numberWithInt: [[item valueForKey:@"numberImages"] intValue]] forKey: stringID];
+                }
+                else
+                    NSLog( @"Already in transfer.... We don't need to download it...");
+            }
+        }
+    } // for item
+    
+    if ([selectedItems count] == 0)
+        return;
+
+    __block NSInteger idx;
+    if ([NSThread isMainThread])
+        idx = [sendToPopup indexOfSelectedItem];
+    else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            idx = [sendToPopup indexOfSelectedItem];
+        });
+    }
+
+    if (idx > 0 &&
+        forViewing)
+    {
+        if (showGUI)
+            NSRunCriticalAlertPanel(NSLocalizedString( @"DICOM Query & Retrieve",nil),
+                                    NSLocalizedString( @"If you want to retrieve & view these images, change the destination to this computer ('retrieve to' menu).",nil),
+                                    NSLocalizedString( @"OK",nil),
+                                    nil,
+                                    nil);
+    }
+    else
+    {
+        WaitRendering *wait = nil;
+        
+        if (showGUI)
+        {
+            wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Retrieving...", nil)];
+            [wait showWindow:self];
+        }
+        
+        checkAndViewTry = -1;
+        
+        NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(performRetrieve:) object: selectedItems] autorelease];
+        t.name = NSLocalizedString( @"Retrieving images...", nil);
+        t.status = N2LocalizedSingularPluralCount(selectedItems.count, NSLocalizedString(@"study", nil), NSLocalizedString(@"studies", nil));
+        if ([selectedItems count] > 1)
+            t.progress = 0;
+        
+        t.supportsCancel = YES;
+        [[ThreadsManager defaultManager] addThreadAndStart: t];
+        
+        if (showGUI)
+        {
+            [NSThread sleepForTimeInterval: 0.2];
+        
+            [wait close];
+            [wait autorelease];
+        }
+    }
 }
 
--(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable forViewing: (BOOL) forViewing
+- (void)  retrieve: (id) sender
+onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
+        forViewing: (BOOL) forViewing
 {
-	NSMutableArray	*selectedItems = [NSMutableArray array];
-	NSIndexSet		*selectedRowIndexes = [outlineView selectedRowIndexes];
+	NSMutableArray *selectedItems = [NSMutableArray array];
+	NSIndexSet *selectedRowIndexes = [outlineView selectedRowIndexes];
 	
 	if ([selectedRowIndexes count])
 	{
-		for (NSUInteger index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+		for (NSUInteger index = [selectedRowIndexes firstIndex];
+             1+[selectedRowIndexes lastIndex] != index;
+             ++index)
 		{
 		   if ([selectedRowIndexes containsIndex:index])
 				[selectedItems addObject: [outlineView itemAtRow:index]];
 		}
 		
-		[self retrieve: sender onlyIfNotAvailable: onlyIfNotAvailable forViewing: forViewing items: selectedItems showGUI: YES];
+		[self retrieve: sender
+    onlyIfNotAvailable: onlyIfNotAvailable
+            forViewing: forViewing
+                 items: selectedItems
+               showGUI: YES];
 	}
 }
 
@@ -3912,9 +3982,11 @@ extern "C"
 	[yearOldBirth setStringValue: yearOld];
 }
 
+#pragma mark -
+
 - (void) performRetrieve:(NSArray*) array
 {
-    if ( [[BrowserController currentBrowser] database] == nil) // During SB rebuild
+    if ([[BrowserController currentBrowser] database] == nil) // During SB rebuild
         return;
     
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -3966,7 +4038,7 @@ extern "C"
     if (array.count == reorderedArray.count)
         array = reorderedArray;
     else
-        NSLog( @"------- array.count != reorderedArray.count : QueryController performRetrieve");
+        NSLog( @"------- array.count != reorderedArray.count : %s", __FUNCTION__);
     
     [array retain];
     
@@ -3990,10 +4062,19 @@ extern "C"
 			[dictionary setObject: [[[object valueForKey:@"transferSyntax"] copy] autorelease] forKey:@"transferSyntax"];
 			
 			NSDictionary *dstDict = nil;
-			
-			if ([sendToPopup indexOfSelectedItem] != 0)
+            
+            __block NSInteger idx;
+            if ([NSThread isMainThread])
+                idx = [sendToPopup indexOfSelectedItem];
+            else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    idx = [sendToPopup indexOfSelectedItem];
+                });
+            }
+
+            if (idx > 0)
 			{
-				NSInteger index = [sendToPopup indexOfSelectedItem] -2;
+				NSInteger index = idx - 2;
 				
 				dstDict = [[[[DCMNetServiceDelegate DICOMServersList] objectAtIndex: index] copy] autorelease];
 				
@@ -4015,8 +4096,11 @@ extern "C"
 				
 				if ([object isMemberOfClass: [DCMTKSeriesQueryNode class]])
 				{
-					if ([outlineView parentForItem: object])
-						[d setObject: [outlineView parentForItem: object] forKey:@"study"];	// for WADO retrieve at Series level
+                    // parentForItem must be used from main thread
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                      if ([outlineView parentForItem: object])
+                          [d setObject: [outlineView parentForItem: object] forKey:@"study"];    // for WADO retrieve at Series level
+                    });
 				}
 				
 				if ([dictionary objectForKey: @"moveDestination"])
@@ -4030,7 +4114,7 @@ extern "C"
 		
 		[dictionary release];
 		[subPool release];
-		
+
 		int i = 0;
 		for (NSDictionary *d in moveArray)
 		{
@@ -4083,7 +4167,7 @@ extern "C"
 			{
 				[previousAutoRetrieve removeObjectForKey: [QueryController stringIDForStudy: object]];
 			}
-			
+
 			[NSThread currentThread].progress = (float) ++i / (float) [moveArray count];
 			if ([NSThread currentThread].isCancelled)
 			{
@@ -4114,8 +4198,16 @@ extern "C"
 		
 		[NSThread sleepForTimeInterval: 0.5];	// To allow errorMessage on the main thread...
 		
-		if ([[self window] isVisible])
-		{
+        __block BOOL visible = FALSE;
+        if ([NSThread isMainThread])
+            visible = [[self window] isVisible];
+        else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                visible = [[self window] isVisible];
+            });
+        }
+        
+        if (visible) {
 			FILE * pFile = fopen( [[NSTemporaryDirectory() stringByAppendingPathComponent:@"kill_all_storescu"] UTF8String], "r");
 			if (pFile)
 				fclose (pFile);
@@ -4227,8 +4319,11 @@ extern "C"
 		{
 			[[BrowserController currentBrowser] checkIncoming: self];
 			
-			if (checkAndViewTry-- > 0 && [sendToPopup indexOfSelectedItem] == 0)
+			if (checkAndViewTry-- > 0 &&
+                [sendToPopup indexOfSelectedItem] == 0)
+            {
 				[self performSelector:@selector(checkAndView:) withObject:item afterDelay:1.0];
+            }
 			else
 				success = YES;
 		}
@@ -4646,11 +4741,14 @@ extern "C"
 	}
 	
 	[self buildPresetsMenu];
-	
-	[alreadyInDatabase setImage:[NSImage pieChartImageWithPercentage:1.0]];
-	[partiallyInDatabase setImage:[NSImage pieChartImageWithPercentage:0.33]];
-	
-	[self autoQueryTimer: self];
+
+    //NSLog(@"%s %d, main thread:%d", __FUNCTION__, __LINE__, [NSThread isMainThread]);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [alreadyInDatabase setImage:[NSImage pieChartImageWithPercentage:1.0]];
+        [partiallyInDatabase setImage:[NSImage pieChartImageWithPercentage:0.33]];
+    });
+
+    [self autoQueryTimer: self];
 	
 	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
 	[toDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
@@ -5259,9 +5357,15 @@ extern "C"
 //	else
 //        modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"Modality"] retain];
     
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshSources) name:@"DCMNetServicesDidChange"  object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshSources)
+                                                 name:@"DCMNetServicesDidChange"
+                                               object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(realtimeCFindResults:) name:@"realtimeCFindResults"  object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(realtimeCFindResults:)
+                                                 name:@"realtimeCFindResults"
+                                               object:nil];
     
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"Button"];
 	NSButtonCell *buttonCell = [[[NSButtonCell alloc] init] autorelease];
@@ -5362,7 +5466,7 @@ extern "C"
 		
 		NSMutableDictionary *aServer = [sourcesArray objectAtIndex: i];
 		
-		switch( [self dicomEcho: [aServer objectForKey:@"server"]])
+		switch ([self dicomEcho: [aServer objectForKey:@"server"]])
 		{
             default:
 			case 1:		status = 0;			break;
@@ -5383,22 +5487,22 @@ extern "C"
 
 - (IBAction) pressButtons:(id) sender
 {
-	switch( [sender selectedSegment])
+	switch ([sender selectedSegment])
 	{
 		case 0:		// Query
 			[self query: sender];
             break;
 		
-		case 2:		// Retrieve
+        case 1:    // Query Selected Patient
+            [self querySelectedStudy: self];
+            break;
+
+        case 2:		// Retrieve
 			[self retrieve: sender];
             break;
 		
 		case 3:		// Verify
 			[self verify: sender];
-            break;
-		
-		case 1:		// Query Selected Patient
-			[self querySelectedStudy: self];
             break;
 	}
 }

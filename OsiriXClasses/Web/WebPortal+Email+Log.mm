@@ -177,7 +177,7 @@
                         {
                             filteredStudies = [studies filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: [user valueForKey: @"studyPredicate"]]];
                             
-                            if( user.studyPredicate.length)
+                            if (user.studyPredicate.length > 0)
                                 filteredStudies = [user arrayByAddingSpecificStudiesToArray: filteredStudies];
                             
                             filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 

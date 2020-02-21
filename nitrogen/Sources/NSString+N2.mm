@@ -387,14 +387,16 @@
 	return [self characterAtIndex:0] == '/' ? url.path : [url.path substringFromIndex:1];
 }
 
--(NSArray*)componentsWithLength:(NSUInteger)len {
+-(NSArray*)componentsWithLength:(NSUInteger)len
+{
 	const CGFloat nf = ((CGFloat)self.length)/len;
 	const NSUInteger n = ceilf(nf);
 	
 	NSMutableArray* r = [NSMutableArray arrayWithCapacity:n];
 	for (NSUInteger i = 0; i < n; ++i)
 		[r addObject:[self substringWithRange:NSMakeRange(i*len, i!=n-1? len : self.length-i*len)]];
-	return r;
+
+    return r;
 }
 
 -(BOOL)isEmail { // from DHValidation

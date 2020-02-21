@@ -73,7 +73,7 @@
 
         NSMenu* menu = [[self.menu copy] autorelease];
         for (NSMenuItem* mi in menu.itemArray)
-            if (!mi.title.length)
+            if (mi.title.length == 0)
                 [menu removeItem:mi];
         
         _menuWindow = [N2PopUpMenu popUpContextMenu:menu withEvent:event forView:self withFont:self.font];
@@ -113,7 +113,7 @@
         NSInteger i = [self indexOfSelectedItem];
         if (i != -1) {
             NSMenuItem* mi = [self.menu itemAtIndex:i];
-            if (!mi.title.length)
+            if (mi.title.length == 0)
                 [self.menu removeItemAtIndex:i];
         }
     }
@@ -129,10 +129,12 @@
 
 @implementation O2DicomPredicateEditorPopUpButtonCell
 
-- (void)drawInteriorWithFrame:(NSRect)frame inView:(O2DicomPredicateEditorPopUpButton*)view {
+- (void)drawInteriorWithFrame:(NSRect)frame inView:(O2DicomPredicateEditorPopUpButton*)view
+{
     [super drawInteriorWithFrame:frame inView:view];
-    if (!self.title.length) {
-        NSAttributedString* t = [[NSAttributedString alloc] initWithString:view.noSelectionLabel attributes:[NSDictionary dictionaryWithObject:self.font forKey:NSFontAttributeName]];
+    if (self.title.length == 0) {
+        NSAttributedString *t = [[NSAttributedString alloc] initWithString:view.noSelectionLabel attributes:[NSDictionary dictionaryWithObject:self.font forKey:NSFontAttributeName]];
+
         frame.origin.y += 1;
         [self drawTitle:t withFrame:[self titleRectForBounds:frame] inView:view];
     }

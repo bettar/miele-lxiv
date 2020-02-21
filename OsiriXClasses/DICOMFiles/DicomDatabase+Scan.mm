@@ -290,7 +290,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
             [item conditionallySetObject:[NSNumber numberWithInteger:1] forKey:@"numberOfSeries"];
             
             [item conditionallySetObject:[[elements objectForKeyRemove: @"0028,0008"] integerNumberValue] forKey:@"numberOfFrames"];
-            if( [[item objectForKey:@"numberOfFrames"] integerValue] > 1) // SERIES ID MUST BE UNIQUE!!!!!
+            if ([[item objectForKey:@"numberOfFrames"] integerValue] > 1) // SERIES ID MUST BE UNIQUE!!!!!
             {
                 NSString *newSerieID = [NSString stringWithFormat:@"%@-%@", [[elements objectForKeyRemove: @"0020,000E"] stringValue], [item objectForKey: @"SOPUID"]];
                 [item conditionallySetObject:newSerieID forKey:@"seriesDICOMUID"]; // SeriesInstanceUID
@@ -464,7 +464,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	}
     
     // DUMP the DICOMDIR... did we miss some files??
-    if( items.count <= 1 || notFoundFiles == YES)
+    if (items.count <= 1 || notFoundFiles == YES)
     {
         NSLog( @"dcmdump DICOMDIR");
         @try
@@ -746,7 +746,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
                 thread.status = NSLocalizedString(@"Ejecting...", nil);
                 thread.progress = -1;
                 
-                [DCMPix purgeCachedDictionaries]; // <- This is very important to 'unlink' all opened files, otherwise MacOS will display the famous 'The disk is in use and could not be ejected'
+                [DCMPix purgeCachedDictionaries]; // <- This is very important to 'unlink' all open files, otherwise MacOS will display the famous 'The disk is in use and could not be ejected'
                 
                 int attempts = 0;
                 BOOL success = NO;

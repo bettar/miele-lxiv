@@ -308,7 +308,8 @@ enum {
         NSBeginAlertSheet([why objectAtIndex:0], nil, nil, nil, self.window, NSApp, @selector(endSheet:), nil, nil, @"%@", [why objectAtIndex:1]);
 }
 
--(NSThread*)initiateSetDatabaseAtPath:(NSString*)path name:(NSString*)name
+-(NSThread*)initiateSetDatabaseAtPath:(NSString*)path
+                                 name:(NSString*)name
 {
 	NSArray* io = [NSMutableArray arrayWithObjects: @"Local", path, name, nil];
 	
@@ -323,7 +324,9 @@ enum {
 	return thread;
 }
 
--(NSThread*)initiateSetRemoteDatabaseWithAddress:(NSString*)address port:(NSInteger)port name:(NSString*)name
+-(NSThread*)initiateSetRemoteDatabaseWithAddress:(NSString*)address
+                                            port:(NSInteger)port
+                                            name:(NSString*)name
 {
 	NSArray* io = [NSMutableArray arrayWithObjects: @"Remote", address, [NSNumber numberWithInteger:port], name, nil];
 	
@@ -360,7 +363,7 @@ enum {
         DicomDatabase* db = [dni database];
 
         if (!db) {
-            NSLog(@"BrowserController+Sources.mm:%d setDatabaseFromSourceIdentifier", __LINE__);
+            //NSLog(@"BrowserController+Sources.mm:%d setDatabaseFromSourceIdentifier", __LINE__);
             return; // TODO: confirm
         }
 
@@ -786,7 +789,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         DataNodeIdentifier* source0 = nil;
         @synchronized (_bonjourSources)
         {
-            if( [_bonjourServices indexOfObject: service] != NSNotFound)
+            if ([_bonjourServices indexOfObject: service] != NSNotFound)
                 source0 = [_bonjourSources objectAtIndex: [_bonjourServices indexOfObject: service]];
             else
                 NSLog( @"***** unknown didResolve Service");
@@ -806,8 +809,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             {
                 @synchronized (_bonjourSources)
                 {
-                    NSLog( @"Remove Service: %@", service);
-                    if( [_bonjourServices indexOfObject: service] != NSNotFound)
+                    //NSLog( @"Remove Service: %@", service);
+                    if ([_bonjourServices indexOfObject: service] != NSNotFound)
                     {
                         [_bonjourSources removeObjectAtIndex: [_bonjourServices indexOfObject: service]];
                         [_bonjourServices removeObject: service];
@@ -880,7 +883,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             if (i != NSNotFound) // Already known
                 @synchronized (_bonjourSources)
                 {
-                    if( [_bonjourServices indexOfObject: service] != NSNotFound)
+                    if ([_bonjourServices indexOfObject: service] != NSNotFound)
                         [_bonjourSources replaceObjectAtIndex: [_bonjourServices indexOfObject: service] withObject: (source = [_browser.sources.content objectAtIndex:i])];
                     else
                         NSLog( @"***** unknown didResolve Service");
@@ -931,7 +934,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     	if (!bsk)
             return;
         
-        NSLog( @"Remove Service: %@", bsk);
+        //NSLog( @"Remove Service: %@", bsk);
         [_bonjourSources removeObjectAtIndex: [_bonjourServices indexOfObject: bsk]];
         [_bonjourServices removeObject: bsk];
     }
@@ -953,7 +956,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         [_bonjourServices addObject: service];
         [_bonjourSources addObject: source];
 	}
-    NSLog( @"Find Service: %@", service);
+    //NSLog( @"Find Service: %@", service);
     
 	// resolve the address and port for this NSNetService
 	[service setDelegate:self];
@@ -997,7 +1000,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         {
             [_browser performSelector: @selector(setDatabase:) withObject: DicomDatabase.defaultDatabase afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
         }
-        NSLog( @"Remove Service: %@", bsk);
+
+        //NSLog( @"Remove Service: %@", bsk);
         [_bonjourSources removeObjectAtIndex: [_bonjourServices indexOfObject: bsk]];
         [_bonjourServices removeObject: bsk];
     }
@@ -1026,7 +1030,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	NSDictionary* result = [NSPropertyListSerialization propertyListFromData:output mutabilityOption:NSPropertyListImmutable format:0 errorDescription:NULL];
 
-	if ([[result objectForKey:@"OpticalMediaType"] length]) // is CD/DVD or other optical media
+	if ([[result objectForKey:@"OpticalMediaType"] length] > 0) // is CD/DVD or other optical media
 		@try {
 			[_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath:path description:path.lastPathComponent dictionary:nil type:MountTypeGeneric]];
         } @catch (NSException* e) {

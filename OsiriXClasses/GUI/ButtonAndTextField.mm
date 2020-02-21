@@ -24,9 +24,17 @@
 
 @implementation ButtonAndTextField
 
-- (id)initWithFrame:(NSRect)frameRect{
-	NSRect subFrame = NSMakeRect(frameRect.origin.x,frameRect.origin.y, frameRect.size.width/2, frameRect.size.height);
-	NSRect textFrame = NSMakeRect(frameRect.origin.x + frameRect.size.width/2+ 10 ,frameRect.origin.y, frameRect.size.width/2 - 10, frameRect.size.height);
+- (id)initWithFrame:(NSRect)frameRect
+{
+	NSRect subFrame = NSMakeRect(frameRect.origin.x,
+                                 frameRect.origin.y,
+                                 frameRect.size.width/2,
+                                 frameRect.size.height);
+
+    NSRect textFrame = NSMakeRect(NSMidX(frameRect) + 10,
+                                  frameRect.origin.y,
+                                  frameRect.size.width/2 - 10,
+                                  frameRect.size.height);
 
 	NSLog(@"init Button and text cell");
 	if (self = [super initWithFrame:subFrame]) {

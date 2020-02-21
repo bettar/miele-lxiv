@@ -23,7 +23,7 @@
 @class ViewerController;
 @class DCMView;
 
-/** \brief Window Controller for the Navigator. The Navigator provides a unrolled view of the selected series (in 3D and in 4D).*/
+/** \brief Window Controller for the Navigator. The Navigator provides an unrolled view of the selected series (in 3D and in 4D).*/
 @interface NavigatorWindowController : NSWindowController
 {
 	ViewerController *viewerController;

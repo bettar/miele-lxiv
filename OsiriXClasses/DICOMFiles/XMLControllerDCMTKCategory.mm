@@ -47,10 +47,10 @@ extern NSRecursiveLock *Papyrus_Lock;
 	
 	@try 
 	{
-		int i, argc = [params count];
+		int argc = [params count];
 		char *argv[ argc];
 		
-		for( i = 0; i < argc; i++)
+		for (int i = 0; i < argc; i++)
 			argv[ i] = (char*) [[params objectAtIndex: i] cStringUsingEncoding: encoding];
 		
 		MdfConsoleEngine engine( argc, argv,"dcmodify");

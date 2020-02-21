@@ -243,17 +243,18 @@
 
 - (void)drawBinHistogramInRect:(NSRect)rect;
 {
-	int i, max = 0;
-	for(i=2; i<histogramSize; i++)
+	int max = 0;
+	for (int i=2; i<histogramSize; i++)
 	{
-		if(histogram[i]>max) max = histogram[i];
+		if (histogram[i]>max)
+            max = histogram[i];
 	}
 		
-	float heightFactor = (max==0)? 1 : rect.size.height / max;
+	float heightFactor = (max==0) ? 1 : rect.size.height / max;
 	
 	NSRect *rects = (NSRect*) malloc(sizeof(NSRect) * histogramSize);
 	float binWidth = rect.size.width / histogramSize;
-	for(i=0; i<histogramSize; i++)
+	for (int i=0; i<histogramSize; i++)
 	{
 		rects[i] = NSMakeRect(i * binWidth, 0, binWidth, histogram[i] * heightFactor);
 	}
@@ -454,6 +455,8 @@
 	}
 }
 
+#pragma mark -
+
 - (void)drawCurvesInRect:(NSRect)rect;
 {		
 	NSAffineTransform* transform = [self transform];
@@ -474,8 +477,9 @@
 			}
 		}
 		
-		// LINE
-		NSBezierPath *line = [NSBezierPath bezierPath];
+#pragma mark LINE
+
+        NSBezierPath *line = [NSBezierPath bezierPath];
 		[line moveToPoint:[[aCurve objectAtIndex:0] pointValue]];
 		for (int j=1; j<[aCurve count]; j++)
 		{
@@ -489,8 +493,9 @@
 		[line setLineWidth:lineWidth];
 		[line stroke];
 				
-		// CONTROL POINT (DRAW)
-		NSRect frame = NSMakeRect(controlPoint.x-pointDiameter*0.5, controlPoint.y-pointDiameter*0.5, pointDiameter, pointDiameter);
+#pragma mark CONTROL POINT (DRAW)
+
+        NSRect frame = NSMakeRect(controlPoint.x-pointDiameter*0.5, controlPoint.y-pointDiameter*0.5, pointDiameter, pointDiameter);
 		NSBezierPath *control = [NSBezierPath bezierPathWithRect:frame];
 		[control setLineWidth:pointBorder];
 		[pointsColor set];
@@ -500,8 +505,9 @@
             [selectedPointColor set];
 		[control stroke];
 		
-		// DOTS
-		NSPoint selectedPointForLabel = NSMakePoint(-1.0, -1.0);
+#pragma mark DOTS
+
+        NSPoint selectedPointForLabel = NSMakePoint(-1.0, -1.0);
 		
 		for (int j=0; j<[aCurve count]; j++)
 		{
@@ -540,12 +546,14 @@
                 selectedPointForLabel = pt;
 		}
 		
-		// LABEL FOR SELECTED POINT
-		if (selectedPointForLabel.y>=0.0)
+#pragma mark LABEL FOR SELECTED POINT
+
+        if (selectedPointForLabel.y>=0.0)
             [self drawPointLabelAtPosition:selectedPointForLabel];
 		
-		// LABEL FOR ALL POINTS
-		if (controlPointSelected)
+#pragma mark LABEL FOR ALL POINTS
+
+        if (controlPointSelected)
 		{
 			int maxYIndex = -1;
 			int minYIndex = -1;
@@ -573,6 +581,8 @@
 		}
 	}
 }
+
+#pragma mark -
 
 - (void)addCurveAtindex:(int)curveIndex withPoints:(NSArray*)pointsArray colors:(NSArray*)colorsArray;
 {
@@ -1370,17 +1380,17 @@ NSRect rect = drawingRect;
 
 - (void)mouseMoved:(NSEvent *)theEvent
 {
-	if( ![[self window] isVisible])
+	if ( ![[self window] isVisible])
 		return;
 	
 	[super mouseMoved:theEvent];
 
-	if( ![[self window] isMainWindow])
+	if ( ![[self window] isMainWindow])
         return;
 	
 	NSPoint mousePositionInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	
-	if( !NSPointInRect([NSEvent mouseLocation], [[self window] frame]))
+	if ( !NSPointInRect([NSEvent mouseLocation], [[self window] frame]))
 	{
 		[[NSCursor arrowCursor] set];
 		mousePositionX = - 9999.0;
@@ -1390,19 +1400,19 @@ NSRect rect = drawingRect;
 	else if ([self clickInSideBarAtPosition:mousePositionInView])
 	{
 		NSString *mouseLabel;
-		if([self clickInAddCurveButtonAtPosition:mousePositionInView])
+		if ([self clickInAddCurveButtonAtPosition:mousePositionInView])
 		{
 			mouseLabel = NSLocalizedString(@"Add", @"");
 		}
-		else if([self clickInRemoveSelectedCurveButtonAtPosition:mousePositionInView])
+		else if ([self clickInRemoveSelectedCurveButtonAtPosition:mousePositionInView])
 		{
 			mouseLabel = NSLocalizedString(@"Remove", @"");
 		}
-		else if([self clickInSaveButtonAtPosition:mousePositionInView])
+		else if ([self clickInSaveButtonAtPosition:mousePositionInView])
 		{
 			mouseLabel = NSLocalizedString(@"Save", @"");
 		}
-		else if([self clickInCloseButtonAtPosition:mousePositionInView])
+		else if ([self clickInCloseButtonAtPosition:mousePositionInView])
 		{
 			mouseLabel = NSLocalizedString(@"Close", @"");
 		}
@@ -1414,7 +1424,6 @@ NSRect rect = drawingRect;
 		[self updateView];
 		return;
 	}
-	
 	
 	NSAffineTransform* transformView2Coordinate = [self transform];
 	[transformView2Coordinate invert];
@@ -1469,6 +1478,7 @@ NSRect rect = drawingRect;
 	[self newCurve];
 }
 
+// Accessor
 - (IBAction)setLineWidth:(id)sender;
 {
 	lineWidth = [sender floatValue];
@@ -1643,13 +1653,17 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	NSBezierPath *line = [NSBezierPath bezierPath];
 	[line setLineWidth:2.0];
 	NSPoint p1, p2;
-	p1 = NSMakePoint(rect.origin.x+4, rect.origin.y+4);
-	p2 = NSMakePoint(rect.origin.x + rect.size.width-4, rect.origin.y + rect.size.height-4);
+	p1 = NSMakePoint(NSMinX(rect) + 4,
+                     NSMinY(rect) + 4);
+	p2 = NSMakePoint(NSMaxX(rect) - 4,
+                     NSMaxY(rect) - 4);
 	[line moveToPoint:p1];
 	[line lineToPoint:p2];
 	
-	p1 = NSMakePoint(rect.origin.x+4, rect.origin.y+ rect.size.height-4);
-	p2 = NSMakePoint(rect.origin.x + rect.size.width-4, rect.origin.y+4);
+	p1 = NSMakePoint(NSMinX(rect) + 4,
+                     NSMaxY(rect) - 4);
+	p2 = NSMakePoint(NSMaxX(rect) - 4,
+                     NSMinY(rect) + 4);
 	[line moveToPoint:p1];
 	[line lineToPoint:p2];
 	
@@ -1660,11 +1674,12 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 {
 	NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:rect];
 	[path setLineWidth:1.5];
-	if(isAddCurveButtonHighlighted)
+	if (isAddCurveButtonHighlighted)
 		[[NSColor darkGrayColor] set];
 	else
 		[backgroundColor set];
-	[path fill];
+
+    [path fill];
 	[[NSColor whiteColor] set];
 	[path stroke];
 	
@@ -1721,7 +1736,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[[NSColor whiteColor] set];
 	[path stroke];
 	
-	NSPoint center = NSMakePoint(rect.origin.x+rect.size.width*0.5, rect.origin.y+rect.size.height*0.5);
+	NSPoint center = NSMakePoint(NSMidX(rect), NSMidY(rect));
 	NSRect dotFrame = NSMakeRect(center.x-3, center.y-3, 6, 6);
 	NSBezierPath *dot = [NSBezierPath bezierPathWithOvalInRect:dotFrame];
 	[dot fill];
@@ -2252,8 +2267,12 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 - (void)setWL:(float)wl ww:(float)ww;
 {
-	int curveIndex = [self selectedCurveIndex];
-	if(curveIndex<0) curveIndex = 0;
+    NSLog(@"%s %d, self class:%@", __FUNCTION__, __LINE__,
+          NSStringFromClass([self class]));
+
+    int curveIndex = [self selectedCurveIndex];
+	if (curveIndex<0)
+        curveIndex = 0;
 	
 	NSMutableArray *theCurve = [curves objectAtIndex:curveIndex];
 	NSPoint firstPoint = [[theCurve objectAtIndex:0] pointValue];
@@ -2330,7 +2349,10 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	if( [cursorImage size].width > 0 && [cursorImage size].height > 0)
 	{
 		[cursorImage lockFocus];
-		[[[NSCursor arrowCursor] image] drawAtPoint: NSMakePoint( 0, 0) fromRect: NSZeroRect operation: NSCompositeCopy fraction: 1.0];
+		[[[NSCursor arrowCursor] image] drawAtPoint: NSZeroPoint
+                                           fromRect: NSZeroRect
+                                          operation: NSCompositeCopy
+                                           fraction: 1.0];
 		[[[NSColor blackColor] colorWithAlphaComponent:0.5] set];
 		//NSRectFill(NSMakeRect(labelPosition.x-2, labelPosition.y+1, labelBounds.size.width+4, labelBounds.size.height+4));
 		NSRectFill(NSMakeRect(labelPosition.x-2, labelPosition.y+1, labelBounds.size.width+4, 13)); // nicer if the height stays the same when moving the mouse
@@ -2362,22 +2384,24 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	return b1 || b2 || b3 || b4;
 }
 
+// Unusesd ?
+// Is this code doing anything at all ?
 - (NSArray*)resolveOverlappingCurves;
 {
 	NSMutableArray *resolvedCurves = [NSMutableArray array];
 	
-	int i, j, k, l;
-	for (i=0; i<[curves count]; i++)
+	int k, l;
+	for (int i=0; i<[curves count]; i++)
 	{
-		for (j=i+1; j<[curves count]; j++)
+		for (int j=i+1; j<[curves count]; j++)
 		{
 			NSArray *curveI = [curves objectAtIndex:i];
 			NSArray *curveJ = [curves objectAtIndex:j];
-			if([self doesCurve:curveI overlapCurve:curveJ])
+			if ([self doesCurve:curveI overlapCurve:curveJ])
 			{
 				k=0;
 				l=0;
-				while(k<[curveI count] && l<[curveJ count])
+				while (k<[curveI count] && l<[curveJ count])
 				{
 					
 				}

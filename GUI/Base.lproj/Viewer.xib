@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14868" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14868"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -330,13 +330,13 @@
                     <rect key="frame" x="-3" y="23" width="48" height="18"/>
                     <buttonCell key="cell" type="check" title="Loop" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="2112">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="smallSystem"/>
+                        <font key="font" metaFont="message" size="11"/>
                     </buttonCell>
                 </button>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15">
                     <rect key="frame" x="0.0" y="3" width="132" height="15"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="60" doubleValue="10" tickMarkPosition="above" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2110">
-                        <font key="font" size="12" name="Helvetica"/>
+                        <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
                         <action selector="speedSliderAction:" target="-2" id="18"/>
@@ -345,7 +345,7 @@
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="19">
                     <rect key="frame" x="89" y="25" width="41" height="13"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="60 im/s" id="2111">
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -379,13 +379,13 @@
                         <column>
                             <buttonCell type="radio" title="Left Button" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1245">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="miniSystem"/>
+                                <font key="font" metaFont="label" size="9"/>
                             </buttonCell>
                         </column>
                         <column>
                             <buttonCell type="radio" title="Right Button" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="1246">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="miniSystem"/>
+                                <font key="font" metaFont="label" size="9"/>
                             </buttonCell>
                         </column>
                     </cells>
@@ -400,7 +400,7 @@
                     </constraints>
                     <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="only" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="odG-BV-hTy" id="2113">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="system"/>
                         <menu key="menu" title="OtherViews" id="577">
                             <items>
                                 <menuItem hidden="YES" id="590"/>
@@ -446,7 +446,7 @@
                                         <action selector="setROITool:" target="-2" id="640"/>
                                     </connections>
                                 </menuItem>
-                                <menuItem title="Opened Polygon" tag="10" keyEquivalent="" id="581">
+                                <menuItem title="Open Polygon" tag="10" keyEquivalent="" id="581">
                                     <modifierMask key="keyEquivalentModifierMask"/>
                                     <connections>
                                         <action selector="setROITool:" target="-2" id="584"/>
@@ -524,43 +524,43 @@
                     <size key="intercellSpacing" width="-2" height="0.0"/>
                     <buttonCell key="prototype" type="bevel" bezelStyle="regularSquare" image="WLWW" imagePosition="above" alignment="center" borderStyle="border" tag="-1" imageScaling="proportionallyUpOrDown" inset="2" id="2367">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                     </buttonCell>
                     <cells>
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="WLWW" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" toolTip="Window Level (Option + click)" imageScaling="proportionallyUpOrDown" inset="2" id="591" userLabel="Levels">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="system" size="10"/>
+                                <font key="font" metaFont="menu" size="10"/>
                             </buttonCell>
                         </column>
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="Move" imagePosition="overlaps" alignment="center" borderStyle="border" toolTip="Move (Apple + click)" tag="1" imageScaling="proportionallyUpOrDown" inset="2" id="592" userLabel="Move">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="system" size="10"/>
+                                <font key="font" metaFont="menu" size="10"/>
                             </buttonCell>
                         </column>
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="Zoom" imagePosition="overlaps" alignment="center" borderStyle="border" toolTip="Zoom (Shift + click)" tag="2" imageScaling="proportionallyUpOrDown" inset="2" id="593" userLabel="Zoom">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="system" size="10"/>
+                                <font key="font" metaFont="menu" size="10"/>
                             </buttonCell>
                         </column>
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="Rotate" imagePosition="overlaps" alignment="center" borderStyle="border" toolTip="Rotate (Apple + Option + click)" tag="3" imageScaling="proportionallyUpOrDown" inset="2" id="594" userLabel="Rotate">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="system" size="10"/>
+                                <font key="font" metaFont="menu" size="10"/>
                             </buttonCell>
                         </column>
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="Stack" imagePosition="overlaps" alignment="center" borderStyle="border" toolTip="Animate" tag="4" imageScaling="proportionallyUpOrDown" inset="2" id="595" userLabel="Next">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="system" size="10"/>
+                                <font key="font" metaFont="menu" size="10"/>
                             </buttonCell>
                         </column>
                         <column>
                             <buttonCell type="bevel" bezelStyle="regularSquare" image="Length" imagePosition="only" alignment="center" borderStyle="border" toolTip="ROI Tool - Click on small arrow to see others" tag="5" imageScaling="proportionallyUpOrDown" inset="2" id="596">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="system" size="10"/>
+                                <font key="font" metaFont="menu" size="10"/>
                             </buttonCell>
                         </column>
                     </cells>
@@ -580,6 +580,7 @@
                 <constraint firstAttribute="bottom" secondItem="580" secondAttribute="bottom" constant="20" id="kcZ-Xm-C6V"/>
                 <constraint firstItem="24" firstAttribute="leading" secondItem="21" secondAttribute="leading" constant="2" id="yF1-jw-kxo"/>
             </constraints>
+            <point key="canvasLocation" x="132" y="155"/>
         </customView>
         <customView id="92" userLabel="WLWW">
             <rect key="frame" x="0.0" y="0.0" width="157" height="47"/>
@@ -592,7 +593,7 @@
                     </constraints>
                     <popUpButtonCell key="cell" type="push" title="Opacity" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" enabled="NO" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="2119">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <menu key="menu" title="OtherViews" id="893">
                             <items>
                                 <menuItem title="Opacity" hidden="YES" id="894"/>
@@ -603,7 +604,7 @@
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="889">
                     <rect key="frame" x="18" y="3" width="41" height="11"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Opacity:" id="2118">
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -611,7 +612,7 @@
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="502">
                     <rect key="frame" x="28" y="18" width="31" height="11"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="CLUT:" id="2117">
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -619,7 +620,7 @@
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="501">
                     <rect key="frame" x="17" y="34" width="42" height="11"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="WL/WW:" id="2116">
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -631,7 +632,7 @@
                     </constraints>
                     <popUpButtonCell key="cell" type="push" title="CLUT" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="497" id="2115">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <menu key="menu" title="OtherViews" id="498">
                             <items>
                                 <menuItem title="CLUT" hidden="YES" id="497"/>
@@ -646,7 +647,7 @@
                     </constraints>
                     <popUpButtonCell key="cell" type="push" title="WL/WW" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="2114">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <menu key="menu" title="OtherViews" id="140">
                             <items>
                                 <menuItem title="WL/WW" hidden="YES" id="142"/>
@@ -775,7 +776,7 @@ Gw
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="136">
                         <rect key="frame" x="5" y="10" width="318" height="26"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="To remove a preset from the menu: simply select it while holding down the shift key." id="2128">
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -829,6 +830,7 @@ Gw
                     <constraint firstItem="114" firstAttribute="leading" secondItem="115" secondAttribute="leading" id="yK5-SZ-1Ad"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="141" y="148"/>
         </window>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" animationBehavior="default" id="149" userLabel="Convolution">
             <windowStyleMask key="styleMask" titled="YES"/>
@@ -891,142 +893,142 @@ Gw
                                     <size key="cellSize" width="46" height="19"/>
                                     <size key="intercellSpacing" width="8" height="8"/>
                                     <textFieldCell key="prototype" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="-1" drawsBackground="YES" id="2370">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <cells>
                                         <column>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" drawsBackground="YES" id="336">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="5" drawsBackground="YES" id="346">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="10" drawsBackground="YES" id="337">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="15" drawsBackground="YES" id="334">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="20" drawsBackground="YES" id="340">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </column>
                                         <column>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="1" drawsBackground="YES" id="323">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="6" drawsBackground="YES" id="325">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="11" drawsBackground="YES" id="335">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="16" drawsBackground="YES" id="344">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="21" drawsBackground="YES" id="339">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </column>
                                         <column>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="2" drawsBackground="YES" id="338">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="7" drawsBackground="YES" id="324">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="12" drawsBackground="YES" id="345">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="17" drawsBackground="YES" id="347">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="22" drawsBackground="YES" id="322">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </column>
                                         <column>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="3" drawsBackground="YES" id="329">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="8" drawsBackground="YES" id="327">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="13" drawsBackground="YES" id="330">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="18" drawsBackground="YES" id="343">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="23" drawsBackground="YES" id="331">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </column>
                                         <column>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="4" drawsBackground="YES" id="333">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="9" drawsBackground="YES" id="341">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="14" drawsBackground="YES" id="326">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="19" drawsBackground="YES" id="342">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <textFieldCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" tag="24" drawsBackground="YES" id="328">
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="message" size="11"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -1048,7 +1050,7 @@ Gw
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="348">
                         <rect key="frame" x="29" y="10" width="330" height="26"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="2131">
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <string key="title">To remove a filter from the menu: select it with the shift key down.
 To modify a filter from the menu: select it with the option key down.</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1144,7 +1146,7 @@ Gw
                                     <rect key="frame" x="297" y="11" width="50" height="27"/>
                                     <buttonCell key="cell" type="push" title="Sum" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="2136">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                     </buttonCell>
                                     <connections>
                                         <action selector="computeSum:" target="-2" id="370"/>
@@ -1153,7 +1155,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="162" translatesAutoresizingMaskIntoConstraints="NO" id="369">
                                     <rect key="frame" x="119" y="14" width="166" height="26"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="This value is normally the sum of matrix values." id="2137">
-                                        <font key="font" metaFont="system" size="10"/>
+                                        <font key="font" metaFont="menu" size="10"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -1228,7 +1230,7 @@ Gw
                     <rect key="frame" x="-2" y="21" width="50" height="18"/>
                     <buttonCell key="cell" type="check" title="Mode:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="mini" inset="2" id="2143">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="activateFusion:" target="-2" id="2001"/>
@@ -1240,7 +1242,7 @@ Gw
                         <constraint firstAttribute="width" constant="30" id="ivX-9O-0IP"/>
                     </constraints>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="128" id="2142">
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -1251,7 +1253,7 @@ Gw
                         <constraint firstAttribute="width" constant="52" id="WSE-rD-qvX"/>
                     </constraints>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="88.8 mm" id="2620">
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -1266,7 +1268,7 @@ Gw
                     </constraints>
                     <popUpButtonCell key="cell" type="push" title="MIP - Max Intensity Projection" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" tag="2" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="377" id="2141">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <menu key="menu" title="OtherViews" id="378">
                             <items>
                                 <menuItem title="Mean" tag="1" id="376"/>
@@ -1290,7 +1292,7 @@ Gw
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="129" id="1xK-Nd-zOX"/>
                     </constraints>
                     <sliderCell key="cell" controlSize="mini" continuous="YES" enabled="NO" alignment="left" minValue="2" maxValue="128" doubleValue="20" tickMarkPosition="below" numberOfTickMarks="45" sliderType="linear" id="2140">
-                        <font key="font" size="12" name="Helvetica"/>
+                        <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
                         <action selector="sliderFusionAction:" target="-2" id="404"/>
@@ -1313,6 +1315,7 @@ Gw
                 <constraint firstAttribute="trailing" secondItem="2619" secondAttribute="trailing" constant="1" id="slo-7h-tj6"/>
                 <constraint firstItem="379" firstAttribute="leading" secondItem="1999" secondAttribute="trailing" constant="7" id="spl-Z3-lE0"/>
             </constraints>
+            <point key="canvasLocation" x="44" y="140"/>
         </customView>
         <customView id="382" userLabel="Filters">
             <rect key="frame" x="0.0" y="0.0" width="121" height="34"/>
@@ -1325,7 +1328,7 @@ Gw
                     </constraints>
                     <popUpButtonCell key="cell" type="push" title="No Filters" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="383" id="2144">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <menu key="menu" title="OtherViews" id="386">
                             <items>
                                 <menuItem title="No Filters" hidden="YES" id="383"/>
@@ -1403,7 +1406,7 @@ Gw
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="998" verticalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="427">
                         <rect key="frame" x="17" y="12" width="517" height="26"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="2148">
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <string key="title">To remove a Color Look Up Table from the menu: select it while holding down the shift key.
 To edit a Color Look Up Table from the menu: select it while holding down the alt/option key.</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1516,7 +1519,7 @@ To edit a Color Look Up Table from the menu: select it while holding down the al
                     </constraints>
                     <popUpButtonCell key="cell" type="push" title="Linear" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="817" id="2157">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <menu key="menu" title="OtherViews" id="818">
                             <items>
                                 <menuItem title="Linear" state="on" id="817">
@@ -1556,7 +1559,7 @@ To edit a Color Look Up Table from the menu: select it while holding down the al
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="819">
                     <rect key="frame" x="8" y="18" width="35" height="13"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Mode:" id="2156">
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -1564,7 +1567,7 @@ To edit a Color Look Up Table from the menu: select it while holding down the al
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="482">
                     <rect key="frame" x="0.0" y="0.0" width="87" height="15"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" enabled="NO" alignment="left" minValue="-256" maxValue="256" doubleValue="1.421085e-14" tickMarkPosition="below" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2155">
-                        <font key="font" size="12" name="Helvetica"/>
+                        <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
                         <action selector="blendingSlider:" target="-2" id="1618"/>
@@ -1576,7 +1579,7 @@ To edit a Color Look Up Table from the menu: select it while holding down the al
                         <constraint firstAttribute="width" constant="30" id="KbM-eE-ruq"/>
                     </constraints>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="-" id="2154">
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -1596,64 +1599,65 @@ To edit a Color Look Up Table from the menu: select it while holding down the al
                 <constraint firstItem="482" firstAttribute="leading" secondItem="475" secondAttribute="leading" id="lVq-VZ-MVh"/>
                 <constraint firstItem="482" firstAttribute="top" secondItem="820" secondAttribute="bottom" constant="3" id="xZm-bs-Rfd"/>
             </constraints>
+            <point key="canvasLocation" x="132" y="155"/>
         </customView>
         <customView id="505" userLabel="Movie">
             <rect key="frame" x="0.0" y="0.0" width="169" height="32"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="512">
-                    <rect key="frame" x="8" y="7" width="22" height="11"/>
+                    <rect key="frame" x="8" y="6" width="22" height="11"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="18" id="tiG-D8-M4v"/>
                     </constraints>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pos:" id="2163">
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="511">
-                    <rect key="frame" x="4" y="21" width="26" height="11"/>
+                    <rect key="frame" x="4" y="20" width="26" height="12"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Rate:" id="2162">
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="510">
-                    <rect key="frame" x="130" y="2" width="35" height="19"/>
+                    <rect key="frame" x="130" y="1" width="35" height="19"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="33" id="VmA-JG-2kR"/>
                     </constraints>
                     <buttonCell key="cell" type="squareTextured" title="Play" bezelStyle="texturedSquare" alignment="center" controlSize="small" borderStyle="border" inset="2" id="2161">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="MoviePlayStop:" target="-2" id="520"/>
                     </connections>
                 </button>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="508">
-                    <rect key="frame" x="30" y="6" width="95" height="15"/>
+                    <rect key="frame" x="30" y="5" width="95" height="15"/>
                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="1" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2160">
-                        <font key="font" size="12" name="Helvetica"/>
+                        <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
                         <action selector="moviePosSliderAction:" target="-2" id="519"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="507">
-                    <rect key="frame" x="127" y="21" width="45" height="11"/>
+                    <rect key="frame" x="127" y="20" width="45" height="11"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="10 im/s" id="2159">
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="506">
-                    <rect key="frame" x="30" y="20" width="95" height="12"/>
+                    <rect key="frame" x="30" y="19" width="95" height="13"/>
                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" maxValue="60" doubleValue="10" tickMarkPosition="above" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2158">
-                        <font key="font" size="12" name="Helvetica"/>
+                        <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
                         <action selector="movieRateSliderAction:" target="-2" id="518"/>
@@ -1770,7 +1774,7 @@ Gw
                                 <slider verticalHuggingPriority="750" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="1386">
                                     <rect key="frame" x="104" y="81" width="296" height="15"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="50" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="50" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2170">
-                                        <font key="font" size="12" name="Helvetica"/>
+                                        <font key="font" metaFont="user"/>
                                     </sliderCell>
                                     <connections>
                                         <action selector="exportQuicktimeSlider:" target="-2" id="2081"/>
@@ -1779,7 +1783,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1388">
                                     <rect key="frame" x="13" y="82" width="47" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Interval:" id="2172">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -1787,7 +1791,7 @@ Gw
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1384">
                                     <rect key="frame" x="104" y="53" width="296" height="15"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2168">
-                                        <font key="font" size="12" name="Helvetica"/>
+                                        <font key="font" metaFont="user"/>
                                     </sliderCell>
                                     <connections>
                                         <action selector="exportQuicktimeSlider:" target="-2" id="1515"/>
@@ -1796,7 +1800,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1385">
                                     <rect key="frame" x="26" y="58" width="34" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="From:" id="2169">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -1804,7 +1808,7 @@ Gw
                                 <slider verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="1387">
                                     <rect key="frame" x="104" y="38" width="296" height="15"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tag="1" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2171">
-                                        <font key="font" size="12" name="Helvetica"/>
+                                        <font key="font" metaFont="user"/>
                                     </sliderCell>
                                     <connections>
                                         <action selector="exportQuicktimeSlider:" target="-2" id="1516"/>
@@ -1813,7 +1817,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1389">
                                     <rect key="frame" x="40" y="34" width="20" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="To:" id="2173">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -1824,7 +1828,7 @@ Gw
                                         <constraint firstAttribute="width" constant="31" id="Z27-Nl-Trm"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="1234" drawsBackground="YES" id="2175">
-                                        <font key="font" metaFont="miniSystem"/>
+                                        <font key="font" metaFont="label" size="9"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -1835,7 +1839,7 @@ Gw
                                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1390">
                                     <rect key="frame" x="65" y="57" width="31" height="15"/>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="0" drawsBackground="YES" id="2174">
-                                        <font key="font" metaFont="miniSystem"/>
+                                        <font key="font" metaFont="label" size="9"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -1846,7 +1850,7 @@ Gw
                                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1383">
                                     <rect key="frame" x="65" y="33" width="31" height="15"/>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="1234" drawsBackground="YES" id="2167">
-                                        <font key="font" metaFont="miniSystem"/>
+                                        <font key="font" metaFont="label" size="9"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -1857,7 +1861,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2076">
                                     <rect key="frame" x="14" y="12" width="46" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Images:" id="2176">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -1868,7 +1872,7 @@ Gw
                                         <constraint firstAttribute="width" constant="73" id="5jb-20-lY9"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="40 images" id="2177">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -1945,7 +1949,7 @@ Gw
                     </constraints>
                     <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Next" imagePosition="only" alignment="center" borderStyle="border" tag="1" imageScaling="proportionallyUpOrDown" inset="2" id="2180">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                         <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                     </buttonCell>
                     <connections>
@@ -1960,7 +1964,7 @@ Gw
                     </constraints>
                     <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Prev" imagePosition="only" alignment="center" borderStyle="border" tag="-1" imageScaling="proportionallyUpOrDown" inset="2" id="2179">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                         <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                     </buttonCell>
                     <connections>
@@ -1989,7 +1993,7 @@ Gw
                     <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2473">
                         <rect key="frame" x="21" y="141" width="28" height="14"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="and" id="2474">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2435,7 +2439,7 @@ Gw
                     </constraints>
                     <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="right" alignment="center" controlSize="small" lineBreakMode="clipping" borderStyle="borderAndBezel" imageScaling="proportionallyUpOrDown" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="741" id="2197">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="system"/>
                         <menu key="menu" title="OtherViews" id="742">
                             <items>
                                 <menuItem image="3D" hidden="YES" id="741"/>
@@ -2564,7 +2568,7 @@ Gw
                     <textField horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="774">
                         <rect key="frame" x="24" y="10" width="355" height="13"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Force display of this window by selecting a 3D reconstruction + shift key" id="2204">
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -2621,7 +2625,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1166">
-                        <rect key="frame" x="71" y="125" width="61" height="16"/>
+                        <rect key="frame" x="70" y="125" width="62" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="X-Vector:" id="2211">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2629,7 +2633,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1167">
-                        <rect key="frame" x="71" y="96" width="61" height="16"/>
+                        <rect key="frame" x="70" y="96" width="61" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Y-Vector:" id="2212">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2704,7 +2708,7 @@ Gw
                         </connections>
                     </matrix>
                     <textField horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1192">
-                        <rect key="frame" x="87" y="34" width="45" height="16"/>
+                        <rect key="frame" x="86" y="34" width="45" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Origin:" id="2213">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2746,17 +2750,17 @@ Gw
                         </cells>
                     </matrix>
                     <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="2007">
-                        <rect key="frame" x="19" y="107" width="51" height="27"/>
+                        <rect key="frame" x="18" y="107" width="51" height="27"/>
                         <buttonCell key="cell" type="push" title="Axial" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="2214">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <connections>
                             <action selector="setAxialOrientation:" target="-2" id="2008"/>
                         </connections>
                     </button>
                     <textField horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2091">
-                        <rect key="frame" x="71" y="67" width="61" height="16"/>
+                        <rect key="frame" x="69" y="67" width="62" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Z-Vector:" id="2215">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2826,7 +2830,7 @@ Gw
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1974">
                     <rect key="frame" x="175" y="5" width="11" height="13"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="+" id="2232">
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -2835,7 +2839,7 @@ Gw
                     <rect key="frame" x="19" y="17" width="32" height="22"/>
                     <buttonCell key="cell" type="squareTextured" title="Sharp" bezelStyle="texturedSquare" alignment="center" controlSize="small" borderStyle="border" tag="21" id="2231">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="subSharpen:" target="-2" id="1666"/>
@@ -2844,7 +2848,7 @@ Gw
                 <slider toolTip="sum up next frames [alt 1] [alt 2] [alt 3]" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" tag="20" translatesAutoresizingMaskIntoConstraints="NO" id="1656">
                     <rect key="frame" x="97" y="4" width="75" height="15"/>
                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tag="20" minValue="1" maxValue="10" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="10" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2230">
-                        <font key="font" size="12" name="Helvetica"/>
+                        <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
                         <action selector="subSumSlider:" target="-2" id="1662"/>
@@ -2856,7 +2860,7 @@ Gw
                         <constraint firstAttribute="width" constant="11" id="MVs-F1-6L5"/>
                     </constraints>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="%" id="2229">
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -2872,7 +2876,7 @@ Gw
                     <rect key="frame" x="0.0" y="16" width="22" height="24"/>
                     <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="15" id="2227">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                     </buttonCell>
                     <connections>
                         <action selector="subCtrlOnOff:" target="-1" id="1584"/>
@@ -2882,7 +2886,7 @@ Gw
                     <rect key="frame" x="80" y="0.0" width="12" height="14"/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" alignment="center" controlSize="mini" borderStyle="border" tag="3" inset="2" id="2226">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="subCtrlOffset:" target="-1" id="1608"/>
@@ -2892,7 +2896,7 @@ Gw
                     <rect key="frame" x="67" y="0.0" width="12" height="14"/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" alignment="center" controlSize="mini" borderStyle="border" tag="2" inset="2" id="2225">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="subCtrlOffset:" target="-1" id="1607"/>
@@ -2902,7 +2906,7 @@ Gw
                     <rect key="frame" x="54" y="0.0" width="12" height="14"/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" alignment="center" controlSize="mini" borderStyle="border" tag="1" inset="2" id="2224">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="subCtrlOffset:" target="-1" id="1606"/>
@@ -2912,7 +2916,7 @@ Gw
                     <rect key="frame" x="80" y="13" width="12" height="12"/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" alignment="center" controlSize="mini" borderStyle="border" tag="6" inset="2" id="2223">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="subCtrlOffset:" target="-1" id="1605"/>
@@ -2922,7 +2926,7 @@ Gw
                     <rect key="frame" x="67" y="13" width="12" height="12"/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" alignment="center" controlSize="mini" borderStyle="border" tag="5" inset="2" id="2222">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="subCtrlOffset:" target="-1" id="1604"/>
@@ -2932,7 +2936,7 @@ Gw
                     <rect key="frame" x="54" y="13" width="12" height="12"/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" alignment="center" controlSize="mini" borderStyle="border" tag="4" inset="2" id="2221">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="subCtrlOffset:" target="-1" id="1603"/>
@@ -2945,7 +2949,7 @@ Gw
                     </constraints>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" alignment="center" controlSize="mini" borderStyle="border" tag="9" inset="2" id="2220">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="subCtrlOffset:" target="-1" id="1602"/>
@@ -2958,7 +2962,7 @@ Gw
                     </constraints>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" alignment="center" controlSize="mini" borderStyle="border" tag="8" inset="2" id="2219">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="subCtrlOffset:" target="-1" id="1601"/>
@@ -2972,7 +2976,7 @@ Gw
                     </constraints>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" alignment="center" controlSize="mini" borderStyle="border" tag="7" inset="2" id="2218">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="subCtrlOffset:" target="-1" id="1600"/>
@@ -2984,7 +2988,7 @@ Gw
                         <constraint firstAttribute="width" constant="22" id="XJK-g7-ayq"/>
                     </constraints>
                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" tag="12" title="2" id="2217">
-                        <font key="font" metaFont="smallSystem"/>
+                        <font key="font" metaFont="message" size="11"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -2993,7 +2997,7 @@ Gw
                     <rect key="frame" x="19" y="0.0" width="32" height="21"/>
                     <buttonCell key="cell" type="squareTextured" title="Mask" bezelStyle="texturedSquare" alignment="center" controlSize="small" borderStyle="border" tag="11" inset="2" id="2216">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <string key="keyEquivalent">*</string>
                         <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                     </buttonCell>
@@ -3138,7 +3142,7 @@ DQ
                         </constraints>
                         <popUpButtonCell key="cell" type="push" title="Select the plug-in method" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="874" id="2238">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="system"/>
                             <menu key="menu" title="OtherViews" id="876">
                                 <items>
                                     <menuItem title="Select the plug-in method" hidden="YES" id="874"/>
@@ -3200,7 +3204,7 @@ DQ
                         </connections>
                     </button>
                     <segmentedControl verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="2103">
-                        <rect key="frame" x="82" y="102" width="303" height="24"/>
+                        <rect key="frame" x="88" y="102" width="291" height="24"/>
                         <segmentedCell key="cell" scrollable="YES" lineBreakMode="clipping" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="2243">
                             <font key="font" metaFont="system"/>
                             <segments>
@@ -3271,7 +3275,7 @@ DQ
                 <textField horizontalHuggingPriority="244" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="863">
                     <rect key="frame" x="11" y="2" width="27" height="11"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Blue:" id="2249">
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -3279,7 +3283,7 @@ DQ
                 <textField horizontalHuggingPriority="244" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="862">
                     <rect key="frame" x="4" y="13" width="34" height="11"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Green:" id="2248">
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -3287,7 +3291,7 @@ DQ
                 <textField horizontalHuggingPriority="244" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="861">
                     <rect key="frame" x="14" y="24" width="24" height="11"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Red:" id="2247">
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -3295,7 +3299,7 @@ DQ
                 <slider verticalHuggingPriority="750" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="860">
                     <rect key="frame" x="39" y="0.0" width="86" height="12"/>
                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tag="2" maxValue="1" doubleValue="1" tickMarkPosition="below" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2246">
-                        <font key="font" size="12" name="Helvetica"/>
+                        <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
                         <action selector="sliderRGBFactor:" target="-1" id="934"/>
@@ -3304,7 +3308,7 @@ DQ
                 <slider verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="859">
                     <rect key="frame" x="39" y="11" width="86" height="12"/>
                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tag="1" maxValue="1" doubleValue="1" tickMarkPosition="below" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2245">
-                        <font key="font" size="12" name="Helvetica"/>
+                        <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
                         <action selector="sliderRGBFactor:" target="-1" id="933"/>
@@ -3316,7 +3320,7 @@ DQ
                         <constraint firstAttribute="width" constant="86" id="YXf-OH-S42"/>
                     </constraints>
                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="below" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2244">
-                        <font key="font" size="12" name="Helvetica"/>
+                        <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
                         <action selector="sliderRGBFactor:" target="-1" id="932"/>
@@ -3411,7 +3415,7 @@ Gw
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="997" setsMaxLayoutWidthAtFirstLayout="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="899">
                         <rect key="frame" x="8" y="7" width="438" height="26"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="2251">
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" metaFont="menu" size="10"/>
                             <string key="title">To remove an Opacity Table from the menu: select it while holding down the shift key.
 To modify an Opacity Table from the menu: select it while holding down the alt/option key.</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -3693,7 +3697,7 @@ Gw
                     </constraints>
                     <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Next" imagePosition="only" alignment="center" borderStyle="border" tag="1" imageScaling="proportionallyUpOrDown" inset="2" id="2273">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                         <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                     </buttonCell>
                     <connections>
@@ -3708,7 +3712,7 @@ Gw
                     </constraints>
                     <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Prev" imagePosition="only" alignment="center" borderStyle="border" tag="-1" imageScaling="proportionallyUpOrDown" inset="2" id="2272">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                         <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                     </buttonCell>
                     <connections>
@@ -3732,7 +3736,7 @@ Gw
                     <rect key="frame" x="2" y="1" width="122" height="18"/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" alignment="center" controlSize="mini" lineBreakMode="clipping" borderStyle="border" inset="2" id="2275">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                     </buttonCell>
                     <connections>
                         <action selector="setComments:" target="-2" id="1085"/>
@@ -3742,7 +3746,7 @@ Gw
                     <rect key="frame" x="1" y="19" width="124" height="16"/>
                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="2274">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="label" size="9"/>
                         <menu key="menu" title="OtherViews" id="1054">
                             <items>
                                 <menuItem title="empty" id="1057"/>
@@ -3987,7 +3991,7 @@ Gw
                                 <slider verticalHuggingPriority="750" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="1351">
                                     <rect key="frame" x="99" y="81" width="473" height="15"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="50" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="50" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2298">
-                                        <font key="font" size="12" name="Helvetica"/>
+                                        <font key="font" metaFont="user"/>
                                     </sliderCell>
                                     <connections>
                                         <action selector="exportDICOMSlider:" target="-2" id="2080"/>
@@ -3996,7 +4000,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1352">
                                     <rect key="frame" x="8" y="82" width="47" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Interval:" id="2299">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -4004,7 +4008,7 @@ Gw
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1353">
                                     <rect key="frame" x="99" y="53" width="473" height="15"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2300">
-                                        <font key="font" size="12" name="Helvetica"/>
+                                        <font key="font" metaFont="user"/>
                                     </sliderCell>
                                     <connections>
                                         <action selector="exportDICOMSlider:" target="-2" id="1517"/>
@@ -4013,7 +4017,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1354">
                                     <rect key="frame" x="21" y="58" width="34" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="From:" id="2301">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -4021,7 +4025,7 @@ Gw
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1355">
                                     <rect key="frame" x="99" y="38" width="473" height="15"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2302">
-                                        <font key="font" size="12" name="Helvetica"/>
+                                        <font key="font" metaFont="user"/>
                                     </sliderCell>
                                     <connections>
                                         <action selector="exportDICOMSlider:" target="-2" id="1518"/>
@@ -4030,7 +4034,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1356">
                                     <rect key="frame" x="35" y="34" width="20" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="To:" id="2303">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -4042,7 +4046,7 @@ Gw
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="31" id="rEi-T9-Y2w"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="1234" drawsBackground="YES" id="2304">
-                                        <font key="font" metaFont="miniSystem"/>
+                                        <font key="font" metaFont="label" size="9"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -4056,7 +4060,7 @@ Gw
                                         <constraint firstAttribute="width" constant="31" id="T9B-Sn-Ppw"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="0" drawsBackground="YES" id="2305">
-                                        <font key="font" metaFont="miniSystem"/>
+                                        <font key="font" metaFont="label" size="9"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -4070,7 +4074,7 @@ Gw
                                         <constraint firstAttribute="width" constant="31" id="07B-S3-X2C"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="1234" drawsBackground="YES" id="2306">
-                                        <font key="font" metaFont="miniSystem"/>
+                                        <font key="font" metaFont="label" size="9"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -4081,7 +4085,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2074">
                                     <rect key="frame" x="9" y="12" width="46" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Images:" id="2307">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -4092,7 +4096,7 @@ Gw
                                         <constraint firstAttribute="width" constant="73" id="L1i-dg-pC7"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="40 images" id="2308">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -4228,7 +4232,7 @@ Gw
                         <constraint firstAttribute="width" constant="29" id="NtW-58-Vbx"/>
                     </constraints>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="0" id="2456">
-                        <font key="font" metaFont="smallSystem"/>
+                        <font key="font" metaFont="message" size="11"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -4240,7 +4244,7 @@ Gw
                     <rect key="frame" x="0.0" y="1" width="130" height="22"/>
                     <popUpButtonCell key="cell" type="push" title="Key Images" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1527" id="2313">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="smallSystem"/>
+                        <font key="font" metaFont="message" size="11"/>
                         <menu key="menu" title="OtherViews" id="1526">
                             <items>
                                 <menuItem title="All Images" tag="1" id="1528">
@@ -4261,7 +4265,7 @@ Gw
                     <rect key="frame" x="3" y="22" width="77" height="18"/>
                     <buttonCell key="cell" type="check" title="Key Image" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="2312">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="smallSystem"/>
+                        <font key="font" metaFont="message" size="11"/>
                     </buttonCell>
                     <connections>
                         <action selector="keyImageCheckBox:" target="-2" id="1212"/>
@@ -4382,31 +4386,31 @@ Gw
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="square" title="Radio" bezelStyle="shadowlessSquare" image="Photos" imagePosition="above" alignment="center" borderStyle="border" inset="2" id="2405">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                            <font key="font" metaFont="miniSystem"/>
+                            <font key="font" metaFont="label" size="9"/>
                         </buttonCell>
                         <cells>
                             <column>
                                 <buttonCell type="square" title="Photos" bezelStyle="shadowlessSquare" image="Photos" imagePosition="above" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="border" tag="2" imageScaling="proportionallyUpOrDown" inset="2" id="2418" userLabel="Photos">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                    <font key="font" metaFont="miniSystem"/>
+                                    <font key="font" metaFont="label" size="9"/>
                                 </buttonCell>
                             </column>
                             <column>
                                 <buttonCell type="square" title="Mail" bezelStyle="shadowlessSquare" image="Mail" imagePosition="above" alignment="center" scrollable="YES" lineBreakMode="clipping" state="on" borderStyle="border" tag="3" imageScaling="proportionallyUpOrDown" inset="2" id="2420">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                    <font key="font" metaFont="miniSystem"/>
+                                    <font key="font" metaFont="label" size="9"/>
                                 </buttonCell>
                             </column>
                             <column>
                                 <buttonCell type="square" title="JPEG Files" bezelStyle="shadowlessSquare" image="JPEGSmall" imagePosition="above" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="2421">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                    <font key="font" metaFont="miniSystem"/>
+                                    <font key="font" metaFont="label" size="9"/>
                                 </buttonCell>
                             </column>
                             <column>
                                 <buttonCell type="square" title="TIFF Files" bezelStyle="shadowlessSquare" image="TIFFSmall" imagePosition="above" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="border" tag="1" imageScaling="proportionallyUpOrDown" inset="2" id="2422">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                    <font key="font" metaFont="miniSystem"/>
+                                    <font key="font" metaFont="label" size="9"/>
                                 </buttonCell>
                             </column>
                         </cells>
@@ -4616,7 +4620,7 @@ DO NOT USE THESE VALUES FOR CLINICAL DECISIONS !</string>
                         <rect key="frame" x="463" y="297" width="32" height="15"/>
                         <buttonCell key="cell" type="roundRect" title="Edit" bezelStyle="roundedRect" alignment="center" controlSize="mini" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2498">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="miniSystem"/>
+                            <font key="font" metaFont="label" size="9"/>
                         </buttonCell>
                         <connections>
                             <action selector="editSUVinjectionTime:" target="-2" id="2514"/>
@@ -4626,7 +4630,7 @@ DO NOT USE THESE VALUES FOR CLINICAL DECISIONS !</string>
                         <rect key="frame" x="463" y="268" width="32" height="15"/>
                         <buttonCell key="cell" type="roundRect" title="Edit" bezelStyle="roundedRect" alignment="center" controlSize="mini" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2527">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="miniSystem"/>
+                            <font key="font" metaFont="label" size="9"/>
                         </buttonCell>
                         <connections>
                             <action selector="editSUVinjectionTime:" target="-2" id="2528"/>
@@ -4799,7 +4803,7 @@ Gw
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1498">
                         <rect key="frame" x="36" y="115" width="262" height="24"/>
                         <sliderCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="20" doubleValue="10" tickMarkPosition="below" numberOfTickMarks="20" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2333">
-                            <font key="font" size="12" name="Helvetica"/>
+                            <font key="font" metaFont="user"/>
                         </sliderCell>
                         <connections>
                             <action selector="setStructuringElementRadius:" target="-2" id="1505"/>
@@ -4811,7 +4815,7 @@ Gw
                             <constraint firstAttribute="width" constant="30" id="KeP-L4-8LV"/>
                         </constraints>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="1" id="2332">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -4822,7 +4826,7 @@ Gw
                             <constraint firstAttribute="width" constant="30" id="nBM-m2-9bB"/>
                         </constraints>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="20" id="2334">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -4912,7 +4916,7 @@ Gw
                     </constraints>
                     <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="1712" id="2338">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="system"/>
                         <menu key="menu" title="OtherViews" id="1711">
                             <items>
                                 <menuItem image="page.tif" hidden="YES" id="1712"/>
@@ -4986,7 +4990,7 @@ Gw
                     </constraints>
                     <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Shutter" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2339">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                     </buttonCell>
                     <connections>
                         <action selector="shutterOnOff:" target="-2" id="1744"/>
@@ -5014,7 +5018,7 @@ Gw
                     <rect key="frame" x="-10" y="0.0" width="52" height="32"/>
                     <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="1754" id="2340">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="system"/>
                         <menu key="menu" title="OtherViews" id="1753">
                             <items>
                                 <menuItem hidden="YES" id="1754"/>
@@ -5046,25 +5050,25 @@ Gw
                     <size key="intercellSpacing" width="-1" height="-1"/>
                     <buttonCell key="prototype" type="square" bezelStyle="shadowlessSquare" image="AxialSmall" imagePosition="only" alignment="center" borderStyle="border" tag="-1" inset="2" id="2389">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                     </buttonCell>
                     <cells>
                         <column>
                             <buttonCell type="square" bezelStyle="shadowlessSquare" image="AxialSmall" imagePosition="only" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="1963">
                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="system" size="10"/>
+                                <font key="font" metaFont="menu" size="10"/>
                             </buttonCell>
                         </column>
                         <column>
                             <buttonCell type="square" bezelStyle="shadowlessSquare" image="CorSmall" imagePosition="only" alignment="center" borderStyle="border" tag="1" imageScaling="proportionallyUpOrDown" inset="2" id="1964">
                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="system" size="10"/>
+                                <font key="font" metaFont="menu" size="10"/>
                             </buttonCell>
                         </column>
                         <column>
                             <buttonCell type="square" bezelStyle="shadowlessSquare" image="SagSmall" imagePosition="only" alignment="center" borderStyle="border" tag="2" imageScaling="proportionallyUpOrDown" inset="2" id="1962">
                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="system" size="10"/>
+                                <font key="font" metaFont="menu" size="10"/>
                             </buttonCell>
                         </column>
                     </cells>
@@ -5092,7 +5096,7 @@ Gw
                     </constraints>
                     <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2553">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="system"/>
                         <menu key="menu" title="OtherViews" id="2554">
                             <items>
                                 <menuItem image="Tiling1x1" tag="11" id="2555"/>
@@ -5135,7 +5139,7 @@ Gw
                     <rect key="frame" x="4" y="2" width="62" height="44"/>
                     <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2624">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="system"/>
                         <menu key="menu" title="OtherViews" id="2625">
                             <items>
                                 <menuItem title="Item" id="2641">
@@ -5176,27 +5180,27 @@ Gw
                     <size key="cellSize" width="64" height="18"/>
                     <buttonCell key="prototype" type="radio" title="Basic" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="dWN-WZ-oyP">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="smallSystem"/>
+                        <font key="font" metaFont="message" size="11"/>
                     </buttonCell>
                     <cells>
                         <column>
                             <buttonCell type="radio" title="None" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="2596">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="smallSystem"/>
+                                <font key="font" metaFont="message" size="11"/>
                             </buttonCell>
                             <buttonCell type="radio" title="Graphic" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="2597">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="smallSystem"/>
+                                <font key="font" metaFont="message" size="11"/>
                             </buttonCell>
                         </column>
                         <column>
                             <buttonCell type="radio" title="Basic" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="Qa3-cE-a5m">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="smallSystem"/>
+                                <font key="font" metaFont="message" size="11"/>
                             </buttonCell>
                             <buttonCell type="radio" title="Full" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="3" inset="2" id="cWS-F4-Ju1">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="smallSystem"/>
+                                <font key="font" metaFont="message" size="11"/>
                             </buttonCell>
                         </column>
                     </cells>
@@ -5228,7 +5232,7 @@ Gw
                         </constraints>
                         <popUpButtonCell key="cell" type="push" title="1x1 (1 per pages)" bezelStyle="rounded" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" tag="1" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1850" id="2342">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="system"/>
                             <menu key="menu" title="OtherViews" id="1848">
                                 <items>
                                     <menuItem title="1x1 (1 per pages)" state="on" tag="1" id="1850">
@@ -5405,7 +5409,7 @@ Gw
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1878">
                                     <rect key="frame" x="102" y="76" width="280" height="15"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="50" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="50" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2355">
-                                        <font key="font" size="12" name="Helvetica"/>
+                                        <font key="font" metaFont="user"/>
                                     </sliderCell>
                                     <connections>
                                         <action selector="setPagesToPrint:" target="-2" id="1926"/>
@@ -5414,7 +5418,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1870">
                                     <rect key="frame" x="11" y="77" width="47" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Interval:" id="2347">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -5422,7 +5426,7 @@ Gw
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1877">
                                     <rect key="frame" x="102" y="48" width="280" height="15"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2354">
-                                        <font key="font" size="12" name="Helvetica"/>
+                                        <font key="font" metaFont="user"/>
                                     </sliderCell>
                                     <connections>
                                         <action selector="printSlider:" target="-2" id="1905"/>
@@ -5431,7 +5435,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1871">
                                     <rect key="frame" x="24" y="53" width="34" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="From:" id="2348">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -5439,7 +5443,7 @@ Gw
                                 <slider verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="1872">
                                     <rect key="frame" x="102" y="33" width="280" height="15"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tag="1" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2349">
-                                        <font key="font" size="12" name="Helvetica"/>
+                                        <font key="font" metaFont="user"/>
                                     </sliderCell>
                                     <connections>
                                         <action selector="printSlider:" target="-2" id="1906"/>
@@ -5448,7 +5452,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1873">
                                     <rect key="frame" x="38" y="29" width="20" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="To:" id="2350">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -5459,7 +5463,7 @@ Gw
                                         <constraint firstAttribute="width" constant="31" id="GD5-oB-Xyn"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="1234" drawsBackground="YES" id="2351">
-                                        <font key="font" metaFont="miniSystem"/>
+                                        <font key="font" metaFont="label" size="9"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -5470,7 +5474,7 @@ Gw
                                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1875">
                                     <rect key="frame" x="63" y="52" width="31" height="15"/>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="0" drawsBackground="YES" id="2352">
-                                        <font key="font" metaFont="miniSystem"/>
+                                        <font key="font" metaFont="label" size="9"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -5481,7 +5485,7 @@ Gw
                                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1876">
                                     <rect key="frame" x="63" y="28" width="31" height="15"/>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="1234" drawsBackground="YES" id="2353">
-                                        <font key="font" metaFont="miniSystem"/>
+                                        <font key="font" metaFont="label" size="9"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -5492,7 +5496,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1971">
                                     <rect key="frame" x="18" y="8" width="40" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pages:" id="2356">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -5503,7 +5507,7 @@ Gw
                                         <constraint firstAttribute="width" constant="73" id="3Iq-6z-1Ob"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="40 pages" id="2357">
-                                        <font key="font" metaFont="smallSystem"/>
+                                        <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -5692,7 +5696,7 @@ Gw
                     </constraints>
                     <buttonCell key="cell" type="squareTextured" bezelStyle="texturedSquare" image="Propagate" imagePosition="only" alignment="center" alternateImage="PropagateOn" inset="2" id="2362">
                         <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="system" size="10"/>
+                        <font key="font" metaFont="menu" size="10"/>
                     </buttonCell>
                     <connections>
                         <binding destination="1977" name="value" keyPath="values.COPYSETTINGS" id="1983"/>
@@ -5810,17 +5814,17 @@ Gw
                     <size key="intercellSpacing" width="4" height="2"/>
                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="2445">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="smallSystem"/>
+                        <font key="font" metaFont="message" size="11"/>
                     </buttonCell>
                     <cells>
                         <column>
                             <buttonCell type="radio" title="8 Bit" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="2443">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="smallSystem"/>
+                                <font key="font" metaFont="message" size="11"/>
                             </buttonCell>
                             <buttonCell type="radio" title="12 Bit" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="2444">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="smallSystem"/>
+                                <font key="font" metaFont="message" size="11"/>
                             </buttonCell>
                         </column>
                     </cells>
@@ -5859,7 +5863,7 @@ Gw
                         </connections>
                     </datePicker>
                     <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="2503">
-                        <rect key="frame" x="204" y="83" width="97" height="32"/>
+                        <rect key="frame" x="204" y="82" width="97" height="32"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="76z-BV-FV2"/>
                         </constraints>
@@ -5875,7 +5879,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2504">
-                        <rect key="frame" x="107" y="83" width="97" height="32"/>
+                        <rect key="frame" x="107" y="82" width="97" height="32"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="IZg-oT-zPJ"/>
                         </constraints>
@@ -5891,7 +5895,7 @@ Gw
                         </connections>
                     </button>
                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2515">
-                        <rect key="frame" x="79" y="131" width="165" height="27"/>
+                        <rect key="frame" x="79" y="130" width="165" height="28"/>
                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="2516">
                             <font key="font" metaFont="system"/>
                             <date key="date" timeIntervalSinceReferenceDate="-595929600">
@@ -5906,9 +5910,9 @@ Gw
                         </connections>
                     </datePicker>
                     <box title="Warning" translatesAutoresizingMaskIntoConstraints="NO" id="2519">
-                        <rect key="frame" x="23" y="16" width="279" height="60"/>
+                        <rect key="frame" x="23" y="16" width="279" height="59"/>
                         <view key="contentView" id="Cd6-x5-cGn">
-                            <rect key="frame" x="3" y="3" width="273" height="42"/>
+                            <rect key="frame" x="3" y="3" width="273" height="41"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2520">
@@ -6021,6 +6025,7 @@ DQ
                     <constraint firstItem="MrV-ed-ZAQ" firstAttribute="baseline" secondItem="MT9-UU-6ho" secondAttribute="baseline" id="vmR-X7-blf"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="141" y="404"/>
         </window>
     </objects>
     <resources>

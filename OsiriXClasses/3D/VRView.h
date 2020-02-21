@@ -85,7 +85,7 @@
 #import	 "vtkCocoaGLView.h"
 #include "vtkCocoaRenderWindowInteractor.h"
 #include "vtkCocoaRenderWindow.h"
-#include "vtkParallelRenderManager.h"
+//#include "vtkParallelRenderManager.h"
 #include "vtkRendererCollection.h"
 #include "vtkCallbackCommand.h"
 
@@ -143,7 +143,7 @@ typedef char* vtkMyCallbackVR;
 typedef char* vtkCocoaRenderWindowInteractor;
 typedef char* vtkCocoaRenderWindow;
 typedef char* vtkParallelRenderManager;
-typedef	char* vtkRenderWindow;
+typedef char* vtkRenderWindow;
 typedef char* vtkRendererCollection;
 typedef char* vtkCocoaGLView;
 typedef char* vtkCallbackCommand;
@@ -209,9 +209,9 @@ typedef char* VTKStereoVRView;
 	vtkColorTransferFunction	*blendingColorTransferFunction;
 
     vtkPiecewiseFunction		*blendingOpacityTransferFunction;
-	double						blendingtable[257][3];
+	double						blendingtable[256][3];
 	
-	BOOL						needToFlip, blendingNeedToFlip, firstTime, alertDisplayed;
+	BOOL needToFlip, blendingNeedToFlip, firstTime, alertDisplayed;
 	
 	IBOutlet NSWindow			*export3DWindow;
 	IBOutlet NSSlider			*framesSlider;
@@ -370,32 +370,29 @@ typedef char* VTKStereoVRView;
 	float						iChatWidth, iChatHeight;
 	BOOL						iChatFrameIsSet;
 	
-    BOOL			clipRangeActivated;
-	double			clippingRangeThickness;
+    BOOL clipRangeActivated;
+	double clippingRangeThickness;
 	
-	BOOL			bestRenderingWasGenerated;
+	BOOL bestRenderingWasGenerated;
 	float superSampling;
 	BOOL dontResetImage, keep3DRotateCentered;
     BOOL fullDepthMode;
 	
 #ifdef _STEREO_VISION_
-	NSWindow						*LeftFullScreenWindow; 
-	NSWindow						*RightFullScreenWindow;   
-	BOOL							StereoVisionOn;
-	vtkCocoaGLView					*leftView;
-	VTKStereoVRView					*rightView;
-	NSWindow						*rootWindow;
-	NSView							*LeftContentView;
-	NSRect							rootSize;
-	NSSize							rootBorder;
-	vtkCallbackCommand				*rightResponder;
+	NSWindow					*LeftFullScreenWindow;
+	NSWindow					*RightFullScreenWindow;
+	vtkCocoaGLView				*leftView;
+	VTKStereoVRView				*rightView;
+	NSWindow					*rootWindow;
+	NSView						*LeftContentView;
+	NSRect						rootSize;
+	NSSize						rootBorder;
+	vtkCallbackCommand			*rightResponder;
 #endif
 }
 
-#ifdef _STEREO_VISION_
-@property(readwrite) BOOL StereoVisionOn; 
+@property BOOL StereoVisionOn;
 //@property(readonly) ToolMode currentTool;
-#endif
 
 @property (nonatomic) BOOL clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
 @property (nonatomic) int projectionMode;
@@ -408,7 +405,7 @@ typedef char* VTKStereoVRView;
 @property (retain) NSString *dcmSeriesString;
 
 + (void) testGraphicBoard;
-//+ (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
++ (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 //+ (void) setCroppingBox:(double*) a :(vtkVolume *) volume;
 //- (void) setBlendingCroppingBox:(double*) a;
 //- (void) setCroppingBox:(double*) a;
@@ -622,5 +619,6 @@ typedef char* VTKStereoVRView;
 - (void) computeLength;
 - (void) generateROI;
 #endif
+- (IBAction) SwitchStereoMode :(id) sender;
 
 @end

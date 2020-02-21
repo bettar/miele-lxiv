@@ -102,7 +102,10 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[self autorelease];
 }
 
--(void)sheetDidEnd:(NSWindow*)sheet returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {
+-(void)sheetDidEnd:(NSWindow*)sheet
+        returnCode:(NSInteger)returnCode
+       contextInfo:(void*)contextInfo
+{
 	[self performSelectorOnMainThread:@selector(sheetDidEndOnMainThread:) withObject:sheet waitUntilDone:NO];
 }
 
@@ -126,11 +129,13 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[super dealloc]; 
 }
 
--(void)repositionViews {
+-(void)repositionViews
+{
     CGFloat p = 0;
     NSRect frame, oframe;
     
-    /* position buttons horizontally */ {
+    /* position buttons horizontally */
+    {
         CGFloat p = 14, w = self.window.frame.size.width;
         for (NSButton* button in [NSArray arrayWithObjects: self.backgroundButton, self.cancelButton, nil]) {
             if (![button isHidden]) {
@@ -143,7 +148,9 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
         }
     }
     
-    if (!self.cancelButton.isHidden || !self.backgroundButton.isHidden) {
+    if (!self.cancelButton.isHidden ||
+        !self.backgroundButton.isHidden)
+    {
         p += 12;
         
         oframe = frame = self.cancelButton.frame;
@@ -152,7 +159,8 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 
         oframe = frame = self.backgroundButton.frame;
         frame.origin.y = p;
-        if (!NSEqualRects(frame, oframe)) [self.backgroundButton setFrame:frame];
+        if (!NSEqualRects(frame, oframe))
+            [self.backgroundButton setFrame:frame];
 
         p += frame.size.height;
     }
@@ -160,10 +168,12 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
     p += 12;
     oframe = frame = self.progressIndicator.frame;
     frame.origin.y = p;
-    if (!NSEqualRects(frame, oframe)) [self.progressIndicator setFrame:frame];
+    if (!NSEqualRects(frame, oframe))
+        [self.progressIndicator setFrame:frame];
+
     p += frame.size.height;
     
-    if (self.statusField.string.length) {
+    if (self.statusField.string.length > 0) {
         p += 10;
         oframe = frame = self.statusFieldScroll.frame;
         if (![_lastPositionedStatus isEqualToString:self.statusField.string] && _lastPositionedStatus.length != self.statusField.string.length) {
@@ -171,7 +181,9 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
             frame.size.height = [self.statusField optimalSizeForWidth:frame.size.width].height;
         }
         frame.origin.y = p;
-        if (!NSEqualRects(frame, oframe)) [self.statusFieldScroll setFrame:frame];
+        if (!NSEqualRects(frame, oframe))
+            [self.statusFieldScroll setFrame:frame];
+
         p += frame.size.height;
     }
     
@@ -182,7 +194,8 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
         if (!NSEqualRects(frame, oframe)) [self.titleField setFrame:frame];
         [self.titleField setHidden:NO];
         p += frame.size.height;
-    } else
+    }
+    else
         [self.titleField setHidden:YES];
 
     p += 18;
@@ -198,14 +211,21 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 
 -(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
     if (_isValid)
-        [self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
+        [self observeValueForKeyPath:[args objectAtIndex:0]
+                            ofObject:[args objectAtIndex:1]
+                              change:[args objectAtIndex:2]
+                             context:[[args objectAtIndex:3] pointerValue]];
 }
 
 -(NSFont*)smallSystemFont {
     return [NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSSmallControlSize]];
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(NSThread*)obj change:(NSDictionary*)change context:(void*)context {
+-(void)observeValueForKeyPath:(NSString*)keyPath
+                     ofObject:(NSThread*)obj
+                       change:(NSDictionary*)change
+                      context:(void*)context
+{
 	if (context == ThreadModalForWindowControllerObservationContext) {
 		if (![NSThread isMainThread])
             [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO];

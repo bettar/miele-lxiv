@@ -165,9 +165,10 @@
 /**
  Method: KillOsiriX
  */
--(void)KillOsiriX:(NSDictionary*)params error:(NSError**)error {
+-(void)KillOsiriX:(NSDictionary*)params
+            error:(NSError**)error {
     
-    if( error)
+    if (error)
         *error = nil;
     
     [[AppController sharedAppController] performSelectorOnMainThread:@selector(terminate:) withObject:self waitUntilDone:NO];
@@ -186,7 +187,7 @@
 -(NSDictionary*)DownloadURL:(NSDictionary*)paramDict error:(NSError**)error {
     @try
     {
-        if ([[paramDict valueForKey:@"URL"] length])
+        if ([[paramDict valueForKey:@"URL"] length] > 0)
         {
             NSURL *url = [NSURL URLWithString: [paramDict valueForKey:@"URL"]];
             
@@ -408,7 +409,7 @@
         if (iobjects.count == 0)
             ReturnWithErrorValue(-1);
 
-        if( downloading)
+        if (downloading)
             [NSThread detachNewThreadSelector: @selector(_onMainThreadOpenWithDelayObjectsWithIDs:) toTarget:self withObject: [iobjects valueForKey:@"objectID"]];
         else
             [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
@@ -475,6 +476,7 @@
     
     if (error && *error)
         ReturnWithErrorValue((*error).code);
+
     if (iobjects.count == 0)
         ReturnWithErrorValue(-1);
     
@@ -603,6 +605,7 @@
             else
                 [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
         }
+
         if ([command isEqualToString:@"Select"])
             [self performSelectorOnMainThread:@selector(_onMainThreadSelectObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
         
@@ -690,7 +693,9 @@
 
  Response: {error: "0"}
  */
--(NSDictionary*)SelectDefaultDatabase:(NSDictionary*)paramDict error:(NSError**)error {
+-(NSDictionary*)SelectDefaultDatabase:(NSDictionary*)paramDict
+                                error:(NSError**)error
+{
     [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabase:) withObject:[DicomDatabase defaultDatabase] waitUntilDone:NO];
     ReturnWithErrorValue(0);
 }

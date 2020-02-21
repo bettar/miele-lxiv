@@ -190,15 +190,21 @@
 				
 				NSRect dstRect;
 				
-				if( rect.size.width/rect.size.height > [im size].width/[im size].height)
+				if (rect.size.width/rect.size.height > [im size].width/[im size].height)
 				{
 					float ratio = rect.size.height / [im size].height;
-					dstRect = NSMakeRect( rect.origin.x + (rect.size.width - [im size].width * ratio) / 2, rect.origin.y, [im size].width * ratio, rect.size.height);
+					dstRect = NSMakeRect(rect.origin.x + (rect.size.width - [im size].width * ratio) / 2,
+                                         rect.origin.y,
+                                         [im size].width * ratio,
+                                         rect.size.height);
 				}
 				else
 				{
 					float ratio = rect.size.width / [im size].width;
-					dstRect = NSMakeRect( rect.origin.x, rect.origin.y  + (rect.size.height - [im size].height * ratio) / 2, rect.size.width, [im size].height * ratio);
+					dstRect = NSMakeRect(rect.origin.x,
+                                         rect.origin.y  + (rect.size.height - [im size].height * ratio) / 2,
+                                         rect.size.width,
+                                         [im size].height * ratio);
 				}
 				
 				//NSZeroRect = complete image

@@ -21,6 +21,12 @@
 #import "options.h"
 #import "mgl.h" // include first
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
+#import "GLRenderer.h"
+
 #import "N3Geometry.h"
 #import "CPRTransverseView.h"
 #import "CPRCurvedPath.h"
@@ -63,12 +69,12 @@ extern int splitPosition[ 3];
 @synthesize delegate = _delegate;
 @synthesize curvedPath = _curvedPath;
 @synthesize displayInfo = _displayInfo;
-@synthesize sectionType = _sectionType;
+//@synthesize sectionType = _sectionType;
 @synthesize sectionWidth = _sectionWidth;
 @synthesize volumeData = _volumeData;
 @synthesize lastRequest = _lastRequest;
 @synthesize generatedVolumeData = _generatedVolumeData;
-@synthesize reformationDisplayStyle = _reformationDisplayStyle;
+//@synthesize reformationDisplayStyle = _reformationDisplayStyle;
 @synthesize displayCrossLines;
 
 - (void) setDisplayCrossLines: (BOOL) b
@@ -123,6 +129,7 @@ extern int splitPosition[ 3];
     }
 }
 
+#pragma mark -
 - (void)drawRect:(NSRect)r
 {
     _processingRequest = YES;
@@ -224,9 +231,10 @@ extern int splitPosition[ 3];
 		}
 		else if( frameZoomed == NO)
 		{
-			splitPosition[0] = [[windowController mprView1] frame].origin.x + [[windowController mprView1] frame].size.width;	// vert
-			splitPosition[1] = [[windowController mprView1] frame].origin.y + [[windowController mprView1] frame].size.height;	// hori12
-			splitPosition[2] = [[windowController mprView3] frame].origin.y + [[windowController mprView3] frame].size.height;	// horiz2
+			splitPosition[0] = NSMaxX([[windowController mprView1] frame]);	// vert
+
+            splitPosition[1] = NSMaxY([[windowController mprView1] frame]);	// hori12
+			splitPosition[2] = NSMaxY([[windowController mprView3] frame]);	// horiz2
 			
 			frameZoomed = YES;
 			
@@ -290,7 +298,7 @@ extern int splitPosition[ 3];
 				newMouseTransverseSectionDistance = (pixVector.y - (CGFloat)curDCM.pheight/2.0) / pixelsPerMm;
 			}
             else {
-				newMouseTransverseSectionType = CPRTransverseViewNoneSectionType;
+				newMouseTransverseSectionType = CPR_TRANSVERSE_VIEW_SECTION_NONE;
 				newMouseTransverseSectionDistance = 0;
 			}
 			
@@ -317,7 +325,7 @@ extern int splitPosition[ 3];
     if ([_delegate respondsToSelector:@selector(CPRViewWillEditDisplayInfo:)]) {
         [_delegate CPRViewWillEditDisplayInfo:self];
     }
-    _displayInfo.mouseTransverseSection = CPRTransverseViewNoneSectionType;
+    _displayInfo.mouseTransverseSection = CPR_TRANSVERSE_VIEW_SECTION_NONE;
     _displayInfo.mouseTransverseSectionDistance = 0;
     if ([_delegate respondsToSelector:@selector(CPRViewDidEditDisplayInfo:)]) {
         [_delegate CPRViewDidEditDisplayInfo:self];
@@ -347,63 +355,65 @@ extern int splitPosition[ 3];
 
 - (void)setVolumeData:(CPRVolumeData *)volumeData
 {
+    if (volumeData == _volumeData)
+        return;
+    
     NSLog(@"%s %d %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
-    if (volumeData != _volumeData) {
-        [_volumeData release];
-        _volumeData = [volumeData retain];
-        [self _setNeedsNewRequest];
-    }
+
+    [_volumeData release];
+    _volumeData = [volumeData retain];
+    [self _setNeedsNewRequest];
 }
 
 - (void)setCurvedPath:(CPRCurvedPath *)curvedPath
 {
-    if (curvedPath != _curvedPath) {
-        if (curvedPath.thickness != _curvedPath.thickness) {
-            [self setNeedsDisplay:YES];
-        }
-        
-        [_curvedPath release];
-        _curvedPath = [curvedPath copy];
-        [self _setNeedsNewRequest];
-    }
-}
+    if (curvedPath == _curvedPath)
+        return;
 
+    if (curvedPath.thickness != _curvedPath.thickness) {
+        [self setNeedsDisplay:YES];
+    }
+    
+    [_curvedPath release];
+    _curvedPath = [curvedPath copy];
+    [self _setNeedsNewRequest];
+}
 
 - (void) setRenderingScale:(CGFloat)renderingScale
 {
-    if (_renderingScale != renderingScale)
-	{
-//		_sectionWidth = _sectionWidth; / (renderingScale/_renderingScale);
-		
-		_renderingScale = renderingScale;
-		
-		[self _setNeedsNewRequest];
-    }
+    if (_renderingScale == renderingScale)
+        return;
+
+//	_sectionWidth = _sectionWidth; / (renderingScale/_renderingScale);
+    _renderingScale = renderingScale;
+    [self _setNeedsNewRequest];
 }
 
-- (void)setReformationDisplayStyle:(CPRTransverseViewReformationDisplayStyle)displayStyle
+- (void)setReformationDisplayStyle:(CPRType)displayStyle
 {
-    if (displayStyle != _reformationDisplayStyle) {
-        _reformationDisplayStyle = displayStyle;
-        [self setNeedsDisplay:YES];
-    }
+    if (displayStyle == _reformationDisplayStyle)
+        return;
+
+    _reformationDisplayStyle = displayStyle;
+    [self setNeedsDisplay:YES];
 }
 
 - (void)setSectionWidth:(CGFloat)sectionWidth
 {
-    if (_sectionWidth != sectionWidth)
-	{
-        _sectionWidth = sectionWidth;
-        [self _setNeedsNewRequest];
-    }
+    if (_sectionWidth == sectionWidth)
+        return;
+    
+    _sectionWidth = sectionWidth;
+    [self _setNeedsNewRequest];
 }
 
 - (void)setSectionType:(CPRTransverseViewSection)sectionType
 {
-    if (_sectionType != sectionType) {
-        _sectionType = sectionType;
-        [self _setNeedsNewRequest];
-    }
+    if (_sectionType == sectionType)
+        return;
+    
+    _sectionType = sectionType;
+    [self _setNeedsNewRequest];
 }
 
 - (void)setFrame:(NSRect)frameRect
@@ -411,7 +421,7 @@ extern int splitPosition[ 3];
     BOOL needsUpdate;
     
     needsUpdate = NO;
-	if( NSEqualRects( frameRect, [self frame]) == NO) {
+	if (NSEqualRects( frameRect, [self frame]) == NO) {
         needsUpdate = YES;
     }
     
@@ -424,7 +434,7 @@ extern int splitPosition[ 3];
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
-	if( [theEvent modifierFlags] & NSEventModifierFlagCommand)
+	if ([theEvent modifierFlags] & NSEventModifierFlagCommand)
 	{
 		CGFloat transverseSectionSpacing = MIN(MAX(_curvedPath.transverseSectionSpacing + [theEvent deltaY] * .4, 0.0), 300); 
 		
@@ -494,99 +504,144 @@ extern int splitPosition[ 3];
 	annotationType = annotationsSaved;
 }
 
+#pragma mark -
+
 - (void)subDrawRect:(NSRect)rect
 {
     N3Vector cursorVector;
-    N3AffineTransform pixToSubDrawRectTransform;
-    CGFloat pixelsPerMm;
+
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if( cgl_ctx == nil)
+    if (cgl_ctx == nil)
         return;
     
-    pixelsPerMm = self.pixelsPerMm;
-    pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
+    CGFloat pixelsPerMm = self.pixelsPerMm;
+    N3AffineTransform pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
 
     // Don't display cross lines on transverse views, to keep coherence with streched mode
-//	if( displayCrossLines && _reformationDisplayStyle == CPRTransverseViewStraightenedReformationDisplayStyle)
-//	{
-//		glColor4d(1.0, 1.0, 0.0, 1.0);
-//		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
-//		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
-//		glLineWidth(1.0 * self.window.backingScaleFactor);
-//		glBegin(GL_LINE_STRIP);
-//		glVertex2f(lineStart.x, lineStart.y);
-//		glVertex2f(lineEnd.x, lineEnd.y);
-//		glEnd();
-//		
-//		if (_curvedPath.thickness > 2.0)
-//		{
-//			glLineWidth(1.0 * self.window.backingScaleFactor);
-//			glBegin(GL_LINES);
-//			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
-//			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
-//			glVertex2f(lineStart.x, lineStart.y);
-//			glVertex2f(lineEnd.x, lineEnd.y);
-//			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
-//			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
-//			glVertex2f(lineStart.x, lineStart.y);
-//			glVertex2f(lineEnd.x, lineEnd.y);
-//			glEnd();
-//		}
-//	}
+#if 0
+	if (displayCrossLines &&
+        _reformationDisplayStyle == 0);//CPRTransverseViewStraightenedReformationDisplayStyle)
+	{
+		N3Vector lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
+		N3Vector lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+
+        [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
+        renderer_set_rgba(1.0, 1.0, 0.0, 1.0);
+
+    #ifdef WITH_OPENGL_32
+        // TODO
+    #else
+		glBegin(GL_LINE_STRIP);
+        {
+            glVertex2f(lineStart.x, lineStart.y);
+            glVertex2f(lineEnd.x, lineEnd.y);
+        }
+		glEnd();
+    #endif
+		
+		if (_curvedPath.thickness > 2.0)
+		{
+			renderer_setLineWidth(1.0 * self.window.backingScaleFactor);
+    #ifdef WITH_OPENGL_32
+            // TODO
+    #else
+			glBegin(GL_LINES);
+            {
+                lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
+                lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+                glVertex2f(lineStart.x, lineStart.y);
+                glVertex2f(lineEnd.x, lineEnd.y);
+                lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
+                lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+                glVertex2f(lineStart.x, lineStart.y);
+                glVertex2f(lineEnd.x, lineEnd.y);
+            }
+			glEnd();
+    #endif
+		}
+	}
+#endif
     
-    if( [[self windowController] displayMousePosition] == YES && _displayInfo.mouseTransverseSection == _sectionType) {
-        cursorVector = N3VectorMake(((CGFloat)curDCM.pwidth)/2.0, ((CGFloat)curDCM.pheight/2.0)+(_displayInfo.mouseTransverseSectionDistance*pixelsPerMm), 0);
+    if ([[self windowController] displayMousePosition] == YES &&
+        _displayInfo.mouseTransverseSection == _sectionType)
+    {
+        cursorVector = N3VectorMake(((CGFloat)curDCM.pwidth)/2.0, ((CGFloat)curDCM.pheight/2.0) + (_displayInfo.mouseTransverseSectionDistance*pixelsPerMm), 0);
         cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
-        
-        glColor4d(1.0, 1.0, 0.0, 1.0);
-#ifndef WITH_OPENGL_32
+
+        NSMutableArray *pArray = [NSMutableArray array];
+        glm::vec2 a(cursorVector.x, cursorVector.y);
+        [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+
+#ifdef WITH_OPENGL_32
+        [self setShaderProgramOverlay_withMode_Point];
+#else
         glEnable(GL_POINT_SMOOTH);
 #endif
         glPointSize(8 * self.window.backingScaleFactor);
-        glBegin(GL_POINTS);
-        {
-            glVertex2f(cursorVector.x, cursorVector.y);
-        }
-        glEnd();
+        renderer_set_rgba(1.0, 1.0, 0.0, 1.0);  // yellow
+        renderer_drawPoints([pArray copy]);
     }
 	
-	// Red Square
-	if( [[self window] firstResponder] == self && stringID == nil)
+#pragma mark Red box bounding the subview
+
+    if ([[self window] firstResponder] == self && stringID == nil)
 	{
-		glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-		glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
-		
-		glColor4d(1.0, 0, 0.0, 1.0);
-		
+#ifdef WITH_OPENGL_32
+        NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+        // Issue #i22 ?
+#else
+		glLoadIdentity();
+		glScalef(2.0f / (xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width),
+                -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height),
+                1.0f); // scale to port per pixel scale
+#endif
+
 		float heighthalf = drawingFrameRect.size.height/2;
 		float widthhalf = drawingFrameRect.size.width/2;
 		
-		glLineWidth(8.0 * self.window.backingScaleFactor);
-		glBegin(GL_LINE_LOOP);
-        {
-            glVertex2f(  -widthhalf, -heighthalf);
-            glVertex2f(  -widthhalf, heighthalf);
-            glVertex2f(  widthhalf, heighthalf);
-            glVertex2f(  widthhalf, -heighthalf);
-        }
-		glEnd();
+        const int nPoints = 4;
+        glm::vec2 pA[nPoints];
+        pA[0] = glm::vec2( -widthhalf, -heighthalf);
+        pA[1] = glm::vec2( -widthhalf,  heighthalf);
+        pA[2] = glm::vec2(  widthhalf,  heighthalf);
+        pA[3] = glm::vec2(  widthhalf, -heighthalf);
+        
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (int i=0; i<nPoints; i++)
+            [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec2)]];
+
+        [self setShaderProgramForLineWidth: 8.0 * self.window.backingScaleFactor];
+        renderer_set_rgba(1.0, 0, 0.0, 1.0); // red
+        renderer_drawLine_xy([pArray copy], GL_LINE_LOOP);
 	}
 	
-	if ( stanStringAttrib == nil)
+	if (stanStringAttrib == nil)
 	{
 		stanStringAttrib = [[NSMutableDictionary dictionary] retain];
 		[stanStringAttrib setObject:[NSFont fontWithName:@"Helvetica" size: 14.0] forKey:NSFontAttributeName];
 		[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 	}
 	
-	if ( stringTex == nil)
+	if (stringTex == nil)
 	{
 		NSString *textValue = nil;
-		switch ( _sectionType)
+		switch (_sectionType)
 		{
-			case CPRTransverseViewCenterSectionType: textValue = @"B"; break;
-			case CPRTransverseViewLeftSectionType: textValue = @"A"; break;
-			case CPRTransverseViewRightSectionType: textValue = @"C"; break;
+			case CPR_TRANSVERSE_VIEW_SECTION_CENTER:
+                textValue = @"B";
+                break;
+
+            case CPR_TRANSVERSE_VIEW_SECTION_LEFT:
+                textValue = @"A";
+                break;
+
+            case CPR_TRANSVERSE_VIEW_SECTION_RIGHT:
+                textValue = @"C";
+                break;
+                
+            default:
+                NSLog(@"%s %d, sectionType:%ld", __FUNCTION__, __LINE__, (long)_sectionType);
+                break;
 		}
 		
 		stringTex = [[StringTexture alloc] initWithString: textValue
@@ -597,27 +652,51 @@ extern int splitPosition[ 3];
 		[stringTex setAntiAliasing: YES];
 	}
 	
-	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-	glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
+#ifdef WITH_OPENGL_32
+    // Prepare to draw text:
+    [self setShaderProgramOverlay_withMode_TextureRgba];
+#else
+	glLoadIdentity();
+	glScalef(2.0f / (xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width),
+            -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height),
+             1.0f); // scale to port per pixel scale
 
-	glEnable (GL_TEXTURE_RECTANGLE_EXT);  // TODO: GLEW_EXT_texture_rectangle
+	glEnable(GL_TEXTURE_RECTANGLE_EXT);
+#endif
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	
-	NSPoint anchor = NSMakePoint( drawingFrameRect.size.width / -2.0f, drawingFrameRect.size.height /-2.0f);
+	NSPoint anchor = NSMakePoint(drawingFrameRect.size.width  / -2.0f,
+                                 drawingFrameRect.size.height / -2.0f);
 	
-	glColor4f (0, 0, 0, 1);	[stringTex drawAtPoint:NSMakePoint( anchor.x+1, anchor.y+1) ratio: 1];
-	glColor4f (1, 1, 0, 1);	[stringTex drawAtPoint:NSMakePoint( anchor.x, anchor.y) ratio: 1];
-	
-	if( annotationType != ANNOTATIONS_NONE)
+    renderer_setTextColor(0, 0, 0, 1); // black
+    [stringTex drawAtPoint:NSMakePoint( anchor.x+1, anchor.y+1) ratio: 1];
+
+    renderer_setTextColor(1, 1, 0, 1); // yellow
+    [stringTex drawAtPoint:NSMakePoint( anchor.x, anchor.y) ratio: 1];
+
+    if (annotationType != ANNOTATIONS_NONE)
 	{
-		glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-		glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-		glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+#ifdef WITH_OPENGL_32
+        // TODO:
+#else
+		glLoadIdentity();
+		glScalef (2.0f / drawingFrameRect.size.width,
+                 -2.0f /  drawingFrameRect.size.height,
+                  1.0f); // scale to port per pixel scale
+		glTranslatef (-(drawingFrameRect.size.width) / 2.0f,
+                      -(drawingFrameRect.size.height) / 2.0f,
+                      0.0f); // translate center to upper left
+#endif
 		
-		[self drawOrientation: drawingFrameRect];
+		[self drawOrientations: drawingFrameRect];
 	}
+    
+#ifdef WITH_OPENGL_32
+    // TODO:
+#else
 	glDisable (GL_TEXTURE_RECTANGLE_EXT);
+#endif
 }
 
 // in case we want to go back to using an async-generator for some reason, we will keep this function around like this
@@ -723,16 +802,20 @@ extern int splitPosition[ 3];
 
 - (CGFloat)_relativeSegmentPosition
 {
-    switch (_sectionType) {
-        case CPRTransverseViewLeftSectionType:
+    switch (_sectionType)
+    {
+        case CPR_TRANSVERSE_VIEW_SECTION_LEFT:
             return _curvedPath.leftTransverseSectionPosition;
             break;
-        case CPRTransverseViewCenterSectionType:
+            
+        case CPR_TRANSVERSE_VIEW_SECTION_CENTER:
             return _curvedPath.transverseSectionPosition;
             break;
-        case CPRTransverseViewRightSectionType:
+            
+        case CPR_TRANSVERSE_VIEW_SECTION_RIGHT:
             return _curvedPath.rightTransverseSectionPosition;
             break;
+            
         default:
             assert(0);
             break;
@@ -757,8 +840,6 @@ extern int splitPosition[ 3];
         [self _sendNewRequest];
     }
 }
-
-
 
 @end
 

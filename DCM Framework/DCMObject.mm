@@ -159,7 +159,7 @@ static kern_return_t GetMACAddress(io_iterator_t intfIterator, UInt8 *MACAddress
 																 CFSTR(kIOMACAddress),
 																 kCFAllocatorDefault,
 																 0);
-            if( MACAddressAsCFData)
+            if (MACAddressAsCFData)
 			{
 				UInt8 tempMac[ kIOEthernetAddressSize];
 				
@@ -167,7 +167,7 @@ static kern_return_t GetMACAddress(io_iterator_t intfIterator, UInt8 *MACAddress
                 CFDataGetBytes((CFDataRef)MACAddressAsCFData, CFRangeMake(0, kIOEthernetAddressSize), tempMac);
                 CFRelease(MACAddressAsCFData);
 				
-				if( tempMac[ 5] + 256*tempMac[ 4] > MACAddress[ 5] + 256*MACAddress[ 4])
+				if (tempMac[ 5] + 256*tempMac[ 4] > MACAddress[ 5] + 256*MACAddress[ 4])
 				{
 					MACAddress[0] = tempMac[ 0];
 					MACAddress[1] = tempMac[ 1];
@@ -225,7 +225,7 @@ static NSString* getMacAddress( void)
     
     (void) IOObjectRelease(intfIterator);	// Release the iterator.
 
-    if( result.length == 0)
+    if (result.length == 0)
         result = @"01:02:03:04:05:06";
 
     return result;
@@ -281,7 +281,7 @@ static NSString* getMacAddressNumber( void)
 + (BOOL)isDICOM:(NSData *)data
 {
 	//int position = 128;
-	if( [data length] < 132)
+	if ([data length] < 132)
         return NO;
     
 	unsigned char *string = (unsigned char *)[data bytes];
@@ -553,7 +553,9 @@ static NSString* getMacAddressNumber( void)
 	return scObject;
 }
 
-+ (id)secondaryCaptureObjectWithBitDepth:(int)bitDepth  samplesPerPixel:(int)spp numberOfFrames:(int)nff{
++ (id)secondaryCaptureObjectWithBitDepth: (int)bitDepth
+                         samplesPerPixel: (int)spp numberOfFrames:(int)nff
+{
 	DCMObject *scObject = [[[DCMObject alloc] init] autorelease];
 	NSString *abstractSyntax;
 	//NSLog(@"Number Frames for SC: %d", nff);
@@ -628,8 +630,8 @@ PixelRepresentation
 	return [[[DCMObject alloc] initWithData:data decodingPixelData:decodePixelData] autorelease];
 }
 
-+ (id)objectWithContentsOfFile:(NSString *)file decodingPixelData:(BOOL)decodePixelData{
-	
++ (id)objectWithContentsOfFile:(NSString *)file decodingPixelData:(BOOL)decodePixelData
+{
 	return [[[DCMObject alloc] initWithContentsOfFile:file decodingPixelData:decodePixelData] autorelease];
 }
 
@@ -646,7 +648,7 @@ PixelRepresentation
     @synchronized( rootUID)
     {
         globallyUnique++;
-        if( macAddress == nil) {
+        if (macAddress == nil) {
             macAddress = [getMacAddressNumber() retain];
         }
         
@@ -691,7 +693,7 @@ PixelRepresentation
 
 - (id)initWithContentsOfFile:(NSString *)file decodingPixelData:(BOOL)decodePixelData
 {
-	if([[NSFileManager defaultManager] fileExistsAtPath:file] == NO)
+	if ([[NSFileManager defaultManager] fileExistsAtPath:file] == NO)
         return nil;
     
 	NSData *aData = [NSData dataWithContentsOfMappedFile:file];
@@ -725,7 +727,7 @@ PixelRepresentation
 		DCMDataContainer *dicomData;
 		dicomData = [data retain];
 			
-		*byteOffset = [self readDataSet:dicomData
+        *byteOffset = [self readDataSet:dicomData
                            lengthToRead:lengthToRead
                              byteOffset:byteOffset];
 		
@@ -736,7 +738,7 @@ PixelRepresentation
 		}
 
         if (DCMDEBUG)
-			NSLog(@"end readDataSet byteOffset: %d", *byteOffset);
+			NSLog(@"End readDataSet byteOffset: %d", *byteOffset);
 
         [dicomData release];
 			//NSLog(@"DCMObject end init: %f", -[timestamp  timeIntervalSinceNow]); 
@@ -785,7 +787,7 @@ PixelRepresentation
       lengthToRead:(int)lengthToRead
         byteOffset:(int *)byteOffset
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL readingMetaHeader = NO;
 	int endMetaHeaderPosition = 0;					
 	BOOL undefinedLength = (lengthToRead == 0xFFFFFFFF);
@@ -801,7 +803,8 @@ PixelRepresentation
 	{
 		while ((undefinedLength || *byteOffset < endByteOffset))
 		{
-            if( previousByteOffset != -1 && previousByteOffset ==  *byteOffset)
+            if (previousByteOffset != -1 &&
+               previousByteOffset == *byteOffset)
             {
                 NSLog( @"***** DCMObject readDataSet previousByteOffset ==  *byteOffset");
                 break;
@@ -820,7 +823,9 @@ PixelRepresentation
                 
                 if (group > 0x0002)
                 {
-                    //NSLog(@"start reading dataset");
+//                    if (DCMDEBUG)
+//                        NSLog(@"Start reading dataset");
+
                     [dicomData startReadingDataSet];
                 }
                 else if (transferSyntax != nil &&
@@ -839,7 +844,7 @@ PixelRepresentation
                 const char *tagUTF8 = [tag.stringValue UTF8String];
                 
                 if (DCMDEBUG)
-                    NSLog(@"Tag: %@  group: 0x%4000x  word 0x%4000x", tag.description, group, element);
+                    NSLog(@"Tag: %@  gr: 0x%04x, el: 0x%04x", tag.description, group, element);
                     
                 // "FFFE,E00D" == Item Delimitation Item
                 if (strcmp(tagUTF8, "FFFE,E00D") == 0)
@@ -849,6 +854,7 @@ PixelRepresentation
                     *byteOffset+=4;
                     if (DCMDEBUG)
                         NSLog(@"ItemDelimitationItem");
+
                     break;
                     //return *byteOffset;	// stop now, since we must have been called to read an item's dataset
                 }
@@ -886,7 +892,7 @@ PixelRepresentation
                         {
 //#ifdef NDEBUG
 //#else
-//                            if( [tag.vr isEqualToString: vr] == NO && [tag.vr isEqualToString: @"UN"] == NO)
+//                            if ([tag.vr isEqualToString: vr] == NO && [tag.vr isEqualToString: @"UN"] == NO)
 //                                NSLog( @"%@ versus %@", tag.vr, vr);
 //#endif
                             tag.vr = vr;
@@ -995,7 +1001,7 @@ PixelRepresentation
                     if (DCMDEBUG)
                         NSLog(@"Attr: %@", [attr description]);
                     
-                    //add attr to attributes
+                    // Add attr to attributes
                     if (attr)
                         CFDictionarySetValue((CFMutableDictionaryRef)attributes, [tag stringValue], attr);
                         
@@ -1005,6 +1011,7 @@ PixelRepresentation
                         readingMetaHeader = YES;
                         if (DCMDEBUG)
                             NSLog(@"metaheader length : %d", [[attr value] intValue]);
+
                         endMetaHeaderPosition = [[attr value] intValue] + *byteOffset;
                         [dicomData startReadingMetaHeader];
                     }
@@ -1033,7 +1040,6 @@ PixelRepresentation
                         [dicomData startReadingDataSet];
                     }
                     */
-
                 }
             }
             @catch (NSException *e)
@@ -1045,10 +1051,11 @@ PixelRepresentation
                 [subPool release];
             }
 			
-			if( dicomDataLength <= [dicomData position])
+			if (dicomDataLength <= [dicomData position])
 				*byteOffset = endByteOffset;
-		}
-		[transferSyntax release];
+		} // while
+
+        [transferSyntax release];
 		transferSyntax = [[dicomData transferSyntaxForDataset] retain];
 	}
 	
@@ -1076,7 +1083,8 @@ PixelRepresentation
 	@try {
 		if (DCMDEBUG)
 			NSLog(@"Read newSequence:%@  lengthtoRead:%d byteOffset:%d, characterSet: %@", [attr description], lengthToRead, *byteOffset, [aSpecificCharacterSet characterSet] );
-		while (undefinedLength || *byteOffset < endByteOffset)
+
+        while (undefinedLength || *byteOffset < endByteOffset)
         {
 			NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
             
@@ -1090,13 +1098,15 @@ PixelRepresentation
                 long vl = [dicomData nextUnsignedLong];		// always implicit VR form for items and delimiters
                 *byteOffset += 4;
     //System.err.println(byteOffset+" "+tag+" VL=<0x"+Long.toHexString(vl)+">");
-                if ([tag.stringValue isEqualToString:[sharedTagForNameDictionary objectForKey:@"SequenceDelimitationItem"]]) {
+                if ([tag.stringValue isEqualToString:[sharedTagForNameDictionary objectForKey:@"SequenceDelimitationItem"]])
+                {
                     if (DCMDEBUG)
                         NSLog(@"SequenceDelimitationItem");
     //System.err.println("readNewSequenceAttribute: SequenceDelimitationItem");
                     break;
                 }
-                else if ([tag.stringValue isEqualToString:[sharedTagForNameDictionary objectForKey:@"Item"]]) {
+                else if ([tag.stringValue isEqualToString:[sharedTagForNameDictionary objectForKey:@"Item"]])
+                {
                     if (DCMDEBUG)
                         NSLog(@"New Item");
 
@@ -1241,10 +1251,11 @@ PixelRepresentation
 	gl += (4+4+4);
 	if (DCMDEBUG)
 		NSLog(@"padded Length: %ld  group length: %d", attr.paddedLength, gl);
-	[attr release];
+
+    [attr release];
 	[tag release];
 	
-	//should already have MediaStorageClassUID and InstanceUID
+	// Should already have MediaStorageClassUID and InstanceUID
 	if ([self attributeWithName:@"MediaStorageSOPClassUID"]){
 		gl += (4+2+2);
 		gl += [[self attributeWithName:@"MediaStorageSOPClassUID"] paddedLength];
@@ -1366,7 +1377,7 @@ PixelRepresentation
 {
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:name];
 	
-	if( tag)
+	if (tag)
 	{
 		DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:(DCMAttributeTag *)tag];
 		if ([attributes objectForKey:[tag stringValue]])
@@ -1384,7 +1395,7 @@ PixelRepresentation
 - (void)setAttributeValues:(NSMutableArray *)values forName:(NSString *)name
 {
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:name];
-	if( tag)
+	if (tag)
 	{
 		DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:(DCMAttributeTag *)tag];
 		attr.values = values;
@@ -1401,10 +1412,13 @@ PixelRepresentation
 	for ( NSString *key in attributes ) {
 		DCMAttribute *attr = [attributes objectForKey:key];
 		//remove all group lengths except for Metaheader group
-		if ([(DCMAttributeTag *)[attr attrTag] element] == 0x0000 && [(DCMAttributeTag *)[attr attrTag] group] != 0x0002) {
+		if ([(DCMAttributeTag *)[attr attrTag] element] == 0x0000 &&
+            [(DCMAttributeTag *)[attr attrTag] group] != 0x0002)
+        {
 			if (DCMDEBUG)
 				NSLog(@"Remove %@", attr.description);
-			[keysToRemove addObject:key];
+
+            [keysToRemove addObject:key];
 		}
 	}
 	
@@ -1414,7 +1428,8 @@ PixelRepresentation
 	//[attributes removeObjectForKey:@"FFFC,FFFC"];
 }
 
-- (void)removePrivateTags{
+- (void)removePrivateTags
+{
 	NSMutableArray *keysToRemove = [NSMutableArray array];
 	for ( NSString *key in attributes ) {
 		DCMAttribute *attr = [attributes objectForKey:key];
@@ -1422,7 +1437,8 @@ PixelRepresentation
 		if ( attr.attrTag.group % 2 != 0 ) {
 			if (DCMDEBUG)
 				NSLog(@"Remove Private Tag %@", [attr description]);
-			[keysToRemove addObject:key];
+
+            [keysToRemove addObject:key];
 		}
 	}
 	[attributes removeObjectsForKeys:keysToRemove];
@@ -1542,16 +1558,18 @@ PixelRepresentation
 			{
 				if (DCMDEBUG)
 					NSLog(@"Anonymize Values: %@ to value: %@", attr.description, [aValue description]);
-				[values replaceObjectAtIndex:index withObject:aValue];
+
+                [values replaceObjectAtIndex:index withObject:aValue];
 			}
 			else
 			{
 				if (DCMDEBUG)
 					NSLog(@"Anonymize Values: %@ to value: %@", attr.description, [newValue description]);
                 
-                if( newValue == nil)
+                if (newValue == nil)
                     newValue = [NSNull null];
-				[values replaceObjectAtIndex:index withObject:newValue];
+
+                [values replaceObjectAtIndex:index withObject:newValue];
 			}
 		}
 	}
@@ -1717,7 +1735,7 @@ PixelRepresentation
     
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"1", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
-	if( [uid length] > 64)
+	if ([uid length] > 64)
     {
         NSLog( @"------ warning newSeriesInstanceUID.length > 64 : %@", uid);
 		uid = [uid substringToIndex:64];
@@ -1741,7 +1759,7 @@ PixelRepresentation
 	NSString *uidSuffix = [DCMObject globallyUniqueString];
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"2", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
-	if( [uid length] > 64)
+	if ([uid length] > 64)
     {
         NSLog( @"------ warning newSeriesInstanceUID.length > 64 : %@", uid);
 		uid = [uid substringToIndex:64];
@@ -1766,7 +1784,7 @@ PixelRepresentation
 	
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"3", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
-	if( [uid length] > 64)
+	if ([uid length] > 64)
 		uid = [uid substringToIndex:64];
 	//NSLog(@"SOPInstanceUID: %@  length: %d", uid, [uid length]);
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"SOPInstanceUID"];
@@ -1774,7 +1792,8 @@ PixelRepresentation
 	DCMAttribute *sopAttr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values:attrValues];
 	if (DCMDEBUG)
 		NSLog(@"New SOP tag: %@ attr: %@", tag.description, sopAttr.description);
-	[attributes setObject:sopAttr  forKey: tag.stringValue];
+
+    [attributes setObject:sopAttr  forKey: tag.stringValue];
 	
 	DCMAttributeTag *mediaTag = [DCMAttributeTag tagWithName:@"MediaStorageSOPInstanceUID"];
 	attrValues = [NSMutableArray arrayWithObject:uid];
@@ -1829,7 +1848,7 @@ PixelRepresentation
 	
 	//if we have the attr and the conversion failed stop
 //	if(ipd == NO && pixelDataAttr && ![pixelDataAttr convertToTransferSyntax: transferSyntax quality:DCMLosslessQuality])
-	if( pixelDataAttr && ![pixelDataAttr convertToTransferSyntax: transferSyntax quality:DCMLosslessQuality])
+	if (pixelDataAttr && ![pixelDataAttr convertToTransferSyntax: transferSyntax quality:DCMLosslessQuality])
 	{
 		NSLog(@"Could not convert pixel Data to %@", transferSyntax.description);
 		return NO;
@@ -1862,7 +1881,7 @@ PixelRepresentation
 			{
 				[container setUseMetaheaderTS: NO];
 				
-//				if( ipd && attr.group == 0x7FE0 && attr.element == 0x0010)
+//				if (ipd && attr.group == 0x7FE0 && attr.element == 0x0010)
 //					[attr writeToDataContainer:container withTransferSyntax: explicitTS];
 //				else
 				if (![attr writeToDataContainer:container withTransferSyntax: ts])
@@ -1940,6 +1959,7 @@ PixelRepresentation
         {
             if (DCMDEBUG)
                 NSLog(@"updateMetaInformation newTransferSyntax:%@", ts.description);
+
             [self updateMetaInformationWithTransferSyntax:ts aet:aet];
             [container addPremable];
         }
@@ -1955,11 +1975,12 @@ PixelRepresentation
         {
             //if (DCMDEBUG)
             //	NSLog(@"key:%@ %@", key, NSStringFromClass([key class]));
+
             DCMAttribute *attr = [attributes objectForKey:key];
             if (attr)
             {
                 //skip metaheader for dataset
-                if( attr.attrTag.group == 0x0002)
+                if (attr.attrTag.group == 0x0002)
                 {
                     if ( flag)
                     {
@@ -1977,11 +1998,11 @@ PixelRepresentation
                 {
                     [container setUseMetaheaderTS:NO];
                     
-                    if( attr.attrTag.group == 0x0008 && attr.attrTag.element == 0x0005)
+                    if (attr.attrTag.group == 0x0008 && attr.attrTag.element == 0x0005)
                     {
                         [specificCharacterSet release];
                         
-                        if( [[attr values] count] > 1) // DCMFramework doesn't support multi-encoded string when writing -> switch for UTF-8
+                        if ([[attr values] count] > 1) // DCMFramework doesn't support multi-encoded string when writing -> switch for UTF-8
                         {
                             specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: @"ISO_IR 192"];
                             attr.values = [NSMutableArray arrayWithObject: @"ISO_IR 192"];
@@ -1992,7 +2013,7 @@ PixelRepresentation
                     
                     [attr setCharacterSet: specificCharacterSet];
                     
-                    if( ![attr writeToDataContainer: container withTransferSyntax: ts])
+                    if (![attr writeToDataContainer: container withTransferSyntax: ts])
                     {
                         exception = [NSException exceptionWithName:@"DCMWriteDataError"
                                                             reason:[NSString stringWithFormat:@"Cannot write %@ to data with syntax:%@", [attr description], [ts transferSyntax]]

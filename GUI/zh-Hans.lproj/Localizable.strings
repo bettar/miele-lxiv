@@ -401,7 +401,7 @@
 "A 3D Scissor State already exists. Do you want to replace it with curent state?" = "3D 剪刀状态已存在。是否要将其替换为当前状态？";
 
 /* No comment provided by engineer. */
-"A burn session is already opened. Close it to burn a new study." = "刻录会话已打开。关闭它刻录一个新的研究。";
+"A burn session is already open. Close it to burn a new study." = "刻录会话已打开。关闭它刻录一个新的研究。";
 
 /* No comment provided by engineer. */
 "A disc named %@, containing %d DICOM files, was mounted. What do you want to do with these files?" = "安装了一个名为%1$@ 的光盘, 其中包含%2$d DICOM 文件。你想用这些文件做什么？";
@@ -1208,16 +1208,16 @@
 "cm/sec" = "cm/s";
 
 /* cm2 */
-"cm²" = "cm²";
+"cm\u00B2" = "cm²";
 
 /* cm2/sec */
-"cm²/sec" = "cm²/s";
+"cm\u00B2/sec" = "cm²/s";
 
 /* cm3 */
-"cm³" = "cm³";
+"cm\u00B3" = "cm³";
 
 /* cm3/sec */
-"cm³/sec" = "cm³/s";
+"cm\u00B3/sec" = "cm³/s";
 
 /* No comment provided by engineer. */
 "Cobb" = "柯布";
@@ -1499,7 +1499,7 @@
 "dB" = "dB";
 
 /* decibel per second */
-"dB/sec" = "dB/sec";
+"dB/sec" = "dB/s";
 
 /* keep it short ! */
 "dbl-click" = "点击";
@@ -3497,9 +3497,6 @@
 "PITUITARY" = "垂体";
 
 /* No comment provided by engineer. */
-"Pixmeo Web site" = "Miele-LXIV 网站";
-
-/* No comment provided by engineer. */
 "Play" = "播放";
 
 /* No comment provided by engineer. */
@@ -4488,6 +4485,9 @@
 
 /* No comment provided by engineer. */
 "Sorted by Value" = "按值排序";
+
+/* No comment provided by engineer. */
+"Source Code Repository" = "源代码存储库";
 
 /* No comment provided by engineer. */
 "Sources" = "来源";

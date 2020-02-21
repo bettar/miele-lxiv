@@ -188,16 +188,16 @@
 {
 	float positionX0, positionX, previousY;
 	
-	if(align==CIAPlaceHolderAlignLeft)
-		positionX0 = [self frame].origin.x +3.0;
-	else if(align==CIAPlaceHolderAlignCenter)
-		positionX0 = [self frame].origin.x + [self frame].size.width / 2.0;
-	else if(align==CIAPlaceHolderAlignRight)
-		positionX0 = [self frame].origin.x + [self frame].size.width;
+	if (align==CIAPlaceHolderAlignLeft)
+		positionX0 = NSMinX([self frame]) + 3.0;
+	else if (align==CIAPlaceHolderAlignCenter)
+        positionX0 = NSMidX([self frame]);
+	else if (align==CIAPlaceHolderAlignRight)
+		positionX0 = NSMaxX([self frame]);
 		
-	previousY = [self frame].origin.y + [self frame].size.height - TOP_MARGIN;
+	previousY = NSMaxY([self frame]) - TOP_MARGIN;
 	
-	if(animate)
+	if (animate)
 	{
 		[NSAnimationContext beginGrouping];
 		[[NSAnimationContext currentContext] setDuration: 0.001];

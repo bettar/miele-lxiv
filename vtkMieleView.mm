@@ -19,6 +19,9 @@
  =========================================================================*/
 
 #include "options.h"
+#import "mgl.h" // include first
+
+#import "GLRenderer.h"
 
 #define id Id
 #include "vtkRenderer.h"
@@ -36,8 +39,10 @@
 
 @implementation vtkMieleView
 
--(id)initWithFrame:(NSRect)frame
+- (instancetype)initWithFrame:(NSRect)frame
 {
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+
     if (self = [super initWithFrame:frame])
     {
         [self initializeVTKSupport];
@@ -64,6 +69,9 @@
 // that contains our NSView subclass is actually on screen and ready to be drawn.
 - (void)drawRect:(NSRect)theRect
 {
+#ifndef NDEBUG
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+#endif
     // Check for a valid vtkWindowInteractor and then initialize it. Technically we
     // do not need to do this, but what happens is that the window that contains
     // this object will not immediately render it so you end up with a big empty
@@ -83,9 +91,19 @@
 
 - (void)initializeVTKSupport
 {
-    // The usual vtk object creation
-    vtkRenderer* ren = vtkRenderer::New();
-    vtkRenderWindow* renWin = vtkRenderWindow::New();
+#if 1
+    NSLog(@"%s %d, self:%p", __FUNCTION__, __LINE__, self);
+    checkOGLVersion();
+#endif
+
+    // The usual VTK object creation
+    vtkRenderer *ren = vtkRenderer::New();
+    vtkRenderWindow *renWin = vtkRenderWindow::New();
+#if 1
+    //renWin->InitializeFromCurrentContext();
+    NSLog(@"%s %d, self:%p", __FUNCTION__, __LINE__, self);
+    checkOGLVersion();
+#endif
     vtkRenderWindowInteractor* renWinInt = vtkRenderWindowInteractor::New();
     vtkInteractorStyleTrackballCamera *interactorStyle = vtkInteractorStyleTrackballCamera::New();
     renWinInt->SetInteractorStyle( interactorStyle );
@@ -105,11 +123,11 @@
         _cocoaRenderWindow->SetRootWindow([self window]);
         _cocoaRenderWindow->SetWindowId(self);
         
-        // The usual vtk connections
+        // The usual VTK connections
         _cocoaRenderWindow->AddRenderer(ren);
         renWinInt->SetRenderWindow(_cocoaRenderWindow);
         
-        // This is special to our usage of vtk.  vtkCocoaGLView
+        // This is special to our usage of VTK.  vtkCocoaGLView
         // keeps track of the renderWindow, and has a get
         // accessor if you ever need it.
         [self setVTKRenderWindow:_cocoaRenderWindow];

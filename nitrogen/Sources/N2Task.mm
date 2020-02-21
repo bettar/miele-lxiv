@@ -178,8 +178,8 @@ static int getfd(id object, BOOL read, int def) { // http://www.quantum-step.com
 		[NSThread sleepForTimeInterval:0.01];
 }
 
-
--(BOOL)isRunning {
+-(BOOL)isRunning
+{
 	if (_pid < 1)
         return NO;
     

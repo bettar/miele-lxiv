@@ -127,9 +127,15 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 	return [[[[self class] alloc] initWithServerAddress:address ports:ports tlsMode:tlsMode username:authUsername password:authPassword] autorelease];
 }
 
--(id)initWithServerAddress:(NSString*)address ports:(NSArray*)ports tlsMode:(SMTPClientTLSMode)tlsMode username:(NSString*)authUsername password:(NSString*)authPassword {
-	if ((self = [super init])) {
-		if (!address.length)
+-(id)initWithServerAddress: (NSString*)address
+                     ports: (NSArray*)ports
+                   tlsMode: (SMTPClientTLSMode)tlsMode
+                  username: (NSString*)authUsername
+                  password: (NSString*)authPassword
+{
+    self = [super init];
+	if (self) {
+		if (address.length == 0)
             [NSException raise:NSInvalidArgumentException format:@"Invalid server address"];
         
 		self.address = address;
@@ -155,7 +161,10 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 	[super dealloc];
 }
 
-+(void)splitAddress:(NSString*)address intoEmail:(NSString**)email description:(NSString**)desc {
++(void)splitAddress: (NSString*)address
+          intoEmail: (NSString**)email
+        description: (NSString**)desc
+{
 	NSInteger lti = [address rangeOfString:@"<" options:0].location;
 	NSInteger gti = [address rangeOfString:@">" options:NSBackwardsSearch].location;
 	if (lti != NSNotFound) {
@@ -183,16 +192,29 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 	}
 }
 
--(void)sendMessage:(NSString*)message withSubject:(NSString*)subject from:(NSString*)from to:(NSString*)toAddresses {
+-(void)sendMessage:(NSString*)message
+       withSubject:(NSString*)subject
+              from:(NSString*)from
+                to:(NSString*)toAddresses
+{
     [self sendMessage:message withSubject:subject from:from to:toAddresses headers:nil];
 }
 
--(void)sendMessage:(NSString*)message withSubject:(NSString*)subject from:(NSString*)from to:(NSString*)toAddresses headers:(NSDictionary*)headers {
-	if (!from.length) [NSException raise:NSInvalidArgumentException format:@"Empty sender email address"];
-	if (!toAddresses.length) [NSException raise:NSInvalidArgumentException format:@"Empty destination email address"];
+-(void)sendMessage:(NSString*)message
+       withSubject:(NSString*)subject
+              from:(NSString*)from
+                to:(NSString*)toAddresses
+           headers:(NSDictionary*)headers
+{
+	if (from.length == 0)
+        [NSException raise:NSInvalidArgumentException format:@"Empty sender email address"];
+
+    if (toAddresses.length == 0)
+        [NSException raise:NSInvalidArgumentException format:@"Empty destination email address"];
 	
 	NSHost* host = [NSHost hostWithName:self.address];
-	if (!host) [NSException raise:NSInvalidArgumentException format:@"Invalid server address"];
+	if (!host)
+        [NSException raise:NSInvalidArgumentException format:@"Invalid server address"];
 		
 	_SMTPConnector* connector = [[_SMTPConnector new] autorelease]; // TODO: release
     connector.client = self;
@@ -214,9 +236,7 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 	}
 	
 	connector.to = to;
-    
     connector.headers = headers;
-	
 	[connector performSelectorInBackground:@selector(start) withObject:nil];
 }
 
@@ -410,18 +430,23 @@ enum {
 		
 	}
 	
-	if (stream == _ostream && event == NSStreamEventHasSpaceAvailable && [_obuffer length]) {
+	if (stream == _ostream &&
+        event == NSStreamEventHasSpaceAvailable &&
+        [_obuffer length])
+    {
 		if (_isTLS && self.connectionStatus == ConnectionStatusConnecting)
             self.connectionStatus = ConnectionStatusOk;
         [self performSelector:@selector(trySendingDataNow) withObject:nil afterDelay:0];
     }
 	
-	if (event == NSStreamEventEndEncountered) {
+	if (event == NSStreamEventEndEncountered)
+    {
 		[stream close];
         self.connectionStatus = ConnectionStatusClosed;
     }
 	
-	if (event == NSStreamEventErrorOccurred) {
+	if (event == NSStreamEventErrorOccurred)
+    {
 		NSLog(@"Stream error: %@", stream.streamError.localizedDescription);
         self.connectionStatus = ConnectionStatusClosed;
 	}
@@ -545,7 +570,8 @@ enum SMTPSubstatuses {
 	NSData* secretData = [secretString dataUsingEncoding:NSUTF8StringEncoding];
 	if (secretData.length > 64)
 		secretData = [secretData md5];
-	[secretData getBytes:ipad];
+
+    [secretData getBytes:ipad];
 	memset(&ipad[secretData.length], 0, 64-secretData.length);
 	memcpy(opad, ipad, 64);
 	for (NSInteger i = 0; i < 64; ++i) {
@@ -558,15 +584,19 @@ enum SMTPSubstatuses {
 	NSMutableData* r2 = [NSMutableData dataWithBytes:ipad length:64];
 	[r2 appendData:[challengeString dataUsingEncoding:NSUTF8StringEncoding]];
 	[r1 appendData:[r2 md5]];
-	return [[r1 md5] hex];
+
+    return [[r1 md5] hex];
 }
 
-+(NSString*)_hostname {
++(NSString*)_hostname
+{
 	char hostname[128];
 	gethostname(hostname, 127);
 	hostname[127] = 0;
 	NSString* string = [NSString stringWithCString:hostname encoding:NSUTF8StringEncoding];
-    if (![string rangeOfString:@"."].length) string = [string stringByAppendingString:@".local"];
+    if ([string rangeOfString:@"."].length == 0)
+        string = [string stringByAppendingString:@".local"];
+
     return string;
 }
 
@@ -775,7 +805,7 @@ enum SMTPSubstatuses {
 					
 					NSMutableString* to = [NSMutableString string];
 					for (NSArray* ito in self.to) {
-						if (to.length)
+						if (to.length > 0)
 							[to appendString:@", "];
                         
 						if (ito.count > 1)

@@ -35,9 +35,10 @@
 	NSMutableString* str = [NSMutableString string];
 	
 	for (NSString* istr in array) {
-		if (str.length)
+		if (str.length > 0)
 			[str appendString:@","];
-		[str appendString:[self quote:istr]];
+
+        [str appendString:[self quote:istr]];
 	}
 	
 	return [[str copy] autorelease];

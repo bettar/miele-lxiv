@@ -73,7 +73,7 @@
 }
 
 -(NSRect)constrainFrameRect:(NSRect)frameRect toScreen:(NSScreen*)screen {
-	return frameRect; // not movable, and OsiriX knows where to place toolbars ;)
+	return frameRect; // not movable, and the Application knows where to place toolbars ;)
 }
 
 @end

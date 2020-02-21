@@ -90,6 +90,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation OrthogonalReslice
 
@@ -141,8 +142,10 @@
 {
     while( yCacheQueue.operationCount > 0)
         [NSThread sleepForTimeInterval: 0.1];
+
     [yCacheQueue release];
-	if( Ycache) free( Ycache);
+	if (Ycache)
+        free( Ycache);
 	
 	[processorsLock release];
 	[xReslicedDCMPixList release];
@@ -198,94 +201,95 @@
 
 - (void) subReslice:(NSNumber*) posNumber
 {
-	int i, x, y, stack, pos = [posNumber intValue];
+    int x, y;
+    //int stack;
+    int pos = [posNumber intValue];
 	int threads = [[NSProcessInfo processInfo] processorCount];
 	int from, to;
 	
 	from = (pos * newY) / threads;
 	to = ((pos+1) * newY) / threads;
 	
-	for( i = minI, stack = 0 ; i < maxI ; i++, stack++)
+	for (int i = minI, stack = 0 ; i < maxI ; i++, stack++)
 	{
-		if( i < 0) i = 0;
-		if( i >= newTotal) i = newTotal-1;
+		if (i < 0)
+            i = 0;
+
+        if (i >= newTotal)
+            i = newTotal-1;
 		
-		if( currentAxe == 0)		// X - RESLICE
+		if (currentAxe == 0)		// X - RESLICE
 		{
 			
 			DCMPix *curPix = [newPixListX objectAtIndex: stack];
 			
-			if( sign > 0)
+			if (sign > 0)
 			{
 				float *srcP, *dstP, *curPixfImage = [curPix fImage];
 				
-				for( y = from; y < to; y++)
+				for (y = from; y < to; y++)
 				{
 					srcP = [[originalDCMPixList objectAtIndex: y] fImage] + i * newX;
-						
 					dstP = curPixfImage + (newY-y-1) * newX;
-
 					memcpy(	dstP, srcP, newX *sizeof(float));
 				}
 			}
 			else
 			{
-				float *srcP, *curPixfImage = [curPix fImage];
+                float *srcP;
+                float *curPixfImage = [curPix fImage];
 				
-				for( y = from; y < to; y++)
+				for (y = from; y < to; y++)
 				{
 					srcP = [[originalDCMPixList objectAtIndex: y] fImage] + i * [firstPix pwidth];
-						
 					memcpy(	curPixfImage + y * newX, srcP, newX *sizeof(float));
 				}
 			}
 		}
 		else									// Y - RESLICE
 		{
-			float	*srcPtr;
-			float	*dstPtr;
-			long	rowBytes = [firstPix pwidth];
+			float *srcPtr;
+			float *dstPtr;
+			long rowBytes = [firstPix pwidth];
 			
 			DCMPix *curPix = [newPixListY objectAtIndex: stack];
 			
-			if( Ycache && yCacheQueue.operationCount == 0)
+			if (Ycache && yCacheQueue.operationCount == 0)
 			{
 //				BlockMoveData(	Ycache + newY*newX*i,
 //								[curPix fImage],
 //								newX * newY *sizeof(float));
 
 
-				if( sign > 0)
+				if (sign > 0)
 				{
-					float		*srcP, *dstP, *curPixfImage = [curPix fImage];
-					DCMPix		*srcPix = [originalDCMPixList objectAtIndex: 0];
-					long		w = [srcPix pheight];
+                    float *curPixfImage = [curPix fImage];
+					DCMPix *srcPix = [originalDCMPixList objectAtIndex: 0];
+					long w = [srcPix pheight];
 					
-					for( y = from; y < to; y++)
+					for (y = from; y < to; y++)
 					{
-						srcP = Ycache + y*newTotal*newX + i * w;
-						dstP = curPixfImage + (newY-y-1) * newX;
-						
+						float *srcP = Ycache + y*newTotal*newX + i * w;
+						float *dstP = curPixfImage + (newY-y-1) * newX;
 						memcpy(	dstP, srcP, newX *sizeof(float));
 					}
 				}
 				else
 				{
-					float *srcP, *curPixfImage = [curPix fImage];
+                    float *curPixfImage = [curPix fImage];
 					
-					for( y = from; y < to; y++)
+					for (y = from; y < to; y++)
 					{
-						srcP = Ycache + y*newTotal*newX + i * newTotal;
-						
+						float *srcP = Ycache + y*newTotal*newX + i * newTotal;
 						memcpy(	curPixfImage + y * newX, srcP, newX *sizeof(float));
 					}
 				}
 			}
 			else
 			{
-				for(x = from; x < to; x++)
+				for (x = from; x < to; x++)
 				{
-					if( sign > 0)
+					if (sign > 0)
 					{
 						srcPtr = [[originalDCMPixList objectAtIndex: newY-x-1] fImage] + i;
 					}
@@ -304,7 +308,7 @@
 				}
 			}
 		}
-	}
+	} // for i
 	
 	[processorsLock lock];
 	numberOfThreadsForCompute--;
@@ -315,10 +319,10 @@
 {
 	firstPix = [originalDCMPixList objectAtIndex: 0];
 	
-	DCMPix				*lastPix = [originalDCMPixList lastObject];
-	long				i, x;
-	float				orientation[ 9], newXSpace, newYSpace, origin[ 3], sliceInterval;
-	BOOL                isRGB = firstPix.isRGB;
+	DCMPix *lastPix = [originalDCMPixList lastObject];
+	long i, x;
+	float orientation[ 9], newXSpace, newYSpace, origin[ 3], sliceInterval;
+	BOOL isRGB = firstPix.isRGB;
 	
 	currentAxe = axe;
 
@@ -332,7 +336,7 @@
 	}
     
 	// Get Values
-	if( axe == 0)		// X - RESLICE
+	if (axe == 0)		// X - RESLICE
 	{
 		newTotal = [firstPix pheight];
 		newX = [firstPix pwidth];
@@ -353,15 +357,15 @@
 	
 	// CREATE A NEW SERIES WITH *ONE* IMAGE !
 	
-	DCMPix	*curPix;
-	long	stack = 0;
+	DCMPix *curPix;
+	long stack = 0;
 	
 	if (thickSlab <= 1)
 	{
 		thickSlab = 1;
 		minI = sliceNumber;
 		maxI = minI+1;
-		if( maxI > newTotal-1)
+		if (maxI > newTotal-1)
 		{
 			maxI = newTotal-1;
 			minI = maxI-1;
@@ -376,15 +380,15 @@
 		if (maxI > newTotal-1)
 		{
 			maxI = newTotal-1;
-			if( minI == maxI)
+			if (minI == maxI)
                 minI = maxI-1;
 		}
 	}
 						
 	// Y - CACHE activated only if thick slab and if enough memory is available
-	if( axe != 0)
+	if (axe != 0)
 	{
-		if( thickSlab > 1 && Ycache == nil)
+		if (thickSlab > 1 && Ycache == nil)
 		{
 			if (useYcache)
 				Ycache = (float *)malloc( newTotal*newY*newX*sizeof(float));
@@ -409,14 +413,14 @@
 		}
 	}
 	
-	if( axe == 0)		// X - RESLICE
+	if (axe == 0)		// X - RESLICE
 	{
-		if( sign > 0)
-				[lastPix orientation: orientation];
+		if (sign > 0)
+            [lastPix orientation: orientation];
 		else
-				[firstPix orientation: orientation];
+            [firstPix orientation: orientation];
 		
-		if( sign > 0)
+		if (sign > 0)
 		{
 			// Y Vector = Normal Vector
 			orientation[ 3] = orientation[ 6] * -sign;
@@ -433,7 +437,7 @@
 	}
 	else
 	{
-		if( sign > 0)
+		if (sign > 0)
             [lastPix orientation: orientation];
 		else
             [firstPix orientation: orientation];
@@ -443,7 +447,7 @@
 		orientation[ 1] = orientation[ 4];
 		orientation[ 2] = orientation[ 5];
 		
-		if( sign > 0)
+		if (sign > 0)
 		{
 			orientation[ 3] = orientation[ 6] * -sign;
 			orientation[ 4] = orientation[ 7] * -sign;
@@ -458,15 +462,17 @@
 	}
 	
     int bits = 32;
-    if( isRGB) bits = 8;
+    if (isRGB)
+        bits = 8;
     
-	for( i = minI, stack = 0 ; i < maxI ; i++, stack++)
+	for (i = minI, stack = 0 ; i < maxI ; i++, stack++)
 	{
-		if( i < 0) i = 0;
+		if (i < 0)
+            i = 0;
 		
-		if( axe == 0)		// X - RESLICE
+		if (axe == 0)		// X - RESLICE
 		{
-			if( stack >= [newPixListX count])
+			if (stack >= [newPixListX count])
 			{
 				curPix = [[DCMPix alloc] initWithData: nil :bits :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
@@ -479,7 +485,7 @@
 		}
 		else
 		{
-			if( stack  >= [newPixListY count])
+			if (stack  >= [newPixListY count])
 			{
 				curPix = [[DCMPix alloc] initWithData: nil :bits :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
@@ -497,7 +503,7 @@
 		[curPix setFrameNo: 0];
 		[curPix setID: 0];
 		
-		if( axe == 0)		// X - RESLICE
+		if (axe == 0)		// X - RESLICE
 		{
 			[curPix setOrientation: orientation];	// Normal vector is recomputed in this procedure
 			
@@ -508,7 +514,7 @@
 			
 			[curPix orientation: orientation];
 			
-			if( sign > 0)
+			if (sign > 0)
 			{
 				origin[ 0] = [lastPix originX] + (i * [firstPix pixelSpacingY]) * orientation[ 6] * sign;
 				origin[ 1] = [lastPix originY] + (i * [firstPix pixelSpacingY]) * orientation[ 7] * sign;
@@ -537,7 +543,7 @@
 			[curPix setPixelRatio:  newYSpace / newXSpace];
 			
 			[curPix orientation: orientation];
-			if( sign > 0)
+			if (sign > 0)
 			{
 				origin[ 0] = [lastPix originX] + (i * [firstPix pixelSpacingX]) * orientation[ 6] * -sign;
 				origin[ 1] = [lastPix originY] + (i * [firstPix pixelSpacingX]) * orientation[ 7] * -sign;
@@ -557,22 +563,22 @@
 		}
 	}
 	
-	if( axe == 0)		// X - RESLICE
+	if (axe == 0)		// X - RESLICE
 	{
-		if( [newPixListX count] > stack)
+		if ([newPixListX count] > stack)
 			[newPixListX removeObjectsInRange: NSMakeRange( stack, [newPixListX count]-stack)];
 	}
 	else
 	{
-		if( [newPixListY count] > stack)
+		if ([newPixListY count] > stack)
 			[newPixListY removeObjectsInRange: NSMakeRange( stack, [newPixListY count]-stack)];
 	}
 	
-	if( processorsLock == nil)
+	if (processorsLock == nil)
 		processorsLock = [[NSLock alloc] init];
 	
 	numberOfThreadsForCompute = [[NSProcessInfo processInfo] processorCount];
-	for( i = 0; i < [[NSProcessInfo processInfo] processorCount]-1; i++)
+	for (i = 0; i < [[NSProcessInfo processInfo] processorCount]-1; i++)
 	{
 		[NSThread detachNewThreadSelector: @selector(subReslice:) toTarget:self withObject: [NSNumber numberWithInt: i]];
 	}
@@ -583,7 +589,7 @@
 	while( done == NO)
 	{
 		[processorsLock lock];
-		if( numberOfThreadsForCompute <= 0)
+		if (numberOfThreadsForCompute <= 0)
             done = YES;
         
 		[processorsLock unlock];
@@ -634,8 +640,10 @@
 
 - (void)freeYCache;
 {
-	if(Ycache) free(Ycache);
-	Ycache = nil;
+	if (Ycache)
+        free(Ycache);
+
+    Ycache = nil;
 }
 
 - (BOOL)useYcache;
@@ -646,7 +654,7 @@
 - (void)setUseYcache:(BOOL)boo;
 {
 	useYcache = boo;
-	if(!boo)
+	if (!boo)
 		[self freeYCache];
 }
 

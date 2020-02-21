@@ -22,14 +22,10 @@
 
 @interface OpacityTransferView : NSView
 {
-
-	IBOutlet		NSTextField *position;
-	
-	NSMutableArray  *points;
-	
-	NSInteger		curIndex;
-	
-	unsigned char   red[256], green[256], blue[256];
+	IBOutlet NSTextField *position;
+	NSMutableArray *points;
+	NSUInteger curIndex;
+	unsigned char red[256], green[256], blue[256];
 }
 
 - (NSMutableArray*) getPoints;

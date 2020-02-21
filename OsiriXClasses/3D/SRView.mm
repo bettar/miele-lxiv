@@ -64,7 +64,7 @@
 #include "vtkCocoaRenderWindowInteractor.h"
 #include "vtkCocoaRenderWindow.h"
 #include "vtkInteractorStyleTrackballCamera.h"
-#include "vtkParallelRenderManager.h"
+//#include "vtkParallelRenderManager.h"
 #include "vtkRendererCollection.h"
 #endif
 
@@ -107,7 +107,6 @@ typedef struct _xyzArray
 @implementation SRView
 
 #ifdef _STEREO_VISION_
-@synthesize StereoVisionOn;
 @synthesize currentTool;
 #endif
 
@@ -161,6 +160,8 @@ typedef struct _xyzArray
 	[self display];
 }
 
+// This is also implemented in DCMView
+#define ORIENTATION_STRING_MAX_SIZE     10
 - (void)getOrientationText:(char *) orientation
                     vector:(float *) vector
                  inversion:(BOOL) inv
@@ -189,7 +190,8 @@ typedef struct _xyzArray
 	float absZ = fabs( vector[ 2]);
 	
 	// get first 3 AXIS
-	for (int i=0; i < 3; ++i) {
+	for (int i=0; i < 3; ++i)
+    {
 		if (absX > .2 &&
             absX >= absY &&
             absX >= absZ)
@@ -215,7 +217,9 @@ typedef struct _xyzArray
             break;
 	}
 	
-	strcpy( orientation, [optr UTF8String]);
+    // Truncate if the localized strings are too long
+    strncpy(orientation, [optr UTF8String], ORIENTATION_STRING_MAX_SIZE);
+    orientation[ORIENTATION_STRING_MAX_SIZE-1] = 0;
 }
 
 //- (void) getOrientationText:(char *) string : (float *) vector :(BOOL) inv
@@ -1017,8 +1021,8 @@ typedef struct _xyzArray
 
 - (void) computeOrientationText
 {
-	char string[ 10];
-	float vectors[ 9];
+	char string[ ORIENTATION_STRING_MAX_SIZE];
+	float vectors[ 9];  // Why 9 ? It should be 3
 	
 	[self getOrientation: vectors];
 	
@@ -1674,9 +1678,9 @@ typedef struct _xyzArray
 
 -(void) setBlendingFactor:(float) a
 {
-	long	i;
-	float   val, ii;
-	double  alpha[ 256];
+	long i;
+	float val, ii;
+	double alpha[ 256];
 	
 	blendingFactor = a;
 	
@@ -2592,27 +2596,6 @@ typedef struct _xyzArray
 	[self setNeedsDisplay:YES];
 }
 
--(IBAction) SwitchStereoMode :(id) sender
-{
-	if ([self renderWindow]->GetStereoRender() == false)
-	{
-		[self renderWindow]->StereoRenderOn();
-		[self renderWindow]->SetStereoTypeToRedBlue();
-		
-		if (orientationWidget)
-			orientationWidget->Off();
-        
-		for (long i = 0; i < NUM_SR_LABELS; i++)
-            aRenderer->RemoveActor2D( oText[ i]);
-	}
-	else
-	{
-		[self renderWindow]->StereoRenderOff();
-	}
-	
-	[self setNeedsDisplay:YES];
-}
-
 -(IBAction) switchProjection:(id) sender
 {
 	NSLog(@"switchProjection");
@@ -2715,7 +2698,7 @@ typedef struct _xyzArray
             }
 #endif
 			
-			long rowBytes = *width**spp**bpp/8;
+			long rowBytes = *width * *spp * *bpp / 8;
 			
 			{
 				unsigned char *tempBuf = (unsigned char*) malloc( rowBytes);

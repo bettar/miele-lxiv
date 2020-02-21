@@ -426,7 +426,8 @@
                             // Pourquoi n'y a-t-il pas de lock? Oui il en faut bien mais pas pendant TOUT le routage... seulement ici:
                             NSArray *studiesArray = [self objectsForEntity:self.studyEntity predicate:[NSPredicate predicateWithFormat:  @"(patientUID BEGINSWITH[cd] %@)", patientUID]];
 							
-							if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
+							if ([studiesArray count] > 0 &&
+                                [studiesArray indexOfObject:study] != NSNotFound)
 							{
 								NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
 								NSArray * sortDescriptors = [NSArray arrayWithObject: sort];

@@ -22,6 +22,8 @@
 #import "url.h"
 #import "mgl.h" // include first
 
+#import "GLRenderer.h"
+
 #import "VRController.h"
 #import "AppController.h"
 #import "DCMView.h"
@@ -141,9 +143,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
     //*** Build the menu
-    NSUInteger  i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+    NSUInteger i;
+    NSArray *keys;
+    NSArray *sortedKeys;
 
     // Presets VIEWER Menu
 	
@@ -509,8 +511,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	DCMPix *firstObject = [pix objectAtIndex: 0];
 
 #if 1
-    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    printf("VRController.mm:%d OpenGL context:%p, version %s\n", __LINE__, cgl_ctx, glGetString(GL_VERSION));
+    //CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    NSLog(@"VRController.mm: %d, initWithPix, class %@, OpenGL legacy:%i", __LINE__,
+          NSStringFromClass([self class]), checkOGLVersion());
 #endif
     
     @try
@@ -577,7 +580,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
             undodata[ i] = nil;
         
         curMovieIndex = 0;
-        maxMovieIndex = 1;
+        maxMovieIndex = 1; // @@@
         
         fileList = f;
         [fileList retain];
@@ -753,10 +756,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
                         [x2DPointsArray addObject:[NSNumber numberWithFloat:x]];
                         [y2DPointsArray addObject:[NSNumber numberWithFloat:y]];
                         [z2DPointsArray addObject:[NSNumber numberWithFloat:z]];
-                    }
-                }
-            }
-        }
+                    } // if t2DPoint
+                } // for j
+            } // for i
+        } // if viewer2D
 
         NSNotificationCenter *nc;
         nc = [NSNotificationCenter defaultCenter];
@@ -3654,39 +3657,39 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 
 	// fill the thumbnails
 	int n = 0;
-    int i;
-	for (i=0; i<[presetPreviewArray count] && n<[settingsList count]; i++)
+    int ii;
+	for (ii=0; ii<[presetPreviewArray count] && n<[settingsList count]; ii++)
 	{
-		n = presetPageNumber*[presetPreviewArray count] + i;
+		n = presetPageNumber*[presetPreviewArray count] + ii;
 		if (n < [settingsList count])
 		{
             // Example: "1. High Contrast"
-			[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[NSString stringWithFormat:@"%d. %@", n+1,[[settingsList objectAtIndex:n] objectForKey:@"name"]]];
+			[(NSTextField*)[presetNameArray objectAtIndex:ii] setStringValue:[NSString stringWithFormat:@"%d. %@", n+1,[[settingsList objectAtIndex:n] objectForKey:@"name"]]];
 
-			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:NO];
-			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setVtkCamera: [view vtkCamera]];
+			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:ii] setIsEmpty:NO];
+			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:ii] setVtkCamera: [view vtkCamera]];
 			
 //			double a[ 6];
 //			if ([view croppingBox: a])
 //				[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setCroppingBox: a];
 			
-			[self load3DSettingsDictionary:[settingsList objectAtIndex:n] forPreview:[presetPreviewArray objectAtIndex:i]];
+			[self load3DSettingsDictionary:[settingsList objectAtIndex:n] forPreview:[presetPreviewArray objectAtIndex:ii]];
 			
-			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIndex:n];
-			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setLOD:1.0];
+			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:ii] setIndex:n];
+			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:ii] setLOD:1.0];
 		}
 	}
 	
 	// the others will be black
 	
 	if (n >= [settingsList count])
-        i--;
+        ii--;
 	
-	while (i < [presetPreviewArray count])
+	while (ii < [presetPreviewArray count])
 	{
-		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:@""];
-		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:YES];
-		i++;
+		[(NSTextField*)[presetNameArray objectAtIndex:ii] setStringValue:@""];
+		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:ii] setIsEmpty:YES];
+		ii++;
 	}
 	
 	if ([presetPreviewArray count])
@@ -3956,9 +3959,10 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	NSRect presetsPanelFrame = [presetsPanel frame];
 	
 	NSPoint centerPoint;
-	centerPoint.x = viewer3DFrame.origin.x + viewer3DFrame.size.width * 0.5;
-	centerPoint.y = viewer3DFrame.origin.y + viewer3DFrame.size.height * 0.5;
-	NSPoint newPresetsPanelOrigin;
+	centerPoint.x = NSMidX(viewer3DFrame);
+	centerPoint.y = NSMidY(viewer3DFrame);
+
+    NSPoint newPresetsPanelOrigin;
 	newPresetsPanelOrigin.x = centerPoint.x - presetsPanelFrame.size.width * 0.5;
 	newPresetsPanelOrigin.y = centerPoint.y - presetsPanelFrame.size.height * 0.5;
 	[presetsPanel setFrameOrigin:newPresetsPanelOrigin];

@@ -91,7 +91,7 @@
 /* Class = "NSMenuItem"; title = "Oval"; ObjectID = "579"; */
 "579.title" = "Oval";
 
-/* Class = "NSMenuItem"; title = "Opened Polygon"; ObjectID = "581"; */
+/* Class = "NSMenuItem"; title = "Open Polygon"; ObjectID = "581"; */
 "581.title" = "Polygone ouvert";
 
 /* Class = "NSMenuItem"; title = "Closed Polygon"; ObjectID = "585"; */

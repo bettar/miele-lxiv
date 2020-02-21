@@ -485,7 +485,7 @@ SecPolicySearchCreate:
 			SecKeychainItemCopyAttributesAndData((SecKeychainItemRef)privateKeyRef,
 			                                     &info, NULL, &privateKeyAttributeList, NULL, NULL);
 			
-			if(privateKeyAttributeList)
+			if (privateKeyAttributeList)
 			{
 				SecKeychainAttribute nameAttribute = privateKeyAttributeList->attr[0];
 				
@@ -513,8 +513,8 @@ SecPolicySearchCreate:
 		CFRelease(currentIdentityRef);
 	}
 	
-	if(keychain)  CFRelease(keychain);
-	if(searchRef) CFRelease(searchRef);
+	if (keychain)  CFRelease(keychain);
+	if (searchRef) CFRelease(searchRef);
 	
 	return result;
 }
@@ -675,8 +675,11 @@ SecPolicySearchCreate:
     
     NSMutableArray * found = [NSMutableArray array];
     
-    for (CFIndex i = 0; i < CFArrayGetCount((CFArrayRef)arrayRef); i++) {
+    for (CFIndex i = 0; i < CFArrayGetCount((CFArrayRef)arrayRef); i++)
+    {
         NSDictionary *attr = (__bridge NSDictionary *)(CFArrayGetValueAtIndex((CFArrayRef)arrayRef, i));
+
+        // Unused variable 'label'
         NSString *label = (NSString *)[attr objectForKey:(id)kSecAttrLabel];
         
         NSDictionary *valRef;

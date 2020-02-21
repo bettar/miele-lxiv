@@ -263,19 +263,19 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vec
 	// for each interval
 	for (i=1; i<nb-2; i++)
 	{
-		// compute coef for x polynom
+		// compute coef for x polynomial
 		ccx = cx[i];
 		aax = px[i];
 		ddx = (cx[i+1] - cx[i]) / (3.0 * h[i]);
 		bbx = ((px[i+1] - px[i]) / h[i]) - (h[i] / 3.0) * (cx[i+1] + 2.0 * cx[i]);
         
-		// compute coef for y polynom
+		// compute coef for y polynomial
 		ccy = cy[i];
 		aay = py[i];
 		ddy = (cy[i+1] - cy[i]) / (3.0 * h[i]);
 		bby = ((py[i+1] - py[i]) / h[i]) - (h[i] / 3.0) * (cy[i+1] + 2.0 * cy[i]);
         
-		// compute coef for z polynom
+		// compute coef for z polynomial
 		ccz = cz[i];
 		aaz = pz[i];
 		ddz = (cz[i+1] - cz[i]) / (3.0 * h[i]);

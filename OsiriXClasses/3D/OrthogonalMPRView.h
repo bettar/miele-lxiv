@@ -31,16 +31,17 @@
 * This view displays a cross to show where the 2 orthogonal plane are crossing 
 */
 
-@interface OrthogonalMPRView : DCMView {
-	float						crossPositionX, crossPositionY; // coordinate x and Y of the cross
-	OrthogonalMPRController		*controller;
-	long						displayResliceAxes;
-	float						savedScaleValue;
+@interface OrthogonalMPRView : DCMView
+{
+	float crossPositionX, crossPositionY; // coordinate x and Y of the cross
+	OrthogonalMPRController *controller;
+	long displayResliceAxes;
+	float savedScaleValue;
 	
-	long						thickSlabX, thickSlabY;
-	NSString					*curWLWWMenu;
-	NSString					*curCLUTMenu;
-	NSString					*curOpacityMenu;
+	long thickSlabX, thickSlabY;
+	NSString *curWLWWMenu;
+	NSString *curCLUTMenu;
+	NSString *curOpacityMenu;
 }
 
 - (void) setPixList: (NSMutableArray*) pix :(NSArray*) files;

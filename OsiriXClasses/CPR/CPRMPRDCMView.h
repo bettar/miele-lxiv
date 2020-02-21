@@ -25,21 +25,7 @@
 #import "N3Geometry.h"
 #import "CPRCurvedPath.h"
 #import "CPRProjectionOperation.h"
-
-enum _CPRViewClippingRangeMode {
-    CPRViewClippingRangeVRMode = CPRProjectionModeVR, // don't use this, it is not implemented
-    CPRViewClippingRangeMIPMode = CPRProjectionModeMIP,
-    CPRViewClippingRangeMinIPMode = CPRProjectionModeMinIP,
-    CPRViewClippingRangeMeanMode = CPRProjectionModeMean
-};
-typedef CPRProjectionMode CPRViewClippingRangeMode;
-
-enum _CPRMPRDCMViewCPRType { // more than kinda ridiculous, move this and the equivalent CPRType constants to a single consts file..... 
-    CPRMPRDCMViewCPRStraightenedType = 0,
-    CPRMPRDCMViewCPRStretchedType = 1
-};
-typedef NSInteger CPRMPRDCMViewCPRType;
-
+#import "cprTypes.h"
 
 @class CPRController;
 @class CPRDisplayInfo;
@@ -61,7 +47,7 @@ typedef NSInteger CPRMPRDCMViewCPRType;
 	NSInteger editingCurvedPathCount;
     CPRCurvedPathControlToken draggedToken;
 	float angleMPR;
-    CPRMPRDCMViewCPRType _CPRType;
+//    CPRType _viewCprType;
     OSIROIManager *_ROIManager;
 	BOOL dontUseAutoLOD;
 	
@@ -94,7 +80,7 @@ typedef NSInteger CPRMPRDCMViewCPRType;
 @property (nonatomic) BOOL displayCrossLines, dontUseAutoLOD;
 @property (readonly) VRView *vrView;
 @property (readonly) BOOL rotateLines, moveCenter;
-@property (nonatomic, assign) CPRMPRDCMViewCPRType CPRType;
+@property (nonatomic, assign) CPRType viewCprType;  // custom setter
 
 - (BOOL)is2DTool:(ToolMode)tool;
 - (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
@@ -119,6 +105,7 @@ typedef NSInteger CPRMPRDCMViewCPRType;
 
 @end
 
+#pragma mark -
 
 @protocol CPRViewDelegate <NSObject>
 
@@ -138,6 +125,7 @@ typedef NSInteger CPRMPRDCMViewCPRType;
 
 @end
 
+#pragma mark -
 
 @interface DCMView (CPRAdditions) 
 

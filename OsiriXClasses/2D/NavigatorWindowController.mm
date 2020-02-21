@@ -64,14 +64,14 @@ static NavigatorWindowController *nav = nil;
 {
 	[navigatorView saveTransformForCurrentViewer];
 	BOOL needsUpdate = NO;
-	if( viewerController != viewer)
+	if (viewerController != viewer)
 	{
 		[viewerController release];
 		viewerController = [viewer retain];
 		needsUpdate = YES;
 	}
 	
-	if( [viewerController isDataVolumicIn4D: YES] == NO)
+	if ([viewerController isDataVolumicIn4D: YES] == NO)
 	{
 		NSLog( @"unsupported data for 4D");
 		[[self window] close];
@@ -107,7 +107,7 @@ static NavigatorWindowController *nav = nil;
 //		[self setViewer: nil];
 //	}
 	
-	if([[ViewerController getDisplayed2DViewers] count] == 0)
+	if ([[ViewerController getDisplayed2DViewers] count] == 0)
 	{
 		[[self window] close];
 	}
@@ -126,15 +126,15 @@ static NavigatorWindowController *nav = nil;
 	r.origin.y = [screen visibleFrame].origin.y;
 	r.size.height = height + [[self window] frame].origin.y - r.origin.y;
 	
-	if( r.size.height > [NavigatorView rect].size.height)
+	if (r.size.height > [NavigatorView rect].size.height)
 		r.size.height = [NavigatorView rect].size.height;
 		
-	if( r.size.height < [navigatorView minimumWindowHeight])
+	if (r.size.height < [navigatorView minimumWindowHeight])
 		r.size.height = [navigatorView minimumWindowHeight];
 	
 	[[self window] setFrame: r display:YES];
 	
-	if( r.size.height != height && withTiling == YES)
+	if (r.size.height != height && withTiling == YES)
 		[[AppController sharedAppController] tileWindows: nil];
 	
 	dontReEnter = NO;
@@ -160,9 +160,7 @@ static NavigatorWindowController *nav = nil;
 - (void)windowWillClose:(NSNotification *)notification
 {
 	[[self window] setAcceptsMouseMovedEvents: NO];
-	
 	[[self window] orderOut:self];
-    
 	[self autorelease];
 }
 
@@ -186,7 +184,7 @@ static NavigatorWindowController *nav = nil;
     
 	float screenWidth = [screen frame].size.width;
 	maxSize.width = screenWidth;
-	if([[self window] frame].size.width < [navigatorView frame].size.width)
+	if ([[self window] frame].size.width < [navigatorView frame].size.width)
         maxSize.height += 11; // 11px for the horizontal scroller
 
 	[[self window] setMaxSize:maxSize];
@@ -194,7 +192,7 @@ static NavigatorWindowController *nav = nil;
 	NSSize minSize = NSMakeSize(navigatorView.thumbnailWidth, navigatorView.thumbnailHeight);
 	minSize.height += 16; // 16px for the title bar
 	minSize.width = screenWidth;
-	if([[self window] frame].size.width < [navigatorView frame].size.width)
+	if ([[self window] frame].size.width < [navigatorView frame].size.width)
         minSize.height += 11; // 11px for the horizontal scroller
 	
 	[[self window] setMinSize:minSize];

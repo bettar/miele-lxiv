@@ -37,8 +37,6 @@
 
 #define NUM_ENCODINGS        10
 
-static float deg2rad = M_PI / 180.0f; 
-
 @implementation DICOMExport
 
 @synthesize rotateRawDataBy90degrees, metaDataDict, removeDICOMOverlays;
@@ -388,7 +386,7 @@ static float deg2rad = M_PI / 180.0f;
     if (result.good() && [dict objectForKey: @"studyDescription"])
         result = dataset->putAndInsertString(DCM_StudyDescription, [[dict objectForKey: @"studyDescription"] UTF8String]);
     
-    if (result.good() && [(NSString*)[dict objectForKey: @"modality"] length])
+    if (result.good() && [(NSString*)[dict objectForKey: @"modality"] length] > 0)
         result = dataset->putAndInsertString(DCM_Modality, [[dict objectForKey: @"modality"] UTF8String]);
     else
         result = dataset->putAndInsertString(DCM_Modality, "OT");
@@ -594,10 +592,13 @@ static float deg2rad = M_PI / 180.0f;
                     width = height;
                     height = copyWidth;
                     
-                    //Origin and vector
-                    if (orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0)
+                    // Origin and vector
+                    if (orientation[ 0] != 0 ||
+                        orientation[ 1] != 0 ||
+                        orientation[ 2] != 0)
                     {
-                        float x = 0, y = width;
+                        float x = 0;
+                        float y = width;
                         float newOrigin[ 3];
                         
                         if (spacingX != 0 && spacingY != 0)
@@ -627,25 +628,36 @@ static float deg2rad = M_PI / 180.0f;
                         o[7] = o[2]*o[3] - o[0]*o[5];
                         o[8] = o[0]*o[4] - o[1]*o[3];
                         
-                        XYZ vector, rotationVector; 
+                        XYZ vector;
+                        XYZ rotationVector;
                         
-                        rotationVector.x = o[ 6];	rotationVector.y = o[ 7];	rotationVector.z = o[ 8];
+                        rotationVector.x = o[ 6];
+                        rotationVector.y = o[ 7];
+                        rotationVector.z = o[ 8];
                         
-                        vector.x = o[ 0];	vector.y = o[ 1];	vector.z = o[ 2];
-                        vector =  ArbitraryRotate(vector, -90*deg2rad, rotationVector);
-                        o[ 0] = vector.x;	o[ 1] = vector.y;	o[ 2] = vector.z;
+                        vector.x = o[ 0];
+                        vector.y = o[ 1];
+                        vector.z = o[ 2];
+                        vector = ArbitraryRotate(vector, glm::radians(-90.0f), rotationVector);
+                        o[ 0] = vector.x;
+                        o[ 1] = vector.y;
+                        o[ 2] = vector.z;
                         
-                        vector.x = o[ 3];	vector.y = o[ 4];	vector.z = o[ 5];
-                        vector =  ArbitraryRotate(vector, -90*deg2rad, rotationVector);
-                        o[ 3] = vector.x;	o[ 4] = vector.y;	o[ 5] = vector.z;
+                        vector.x = o[ 3];
+                        vector.y = o[ 4];
+                        vector.z = o[ 5];
+                        vector = ArbitraryRotate(vector, glm::radians(-90.0f), rotationVector);
+                        o[ 3] = vector.x;
+                        o[ 4] = vector.y;
+                        o[ 5] = vector.z;
                         
                         // Compute normal vector
                         o[6] = o[1]*o[5] - o[2]*o[4];
                         o[7] = o[2]*o[3] - o[0]*o[5];
                         o[8] = o[0]*o[4] - o[1]*o[3];
                         
-                        orientation[0] = o[0];  orientation[1] = o[1];  orientation[2] = o[2];
-                        orientation[3] = o[3];  orientation[4] = o[4];  orientation[5] = o[5];
+                        for (int i=0; i<6; i++)
+                            orientation[i] = o[i];
                     }
                     
                     //Pixels data

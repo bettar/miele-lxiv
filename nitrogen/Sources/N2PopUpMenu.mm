@@ -258,9 +258,18 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     
     NSRect viewFrame = [_view.window convertRectToScreen:[_view convertRect:_view.bounds toView:nil]];
 
-    NSRect f = NSMakeRect(viewFrame.origin.x, viewFrame.origin.y, totContentSize.width, MIN(availableSize.height, totContentSize.height)+PopUpWindowBorder.height*2+extraH);
-    if (f.origin.y+f.size.height > screenFrame.origin.y+screenFrame.size.height) f.origin.y += (screenFrame.origin.y+screenFrame.size.height)-(f.origin.y+f.size.height);
-    if (f.origin.y < screenFrame.origin.y) f.origin.y = screenFrame.origin.y;
+    NSRect f = NSMakeRect(viewFrame.origin.x,
+                          viewFrame.origin.y,
+                          totContentSize.width,
+                          MIN(availableSize.height, totContentSize.height)+PopUpWindowBorder.height*2+extraH);
+
+    if (NSMaxY(f) > NSMaxY(screenFrame))
+    {
+        f.origin.y += NSMaxY(screenFrame) - NSMaxY(f);
+    }
+
+    if (NSMinY(f) < NSMinY(screenFrame))
+        f.origin.y = NSMinY(screenFrame);
 
     // try keeping the same top origin
     /*if (!NSEqualRects(fo, NSZeroRect))
@@ -272,16 +281,18 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
         NSPoint p = NSMakePoint(viewFrame.origin.x+viewFrame.size.width/2, viewFrame.origin.y+viewFrame.size.height/2);
         NSInteger d = (f.origin.y+itemHeight/2)-p.y;
         d = ABS(d);
-        d = d%(int)itemHeight-PopUpWindowBorder.height;
-        if (d) f.origin.y += d;
+        d = d % (int)itemHeight-PopUpWindowBorder.height;
+        if (d)
+            f.origin.y += d;
+
         f.origin.x -= (PopUpWindowBorder.width-6);
     }
     
     while (f.origin.y < screenFrame.origin.y)
         f.origin.y += itemHeight;
+
     while (f.origin.y+f.size.height > screenFrame.origin.y+screenFrame.size.height)
         f.size.height -= itemHeight;
-    
     
     if (!NSEqualRects(self.window.frame, f))
         [self.window setFrame:f display:NO];
@@ -371,7 +382,9 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
                 [self.window setFrame:wf display:NO];
                 [_sView setFrame:vf];
             }
+
             d = _sView.documentVisibleRect.origin.y - _sView.contentView.documentRect.origin.y;
+
             if (d < 0) {
                 wf.origin.y += d;
                 wf.size.height -= d;
@@ -642,7 +655,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     
     NSMutableArray* lcwords = [NSMutableArray array];
     for (NSString* word in words)
-        if (word.length)
+        if (word.length > 0)
             [lcwords addObject:word.lowercaseString];
     
     BOOL somethingIsAvailable = NO;
@@ -650,7 +663,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
         NSString* lctitle = mi.title.lowercaseString;
         BOOL matchedAllWords = YES;
         for (NSString* word in lcwords)
-            if (word.length) {
+            if (word.length > 0) {
                 if (![lctitle contains:word])
                     matchedAllWords = NO;
             }
@@ -686,7 +699,8 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
                       [NSColor selectedMenuItemTextColor], NSForegroundColorAttributeName,
                       controlView.font, NSFontAttributeName,
                       nil];
-    } else {
+    }
+    else {
         attributes = [NSDictionary dictionaryWithObjectsAndKeys:
                       [NSColor controlTextColor], NSForegroundColorAttributeName,
                       controlView.font, NSFontAttributeName,
@@ -704,7 +718,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     
     cellFrame.origin.x += 9;
 
-    cellFrame.size.width += PopUpWindowBorder.width; // see insetrect in next line...
+    cellFrame.size.width += PopUpWindowBorder.width; // see NSInsetRect in next line...
     [super drawWithFrame:NSInsetRect(cellFrame, PopUpWindowBorder.width, 0) inView:controlView];
     
     [NSGraphicsContext.currentContext restoreGraphicsState];
@@ -786,7 +800,8 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     [self mouseMovedToWindowLocation:[event locationInWindow]];
 }
 
-- (void)mouseMovedToWindowLocation:(NSPoint)windowLocation {
+- (void)mouseMovedToWindowLocation:(NSPoint)windowLocation
+{
     NSInteger row, col;
     
     if (![self getRow:&row column:&col forPoint:[self convertPoint:windowLocation fromView:nil]])
@@ -795,7 +810,8 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     [self highlightItemAtRow:row scroll:NO];
 }
 
-- (void)highlightItemAtRow:(NSInteger)row scroll:(BOOL)scroll {
+- (void)highlightItemAtRow:(NSInteger)row scroll:(BOOL)scroll
+{
 //    if (row == _highlightedCellRow)
 //        return;
     
@@ -922,24 +938,28 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
         [self scrollToEndOfDocument:nil]; // this is ugly...
 }
 
-- (void)moveUp:(id)sender {
+- (void)moveUp:(id)sender
+{
     NSInteger row = _highlightedCellRow;
     if (row == NSNotFound)
         row = self.numberOfRows-1;
     else if (row == 0)
         return;
-    else --row;
+
+    --row;
+
     [self highlightItemAtRow:row scroll:YES];
-    
 }
 
-- (void)moveDown:(id)sender {
+- (void)moveDown:(id)sender
+{
     NSInteger row = _highlightedCellRow;
     if (row == NSNotFound)
         row = 0;
     else if (row == self.numberOfRows-1)
         return;
-    else ++row;
+
+    ++row;
     [self highlightItemAtRow:row scroll:YES];
 }
 

@@ -162,12 +162,12 @@ static NSMutableArray *pluginWithHTTPResponses = nil;
 
 -(DicomDatabase*)independentDicomDatabase
 {
-    if( [NSThread isMainThread])
+    if ([NSThread isMainThread])
         return self.portal.dicomDatabase;
     
     if (_independentDicomDatabase)
     {
-        if( [NSThread currentThread] != _independentDicomDatabaseThread)
+        if ([NSThread currentThread] != _independentDicomDatabaseThread)
             N2LogStackTrace( @"***************** [NSThread currentThread] != _independentDicomDatabaseThread");
         
         return _independentDicomDatabase;
@@ -233,7 +233,7 @@ static NSMutableArray *pluginWithHTTPResponses = nil;
 	if (!self.portal.usesSSL && [requestedHost hasSuffix:@":80"]) requestedHost = [requestedHost substringWithRange:NSMakeRange(0,requestedHost.length-3)];
 	if (self.portal.usesSSL && [requestedHost hasSuffix:@":443"]) requestedHost = [requestedHost substringWithRange:NSMakeRange(0,requestedHost.length-4)];
     
-    if( requestedHost == nil)
+    if (requestedHost == nil)
         return self.portal.URL;
     else
     {
@@ -315,7 +315,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
         {
             NSNumber *v = [plugin performSelector: @selector(isPasswordProtected:forConnection:) withObject: path withObject: self];
             
-            if( v)
+            if (v)
                 return [v boolValue];
         }
     }
@@ -394,8 +394,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
     return str;
 }
 
-+(NSDictionary*)ExtractParams:(NSString*)paramsString {
-	if (!paramsString.length)
++(NSDictionary*)ExtractParams:(NSString*)paramsString
+{
+	if (paramsString.length == 0)
 		return [NSDictionary dictionary];
 	
 	NSArray* paramsArray = [paramsString componentsSeparatedByString:@"&"];
@@ -406,7 +407,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		NSArray* paramArray = [param componentsSeparatedByString:@"="];
 		
 		NSString* paramName = [[[paramArray objectAtIndex:0] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-		if (!paramName.length)
+		if (paramName.length == 0)
 			continue;
 		
 		NSString* paramValue = paramArray.count > 1? [[[paramArray objectAtIndex:1] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] : (NSString*)[NSNull null];
@@ -463,14 +464,17 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 //	BOOL isIOS [userAgent contains:@"iPhone"] || [userAgent contains:@"iPad"];	
 //	BOOL isMacOS [userAgent contains:@"Mac OS"];	
 
-	NSString* ext = [requestedPath pathExtension];
+	NSString *ext = [requestedPath pathExtension];
 	if ([ext compare:@"jar" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
 		response.mimeType = @"application/java-archive";
-	if ([ext compare:@"swf" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
+
+    if ([ext compare:@"swf" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
 		response.mimeType = @"application/x-shockwave-flash";
-    if( [ext compare:@"css" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
+
+    if ([ext compare:@"css" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
         response.mimeType = @"text/css";
-    if( [ext compare:@"js" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
+
+    if ([ext compare:@"js" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
         response.mimeType = @"application/javascript";
 	
 //    [response.httpHeaders setObject: @"no-cache" forKey: @"Cache-Control"];
@@ -483,7 +487,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		response.statusCode = 404;
 		#endif
 	}
-	else if ([requestedPath rangeOfString:@".pvt."].length)
+	else if ([requestedPath rangeOfString:@".pvt."].length > 0)
     {
 		response.statusCode = 404;
 	}
@@ -493,23 +497,23 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
         @try
         {
             // Maybe a plugin has an answer ?
-            if( pluginWithHTTPResponses == nil)
+            if (pluginWithHTTPResponses == nil)
             {
                 pluginWithHTTPResponses = [[NSMutableArray alloc] init];
                 for( id key in [PluginManager installedPlugins])
                 {
                     id plugin = [[PluginManager installedPlugins] objectForKey:key];
                     
-                    if( [plugin respondsToSelector:@selector(httpResponseForPath:forConnection:)])
+                    if ([plugin respondsToSelector:@selector(httpResponseForPath:forConnection:)])
                         [pluginWithHTTPResponses addObject: plugin];
                 }
             }
             
-            for( id plugin in pluginWithHTTPResponses)
+            for (id plugin in pluginWithHTTPResponses)
             {
                 NSData *data = [plugin performSelector: @selector(httpResponseForPath:forConnection:) withObject: requestedPath withObject: self];
                 
-                if( data.length)
+                if (data.length > 0)
                 {
                     response.data = data;
                     handledByPlugin = YES;
@@ -521,7 +525,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             N2LogException( exception);
         }
         
-        if( handledByPlugin == NO)
+        if (handledByPlugin == NO)
         {
             @try
             {
@@ -753,7 +757,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	{
 		DicomFile *f = [[[DicomFile alloc] init: oFile DICOMOnly: YES] autorelease];
 		
-		if( f)
+		if (f)
 		{
 			file = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
 				
@@ -803,8 +807,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 								if ([[study valueForKey: @"type"] isEqualToString:@"Series"])
 									study = [study valueForKey:@"study"];
 								
-                                if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || 
-                                   [studiesArrayPatientUID indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) { if( [obj compare: [study valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) return YES; else return NO;}] == NSNotFound)
+                                if ([studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound ||
+                                   [studiesArrayPatientUID indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) { if ([obj compare: [study valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) return YES; else return NO;}] == NSNotFound)
 								{
 									NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: user.managedObjectContext];
 									
@@ -831,13 +835,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 							}
 						}
 						
-						if( user.name && [[NSUserDefaults standardUserDefaults] boolForKey: @"WebServerTagUploadedStudiesWithUsername"])
+						if (user.name && [[NSUserDefaults standardUserDefaults] boolForKey: @"WebServerTagUploadedStudiesWithUsername"])
 						{
 							for ( NSManagedObject *study in studies)
 							{
 								NSString *comment = [study valueForKey: @"comment"];
 								
-								if( comment == nil)
+								if (comment == nil)
 									comment = [NSString string];
 									
 								comment = [comment stringByAppendingString: NSLocalizedString( @"Uploaded by ", nil)];
@@ -901,13 +905,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			if ([[postDataChunk subdataWithRange:searchRange] isEqualToData:separatorData])
 			{
 				NSRange newDataRange = {static_cast<NSUInteger>(dataStartIndex), static_cast<NSUInteger>(i - dataStartIndex)};
-				if( i >= dataStartIndex)
+				if (i >= dataStartIndex)
 				{
 					dataStartIndex = i + l;
 					i += l - 1;
 					NSData *newData = [postDataChunk subdataWithRange:newDataRange];
 					
-					if ([newData length])
+					if ([newData length] > 0)
 					{
 						[multipartData addObject:newData];
 					}
@@ -925,13 +929,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 							NSRange filenameRange = [postInfo rangeOfString: @"filename"];
 							NSString *extension = nil;
 							
-							if( filenameRange.location != NSNotFound)
+							if (filenameRange.location != NSNotFound)
 							{
 								NSString *filename = [postInfo substringFromIndex: filenameRange.location + filenameRange.length];
 								
 								NSArray *components = [filename componentsSeparatedByString: @"\""];
 								
-								if( components.count >= 3)
+								if (components.count >= 3)
 									extension = [[components objectAtIndex: 1] pathExtension];
 
                                 NSString *root = NSTemporaryDirectory();
@@ -999,7 +1003,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		
 		@try
 		{
-			if( [[multipartData lastObject] isKindOfClass: [NSFileHandle class]])
+			if ([[multipartData lastObject] isKindOfClass: [NSFileHandle class]])
 				[(NSFileHandle*)[multipartData lastObject] writeData: [postDataChunk subdataWithRange: fileDataRange]];
 			else
 			{
@@ -1066,19 +1070,19 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             
 			if (username && token) // has token, user exists
             {
-				if( [url hasPrefix: @"/movie."])
+				if ([url hasPrefix: @"/movie."])
                     self.session = [self.portal sessionForUsername:username token:token doConsume: NO]; //We keep the token valid for video players...iOS uses multiple range GET requests
                 else
                     self.session = [self.portal sessionForUsername:username token:token];
             }
-            else if( token)
+            else if (token)
             {
                 WebPortalSession* temp = [self.portal sessionForId: [token uppercaseString]];
                 if (temp)
                     self.session = temp;
             }
             
-//            else if( username && sha1 && token == nil) //username and password in http request : major security breach... no way to tell the web browser to not store the URL in the history -- http://stackoverflow.com/questions/3178715/
+//            else if (username && sha1 && token == nil) //username and password in http request : major security breach... no way to tell the web browser to not store the URL in the history -- http://stackoverflow.com/questions/3178715/
 //            {
 //                if (username.length && sha1.length)
 //                {
@@ -1088,7 +1092,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 //                    
 //                    NSString* sha1internal = self.user.passwordHash;
 //                    
-//                    if( [sha1internal length] > 0 && [sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame)
+//                    if ([sha1internal length] > 0 && [sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame)
 //                    {
 //                        [self.session setObject:username forKey:SessionUsernameKey];
 //                        [self.session deleteChallenge];
@@ -1118,7 +1122,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             
             BOOL authenticatedByPlugin = NO;
             
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AllowPluginAuthenticationForWebPortal"]) // Authentication through a plugin? For example, add an LDAP plugin...
+            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AllowPluginAuthenticationForWebPortal"]) // Authentication through a plugin? For example, add an LDAP plugin...
             {
                 for (id key in [PluginManager installedPlugins])
                 {
@@ -1128,7 +1132,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                     {
                         WebPortalUser *u = [plugin performSelector: @selector(authenticateConnection: parameters:) withObject: self withObject: params];
                         
-                        if( u)
+                        if (u)
                         {
                             authenticatedByPlugin = YES;
                             
@@ -1143,7 +1147,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                 }
             }
             
-            if( authenticatedByPlugin == NO && username.length && sha1.length)
+            if (authenticatedByPlugin == NO &&
+                username.length > 0 &&
+                sha1.length > 0)
             {
                 NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"User"];
                 r.predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", username];
@@ -1153,7 +1159,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                 
                 NSString* sha1internal = self.user.passwordHash;
                 
-                if( [sha1internal length] > 0 && [sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame)
+                if ([sha1internal length] > 0 && [sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame)
                 {
                     [self.session setObject: self.user.objectID forKey:SessionUserIDKey];
                     [self.session setObject:username forKey:SessionUsernameKey];
@@ -1185,9 +1191,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
     {
 		self.user = (WebPortalUser*) [self.portal.database.independentContext objectWithID: [session objectForKey:SessionUserIDKey]];
         
-        if( [session objectForKey: SessionLastActivityDateKey])
+        if ([session objectForKey: SessionLastActivityDateKey])
         {
-            if( [[NSDate date] timeIntervalSinceDate: [session objectForKey: SessionLastActivityDateKey]] > [[NSUserDefaults standardUserDefaults] integerForKey: @"WebServerTimeOut"])
+            if ([[NSDate date] timeIntervalSinceDate: [session objectForKey: SessionLastActivityDateKey]] > [[NSUserDefaults standardUserDefaults] integerForKey: @"WebServerTimeOut"])
             {
                 [self.session setObject: nil forKey:SessionUserIDKey]; // logout
                 [self.session setObject: nil forKey:SessionUsernameKey]; // logout
@@ -1210,7 +1216,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	NSString *webPortalDefaultTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"WebPortalTitle"];
 	
-	if( webPortalDefaultTitle.length == 0)
+	if (webPortalDefaultTitle.length == 0)
 		webPortalDefaultTitle = NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title");
 	
 	[response.tokens setObject: webPortalDefaultTitle forKey:@"PageTitle"]; // the default title

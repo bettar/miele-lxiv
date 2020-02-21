@@ -1027,7 +1027,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                     if( output->GetNumberOfLines() > 3)
                     {
                         long ii;
-                        ROI *newROI = [srcViewer newROI: tCPolygon];
+                        ROI *newROI = [srcViewer newROI: tClosedPolygon];
                         NSMutableArray *points = [newROI points];
                         
                         for ( ii = 0; ii < output->GetNumberOfLines(); ii+=2)

@@ -214,19 +214,19 @@ static NSString* DefaultWebPortalDatabasePath = nil;
             NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
             NSString *s = [NSString stringWithFormat:@"~/Library/Application Support/%@ App/WebServicesHTML", bundleName];
             [dirsToScanForFiles addObject: [s stringByExpandingTildeInPath]];
-            NSLog(@"%s line %i, dirsToScanForFiles:%@", __FUNCTION__ , __LINE__, dirsToScanForFiles);
+            //NSLog(@"%s line %i, dirsToScanForFiles:%@", __FUNCTION__ , __LINE__, dirsToScanForFiles);
         }
 #else
         if (NSUserDefaults.webPortalPrefersCustomWebPages) {
             NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
             NSString *s = [NSString stringWithFormat:@"~/Library/Application Support/%@/WebServicesHTML", bundleName];
             [dirsToScanForFiles addObject: [s stringByExpandingTildeInPath]];
-            NSLog(@"%s line %i, dirsToScanForFiles:%@", __FUNCTION__ , __LINE__, dirsToScanForFiles);
+            //NSLog(@"%s line %i, dirsToScanForFiles:%@", __FUNCTION__ , __LINE__, dirsToScanForFiles);
         }
 #endif
         [dirsToScanForFiles addObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"WebServicesHTML"]];
         webPortal.dirsToScanForFiles = dirsToScanForFiles;
-        NSLog(@"%s line %i, dirsToScanForFiles:%@", __FUNCTION__ , __LINE__, dirsToScanForFiles);
+        //NSLog(@"%s line %i, dirsToScanForFiles:%@", __FUNCTION__ , __LINE__, dirsToScanForFiles);
     }
     else if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalRequiresAuthenticationDefaultsKey)])
         

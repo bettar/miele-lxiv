@@ -16,6 +16,8 @@
 
 #import "mgl.h" // include first
 
+#import "GLRenderer.h"
+
 #import "OSIMaskROI.h"
 #import "CPRGenerator.h"
 #import "CPRGeneratorRequest.h"
@@ -324,27 +326,44 @@
      pixelFormat:(CGLPixelFormatObj)pixelFormat
 dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
-    OSIROIMaskRun maskRun;
-    NSData *maskRunsData;
-    N3Vector minCorner;
-    NSInteger runsCount;
-    const OSIROIMaskRun *maskRunsBytes;
-    double widthIndex;
-    double maxWidthIndex;
-    double heightIndex;
-    double depthIndex;
-
     if (self.fillColor == nil)
         return;
 
     NSColor *deviceColor = [self.fillColor colorUsingColorSpaceName:NSDeviceRGBColorSpace];
 
-    maskRunsData = [self _maskRunsDataForSlab:slab dicomToPixTransform:dicomToPixTransform minCorner:&minCorner];
+    N3Vector minCorner;
+    NSData *maskRunsData = [self _maskRunsDataForSlab:slab dicomToPixTransform:dicomToPixTransform minCorner:&minCorner];
 
-    if ([maskRunsData length] == 0) {
+    if ([maskRunsData length] == 0)
         return;
+
+    NSInteger runsCount = [maskRunsData length] / sizeof(OSIROIMaskRun);
+    const OSIROIMaskRun *maskRunsBytes = (const OSIROIMaskRun *)[maskRunsData bytes];
+
+    const int nPoints = 4 * runsCount;
+    glm::vec3 pA[nPoints];
+    int idx = 0;
+    for (NSInteger i = 0; i < runsCount; i++) {
+        OSIROIMaskRun maskRun = maskRunsBytes[i];
+
+        double widthIndex = (double)maskRun.widthRange.location + minCorner.x;
+        double maxWidthIndex = widthIndex + (double)maskRun.widthRange.length;
+        double heightIndex = (double)maskRun.heightIndex + minCorner.y;
+        double depthIndex = maskRun.depthIndex;
+
+        pA[idx++] = glm::vec3(widthIndex, heightIndex, depthIndex);
+        pA[idx++] = glm::vec3(maxWidthIndex, heightIndex, depthIndex);
+        pA[idx++] = glm::vec3(maxWidthIndex, heightIndex + 1.0, depthIndex);
+        pA[idx++] = glm::vec3(widthIndex, heightIndex + 1.0, depthIndex);
     }
 
+    assert(idx == nPoints);
+
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (int i=0; i<nPoints; i++)
+        [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec3)]];
+    
+    // OpenGL
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 #ifndef WITH_OPENGL_32
@@ -355,29 +374,12 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glColor4f((float)[deviceColor redComponent],
-              (float)[deviceColor greenComponent],
-              (float)[deviceColor blueComponent],
-              (float)[deviceColor alphaComponent]);
+    renderer_set_rgba((float)[deviceColor redComponent],
+                      (float)[deviceColor greenComponent],
+                      (float)[deviceColor blueComponent],
+                      (float)[deviceColor alphaComponent]);
 
-    runsCount = [maskRunsData length] / sizeof(OSIROIMaskRun);
-    maskRunsBytes = (const OSIROIMaskRun *)[maskRunsData bytes];
-    glBegin(GL_QUADS);
-    {
-        for (NSInteger i = 0; i < runsCount; i++) {
-            maskRun = maskRunsBytes[i];
-            widthIndex = (double)maskRun.widthRange.location + minCorner.x;
-            maxWidthIndex = widthIndex + (double)maskRun.widthRange.length;
-            heightIndex = (double)maskRun.heightIndex + minCorner.y;
-            depthIndex = maskRun.depthIndex;
-
-            glVertex3d(widthIndex, heightIndex, depthIndex);
-            glVertex3d(maxWidthIndex, heightIndex, depthIndex);
-            glVertex3d(maxWidthIndex, heightIndex + 1.0, depthIndex);
-            glVertex3d(widthIndex, heightIndex + 1.0, depthIndex);
-        }
-    }
-    glEnd();
+    renderer_drawQuads_xyz([pArray copy]);
 
     glDisable(GL_LINE_SMOOTH);
     glDisable(GL_POLYGON_SMOOTH);
@@ -456,7 +458,7 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
     sliceRequest.pixelsWide = width;
     sliceRequest.pixelsHigh = height;
     sliceRequest.slabWidth = slab.thickness;
-    sliceRequest.projectionMode = CPRProjectionModeMIP;
+    sliceRequest.projectionMode = CPR_PROJECTION_MODE_MIP;
     sliceRequest.interpolationMode = CPRInterpolationModeNearestNeighbor;
 
     sliceRequest.sliceToDicomTransform = N3AffineTransformConcat(N3AffineTransformMakeTranslation(minCorner.x + 0.5, minCorner.y + 0.5, 0), N3AffineTransformInvert(dicomToPixTransform));

@@ -138,7 +138,7 @@
     NSRect usefulRect = NSZeroRect;
     
     if (screen)
-        usefulRect = [AppController usefullRectForScreen: screen];
+        usefulRect = [AppController usefulRectForScreen: screen];
     
     if (fabs(screenPoint.x - draggingStartingPoint.x) > 50 &&
         [w.windowController isKindOfClass: [ThumbnailsListPanel class]] == NO &&

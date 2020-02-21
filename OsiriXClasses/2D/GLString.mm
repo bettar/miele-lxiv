@@ -59,6 +59,8 @@
 
 #import "mgl.h" // include first
 
+#import "GLRenderer.h"
+
 #import "GLString.h"
 #import "N2Debug.h"
 
@@ -106,9 +108,9 @@
 
 - (void) deleteTexture
 {
-	if (texName && cgl_ctx) {
-		(*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &texName);
-		texName = 0; // ensure it is zeroed for failure cases
+	if (textureID && cgl_ctx) {
+		(*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &textureID);
+		textureID = 0; // ensure it is zeroed for failure cases
 		cgl_ctx = 0;
 	}
 }
@@ -124,7 +126,7 @@
 	[textColor release];
 	[boxColor release];
 	[borderColor release];
-	[string release];
+	[_attrString release];
 	[bitmap release];
 	[super dealloc];
 }
@@ -138,19 +140,17 @@
 {
 	self = [super init];
 	cgl_ctx = NULL;
-	texName = 0;
-	texSize.width = 0.0f;
-	texSize.height = 0.0f;
+	textureID = 0;
+	texSize = NSZeroSize;
 	[attributedString retain];
-	string = attributedString;
+	_attrString = attributedString;
 	[box retain];
 	[border retain];
 	boxColor = box;
 	borderColor = border;
 	staticFrame = NO;
 	antialias = YES;
-	marginSize.width = 4.0f; // standard margins
-	marginSize.height = 2.0f;
+    marginSize = NSMakeSize(4.0f, 2.0f);  // standard margins
 	cRadius = 4.0f;
 	requiresUpdate = YES;
 	// all other variables 0 or NULL
@@ -189,15 +189,15 @@
                           withBorderColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f]];
 }
 
+#pragma mark -
+
 - (void) genTexture; // generates the texture without drawing texture to current context
 {
-	NSImage * image;
-	
 	if ((NO == staticFrame) &&
         (0.0f == frameSize.width) &&
         (0.0f == frameSize.height)) // find frame size if we have not already found it
     {
-		frameSize = [string size]; // current string size
+		frameSize = [_attrString size]; // current string size
         
         frameSize.width = (int) frameSize.width;
         frameSize.height = (int) frameSize.height;
@@ -206,7 +206,7 @@
 		frameSize.height += marginSize.height * 2.0f;
 	}
     
-	image = [[NSImage alloc] initWithSize:frameSize];
+    NSImage *image = [[NSImage alloc] initWithSize:frameSize];
 	if ([image size].width > 0 &&
         [image size].height > 0)
 	{
@@ -229,7 +229,7 @@
 		}
 		
 		[textColor set]; 
-		[string drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)]; // draw at offset position
+		[_attrString drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)]; // draw at offset position
 
 		[bitmap release];
 		bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
@@ -238,46 +238,94 @@
 		
 		texSize.width = [bitmap pixelsWide];
 		texSize.height = [bitmap pixelsHigh];
+        
+//#ifdef DEBUG_TEXTURE_BITMAP
+//        if ([_attrString.string isEqualToString:@" 1 "])
+//        {
+//            NSLog(@"%s %d <%@> %@, SPP:%ld, BPS:%ld, PPR:%ld", __FUNCTION__, __LINE__,
+//                  _attrString.string,
+//                  NSStringFromSize(bitmap.size),
+//                  (long)bitmap.samplesPerPixel, // 4
+//                  (long)bitmap.bitsPerSample, // 8
+//                  (long)[bitmap pixelsWide]); // pixels per row
+//
+//            unsigned int *bmp = (unsigned int *)self->bitmap.bitmapData;
+//            int n = self->bitmap.size.width;
+//            int j=0;
+//            for (int i=0; i<(n * self->bitmap.size.height); i++) {
+//                if ((i%n) == 0) {
+//                    printf("\n%d-%2d)\t", j, i);
+//                    j++;
+//                }
+//                printf("%8x ", bmp[i]);
+//            }
+//            printf("\n\n");
+//        }
+//#endif
 		
-		if ((cgl_ctx = CGLGetCurrentContext ())) // if we successfully retrieve a current context (required)
+        cgl_ctx = CGLGetCurrentContext();
+		if (!cgl_ctx)
+            NSLog(@"%s StringTexture: Failure to get current OpenGL context\n", __FUNCTION__);
+        else
 		{
+#ifdef WITH_OPENGL_32
+            GLenum target = GL_TEXTURE_RECTANGLE;
+#else
 			glPushAttrib(GL_TEXTURE_BIT);
-			if (0 != texName)
-                glDeleteTextures( 1, &texName);
-
-            glGenTextures (1, &texName);
-			
-#if !defined( WITH_OPENGL_32) || defined( WITH_GLEW) // TODO: GLEW_EXT_texture_rectangle
-			glTexParameterf (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_PRIORITY, 1.0f);
+            GLenum target = GL_TEXTURE_RECTANGLE_EXT;
 #endif
-			glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
+			if (textureID != 0)
+                glDeleteTextures(1, &textureID);
+
+            glGenTextures(1, &textureID);
+			
+#if !defined( WITH_OPENGL_32) || defined( WITH_GLEW)
+			glTexParameterf(target, GL_TEXTURE_PRIORITY, 1.0f);
+#endif
+			glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
             
+#ifndef WITH_OPENGL_32
             // The cached hint specifies to cache texture data in video memory.
             // This hint is recommended when you have textures that you plan to use multiple times or that use linear filtering
-			glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
-			
+			glTexParameteri(target, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+
             // Make a single memory mapping for all of the textures used by the application:
-			glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, texSize.width * texSize.height * 4, [bitmap bitmapData]);
+            glTextureRangeAPPLE(target, texSize.width * texSize.height * 4, [bitmap bitmapData]);
+#endif
 
-            glPixelStorei (GL_UNPACK_ROW_LENGTH, texSize.width);
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, texSize.width);
 			
-			glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
-			
-				glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0,
-                             GL_RGBA,
-                             texSize.width, texSize.height, 0,
-                             [bitmap hasAlpha] ? GL_RGBA : GL_RGB,
-                             GL_UNSIGNED_BYTE,
-                             [bitmap bitmapData]);
+#ifdef WITH_OPENGL_32
+            GLint internalFormat = GL_RGBA8;
+            GLenum format = GL_RGBA;
+#else
+            GLint internalFormat = GL_RGBA;
+            GLenum format = [bitmap hasAlpha] ? GL_RGBA : GL_RGB;
+#endif
 
+            glBindTexture (target, textureID);
+			
+            glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexImage2D(target, 0,
+                         internalFormat,
+                         texSize.width, texSize.height, 0,
+
+                         format,
+                         GL_UNSIGNED_BYTE,
+                         [bitmap bitmapData]);
+
+#ifndef WITH_OPENGL_32
 			glPopAttrib();
+#endif
 		}
-		else
-			NSLog (@"StringTexture -genTexture: Failure to get current OpenGL context\n");
 	}
-    
+        
+#ifdef DEBUG_TEXTURE_BITMAP
+//    if ([_attrString.string isEqualToString:@" 1 "])
+//        [[image TIFFRepresentation] writeToFile: @"/tmp/glstring.tiff" atomically: YES];
+#endif
+
     [image release];
 	requiresUpdate = NO;
 }
@@ -286,7 +334,7 @@
 
 - (GLuint) texName
 {
-	return texName;
+	return textureID;
 }
 
 - (NSSize) texSize
@@ -366,7 +414,7 @@
         (0.0f == frameSize.width) &&
         (0.0f == frameSize.height)) // find frame size if we have not already found it
     {
-		frameSize = [string size]; // current string size
+		frameSize = [_attrString size]; // current string size
         
         frameSize.width = (int) frameSize.width;
         frameSize.height = (int) frameSize.height;
@@ -384,21 +432,23 @@
 
 #pragma mark - String
 
-- (void) setString:(NSAttributedString *)attributedString // set string after initial creation
+// set string after initial creation
+- (void) setString:(NSAttributedString *)attributedString
 {
 	[attributedString retain];
-	[string release];
-	string = attributedString;
-	if (NO == staticFrame) { // ensure dynamic frame sizes will be recalculated
-		frameSize.width = 0.0f;
-		frameSize.height = 0.0f;
-	}
-	requiresUpdate = YES;
+	[_attrString release];
+	_attrString = attributedString;
+	if (NO == staticFrame) // ensure dynamic frame sizes will be recalculated
+		frameSize = NSZeroSize;
+
+    requiresUpdate = YES;
 }
 
-- (void) setString:(NSString *)aString withAttributes:(NSDictionary *)attribs; // set string after initial creation
+// set string after initial creation
+- (void) setString:(NSString *)aString
+    withAttributes:(NSDictionary *)attribs;
 {
-	if( aString == nil)
+	if (aString == nil)
         aString = @"";
     
 	[self setString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease]];
@@ -421,34 +471,66 @@
 	if (requiresUpdate)
 		[self genTexture];
     
-	if (texName)
-	{
-		glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT); // GL_COLOR_BUFFER_BIT for glBlendFunc, GL_ENABLE_BIT for glEnable / glDisable
-		
-		glDisable (GL_DEPTH_TEST); // ensure text is not removed by depth buffer test.
-		glEnable (GL_BLEND); // for text fading
-		glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // ditto
-		glEnable (GL_TEXTURE_RECTANGLE_EXT);	
-		
-		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
-		glBegin (GL_QUADS);
-        {
-			glTexCoord2f (0.0f, 0.0f); // draw upper left in world coordinates
-			glVertex2f (bounds.origin.x, bounds.origin.y);
-	
-			glTexCoord2f (0.0f, texSize.height); // draw lower left in world coordinates
-			glVertex2f (bounds.origin.x, bounds.origin.y + bounds.size.height);
-	
-			glTexCoord2f (texSize.width, texSize.height); // draw upper right in world coordinates
-			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
-	
-			glTexCoord2f (texSize.width, 0.0f); // draw lower right in world coordinates
-			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
-        }
-		glEnd ();
-		
-		glPopAttrib();
-	}
+	if (textureID == 0)
+        return;
+
+    //NSLog(@"%s %d, bounds:%@ <%@>", __FUNCTION__, __LINE__, NSStringFromRect(bounds), _attrString);
+#ifdef WITH_OPENGL_32
+    GLenum target = GL_TEXTURE_RECTANGLE;
+#else
+    glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT); // GL_COLOR_BUFFER_BIT for glBlendFunc, GL_ENABLE_BIT for glEnable / glDisable
+
+    GLenum target = GL_TEXTURE_RECTANGLE_EXT;
+#endif
+    
+    glDisable (GL_DEPTH_TEST); // ensure text is not removed by depth buffer test.
+    
+#ifdef DEBUG_TEXTURE_WITH_SHADER
+    glDisable(GL_BLEND);
+#else
+    glEnable(GL_BLEND); // for text fading
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // ditto
+#endif
+    
+#ifndef DEBUG_TEXTURE_WITH_SHADER
+#ifndef WITH_OPENGL_32
+    glEnable(target);
+#endif
+    glBindTexture(target, textureID);
+#endif
+    checkOpenGLErrors(__LINE__);
+
+    NSMutableArray *pArray = [NSMutableArray array];
+    
+    // upper left in world coordinates
+    glm::vec2 t = glm::vec2(0,0);
+    glm::vec2 p = glm::vec2(NSMinX(bounds), NSMinY(bounds));
+    glm::vec4 v = glm::vec4(p, t);
+    [pArray addObject: [NSValue valueWithBytes:&v objCType:@encode(glm::vec4)]];
+
+    // lower left in world coordinates
+    t = glm::vec2(0.0f, texSize.height);
+    p = glm::vec2(NSMinX(bounds), NSMaxY(bounds));
+    v = glm::vec4(p, t);
+    [pArray addObject: [NSValue valueWithBytes:&v objCType:@encode(glm::vec4)]];
+
+    // upper right in world coordinates
+    t = glm::vec2(texSize.width, texSize.height);
+    p = glm::vec2(NSMaxX(bounds), NSMaxY(bounds));
+    v = glm::vec4(p, t);
+    [pArray addObject: [NSValue valueWithBytes:&v objCType:@encode(glm::vec4)]];
+
+    // lower right in world coordinates
+    t = glm::vec2(texSize.width, 0.0f);
+    p = glm::vec2(NSMaxX(bounds), NSMinY(bounds));
+    v = glm::vec4(p, t);
+    [pArray addObject: [NSValue valueWithBytes:&v objCType:@encode(glm::vec4)]];
+
+    renderer_drawQuad_xyuv([pArray copy]); // originally GL_QUADS
+
+#ifndef WITH_OPENGL_32
+    glPopAttrib();
+#endif
 }
 
 @end

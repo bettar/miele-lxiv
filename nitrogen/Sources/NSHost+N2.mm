@@ -24,10 +24,10 @@
 
 +(NSHost*)hostWithAddressOrName:(NSString*)str
 {
-    if (![str rangeOfCharacterFromSet:[NSCharacterSet letterCharacterSet]].length)
+    if ([str rangeOfCharacterFromSet:[NSCharacterSet letterCharacterSet]].length == 0)
         return [NSHost hostWithAddress:str];
-	else
-        return [NSHost hostWithName:str];
+
+    return [NSHost hostWithName:str];
 }
 
 @end

@@ -43,15 +43,16 @@
 
 extern void setvtkMeanIPMode( int m);
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
-static float deg2rad = M_PI/180.0; 
 
 @implementation MPRController
 
 @synthesize dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
 @synthesize dcmmN, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit, verticalSplit, lowLOD;
-@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable, dcmBatchReverse, dcmIntervalMin, dcmIntervalMax;
+@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, dcmFormat, blendingModeAvailable, dcmBatchReverse, dcmIntervalMin, dcmIntervalMax;
+//@synthesize blendingMode;
 
+// Returns angle in degrees
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
 	double sc[ 2];
@@ -66,7 +67,7 @@ static float deg2rad = M_PI/180.0;
 	sc[ 0 ] = a[ 0] * orientation[ 0 ] + a[ 1] * orientation[ 1 ] + a[ 2] * orientation[ 2 ];
 	sc[ 1 ] = a[ 0] * orientation[ 3 ] + a[ 1] * orientation[ 4 ] + a[ 2] * orientation[ 5 ];
 	
-	return ((atan2( sc[1], sc[0])) / deg2rad);
+	return glm::degrees(atan2(sc[1], sc[0]));
 }
 
 - (DCMPix*) emptyPix: (DCMPix*) oP width: (long) w height: (long) h
@@ -173,7 +174,7 @@ static float deg2rad = M_PI/180.0;
 			[blendedMprView3 setWLWW: [[fusedViewer2D imageView] curDCM].wl :[[fusedViewer2D imageView] curDCM].ww];
 			
 			self.blendingPercentage = 50;
-			self.blendingMode = 0;
+			_blendingMode = BLENDING_MODE_LINEAR_FUSION;
 		}
 		
 		hiddenVRController = [[VRController alloc] initWithPix:pix
@@ -235,23 +236,23 @@ static float deg2rad = M_PI/180.0;
 		self.dcmRotationDirection = 0;
 		self.dcmRotation = 360;
 		self.dcmSeriesName = @"MPR";
-		float r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3;
-		r1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_RED"];
-		g1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_GREEN"];
-		b1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_BLUE"];
-		a1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_ALPHA"];
+
+        float r1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_RED"];
+		float g1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_GREEN"];
+		float b1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_BLUE"];
+		float a1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_ALPHA"];
 		
-		r2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_RED"];
-		g2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_GREEN"];
-		b2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_BLUE"];
-		a2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_ALPHA"];
+		float r2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_RED"];
+		float g2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_GREEN"];
+		float b2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_BLUE"];
+		float a2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_ALPHA"];
 		
-		r3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_RED"];
-		g3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_GREEN"];
-		b3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_BLUE"];
-		a3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_ALPHA"];
+		float r3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_RED"];
+		float g3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_GREEN"];
+		float b3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_BLUE"];
+		float a3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_ALPHA"];
 		
-		if(r1==0.0 && g1==0.0 && b1==0.0 && a1==0.0 && r2==0.0 && g2==0.0 && b2==0.0 && a2==0.0 && r3==0.0 && g3==0.0 && b3==0.0 && a3==0.0)
+		if (r1==0.0 && g1==0.0 && b1==0.0 && a1==0.0 && r2==0.0 && g2==0.0 && b2==0.0 && a2==0.0 && r3==0.0 && g3==0.0 && b3==0.0 && a3==0.0)
 		{
 			r1 = 1.0; g1 = 0.67; b1 = 0.0; a1 = 0.8;
 			r2 = 0.6; g2 = 0.0; b2 = 1.0; a2 = 0.8;
@@ -705,21 +706,32 @@ static float deg2rad = M_PI/180.0;
 		if( sender == mprView1)
 		{
 			float angle = mprView1.angleMPR;
-			XYZ vector, rotationVector;
-			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
+            XYZ vector;
+            XYZ rotationVector;
+			rotationVector.x = cos[ 6];
+            rotationVector.y = cos[ 7];
+            rotationVector.z = cos[ 8];
 			
-			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
-			vector =  ArbitraryRotate(vector, (angle-180.)*deg2rad, rotationVector);
-			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
+			vector.x = cos[ 3];
+            vector.y = cos[ 4];
+            vector.z = cos[ 5];
+			vector =  ArbitraryRotate(vector, glm::radians(angle-180.), rotationVector);
+			x = position.x + vector.x;
+            y = position.y + vector.y;
+            z = position.z + vector.z;
 			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
 			// Correct slice position according to slice center (VR: position is the beginning of the slice)
 			Point3D *p = mprView2.camera.position;
 			mprView2.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
 			
-			vector.x = cos[ 0];	vector.y = cos[ 1];	vector.z = cos[ 2];
-			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
-			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
+			vector.x = cos[ 0];
+            vector.y = cos[ 1];
+            vector.z = cos[ 2];
+			vector =  ArbitraryRotate(vector, glm::radians(angle), rotationVector);
+			x = position.x + vector.x;
+            y = position.y + vector.y;
+            z = position.z + vector.z;
 			mprView3.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
 			// Correct slice position according to slice center (VR: position is the beginning of the slice)
@@ -730,21 +742,32 @@ static float deg2rad = M_PI/180.0;
 		if( sender == mprView2)
 		{
 			float angle = mprView2.angleMPR;
-			XYZ vector, rotationVector;
-			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
+            XYZ vector;
+            XYZ rotationVector;
+			rotationVector.x = cos[ 6];
+            rotationVector.y = cos[ 7];
+            rotationVector.z = cos[ 8];
 			
-			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
-			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
-			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
+			vector.x = cos[ 3];
+            vector.y = cos[ 4];
+            vector.z = cos[ 5];
+			vector =  ArbitraryRotate(vector, glm::radians(angle), rotationVector);
+			x = position.x + vector.x;
+            y = position.y + vector.y;
+            z = position.z + vector.z;
 			mprView3.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
 			// Correct slice position according to slice center (VR: position is the beginning of the slice)
 			Point3D *p = mprView3.camera.position;
 			mprView3.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
 			
-			vector.x = cos[ 0];	vector.y = cos[ 1];	vector.z = cos[ 2];
-			vector =  ArbitraryRotate(vector, (angle-180.)*deg2rad, rotationVector);
-			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
+			vector.x = cos[ 0];
+            vector.y = cos[ 1];
+            vector.z = cos[ 2];
+			vector =  ArbitraryRotate(vector, glm::radians(angle-180.), rotationVector);
+			x = position.x + vector.x;
+            y = position.y + vector.y;
+            z = position.z + vector.z;
 			mprView1.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
 			// Correct slice position according to slice center (VR: position is the beginning of the slice)
@@ -752,24 +775,34 @@ static float deg2rad = M_PI/180.0;
 			mprView1.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
 		}
 		
-		if( sender == mprView3)
+		if (sender == mprView3)
 		{
 			float angle = mprView3.angleMPR;
 			XYZ vector, rotationVector;
-			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
+			rotationVector.x = cos[ 6];
+            rotationVector.y = cos[ 7];
+            rotationVector.z = cos[ 8];
 			
-			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
-			vector =  ArbitraryRotate(vector, (angle-180.)*deg2rad, rotationVector);
-			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
+			vector.x = cos[ 3];
+            vector.y = cos[ 4];
+            vector.z = cos[ 5];
+			vector =  ArbitraryRotate(vector, glm::radians(angle-180.), rotationVector);
+			x = position.x + vector.x;
+            y = position.y + vector.y;
+            z = position.z + vector.z;
 			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
 			// Correct slice position according to slice center (VR: position is the beginning of the slice)
 			Point3D *p = mprView2.camera.position;
 			mprView2.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
 			
-			vector.x = -cos[ 0];	vector.y = -cos[ 1];	vector.z = -cos[ 2];
-			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
-			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
+			vector.x = -cos[ 0];
+            vector.y = -cos[ 1];
+            vector.z = -cos[ 2];
+			vector =  ArbitraryRotate(vector, glm::radians(angle), rotationVector);
+			x = position.x + vector.x;
+            y = position.y + vector.y;
+            z = position.z + vector.z;
 			mprView1.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
 			// Correct slice position according to slice center (VR: position is the beginning of the slice)
@@ -989,8 +1022,8 @@ static float deg2rad = M_PI/180.0;
 		case tOval:			filename = @"Oval";				break;
 		case tText:			filename = @"Text";				break;
 		case tArrow:		filename = @"Arrow";			break;
-		case tOPolygon:		filename = @"Opened Polygon";	break;
-		case tCPolygon:		filename = @"Closed Polygon";	break;
+		case tOpenPolygon:		filename = @"Open Polygon";	break;
+		case tClosedPolygon:		filename = @"Closed Polygon";	break;
 		case tPencil:		filename = @"Pencil";			break;
 		case t2DPoint:		filename = @"Point";			break;
 		case tPlain:		filename = @"Brush";			break;
@@ -3177,9 +3210,9 @@ static float deg2rad = M_PI/180.0;
 	}
 }
 
-- (void) setBlendingMode: (int) m
+- (void) setBlendingMode: (BlendingMode2DType) m
 {
-	blendingMode = m;
+	_blendingMode = m;
 	
 	[mprView1 setBlendingMode: m];
 	[mprView2 setBlendingMode: m];

@@ -45,7 +45,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 
 + (NSString*) NSreplaceBadCharacter: (NSString*) str
 {
-	if( str == nil)
+	if (str == nil)
         return nil;
 	
 	NSMutableString	*mutable1 = [NSMutableString stringWithString: str];

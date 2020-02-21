@@ -25,23 +25,24 @@
 
 @synthesize group = _group, element = _element, name = _name, vr = _vr;
 
-+ (id) tagWithGroup:(int)group element:(int)element{
++ (id) tagWithGroup:(int)group element:(int)element {
 	return [[[DCMAttributeTag alloc] initWithGroup:group element:element] autorelease];
 }
 
-+ (id) tagWithTag:(DCMAttributeTag *)tag{
++ (id) tagWithTag:(DCMAttributeTag *)tag {
 	return [[[DCMAttributeTag alloc] initWithTag:(DCMAttributeTag *)tag] autorelease];
 }
 
-+ (id) tagWithTagString:(NSString *)tagString{
++ (id) tagWithTagString:(NSString *)tagString {
 	return [[[DCMAttributeTag alloc] initWithTagString:tagString] autorelease];
 }
 
-+ (id) tagWithName:(NSString *)name{
++ (id) tagWithName:(NSString *)name {
 	return [[[DCMAttributeTag alloc] initWithName:name] autorelease];
 }
 
-- (instancetype) initWithGroup:(int)group element:(int)element
+- (instancetype) initWithGroup:(int)group
+                       element:(int)element
 {
     self = [super init];
 	if (self) {
@@ -67,7 +68,7 @@
     return self;
 }
 
-- (id) initWithTag:(DCMAttributeTag *)tag{
+- (id) initWithTag:(DCMAttributeTag *)tag {
 	return [self initWithGroup: tag.group element: tag.element];
 }
 
@@ -94,7 +95,8 @@
 			_name = [(NSString *)CFDictionaryGetValue((CFDictionaryRef)dict, @"Description") retain];
 			_vr =	[(NSString *)CFDictionaryGetValue((CFDictionaryRef)dict, @"VR") retain];
 		}
-		if (!_vr)
+
+        if (!_vr)
 			_vr = [@"UN" retain];
 		/*
 		if (![DCMValueRepresentation isValidVR:_vr])
@@ -114,7 +116,7 @@
     return [self initWithTagString:tagString];
 }
 
-- (id)copyWithZone:(NSZone *)zone{
+- (id)copyWithZone:(NSZone *)zone {
 	return [[DCMAttributeTag allocWithZone:zone] initWithTag:self];
 }
 

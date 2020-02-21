@@ -52,12 +52,12 @@
     float sliceThickness = fabs( [firstObject sliceInterval]);
 	
 	// Find Minimum Value
-	if( [firstObject isRGB] == NO)
+	if ([firstObject isRGB] == NO)
         [self computeMinMax];
 	else
         minimumValue = 0;
     
-    if( sliceThickness == 0)
+    if (sliceThickness == 0)
     {
 		sliceThickness = [firstObject sliceThickness];
 		
@@ -175,14 +175,15 @@
 	nc = [NSNotificationCenter defaultCenter];
 	
 	[nc addObserver: self
-		selector: @selector(remove3DPoint:)
-		name: OsirixRemoveROINotification
-		object: nil];
-	[nc addObserver: self
-		selector: @selector(add3DPoint:)
-		//name: OsirixROIChangeNotification
-		name: OsirixROISelectedNotification
-		object: nil];
+           selector: @selector(remove3DPoint:)
+               name: OsirixRemoveROINotification
+             object: nil];
+
+    [nc addObserver: self
+           selector: @selector(add3DPoint:)
+		     //name: OsirixROIChangeNotification
+               name: OsirixROISelectedNotification
+             object: nil];
 
     [nc addObserver: self
            selector: @selector(UpdateWLWWMenu:)
@@ -194,7 +195,9 @@
                name: OsirixUpdateVolumeDataNotification
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification
+                                                        object: curWLWWMenu
+                                                      userInfo: nil];
 	
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	
@@ -203,7 +206,9 @@
                name: OsirixUpdateCLUTMenuNotification
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification
+                                                        object: curCLUTMenu
+                                                      userInfo: nil];
 	
 	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	
@@ -212,7 +217,9 @@
                name: OsirixUpdateOpacityMenuNotification
              object: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification
+                                                        object: curOpacityMenu
+                                                      userInfo: nil];
 	
 	[nc addObserver: self
            selector: @selector(CLUTChanged:)

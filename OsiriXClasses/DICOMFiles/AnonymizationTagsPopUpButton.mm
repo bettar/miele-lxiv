@@ -33,6 +33,7 @@
 
 #import "N2Debug.h"
 
+// 'AnonymizationTagsPopUpButton' lacks a 'dealloc' instance method but must release 'selectedTag'
 @implementation AnonymizationTagsPopUpButton
 
 @synthesize selectedTag;
@@ -94,7 +95,7 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 				
 				NSString *description;
 				
-				if( [valDescription length])
+				if ([valDescription length] > 0)
 					description = [NSString stringWithFormat:@"%@ - %@ -%@", [tag attrTag].stringValue, [tag attrTag].name, valDescription];
 				else
 					description = [NSString stringWithFormat:@"%@ - %@", [tag attrTag].stringValue, [tag attrTag].name];

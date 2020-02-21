@@ -68,26 +68,24 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
         
 	if ([scanner scanString:@"," intoString:NULL])
 	{
-	  if ([addr length])
+	  if ([addr length] > 0)
 	  {
-	    NSAppleEventDescriptor *record
-              = [NSAppleEventDescriptor listDescriptor];
-	    NSAppleEventDescriptor *userRecord 
-              = [NSAppleEventDescriptor recordDescriptor];
+	    NSAppleEventDescriptor *record = [NSAppleEventDescriptor listDescriptor];
+	    NSAppleEventDescriptor *userRecord = [NSAppleEventDescriptor recordDescriptor];
             
-	    [record insertDescriptor:
-             [NSAppleEventDescriptor descriptorWithString:@"name"] 
-			     atIndex:1];
-	    [record insertDescriptor:
-             [NSAppleEventDescriptor descriptorWithString:name] 
-			     atIndex:2];
-	    [record insertDescriptor:
-             [NSAppleEventDescriptor descriptorWithString:@"address"] 
-			     atIndex:3];
-	    [record insertDescriptor:
-             [NSAppleEventDescriptor descriptorWithString:addr]
-			     atIndex:4];
-	    [userRecord setDescriptor:record forKeyword:keyASUserRecordFields];
+	    [record insertDescriptor: [NSAppleEventDescriptor descriptorWithString:@"name"]
+                         atIndex: 1];
+
+        [record insertDescriptor: [NSAppleEventDescriptor descriptorWithString:name]
+                         atIndex: 2];
+
+        [record insertDescriptor: [NSAppleEventDescriptor descriptorWithString:@"address"]
+                         atIndex: 3];
+
+        [record insertDescriptor: [NSAppleEventDescriptor descriptorWithString:addr]
+                         atIndex: 4];
+
+        [userRecord setDescriptor:record forKeyword:keyASUserRecordFields];
             
 	    [list insertDescriptor:userRecord atIndex:numRecs++];
 	  }
@@ -98,24 +96,15 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
       }
     }
     
-    if ([addr length]) {
-      NSAppleEventDescriptor *record 
-        = [NSAppleEventDescriptor listDescriptor];
-      NSAppleEventDescriptor *userRecord 
-        = [NSAppleEventDescriptor recordDescriptor];
+    if ([addr length] > 0) {
+      NSAppleEventDescriptor *record = [NSAppleEventDescriptor listDescriptor];
+      NSAppleEventDescriptor *userRecord = [NSAppleEventDescriptor recordDescriptor];
       
-      [record insertDescriptor:
-       [NSAppleEventDescriptor descriptorWithString:@"name"] 
-		       atIndex:1];
-      [record insertDescriptor:
-       [NSAppleEventDescriptor descriptorWithString:name] 
-		       atIndex:2];
-      [record insertDescriptor:
-       [NSAppleEventDescriptor descriptorWithString:@"address"] 
-		       atIndex:3];
-      [record insertDescriptor:
-       [NSAppleEventDescriptor descriptorWithString:addr]
-		       atIndex:4];
+      [record insertDescriptor:[NSAppleEventDescriptor descriptorWithString:@"name"]    atIndex:1];
+      [record insertDescriptor:[NSAppleEventDescriptor descriptorWithString:name]       atIndex:2];
+      [record insertDescriptor:[NSAppleEventDescriptor descriptorWithString:@"address"] atIndex:3];
+      [record insertDescriptor:[NSAppleEventDescriptor descriptorWithString:addr]       atIndex:4];
+
       [userRecord setDescriptor:record forKeyword:keyASUserRecordFields];
       
       // Static Analyser false positive
@@ -135,7 +124,7 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 {
     self = [super init];
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"WebServerUseMailAppForEmails"] == NO)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"WebServerUseMailAppForEmails"] == NO)
     {
         if (!defaultSMTPAccount)
         {
@@ -287,7 +276,7 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
     
     NSString *LionPath = [@"~/Library/Mail/V2/MailData/Accounts.plist" stringByExpandingTildeInPath];
     
-    if( [[NSFileManager defaultManager] fileExistsAtPath: LionPath])
+    if ([[NSFileManager defaultManager] fileExistsAtPath: LionPath])
     {
         deliveryAccounts = [[NSDictionary dictionaryWithContentsOfFile: LionPath] objectForKey: @"DeliveryAccounts"];
         mailAccounts = [[NSDictionary dictionaryWithContentsOfFile: LionPath] objectForKey: @"MailAccounts"];
@@ -318,7 +307,7 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
     {
 		NSString *identifier = nil;
         
-        if( [account objectForKey:@"Username"])
+        if ([account objectForKey:@"Username"])
             identifier = [NSString stringWithFormat:@"%@:%@", [account objectForKey:@"Hostname"], [account objectForKey:@"Username"]];
         else
             identifier = [NSString stringWithFormat:@"%@", [account objectForKey:@"Hostname"]];
@@ -333,7 +322,7 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 			continue;
         
 		viableAccount = [[[deliveryAccountsBySMTPIdentifier objectForKey:identifier] mutableCopy] autorelease];
-		if( viableAccount && (found == NO || [[[account objectForKey:@"EmailAddresses"] objectAtIndex: 0] isEqualToString: [[NSUserDefaults standardUserDefaults] objectForKey: @"notificationsEmailsSender"]]))
+		if (viableAccount && (found == NO || [[[account objectForKey:@"EmailAddresses"] objectAtIndex: 0] isEqualToString: [[NSUserDefaults standardUserDefaults] objectForKey: @"notificationsEmailsSender"]]))
         {
 			NSString *bareAddress = [[account objectForKey:@"EmailAddresses"] objectAtIndex:0UL];
 			NSString *name = [account objectForKey:@"FullUserName"];
@@ -343,7 +332,7 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 				viableAccount = nil;
 			}
             
-            if( [[viableAccount objectForKey: @"UseDefaultPorts"] boolValue])
+            if ([[viableAccount objectForKey: @"UseDefaultPorts"] boolValue])
 				[viableAccount removeObjectForKey: @"PortNumber"];
             
             if (viableAccount)
@@ -352,14 +341,14 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
                 NSString *username = [viableAccount valueForKey: @"Username"];
                 NSString *port = [viableAccount valueForKey: @"PortNumber"];
                 
-                if( port == nil)
+                if (port == nil)
                     port = @"0";
                 
                 OSStatus err = noErr;
                 UInt32 passwordLength = 0U;
                 void *passwordBytes = NULL;
                 
-                if( username.length) // Do we need to retrieve a password?
+                if (username.length > 0) // Do we need to retrieve a password?
                 {
                     @try
                     {
@@ -408,7 +397,7 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
                     
                     NSMutableDictionary *tempDictionary = [NSMutableDictionary dictionaryWithDictionary: viableAccount];
                     
-                    if( passwordBytes)
+                    if (passwordBytes)
                     {
                         passwordData = [NSData dataWithBytesNoCopy:passwordBytes length:passwordLength freeWhenDone:NO];
                         [tempDictionary setValue: [[[NSString alloc] initWithData: passwordData encoding: NSUTF8StringEncoding] autorelease] forKey: @"Password"];
@@ -544,12 +533,12 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
   
   NSDictionary* UserHeaders = [[[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.mail"] objectForKey: @"UserHeaders"] mutableCopy] autorelease];
   
-  if( [replyto length])
+  if ([replyto length] > 0)
   {
 	NSMutableDictionary* defaults = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.mail"] mutableCopy] autorelease];
 	NSMutableDictionary* MutableUserHeaders = [[[defaults objectForKey: @"UserHeaders"] mutableCopy] autorelease];
 	
-	if( MutableUserHeaders == nil)
+	if (MutableUserHeaders == nil)
 		MutableUserHeaders = [NSMutableDictionary dictionary];
 	
 	[MutableUserHeaders setValue: replyto forKey: @"Reply-To"];
@@ -569,11 +558,11 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
     return NO;
   }
 
- if( [replyto length])
+ if ([replyto length] > 0)
  {
 	NSMutableDictionary* defaults = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.mail"] mutableCopy] autorelease];
 	
-	if( UserHeaders)
+	if (UserHeaders)
 		[defaults setObject: UserHeaders forKey: @"UserHeaders"];
 	else
 		[defaults removeObjectForKey: @"UserHeaders"];
@@ -598,11 +587,11 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
                headers:(NSDictionary *)messageHeaders
            withMailApp:(BOOL) mailApp
 {
-    if( mailApp)
+    if (mailApp)
     {
         NSAttributedString* m = [[[NSAttributedString alloc] initWithHTML:[messageBody dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL] autorelease]; // This function is NOT thread safe !
         
-        if( [NSThread isMainThread] == NO)
+        if ([NSThread isMainThread] == NO)
             NSLog( @"************** This function is NOT thread safe : [[NSAttributedString alloc] initWithHTML");
         
         return [self doHandler:@"deliver_message"
@@ -624,19 +613,19 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
         
         int mode = SMTPClientTLSModeNone;
         
-        if( [[defaultSMTPAccount valueForKey: @"SSLEnabled"] boolValue])
+        if ([[defaultSMTPAccount valueForKey: @"SSLEnabled"] boolValue])
             mode = SMTPClientTLSModeTLSIfPossible;
         
         NSString *fromEmail;
         
-        if( [messageHeaders objectForKey:@"Sender"])
+        if ([messageHeaders objectForKey:@"Sender"])
             fromEmail = [messageHeaders objectForKey:@"Sender"];
         else
             fromEmail = fromAddress;
         
         NSArray *ports = nil;
         
-        if( [defaultSMTPAccount valueForKey: @"PortNumber"])
+        if ([defaultSMTPAccount valueForKey: @"PortNumber"])
             ports = [NSArray arrayWithObject: [defaultSMTPAccount valueForKey: @"PortNumber"]];
         else
             ports = [NSArray arrayWithObjects: [NSNumber numberWithInteger:25], [NSNumber numberWithInteger:465], [NSNumber numberWithInteger:587], nil];

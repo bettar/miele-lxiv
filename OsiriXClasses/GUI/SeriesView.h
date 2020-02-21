@@ -20,12 +20,15 @@
 
 /** \brief Series View for ViewerControllerr */
 
-
 #import <Cocoa/Cocoa.h>
+#import "DCMView.h"
 
 @class DCMView;
 @class DCMPix;
 @class ViewerController;
+
+#pragma mark -
+
 @interface SeriesView : NSView {
 	int seriesRows;
 	int seriesColumns;
@@ -40,11 +43,10 @@
 	char            listType;    
     short           curImage, startImage;
 	
-	NSTimeInterval			lastTime, lastTimeFrame;
-	NSTimeInterval			lastMovieTime;
+	NSTimeInterval	lastTime, lastTimeFrame;
+	NSTimeInterval	lastMovieTime;
 	//int curMovieIndex;
 	//int maxMovieIndex;
-
 }
 
 - (id)initWithFrame:(NSRect)frame seriesRows:(int)rows  seriesColumns:(int)columns;
@@ -59,7 +61,7 @@
 - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset;
 - (void) setPixels: (NSMutableArray*) pixels files: (NSArray*) files rois: (NSMutableArray*) rois firstImage: (short) firstImage level: (char) level reset: (BOOL) reset;
 - (void) setBlendingFactor:(float) value;
-- (void) setBlendingMode:(int) value;
+- (void) setBlendingMode:(BlendingMode2DType) value;
 - (void) setFlippedData:(BOOL) value;
 - (void) ActivateBlending:(ViewerController*) bC blendingFactor:(float)blendingFactor;
 - (int)imageRows;

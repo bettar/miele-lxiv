@@ -76,9 +76,10 @@
     return [NSSet setWithObject:@"predicateFormat"];
 }
 
-- (NSPredicate*)predicate {
+- (NSPredicate*)predicate
+{
     @try {
-        if (self.predicateFormat.length)
+        if (self.predicateFormat.length > 0)
             return [NSPredicate predicateWithFormat:self.predicateFormat];
     } @catch (...) {
     }
@@ -90,14 +91,16 @@
     self.predicateFormat = [predicate predicateFormat];
 }
 
-- (NSString*)predicateFormat {
-    if (_predicateFormat.length)
+- (NSString*)predicateFormat
+{
+    if (_predicateFormat.length > 0)
         return _predicateFormat;
-    else
-        return nil;
+
+    return nil;
 }
 
-- (void)setPredicateFormat:(NSString *)predicateFormat {
+- (void)setPredicateFormat:(NSString *)predicateFormat
+{
     if (predicateFormat != _predicateFormat) {
         [_predicateFormat release];
         _predicateFormat = [predicateFormat retain];

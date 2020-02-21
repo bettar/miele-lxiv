@@ -18,8 +18,8 @@
      PURPOSE.
 =========================================================================*/
 
-#import "SeriesView.h"
 #import "DCMView.h"
+#import "SeriesView.h"
 #import "ViewerController.h"
 #import "WindowLayoutManager.h"
 #import "Notifications.h"
@@ -28,10 +28,11 @@
 
 - (id)initWithFrame:(NSRect)frame {
 	return [self initWithFrame:frame seriesRows:1  seriesColumns:1];
-
 }
 
-- (id)initWithFrame:(NSRect)frame seriesRows:(int)rows  seriesColumns:(int)columns
+- (id)initWithFrame:(NSRect)frame
+         seriesRows:(int)rows
+      seriesColumns:(int)columns
 {
 	self = [super initWithFrame:frame];
     if (self)
@@ -224,11 +225,20 @@
         BOOL csis = [[imageViews lastObject] COPYSETTINGSINSERIES];
 		for (int  i = [imageViews count]; i < rows * columns; i++)
 		{
-			DCMView *dcmView = [[[DCMView alloc] initWithFrame:[self bounds]  imageRows:rows  imageColumns:columns] autorelease];
+			DCMView *dcmView = [[[DCMView alloc] initWithFrame:[self bounds]
+                                                     imageRows:rows
+                                                  imageColumns:columns] autorelease];
+
             [dcmView setCOPYSETTINGSINSERIESdirectly: csis];
 			[self addSubview:dcmView];
 			[dcmView setTag:i];	
-			[dcmView setPixels: dcmPixList files:dcmFilesList rois:dcmRoiList firstImage:0 level:listType reset:YES];
+
+            [dcmView setPixels:dcmPixList
+                         files:dcmFilesList
+                          rois:dcmRoiList
+                    firstImage:0
+                         level:listType
+                         reset:YES];
 		}	
 	}
 	
@@ -348,9 +358,8 @@
     	
     listType = level;
 	
-	DCMView *view;
 	int i = firstImage;
-	for (view in imageViews)
+	for (DCMView *view in imageViews)
 	{
 		if (i < [dcmPixList count])
 			[view setPixels: pixels files:files rois:rois firstImage:i++ level:level reset:reset];
@@ -364,27 +373,27 @@
 	[self setPixels: c files: d rois: e firstImage: firstImage level: type reset: reset];
 }
  
- - (void) setBlendingFactor:(float) value{
-	DCMView *view;
-	for (view in imageViews)
-		[view setBlendingFactor:value];
-	
- }
-- (void) setBlendingMode:(int) value{
-	DCMView *view;
-	for (view in imageViews)
+- (void) setBlendingFactor:(float) value
+{
+    for (DCMView *view in imageViews)
+        [view setBlendingFactor:value];
+}
+
+- (void) setBlendingMode:(BlendingMode2DType) value
+{
+	for (DCMView *view in imageViews)
 		[view setBlendingMode:value];
 }
+
 - (void) setFlippedData:(BOOL) value
 {
-	DCMView *view;
-	for (view in imageViews)
+	for (DCMView *view in imageViews)
 		[view setFlippedData:value];
 }
 
--(void) ActivateBlending:(ViewerController*) bC blendingFactor:(float)blendingFactor{
-	DCMView *view;
-	for (view in imageViews)
+-(void) ActivateBlending:(ViewerController*) bC blendingFactor:(float)blendingFactor
+{
+	for (DCMView *view in imageViews)
 	{
 		if( bC)
 			[view setBlending: [bC imageView]];			

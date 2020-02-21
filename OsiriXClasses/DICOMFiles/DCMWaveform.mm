@@ -298,7 +298,8 @@
     return cd;
 }
 
-- (DCMWaveformChannelSensitivityUnit*)newChannelSensitivityUnit {
+- (DCMWaveformChannelSensitivityUnit*)newChannelSensitivityUnit
+{
     if (self.channelSensitivityUnit)
         [NSException raise:NSGenericException format:@"Waveform Channel Definition Sequence can only contain one Channel Sensitivity Units Sequence item"];
     return (self.channelSensitivityUnit = [[[DCMWaveformChannelSensitivityUnit alloc] init] autorelease]);

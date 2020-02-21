@@ -34,8 +34,8 @@
 #import <DCM/DCMNetServiceDelegate.h>
 #import <DCM/DCMEncapsulatedPDF.h>
 
-#define DCMDEBUG 0
-#define DCMFramework_compile YES
+#define DCMDEBUG                NO
+#define DCMFramework_compile    YES
 
 #import <Accelerate/Accelerate.h>
 

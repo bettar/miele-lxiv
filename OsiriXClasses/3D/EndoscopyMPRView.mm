@@ -20,6 +20,13 @@
 
 #import "mgl.h" // include first
 
+#import "GLRenderer.h"
+
+
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 #import "EndoscopyMPRView.h"
 #import "EndoscopyViewer.h"
 #import "DCMPix.h"
@@ -57,13 +64,14 @@
 	return self;
 }
 
+#pragma mark -
+
 - (void) subDrawRect:(NSRect)aRect
 {	
 	[super subDrawRect:aRect];
 	
-	float xCrossCenter,yCrossCenter;
-	xCrossCenter = (crossPositionX-[[self curDCM] pwidth]/2) * scaleValue;
-	yCrossCenter = (crossPositionY-[[self curDCM] pheight]/2) * scaleValue;
+	float xCrossCenter = (crossPositionX-[[self curDCM] pwidth]/2) * scaleValue;
+	float yCrossCenter = (crossPositionY-[[self curDCM] pheight]/2) * scaleValue;
 		
 	// normalization of FOCAL VECTOR
 	float vectNorm = sqrt(pow(focalShiftX,2)+pow(focalShiftY/[self pixelSpacingX]*[self pixelSpacingY],2));
@@ -74,22 +82,40 @@
 	float normalizationFactor = maxSize/vectNorm;
 	
 	//normalizationFactor = 1.0;
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if (cgl_ctx == nil)
-        return;
    
 #ifdef WITH_OPENGL_32
-    // TODO: replacement code
-#else
-	glPushMatrix();
+    // We don't need this to apply the local MV because in OpenGL 2.1 (Legacy)
+    // it redefines the whole matrix transformation and the end
+    // result is apparently the same as what we have by doing nothing.
+    // TBC: maybe only the last transformation, the pixelRatio, should be applied.
+    //#define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_ENDO
+    #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_ENDO
+    // Define a local model matrix and apply it locally without affecting the shader
+    glm::mat4 M = glm::mat4(1.0);
+    M = glm::scale(M, glm::vec3(2.0f / (xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width),
+                               -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height),
+                                1.0f));
+    M = glm::rotate(M, glm::radians(self.rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+    M = glm::translate(M, glm::vec3(origin.x, -origin.y, 0.0f));
+    M = glm::scale(M, glm::vec3(1.f, curDCM.pixelRatio, 1.f));
+    #endif // WITH_LOCAL_MV_MATRIX_TRANSFORMATION_ENDO
+#else // WITH_OPENGL_32
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (cgl_ctx == nil)
+        return;
+
+    glPushMatrix();
 	
-	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-	glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
-	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+	glLoadIdentity();
+	glScalef (2.0f / (xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width),
+             -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height),
+              1.0f); // scale to port per pixel scale
+	glRotatef (self.rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 	glTranslatef( origin.x, -origin.y, 0.0f);
 	glScalef( 1.f, curDCM.pixelRatio, 1.f);
-	
-	// antialiasing
+#endif // WITH_OPENGL_32
+
+	// Antialiasing
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable(GL_BLEND);
 #ifndef WITH_OPENGL_32
@@ -97,12 +123,13 @@
 #endif
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
+    checkOpenGLErrors(__LINE__);
 
-    // draw the direction vector
-    glColor3f (1.0f, 0.0f, 1.0f);
-#endif
-	
-	glLineWidth(1.0 * self.window.backingScaleFactor);
+#pragma mark Focal Vector
+
+    // Draw the direction vector
+    [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
+    renderer_set_rgb(1.0f, 0.0f, 1.0f); // magenta
 
     float cfocalShiftX = focalShiftX;
     float cfocalShiftY = focalShiftY;
@@ -113,93 +140,127 @@
     if (yFlipped)
         cfocalShiftY *= -1.0;
 
-#ifdef WITH_OPENGL_32
-    // TODO: replacement code
-#else
-    glBegin(GL_LINES);
     {
-        glVertex2f(xCrossCenter,yCrossCenter);
-        glVertex2f(xCrossCenter + cfocalShiftX * normalizationFactor,
-                   yCrossCenter + cfocalShiftY * normalizationFactor);    //*[self pixelSpacingY]/[self pixelSpacingX]
-    }
-	glEnd();
+        glm::vec2 pFrom(xCrossCenter,yCrossCenter);
+        glm::vec2 pTo(xCrossCenter + cfocalShiftX * normalizationFactor,
+                      yCrossCenter + cfocalShiftY * normalizationFactor);
+        
+#ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_ENDO
+        // Apply local model transformation
+        glm::vec4 pTemp;
+        pTemp= M*glm::vec4(pFrom,0,1);
+        pFrom =glm::vec2(pTemp.x, pTemp.y);
+
+        pTemp= M*glm::vec4(pTo,0,1);
+        pTo =glm::vec2(pTemp.x, pTemp.y);
 #endif
+        NSMutableArray *pArray = [NSMutableArray array];
+        [pArray addObject: [NSValue valueWithBytes:&pFrom objCType:@encode(glm::vec2)]];
+        [pArray addObject: [NSValue valueWithBytes:&pTo objCType:@encode(glm::vec2)]];
+
+        renderer_drawLine_xy([pArray copy], GL_LINES);
+    }
 				
-	// draw a point at the end of FOCAL POINT vector (handle to move the vector)
+#pragma mark Focal Vector Handle
+
+    [self setShaderProgramOverlay_withMode_Point];
+	// Draw a point at the end of FOCAL POINT vector (handle to move the vector)
 	glPointSize(2.0 * near * self.window.backingScaleFactor);
     
-#ifdef WITH_OPENGL_32
-    // TODO: replacement code
-#else
-	glBegin(GL_POINTS);
     {
-        glVertex2f(xCrossCenter + cfocalShiftX * normalizationFactor,
-                   yCrossCenter + cfocalShiftY * normalizationFactor);    //*[self pixelSpacingY]/[self pixelSpacingX]
-    }
-	glEnd();
-#endif
+        NSMutableArray *pArray = [NSMutableArray array];
+        glm::vec2 a(xCrossCenter + cfocalShiftX * normalizationFactor,
+                    yCrossCenter + cfocalShiftY * normalizationFactor);
 
+        #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_ENDO
+        // Apply local model transformation
+        glm::vec4 pTemp;
+        pTemp= M*glm::vec4(a,0,1);
+        a =glm::vec2(pTemp.x, pTemp.y);
+        #endif
+        [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+
+        renderer_drawPoints([pArray copy]);
+    }
+
+    // Restore
     glPointSize(1.0 * self.window.backingScaleFactor);
 	
-	// normalization of VIEW UP VECTOR
-	float vectViewUpNorm = sqrt(pow(viewUpX,2)+pow(viewUpY,2));
-	float sizeViewUp = 25.0;
-	vectViewUpNorm = (vectViewUpNorm==0)? 1.0: vectViewUpNorm;
-	sizeViewUp = (vectViewUpNorm==0)? 0.0: sizeViewUp;
-	sizeViewUp = (vectViewUpNorm>sizeViewUp)? sizeViewUp : vectViewUpNorm;
-	float normalizationViewUpFactor = sizeViewUp/vectViewUpNorm*2.0;
+#pragma mark View Up Vector
 
-    glLineWidth(1.0 * self.window.backingScaleFactor);
-#ifdef WITH_OPENGL_32
-    // TODO: replacement code
-#else
-	// draw the view up vector
-	glColor3f (0.0f, 0.75f, 1.0f);
-	glBegin(GL_LINES);
+	// Normalization of VIEW UP VECTOR
+	float vectViewUpNorm = sqrt(pow(viewUpX,2) + pow(viewUpY,2));
+	float sizeViewUp = 25.0;
+	vectViewUpNorm = (vectViewUpNorm == 0) ? 1.0 : vectViewUpNorm;
+	sizeViewUp = (vectViewUpNorm == 0) ? 0.0 : sizeViewUp; // does nothing ??
+	sizeViewUp = (vectViewUpNorm > sizeViewUp) ? sizeViewUp : vectViewUpNorm;
+	float normalizationViewUpFactor = sizeViewUp / vectViewUpNorm * 2.0;
+
+    // Draw the view up vector
+
+    [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
+    renderer_set_rgb(0.0f, 0.75f, 1.0f); // cyan
+
     {
-        glVertex2f(xCrossCenter,yCrossCenter);
-        glVertex2f(xCrossCenter + viewUpX * normalizationViewUpFactor,
-                   yCrossCenter + viewUpY * normalizationViewUpFactor);    //*[self pixelSpacingY]/[self pixelSpacingX]
+        glm::vec2 pFrom(xCrossCenter,yCrossCenter);
+        glm::vec2 pTo(xCrossCenter + viewUpX * normalizationViewUpFactor,
+                      yCrossCenter + viewUpY * normalizationViewUpFactor);
+
+        #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_ENDO
+        // Apply local model transformation
+        glm::vec4 pTemp;
+        pTemp = M*glm::vec4(pFrom,0,1);
+        pFrom = glm::vec2(pTemp.x, pTemp.y);
+
+        pTemp = M*glm::vec4(pTo,0,1);
+        pTo = glm::vec2(pTemp.x, pTemp.y);
+        #endif
+        NSMutableArray *pArray = [NSMutableArray array];
+        [pArray addObject: [NSValue valueWithBytes:&pFrom objCType:@encode(glm::vec2)]];
+        [pArray addObject: [NSValue valueWithBytes:&pTo objCType:@encode(glm::vec2)]];
+
+        renderer_drawLine_xy([pArray copy], GL_LINES);
     }
-	glEnd();
-#endif
 	
-	// draw the Fly Through Path
+#pragma mark Fly Through Path
+
     if (flyThroughPath)
     {
-        glLineWidth(1.0 * self.window.backingScaleFactor);
-#ifdef WITH_OPENGL_32
-        // TODO: replacement code
-#else
-        glColor3f (0.8f, 0.0f, 0.25f);
-        glBegin(GL_LINE_STRIP);
+        [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
+        renderer_set_rgb(0.8f, 0.0f, 0.25f);
+
+        NSMutableArray *pArray = [NSMutableArray array];
+        
+        for (int i=0; i<[flyThroughPath count]; i++)
         {
-            for (int i=0; i<[flyThroughPath count]; i++)
-            {
-                Point3D *pt = [flyThroughPath objectAtIndex:i];
-                float x = (pt.x - [[self curDCM] pwidth]/2) * scaleValue;
-                float y = (pt.y - [[self curDCM] pheight]/2) * scaleValue ; //* [self pixelSpacingY]/[self pixelSpacingX];
-                glVertex2f(x,y);
-            }
+            Point3D *pt = [flyThroughPath objectAtIndex:i];
+            glm::vec2 a((pt.x - [[self curDCM] pwidth]/2) * scaleValue,
+                        (pt.y - [[self curDCM] pheight]/2) * scaleValue);
+            #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_ENDO
+            // Apply local model transformation
+            glm::vec4 pTemp;
+            pTemp= M*glm::vec4(a,0,1);
+            a =glm::vec2(pTemp.x, pTemp.y);
+            #endif
+            //* [self pixelSpacingY]/[self pixelSpacingX];
+            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
         }
-        glEnd();
-#endif
+
+        renderer_drawLine_xy([pArray copy], GL_LINE_STRIP);
     }
 	
-	// antialiasing end
+	// Antialiasing end
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
-#ifndef WITH_OPENGL_32
-	glDisable(GL_POINT_SMOOTH);
-#endif
 	glDisable(GL_BLEND);
 	
-#ifdef WITH_OPENGL_32
-    // TODO: replacement code
-#else
+#ifndef WITH_OPENGL_32
+    glDisable(GL_POINT_SMOOTH);
     glPopMatrix();
 #endif
 }
+
+#pragma mark -
 
 - (BOOL) mouseOnFocal:(NSEvent *)theEvent
 {
@@ -599,7 +660,7 @@
 			
 			[exportDCM setOrientation: o];
 			
-			NSPoint tempPt = [self ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
+			NSPoint tempPt = [self ConvertFromUpLeftView2GL: NSZeroPoint];				// <- Because we do screen capture !!!!!
 			[curPix convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 			[exportDCM setPosition: o];
 			

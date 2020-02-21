@@ -28,18 +28,19 @@
 {
 	NSMutableArray *winList = [NSMutableArray array];
 	
-	for( NSWindow *w in [NSApp windows])
+	for (NSWindow *w in [NSApp windows])
 	{
-		if( [w isVisible] && ([[w windowController] isKindOfClass: [WaitRendering class]] || [[w windowController] isKindOfClass: [Wait class]]))
+		if ([w isVisible] && ([[w windowController] isKindOfClass: [WaitRendering class]] || [[w windowController] isKindOfClass: [Wait class]]))
 			[winList addObject: [w windowController]];
 	}
 	
-	if( [[self window] isVisible] == NO)
+	if ([[self window] isVisible] == NO)
 	{
 		[[self window] center];
 		[[self window] setFrame: NSMakeRect( [[self window] frame].origin.x, [[self window] frame].origin.y - [winList count] * (5 + [[self window] frame].size.height), [[self window] frame].size.width, [[self window] frame].size.height) display: NO];
 	}
-	[super showWindow: sender];
+
+    [super showWindow: sender];
 	[[self window] makeKeyAndOrderFront: sender];
 	
 	[self run];

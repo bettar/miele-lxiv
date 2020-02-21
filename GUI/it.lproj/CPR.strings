@@ -340,8 +340,8 @@
 /* Class = "NSMenuItem"; title = "Closed Polygon"; ObjectID = "1616"; */
 "1616.title" = "Poligono chiuso";
 
-/* Class = "NSMenuItem"; title = "Opened Polygon"; ObjectID = "1617"; */
-"1617.title" = "Poligono Aperto";
+/* Class = "NSMenuItem"; title = "Open Polygon"; ObjectID = "1617"; */
+"1617.title" = "Poligono aperto";
 
 /* Class = "NSMenuItem"; title = "Oval"; ObjectID = "1618"; */
 "1618.title" = "Ovale";

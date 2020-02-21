@@ -85,11 +85,14 @@
         frame = NSMakeRect( frame.origin.x, frame.origin.y - (297 - frame.size.height), frame.size.width, 297);
     
     float minWidth = 154;
-    if( matrix)
-        minWidth = matrix.frame.origin.x + matrix.frame.size.width + 10;
+    if (matrix)
+        minWidth = NSMaxX(matrix.frame) + 10;
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"customIntervalWithHoursAndMinutes"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"] &&
+        [[NSUserDefaults standardUserDefaults] boolForKey: @"customIntervalWithHoursAndMinutes"])
+    {
         frame = NSMakeRect( frame.origin.x, frame.origin.y, MAX( minWidth, 288), frame.size.height);
+    }
     else
         frame = NSMakeRect( frame.origin.x, frame.origin.y, MAX( minWidth, 154), frame.size.height);
     
@@ -148,11 +151,11 @@
             
             fromDate = [[[NSCalendar currentCalendar] dateFromComponents: components] retain];
             
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"] == NO)
+            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"] == NO)
                 self.toDate = date;
         }
         
-        if( [[self window] isVisible])
+        if ([[self window] isVisible])
             [BrowserController currentBrowser].timeIntervalType = TIME_INTERVAL_CUSTOM;
     }
 }

@@ -22,7 +22,7 @@
 #import "ToolbarPanel.h"
 #import "ThumbnailsListPanel.h"
 #import "NavigatorView.h"
-#import "NavigatorWindowController.h"
+//#import "NavigatorWindowController.h"
 #import "AppController.h"
 #import "ViewerController.h"
 #import "BrowserController.h"
@@ -159,7 +159,10 @@ static BOOL protectedReentryWindowDidResize = NO;
 				e = [[NSApp windows] objectEnumerator];
 				while (window = [e nextObject])
 				{
-					if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [OSIWindowController class]] && [window.screen isEqualTo: theWindow.screen])
+					if (window != theWindow &&
+                        [window isVisible] &&
+                        [[window windowController] isKindOfClass: [OSIWindowController class]] &&
+                        [window.screen isEqualTo: theWindow.screen])
 					{
 						if ([[window windowController] magnetic])
 							[rects addObject: [NSValue valueWithRect: [window frame]]];
@@ -170,7 +173,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 	//			e = [[NSScreen screens] objectEnumerator];
 	//			while (screen = [e nextObject])
 				{
-					NSRect frame = [AppController usefullRectForScreen: [[self window] screen]];
+					NSRect frame = [AppController usefulRectForScreen: [[self window] screen]];
                     
 					frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 					[rects addObject: [NSValue valueWithRect: frame]];
@@ -205,15 +208,15 @@ static BOOL protectedReentryWindowDidResize = NO;
 					if (fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)	//RIGHT
 					{
 						gravityX = fabs(NSMaxX(frame) - NSMaxX(myFrame));
-						dstFrame.size.width = frame.origin.x + frame.size.width - myFrame.origin.x;
+						dstFrame.size.width = NSMaxX(frame) - NSMinX(myFrame);
 					}
 				
 					if (fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)	// BOTTOM
 					{
 						gravityY = fabs(NSMaxY(frame) - NSMinY(myFrame));
 						
-						NSRect	previous = dstFrame;
-						dstFrame.origin.y = frame.origin.y + frame.size.height;
+						NSRect previous = dstFrame;
+						dstFrame.origin.y = NSMaxY(frame);
 						dstFrame.size.height = dstFrame.size.height - (dstFrame.origin.y - previous.origin.y);
 					}
 				}
@@ -260,7 +263,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 		else
 		{
 			NSRect dstFrame = [[self window] frame];
-			NSRect visibleRect = [AppController usefullRectForScreen: self.window.screen];
+			NSRect visibleRect = [AppController usefulRectForScreen: self.window.screen];
             
             if (dstFrame.size.height >= visibleRect.size.height)
                 dstFrame.size.height = visibleRect.size.height;
@@ -366,7 +369,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 			if ([[NSApp currentEvent] modifierFlags] & NSEventModifierFlagOption)
                 return;
 			
-			NSMutableArray	*rects = [NSMutableArray array];
+			NSMutableArray *rects = [NSMutableArray array];
 			
 			// Add the viewers
 			e = [[NSApp windows] objectEnumerator];
@@ -383,7 +386,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 	//		e = [[NSScreen screens] objectEnumerator];
 	//		while (screen = [e nextObject])
 			{
-				NSRect frame = [AppController usefullRectForScreen: [[self window] screen]];
+				NSRect frame = [AppController usefulRectForScreen: [[self window] screen]];
                 
 				frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 				
@@ -400,44 +403,50 @@ static BOOL protectedReentryWindowDidResize = NO;
 				if (fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravityX)
 				{
 					gravityX = fabs(NSMinX(frame) - NSMinX(myFrame));
-					dstFrame.origin.x = frame.origin.x;
+					dstFrame.origin.x = NSMinX(frame);
 				}
-				if (fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
+
+                if (fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
 				{
 					gravityX = fabs(NSMinX(frame) - NSMaxX(myFrame));
-					dstFrame.origin.x = myFrame.origin.x + NSMinX(frame) - NSMaxX(myFrame);
+					dstFrame.origin.x = NSMinX(frame) - NSWidth(myFrame);
 				}
-				if (fabs(NSMaxX(frame) - NSMinX(myFrame)) <= gravityX)
+
+                if (fabs(NSMaxX(frame) - NSMinX(myFrame)) <= gravityX)
 				{
 					gravityX = fabs(NSMaxX(frame) - NSMinX(myFrame));
 					dstFrame.origin.x = NSMaxX(frame);
 				}
-				if (fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
+
+                if (fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
 				{
 					gravityX = fabs(NSMaxX(frame) - NSMaxX(myFrame));
-					dstFrame.origin.x = myFrame.origin.x + NSMaxX(frame) - NSMaxX(myFrame);
+					dstFrame.origin.x = NSMaxX(frame) - NSWidth(myFrame);
 				}
 				
 				/* vertical magnet */
 				if (fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
 				{
 					gravityY = fabs(NSMinY(frame) - NSMinY(myFrame));
-					dstFrame.origin.y = frame.origin.y;
+					dstFrame.origin.y = NSMinY(frame);
 				}
-				if (fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravityY)
+
+                if (fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravityY)
 				{
 					gravityY = fabs(NSMinY(frame) - NSMaxY(myFrame));
-					dstFrame.origin.y = myFrame.origin.y + NSMinY(frame) - NSMaxY(myFrame);
+                    dstFrame.origin.y = NSMinY(frame) - NSHeight(myFrame);
 				}
-				if (fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
+
+                if (fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
 				{
 					gravityY = fabs(NSMaxY(frame) - NSMinY(myFrame));
 					dstFrame.origin.y = NSMaxY(frame);
 				}
-				if (fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravityY)
+
+                if (fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravityY)
 				{
 					gravityY = fabs(NSMaxY(frame) - NSMaxY(myFrame));
-					dstFrame.origin.y = myFrame.origin.y + NSMaxY(frame) - NSMaxY(myFrame);
+                    dstFrame.origin.y = NSMaxY(frame) - NSHeight(myFrame);
 				}
 			}
 			myFrame = dstFrame;

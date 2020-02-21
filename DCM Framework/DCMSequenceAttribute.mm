@@ -100,7 +100,9 @@
 	if (DCMDEBUG)
 		NSLog(@"Add sequence Item %@ at Offset:%ld", [item description], offset);
     
-	NSArray *objects = [NSArray arrayWithObjects:item, [NSNumber numberWithInt:offset], nil];
+	NSArray *objects = [NSArray arrayWithObjects:item,
+                        [NSNumber numberWithInt:offset],
+                        nil];
 	NSArray *keys =	[NSArray arrayWithObjects:@"item", @"offset", nil];
 	NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
 	[sequenceItems addObject:dictionary];

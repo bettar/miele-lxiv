@@ -52,7 +52,7 @@ typedef char* vtkCocoaRenderWindow;
 
 + (unsigned long) VRAMSizeForDisplayID: (CGDirectDisplayID) displayID;
 
--(id)initWithFrame:(NSRect)frame;
+-(instancetype)initWithFrame:(NSRect)frame;
 -(void)dealloc;
 
 // Access to VTK instances

@@ -81,7 +81,7 @@
 #include "vtkCocoaRenderWindowInteractor.h"
 #include "vtkCocoaRenderWindow.h"
 #include "vtkInteractorStyleTrackballCamera.h"
-#include "vtkParallelRenderManager.h"
+//#include "vtkParallelRenderManager.h"
 #include "vtkRendererCollection.h"
 #endif
 
@@ -137,6 +137,7 @@ public:
 	
 	virtual void Execute(vtkObject *caller, unsigned long, void*)
     {
+        NSLog(@"%s %d", __FUNCTION__, __LINE__);
 		vtkBoxWidget *widget = reinterpret_cast<vtkBoxWidget*>(caller);
 		
 		vtkVolume *volume = (vtkVolume*) widget->GetProp3D();
@@ -214,9 +215,9 @@ public:
 
 @implementation VRView
 
-#ifdef _STEREO_VISION_
-@synthesize StereoVisionOn;
-#endif
+//#ifdef _STEREO_VISION_
+//@synthesize StereoVisionOn;
+//#endif
 
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
 @synthesize lowResLODFactor, engine, lodDisplayed;
@@ -409,7 +410,9 @@ public:
 	return linearOpacity;
 }
 	
-+ (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox
++ (BOOL) getCroppingBox:(double*) a
+                       :(vtkVolume *) volume
+                       :(vtkBoxWidget*) croppingBox
 {
 	if (volume == nil)
         return NO;
@@ -699,7 +702,10 @@ public:
 	[controller print: sender];
 }
 
-- (void)getOrientationText:(char *) o vector: (float *) vector inversion:(BOOL) inv
+// This is also implemented in DCMView
+- (void)getOrientationText: (char *) o
+                    vector: (float *) vector
+                 inversion: (BOOL) inv
 {	
 	NSString *orientationX;
 	NSString *orientationY;
@@ -725,26 +731,35 @@ public:
 	float absZ = fabs( vector[ 2]);
 	
 	// get first 3 AXIS
-	for ( int i=0; i < 3; ++i)
+	for (int i=0; i < 3; ++i)
 	{
-		if (absX>.2 && absX>=absY && absX>=absZ)
+		if (absX > .2 &&
+            absX >= absY &&
+            absX >= absZ)
 		{
-			[optr appendString: orientationX]; absX=0;
+			[optr appendString: orientationX];
+            absX=0;
 		}
-		else if (absY>.2 && absY>=absX && absY>=absZ)
+		else if (absY > .2 &&
+                 absY >= absX &&
+                 absY >= absZ)
 		{
-			[optr appendString: orientationY]; absY=0;
+			[optr appendString: orientationY];
+            absY=0;
 		}
-		else if (absZ>.2 && absZ>=absX && absZ>=absY)
+		else if (absZ > .2 &&
+                 absZ >= absX &&
+                 absZ >= absY)
 		{
-			[optr appendString: orientationZ]; absZ=0;
+			[optr appendString: orientationZ];
+            absZ=0;
 		}
 		else
             break;
 	}
 	
-	strcpy( o, [optr UTF8String]);
-	strcat( o, " ");
+	strcpy( o, [optr UTF8String]);  // TODO: use strncpy() but 256 should be safe for now
+	strcat( o, " "); // Why are we adding a space at the end ?
 }
 
 - (void) setBlendingMode: (long) modeID
@@ -784,7 +799,7 @@ public:
 	[self setBlendingMode: modeID];
 }
 
-- (void) setMode: (long) modeID
+- (void) setMode: (long) modeID // TODO: CPRProjectionMode
 {
 	renderingMode = modeID;
 	
@@ -1026,7 +1041,7 @@ public:
 	if (blendingController == nil)
         return;
 	
-	WaitRendering	*www = nil;
+	WaitRendering *www = nil;
 	
 	if (showWait)
         www = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D data...", nil)];
@@ -1986,6 +2001,8 @@ public:
 
 -(instancetype)initWithFrame:(NSRect)frame
 {
+    NSLog(@"%s %d, self:%p", __FUNCTION__, __LINE__, self);
+
     self = [super initWithFrame:frame];
     if (self)
     {
@@ -2310,6 +2327,8 @@ public:
     if (!volumeMapper)
         return;
 
+    //NSLog(@"%s %d", __FUNCTION__, __LINE__); // debug issue i28. Not called for 3D VR ?!
+
     aRenderer->SetDraw( 0);
     
     dontRenderVolumeRenderingOsiriX = false;
@@ -2318,7 +2337,7 @@ public:
     _cocoaRenderWindow->UpdateContext();
     _cocoaRenderWindow->MakeCurrent();
 
-    volumeMapper->Render( aRenderer, volume);
+    volumeMapper->Render( aRenderer, volume); // #i18 stack 5
     dontRenderVolumeRenderingOsiriX = true;
 }
 
@@ -2361,8 +2380,13 @@ public:
     [[self window] performClose: self];
 }
 
+#pragma mark -
+
 - (void) drawRect:(NSRect)aRect
 {
+#ifndef NDEBUG
+    NSLog(@"%s %d, self:%p, class:%@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]));
+#endif
 	if (drawLock == nil)
         drawLock = [[NSRecursiveLock alloc] init];
 	
@@ -2998,9 +3022,9 @@ public:
     float psi = -atan2( cos[ 6], cos[ 7]);
     float phi = atan2( cos[ 2], cos[ 5]);
     
-    phi = vtkMath::DegreesFromRadians(phi);
+    phi   = vtkMath::DegreesFromRadians(phi);
     theta = vtkMath::DegreesFromRadians(theta);
-    psi = vtkMath::DegreesFromRadians(psi);
+    psi   = vtkMath::DegreesFromRadians(psi);
     
     if (phi < 0)
         phi += 180;
@@ -3176,7 +3200,7 @@ public:
 		NSString *val = [[NSString stringWithFormat: @"%.2f", value]
                          stringByPaddingToLength: 9 withString: @" " startingAtIndex: 0];
 		
-		[s appendFormat: NSLocalizedString( @"   Pixel: %@    %@ %@", nil), val, pixLoc, mmLoc];
+		[s appendFormat: NSLocalizedString(@"   Pixel: %@    %@ %@", nil), val, pixLoc, mmLoc];
 	}
 	
 	if (measureLength)
@@ -3912,8 +3936,6 @@ public:
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
-
     if ([self eventToPlugins:theEvent])
         return;
     
@@ -3980,7 +4002,6 @@ public:
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
     if ([self eventToPlugins:theEvent])
         return;
     
@@ -4537,12 +4558,12 @@ public:
 					BOOL addition = NO;
 					
 					// Bone Removal
-					NSNumber		*nsnewValue	= @-1000.0F;		//-1000
-					NSNumber		*nsminValue	= [NSNumber numberWithFloat: -FLT_MAX];		//-99999
-					NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: FLT_MAX];
-					NSNumber		*nsoutside	= @NO;
-					NSNumber		*nsaddition	= [NSNumber numberWithBool: addition];
-					NSMutableArray	*roiToProceed = [NSMutableArray array];
+					NSNumber *nsnewValue = @-1000.0F;		//-1000
+					NSNumber *nsminValue = [NSNumber numberWithFloat: -FLT_MAX];		//-99999
+					NSNumber *nsmaxValue = [NSNumber numberWithFloat: FLT_MAX];
+					NSNumber *nsoutside	= @NO;
+					NSNumber *nsaddition = [NSNumber numberWithBool: addition];
+					NSMutableArray *roiToProceed = [NSMutableArray array];
 					
 					for (NSDictionary *rr in roiList)
 					{
@@ -4927,14 +4948,14 @@ public:
 	}
 	
 	for (long i = 0 ; i < stackMax ; i++)
-		[ROIList addObject: [[[ROI alloc] initWithType: tCPolygon
+		[ROIList addObject: [[[ROI alloc] initWithType: tClosedPolygon
                                                       : [fObject pixelSpacingX]*factor
                                                       : [fObject pixelSpacingY]*factor
                                                       : [DCMPix originCorrectedAccordingToOrientation: fObject]] autorelease]];
     
     // Clip the polygons to the crop box?
-    NSValue *minClip = [NSValue valueWithPoint: NSMakePoint( 0, 0)];
-    NSValue *maxClip = [NSValue valueWithPoint: NSMakePoint( 0, 0)];
+    NSValue *minClip = [NSValue valueWithPoint: NSZeroPoint];
+    NSValue *maxClip = [NSValue valueWithPoint: NSZeroPoint];
     NSPoint zClip = NSMakePoint( 0, stackMax);
     double a[ 6];
     BOOL applyInsideCroppBox = NO;
@@ -5840,9 +5861,7 @@ public:
 }
 
 -(void) setBlendingCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
-{
-	long i;
-	
+{	
 	if (fullDepthMode)
         return;
 	
@@ -5853,7 +5872,7 @@ public:
 	{
 		if (r)
 		{
-			for (i = 0; i < 256; i++)
+			for (long i = 0; i < 256; i++)
 			{
 				blendingtable[i][0] = r[i] / 255.;
 				blendingtable[i][1] = g[i] / 255.;
@@ -5867,7 +5886,7 @@ public:
 		}
 		else
 		{
-			for (i = 0; i < 256; i++)
+			for (long i = 0; i < 256; i++)
 			{
 				blendingtable[i][0] = i / 255.;
 				blendingtable[i][1] = i / 255.;
@@ -5891,11 +5910,10 @@ public:
     
     if (opacityTransferFunction == nil)
         return;
-    
-	long		i;
-	NSPoint		pt;
-	float		start, end;
-	float		opacityAdapter = 1;
+
+	NSPoint pt;
+	float start, end;
+	float opacityAdapter = 1;
 	
 	if (renderingMode == 0) // VR
 		opacityAdapter = superSampling;
@@ -5929,7 +5947,7 @@ public:
 	else
         opacityTransferFunction->AddPoint(0 +start, 0);
 	
-	for (i = 0; i < [array count]; i++)
+	for (long i = 0; i < [array count]; i++)
 	{
 		pt = NSPointFromString( [array objectAtIndex: i]);
 		pt.x -= 1000;
@@ -6929,10 +6947,13 @@ public:
 - (BOOL) setPixSource:(NSMutableArray*) pix
                      :(float*) volumeData
 {
-#if 0 //ndef NDEBUG // CRASH with 3d MIP
+#if 1 //ndef NDEBUG // CRASH with 3D MIP
+    // VRView is not a subclass of NSOpenGLContext
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    NSLog(@"VRView.mm:%d %s class:%@, OpenGL context:%p, version %s", __LINE__, __FUNCTION__,
-          NSStringFromClass([self class]), cgl_ctx, glGetString(GL_VERSION)); // version 2.1 APPLE-12.1.0
+    NSLog(@"%s %d, class:%@, OpenGL context:%p, version<%s>", __FUNCTION__, __LINE__,
+          NSStringFromClass([self class]),
+          cgl_ctx,
+          glGetString(GL_VERSION)); // version 2.1 APPLE-12.1.0
 #endif
     
 	if ([[[self window] windowController] isKindOfClass:[VRController class]])
@@ -7000,6 +7021,7 @@ public:
 	
 	try
 	{
+        NSLog(@"%s %d vtkImageImport, isRGB:%d", __FUNCTION__, __LINE__, isRGB);
 		reader = vtkImageImport::New();
 		
 		if (isRGB)
@@ -7054,6 +7076,7 @@ public:
 		
 		opacityTransferFunction->AddPoint(255., 1. / opacityAdapter);
 		
+        NSLog(@"%s %d vtkColorTransferFunction", __FUNCTION__, __LINE__);
 		colorTransferFunction = vtkColorTransferFunction::New();
 		
         if ([[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
@@ -7085,6 +7108,7 @@ public:
             blue->AddRGBPoint( 255, 0, 0, 1 );
 		}
         
+        NSLog(@"%s %d vtkVolumeProperty", __FUNCTION__, __LINE__);
 		volumeProperty = vtkVolumeProperty::New();
 		if (isRGB)
 		{
@@ -7111,11 +7135,11 @@ public:
 		
 		if ([[NSApp currentEvent] modifierFlags] & NSEventModifierFlagOption)
             volumeProperty->SetInterpolationTypeToNearest();
-		else
-            volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();	//SetInterpolationTypeToLinear
+		else            volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();	//SetInterpolationTypeToLinear
 			
 		LOD = 2.0;
 		
+        NSLog(@"%s %d vtkVolume", __FUNCTION__, __LINE__);
 		volume = vtkVolume::New();
 		volume->SetProperty( volumeProperty);
 		
@@ -7157,14 +7181,17 @@ public:
 		
 		volume->PickableOff();
 		
+        NSLog(@"%s %d vtkOutlineFilter", __FUNCTION__, __LINE__);
 		outlineData = vtkOutlineFilter::New();
 		outlineData->SetInputConnection(reader->GetOutputPort());
 		outlineData->Update();
 		
+        NSLog(@"%s %d vtkPolyDataMapper", __FUNCTION__, __LINE__);
 		mapOutline = vtkPolyDataMapper::New();
 		mapOutline->SetInputConnection(outlineData->GetOutputPort());
 		mapOutline->Update();
 		
+        NSLog(@"%s %d vtkActor", __FUNCTION__, __LINE__);
 		outlineRect = vtkActor::New();
 		outlineRect->SetMapper(mapOutline);
 		outlineRect->GetProperty()->SetColor(0,1,0);
@@ -7207,6 +7234,7 @@ public:
 			croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
 		}
 		
+        NSLog(@"%s %d vtkTextActor", __FUNCTION__, __LINE__);
 		textWLWW = vtkTextActor::New();
 		if (ww < 50)
             sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
@@ -7279,6 +7307,7 @@ public:
 		aRenderer->ResetCamera();
 		
 		// 3D Cut ROI
+        NSLog(@"%s %d vtkPoints", __FUNCTION__, __LINE__);
 		vtkPoints *pts = vtkPoints::New();
 		vtkCellArray *rect = vtkCellArray::New();
 		
@@ -7290,9 +7319,11 @@ public:
 		ROI3DData->SetLines( rect);
 		rect->Delete();
 		
+        NSLog(@"%s %d vtkPolyDataMapper2D", __FUNCTION__, __LINE__);
 		ROI3D = vtkPolyDataMapper2D::New();
 		ROI3D->SetInputData( ROI3DData);
 		
+        NSLog(@"%s %d vtkActor2D", __FUNCTION__, __LINE__);
 		ROI3DActor = vtkActor2D::New();
 		ROI3DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
 		ROI3DActor->SetMapper( ROI3D);
@@ -7392,21 +7423,6 @@ public:
 	}
 	
     return false; // No error
-}
-
--(IBAction) SwitchStereoMode :(id) sender
-{
-	if ([self renderWindow]->GetStereoRender() == false)
-	{
-		[self renderWindow]->StereoRenderOn();
-		[self renderWindow]->SetStereoTypeToRedBlue();
-	}
-	else
-	{
-		[self renderWindow]->StereoRenderOff();
-	}
-	
-	[self setNeedsDisplay:YES];
 }
 
 - (NSImage*) resizeMatrix:(NSImage*) currentImage size: (int) matrixsize

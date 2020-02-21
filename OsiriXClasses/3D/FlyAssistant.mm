@@ -244,24 +244,23 @@
      }
 */
 
-    __block int changedpoints=1;
+    __block int changedpoints = 1;
 	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 	
-	while (changedpoints>0) {
+	while (changedpoints > 0) {
 		its++;
 		changedpoints=0;
 		dispatch_apply(distmapDepth/SLICES1BLOCK, queue, ^(size_t j) {
-            float deltamt[4]={0,1,1.414213,1.73205};
-			int starti,endi;
-			starti=j*SLICES1BLOCK;
-			endi=starti+SLICES1BLOCK;
-			if (starti==0) {
+            float deltamt[4] = {0, 1, 1.414213, 1.73205};
+			int starti = j*SLICES1BLOCK;
+			int endi = starti+SLICES1BLOCK;
+			if (starti==0)
 				starti=1;
-			}
-			if (endi>=distmapDepth-1) {
-				endi=distmapDepth-1;
-			}
-			int x,y,z;
+
+            if (endi >= distmapDepth-1)
+				endi = distmapDepth-1;
+
+            int x,y,z;
 			int dx,dy,dz;
 			for (z=starti; z<endi; z++) {
 				for (y=1; y<distmapHeight-1; y++) {
@@ -297,14 +296,12 @@
 			break;
 		}
 		dispatch_apply(distmapDepth/SLICES1BLOCK, queue, ^(size_t j) {
-            float deltamt[4]={0,1,1.414213,1.73205};
-			int starti,endi;
-			starti=j*SLICES1BLOCK;
-			endi=starti+SLICES1BLOCK;
+            float deltamt[4] = {0, 1, 1.414213, 1.73205};
+			int starti = j*SLICES1BLOCK;
+			int endi = starti+SLICES1BLOCK;
 			
-			if (endi>=distmapDepth-1) {
+			if (endi>=distmapDepth-1)
 				endi=distmapDepth-2;
-			}
 			
 			int x,y,z;
 			int dx,dy,dz;

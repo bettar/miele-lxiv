@@ -87,7 +87,7 @@
 #import	 "vtkCocoaGLView.h"
 #include "vtkCocoaRenderWindowInteractor.h"
 #include "vtkCocoaRenderWindow.h"
-#include "vtkParallelRenderManager.h"
+//#include "vtkParallelRenderManager.h"
 #include "vtkRendererCollection.h"
 #include "vtkCallbackCommand.h"
 #import "VTKStereoSRView.h"
@@ -286,7 +286,8 @@ typedef struct renderSurface
 	IBOutlet NSColorWell		*point3DColorWell, *point3DTextColorWell;
     IBOutlet NSButton			*point3DPropagateToAll, *point3DSetDefault;
 	IBOutlet SRController		*controller;
-	float						point3DDefaultRadius, point3DDefaultColorRed, point3DDefaultColorGreen, point3DDefaultColorBlue, point3DDefaultColorAlpha;
+
+    float point3DDefaultRadius, point3DDefaultColorRed, point3DDefaultColorGreen, point3DDefaultColorBlue, point3DDefaultColorAlpha;
 	
 	BOOL						_dragInProgress;
 	NSTimer						*_mouseDownTimer;
@@ -299,24 +300,24 @@ typedef struct renderSurface
 	NSRect						savedViewSizeFrame;
 
 #ifdef _STEREO_VISION_
-	NSWindow						*LeftFullScreenWindow;
-	NSWindow						*RightFullScreenWindow;   
-	BOOL							StereoVisionOn;
-	vtkCocoaGLView					*leftView;
-	VTKStereoSRView					*rightView;
-	NSWindow						*rootWindow;
-	NSView							*LeftContentView;
-	NSRect							rootSize;
-	NSSize							rootBorder;
+	NSWindow					*LeftFullScreenWindow;
+	NSWindow					*RightFullScreenWindow;
+	vtkCocoaGLView				*leftView;
+	VTKStereoSRView				*rightView;
+	NSWindow					*rootWindow;
+	NSView						*LeftContentView;
+	NSRect						rootSize;
+	NSSize						rootBorder;
 	
-	renderSurface					first;
-	renderSurface					second;
-	vtkCallbackCommand				*rightResponder;
+	renderSurface				first;
+	renderSurface				second;
+	vtkCallbackCommand			*rightResponder;
 #endif
 }
 
+@property BOOL StereoVisionOn;
+
 #ifdef _STEREO_VISION_
-@property(readwrite) BOOL StereoVisionOn; 
 @property(readonly) ToolMode currentTool;
 #endif
 
@@ -351,7 +352,9 @@ typedef struct renderSurface
 -(NSImage*) nsimageQuicktime;
 -(NSImage*) nsimage:(BOOL) q;
 -(IBAction) export3DFileFormat :(id) sender;
+//#ifndef _STEREO_VISION_
 -(IBAction) SwitchStereoMode :(id) sender;
+//#endif
 - (void) setCamera: (Camera*) cam;
 - (Camera*) camera;
 -(void) switchOrientationWidget:(id) sender;

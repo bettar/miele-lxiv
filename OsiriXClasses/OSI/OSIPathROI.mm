@@ -43,7 +43,7 @@
 			[_bezierPath moveToVector:N3VectorApplyTransform(N3VectorMakeFromNSPoint(point), pixToDICOMTransfrom)];
 			point = [roi pointAtIndex:1];
 			[_bezierPath lineToVector:N3VectorApplyTransform(N3VectorMakeFromNSPoint(point), pixToDICOMTransfrom)];
-		} else if ([roi type] == tOPolygon) {
+		} else if ([roi type] == tOpenPolygon) {
 			pointArray = [roi points];
 			
 			nodes = [[NSMutableArray alloc] init];
@@ -52,7 +52,7 @@
 			}
 			_bezierPath = [[N3MutableBezierPath alloc] initWithNodeArray:nodes style:N3BezierNodeOpenEndsStyle];
 			[nodes release];
-		} else if ([roi type] == tCPolygon) {
+		} else if ([roi type] == tClosedPolygon) {
 			pointArray = [roi points];
 			
 			nodes = [[NSMutableArray alloc] init];

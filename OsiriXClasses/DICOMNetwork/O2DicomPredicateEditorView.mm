@@ -1401,7 +1401,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 //        case DCM_CS:
         case DCM_UI:
         case DCM_AS: {
-            if (self.stringValue.length)
+            if (self.stringValue.length > 0)
                 return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
                                                           rightExpression:[NSExpression expressionForConstantValue:self.stringValue]
                                                                  modifier:NSDirectPredicateModifier
@@ -1545,7 +1545,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         
         [view setFrame:frame];
         
-        frame.origin.x += frame.size.width+kSeparatorWidth;
+        frame.origin.x += frame.size.width + kSeparatorWidth;
     }
 }
 
@@ -1559,7 +1559,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     if (!dic)
         return 0;
     
-    NSInteger i = [dic.allKeys indexOfObject:str];
+    NSUInteger i = [dic.allKeys indexOfObject:str];
     
     if (i == NSNotFound)
         return dic.count+1;

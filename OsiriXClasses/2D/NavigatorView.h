@@ -19,6 +19,13 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
+
+#import "GLRenderer.h"
+#import "GLProgramImage.h"
+#import "GLProgramOverlay.h"
+#import "GLProgramOverlayLine.h"
+#import "GLScene.h"
+
 #import "DCMView.h"
 #import "ViewerController.h"
 
@@ -40,13 +47,15 @@ typedef enum
 	NSPoint mouseDownPosition, mouseDraggedPosition, mouseMovedPosition;
 	MouseEventType userAction;
 	NSPoint offset, translation;
-	float rotationAngle, zoomFactor;
+    float rotationAngleRad;
+    float zoomFactor;
 	
 	int dontListenToNotification;
 	float wl, ww, startWL, startWW;
 	NSMutableArray *isTextureWLWWUpdated;
 	
-	BOOL drawLeftLateralScrollBar, drawRightLateralScrollBar;
+    BOOL drawLeftLateralScrollBar;
+    BOOL drawRightLateralScrollBar;
 	NSTimer *scrollTimer;
 	
 	NSTrackingArea *cursorTracking;
@@ -57,9 +66,12 @@ typedef enum
 	BOOL mouseDragged, mouseClickedWithCommandKey;
 	
 	NSMutableDictionary *savedTransformDict;
+    
+    GLScene *scene;
 }
 
-@property(readonly) int thumbnailWidth, thumbnailHeight;
+@property (readonly) int thumbnailWidth;
+@property (readonly) int thumbnailHeight;
 
 + (NSRect) rect;
 + (NSRect) adjustIfScreenAreaIf4DNavigator: (NSRect) frame;

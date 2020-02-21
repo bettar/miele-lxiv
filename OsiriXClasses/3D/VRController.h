@@ -45,14 +45,13 @@
 /** \brief Window Controller for VR and MIP 
 */
 
-
 @interface VRController : Window3DController <NSWindowDelegate, NSToolbarDelegate>
 {
-	IBOutlet VRView			*view;
+	IBOutlet VRView *view;
 	
-	NSString				*style;
+	NSString *style;
 	
-    IBOutlet NSView         *toolsView, *WLWWView, *CLUTEditorsView, *LODView, *ClippingRangeView, *BlendingView, *movieView, *shadingView, *engineView, *perspectiveView, *modeView, *scissorStateView;
+    IBOutlet NSView  *toolsView, *WLWWView, *CLUTEditorsView, *LODView, *ClippingRangeView, *BlendingView, *movieView, *shadingView, *engineView, *perspectiveView, *modeView, *scissorStateView;
 	
 	IBOutlet NSView			*OrientationsView;
 	

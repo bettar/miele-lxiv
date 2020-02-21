@@ -102,8 +102,11 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 
     while (i-- > 0)
     {
-        if      (str[i] == '/') str[i] = '-';
-        else if (str[i] == '^') str[i] = ' ';
+        if (str[i] == '/')
+            str[i] = '-';
+            
+        if (str[i] == '^')
+            str[i] = ' ';
     }
 
     i = strlen( str);
@@ -164,20 +167,20 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 
 - (BOOL) containsLocalizerInString: (NSString*) str
 {
-    if( str.length == 0)
+    if (str.length == 0)
         return NO;
     
 	NSArray *stringsToFind = [[[NSUserDefaults standardUserDefaults] valueForKey: @"NOLOCALIZER_Strings"] componentsSeparatedByString:@","];
 	
 	for( NSString *localizerString in stringsToFind)
 	{
-		if( [localizerString hasPrefix: @" "])
+		if ([localizerString hasPrefix: @" "])
 			localizerString = [localizerString substringFromIndex: 1];
 		
-		if( [localizerString hasSuffix: @" "])
+		if ([localizerString hasSuffix: @" "])
 			localizerString = [localizerString substringToIndex: localizerString.length-2];
 		
-		if( [str rangeOfString: localizerString options: NSCaseInsensitiveSearch].location != NSNotFound)
+		if ([str rangeOfString: localizerString options: NSCaseInsensitiveSearch].location != NSNotFound)
 			return YES;
 	}
 	
@@ -186,11 +189,11 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 
 - (BOOL) containsString: (NSString*) s inArray: (NSArray*) a
 {
-	for( NSString *v in a)
+	for (NSString *v in a)
 	{
 		if ([v isKindOfClass:[NSString class]])
 		{
-			if ([v isEqualToString: s])
+			if ([v isEqualToString: s]) // use containsString instead ?
                 return YES;
 		}
 	}
@@ -224,8 +227,8 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	[mutable1 replaceOccurrencesOfString:@"  " withString:@" " options:0 range:mutable1.range];  //double space -> single space
 
 	NSUInteger i = [mutable1 length];
-	while( --i > 0)
-        if ( [mutable1 characterAtIndex: i]==' ')
+	while ( --i > 0)
+        if ([mutable1 characterAtIndex: i]==' ')
             [mutable1 deleteCharactersInRange: NSMakeRange( i, 1)];
 	
 	return mutable1;
@@ -248,58 +251,59 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
     return result;
 }
 
-+ (NSString *) originalStringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding replaceBadCharacters: (BOOL) replace
++ (NSString *) originalStringWithBytes: (char *) str
+                             encodings: (NSStringEncoding*) encoding
+                  replaceBadCharacters: (BOOL) replace
 {
-	if( str == nil)
+	if (str == nil)
         return nil;
     
-	char c;
-	int	i, from, len = strlen( str), index;
+    auto len = strlen( str);
 	NSMutableString	*result = [NSMutableString string];
 	BOOL separators = NO;
-    //	BOOL twoCharsEncoding = NO;
+//	BOOL twoCharsEncoding = NO;
 	
-	for( i = 0, from = 0, index = 0; i < len; i++)
+	for (unsigned long i = 0, from = 0, index = 0; i < len; i++)
 	{
-		c = str[ i];
+		char c = str[i];
 		
-//		if( encoding[ index] == NSISO2022JPStringEncoding || encoding[ index] == -2147483647)
+//		if (encoding[ index] == NSISO2022JPStringEncoding || encoding[ index] == -2147483647)
 //			twoCharsEncoding = YES;
 //		else
 //			twoCharsEncoding = NO;
 		
 		BOOL separatorFound = NO;
 		
-//		if( twoCharsEncoding)
+//		if (twoCharsEncoding)
 //		{
-//			if( c == 0x1b && str[ i+1] == '(')
+//			if (c == 0x1b && str[ i+1] == '(')
 //				separatorFound = YES;
 //		}
 //		else
 //		{
-        if( c == 0x1b)
+        if (c == 0x1b)
             separatorFound = YES;
 //		}
 		
-		if( separatorFound || i == len-1)
+		if (separatorFound || i == len-1)
 		{
-			if( separatorFound)
+			if (separatorFound)
 				separators = YES;
 			
-			if( i == len-1)
+			if (i == len-1)
 				i = len;
 			
-            if( i-from)
+            if (i-from)
             {
                 NSString *s = [[NSString alloc] initWithBytes: str+from length:i-from encoding: encoding[ index]];
                 
-                NSLog( @"%@ %d", s, (int) encoding[ index]);
+                NSLog(@"%@ %d", s, (int) encoding[ index]);
                 
-                if( s)
+                if (s)
                 {
                     [result appendString: s];
                     
-                    if( encoding[ index] == -2147481280)	// Korean support
+                    if (encoding[ index] == -2147481280)	// Korean support
                         [result replaceOccurrencesOfString:@"$)C" withString:@"" options:0 range:result.range];
                     
                     [s release];
@@ -307,16 +311,16 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
             }
 			
 			from = i;
-			if( index < 9)
+			if (index < 9)
 			{
 				index++;
-				if( encoding[ index] == 0)
+				if (encoding[ index] == 0)
 					index--;
 			}
 		}
-	}
+	} // for
 	
-//	if( separators)
+//	if (separators)
 //	{
 //		[result replaceOccurrencesOfString: @"\x1b" withString: @"" options: 0 range:result.range];
 //		[result replaceOccurrencesOfString: @"(B=)" withString: @"=" options: 0 range:result.range];
@@ -417,7 +421,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			
 			PREFERPAPYRUSFORCD = [[dict objectForKey: @"PREFERPAPYRUSFORCD"] intValue];
 			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER4"] intValue];
-			if( TOOLKITPARSER == 0)
+			if (TOOLKITPARSER == 0)
                 TOOLKITPARSER = 2;
             
 			COMMENTSFROMDICOMFILES = [[dict objectForKey: @"CommentsFromDICOMFiles"] intValue];
@@ -462,12 +466,12 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	#ifndef MIELE_LIGHT
 	NSString *extension = [[file pathExtension] lowercaseString];
 	
-	if( [extension isEqualToString:@"tiff"] ||
+	if ([extension isEqualToString:@"tiff"] ||
 		[extension isEqualToString:@"stk"] ||
 		[extension isEqualToString:@"tif"])
 	{
 		TIFF* tif = TIFFOpen([file UTF8String], "r");
-		if(tif)
+		if (tif)
 		{
 			success = YES;
 			TIFFClose(tif);
@@ -487,13 +491,13 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	#ifndef MIELE_LIGHT
 	NSString *extension = [[file pathExtension] lowercaseString];
 	
-	if( [extension isEqualToString:@"tiff"] ||
+	if ([extension isEqualToString:@"tiff"] ||
 		[extension isEqualToString:@"tif"])
 	{
 		short head_size = 0;
 		char* head_data = 0;
 		TIFF* tif = TIFFOpen([file UTF8String], "r");
-		if(tif)
+		if (tif)
 		{
 			success = TIFFGetField(tif, TIFFTAG_FV_MMHEADER, &head_size, &head_data);
 			TIFFClose(tif);
@@ -515,15 +519,15 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	NSString	*extension = [[file pathExtension] lowercaseString];
 	struct nifti_1_header  *NIfTI;
 	
-	if( [extension isEqualToString:@"hdr"] ||
+	if ([extension isEqualToString:@"hdr"] ||
 		[extension isEqualToString:@"nii"])
 	{
 		NIfTI = (nifti_1_header *) nifti_read_header([file UTF8String], nil, 0);
 		
-		if( (NIfTI->magic[0] != 'n')                           ||
-					(NIfTI->magic[1] != 'i' && NIfTI->magic[1] != '+')   ||
-					(NIfTI->magic[2] != '1')                           ||
-					(NIfTI->magic[3] != '\0'))
+		if ((NIfTI->magic[0] != 'n') ||
+            (NIfTI->magic[1] != 'i' && NIfTI->magic[1] != '+') ||
+            (NIfTI->magic[2] != '1') ||
+            (NIfTI->magic[3] != '\0'))
 		{
 			success = NO;
 		}
@@ -607,11 +611,11 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 {
 	int success = 0;
 	
-	#ifndef STATIC_DICOM_LIB
-	#ifndef MIELE_LIGHT
+#ifndef STATIC_DICOM_LIB
+#ifndef MIELE_LIGHT
 	NSString *extension = [[filePath pathExtension] lowercaseString];
 	
-	if( [extension isEqualToString:@"tiff"] ||
+	if ([extension isEqualToString:@"tiff"] ||
 		[extension isEqualToString:@"tif"])
 	{
 		TIFF* tif = TIFFOpen( [filePath UTF8String], "r");
@@ -619,7 +623,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 		short head_size = 0;
 		const char* head_data = 0;
 		
-		if(tif)
+		if (tif)
 			success = TIFFGetField(tif, TIFFTAG_FV_MMHEADER, &head_size, &head_data);
 		
 		if (success)
@@ -672,7 +676,8 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 						NSXMLNode* theSubNode = [theNode childAtIndex:j];
 						if ([[theSubNode name] isEqualToString:@"Date"])
 							datetime_string = [NSString stringWithFormat:@"%@ %@", datetime_string, [theSubNode stringValue]];
-						if ([[theSubNode name] isEqualToString:@"Time"])
+
+                        if ([[theSubNode name] isEqualToString:@"Time"])
 							datetime_string = [NSString stringWithFormat:@"%@ %@", datetime_string, [theSubNode stringValue]];
 					}
 			}
@@ -681,7 +686,9 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			date = [[NSDate dateWithNaturalLanguageString:datetime_string] retain];
 			if (date == nil)
 				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
-			if( date == nil) date = [[NSDate date] retain];
+
+            if (date == nil)
+                date = [[NSDate date] retain];
             
 			[dicomElements setObject:studyID forKey:@"studyID"];
 			[dicomElements setObject:study forKey:@"studyDescription"];
@@ -715,14 +722,14 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 				for (int j = 0; j < FV_SPATIAL_DIMENSION; j++)
 					if (*(mm_head.DimInfo[j].Name) != 'X' && *(mm_head.DimInfo[j].Name) != 'Y' && *(mm_head.DimInfo[j].Name) != 'Z')
 						largestDimSize *= mm_head.DimInfo[j].Size;
-				for (int j = FV_SPATIAL_DIMENSION - 1; j >= 0; j--)
+
+                for (int j = FV_SPATIAL_DIMENSION - 1; j >= 0; j--)
 				{
 					if (mm_head.DimInfo[j].Size > 1 && *(mm_head.DimInfo[j].Name) != 'X' && *(mm_head.DimInfo[j].Name) != 'Y' && *(mm_head.DimInfo[j].Name) != 'Z')
 					{
 						if (![seriesDesc isEqualToString:@"FV "])
 							seriesDesc = [seriesDesc stringByAppendingString:@", "];
-						
-						
+
 						largestDimSize /= mm_head.DimInfo[j].Size;
 						seriesDesc = [seriesDesc stringByAppendingFormat:@"%s %d", mm_head.DimInfo[j].Name, pos / largestDimSize];
 						pos %= largestDimSize;
@@ -732,16 +739,18 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			}
 			[xmlDocument release];
 		}
-		if(tif) TIFFClose(tif);
+
+        if (tif)
+            TIFFClose(tif);
 	}
 	
-	#endif
-	#endif
+#endif // MIELE_LIGHT
+#endif // STATIC_DICOM_LIB
 	
 	if (success)
 		return 0;
-	else
-		return -1;
+
+    return -1;
 }
 
 // For testing purposes only. Can quickly generate very large database to test performances
@@ -801,7 +810,9 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 		[extension isEqualToString:@"gif"])
 		{
 			NSImage *otherImage = [[NSImage alloc] initWithContentsOfFile:filePath];
-			if (otherImage || [extension isEqualToString:@"tiff"] || [extension isEqualToString:@"tif"])
+			if (otherImage ||
+                [extension isEqualToString:@"tiff"] ||
+                [extension isEqualToString:@"tif"])
 			{
 				// Try to identify a 2 digit number in the last part of the file.
 				char strNo[ 5];
@@ -809,15 +820,16 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 				
 #ifndef STATIC_DICOM_LIB
 #ifndef MIELE_LIGHT
-				if( [extension isEqualToString:@"tiff"] ||
+				if ([extension isEqualToString:@"tiff"] ||
 					[extension isEqualToString:@"stk"] ||
 					[extension isEqualToString:@"tif"])
 				{
 					TIFF* tif = TIFFOpen([filePath UTF8String], "r");
-					if( tif)
+					if (tif)
 					{
 						long count = 0;
-						int w = 0, h = 0;
+                        int w = 0;
+                        int h = 0;
 						
 						width = 0;
 						height = 0;
@@ -828,8 +840,11 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 							TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
 							TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
 							
-							if( w > width) width = w;
-							if( h > height) height = h;
+							if (w > width)
+                                width = w;
+
+                            if (h > height)
+                                height = h;
 							
 							count++;
 						}
@@ -859,10 +874,10 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
                     }
 				}
 				
-				if( [tempString length] >= 4) strNo[ 0] = [tempString characterAtIndex: [tempString length] -4]; else strNo[ 0]= 0;
-				if( [tempString length] >= 3) strNo[ 1] = [tempString characterAtIndex: [tempString length] -3]; else strNo[ 1]= 0;
-				if( [tempString length] >= 2) strNo[ 2] = [tempString characterAtIndex: [tempString length] -2]; else strNo[ 2]= 0;
-				if( [tempString length] >= 1) strNo[ 3] = [tempString characterAtIndex: [tempString length] -1]; else strNo[ 3]= 0;
+				if ([tempString length] >= 4) strNo[ 0] = [tempString characterAtIndex: [tempString length] -4]; else strNo[ 0]= 0;
+				if ([tempString length] >= 3) strNo[ 1] = [tempString characterAtIndex: [tempString length] -3]; else strNo[ 1]= 0;
+				if ([tempString length] >= 2) strNo[ 2] = [tempString characterAtIndex: [tempString length] -2]; else strNo[ 2]= 0;
+				if ([tempString length] >= 1) strNo[ 3] = [tempString characterAtIndex: [tempString length] -1]; else strNo[ 3]= 0;
 
                 strNo[ 4] = 0;
 				
@@ -871,10 +886,14 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
                     strNo[ 2] >= '0' && strNo[ 2] <= '9' &&
                     strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
-					imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 4] stringByAppendingString:[NSString stringWithCString: (char*) strNo encoding: NSISOLatin1StringEncoding]]];
-					self.serieID = [tempString substringToIndex: [tempString length] - 4];
-					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 4]];
+					imageID = [[NSString alloc] initWithCString: (char*) strNo
+                                                       encoding: NSASCIIStringEncoding];
+
+                    SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 4] stringByAppendingString:[NSString stringWithCString: (char*) strNo encoding: NSISOLatin1StringEncoding]]];
+
+                    self.serieID = [tempString substringToIndex: [tempString length] - 4];
+
+                    studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 4]];
 				}
 				else if (strNo[ 1] >= '0' && strNo[ 1] <= '9' &&
                          strNo[ 2] >= '0' && strNo[ 2] <= '9' &&
@@ -929,7 +948,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 				study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				Modality = [[NSString alloc] initWithString:extension];
 				date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
-                if( date == nil)
+                if (date == nil)
                     date = [[NSDate date] retain];
 
                 serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
@@ -970,7 +989,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			}
 	}
 	
-	if( [extension isEqualToString:@"mov"] ||
+	if ([extension isEqualToString:@"mov"] ||
 		[extension isEqualToString:@"mpg"] ||
 		[extension isEqualToString:@"mpeg"] ||
 		[extension isEqualToString:@"avi"])
@@ -985,7 +1004,9 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
         study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
         Modality = [[NSString alloc] initWithString:extension];
         date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
-        if( date == nil) date = [[NSDate date] retain];
+        if (date == nil)
+            date = [[NSDate date] retain];
+
         serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
         fileType = [@"IMAGE" retain];
 
@@ -997,7 +1018,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
         AVAssetReader *asset_reader = [[[AVAssetReader alloc] initWithAsset: asset error: &error] autorelease];
         
         NSArray* video_tracks = [asset tracksWithMediaType: AVMediaTypeVideo];
-        if( video_tracks.count)
+        if (video_tracks.count)
         {
             AVAssetTrack* video_track = [video_tracks objectAtIndex:0];
             
@@ -1015,7 +1036,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
             {
                 CMSampleBufferRef sampleBufferRef = [asset_reader_output copyNextSampleBuffer];
                 
-                if( NoOfFrames == 0)
+                if (NoOfFrames == 0)
                 {
                     CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBufferRef);
                     size_t w = CVPixelBufferGetWidth(pixelBuffer); 
@@ -1025,17 +1046,17 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
                     width = w;
                 }
                 
-                if( sampleBufferRef)
+                if (sampleBufferRef)
                 {
                     CMSampleBufferInvalidate(sampleBufferRef);
                     CFRelease(sampleBufferRef);
-                    
                     NoOfFrames++;
                 }
             }
         }
         
-        if( NoOfFrames > QUICKTIMETIMEFRAMELIMIT) NoOfFrames = QUICKTIMETIMEFRAMELIMIT;   // Limit number of images !
+        if (NoOfFrames > QUICKTIMETIMEFRAMELIMIT)
+            NoOfFrames = QUICKTIMETIMEFRAMELIMIT;   // Limit number of images !
         
         [dicomElements setObject:studyID forKey:@"studyID"];
         [dicomElements setObject:study forKey:@"studyDescription"];
@@ -1067,13 +1088,13 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 //	NSString	*extension = [[filePath pathExtension] lowercaseString];
 //	
 //	file = [NSData dataWithContentsOfFile: filePath];
-//	if( [file length] > 3300)
+//	if ([file length] > 3300)
 //	{
 //		ptr = (char*) [file bytes];
 //		
 ////		for( i = 0 ; i < [file length]; i++)
 ////		{
-////			if( *((short*)&ptr[ i]) == 512 && *((short*)&ptr[ i+2]) == 512)
+////			if (*((short*)&ptr[ i]) == 512 && *((short*)&ptr[ i+2]) == 512)
 ////			{
 ////				NSLog(@"Found! %d", i);
 ////				NSLog(@"%2.2f, %2.2f", *((float*)&ptr[ i+4]), *((float*)&ptr[ i+8]));
@@ -1085,7 +1106,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 //		//for( i = 0 ; i < [file length]; i++)
 //		i = 3228;
 //		{
-//			if( ptr[ i] == 'I' && ptr[ i+1] == 'M' && ptr[ i+2] == 'G' && ptr[ i+3] == 'F')
+//			if (ptr[ i] == 'I' && ptr[ i+1] == 'M' && ptr[ i+2] == 'G' && ptr[ i+3] == 'F')
 //			{
 //				NSLog(@"SIGNA 5.X File Format: %d", i);
 //				
@@ -1124,7 +1145,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 //				fclose( fp);
 //				
 //				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
-//				if( date == nil) date = [[NSDate date] retain];
+//				if (date == nil) date = [[NSDate date] retain];
 //
 //				[dicomElements setObject:studyID forKey:@"studyID"];
 //				[dicomElements setObject:study forKey:@"studyDescription"];
@@ -1140,7 +1161,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 //				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 //				[dicomElements setObject:fileType forKey:@"fileType"];
 //
-//				if( name != nil & studyID != nil & serieID != nil & imageID != nil)
+//				if (name != nil & studyID != nil & serieID != nil & imageID != nil)
 //				{
 //					return 0;   // success
 //				}
@@ -1156,27 +1177,25 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 
 -(short) getBioradPicFile
 {
-	FILE					*fp;
-	struct BioradHeader		header;
+	NSString *extension = [[filePath pathExtension] lowercaseString];
 	
-	NSString	*extension = [[filePath pathExtension] lowercaseString];
-	
-	if( [extension isEqualToString:@"pic"])
+	if ([extension isEqualToString:@"pic"])
 	{
-		NSLog(@"Entering getBioradPicFile");
+		NSLog(@"%s", __FUNCTION__);
 		
-		fp = fopen( [filePath UTF8String], "r");
-		if( fp)
+		FILE *fp = fopen( [filePath UTF8String], "r");
+		if (fp)
 		{
 			fileType = [@"BIORAD" retain];
 			
+            struct BioradHeader header;
 			fread( &header, 76, 1, fp);
 			
 			// GJ: 040609 giving better names
-			NSString	*fileNameStem = [[filePath lastPathComponent] stringByDeletingPathExtension];
+			NSString *fileNameStem = [[filePath lastPathComponent] stringByDeletingPathExtension];
 			// Biorad files _usually_ keep the channel number in the last two digits
 			
-			NSString	*imageStem = [fileNameStem substringToIndex:[fileNameStem length]-2];
+			NSString *imageStem = [fileNameStem substringToIndex:[fileNameStem length]-2];
 			name = [[NSString alloc] initWithString: [filePath lastPathComponent]];
 			patientID = [[NSString alloc] initWithString:name];
 			studyID = [[NSString alloc] initWithString:imageStem];
@@ -1185,7 +1204,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			study = [[NSString alloc] initWithString:imageStem];
 			serie = [[NSString alloc] initWithString:fileNameStem];
 			Modality = [[NSString alloc] initWithString:@"BRP"];
-			//////////////////////////////////////////////////////////////////////////////////////
+			// /////////////////////////////////////////////////////////////////
 			
 			short realheight = NSSwapLittleShortToHost(header.ny);
 			height = realheight;
@@ -1195,14 +1214,15 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			NoOfSeries = 1;
 			
 			date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
-			if( date == nil) date = [[NSDate date] retain];
+			if (date == nil)
+                date = [[NSDate date] retain];
             
 			//NSLog(@"File has h x w x d %d x %d x %d",height,width,NoOfFrames);
-			int bytesPerPixel=1;
+			int bytesPerPixel = 1;
 			// if 8bit, byte_format==1 otherwise 16bit
-			if (NSSwapLittleShortToHost(header.byte_format)!=1)
+			if (NSSwapLittleShortToHost(header.byte_format) != 1)
 			{
-				bytesPerPixel=2;
+				bytesPerPixel = 2;
 			}
 			
 			fclose( fp);
@@ -1221,7 +1241,11 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 			[dicomElements setObject:fileType forKey:@"fileType"];
 			
-			if( name != nil && studyID != nil && self.serieID != nil && imageID != nil && NoOfFrames>0)
+			if (name != nil &&
+                studyID != nil &&
+                self.serieID != nil &&
+                imageID != nil &&
+                NoOfFrames > 0)
 			{
 				return 0;   // success
 			}
@@ -1238,16 +1262,16 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	
 	NSString *extension = [[filePath pathExtension] lowercaseString];
 	
-	if( [extension isEqualToString:@"lsm"])
+	if ([extension isEqualToString:@"lsm"])
 	{
 		file = [NSData dataWithContentsOfFile: filePath];
-		if( [file length] > 1)
+		if ([file length] > 1)
 		{
 			fileType = [@"LSM" retain];
 			
 			ptr = (const char *)[file bytes];
 			
-			if( ptr[ 2] == 42)
+			if (ptr[ 2] == 42)
 				NSLog(@"LSM File");
 			
 			name = [[NSString alloc] initWithString: [filePath lastPathComponent]];
@@ -1428,45 +1452,50 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			fread( &TIF_STRIPBYTECOUNTS2, 4, 1, fp);   TIF_STRIPBYTECOUNTS2 = EndianU32_LtoN( TIF_STRIPBYTECOUNTS2);
 			fread( &TIF_STRIPBYTECOUNTS3, 4, 1, fp);   TIF_STRIPBYTECOUNTS3 = EndianU32_LtoN( TIF_STRIPBYTECOUNTS3);
 			
-			if( TIF_CZ_LSMINFO)
+			if (TIF_CZ_LSMINFO)
 			{
 				fseek(fp, TIF_CZ_LSMINFO + 8, SEEK_SET);
 				
-				int		DIMENSION_X, DIMENSION_Y, DIMENSION_Z, NUMBER_OF_CHANNELS, TIMESTACKSIZE, DATATYPE, SCANTYPE;
+				int DIMENSION_X, DIMENSION_Y, DIMENSION_Z;
+				fread( &DIMENSION_X, 4, 1, fp); DIMENSION_X = EndianS32_LtoN( DIMENSION_X);
+				fread( &DIMENSION_Y, 4, 1, fp); DIMENSION_Y = EndianS32_LtoN( DIMENSION_Y);
+				fread( &DIMENSION_Z, 4, 1, fp); DIMENSION_Z = EndianS32_LtoN( DIMENSION_Z);
 				
-				fread( &DIMENSION_X, 4, 1, fp);		DIMENSION_X = EndianS32_LtoN( DIMENSION_X);
-				fread( &DIMENSION_Y, 4, 1, fp);		DIMENSION_Y = EndianS32_LtoN( DIMENSION_Y);
-				fread( &DIMENSION_Z, 4, 1, fp);		DIMENSION_Z = EndianS32_LtoN( DIMENSION_Z);
+                int NUMBER_OF_CHANNELS;
+				fread( &NUMBER_OF_CHANNELS, 4, 1, fp); NUMBER_OF_CHANNELS = EndianS32_LtoN( NUMBER_OF_CHANNELS);
+
+                int TIMESTACKSIZE;
+                fread( &TIMESTACKSIZE, 4, 1, fp); TIMESTACKSIZE = EndianS32_LtoN( TIMESTACKSIZE);
 				
-				fread( &NUMBER_OF_CHANNELS, 4, 1, fp);		NUMBER_OF_CHANNELS = EndianS32_LtoN( NUMBER_OF_CHANNELS);
-				fread( &TIMESTACKSIZE, 4, 1, fp);			TIMESTACKSIZE = EndianS32_LtoN( TIMESTACKSIZE);
+                int DATATYPE;
+				fread( &DATATYPE, 4, 1, fp); DATATYPE = EndianU32_LtoN( DATATYPE);
 				
-				fread( &DATATYPE, 4, 1, fp);			DATATYPE = EndianU32_LtoN( DATATYPE);
-				
+                int SCANTYPE;
 				fseek(fp, TIF_CZ_LSMINFO + 64, SEEK_SET);
-				fread( &SCANTYPE, 4, 1, fp);			SCANTYPE = EndianU32_LtoN( SCANTYPE);
+                fread( &SCANTYPE, 4, 1, fp); SCANTYPE = EndianU32_LtoN( SCANTYPE);
 	
 				switch (SCANTYPE)
 				{
-				case 3:
-					NoOfFrames = TIMESTACKSIZE;
-					NoOfSeries = NUMBER_OF_CHANNELS;
-					break;
-				case 4:
-					NoOfFrames = TIMESTACKSIZE;
-					NoOfSeries = NUMBER_OF_CHANNELS;
-					break;
-				case 6:
-					NoOfFrames = DIMENSION_Z  * TIMESTACKSIZE;
-					NoOfSeries = NUMBER_OF_CHANNELS;
-					break;
-				default:
-					NoOfFrames = DIMENSION_Z  * TIMESTACKSIZE;
-					NoOfSeries = NUMBER_OF_CHANNELS;
-					break;
+                    case 3:
+                        NoOfFrames = TIMESTACKSIZE;
+                        NoOfSeries = NUMBER_OF_CHANNELS;
+                        break;
+
+                    case 4:
+                        NoOfFrames = TIMESTACKSIZE;
+                        NoOfSeries = NUMBER_OF_CHANNELS;
+                        break;
+
+                    case 6:
+                        NoOfFrames = DIMENSION_Z * TIMESTACKSIZE;
+                        NoOfSeries = NUMBER_OF_CHANNELS;
+                        break;
+
+                    default:
+                        NoOfFrames = DIMENSION_Z * TIMESTACKSIZE;
+                        NoOfSeries = NUMBER_OF_CHANNELS;
+                        break;
 				}
-				
-				
 				
 				//NSLog(@"getLSM opened an LSM file with %d series",NoOfSeries);
 				
@@ -1514,12 +1543,10 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			}
 			
 			fclose( fp);
-			
-
-
 
 			date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
-			if( date == nil) date = [[NSDate date] retain];
+			if (date == nil)
+                date = [[NSDate date] retain];
             
 			[dicomElements setObject:studyID forKey:@"studyID"];
 			[dicomElements setObject:study forKey:@"studyDescription"];
@@ -1535,12 +1562,11 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 //			[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 			[dicomElements setObject:fileType forKey:@"fileType"];
 			
-////////////////
-			for (long i = 0; i < NoOfSeries; i++)
+			for (int i = 0; i < NoOfSeries; i++)
 			{
 				NSString* SeriesNum;
 				if (i)
-					SeriesNum = [NSString stringWithFormat:@"%ld",i];
+					SeriesNum = [NSString stringWithFormat:@"%d", i];
 				else
 					SeriesNum = @"";
 								
@@ -1550,8 +1576,8 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 				[dicomElements setObject:[imageID stringByAppendingString:SeriesNum] forKey:[@"SOPUID" stringByAppendingString:SeriesNum]];
 				[dicomElements setObject:[NSNumber numberWithInt: i] forKey:[@"imageID" stringByAppendingString:SeriesNum]];
 			}
-////////////////
-			return 0;
+
+            return 0;
 		}
 	}
 	
@@ -1567,12 +1593,12 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	NSData		*file;
 	NSString	*extension = [[filePath pathExtension] lowercaseString];
 
-	if( [extension isEqualToString:@"hdr"])
+	if ([extension isEqualToString:@"hdr"])
 	{
 		if ([[NSFileManager defaultManager] fileExistsAtPath:[[filePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)
 		{
 			file = [NSData dataWithContentsOfFile: filePath];
-			if( [file length] == 348)
+			if ([file length] == 348)
 			{
 				fileType = [@"ANALYZE" retain];
 				
@@ -1588,8 +1614,12 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 				Modality = [[NSString alloc] initWithString:@"ANZ"];
 				
 				date = [[NSCalendarDate alloc] initWithString:[NSString stringWithCString: Analyze->hist.exp_date encoding: NSISOLatin1StringEncoding] calendarFormat:@"%Y%m%d"];
-				if(date == nil) date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
-				if( date == nil) date = [[NSDate date] retain];
+
+                if (date == nil)
+                    date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
+
+                if (date == nil)
+                    date = [[NSDate date] retain];
                 
 				short endian = Analyze->dime.dim[ 0];		// dim[0] 
 				if ((endian < 0) || (endian > 15)) 
@@ -1598,13 +1628,18 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 				}
 				
 				height = Analyze->dime.dim[ 1];
-				if( intelByteOrder) height = Endian16_Swap( height);
-				width = Analyze->dime.dim[ 2];
-				if( intelByteOrder) width = Endian16_Swap( width);
+				if (intelByteOrder)
+                    height = Endian16_Swap( height);
+
+                width = Analyze->dime.dim[ 2];
+				if (intelByteOrder)
+                    width = Endian16_Swap( width);
 				
 				NoOfFrames = Analyze->dime.dim[ 3];
-				if( intelByteOrder) NoOfFrames = Endian16_Swap( NoOfFrames);
-				NoOfSeries = 1;
+				if (intelByteOrder)
+                    NoOfFrames = Endian16_Swap( NoOfFrames);
+
+                NoOfSeries = 1;
 				
 				[dicomElements setObject:studyID forKey:@"studyID"];
 				[dicomElements setObject:study forKey:@"studyDescription"];
@@ -1620,7 +1655,10 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 				[dicomElements setObject:fileType forKey:@"fileType"];
 				
-				if( name != nil && studyID != nil && self.serieID != nil && imageID != nil)
+				if (name != nil &&
+                    studyID != nil &&
+                    self.serieID != nil &&
+                    imageID != nil)
 				{
 					return 0;   // success
 				}
@@ -1642,18 +1680,18 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	
 	NSString	*extension = [[filePath pathExtension] lowercaseString];
 
-	if( (( [extension isEqualToString:@"hdr"]) &&
+	if ((( [extension isEqualToString:@"hdr"]) &&
 		([[NSFileManager defaultManager] fileExistsAtPath:[[filePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)) ||
 		( [extension isEqualToString:@"nii"]))
 	{
 		NIfTI = (nifti_1_header *) nifti_read_header([filePath UTF8String], nil, 0);
 		
-		if( NIfTI == nil)
+		if (NIfTI == nil)
 			return -1;
 		
 		fileType = [@"NIfTI" retain];
 		
-		if( (NIfTI->magic[0] == 'n') &&
+		if ((NIfTI->magic[0] == 'n') &&
 			(NIfTI->magic[1] == 'i' || NIfTI->magic[1] == '+') &&
 			(NIfTI->magic[2] == '1') &&
 			(NIfTI->magic[3] == '\0'))
@@ -1667,7 +1705,8 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			serie = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
 			Modality = [[NSString alloc] initWithString:@"NIfTI"];
 			date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:NULL] fileCreationDate] retain];
-			if( date == nil) date = [[NSDate date] retain];
+			if (date == nil)
+                date = [[NSDate date] retain];
             
 			width = NIfTI->dim[ 1];
 
@@ -1691,7 +1730,10 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			[dicomElements setObject:fileType forKey:@"fileType"];
 			
 			
-			if( name != nil && studyID != nil && self.serieID != nil && imageID != nil)
+			if (name != nil &&
+                studyID != nil &&
+                self.serieID != nil &&
+                imageID != nil)
 			{
 				return 0;   // success
 			}
@@ -1715,7 +1757,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	
 	// Process NIfTI header
 	
-	if([self isNIfTIFile: file])
+	if ([self isNIfTIFile: file])
 	{
 		NIfTI = nifti_image_read( [file UTF8String], 0);
 		 
@@ -1727,10 +1769,10 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 		// Cycle through string, and parse out key and value from each line.  Then store in XML document.
 		NSArray *allLines = [returnString componentsSeparatedByString:@"\n"];
 		
-		if([allLines count] > 0)
+		if ([allLines count] > 0)
 		{
 			NSLog(@"allLines Count:  %d", (int) [allLines count]);
-			for(id loopItem1 in allLines)
+			for (id loopItem1 in allLines)
 			{
 				NSString* aLine = (NSString *) loopItem1;
 				
@@ -1738,7 +1780,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 				NSArray *splitLine = [aLine componentsSeparatedByString:@" = '"];
 				NSLog(@"splitLine %@", splitLine);
 				
-				if([splitLine count] == 2)
+				if ([splitLine count] == 2)
 				{
 					// Expected value
 					NSString * key = (NSString *) [splitLine objectAtIndex:0]; 
@@ -1765,12 +1807,12 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 		}
 		
 		// Review the NIfTI extension list and add any elements to list.
-		if( NIfTI->num_ext > 0 && NIfTI->ext_list != NULL)
+		if (NIfTI->num_ext > 0 &&
+            NIfTI->ext_list != NULL)
 		{
-			int c = 0;
 			nifti1_extension * ext;
 			ext = NIfTI->ext_list;
-			for ( c = 0; c < NIfTI->num_ext; c++)
+			for (int c = 0; c < NIfTI->num_ext; c++)
 			{
 				NSXMLElement *node = [[[NSXMLElement alloc] initWithName:
 					[@"extension: ecode " stringByAppendingString:[NSString stringWithFormat:@"%i", ext->ecode]]] autorelease];
@@ -1804,7 +1846,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	
 	NSString *htmlpath = [[pathDicomSrSlash stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"xml"];
 	
-	if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
+	if ([[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
 	{
 		NSTask *aTask = [[[NSTask alloc] init] autorelease];
 
@@ -1831,10 +1873,10 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 		[aTask interrupt];
 	}
 	
-	if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
+	if ([[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
 	{
         NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"Decompress"] path];
-        if( [[NSFileManager defaultManager] fileExistsAtPath: launchPath])
+        if ([[NSFileManager defaultManager] fileExistsAtPath: launchPath])
         {
             NSTask *aTask = [[[NSTask alloc] init] autorelease];
             [aTask setLaunchPath: launchPath];
@@ -1866,16 +1908,16 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 {
 	BOOL isCD = NO;
 	
-	if( PREFERPAPYRUSFORCD)
+	if (PREFERPAPYRUSFORCD)
 		isCD = filesAreFromCDMedia;
 
-	if( TOOLKITPARSER == 1 || isCD == YES)
+	if (TOOLKITPARSER == 1 || isCD == YES)
         return [self getDicomFilePapyrus: NO];
 	
-	if( TOOLKITPARSER == 0)
+	if (TOOLKITPARSER == 0)
         return [self getDicomFilePapyrus: NO];
 	
-	if( TOOLKITPARSER == 2)
+	if (TOOLKITPARSER == 2)
         return [self getDicomFileDCMTK];
 	
 	return [self getDicomFileDCMTK];
@@ -1885,11 +1927,11 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 {
 	id returnVal = nil;
 	
-	if( self = [super init])
+	if (self = [super init])
 	{
 		[DicomFile setDefaults];
 		
-		//width and height need to greater than 0 or get validation errors
+		// width and height need to be greater than 0 or get validation errors
 		
 		width = 1;
 		height = 1;
@@ -1898,13 +1940,11 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 		
 		dicomElements = [[NSMutableDictionary dictionary] retain];
 		
-		if( [self getRandom] == 0)
-		{
+		if ([self getRandom] == 0)
 			returnVal = self;
-		}
 	}
 	
-	if( returnVal)
+	if (returnVal)
 	{
 		[dicomElements setObject:[NSNumber numberWithInt: height] forKey:@"height"];
 		[dicomElements setObject:[NSNumber numberWithInt: width] forKey:@"width"];
@@ -1923,9 +1963,10 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 - (id) init:(NSString*) f DICOMOnly:(BOOL) DICOMOnly
 {
 	id returnVal = nil;
-//	NSLog(@"Init dicomFile: %d", DICOMOnly);
-    
-	if( self = [super init])
+//  NSLog(@"%s %d, DICOMOnly:%d", __FUNCTION__, __LINE__, DICOMOnly);
+
+    self = [super init];
+	if (self)
 	{
 		[DicomFile setDefaults];
 		
@@ -1940,9 +1981,9 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 		
 		dicomElements = [[NSMutableDictionary dictionary] retain];
 		
-		if( DICOMOnly)
+		if (DICOMOnly)
 		{
-			if( [self getDicomFile] == 0)
+			if ([self getDicomFile] == 0)
 			{
 				returnVal = self;
 			}
@@ -1955,11 +1996,11 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 		}
 		else
 		{
-			if( [self getFVTiffFile] == 0) // this needs to happen before getImageFile, since a FVTiff is a legal tiff and getImageFile will try to read it
+			if ([self getFVTiffFile] == 0) // this needs to happen before getImageFile, since a FVTiff is a legal tiff and getImageFile will try to read it
 			{
 				returnVal = self;
 			}
-			else if( [self getImageFile] == 0)
+			else if ([self getImageFile] == 0)
 			{
 				returnVal = self;
 			}
@@ -1967,42 +2008,41 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			{
 				returnVal = self;
 			}
-			else if( [self getBioradPicFile] == 0)
+			else if ([self getBioradPicFile] == 0)
 			{
 				returnVal = self;
 			}
-			else if( [self getAnalyze] == 0)
+			else if ([self getAnalyze] == 0)
 			{
 				returnVal = self;
 			}
-			#ifndef DECOMPRESS_APP
-			else if( [self getNIfTI] == 0)
+#ifndef DECOMPRESS_APP
+			else if ([self getNIfTI] == 0)
 			{
 				returnVal = self;
 			}
-			#endif
-			else if( [self getLSM] == 0)
+#endif
+			else if ([self getLSM] == 0)
 			{
 				returnVal = self;
 			}
-			else if( [self getNRRDFile] == 0)
+			else if ([self getNRRDFile] == 0)
 			{
 				returnVal = self;
 			}
-			else if( [self getDicomFile] == 0)
+			else if ([self getDicomFile] == 0)
 			{
 				returnVal = self;
 			}
 			else
 			{
-				[self autorelease];
-				
+				[self autorelease];				
 				returnVal = nil;
 			}
 		}
 	}
 	
-	if( returnVal)
+	if (returnVal)
 	{
 		[dicomElements setObject:[NSNumber numberWithInt: height] forKey:@"height"];
 		[dicomElements setObject:[NSNumber numberWithInt: width] forKey:@"width"];
@@ -2050,24 +2090,24 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
     NSString *patientID = @"";
     NSString *patientBirthDate = @"";
     
-    if( gUsePatientBirthDateForUID == NO && gUsePatientIDForUID == NO && gUsePatientNameForUID == NO)
+    if (gUsePatientBirthDateForUID == NO && gUsePatientIDForUID == NO && gUsePatientNameForUID == NO)
         N2LogStackTrace( @"PatientUID requires at least one parameter.");
     
-    if( gUsePatientNameForUID)
+    if (gUsePatientNameForUID)
     {
         patientName = [DicomFile NSreplaceBadCharacter: [src valueForKey:@"patientName"]];
         patientName = [patientName stringByReplacingOccurrencesOfString: @"-" withString: @" "];
         
         NSString *firstRepresentation = [[patientName componentsSeparatedByString: @"="] objectAtIndex: 0];
         
-        if( firstRepresentation.length)
+        if (firstRepresentation.length > 0)
             patientName = firstRepresentation;
     }
     
-    if( gUsePatientBirthDateForUID)
+    if (gUsePatientBirthDateForUID)
         patientBirthDate = [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[src valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"];
     
-    if( gUsePatientIDForUID)
+    if (gUsePatientIDForUID)
         patientID = [src valueForKey:@"patientID"];
     
 	NSString *string = [NSString stringWithFormat:@"%@-%@-%@", patientName, patientID, patientBirthDate];
@@ -2094,13 +2134,12 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 
 - (short)getPluginFile
 {
-	#ifdef OSIRIX_VIEWER
-	NSString	*extension = [[filePath pathExtension] lowercaseString];	
+#ifdef OSIRIX_VIEWER
+	NSString *extension = [[filePath pathExtension] lowercaseString];
 	NoOfFrames = 1;	
 	
-	id fileFormatBundle;
-	
-	if ((fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:extension]))
+	id fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:extension];
+	if (fileFormatBundle)
 	{
 		fileType = [@"IMAGE" retain];
 		
@@ -2117,7 +2156,6 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			name = [[decoder patientName] retain];
 		else 
 			name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-
 		
 		if ([decoder patientID])
 			patientID = [[decoder patientID] retain];
@@ -2131,7 +2169,8 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			
 		Modality = [[NSString alloc] initWithString:extension];
 		date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:NULL] fileCreationDate] retain];
-		if( date == nil) date = [[NSDate date] retain];
+		if (date == nil)
+            date = [[NSDate date] retain];
         
 		if ([decoder seriesDescription])
 			serie = [[decoder seriesDescription] retain];
@@ -2142,12 +2181,12 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			[dicomElements setObject:[decoder studyID] forKey:@"studyID"];
 		else 
 			[dicomElements setObject:studyID forKey:@"studyID"];
-		NSLog(@"studyID ; %@", studyID);
+
+        NSLog(@"studyID ; %@", studyID);
 		if ([decoder studyDescription])
 			[dicomElements setObject:[decoder studyDescription]forKey:@"studyDescription"];
 		else
 			[dicomElements setObject:study forKey:@"studyDescription"];
-			
 			
 		[dicomElements setObject:date forKey:@"studyDate"];
 		[dicomElements setObject:Modality forKey:@"modality"];
@@ -2186,67 +2225,75 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
         
 		return 0;				
 	}
-	#endif
+#endif
 	
 	return -1;
 }
 
-- (void)extractSeriesStudyImageNumbersFromFileName:(NSString *)tempString{
-// Try to identify a 2 digit number in the last part of the file.
-				char				strNo[ 5];
-	if( [tempString length] >= 4) strNo[ 0] = [tempString characterAtIndex: [tempString length] -4];	else strNo[ 0]= 0;
-	if( [tempString length] >= 3) strNo[ 1] = [tempString characterAtIndex: [tempString length] -3];	else strNo[ 1]= 0;
-	if( [tempString length] >= 2) strNo[ 2] = [tempString characterAtIndex: [tempString length] -2];	else strNo[ 2]= 0;
-	if( [tempString length] >= 1) strNo[ 3] = [tempString characterAtIndex: [tempString length] -1];	else strNo[ 3]= 0;
-		strNo[ 4] = 0;
+- (void)extractSeriesStudyImageNumbersFromFileName:(NSString *)tempString
+{
+    // Try to identify a 2 digit number in the last part of the file.
+    char strNo[ 5];
+	if ([tempString length] >= 4) strNo[ 0] = [tempString characterAtIndex: [tempString length] -4]; else strNo[ 0]= 0;
+	if ([tempString length] >= 3) strNo[ 1] = [tempString characterAtIndex: [tempString length] -3]; else strNo[ 1]= 0;
+	if ([tempString length] >= 2) strNo[ 2] = [tempString characterAtIndex: [tempString length] -2]; else strNo[ 2]= 0;
+	if ([tempString length] >= 1) strNo[ 3] = [tempString characterAtIndex: [tempString length] -1]; else strNo[ 3]= 0;
+
+    strNo[ 4] = 0;
 		
-	if( strNo[ 0] >= '0' && strNo[ 0] <= '9' && strNo[ 1] >= '0' && strNo[ 1] <= '9' && strNo[ 2] >= '0' && strNo[ 2] <= '9'  && strNo[ 3] >= '0' && strNo[ 3] <= '9')
-		{
-			// We HAVE a number with 4 digit at the end of the file!! Make a serie of it!
+	if (strNo[ 0] >= '0' && strNo[ 0] <= '9' &&
+        strNo[ 1] >= '0' && strNo[ 1] <= '9' &&
+        strNo[ 2] >= '0' && strNo[ 2] <= '9' &&
+        strNo[ 3] >= '0' && strNo[ 3] <= '9')
+    {
+        // We HAVE a number with 4 digit at the end of the file!! Make a serie of it!
 			
-			imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-			self.serieID = [tempString substringToIndex: [tempString length] -4];
-			studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -4]];
+        imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
+        self.serieID = [tempString substringToIndex: [tempString length] -4];
+        studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -4]];
 	}
-	else if( strNo[ 1] >= '0' && strNo[ 1] <= '9' && strNo[ 2] >= '0' && strNo[ 2] <= '9' && strNo[ 3] >= '0' && strNo[ 3] <= '9')
+	else if (strNo[ 1] >= '0' && strNo[ 1] <= '9' &&
+             strNo[ 2] >= '0' && strNo[ 2] <= '9' &&
+             strNo[ 3] >= '0' && strNo[ 3] <= '9')
 	{
-			// We HAVE a number with 3 digit at the end of the file!! Make a serie of it!
-			
-			strNo[0] = strNo[ 1];
-			strNo[1] = strNo[ 2];
-			strNo[2] = strNo[ 3];
-			strNo[3] = 0;
-			
-			imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-			self.serieID = [tempString substringToIndex: [tempString length] -3];
-			studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -3]];
+        // We HAVE a number with 3 digit at the end of the file!! Make a serie of it!
+        
+        strNo[0] = strNo[ 1];
+        strNo[1] = strNo[ 2];
+        strNo[2] = strNo[ 3];
+        strNo[3] = 0;
+        
+        imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
+        self.serieID = [tempString substringToIndex: [tempString length] -3];
+        studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -3]];
 	}
-	else if( strNo[ 2] >= '0' && strNo[ 2] <= '9' && strNo[ 3] >= '0' && strNo[ 3] <= '9')
+	else if (strNo[ 2] >= '0' && strNo[ 2] <= '9' &&
+             strNo[ 3] >= '0' && strNo[ 3] <= '9')
 	{
-			// We HAVE a number with 2 digit at the end of the file!! Make a serie of it!
-			strNo[0] = strNo[ 2];
-			strNo[1] = strNo[ 3];
-			strNo[2] = 0;
-			
-			imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-			self.serieID = [tempString substringToIndex: [tempString length] -2];
-			studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -2]];
+        // We HAVE a number with 2 digit at the end of the file!! Make a serie of it!
+        strNo[0] = strNo[ 2];
+        strNo[1] = strNo[ 3];
+        strNo[2] = 0;
+        
+        imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
+        self.serieID = [tempString substringToIndex: [tempString length] -2];
+        studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -2]];
 	}
-	else if( strNo[ 3] >= '0' && strNo[ 3] <= '9')
+	else if (strNo[ 3] >= '0' && strNo[ 3] <= '9')
 	{
-			// We HAVE a number with 1 digit at the end of the file!! Make a serie of it!
-			strNo[0] = strNo[ 3];
-			strNo[1] = 0;
-			
-			imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-			self.serieID = [tempString substringToIndex: [tempString length] -1];
-			studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -1]];
+        // We HAVE a number with 1 digit at the end of the file!! Make a serie of it!
+        strNo[0] = strNo[ 3];
+        strNo[1] = 0;
+        
+        imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
+        self.serieID = [tempString substringToIndex: [tempString length] -1];
+        studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -1]];
 	}
 	else
 	{
-			studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-			self.serieID = [filePath lastPathComponent];
-			imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+        studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+        self.serieID = [filePath lastPathComponent];
+        imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 	}
 
 }
@@ -2255,7 +2302,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 //
 //- (id) initWithXMLDescriptor: (NSString*)pathToXMLDescriptor path:(NSString*) f
 //{
-//	if( self = [super init])
+//	if (self = [super init])
 //	{	
 //		// XML Data
 //		NSLog(@"pathToXMLDescriptor : %@", pathToXMLDescriptor);
@@ -2420,7 +2467,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 
 //- (BOOL) checkForLAVIM
 //{
-//	if( CHECKFORLAVIM == YES) return YES;
+//	if (CHECKFORLAVIM == YES) return YES;
 //	
 //	return NO;
 //}

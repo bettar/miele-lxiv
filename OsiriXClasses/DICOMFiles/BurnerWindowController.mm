@@ -1065,7 +1065,7 @@
                 NSStringEncoding encoding;
                 NSString *autorunInf = [NSString stringWithContentsOfFile: [burnFolder stringByAppendingPathComponent: @"Autorun.inf"] usedEncoding: &encoding error: nil];
                 
-                if (autorunInf.length)
+                if (autorunInf.length > 0)
                 {
                     autorunInf = [autorunInf stringByReplacingOccurrencesOfString: @"Label=Weasis" withString: [NSString stringWithFormat: @"Label=%@", cdName]];
                     

@@ -523,7 +523,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
                 return;
             
             NSData* chunk = [dbFileHandle readDataOfLength: DATA_READ_SIZE * 1024L*1024L];
-            if ([chunk length]) {
+            if ([chunk length] > 0) {
                 [self writeData: chunk];
                 return;
             }
@@ -842,15 +842,15 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 - (void)MFILE {
     NSString* path = [self _stackReadString];
     
-    if( [path length])
+    if ([path length] > 0)
     {
-        if( [path characterAtIndex: 0] != '/')
+        if ([path characterAtIndex: 0] != '/')
             path = [[[DicomDatabase defaultDatabase] baseDirPath] stringByAppendingPathComponent: path];
     }
     
     NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
     
-    NSData	*content = [[[fattrs objectForKey:NSFileModificationDate] description] dataUsingEncoding: NSUnicodeStringEncoding];
+    NSData *content = [[[fattrs objectForKey:NSFileModificationDate] description] dataUsingEncoding: NSUnicodeStringEncoding];
     
     [self writeData:content];
     
@@ -866,7 +866,8 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     int noOfFiles = [self _stackReadInt];
 
     NSMutableArray* localPaths = [self _stackedObject];
-    if (!localPaths) [self _stackObject:(localPaths = [NSMutableArray array])];
+    if (!localPaths)
+        [self _stackObject:(localPaths = [NSMutableArray array])];
 
     while (localPaths.count < noOfFiles)
     {

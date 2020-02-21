@@ -61,7 +61,7 @@ NSString* soundex4( NSString *inString)
 	char workbuf[WBUFSIZE + 1];
 	char priorletter;
 	
-	if( inString == nil)
+	if (inString == nil)
         return nil;
 	
       /* Make a working copy  */
@@ -209,7 +209,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 + (NSRecursiveLock*) dbModifyLock
 {
-	if( dbModifyLock == nil)
+	if (dbModifyLock == nil)
 		dbModifyLock = [[NSRecursiveLock alloc] init];
 		
 	return dbModifyLock;
@@ -220,7 +220,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	NSArray *a = [s componentsSeparatedByString:@" "];
 	NSMutableString *r = [NSMutableString string];
 	
-	for( NSString *w in a)
+	for (NSString *w in a)
 		[r appendFormat:@" %@", soundex4( w)];
 	
 	return r;
@@ -230,7 +230,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
     static NSMutableArray *v = nil;
     
-    if( v == nil)
+    if (v == nil)
     {
         v = [[NSMutableArray arrayWithObjects: @"A", @"E", @"I", @"O", @"U", @"Y", @"R", @"F", @"N", @"M", @"P", @"L", @"S", @"D", @"B", @"C", nil] retain];
         
@@ -276,12 +276,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSSet*) series
 {
-    if( self.managedObjectContext.deletedObjects.count == 0)
+    if (self.managedObjectContext.deletedObjects.count == 0)
         return [self primitiveValueForKey: @"series"];
-    else
-        return [[self primitiveValueForKey: @"series"] objectsPassingTest:^BOOL(DicomSeries *obj, BOOL *stop)
+
+    return [[self primitiveValueForKey: @"series"] objectsPassingTest:^BOOL(DicomSeries *obj, BOOL *stop)
             {
-                if( obj.isDeleted)
+                if (obj.isDeleted)
                     return NO;
                 
                 return YES;
@@ -291,7 +291,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSString*) studyName
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [[self primitiveValueForKey: @"studyName"] capitalizedString];
     
     return [self primitiveValueForKey: @"studyName"];
@@ -299,7 +299,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSString*) performingPhysician
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [[self primitiveValueForKey: @"performingPhysician"] capitalizedString];
     
     return [self primitiveValueForKey: @"performingPhysician"];
@@ -307,7 +307,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSString*) referringPhysician
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [[self primitiveValueForKey: @"referringPhysician"] capitalizedString];
     
     return [self primitiveValueForKey: @"referringPhysician"];
@@ -315,7 +315,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSString*) institutionName
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [[self primitiveValueForKey: @"institutionName"] capitalizedString];
     
     return [self primitiveValueForKey: @"institutionName"];
@@ -327,7 +327,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     
     s = [s stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [s capitalizedString];
     
     return s;
@@ -344,7 +344,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
     static int avoidReentry3 = 0;
     
-    if( avoidReentry3)
+    if (avoidReentry3)
     {
         NSLog( @"****** reapplyAnnotationsFromDICOMSR avoidReentry");
         return;
@@ -352,20 +352,20 @@ static NSRecursiveLock *dbModifyLock = nil;
     
     avoidReentry3++;
     
-	#ifndef MIELE_LIGHT
-	if( [self.hasDICOM boolValue] == YES)
+#ifndef MIELE_LIGHT
+	if ([self.hasDICOM boolValue] == YES)
 	{
         @try
         {
             NSManagedObject *archivedAnnotations = [self annotationsSRImage];
             NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
             
-            if( dstPath)
+            if (dstPath)
             {
                 SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
                 
                 NSDictionary *annotations = [r annotations];
-                if( annotations)
+                if (annotations)
                     [self applyAnnotationsFromDictionary: annotations];
             }
         }
@@ -375,20 +375,20 @@ static NSRecursiveLock *dbModifyLock = nil;
         @finally {
         }
 	}
-	#endif
+#endif
     
     avoidReentry3--;
 }
 
 - (void) applyAnnotationsFromDictionary: (NSDictionary*) rootDict
 {
-	if( rootDict == nil)
+	if (rootDict == nil)
 	{
 		NSLog( @"******** applyAnnotationsFromDictionary : rootDict == nil");
 		return;
 	}
 	
-	if( [self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO) // || [self.patientUID compare: [rootDict valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
+	if ([self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO) // || [self.patientUID compare: [rootDict valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 	{
 		NSLog( @"******** WARNING applyAnnotationsFromDictionary will not be applied - studyInstanceUID are NOT corresponding: %@ / %@", [rootDict valueForKey: @"studyInstanceUID"], self.studyInstanceUID);
 	}
@@ -397,12 +397,15 @@ static NSRecursiveLock *dbModifyLock = nil;
 		@try
 		{
 			// We are at root level
-			if( [rootDict valueForKey: @"comment"]) {[self willChangeValueForKey: @"comment"];[self setPrimitiveValue: [rootDict valueForKey: @"comment"] forKey: @"comment"]; [self didChangeValueForKey: @"comment"];}
-            if( [rootDict valueForKey: @"comment2"]) {[self willChangeValueForKey: @"comment2"];[self setPrimitiveValue: [rootDict valueForKey: @"comment2"] forKey: @"comment2"]; [self didChangeValueForKey: @"comment2"];}
-            if( [rootDict valueForKey: @"comment3"]) {[self willChangeValueForKey: @"comment3"];[self setPrimitiveValue: [rootDict valueForKey: @"comment3"] forKey: @"comment3"]; [self didChangeValueForKey: @"comment3"];}
-            if( [rootDict valueForKey: @"comment4"]) {[self willChangeValueForKey: @"comment4"];[self setPrimitiveValue: [rootDict valueForKey: @"comment4"] forKey: @"comment4"]; [self didChangeValueForKey: @"comment4"];}
+			if ([rootDict valueForKey: @"comment"]) {[self willChangeValueForKey: @"comment"];[self setPrimitiveValue: [rootDict valueForKey: @"comment"] forKey: @"comment"]; [self didChangeValueForKey: @"comment"];}
+
+            if ([rootDict valueForKey: @"comment2"]) {[self willChangeValueForKey: @"comment2"];[self setPrimitiveValue: [rootDict valueForKey: @"comment2"] forKey: @"comment2"]; [self didChangeValueForKey: @"comment2"];}
+
+            if ([rootDict valueForKey: @"comment3"]) {[self willChangeValueForKey: @"comment3"];[self setPrimitiveValue: [rootDict valueForKey: @"comment3"] forKey: @"comment3"]; [self didChangeValueForKey: @"comment3"];}
+
+            if ([rootDict valueForKey: @"comment4"]) {[self willChangeValueForKey: @"comment4"];[self setPrimitiveValue: [rootDict valueForKey: @"comment4"] forKey: @"comment4"]; [self didChangeValueForKey: @"comment4"];}
 			
-            if( [rootDict valueForKey: @"stateText"])
+            if ([rootDict valueForKey: @"stateText"])
             {
                 [self willChangeValueForKey: @"stateText"];
                 [self setPrimitiveValue: [rootDict valueForKey: @"stateText"] forKey: @"stateText"];
@@ -413,13 +416,12 @@ static NSRecursiveLock *dbModifyLock = nil;
             req.predicate = [NSPredicate predicateWithValue: YES];
             NSArray* albums = [self.managedObjectContext executeFetchRequest: req error: nil];
             
-			for( NSString *name in [rootDict valueForKey: @"albums"])
+			for (NSString *name in [rootDict valueForKey: @"albums"])
 			{
 				NSUInteger index = [[albums valueForKey: @"name"] indexOfObject: name];
-				
-				if( index != NSNotFound)
+				if (index != NSNotFound)
 				{
-					if( [[[albums objectAtIndex: index] valueForKey: @"smartAlbum"] boolValue] == NO)
+					if ([[[albums objectAtIndex: index] valueForKey: @"smartAlbum"] boolValue] == NO)
 					{
 						NSMutableSet *studies = [[albums objectAtIndex: index] mutableSetValueForKey: @"studies"];	
 						
@@ -432,39 +434,57 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			NSArray *allImages = nil, *compressedSopInstanceUIDArray = nil;
 			
-			for( NSDictionary *series in [rootDict valueForKey: @"series"])
+			for (NSDictionary *series in [rootDict valueForKey: @"series"])
 			{
-				// -------------------------
 				// Find corresponding series
-				if( [series valueForKey: @"seriesInstanceUID"] && [series valueForKey: @"seriesDICOMUID"])
+				if ([series valueForKey: @"seriesInstanceUID"] && [series valueForKey: @"seriesDICOMUID"])
 				{
 					NSUInteger index = [[seriesArray valueForKey: @"seriesInstanceUID"] indexOfObject: [series valueForKey: @"seriesInstanceUID"]];
 					
-					if( index == NSNotFound)
+					if (index == NSNotFound)
 						index = [[seriesArray valueForKey: @"seriesDICOMUID"] indexOfObject: [series valueForKey: @"seriesDICOMUID"]];
 					
-					if( index != NSNotFound)
+					if (index != NSNotFound)
 					{
 						DicomSeries *s = [seriesArray objectAtIndex: index];
 						
-						if( [series valueForKey:@"comment"]) {[s willChangeValueForKey: @"comment"];[s setPrimitiveValue: [series valueForKey: @"comment"] forKey: @"comment"]; [s didChangeValueForKey: @"comment"];}
-						if( [series valueForKey:@"comment2"]) {[s willChangeValueForKey: @"comment2"];[s setPrimitiveValue: [series valueForKey: @"comment2"] forKey: @"comment2"]; [s didChangeValueForKey: @"comment2"];};
-						if( [series valueForKey:@"comment3"]) {[s willChangeValueForKey: @"comment3"];[s setPrimitiveValue: [series valueForKey: @"comment3"] forKey: @"comment3"]; [s didChangeValueForKey: @"comment3"];};
-						if( [series valueForKey:@"comment4"]) {[s willChangeValueForKey: @"comment4"];[s setPrimitiveValue: [series valueForKey: @"comment4"] forKey: @"comment4"]; [s didChangeValueForKey: @"comment4"];};
+						if ([series valueForKey:@"comment"]) {
+                            [s willChangeValueForKey: @"comment"];
+                            [s setPrimitiveValue: [series valueForKey: @"comment"] forKey: @"comment"];
+                            [s didChangeValueForKey: @"comment"];
+                        }
+
+                        if ([series valueForKey:@"comment2"]) {
+                            [s willChangeValueForKey: @"comment2"];
+                            [s setPrimitiveValue: [series valueForKey: @"comment2"] forKey: @"comment2"];
+                            [s didChangeValueForKey: @"comment2"];
+                        }
+                        
+						if ([series valueForKey:@"comment3"]) {
+                            [s willChangeValueForKey: @"comment3"];
+                            [s setPrimitiveValue: [series valueForKey: @"comment3"] forKey: @"comment3"];
+                            [s didChangeValueForKey: @"comment3"];
+                        }
+                        
+						if ([series valueForKey:@"comment4"]) {
+                            [s willChangeValueForKey: @"comment4"];
+                            [s setPrimitiveValue: [series valueForKey: @"comment4"] forKey: @"comment4"];
+                            [s didChangeValueForKey: @"comment4"];
+                        }
 						
-						if( [series valueForKey:@"stateText"])
+						if ([series valueForKey:@"stateText"])
                         {
                             [s willChangeValueForKey: @"stateText"];
 							[s setPrimitiveValue: [series valueForKey:@"stateText"] forKey: @"stateText"];
                             [s didChangeValueForKey: @"stateText"];
 						}
                         
-						for( NSDictionary *image in [series valueForKey: @"images"])
+						for (NSDictionary *image in [series valueForKey: @"images"])
 						{
-							if( allImages == nil)
+							if (allImages == nil)
 							{
 								allImages = [NSArray array];
-								for( id w in seriesArray)
+								for (id w in seriesArray)
 									allImages = [allImages arrayByAddingObjectsFromArray: [[w valueForKey: @"images"] allObjects]];
 									
 								compressedSopInstanceUIDArray = [allImages filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"]];
@@ -473,13 +493,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 							NSPredicate	*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [Dicom_Image sopInstanceUIDEncodeString: [image valueForKey: @"sopInstanceUID"]]] customSelector: @selector(isEqualToSopInstanceUID:)];
 							NSArray	*found = [compressedSopInstanceUIDArray filteredArrayUsingPredicate: predicate];
 					
-							// -------------------------
 							// Find corresponding image
-							if( [found count] > 0)
+							if ([found count] > 0)
 							{
 								Dicom_Image *i = [found lastObject];
 								
-								if( [image valueForKey:@"isKeyImage"])
+								if ([image valueForKey:@"isKeyImage"])
                                 {
                                     [i willChangeValueForKey: @"storedIsKeyImage"];
 									[i setPrimitiveValue: [image valueForKey:@"isKeyImage"] forKey: @"storedIsKeyImage"];
@@ -516,31 +535,31 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	NSMutableDictionary *rootDict = [NSMutableDictionary dictionary];
 	
-	if( self.studyInstanceUID)
+	if (self.studyInstanceUID)
 		[rootDict setObject: self.studyInstanceUID forKey: @"studyInstanceUID"];
 	
-	if( self.name)
+	if (self.name)
 		[rootDict setObject: self.name forKey: @"patientsName"];
 	
-	if( self.patientID)
+	if (self.patientID)
 		[rootDict setObject: self.patientID forKey: @"patientID"];
 	
-	if( self.patientUID)
+	if (self.patientUID)
 		[rootDict setObject: self.patientUID forKey: @"patientUID"];
 	
-	if( self.comment) [rootDict setObject: self.comment forKey: @"comment"];
-	if( self.comment2) [rootDict setObject: self.comment2 forKey: @"comment2"];
-	if( self.comment3) [rootDict setObject: self.comment3 forKey: @"comment3"];
-	if( self.comment4) [rootDict setObject: self.comment4 forKey: @"comment4"];
+	if (self.comment)  [rootDict setObject: self.comment  forKey: @"comment"];
+	if (self.comment2) [rootDict setObject: self.comment2 forKey: @"comment2"];
+	if (self.comment3) [rootDict setObject: self.comment3 forKey: @"comment3"];
+	if (self.comment4) [rootDict setObject: self.comment4 forKey: @"comment4"];
 	
-	if( self.stateText)
+	if (self.stateText)
 		[rootDict setObject: self.stateText forKey: @"stateText"];
 	
 	NSMutableArray *albumsArray = [NSMutableArray array];
 	
-	for( DicomAlbum * a in [[self.albums allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]])
+	for (DicomAlbum * a in [[self.albums allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]])
 	{
-		if( [[a valueForKey: @"smartAlbum"] boolValue] == NO)
+		if ([[a valueForKey: @"smartAlbum"] boolValue] == NO)
 		{
 			NSString *name = [a valueForKey: @"name"];
 			[albumsArray addObject: name];
@@ -555,18 +574,18 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	NSMutableArray *seriesArray = [NSMutableArray array];
 	
-	for( DicomSeries *series in [[self.series allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]])
+	for (DicomSeries *series in [[self.series allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]])
 	{
 		NSMutableDictionary *seriesDict = [NSMutableDictionary dictionary];
 		
-		if( [series valueForKey:@"seriesInstanceUID"] && [series valueForKey:@"seriesDICOMUID"])
+		if ([series valueForKey:@"seriesInstanceUID"] && [series valueForKey:@"seriesDICOMUID"])
 		{
-			if( [series valueForKey:@"comment"]) [seriesDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
-			if( [series valueForKey:@"comment2"]) [seriesDict setObject: [series valueForKey:@"comment2"] forKey: @"comment2"];
-			if( [series valueForKey:@"comment3"]) [seriesDict setObject: [series valueForKey:@"comment3"] forKey: @"comment3"];
-			if( [series valueForKey:@"comment4"]) [seriesDict setObject: [series valueForKey:@"comment4"] forKey: @"comment4"];
+			if ([series valueForKey:@"comment"])  [seriesDict setObject: [series valueForKey:@"comment"]  forKey: @"comment"];
+			if ([series valueForKey:@"comment2"]) [seriesDict setObject: [series valueForKey:@"comment2"] forKey: @"comment2"];
+			if ([series valueForKey:@"comment3"]) [seriesDict setObject: [series valueForKey:@"comment3"] forKey: @"comment3"];
+			if ([series valueForKey:@"comment4"]) [seriesDict setObject: [series valueForKey:@"comment4"] forKey: @"comment4"];
 			
-			if( [series valueForKey:@"stateText"])
+			if ([series valueForKey:@"stateText"])
 				[seriesDict setObject: [series valueForKey:@"stateText"] forKey: @"stateText"];
 			
 			// ***************************************************************************************************
@@ -574,13 +593,13 @@ static NSRecursiveLock *dbModifyLock = nil;
 			// Images Level
 			
 			NSMutableArray *imagesArray = [NSMutableArray array];
-			for( DicomSeries *image in [[[series valueForKey: @"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]])
+			for (DicomSeries *image in [[[series valueForKey: @"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]])
 			{
 				NSMutableDictionary *imageDict = [NSMutableDictionary dictionary];
 				
-				if( [image valueForKey:@"sopInstanceUID"])
+				if ([image valueForKey:@"sopInstanceUID"])
 				{
-					if( [image valueForKey:@"storedIsKeyImage"])
+					if ([image valueForKey:@"storedIsKeyImage"])
 					{
 						[imageDict setObject: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
 						[imageDict setObject: [image valueForKey:@"sopInstanceUID"] forKey: @"sopInstanceUID"];
@@ -589,10 +608,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 				}
 			}
 			
-			if( [imagesArray count] > 0)
+			if ([imagesArray count] > 0)
 				[seriesDict setObject: imagesArray forKey: @"images"];
 			
-			if( [seriesDict count] > 0)
+			if ([seriesDict count] > 0)
 			{
 				[seriesDict setObject: [series valueForKey:@"seriesInstanceUID"] forKey: @"seriesInstanceUID"];
 				[seriesDict setObject: [series valueForKey:@"seriesDICOMUID"] forKey: @"seriesDICOMUID"];
@@ -602,7 +621,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		}
 	}
 	
-	if( [seriesArray count] > 0)
+	if ([seriesArray count] > 0)
 		[rootDict setObject: seriesArray forKey: @"series"];
 	
 	return rootDict;
@@ -612,7 +631,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
     static int avoidReentry2 = 0;
     
-    if( avoidReentry2)
+    if (avoidReentry2)
     {
         NSLog( @"****** archiveAnnotationsAsDICOMSR avoidReentry");
         return;
@@ -629,15 +648,15 @@ static NSRecursiveLock *dbModifyLock = nil;
 			NSManagedObject *archivedAnnotations = [self annotationsSRImage];
 			NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
 			
-			if( dstPath == nil)
+			if (dstPath == nil)
 				dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
 			
 			NSDictionary *annotationsDict = [self annotationsAsDictionary];
 			
 			SRAnnotation *w = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-			if( [[w annotations] isEqualToDictionary: annotationsDict] == NO)
+			if ([[w annotations] isEqualToDictionary: annotationsDict] == NO)
 			{
-                if( w)
+                if (w)
                     dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
                 
 				// Save or Re-Save it as DICOM SR
@@ -645,12 +664,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 				[r writeToFileAtPath: dstPath];
 				
                 DicomDatabase *idb = nil;
-                if( [[NSThread currentThread] isMainThread])
+                if ([[NSThread currentThread] isMainThread])
                     idb = BrowserController.currentBrowser.database;
                 else
                     idb = [BrowserController.currentBrowser.database independentDatabase];
                 
-                if( isMainDB)
+                if (isMainDB)
                     [idb addFilesAtPaths: [NSArray arrayWithObject: dstPath]
                                                                postNotifications: NO
                                                                        dicomOnly: YES
@@ -690,7 +709,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     [self.managedObjectContext save: nil];
     
     DicomDatabase *idb = nil;
-    if( [[NSThread currentThread] isMainThread])
+    if ([[NSThread currentThread] isMainThread])
         idb = BrowserController.currentBrowser.database;
     else
         idb = [BrowserController.currentBrowser.database independentDatabase];
@@ -704,12 +723,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) archiveReportAsDICOMSR
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"archiveReportsAndAnnotationsAsDICOMSR"] == NO)
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"archiveReportsAndAnnotationsAsDICOMSR"] == NO)
 		return;
     
     static int avoidReentry = 0;
     
-    if( avoidReentry)
+    if (avoidReentry)
     {
         NSLog( @"****** archiveReportAsDICOMSR avoidReentry");
         return;
@@ -718,7 +737,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     avoidReentry++;
     
 	#ifndef MIELE_LIGHT
-	if( [self.hasDICOM boolValue] == YES)
+	if ([self.hasDICOM boolValue] == YES)
 	{
 		[self.managedObjectContext lock];
 		@try
@@ -733,41 +752,41 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			dstPath = [reportImage valueForKey: @"completePathResolved"];
 			
-			if( dstPath == nil)
+			if (dstPath == nil)
 				dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
 			
-			if( [self.reportURL hasPrefix: @"http://"] || [self.reportURL hasPrefix: @"https://"])
+			if ([self.reportURL hasPrefix: @"http://"] || [self.reportURL hasPrefix: @"https://"])
 			{
 				SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-				if( [self.reportURL isEqualToString: [r reportURL]] == NO)
+				if ([self.reportURL isEqualToString: [r reportURL]] == NO)
 					needToArchive = YES;
 			}
-			else if( [[NSFileManager defaultManager] fileExistsAtPath: self.reportURL])
+			else if ([[NSFileManager defaultManager] fileExistsAtPath: self.reportURL])
 			{
 				NSDate *storedModifDate = [reportImage valueForKey: @"date"];
 				NSDate *fileModifDate = [[[NSFileManager defaultManager] attributesOfItemAtPath: self.reportURL error: nil] valueForKey: NSFileModificationDate];
 				
-				if( reportImage == nil || [[storedModifDate description] isEqualToString: [fileModifDate description]] == NO) // We want to compare only date and time, without milliseconds
+				if (reportImage == nil || [[storedModifDate description] isEqualToString: [fileModifDate description]] == NO) // We want to compare only date and time, without milliseconds
 				{
 					[BrowserController encryptFileOrFolder: self.reportURL inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
 				
-					if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
+					if ([[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
 					{
 						SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-						if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]] == NO)
+						if ([[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]] == NO)
 							needToArchive = YES;
 					}
 				}
 			}
 			else //empty or deleted report?
 			{
-				if( [reportImage valueForKey: @"completePath"] && [[NSFileManager defaultManager] fileExistsAtPath: [reportImage valueForKey: @"completePath"]])
+				if ([reportImage valueForKey: @"completePath"] && [[NSFileManager defaultManager] fileExistsAtPath: [reportImage valueForKey: @"completePath"]])
 				{
 					needToArchive = YES;
 					zippedFile = nil;	//We will archive an empty NSData
 				}
 				
-				if( self.reportURL && [[NSFileManager defaultManager] fileExistsAtPath: self.reportURL])
+				if (self.reportURL && [[NSFileManager defaultManager] fileExistsAtPath: self.reportURL])
 					[[NSFileManager defaultManager] removeItemAtPath: self.reportURL error: nil];
 				
                 
@@ -776,13 +795,13 @@ static NSRecursiveLock *dbModifyLock = nil;
                 [self didChangeValueForKey: @"reportURL"];
 			}
 			
-			if( needToArchive)
+			if (needToArchive)
 			{
 				SRAnnotation *r = nil;
 				
 				NSLog( @"--- Report -> DICOM SR : %@", self.name);
 				
-				if( [self.reportURL hasPrefix: @"http://"] || [self.reportURL hasPrefix: @"https://"])
+				if ([self.reportURL hasPrefix: @"http://"] || [self.reportURL hasPrefix: @"https://"])
 					r = [[[SRAnnotation alloc] initWithURLReport: self.reportURL path: dstPath forImage: [[[self.series anyObject] valueForKey:@"images"] anyObject]] autorelease];
 				else
 				{
@@ -795,12 +814,12 @@ static NSRecursiveLock *dbModifyLock = nil;
                 [self.managedObjectContext save: nil];
                 
                 DicomDatabase *idb = nil;
-                if( [[NSThread currentThread] isMainThread])
+                if ([[NSThread currentThread] isMainThread])
                     idb = BrowserController.currentBrowser.database;
                 else
                     idb = [BrowserController.currentBrowser.database independentDatabase];
                 
-                if( isMainDB)
+                if (isMainDB)
                     [idb addFilesAtPaths: [NSArray arrayWithObject: dstPath]
                                                                postNotifications: YES
                                                                        dicomOnly: YES
@@ -814,7 +833,7 @@ static NSRecursiveLock *dbModifyLock = nil;
                                                                  generatedByOsiriX: YES];
 			}
 			
-			if( zippedFile)
+			if (zippedFile)
 				[[NSFileManager defaultManager] removeItemAtPath: zippedFile error: nil];
 		}
 		@catch (NSException* e) {
@@ -835,10 +854,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 	BOOL _delete = [super validateForDelete: error];
 	if (_delete)
 	{
-		if( self.reportURL && [[NSFileManager defaultManager] fileExistsAtPath: self.reportURL])
+		if (self.reportURL && [[NSFileManager defaultManager] fileExistsAtPath: self.reportURL])
 			[[NSFileManager defaultManager] removeItemAtPath: self.reportURL error: nil];
 	}
-	return _delete;
+
+    return _delete;
 }
 
 - (NSString*) soundex
@@ -852,33 +872,33 @@ static NSRecursiveLock *dbModifyLock = nil;
     
     BOOL SC = NO, SR = NO, PR = NO, OT = NO;
     
-    for( NSString *mod in seriesModalities)
+    for (NSString *mod in seriesModalities)
     {
-        if( [mod isEqualToString:@"SR"])
+        if ([mod isEqualToString:@"SR"])
             SR = YES;
-        else if( [mod isEqualToString:@"SC"])
+        else if ([mod isEqualToString:@"SC"])
             SC = YES;
-        else if( [mod isEqualToString:@"PR"])
+        else if ([mod isEqualToString:@"PR"])
             PR = YES;
-        else if( [mod isEqualToString:@"RTSTRUCT"] && [r containsString: mod] == NO)
+        else if ([mod isEqualToString:@"RTSTRUCT"] && [r containsString: mod] == NO)
             [r addObject: @"RT"];
-        else if( [mod isEqualToString:@"OT"])
+        else if ([mod isEqualToString:@"OT"])
             OT = YES;
-        else if( [mod isEqualToString:@"KO"])
+        else if ([mod isEqualToString:@"KO"])
         {
         }
         else if([r containsString: mod] == NO)
             [r addObject: mod];
     }
     
-    if( [r count] == 0)
+    if ([r count] == 0)
     {
-        if( SC) [r addObject: @"SC"];
-        else if( OT) [r addObject: @"OT"];
+        if (SC) [r addObject: @"SC"];
+        else if (OT) [r addObject: @"OT"];
         else
         {
-            if( SR) [r addObject: @"SR"];
-            if( PR) [r addObject: @"PR"];
+            if (SR) [r addObject: @"SR"];
+            if (PR) [r addObject: @"PR"];
         }
     }
     
@@ -963,17 +983,17 @@ static NSRecursiveLock *dbModifyLock = nil;
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files objectAtIndex: 0]] objectAtIndex: 0]];
         
-		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
+		if ([dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
 			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-e", [dict objectForKey: @"field"], nil]];
 		else
         {
-            if( [[dict objectForKey: @"value"] canBeConvertedToEncoding: encoding])
+            if ([[dict objectForKey: @"value"] canBeConvertedToEncoding: encoding])
                 [params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
             else
                 NSLog( @"---- cannot convert [dict objectForKey: value] to this encoding: %ld", (long) encoding);
 		}
         
-		if( files)
+		if (files)
 		{
 			[files removeDuplicatedStrings];
 			
@@ -983,7 +1003,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				[XMLController modifyDicom: params encoding: encoding];
 				
-				for( id loopItem in files)
+				for (id loopItem in files)
                 {
 					[[NSFileManager defaultManager] removeItemAtPath: [loopItem stringByAppendingString:@".bak"] error:nil];
                 }
@@ -1007,14 +1027,16 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) setComment: (NSString*) c
 {
-	if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[DicomDatabase databaseForContext:[self managedObjectContext]] isLocal])
+	if ([self.hasDICOM boolValue] == YES &&
+        [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] &&
+        [[DicomDatabase databaseForContext:[self managedObjectContext]] isLocal])
 	{
-		if( c == nil)
+		if (c == nil)
 			c = @"";
 			
-		if( ([(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0))
+		if (([(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0))
 		{
-			if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
+			if ([c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
 			{
 				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
                                       [[self paths] allObjects], @"files",
@@ -1037,9 +1059,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self setPrimitiveValue: c forKey: @"comment"];
 	[self didChangeValueForKey: @"comment"];
 	
-	if( [previousValue length] != 0 || [c length] != 0)
+	if ([previousValue length] != 0 || [c length] != 0)
 	{
-		if( [c isEqualToString: previousValue] == NO)
+		if ([c isEqualToString: previousValue] == NO)
 			[self archiveAnnotationsAsDICOMSR];
 	}
 }
@@ -1052,9 +1074,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self setPrimitiveValue: c forKey: @"comment2"];
 	[self didChangeValueForKey: @"comment2"];
 	
-	if( [previousValue length] != 0 || [c length] != 0)
+	if ([previousValue length] != 0 || [c length] != 0)
 	{
-		if( [c isEqualToString: previousValue] == NO)
+		if ([c isEqualToString: previousValue] == NO)
 			[self archiveAnnotationsAsDICOMSR];
 	}
 }
@@ -1067,9 +1089,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self setPrimitiveValue: c forKey: @"comment3"];
 	[self didChangeValueForKey: @"comment3"];
 	
-	if( [previousValue length] != 0 || [c length] != 0)
+	if ([previousValue length] != 0 || [c length] != 0)
 	{
-		if( [c isEqualToString: previousValue] == NO)
+		if ([c isEqualToString: previousValue] == NO)
 			[self archiveAnnotationsAsDICOMSR];
 	}
 }
@@ -1082,9 +1104,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self setPrimitiveValue: c forKey: @"comment4"];
 	[self didChangeValueForKey: @"comment4"];
 	
-	if( [previousValue length] != 0 || [c length] != 0)
+	if ([previousValue length] != 0 || [c length] != 0)
 	{
-		if( [c isEqualToString: previousValue] == NO)
+		if ([c isEqualToString: previousValue] == NO)
 			[self archiveAnnotationsAsDICOMSR];
 	}
 }
@@ -1095,12 +1117,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 	#ifndef MIELE_LIGHT
 	@try 
 	{
-		if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
+		if ([self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
 		{
-			if( c == nil)
+			if (c == nil)
 				c = @0;
 			
-			if( [c intValue] != [[self primitiveValueForKey: @"stateText"] intValue])
+			if ([c intValue] != [[self primitiveValueForKey: @"stateText"] intValue])
 			{
 				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
                                       [[self paths] allObjects], @"files",
@@ -1116,10 +1138,12 @@ static NSRecursiveLock *dbModifyLock = nil;
             }
         }
         
-        if( [self.hasDICOM boolValue] == YES)
+        if ([self.hasDICOM boolValue] == YES)
         {
             // Save as DICOM PDF
-            if( [[NSUserDefaults standardUserDefaults] boolForKey:@"generateDICOMPDFWhenValidated"] && [c intValue] == 4 && self.reportURL.length)
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"generateDICOMPDFWhenValidated"] &&
+               [c intValue] == 4 &&
+               self.reportURL.length)
             {
                 BOOL isMainDB = self.managedObjectContext.persistentStoreCoordinator == BrowserController.currentBrowser.database.managedObjectContext.persistentStoreCoordinator;
                 
@@ -1129,12 +1153,12 @@ static NSRecursiveLock *dbModifyLock = nil;
                     [self saveReportAsDicomAtPath: filePath];
                     
                     DicomDatabase *idb = nil;
-                    if( [[NSThread currentThread] isMainThread])
+                    if ([[NSThread currentThread] isMainThread])
                         idb = BrowserController.currentBrowser.database;
                     else
                         idb = [BrowserController.currentBrowser.database independentDatabase];
                     
-                    if( isMainDB)
+                    if (isMainDB)
                         [idb addFilesAtPaths: [NSArray arrayWithObject: filePath]
                            postNotifications: YES
                                    dicomOnly: YES
@@ -1166,7 +1190,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self setPrimitiveValue: c forKey: @"stateText"];
 	[self didChangeValueForKey: @"stateText"];
 	
-	if( [c intValue] != [previousState intValue])
+	if ([c intValue] != [previousState intValue])
 		[self archiveAnnotationsAsDICOMSR];
 }
 
@@ -1175,20 +1199,22 @@ static NSRecursiveLock *dbModifyLock = nil;
 	#ifdef OSIRIX_VIEWER
 	BrowserController *cB = [BrowserController currentBrowser];
 	
-	if( url)
+	if (url)
 	{
-		if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
+		if ([url hasPrefix: @"http://"] == NO &&
+            [url hasPrefix: @"https://"] == NO)
 		{
 		   NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
 		
-			if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
+			if ([commonPath isEqualToString: [cB fixedDocumentsDirectory]])
 			{
 				url = [url substringFromIndex: [[cB fixedDocumentsDirectory] length]];
 				
-				if( [url hasPrefix: @"TEMP.noindex/"])
+				if ([url hasPrefix: @"TEMP.noindex/"])
 					url = [url stringByReplacingOccurrencesOfString: @"TEMP.noindex/" withString: @"REPORTS/"];
 				
-				if( [url characterAtIndex: 0] == '/') url = [url substringFromIndex: 1];
+				if ([url characterAtIndex: 0] == '/')
+                    url = [url substringFromIndex: 1];
 			}
 		}
 	}
@@ -1205,31 +1231,32 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
 	NSString *url = [self primitiveValueForKey: @"reportURL"];
 	
-	#ifdef OSIRIX_VIEWER
-	if( url && [url length])
+#ifdef OSIRIX_VIEWER
+	if (url &&
+        [url length] > 0)
 	{
-		if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
+		if ([url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
 		{
 			BrowserController *cB = [BrowserController currentBrowser];
 			
-			if( [cB isBonjour: [self managedObjectContext]])
+			if ([cB isBonjour: [self managedObjectContext]])
 			{
 				// We will give a path with TEMP.noindex, instead of REPORTS
-				if( [url characterAtIndex: 0] != '/')
+				if ([url characterAtIndex: 0] != '/')
 				{
-					if( [url hasPrefix: @"REPORTS/"])
+					if ([url hasPrefix: @"REPORTS/"])
 						url = [url stringByReplacingOccurrencesOfString: @"REPORTS/" withString: @"TEMP.noindex/"];
 					url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
 				}
 			}
 			else
 			{
-				if( [url characterAtIndex: 0] != '/')
+				if ([url characterAtIndex: 0] != '/')
 					url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
 				else
 				{	// Should we convert it to a local path?
 					NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
-					if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
+					if ([commonPath isEqualToString: [cB fixedDocumentsDirectory]])
                     {
                         [self willChangeValueForKey: @"reportURL"];
 						[self setPrimitiveValue: url forKey: @"reportURL"];
@@ -1239,7 +1266,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			}
 		}
 	}
-	#endif
+#endif
 	
 	return url;
 }
@@ -1282,7 +1309,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (NSNumber*) dicomTime
 {
     @synchronized (self) {
-        if( dicomTime)
+        if (dicomTime)
             return dicomTime;
         
         dicomTime = [[[DCMCalendarDate dicomTimeWithDate:self.date] timeAsNumber] retain];
@@ -1297,7 +1324,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
 	NSSet *paths = [self paths];
 	
-	if( [paths count])
+	if ([paths count])
 	{
 		id value = [DicomFile getDicomField: key forFile: [[paths anyObject] completePath]];
 		if (value)
@@ -1307,49 +1334,48 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return [super valueForUndefinedKey: key];
 }
 
-////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
 
 - (NSNumber*) intervalSinceBirth
 {
-    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"yearOldDatabaseDisplay"] == 0)
+    if ([[NSUserDefaults standardUserDefaults] integerForKey: @"yearOldDatabaseDisplay"] == 0)
         return [NSNumber numberWithDouble: [[NSDate date] timeIntervalSinceDate: self.dateOfBirth]];
-    else
-        return [NSNumber numberWithDouble: [self.date timeIntervalSinceDate: self.dateOfBirth]];
+
+    return [NSNumber numberWithDouble: [self.date timeIntervalSinceDate: self.dateOfBirth]];
 }
 
-+ (NSString*) yearOldAcquisition:(NSDate*) acquisitionDate FromDateOfBirth: (NSDate*) dateOfBirth
++ (NSString*) yearOldAcquisition: (NSDate*) acquisitionDate
+                 FromDateOfBirth: (NSDate*) dateOfBirth
 {
-	if( dateOfBirth && acquisitionDate)
-	{
-		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [dateOfBirth timeIntervalSinceReferenceDate]];
-		NSCalendarDate *dateOfBirth = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [acquisitionDate timeIntervalSinceReferenceDate]];
-		
-		NSInteger years, months, days;
-		
-		[dateOfBirth years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
-		
-		if( years < 2)
-		{
-			if( years < 1)
-			{
-				if( months < 1)
-				{
-					if( days < 0)
-                        return @"";
-					else
-                        return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
-				}
-				else
-                    return [NSString stringWithFormat: @"%d%@", (int) months, NSLocalizedString( @" m", @"m = month")];
-			}
-			else
-                return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), (int) months, NSLocalizedString( @" m", @"m = month")];
-		}
-		else
-            return [NSString stringWithFormat: @"%d%@", (int) years, NSLocalizedString( @" y", @"y = year")];
-	}
-	else
+	if (!dateOfBirth || !acquisitionDate)
         return @"";
+
+    NSCalendarDate *dobCalDate = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [dateOfBirth timeIntervalSinceReferenceDate]];
+
+    NSCalendarDate *acqCalDate = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [acquisitionDate timeIntervalSinceReferenceDate]];
+    
+    NSInteger years, months, days;
+    [acqCalDate years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:dobCalDate];
+    
+    if (years < 2)
+    {
+        if (years < 1)
+        {
+            if (months < 1)
+            {
+                if (days < 0)
+                    return @"";
+
+                return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
+            }
+
+            return [NSString stringWithFormat: @"%d%@", (int) months, NSLocalizedString( @" m", @"m = month")];
+        }
+
+        return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), (int) months, NSLocalizedString( @" m", @"m = month")];
+    }
+
+    return [NSString stringWithFormat: @"%d%@", (int) years, NSLocalizedString( @" y", @"y = year")];
 }
 
 - (NSString*) yearOldAcquisition
@@ -1359,37 +1385,35 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 + (NSString*) yearOldFromDateOfBirth: (NSDate*) dateOfBirth
 {
-    if( dateOfBirth)
-	{
-		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [dateOfBirth timeIntervalSinceReferenceDate]];
-		NSCalendarDate *dateOfBirth = [NSCalendarDate date];
-		
-		NSInteger years, months, days;
-		
-		[dateOfBirth years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
-		
-		if( years < 2)
-		{
-			if( years < 1)
-			{
-				if( months < 1)
-				{
-					if( days < 0)
-                        return @"";
-					else
-                        return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
-				}
-				else
-                    return [NSString stringWithFormat: @"%d%@", (int) months, NSLocalizedString( @" m", @"m = month")];
-			}
-			else
-                return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), (int) months, NSLocalizedString( @" m", @"m = month")];
-		}
-		else
-            return [NSString stringWithFormat: @"%d%@", (int) years, NSLocalizedString( @" y", @"y = year")];
-	}
-	else
+    if (!dateOfBirth)
         return @"";
+
+    NSCalendarDate *dobCalDate = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [dateOfBirth timeIntervalSinceReferenceDate]];
+
+    NSCalendarDate *calDate = [NSCalendarDate date];
+    
+    NSInteger years, months, days;
+    [calDate years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:dobCalDate];
+    
+    if (years < 2)
+    {
+        if (years < 1)
+        {
+            if (months < 1)
+            {
+                if (days < 0)
+                    return @"";
+
+                return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
+            }
+
+            return [NSString stringWithFormat: @"%d%@", (int) months, NSLocalizedString( @" m", @"m = month")];
+        }
+
+        return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), (int) months, NSLocalizedString( @" m", @"m = month")];
+    }
+
+    return [NSString stringWithFormat: @"%d%@", (int) years, NSLocalizedString( @" y", @"y = year")];
 }
 
 - (NSString*) yearOld
@@ -1397,18 +1421,18 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return [DicomStudy yearOldFromDateOfBirth: self.dateOfBirth];
 }
 
-////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
 
 - (void) setModality:(NSString *) s
 {
-	if( [s isEqualToString:@"SC"] ||
+	if ([s isEqualToString:@"SC"] ||
 		[s isEqualToString:@"PR"] ||
 		[s isEqualToString:@"SR"] ||
 		[s isEqualToString:@"RTSTRUCT"] ||
 		[s isEqualToString:@"RT"] ||
 		[s isEqualToString:@"KO"])
 	{
-		if( self.modality.length > 0)
+		if (self.modality.length > 0)
 			return; //We are not insterested in these 'technical' modalities, we prefer true modalities like CT, MR, ...
 	}
 		   
@@ -1439,7 +1463,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     [self.managedObjectContext lock];
     @try
     {
-        for( DicomSeries *s in [self.series allObjects])
+        for (DicomSeries *s in [self.series allObjects])
         {
             sum += [[s valueForKey: @"rawNoFiles"] intValue];
         }
@@ -1495,20 +1519,20 @@ static NSRecursiveLock *dbModifyLock = nil;
 		@try {
 			BOOL framesInSeries = NO;
 			
-			for( DicomSeries *s in [self.series allObjects])
+			for (DicomSeries *s in [self.series allObjects])
 			{
-                if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
+                if ([DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
                     [DCMAbstractSyntaxUID isSupportedPrivateClasses: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
                     [DCMAbstractSyntaxUID isPresentationState: [s valueForKey: @"seriesSOPClassUID"]] == NO)
                 {
                     sum += [[s valueForKey:@"noFiles"] intValue];
                     
-                    if( [[s primitiveValueForKey:@"numberOfImages"] intValue] < 0) // There are frames !
+                    if ([[s primitiveValueForKey:@"numberOfImages"] intValue] < 0) // There are frames !
                         framesInSeries = YES;
                 }
 			}
 			
-			if( framesInSeries)
+			if (framesInSeries)
 				sum = -sum;
 			
 			no = [NSNumber numberWithInt: sum];
@@ -1607,11 +1631,11 @@ static NSRecursiveLock *dbModifyLock = nil;
     if ([description isEqualToString:@"OsiriX No Autodeletion"])
         return NO;
     
-    if( pixels)
+    if (pixels)
     {
         if (uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid])
         {
-            if( [uid isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
+            if ([uid isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
                 return NO;
             
             return YES;
@@ -1776,6 +1800,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		for (DicomSeries *series in self.series)
 			if ([DCMAbstractSyntaxUID isWaveform:[series valueForKey:@"seriesSOPClassUID"]])
 				[newArray addObject:series];
+
         return newArray;
 	}
 	@catch (NSException* e) {
@@ -1792,7 +1817,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (NSManagedObject *) annotationsSRImage // Comments, Status, Key Images, ...
 {
 	NSSet* array = self.series;
-	if( array.count < 1)
+	if (array.count < 1)
         return nil;
 	
 	[self.managedObjectContext lock];
@@ -1800,7 +1825,7 @@ static NSRecursiveLock *dbModifyLock = nil;
         NSMutableArray* newArray = [NSMutableArray array];
         NSManagedObject* image = nil;
 
-		for( DicomSeries *series in array)
+		for (DicomSeries *series in array)
 		{
 			if([[series valueForKey:@"id"] intValue] == 5004 &&
                [[series valueForKey:@"name"] isEqualToString: @"OsiriX Annotations SR"] &&
@@ -1811,7 +1836,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		}
 		
 		// Take the most recent series
-		if( [newArray count] > 1)
+		if ([newArray count] > 1)
 		{
 			NSLog( @"****** multiple (%d) annotationsSRImage 5004 series: Delete the extra series and merge the images...", (int) [newArray count]);
 			
@@ -1819,9 +1844,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
 			
-				for( DicomSeries *i in newArray)
+				for (DicomSeries *i in newArray)
 				{
-					if( i != [newArray lastObject])
+					if (i != [newArray lastObject])
 					{
 						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
 						
@@ -1844,7 +1869,7 @@ static NSRecursiveLock *dbModifyLock = nil;
             [self setNumberOfImages: nil];
 		}
 		
-		if( [[[newArray lastObject] valueForKey: @"images"] count] > 1)
+		if ([[[newArray lastObject] valueForKey: @"images"] count] > 1)
 		{
 			NSArray *images = [[[newArray lastObject] valueForKey: @"images"] allObjects];
 			
@@ -1875,7 +1900,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		images = [[[self reportSRSeries] valueForKey: @"images"] allObjects];
 		
-		if( [images count] > 1)
+		if ([images count] > 1)
 		{
 			// Take the most recent image
 			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]];
@@ -1899,9 +1924,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 	@try {
         NSMutableArray *newArray = [NSMutableArray array];
     
-		for( DicomSeries *series in array)
+		for (DicomSeries *series in array)
 		{
-			if( [[series valueForKey:@"id"] intValue] == 5003 &&
+			if ([[series valueForKey:@"id"] intValue] == 5003 &&
                [[series valueForKey:@"name"] isEqualToString: @"OsiriX Report SR"] &&
                [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
             {
@@ -1909,7 +1934,7 @@ static NSRecursiveLock *dbModifyLock = nil;
             }
 		}
 		
-		if( [newArray count] > 1)
+		if ([newArray count] > 1)
 		{
 			NSLog( @"****** multiple (%d) reportSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
 			
@@ -1917,9 +1942,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
 			
-				for( DicomSeries *i in newArray)
+				for (DicomSeries *i in newArray)
 				{
-					if( i != [newArray lastObject])
+					if (i != [newArray lastObject])
 					{
 						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
 						
@@ -1962,7 +1987,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		images = [[[self windowsStateSRSeries] valueForKey: @"images"] allObjects];
 		
-		if( [images count] > 1)
+		if ([images count] > 1)
 		{
 			// Take the most recent image
 			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]];
@@ -1991,9 +2016,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 	@try {
         NSMutableArray *newArray = [NSMutableArray array];
         
-		for( DicomSeries *series in array)
+		for (DicomSeries *series in array)
 		{
-			if( [[series valueForKey:@"id"] intValue] == 5006 &&
+			if ([[series valueForKey:@"id"] intValue] == 5006 &&
                [[series valueForKey:@"name"] isEqualToString: @"OsiriX WindowsState SR"] &&
                [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
             {
@@ -2001,7 +2026,7 @@ static NSRecursiveLock *dbModifyLock = nil;
             }
 		}
 		
-		if( [newArray count] > 1)
+		if ([newArray count] > 1)
 		{
 			NSLog( @"****** multiple (%d) reportSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
 			
@@ -2009,9 +2034,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
                 
-				for( DicomSeries *i in newArray)
+				for (DicomSeries *i in newArray)
 				{
-					if( i != [newArray lastObject])
+					if (i != [newArray lastObject])
 					{
 						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
 						
@@ -2055,9 +2080,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self.managedObjectContext lock];
 	@try {
         NSMutableArray *newArray = [NSMutableArray array];
-		for( DicomSeries *series in array)
+		for (DicomSeries *series in array)
 		{
-			if( [[series valueForKey:@"id"] intValue] == 5002 &&
+			if ([[series valueForKey:@"id"] intValue] == 5002 &&
                [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] &&
                [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
             {
@@ -2065,7 +2090,7 @@ static NSRecursiveLock *dbModifyLock = nil;
             }
 		}
 		
-		if( [newArray count] > 1)
+		if ([newArray count] > 1)
 		{
 			NSLog( @"****** multiple (%d) roiSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
 			
@@ -2073,9 +2098,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
 			
-				for( DicomSeries *i in newArray)
+				for (DicomSeries *i in newArray)
 				{
-					if( i != [newArray lastObject])
+					if (i != [newArray lastObject])
 					{
 						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
 						
@@ -2117,29 +2142,29 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		searchedUID = [searchedUID stringByAppendingFormat: @"-%d", [[image valueForKey: @"frameID"] intValue]];
 		
-		if( roisArray == nil)
+		if (roisArray == nil)
 			roisArray = [[[self roiSRSeries] valueForKey: @"images"] allObjects];
 		
 		NSArray	*found = [roisArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"comment == %@", searchedUID]];
 		
 		// Take the most recent ROI
-		if( [found count] > 1)
+		if ([found count] > 1)
 		{
 			found = [[[found sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] mutableCopy] autorelease];
 			NSLog( @"--- multiple rois array for same sopInstanceUID (roiForImage) : %d", (int) [found count]);
 			
 			// Merge the other ROIs with this ROI, and empty the old ones
 			NSMutableArray *r = [NSMutableArray array];
-			for( Dicom_Image *i in found)
+			for (Dicom_Image *i in found)
 			{
-				if( i != [found lastObject])
+				if (i != [found lastObject])
 				{
 					@try
 					{
-						if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
+						if ([[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
 						{
 							// Not modified on the 'bonjour client side'?
-							if( [[i valueForKey:@"inDatabaseFolder"] boolValue])
+							if ([[i valueForKey:@"inDatabaseFolder"] boolValue])
 							{
 								// The ROI file was maybe changed on the server -> delete it
 								[[NSFileManager defaultManager] removeItemAtPath: [i valueForKey: @"completePath"] error: nil];
@@ -2148,11 +2173,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 						
 						NSData *d = [SRAnnotation roiFromDICOM: [i valueForKey: @"completePathResolved"]];
 						
-						if( d)
+						if (d)
 						{
 							NSArray *o = [NSUnarchiver unarchiveObjectWithData: d];
 							
-							if( [o count])
+							if ([o count])
 							{
 								[r addObjectsFromArray: o];
 								[SRAnnotation archiveROIsAsDICOM: [NSArray array] toPath: [i valueForKey: @"completePathResolved"] forImage: image];
@@ -2166,7 +2191,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 				}
 			}
 			
-			if( [r count])
+			if ([r count])
 			{
 				NSArray *o = [NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: [[found lastObject] valueForKey: @"completePathResolved"]]];
 				[r addObjectsFromArray: o];
@@ -2175,13 +2200,13 @@ static NSRecursiveLock *dbModifyLock = nil;
 			}
 		}
 		
-		if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
+		if ([[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
 		{
 			// Not modified on the 'bonjour client side'?
-			if( [[[found lastObject] valueForKey:@"inDatabaseFolder"] boolValue])
+			if ([[[found lastObject] valueForKey:@"inDatabaseFolder"] boolValue])
 			{
 				// The ROI file was maybe changed on the server -> delete it
-				if( [[found lastObject] valueForKey: @"completePath"])
+				if ([[found lastObject] valueForKey: @"completePath"])
 					[[NSFileManager defaultManager] removeItemAtPath: [[found lastObject] valueForKey: @"completePath"] error: nil];
 			}
 		}
@@ -2213,7 +2238,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		path = [roi valueForKey: @"completePathResolved"];
 		
-		if( path == nil) // Try the 'old' ROIs folder
+		if (path == nil) // Try the 'old' ROIs folder
 			path = [image SRPath];
 	}
 	@catch (NSException * e) 
@@ -2267,7 +2292,7 @@ static NSRecursiveLock *dbModifyLock = nil;
             p = [NSPredicate predicateWithFormat:@"sopInstanceUID = %@", uid];
         
         NSArray *found = [allImages filteredArrayUsingPredicate:p];
-        if( found.count)
+        if (found.count)
             [roiImages addObject:[found objectAtIndex:0]];
     }
     
@@ -2311,24 +2336,24 @@ static NSRecursiveLock *dbModifyLock = nil;
 #ifndef MIELE_LIGHT
     NSArray *images = nil;
     
-    if( keyImages && ROIImages)
+    if (keyImages && ROIImages)
         images = [self roiAndKeyImages];
-    else if( keyImages)
+    else if (keyImages)
         images = self.keyImages.allObjects;
-    else if( ROIImages)
+    else if (ROIImages)
         images = self.roiImages;
     
     NSMutableArray *producedFiles = [NSMutableArray array];
     DICOMExport *exporter = [[[DICOMExport alloc] init] autorelease];
     
-    for( Dicom_Image *image in images)
+    for (Dicom_Image *image in images)
     {
         NSDictionary *d = [image imageAsDICOMScreenCapture: exporter];
         
         [producedFiles addObject: d];
     }
     
-    if( [producedFiles count])
+    if ([producedFiles count])
     {
         NSArray *objects = [BrowserController.currentBrowser.database addFilesAtPaths: [producedFiles valueForKey: @"file"]
                                                                     postNotifications: YES
@@ -2380,29 +2405,29 @@ static NSRecursiveLock *dbModifyLock = nil;
         NSArray* allStudies = [self studiesForThisPatient];
         
         NSMutableArray* authorizedUsers = [NSMutableArray array];
-        for( WebPortalUser* user in users)
+        for (WebPortalUser* user in users)
         {
-            if( user.studyPredicate.length > 0)
+            if (user.studyPredicate.length > 0)
             {
                 NSArray *studies = nil;
                 
                 // First check the studyPredicate of the user
                 
-                if( user.canAccessPatientsOtherStudies)
+                if (user.canAccessPatientsOtherStudies)
                     studies = [allStudies filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate]];
                 else
                     studies = [[NSArray arrayWithObject: self] filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate]];
                 
-                if( studies.count)
+                if (studies.count)
                     [authorizedUsers addObject: user];
                 
                 // And now check his list of specific studies
                 else 
                 {
-                    if( user.canAccessPatientsOtherStudies && [[user.studies.allObjects valueForKey:@"patientUID"] containsObject: self.patientUID])
+                    if (user.canAccessPatientsOtherStudies && [[user.studies.allObjects valueForKey:@"patientUID"] containsObject: self.patientUID])
                         [authorizedUsers addObject: user];
                     
-                    else if( [[user.studies.allObjects valueForKey:@"studyInstanceUID"] containsObject: self.studyInstanceUID])
+                    else if ([[user.studies.allObjects valueForKey:@"studyInstanceUID"] containsObject: self.studyInstanceUID])
                         [authorizedUsers addObject: user];
                 }
             }

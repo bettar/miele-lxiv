@@ -66,10 +66,10 @@
 @interface GLString : NSObject
 {
 	CGLContextObj cgl_ctx; // current context at time of texture creation
-	GLuint texName;
+	GLuint textureID;
 	NSSize texSize;
 	
-	NSAttributedString * string;
+	NSAttributedString * _attrString;
 	NSColor * textColor; // default is opaque white
 	NSColor * boxColor; // default transparent or none
 	NSColor * borderColor; // default transparent or none
@@ -77,7 +77,7 @@
 	BOOL antialias;	// default to YES
 	NSSize marginSize; // offset or frame size, default is 4 width 2 height
 	NSSize frameSize; // offset or frame size, default is 4 width 2 height
-	float	cRadius; // Corner radius, if 0 just a rectangle. Defaults to 4.0f
+	float cRadius; // Corner radius, if 0 just a rectangle. Defaults to 4.0f
 	NSBitmapImageRep * bitmap;
 	
 	BOOL requiresUpdate;

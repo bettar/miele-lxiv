@@ -155,10 +155,14 @@
             [NSException raise:NSGenericException format:@"Could not delete file at %@", pathWithExt];
 	}
 	
-	if (!pathWithExtExists && pathWithoutExtExists && pathWithoutExtIsDir) {
+	if (!pathWithExtExists && pathWithoutExtExists && pathWithoutExtIsDir)
+    {
 		[self moveItemAtPath:pathWithoutExt toPath:pathWithExt error:NULL];
+        
+        // Value stored to 'pathWithoutExtExists' is never read
 		pathWithoutExtExists = [self fileExistsAtPath:pathWithoutExt isDirectory:&pathWithoutExtIsDir];
-		pathWithExtExists = [self fileExistsAtPath:pathWithExt isDirectory:&pathWithExtIsDir];
+
+        pathWithExtExists = [self fileExistsAtPath:pathWithExt isDirectory:&pathWithExtIsDir];
 		if (!pathWithExtExists)
             [NSException raise:NSGenericException format:@"Could not rename directory at %@ to %@", pathWithoutExt, pathWithExt];
 	}

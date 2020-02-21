@@ -198,9 +198,12 @@ NSString* const OsirixWebPortalEnabledDefaultsKey = @"httpWebServer";
 NSString* const OsirixWebPortalAddressDefaultsKey = @"webServerAddress";
 +(NSString*)webPortalAddress {
 	NSString* r = [NSUserDefaultsController.sharedUserDefaultsController stringForKey:OsirixWebPortalAddressDefaultsKey];
-	if (!r.length) r = self.defaultWebPortalAddress;
-	return r;
+	if (r.length == 0)
+        r = self.defaultWebPortalAddress;
+
+    return r;
 }
+
 +(NSString*)defaultWebPortalAddress {
 	return N2Shell.hostname;
 }
@@ -211,6 +214,7 @@ NSString* const OsirixWebPortalPortNumberDefaultsKey = @"httpWebServerPort";
 	if (!r) r = self.defaultWebPortalPortNumber;
 	return r;
 }
+
 +(NSInteger)defaultWebPortalPortNumber {
 	return 3333;
 }

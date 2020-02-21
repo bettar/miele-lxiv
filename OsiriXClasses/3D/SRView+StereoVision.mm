@@ -22,6 +22,7 @@
 // =========================================================================
 
 #ifdef _STEREO_VISION_
+#import "mgl.h" // include first
 #import "SRView+StereoVision.h"
 
 #import "SRView.h"
@@ -88,11 +89,14 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	[mipv setNeedsDisplay:YES];
 }
 
+#pragma mark -
+
 @implementation SRView (StereoVision)
 
 -(id)initWithFrame:(NSRect)frame
-{		
-    if ( self = [super initWithFrame:frame] )
+{
+    self = [super initWithFrame:frame];
+    if (self)
     {
 		NSTrackingArea *cursorTracking =
         [[[NSTrackingArea alloc] initWithRect: [self visibleRect]
@@ -102,7 +106,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		[self addTrackingArea: cursorTracking];
 		
 		// Added SilvanWidmer 10-08-09
-		StereoVisionOn = NO;	
+        self.StereoVisionOn = NO;
 		
 		splash = [[WaitRendering alloc] init: NSLocalizedString( @"Rendering...", nil)];
 		//[[splash window] makeKeyAndOrderFront:self];
@@ -184,9 +188,9 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			{
 				isoResample = vtkImageResample::New();
 				if (flip)
-                    isoResample->SetInput( flip->GetOutput());
+                    isoResample->SetInputData( flip->GetOutput());
 				else
-                    isoResample->SetInput( reader->GetOutput());
+                    isoResample->SetInputData( reader->GetOutput());
 
                 isoResample->SetAxisMagnificationFactor(0, resolution);
 				isoResample->SetAxisMagnificationFactor(1, resolution);
@@ -198,26 +202,26 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		if( isoResample)
 		{
 			isoExtractor[ actor] = vtkContourFilter::New();
-			isoExtractor[ actor]->SetInput( isoResample->GetOutput());
+			isoExtractor[ actor]->SetInputData( isoResample->GetOutput());
 			isoExtractor[ actor]->SetValue(0, isocontour);
 		}
 		else
 		{
 			isoExtractor[ actor] = vtkContourFilter::New();
 			if (flip)
-                isoExtractor[ actor]->SetInput( flip->GetOutput());
+                isoExtractor[ actor]->SetInputData( flip->GetOutput());
 			else
-                isoExtractor[ actor]->SetInput( reader->GetOutput());
+                isoExtractor[ actor]->SetInputData( reader->GetOutput());
 
             isoExtractor[ actor]->SetValue(0, isocontour);
 		}
 		
 		vtkPolyData* previousOutput = isoExtractor[ actor]->GetOutput();
 		
-		if( useDecimate)
+		if (useDecimate)
 		{
 			isoDeci[ actor] = vtkDecimatePro::New();
-			isoDeci[ actor]->SetInput( previousOutput);
+			isoDeci[ actor]->SetInputData( previousOutput);
 			isoDeci[ actor]->SetTargetReduction(decimateVal);
 			isoDeci[ actor]->SetPreserveTopology( TRUE);
 			
@@ -233,10 +237,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			NSLog(@"Use Decimate : %f", decimateVal);
 		}
 		
-		if( useSmooth)
+		if (useSmooth)
 		{
 			isoSmoother[ actor] = vtkSmoothPolyDataFilter::New();
-			isoSmoother[ actor]->SetInput( previousOutput);
+			isoSmoother[ actor]->SetInputData( previousOutput);
 			isoSmoother[ actor]->SetNumberOfIterations( smoothVal);
 			//		isoSmoother[ actor]->SetRelaxationFactor(0.05);
 			
@@ -244,15 +248,15 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			
 			previousOutput = isoSmoother[ actor]->GetOutput();
 			
-			NSLog(@"Use Smooth: %d", smoothVal);
+            NSLog(@"Use Smooth: %ld", smoothVal);
 		}
 
 		isoNormals[ actor] = vtkPolyDataNormals::New();
-		isoNormals[ actor]->SetInput( previousOutput);
+		isoNormals[ actor]->SetInputData( previousOutput);
 		isoNormals[ actor]->SetFeatureAngle(120);
 		
 		isoMapper[ actor] = vtkPolyDataMapper::New();
-		isoMapper[ actor]->SetInput( isoNormals[ actor]->GetOutput());
+		isoMapper[ actor]->SetInputData( isoNormals[ actor]->GetOutput());
 		isoMapper[ actor]->ScalarVisibilityOff();
 		
 		//	isoMapper[ actor]->GlobalImmediateModeRenderingOff();
@@ -348,13 +352,14 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	[splash autorelease];
 	[exportDCM release];
 	
-	if([firstObject isRGB]) free( dataFRGB);
+	if ([firstObject isRGB])
+        free( dataFRGB);
 	
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 	[self setBlendingPixSource: nil];
 	
-	for( i = 0 ; i < 2; i++)
+	for ( i = 0 ; i < 2; i++)
 	{
 		[self deleteActor:i];
 		[self BdeleteActor:i];
@@ -362,7 +367,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	NSLog(@"Should close the Stereo Window");
 
     // Added SilvanWidmer 12-08-09
-	if (StereoVisionOn)
+	if (self.StereoVisionOn)
 		[self disableStereoModeLeftRight];
 	
 	if (flip)
@@ -421,13 +426,13 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 - (void) setNeedsDisplay: (BOOL) flag
 {
 	[super setNeedsDisplay:flag];
-	if(StereoVisionOn){
+	if (self.StereoVisionOn)
 		[rightView setNeedsDisplay:flag];
-	}
 }
 
 -(IBAction) SwitchStereoMode :(id) sender
 {
+#ifndef _STEREO_VISION_
 	for (int i = 0; i <6; i++)
 		[[[sender menu]itemWithTag: i] setState: false];
 
@@ -436,10 +441,9 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	switch ([sender tag])
 	{
 		case STEREO_MODE_OFF:
-		{
 			if ([self renderWindow]->GetStereoRender() == true)
 			{
-                if (StereoVisionOn) {
+                if (self.StereoVisionOn) {
 					[self disableStereoModeLeftRight];
                 }
 				else {
@@ -447,12 +451,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 					[self setNeedsDisplay:YES];
 				}
 			}
-		}
 			break;
 			
 		case STEREO_MODE_ANAGLYPH:
-		{
-			if (StereoVisionOn)
+			if (self.StereoVisionOn)
 				[self disableStereoModeLeftRight];
 
             [self renderWindow]->StereoRenderOn();
@@ -464,12 +466,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
                 aRenderer->RemoveActor2D( oText[ i]);
 
             [self setNeedsDisplay:YES];
-		}
 			break;
 			
 		case STEREO_MODE_RED_BLUE:
-		{
-			if (StereoVisionOn)
+			if (self.StereoVisionOn)
 				[self disableStereoModeLeftRight];
 
             [self renderWindow]->StereoRenderOn();
@@ -481,12 +481,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
                 aRenderer->RemoveActor2D( oText[ i]);
 
             [self setNeedsDisplay:YES];
-		}
 			break;
 			
 		case STEREO_MODE_INTERLACED:
-		{
-			if (StereoVisionOn)
+			if (self.StereoVisionOn)
 				[self disableStereoModeLeftRight];
 
             [self renderWindow]->StereoRenderOn();
@@ -498,7 +496,6 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
                 aRenderer->RemoveActor2D( oText[ i]);
 
             [self setNeedsDisplay:YES];
-		}
 			break;
 			
 		case STEREO_MODE_LR_DUAL_SCREEN:
@@ -506,12 +503,34 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			break;
 			
 		case STEREO_MODE_LR_SINGLE_SCREEN:
-			if (StereoVisionOn)
+			if (self.StereoVisionOn)
 				[self disableStereoModeLeftRight];
 
             [self LeftRightSingleScreen];
 			break;
 	}
+
+#else // _STEREO_VISION_
+
+    if ([self renderWindow]->GetStereoRender() == false)
+    {
+        [self renderWindow]->StereoRenderOn();
+        [self renderWindow]->SetStereoTypeToRedBlue();
+        
+        if (orientationWidget)
+            orientationWidget->Off();
+        
+        for (long i = 0; i < NUM_SR_LABELS; i++)
+            aRenderer->RemoveActor2D( oText[ i]);
+    }
+    else
+    {
+        [self renderWindow]->StereoRenderOff();
+    }
+    
+    [self setNeedsDisplay:YES];
+
+#endif // _STEREO_VISION_
 }
 
 -(void) updateStereoLeftRight
@@ -632,7 +651,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 -(void) LeftRightSingleScreen
 {	
 	NSLog(@"---Stereo Vision ON ---");
-	StereoVisionOn = YES;
+	self.StereoVisionOn = YES;
 	//storing the previous window
 	if (rootWindow == nil)
 	{
@@ -679,7 +698,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 - (short) LeftRightDualScreen
 {
 	NSLog(@"--- Dual Stereo Vision ON ---");
-	StereoVisionOn = YES;
+	self.StereoVisionOn = YES;
 
 	currentTool = t3DRotate;
 
@@ -788,7 +807,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 
 - (void) disableStereoModeLeftRight
 {
-	if (!StereoVisionOn)
+	if (!self.StereoVisionOn)
 		NSLog(@"Error! Stereo Mode was not activated");
 	
 	if (LeftFullScreenWindow != nil && RightFullScreenWindow != nil)
@@ -838,10 +857,12 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	[rightView release];
 	[leftView release];
 	
-	StereoVisionOn = NO;
+	self.StereoVisionOn = NO;
 }
 
--(void) setNewGeometry: (double) screenHeight: (double) screenDistance: (double) eyeDistance
+-(void) setNewGeometry: (double) screenHeight
+                      : (double) screenDistance
+                      : (double) eyeDistance
 {
 	
 	double oldFocalPoint[3];
@@ -1003,9 +1024,8 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	
 	[self setNeedsDisplay:YES];
 	
-	StereoVisionOn = YES;
+	self.StereoVisionOn = YES;
 	return 1;
-	
 }
 
 #pragma mark - Movie-Export
@@ -1033,37 +1053,37 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		
 		[mov release];
 		//Added SilvanWidmer 19-08-09
-		if(StereoVisionOn)
+		if (self.StereoVisionOn)
 			[self disableStereoModeLeftRight];
 		else 
 			[self restoreViewSizeAfterMatrix3DExport];
 	}
 }
 
-
-
-
 -(NSImage*) nsimageQuicktime
 {
 	NSImage *theIm;
 	BOOL wasPresent = NO;
 	//Added SilvanWidmer
-	if(StereoVisionOn && RightFullScreenWindow==nil && LeftFullScreenWindow ==nil)
+	if (self.StereoVisionOn &&
+        RightFullScreenWindow == nil &&
+        LeftFullScreenWindow == nil)
 	{
 		[self LeftRightMovieScreen];
 	}
 	
-	if( aRenderer->GetActors()->IsItemPresent( outlineRect))
+	if (aRenderer->GetActors()->IsItemPresent( outlineRect))
 	{
 		aRenderer->RemoveActor( outlineRect);
 		//Added SilvanWidmer
-		if (StereoVisionOn)
+		if (self.StereoVisionOn)
 			[rightView renderer]->RemoveActor(outlineRect);
-		wasPresent = YES;
+
+        wasPresent = YES;
 	}
 	
 	[self display];
-	if (StereoVisionOn)
+	if (self.StereoVisionOn)
 		[rightView display];
 	
 	theIm = [self nsimage:YES];
@@ -1071,7 +1091,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	if( wasPresent){
 		aRenderer->AddActor(outlineRect);
 		//Added SilvanWidmer
-		if (StereoVisionOn)
+		if (self.StereoVisionOn)
 			[rightView renderer]->AddActor(outlineRect);
 	}
 	
@@ -1122,7 +1142,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		
 		[mov release];
 		// Added SilvanWidmer 19-08-09
-		if(StereoVisionOn)
+		if (self.StereoVisionOn)
 			[self disableStereoModeLeftRight];
 		else
             [self restoreViewSizeAfterMatrix3DExport];
@@ -1132,7 +1152,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
 	// Added SilvanWidmer 19-08-09
-	if (StereoVisionOn)
+	if (self.StereoVisionOn)
 	{
 		unsigned char	*buf = nil;
 		unsigned char  *leftBuf = nil;
@@ -1307,11 +1327,11 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 {	
 	if( [backgroundColor isActive])
 	{
-		NSColor *color=  [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
+		NSColor *color=  [[(NSColorPanel*)sender color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
 		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
 		
 		//Added SilvanWidmer 20-08-09
-		if(StereoVisionOn)
+		if (self.StereoVisionOn)
 		{
 			[rightView renderer]->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
 		}
@@ -1323,30 +1343,32 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 
 - (void) keyDown:(NSEvent *)event
 {
-    if( [[event characters] length] == 0)
+    if ( [[event characters] length] == 0)
         return;
     
     unichar c = [[event characters] characterAtIndex:0];
 	
-	if( c == ' ')
+	if ( c == ' ')
 	{
 		if( aRenderer->GetActors()->IsItemPresent( outlineRect))
 		{
 			aRenderer->RemoveActor( outlineRect);
-			if(StereoVisionOn)
+			if (self.StereoVisionOn)
 				[rightView renderer]->RemoveActor(outlineRect);
 		}
 		else{
 			aRenderer->AddActor( outlineRect);
-			if(StereoVisionOn)
+			if (self.StereoVisionOn)
 				[rightView renderer]->AddActor(outlineRect);
 		}
 		
 		[self setNeedsDisplay: YES];
 	}
-	else if( c == 27)
+	else if ( c == 27)
 	{
-		if (StereoVisionOn && LeftFullScreenWindow!=nil && RightFullScreenWindow!=nil)
+		if (self.StereoVisionOn &&
+            LeftFullScreenWindow != nil &&
+            RightFullScreenWindow != nil)
 		{
 			//[controller ];
 			[self disableStereoModeLeftRight];
@@ -1564,7 +1586,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		_tool = tool;
 		[self setCursorForView: tool];
 		
-		if( tool == tRotate)
+		if (tool == tRotate)
 		{
 			int shiftDown = 0;
 			int controlDown = 1;
@@ -1574,7 +1596,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	
 				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-			if(StereoVisionOn)
+			if (self.StereoVisionOn)
 			{
 				[rightView getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[rightView getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
@@ -1592,7 +1614,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			
 				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-			if(StereoVisionOn)
+			if (self.StereoVisionOn)
 			{
 				[rightView getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[rightView getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
@@ -1610,7 +1632,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 			
-			if(StereoVisionOn)
+			if (self.StereoVisionOn)
 			{
 				[rightView getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[rightView getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
@@ -1618,7 +1640,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		}
 		else if( tool == tZoom)
 		{
-			if( projectionMode != 2)
+			if (projectionMode != 2)
 			{
 				int shiftDown = 0;
 				int controlDown = 1;
@@ -1627,7 +1649,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[self getInteractor]->InvokeEvent(vtkCommand::RightButtonPressEvent,NULL);
 			
-				if(StereoVisionOn)
+				if (self.StereoVisionOn)
 				{
 					[rightView getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 					[rightView getInteractor]->InvokeEvent(vtkCommand::RightButtonPressEvent,NULL);
@@ -1716,7 +1738,8 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	noWaitDialog = NO;
 }
 
-- (void)mouseUp:(NSEvent *)theEvent{
+- (void)mouseUp:(NSEvent *)theEvent
+{
 	[self deleteMouseDownTimer];
 	
 	switch (_tool) {
@@ -1725,20 +1748,23 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		case tTranslate:
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
 			// Added SilvanWidmer 21-08-09
-			if(StereoVisionOn)
+			if (self.StereoVisionOn)
 				[rightView getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
 			break;
-		case tZoom:
+
+        case tZoom:
 			[self rightMouseUp:theEvent];
 			break;
-		default:
+
+        default:
 			break;
 	}
 	
 	[super mouseUp:theEvent];
 }
 
-- (void)rightMouseUp:(NSEvent *)theEvent{
+- (void)rightMouseUp:(NSEvent *)theEvent
+{
 	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];	
 	if (_tool == tZoom && ( projectionMode != 2)) {
 		int shiftDown = 0;
@@ -1746,7 +1772,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 		[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
 		
-		if(StereoVisionOn)
+		if (self.StereoVisionOn)
 		{
 			[rightView getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 			[rightView getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);	
@@ -1802,7 +1828,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		
 		[self setNeedsDisplay:YES];
 	}	
-	else{
+	else {
 		int shiftDown;
 		int controlDown;
 		
@@ -1811,54 +1837,55 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			case tRotate:
 				shiftDown  = 0;
 				controlDown = 1;
-				
 	
-					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
-					[self computeOrientationText];
-					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+                [self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+                [self computeOrientationText];
+                [self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
 				
-				if(StereoVisionOn)
+				if (self.StereoVisionOn)
 				{
 					[rightView getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 					[rightView getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
 				}
 				
 				break;
-			case t3DRotate:
+
+            case t3DRotate:
 				shiftDown  = 0;
 				controlDown = 0;		
 				
-					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
-					[self computeOrientationText];
-					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+                [self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+                [self computeOrientationText];
+                [self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
 				
-				if(StereoVisionOn)
+				if (self.StereoVisionOn)
 				{
 					[rightView getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 					[rightView getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
 				}
 				
 				break;
-			case tTranslate:
+
+            case tTranslate:
 				shiftDown  = 1;
 				controlDown = 0;
+
+                [self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+                [self computeOrientationText];
+                [self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
 				
-				
-					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
-					[self computeOrientationText];
-					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-				
-				if (StereoVisionOn)
+				if (self.StereoVisionOn)
 				{
 					[rightView getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 					[rightView getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
 				}
 				break;
-			case tZoom:				
+
+            case tZoom:
 				[self rightMouseDragged:theEvent];
 				break;
-			case tCamera3D:
-				
+
+            case tCamera3D:
 				aCamera->Yaw( -(mouseLoc.x - _mouseLocStart.x) / 5.);
 				aCamera->Pitch( (mouseLoc.y - _mouseLocStart.y) / 5.);
 				aCamera->ComputeViewPlaneNormal();
@@ -1867,22 +1894,22 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				[self computeOrientationText];
 				_mouseLocStart = mouseLoc;
 				[self setNeedsDisplay:YES];
-				
-				
-				
 				break;
-			default:
+
+            default:
 				break;
 		}
 	}	
 }
 
-- (void)rightMouseDragged:(NSEvent *)theEvent{
+- (void)rightMouseDragged:(NSEvent *)theEvent
+{
 	int shiftDown, controlDown;
 	float distance;
-	NSPoint		mouseLoc,  mouseLocPre;
+	NSPoint mouseLoc, mouseLocPre;
 	mouseLocPre = mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-	switch (_tool) {
+
+    switch (_tool) {
 		case tZoom:
 			if( projectionMode != 2){
 				shiftDown = 0;
@@ -1892,7 +1919,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				[self computeOrientationText];
 				[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
 				
-				if (StereoVisionOn)
+				if (self.StereoVisionOn)
 				{
 					[rightView getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 					[rightView getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
@@ -1964,15 +1991,15 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			theRenderer->RemoveActor(text);
 		}	
 	}
-	[self setNeedsDisplay:YES];
-	
+
+    [self setNeedsDisplay:YES];
 }
 
 - (void) toggleDisplay3DPoints
 {
 	[self setDisplay3DPoints:!display3DPoints];
 	//Added SilvanWidmer 21-08-09
-	if(StereoVisionOn)
+	if (self.StereoVisionOn)
 		[self setDisplayStereo3DPoints:[rightView renderer] :!display3DPoints];
 }
 
@@ -1983,11 +2010,13 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	// remove from Renderer
 	aRenderer->RemoveActor(actor);
 	//Added SilvanWidmer 21-08-09
-	if(StereoVisionOn)
+	if (self.StereoVisionOn)
 		[rightView renderer]->RemoveActor(actor);
-	// remove the highlight bounding box
+
+    // remove the highlight bounding box
 	[self unselectAllActors];
-	// remove from list
+
+    // remove from list
 	[point3DActorArray removeObjectAtIndex:index];
 	[point3DPositionsArray removeObjectAtIndex:index];
 	[point3DRadiusArray removeObjectAtIndex:index];
@@ -1997,15 +2026,16 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	vtkFollower *text = (vtkFollower*)[[point3DTextArray objectAtIndex:index] pointerValue];
 	aRenderer->RemoveActor(text);
 	//Added SilvanWidmer 21-08-09
-	if(StereoVisionOn)
+	if (self.StereoVisionOn)
 		[rightView renderer]->RemoveActor(text);
-	text->Delete();
+
+    text->Delete();
 	[point3DTextArray removeObjectAtIndex:index];
 	[point3DPositionsStringsArray removeObjectAtIndex:index];
 	[point3DTextColorsArray removeObjectAtIndex:index];
 	[point3DTextSizesArray removeObjectAtIndex:index];
-	// refresh display
-	[self setNeedsDisplay:YES];
+
+    [self setNeedsDisplay:YES];
 }
 
 - (void) hideAnnotationFor3DPointAtIndex:(unsigned int) index
@@ -2015,7 +2045,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	
 	[self setNeedsDisplay:YES];
 	//Added SilvanWidmer 21-08-09
-	if(StereoVisionOn)
+	if (self.StereoVisionOn)
 	{	
 		[rightView renderer]->RemoveActor(text);
 		[rightView setNeedsDisplay:YES];
@@ -2027,7 +2057,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	void* actorPointer = actor;
 	[point3DActorArray addObject:[NSValue valueWithPointer:actorPointer]];
 	aRenderer->AddActor(actor);
-	if(StereoVisionOn)
+	if (self.StereoVisionOn)
 		[rightView renderer]->AddActor(actor);
 	//actor->Delete();
 }

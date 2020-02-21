@@ -21,21 +21,7 @@
 #import <Cocoa/Cocoa.h>
 #import "DCMView.h"
 #import "CPRMPRDCMView.h"
-
-enum _CPRTransverseViewReformationDisplayStyle { 
-    CPRTransverseViewStraightenedReformationDisplayStyle = 0,
-    CPRTransverseViewStretchedReformationDisplayStyle = 1,
-};
-typedef NSInteger CPRTransverseViewReformationDisplayStyle;
-
-// horrible name! rename me!
-enum _CPRTransverseViewSectionType { 
-    CPRTransverseViewNoneSectionType = -1,
-    CPRTransverseViewCenterSectionType = 0,
-    CPRTransverseViewLeftSectionType,
-    CPRTransverseViewRightSectionType
-};
-typedef NSInteger CPRTransverseViewSection;
+#import "cprTypes.h"
 
 @class CPRCurvedPath;
 @class CPRDisplayInfo;
@@ -48,7 +34,7 @@ typedef NSInteger CPRTransverseViewSection;
 
     CPRCurvedPath *_curvedPath;
     CPRDisplayInfo *_displayInfo;
-    CPRTransverseViewSection _sectionType;
+//    CPRTransverseViewSection _sectionType;
     CGFloat _sectionWidth;
     
     CPRVolumeData *_volumeData;
@@ -59,7 +45,6 @@ typedef NSInteger CPRTransverseViewSection;
     BOOL _needsNewRequest;
 	
 	BOOL displayCrossLines;
-	CPRTransverseViewReformationDisplayStyle _reformationDisplayStyle;
     
 	CGFloat _renderingScale;
 	
@@ -78,7 +63,7 @@ typedef NSInteger CPRTransverseViewSection;
 @property (nonatomic, readwrite, assign) CGFloat renderingScale;
 @property (nonatomic, readwrite, assign) BOOL displayCrossLines;
 
-@property (nonatomic, readwrite, assign) CPRTransverseViewReformationDisplayStyle reformationDisplayStyle;
+@property (nonatomic, readwrite, assign) CPRType reformationDisplayStyle; // custom setter
 
 - (float) pixelsPerMm;
 

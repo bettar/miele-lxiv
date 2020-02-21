@@ -349,7 +349,7 @@
 	[viewer moveBlendingFactorSlider:f];
 }
 
--(void) setBlendingMode:(long) f
+-(void) setBlendingMode:(BlendingMode2DType) f
 {
 	[originalView setBlendingMode:f];
 	[xReslicedView setBlendingMode:f];

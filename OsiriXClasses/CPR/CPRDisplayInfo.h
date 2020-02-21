@@ -33,7 +33,6 @@
     BOOL _mouseCursorHidden;
     CGFloat _mouseCursorPosition;
 	
-    CPRTransverseViewSection _mouseTransverseSection; 
     CGFloat _mouseTransverseSectionDistance;
     
 	// to handle tracking the mouse on intersections of the plane and the CPR

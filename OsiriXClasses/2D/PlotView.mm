@@ -188,7 +188,7 @@
 		NSPoint xLabelPosition;
 		xLabelPosition = lineRect.origin;
 		xLabelPosition.x += 4;
-		if(lineRect.origin.x + traceSize.width + 2 > boundsRect.size.width)
+		if (lineRect.origin.x + traceSize.width + 2 > boundsRect.size.width)
 			xLabelPosition.x = boundsRect.size.width - traceSize.width - 2;
 		
 		[[NSColor whiteColor] set];	

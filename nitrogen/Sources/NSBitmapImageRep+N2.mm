@@ -62,7 +62,9 @@
             [[xycolor colorUsingColorSpaceName:NSCalibratedRGBColorSpace] getHue:NULL saturation:NULL brightness:&brightness alpha:&alpha];
             NSColor* fixedColor = [NSColor colorWithDeviceHue:[color hueComponent] saturation:[color saturationComponent] brightness:std::max((CGFloat).75, brightness) alpha:alpha];
             
+            // Value stored to 'xycolor' is never read
             xycolor = [fixedColor colorUsingColorSpace:colorSpace];
+
             [color getComponents:fsamples];
             if (self.hasAlpha)
                 fsamples[spp-1] = alpha;
@@ -105,7 +107,8 @@ struct P {
 	float v[width][height];
 	
 	unsigned char* bitmapData = [self bitmapData];
-	size_t bpp = [self bytesPerPlane], bpr = [self bytesPerRow];
+    size_t bpp = [self bytesPerPlane]; // Value stored to 'bpp' during its initialization is never read
+    size_t bpr = [self bytesPerRow];
 	assert(bpp = 4);
 	NSLog(@"time1!!!!!! %f", [NSDate timeIntervalSinceReferenceDate]);
 //#pragma omp parallel for default(shared)

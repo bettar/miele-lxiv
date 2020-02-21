@@ -82,7 +82,7 @@ static volatile int sendControllerObjects = 0;
 {
     @autoreleasepool
     {
-        if( self.isCancelled)
+        if (self.isCancelled)
             return;
         
         self.thread = [NSThread currentThread];
@@ -151,7 +151,7 @@ static volatile int sendControllerObjects = 0;
 
 + (void) sendFiles: (NSArray *) files
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DICOMSENDALLOWED"] == NO)
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"DICOMSENDALLOWED"] == NO)
 	{
 		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),
                                 NSLocalizedString( @"DICOM Sending is not activated. Contact your PACS manager for more information about DICOM Send.",nil),
@@ -161,9 +161,9 @@ static volatile int sendControllerObjects = 0;
 		return;
 	}
 
-	if( [files  count])
+	if ([files  count])
 	{
-		if( [[DCMNetServiceDelegate DICOMServersListSendOnly: YES QROnly: NO] count] > 0)
+		if ([[DCMNetServiceDelegate DICOMServersListSendOnly: YES QROnly: NO] count] > 0)
 		{
 			SendController *sendController = [[SendController alloc] initWithFiles:files];
 			[NSApp beginSheet: [sendController window] modalForWindow:[NSApp mainWindow] modalDelegate:sendController didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
@@ -218,15 +218,15 @@ static volatile int sendControllerObjects = 0;
 		
 		_serverIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendServer"];	
 		
-		if( _serverIndex >= [[DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly: NO] count])
+		if (_serverIndex >= [[DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly: NO] count])
 			_serverIndex = 0;
 		
 		_keyImageIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendWhat"];
 		
-        if( _keyImageIndex == 1 && self.hasKeyImages == NO) //KeyImages
+        if (_keyImageIndex == 1 && self.hasKeyImages == NO) //KeyImages
             _keyImageIndex = 0;
         
-        if( _keyImageIndex == 1 && self.hasSecondaryCapturesImages == NO) //SC
+        if (_keyImageIndex == 1 && self.hasSecondaryCapturesImages == NO) //SC
             _keyImageIndex = 0;
         
 		_readyForRelease = NO;
@@ -243,25 +243,28 @@ static volatile int sendControllerObjects = 0;
 	return self;
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+-(void)observeValueForKeyPath: (NSString *) keyPath
+                     ofObject: (id) object
+                       change: (NSDictionary *) change
+                      context: (void *) context
 {
 	if (object == [NSUserDefaultsController sharedUserDefaultsController])
     {
-        if( [keyPath isEqualToString: @"values.SERVERS"])
+        if ([keyPath isEqualToString: @"values.SERVERS"])
         {
             [self updateDestinationPopup: nil];
         }
         
-        if( [keyPath isEqualToString: @"values.SendControllerConcurrentThreads"])
+        if ([keyPath isEqualToString: @"values.SendControllerConcurrentThreads"])
         {
             // Find current server (if it exists)
             
             NSMutableArray *servers = [[[[NSUserDefaults standardUserDefaults] objectForKey: @"SERVERS"] mutableCopy] autorelease];
             NSDictionary *currentServer = [self server];
             
-            for( NSDictionary *server in servers)
+            for (NSDictionary *server in servers)
             {
-                if( [[server objectForKey: @"Address"] isEqualToString: [currentServer objectForKey: @"Address"]] && [[server objectForKey: @"Description"] isEqualToString: [currentServer objectForKey: @"Description"]])
+                if ([[server objectForKey: @"Address"] isEqualToString: [currentServer objectForKey: @"Address"]] && [[server objectForKey: @"Description"] isEqualToString: [currentServer objectForKey: @"Description"]])
                 {
                     NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary: server];
                     
@@ -278,10 +281,9 @@ static volatile int sendControllerObjects = 0;
 	}
 }
 
-
 - (void) windowDidLoad
 {
-	if 	([_files  count])
+	if ([_files  count])
 	{
 		[self updateDestinationPopup: nil];
 		
@@ -340,7 +342,7 @@ static volatile int sendControllerObjects = 0;
 
 - (id)server
 {
-	if( _destinationServer)
+	if (_destinationServer)
 		return _destinationServer;
 	
 	return [self serverAtIndex:_serverIndex];
@@ -352,7 +354,7 @@ static volatile int sendControllerObjects = 0;
 {
 	NSArray *serversArray = [DCMNetServiceDelegate DICOMServersListSendOnly: YES QROnly:NO];
 	
-	if(	index > -1 && index < [serversArray count])
+	if (index > -1 && index < [serversArray count])
         return [serversArray objectAtIndex:index];
 	
 	return nil;
@@ -371,7 +373,7 @@ static volatile int sendControllerObjects = 0;
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: preferredTS forKey: @"syntaxListOffis"];
         
-        if( [[self server] objectForKey: @"SendControllerConcurrentThreads"])
+        if ([[self server] objectForKey: @"SendControllerConcurrentThreads"])
             [[NSUserDefaults standardUserDefaults] setInteger: [[[self server] objectForKey: @"SendControllerConcurrentThreads"] intValue] forKey: @"SendControllerConcurrentThreads"];
 	}	
 	
@@ -401,7 +403,7 @@ static volatile int sendControllerObjects = 0;
 	[NSApp endSheet: [self window] returnCode:[sender tag]];
 	NSArray *objectsToSend = _files;
 	
-	if( [sender tag])   //User clicks OK Button
+	if ([sender tag])   //User clicks OK Button
     {		
 		if (_keyImageIndex == 1)
 		{
@@ -420,9 +422,9 @@ static volatile int sendControllerObjects = 0;
         
 		NSMutableArray *files2Send = [objectsToSend valueForKey: @"completePath"];
 		
-		if( files2Send != nil && [files2Send count] > 0)
+		if (files2Send != nil && [files2Send count] > 0)
 		{
-			if( files2Send)
+			if (files2Send)
 				[self sendToNode: [self server] objects: objectsToSend];
 			else
 				[self autorelease];
@@ -444,10 +446,10 @@ static volatile int sendControllerObjects = 0;
 
 - (void) addArray: (NSMutableArray*) a toArraysOfFiles: (NSMutableArray*) arraysOfFiles andArrayOfPatientNames: (NSMutableArray*) arrayOfPatientNames
 {
-    if( a.count == 0)
+    if (a.count == 0)
         return;
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"] == NO)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"] == NO)
     {
         @try
         {
@@ -486,7 +488,7 @@ static volatile int sendControllerObjects = 0;
 
 - (void) sendToNode: (NSDictionary*) node objects:(NSArray*) objects
 {
-	if( objects == nil)
+	if (objects == nil)
 		objects = _files;
 	
     NSMutableArray *objectsToSend = [NSMutableArray arrayWithArray: objects];
@@ -509,16 +511,16 @@ static volatile int sendControllerObjects = 0;
 		NSMutableArray *paths = [NSMutableArray arrayWithArray: [objectsToSend valueForKey: @"completePathResolved"]];
 		[paths removeDuplicatedStringsInSyncWithThisArray: objectsToSend];
 		
-        if( objectsToSend.count)
+        if (objectsToSend.count)
         {
             NSString *previousPatientUID = nil;
             NSMutableArray *samePatientArray = [NSMutableArray array];
             
-            for( Dicom_Image *image in objectsToSend)
+            for (Dicom_Image *image in objectsToSend)
             {
                 NSString *patientUID = [image valueForKeyPath:@"series.study.patientUID"];
                 
-                if( [previousPatientUID compare: patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+                if ([previousPatientUID compare: patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                     [samePatientArray addObject: image];
                 
                 else
@@ -541,7 +543,7 @@ static volatile int sendControllerObjects = 0;
 		NSLog( @"***** sendDICOMFilesOffis exception: %@", e);
 	}
     
-    if( arraysOfFiles.count)
+    if (arraysOfFiles.count)
     {
         NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
                               arraysOfFiles, @"arraysOfFiles",
@@ -559,9 +561,10 @@ static volatile int sendControllerObjects = 0;
 
 #pragma mark - Sending functions
 
-- (void) executeSend:(NSArray*) files patientName: (NSString*) patientName
+- (void) executeSend: (NSArray*) files
+         patientName: (NSString*) patientName
 {
-	if( [NSThread currentThread].isCancelled)
+	if ([NSThread currentThread].isCancelled)
 		return;
 	
 	[NSThread currentThread].name = [NSString stringWithFormat: @"%@ %@", NSLocalizedString( @"Sending...", nil), patientName];
@@ -574,26 +577,26 @@ static volatile int sendControllerObjects = 0;
     
     unsigned int maxThreads = [[NSUserDefaults standardUserDefaults] integerForKey: @"SendControllerConcurrentThreads"];
     
-    if( maxThreads > [[NSUserDefaults standardUserDefaults] integerForKey: @"MaximumSendControllerConcurrentThreads"])
+    if (maxThreads > [[NSUserDefaults standardUserDefaults] integerForKey: @"MaximumSendControllerConcurrentThreads"])
         maxThreads = [[NSUserDefaults standardUserDefaults] integerForKey: @"MaximumSendControllerConcurrentThreads"];
     
-    if( maxThreads <= 0)
+    if (maxThreads <= 0)
         maxThreads = 1;
     
-    if( maxThreads > 1)
+    if (maxThreads > 1)
         NSLog( @"DCMTKStoreSCU threads: %d", maxThreads);
     
     unsigned long loc = 0;
     do
     {
         NSRange range = NSMakeRange( loc, ceil( (float)files.count / (float)maxThreads));
-        if( operations.count == maxThreads-1)
+        if (operations.count == maxThreads-1)
             range.length = files.count - range.location;
         
-        if( range.location + range.length > files.count)
+        if (range.location + range.length > files.count)
             range.length = files.count-range.location;
         
-        if( range.length)
+        if (range.length > 0)
         {
             loc += range.length;
             
@@ -604,12 +607,12 @@ static volatile int sendControllerObjects = 0;
         }
                                   
     }
-    while( loc < files.count);
+    while (loc < files.count);
     
 //    NSUInteger initialOpCount = queue.operationCount;
     while (queue.operationCount)
     {
-        if( [[NSThread currentThread] isCancelled])
+        if ([[NSThread currentThread] isCancelled])
         {
             [NSThread currentThread].progress = -1;
             [NSThread currentThread].status = NSLocalizedString( @"Cancelling...", nil);
@@ -618,11 +621,11 @@ static volatile int sendControllerObjects = 0;
         }
         
         float progress = 0;
-        for( DCMTKStoreSCUOperation *o in operations)
+        for (DCMTKStoreSCUOperation *o in operations)
         {
-            if( [queue.operations containsObject: o] == NO)
+            if ([queue.operations containsObject: o] == NO)
                 progress += 1.0;
-            else if( o.thread.progress >= 0)
+            else if (o.thread.progress >= 0)
                 progress += o.thread.progress;
         }
         
@@ -654,7 +657,7 @@ static int globalDCMTKSCUCounter = 0;
     
 	@try
 	{
-        for( int i = 0;i < arraysOfFiles.count;i++)
+        for (int i = 0;i < arraysOfFiles.count;i++)
         {
             [self executeSend: [arraysOfFiles objectAtIndex: i] patientName: [arrayOfPatientNames objectAtIndex: i]];
         }
@@ -676,12 +679,12 @@ static int globalDCMTKSCUCounter = 0;
 
 - (void) updateDestinationPopup: (NSNotification *)note
 {
-	if( newServerList)
+	if (newServerList)
 	{
 		NSString *currentTitle = [[[newServerList selectedItem] title] retain];
 		
 		[newServerList removeAllItems];
-		for( NSDictionary *d in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
+		for (NSDictionary *d in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
 		{
 			NSString *title = [NSString stringWithFormat:@"%@ - %@",[d objectForKey:@"AETitle"],[d objectForKey:@"Description"]];
 			
@@ -691,9 +694,9 @@ static int globalDCMTKSCUCounter = 0;
 			[newServerList addItemWithTitle: title];
 		}
 		
-		for( NSMenuItem *d in [newServerList itemArray])
+		for (NSMenuItem *d in [newServerList itemArray])
 		{
-			if( [[d title] isEqualToString: currentTitle])
+			if ([[d title] isEqualToString: currentTitle])
 				[newServerList selectItem: d];
 		}
 		

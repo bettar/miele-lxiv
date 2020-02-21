@@ -382,11 +382,11 @@ void info_callback(const char *msg, void *a) {
 //      opj_cio_close(cio);
 //
 //  /* free the memory containing the code-stream */
-//  if( width)
+//  if (width)
 //	*width = image->comps[ 0].w;
-//  if( height)
+//  if (height)
 //	*height = image->comps[ 0].h;
-//  if( samplePerPixel)
+//  if (samplePerPixel)
 //	*samplePerPixel = image->numcomps;
 //
 //  int bbp;
@@ -410,7 +410,7 @@ void info_callback(const char *msg, void *a) {
 //	  int numcomps = image->numcomps;
 //      int hr = int_ceildivpow2(image->comps[compno].h, image->comps[compno].factor);
 //	   
-//	   if( wr == w && numcomps == 1)
+//	   if (wr == w && numcomps == 1)
 //	   {
 //		   if (comp->prec <= 8)
 //		   {
@@ -479,7 +479,7 @@ void info_callback(const char *msg, void *a) {
 //  }
 //
 //  /* free image data structure */
-//  if( image)
+//  if (image)
 //	opj_image_destroy(image);
 //
 //  return raw;
@@ -570,16 +570,16 @@ void info_callback(const char *msg, void *a) {
 //	size_t theLength;
 //	int width, height, samplePerPixel;
 //	
-//	if( inImageBuffP == nil)
+//	if (inImageBuffP == nil)
 //		return nil;
 //	
 //	void *data = dcm_read_JPEG2000_file( (char*) inImageBuffP, theCompressedLength, &theLength, &width, &height, &samplePerPixel);
 //	
-//	if( data == nil)
+//	if (data == nil)
 //		return nil;
 //	
 //	NSString *cs;
-//	if( samplePerPixel == 3)
+//	if (samplePerPixel == 3)
 //		cs = NSCalibratedRGBColorSpace;
 //	else
 //		cs = NSCalibratedWhiteColorSpace;
@@ -694,7 +694,13 @@ void info_callback(const char *msg, void *a) {
 	_samplesPerPixel = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"SamplesperPixel"]] value] intValue];
 
     if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"NumberofFrames"]])
-		_numberOfFrames = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"NumberofFrames"]] value] intValue];
+    {
+		_numberOfFrames = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"NumberofFrames"]] value] intValue]; // Why not @"NumberOfFrames" ?
+#if 1 // Issue i26
+        if (_numberOfFrames == -1)
+            _numberOfFrames = 1;
+#endif
+    }
 
     _isSigned = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"PixelRepresentation"]] value] boolValue];
 	transferSyntax = [ts retain];
@@ -809,9 +815,11 @@ void info_callback(const char *msg, void *a) {
 			[container addData:object];
 			
 		}
-		if (DCMDEBUG)
+
+        if (DCMDEBUG)
 			NSLog(@"Write end sequence");
-		[container addUnsignedShort:(0xfffe)];	// Sequence Delimiter
+
+        [container addUnsignedShort:(0xfffe)];	// Sequence Delimiter
 		[container addUnsignedShort:(0xe0dd)];
 		[container addUnsignedLong:(0)];		// dummy length
 	
@@ -871,7 +879,7 @@ void info_callback(const char *msg, void *a) {
 	}
 	
 	// we need to decode pixel data
-	if( _isDecoded == NO)
+	if (_isDecoded == NO)
 		[self decodeData];
 	
 	//unencapsulated syntaxes
@@ -915,7 +923,7 @@ void info_callback(const char *msg, void *a) {
 	if ([[DCMTransferSyntax JPEG2000LosslessTransferSyntax] isEqualToTransferSyntax:ts] ||
         [[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:ts])
 	{
-//		if( JasperInitialized == NO)
+//		if (JasperInitialized == NO)
 //		{
 //			JasperInitialized = YES;
 //			jas_init();
@@ -937,29 +945,32 @@ void info_callback(const char *msg, void *a) {
 			
 		//[_dcmObject removePlanarAndRescaleAttributes];
 		
-		[self createOffsetTable];
+        [self createOffsetTable];
 		self.transferSyntax = ts;
 		if (DCMDEBUG)
 			NSLog(@"Converted to Syntax %@", transferSyntax.description );
-		status = YES;
+
+        status = YES;
 		goto finishedConversion;
 	}
 	
 	finishedConversion:
 	status = status;
-	} @catch( NSException *localException) {
+	}
+    @catch( NSException *localException) {
 		status = NO;
 	}
 	if (DCMDEBUG)
 		NSLog(@"Converted to Syntax %@ status:%d", transferSyntax.description, status);
-	return status;
+
+    return status;
 }
 
 //Pixel Decoding
 - (NSData *)convertDataFromLittleEndianToHost:(NSMutableData *)data
 {
 	void *ptr = malloc([data length]);
-	if( ptr)
+	if (ptr)
 	{
 		memcpy( ptr, [data bytes], [data length]);
 		
@@ -993,7 +1004,7 @@ void info_callback(const char *msg, void *a) {
 - (NSData *)convertDataFromBigEndianToHost:(NSMutableData *)data
 {
 	void *ptr = malloc([data length]);
-	if( ptr)
+	if (ptr)
 	{
 		memcpy( ptr, [data bytes], [data length]);
 		
@@ -1030,7 +1041,7 @@ void info_callback(const char *msg, void *a) {
 			if (_pixelDepth <= 16) {	
 				unsigned short *shortsToSwap = (unsigned short *) [data mutableBytes];
 				//signed short *signedShort = [data mutableBytes];
-				unsigned int length = [data length]/2;
+				auto length = [data length]/2;
 				for ( unsigned i = 0; i < length; i++) {
 					shortsToSwap[i] = NSSwapShort(shortsToSwap[i]);
 				}
@@ -1038,7 +1049,7 @@ void info_callback(const char *msg, void *a) {
 			else {	
 				unsigned long *longsToSwap = (unsigned long *) [data mutableBytes];
 				//signed short *signedShort = [data mutableBytes];
-				unsigned int length = [data length]/4;
+				auto length = [data length]/4;
 				for ( unsigned int i = 0; i < length; i++) {
 					longsToSwap[i] = NSSwapLong(longsToSwap[i]);
 				}
@@ -1152,7 +1163,7 @@ void info_callback(const char *msg, void *a) {
     long decompressedLength = 0;
     
 //    NSUInteger processors = 0;
-//    if( [jpegData length] > 512*1024)
+//    if ([jpegData length] > 512*1024)
 //        processors = [[NSProcessInfo processInfo] processorCount] /2;
     
     int colorModel;
@@ -1160,13 +1171,13 @@ void info_callback(const char *msg, void *a) {
     OPJSupport opj;
     void *p = opj.decompressJPEG2K( (void*) [jpegData bytes],
                                    [jpegData length], &decompressedLength, &colorModel);
-    if( p)
+    if (p)
     {
         pixelData = [NSMutableData dataWithBytesNoCopy: p length:decompressedLength freeWhenDone: YES];
 //		succeed = YES;
     }
 	
-//	if( succeed == NO)
+//	if (succeed == NO)
 //	{
 //		unsigned char *newPixelData;
 //		
@@ -1175,14 +1186,14 @@ void info_callback(const char *msg, void *a) {
 //		size_t decompressedLength = 0;
 //		newPixelData = (unsigned char*) dcm_read_JPEG2000_file( (char*) [jpegData bytes], [jpegData length], &decompressedLength, nil, nil, nil);
 //		
-//		if( newPixelData)
+//		if (newPixelData)
 //		{
 //			pixelData = [NSMutableData dataWithBytesNoCopy:newPixelData length:decompressedLength freeWhenDone: YES];
 //			succeed = YES;
 //		}
 //	}
 	
-//	if( succeed == NO)
+//	if (succeed == NO)
 //	{
 //		int fmtid;
 //		unsigned long i,  theLength,  x, y, decompressedLength;
@@ -1238,7 +1249,7 @@ void info_callback(const char *msg, void *a) {
 //		for (i=0; i < numcmpts; i++)
 //			pixels[ i] = jas_matrix_create( height, width);
 //			
-//		if( numcmpts == 1)
+//		if (numcmpts == 1)
 //		{
 //			if (depth > 8)
 //			{
@@ -1308,7 +1319,7 @@ void info_callback(const char *msg, void *a) {
     NSMutableData *pixelData = nil;
 
 //    NSUInteger processors = 0;
-//    if( [jpegData length] > 512*1024)
+//    if ([jpegData length] > 512*1024)
 //        processors = [[NSProcessInfo processInfo] processorCount] /2;
     
     JlsParameters params = JlsParameters();
@@ -1404,7 +1415,8 @@ void info_callback(const char *msg, void *a) {
 			}
 			[decompressedData appendData:data];
 		}
-		break;
+		
+            break;
 		case 2:
 			data = [NSMutableData dataWithLength:decompressedLength * 2];
 			for (int i = 0; i< segmentCount; i++) {
@@ -1472,7 +1484,7 @@ void info_callback(const char *msg, void *a) {
     int rate = 0;
 
 #ifdef WITH_KDU_JP2K
-    if( Use_kdu_IfAvailable && kdu_available())
+    if (Use_kdu_IfAvailable && kdu_available())
     {
         int precision = [[_dcmObject attributeValueWithName:@"BitsStored"] intValue];
         
@@ -1487,7 +1499,7 @@ void info_callback(const char *msg, void *a) {
                 break;
                 
             case DCMMediumQuality:
-                if( _columns <= 600 || _rows <= 600)
+                if (_columns <= 600 || _rows <= 600)
                     rate = 6;
                 else
                     rate = 8;
@@ -1538,7 +1550,7 @@ void info_callback(const char *msg, void *a) {
 			break;
 				
 			case DCMMediumQuality:
-				if( _columns <= 600 || _rows <= 600)
+				if (_columns <= 600 || _rows <= 600)
                     rate = 6;
 				else
                     rate = 8;
@@ -1598,19 +1610,19 @@ void info_callback(const char *msg, void *a) {
 		}
 		else
 		{
-			if( spp != 3)
+			if (spp != 3)
 				NSLog( @"*** RGB Photometric?, but... spp != 3 ?");
             
 			spp = 3;
 		}
 		
-		if( prec >= 16)
+		if (prec >= 16)
 		{
 			[self findMinAndMax: data];
 			
 			int amplitude = _max;
 			
-			if( _min < 0)
+			if (_min < 0)
 				amplitude -= _min;
 			
 			int bits = 1, value = 2;
@@ -1621,7 +1633,7 @@ void info_callback(const char *msg, void *a) {
 				bits++;
 			}
 			
-			if( _min < 0)
+			if (_min < 0)
 			{
 				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: @YES] forName:@"PixelRepresentation"];
 				bits++;  // For the sign
@@ -1629,15 +1641,17 @@ void info_callback(const char *msg, void *a) {
 			else
 				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: @NO] forName:@"PixelRepresentation"];
 			
-			if( bits < 9) bits = 9;
+			if (bits < 9)
+                bits = 9;
 			
 			// avoid the artifacts... switch to lossless
-			if( (_max >= 32000 && _min <= -32000) || _max >= 65000 || bits > 16)
+			if ((_max >= 32000 && _min <= -32000) || _max >= 65000 || bits > 16)
 			{
 				quality = DCMLosslessQuality;
 			}
 			
-			if( bits > 16) bits = 16;
+			if (bits > 16)
+                bits = 16;
 			
 			prec = bits;
 		}
@@ -1770,7 +1784,7 @@ void info_callback(const char *msg, void *a) {
 			break;
 				
 			case DCMMediumQuality:
-				if( _columns <= 600 || _rows <= 600)
+				if (_columns <= 600 || _rows <= 600)
 					strcpy( optstr, "rate=0.16");
 				else
 					strcpy( optstr, "rate=0.12");
@@ -1808,7 +1822,7 @@ void info_callback(const char *msg, void *a) {
 		if ([jpeg2000Data length] % 2) 
 			[jpeg2000Data appendBytes:&zero length:1];
 		
-//		if( [data length] / [jpeg2000Data length] > 30 && quality != DCMLosslessQuality)
+//		if ([data length] / [jpeg2000Data length] > 30 && quality != DCMLosslessQuality)
 //		{
 //			NSLog( @"****** warning compress ratio is very high : %d?? Problem during compression? -> will use jp2k lossless", [data length] / [jpeg2000Data length]);
 //			return [self encodeJPEG2000: data quality: DCMLosslessQuality];
@@ -1823,7 +1837,9 @@ void info_callback(const char *msg, void *a) {
 
 - (void)decodeData
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (!_framesCreated)
 		[self createFrames];
 	if (!_isDecoded)
@@ -2164,14 +2180,14 @@ void info_callback(const char *msg, void *a) {
 //	}
 //}
 
-
 -(void)createOffsetTable{
 	/*
 		offset should be item tag 4 bytes length 4 bytes last item length
 	*/
 	if (DCMDEBUG)
 		NSLog(@"create Offset table");
-	NSMutableData *offsetTable = [NSMutableData data];
+
+    NSMutableData *offsetTable = [NSMutableData data];
 	unsigned long offset = 0;
 	[offsetTable appendBytes:&offset length:4];
 
@@ -2318,7 +2334,7 @@ void info_callback(const char *msg, void *a) {
 	
 	DCMAttributeTag *compressionTag = [DCMAttributeTag tagWithName:@"LossyImageCompression"];
 	DCMAttribute *compressionAttr;
-	if( quality != DCMLosslessQuality)
+	if (quality != DCMLosslessQuality)
 		compressionAttr = [DCMAttribute attributeWithAttributeTag:compressionTag vr:[compressionTag vr] values:[NSMutableArray arrayWithObject:@"01"]];
 	else
 		compressionAttr = [DCMAttribute attributeWithAttributeTag:compressionTag vr:[compressionTag vr] values:[NSMutableArray arrayWithObject:@"00"]];
@@ -2344,7 +2360,7 @@ void info_callback(const char *msg, void *a) {
 		length = [data length]/4;
 		
 	float *fBuffer = (float*) malloc(length * 4);
-    if( !fBuffer) {
+    if (!fBuffer) {
         NSLog(@"%s:%i %s", __FILE__, __LINE__, MALLOC_ERROR_MESSAGE);
         return;
     }
@@ -2366,7 +2382,7 @@ void info_callback(const char *msg, void *a) {
 		{
 			src.rowBytes = _columns * 2;
 			
-			if( isSigned)
+			if (isSigned)
 				vImageConvert_16SToF( &src, &dstf, 0, 1, 0);
 			else
 				vImageConvert_16UToF( &src, &dstf, 0, 1, 0);
@@ -2381,13 +2397,13 @@ void info_callback(const char *msg, void *a) {
 //		// The goal of this 'trick' is to avoid the problem that some annotations can generate, if they are 'incrusted' in the image
 //		// the jp2k algorithm doesn't like them at all...
 //		
-//		if( isSigned == NO && _max == 65535)
+//		if (isSigned == NO && _max == 65535)
 //		{
 //			long i = _columns * _rows;
 //			// Compute the new max
 //			while( i-->0)
 //			{
-//				if( fBuffer[ i] == 0xFFFF)
+//				if (fBuffer[ i] == 0xFFFF)
 //					fBuffer[ i] = _min;
 //			}
 //			
@@ -2404,7 +2420,7 @@ void info_callback(const char *msg, void *a) {
 //			i = _columns * _rows;
 //			while( i-->0)
 //			{
-//				if( ptr[ i] == 0xFFFF)
+//				if (ptr[ i] == 0xFFFF)
 //					ptr[ i] = _max;
 //			}
 //		}
@@ -2450,9 +2466,9 @@ void info_callback(const char *msg, void *a) {
 		clutEntryB = (unsigned short)[[blueLUTDescriptor objectAtIndex:0] intValue];
 		clutDepthB = (unsigned short)[[blueLUTDescriptor objectAtIndex:2] intValue];
 		
-		if( clutEntryR > 256) NSLog(@"R-Palette > 256");
-		if( clutEntryG > 256) NSLog(@"G-Palette > 256");
-		if( clutEntryB > 256) NSLog(@"B-Palette > 256");
+		if (clutEntryR > 256) NSLog(@"R-Palette > 256");
+		if (clutEntryG > 256) NSLog(@"G-Palette > 256");
+		if (clutEntryB > 256) NSLog(@"B-Palette > 256");
 		
 		//NSLog(@"%d red entries with depth: %d", clutEntryR , clutDepthR);
 		//NSLog(@"%d green entries with depth: %d", clutEntryG , clutDepthG);
@@ -2497,7 +2513,7 @@ void info_callback(const char *msg, void *a) {
 								{
 									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj++]);
 									shortRed[ xxindex] = pixel;
-									//if( xxindex < 256) NSLog(@"Type: %d  pixel:%d, swapped: %d", shortRed[ xxindex], NSSwapLittleShortToHost(shortRed[ xxindex]));
+									//if (xxindex < 256) NSLog(@"Type: %d  pixel:%d, swapped: %d", shortRed[ xxindex], NSSwapLittleShortToHost(shortRed[ xxindex]));
 								}
 								jj--;
                                 break;
@@ -2509,7 +2525,7 @@ void info_callback(const char *msg, void *a) {
 								{
 									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj + 1]);
 									shortRed[ xxindex] = shortRed[ xx-1] + ((pixel - shortRed[ xx-1]) * (1+xxindex - xx)) / (length);
-									//if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
+									//if (xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
 								}
 								jj++;
                                 break;
@@ -2556,7 +2572,7 @@ void info_callback(const char *msg, void *a) {
 								{
 									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj++]);
 									shortGreen[ xxindex] = pixel;
-									//if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
+									//if (xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
 								}
 								jj--;
                                 break;
@@ -2568,7 +2584,7 @@ void info_callback(const char *msg, void *a) {
 								{
 									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj + 1]);
 									shortGreen[ xxindex] = shortGreen[ xx-1] + ((pixel - shortGreen[ xx-1]) * (1+xxindex - xx)) / (length);
-								//	if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
+								//	if (xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
 								}
 								jj++;
                                 break;
@@ -2614,7 +2630,7 @@ void info_callback(const char *msg, void *a) {
 								{
 									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj++]);
 									shortBlue[ xxindex] = pixel;
-						//			if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
+						//			if (xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
 								}
 								jj--;
                                 break;
@@ -2626,7 +2642,7 @@ void info_callback(const char *msg, void *a) {
 								{
 									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj + 1]);
 									shortBlue[ xxindex] = shortBlue[ xx-1] + ((pixel - shortBlue[ xx-1]) * (xxindex - xx + 1)) / (length);
-									//if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
+									//if (xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
 								}
 								jj++;
                                 break;
@@ -2804,7 +2820,7 @@ void info_callback(const char *msg, void *a) {
 			rgbData = [NSMutableData dataWithLength:totSize];
 			tmpImage = (unsigned char*) [rgbData mutableBytes];
 			
-			//if( _pixelDepth != 8) NSLog(@"Palette with a non-8 bit image??? : %d ", _pixelDepth);
+			//if (_pixelDepth != 8) NSLog(@"Palette with a non-8 bit image??? : %d ", _pixelDepth);
 			//NSLog(@"height; %d  width %d totSize: %d, length: %d", height, realwidth, totSize, [data length]);
 			switch(_pixelDepth)
 			{
@@ -2815,9 +2831,9 @@ void info_callback(const char *msg, void *a) {
 						{
 							pixelR = pixelG = pixelB = bufPtr[y*width + x];
 							
-							if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
-							if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
-							if( pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
+							if (pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
+							if (pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
+							if (pixelB > clutEntryB) {	pixelB = clutEntryB-1;}
 
 							tmpImage[y*width*3 + x*3 + 0] = clutRed[ pixelR];
 							tmpImage[y*width*3 + x*3 + 1] = clutGreen[ pixelG];
@@ -2878,7 +2894,7 @@ void info_callback(const char *msg, void *a) {
         NSLog(@"Exception converting Palette to RGB: %@", localException.name);
     }
 
-    if( clutRed != nil)
+    if (clutRed != nil)
 		free(clutRed);
 	if ( clutGreen != nil)
 		free(clutGreen);
@@ -3184,7 +3200,7 @@ void info_callback(const char *msg, void *a) {
 		dstf.data = (float *)[floatData mutableBytes];
 		vImageConvert_Planar8toPlanarF (&argb, &dstf, 0, 256, 0);	
 	}
-	else if( _pixelDepth == 32)
+	else if (_pixelDepth == 32)
 	{
 		unsigned int *uslong = (unsigned int*) [data bytes];
 		int	 *slong = (int*) [data bytes];
@@ -3276,15 +3292,21 @@ void info_callback(const char *msg, void *a) {
 	}	
 }
 
-- (NSMutableData *)createFrameAtIndex:(int)index{
-	
-	//NSDate *timestamp = [NSDate date];
+- (NSMutableData *)createFrameAtIndex:(int)index
+{
+    if (DCMDEBUG)
+        NSLog(@"%s %d, index:%d", __FUNCTION__, __LINE__, index);
+
+    //NSDate *timestamp = [NSDate date];
 	NSMutableData *subData = nil;
-	if (!_framesCreated){	
+	if (!_framesCreated)
+    {
 		//NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		if ( transferSyntax.isEncapsulated )
 		{
-			//NSLog(@"encapsulated");
+            if (DCMDEBUG)
+                NSLog(@"%s %d, encapsulated", __FUNCTION__, __LINE__);
+
 			NSMutableArray *offsetTable = [NSMutableArray array];
 			/*offset table will be first fragment
 				if single image value = 0;
@@ -3294,8 +3316,10 @@ void info_callback(const char *msg, void *a) {
 				The 2 frame starts at offset - 16   ( three Item tag and lengths)
 				So will use 0 for first frame, and then  subtract (n-1) * 8
 			*/
-			unsigned  long offset;
-			if ([_values count] > 1  && [(NSData *)[_values objectAtIndex:0] length] > 0) {
+			unsigned long offset;
+			if ([_values count] > 1 &&
+                [(NSData *)[_values objectAtIndex:0] length] > 0)
+            {
 				NSData *offsetData = [_values objectAtIndex:0];
 				unsigned long *offsets = (unsigned long *)[offsetData bytes];
 				NSUInteger numberOfOffsets = [offsetData length]/4;
@@ -3309,13 +3333,19 @@ void info_callback(const char *msg, void *a) {
 					[offsetTable addObject:[NSNumber numberWithLong:offset]];
 				}
 			}
-			else 
+            else
+            {
 				[offsetTable addObject:[NSNumber numberWithLong:0L]];
+            }
 			
-			//most likely way to have data with one frame per data object.
+			// Most likely way to have data with one frame per data object.
 			NSMutableArray *values = [NSMutableArray arrayWithArray:_values];
-			//remove offset table
+			// Remove offset table
 			[values removeObjectAtIndex:0];
+
+            if (DCMDEBUG)
+                NSLog(@"%s %d, values count:%lu, _numberOfFrames:%d", __FUNCTION__, __LINE__, (unsigned long)[values count], _numberOfFrames);
+
 			if ([values count] == _numberOfFrames)
 			{
 				subData = [values objectAtIndex:index];
@@ -3325,17 +3355,22 @@ void info_callback(const char *msg, void *a) {
 			{
 				int currentOffset = [[offsetTable objectAtIndex:index] longValue];
 				int currentLength = 0;
-				if (index < _numberOfFrames - 1 && index < [offsetTable count] - 1)
-					currentLength =  [[offsetTable objectAtIndex:index + 1] longValue] - currentOffset;
-				else{
+				if (index < _numberOfFrames - 1 &&
+                    index < [offsetTable count] - 1)
+                {
+					currentLength = [[offsetTable objectAtIndex:index + 1] longValue] - currentOffset;
+                }
+				else
+                {
 					//last offset - currentLength =  total length of items 
 					int itemsLength = 0;
-					for ( NSData *aData in values )
+					for (NSData *aData in values)
 						itemsLength += [aData length];
 
                     currentLength = itemsLength - currentOffset;
 				}
-				/*now we need to find the item that == the start of the offset
+
+                /* Now we need to find the item that == the start of the offset
 					find which items contain the data.
 					need to add for item tag and length 8 bytes * (n - 1) items
 				*/
@@ -3347,7 +3382,8 @@ void info_callback(const char *msg, void *a) {
 					combinedLength += ([(NSData *)[values objectAtIndex:startingItem] length] + 8);
 					startingItem++;
 				}
-				endItem = startingItem;
+
+                endItem = startingItem;
 				dataLength = ([(NSData *)[values objectAtIndex:endItem] length] + 8);
 				while ((dataLength < currentLength) && (endItem < [values count])) {
 					endItem++;
@@ -3357,13 +3393,12 @@ void info_callback(const char *msg, void *a) {
 				subData = [NSMutableData data];
 				for (int j = startingItem; j <= endItem ; j++)
 					[subData appendData:[values objectAtIndex:j]];	
-			} //appending fragments
+			} // Appending fragments
 
-		} //end encapsulated
-		//multiple frames
-		else if (_numberOfFrames > 1)
+		} // End encapsulated
+		else if (_numberOfFrames > 1) // Multiple frames
 		{
-			int depth = 1;
+            int depth = 1;
 			if (_bitsAllocated <= 8) 
 				depth = 1;
 			else if (_bitsAllocated  <= 16)
@@ -3375,9 +3410,9 @@ void info_callback(const char *msg, void *a) {
 			NSRange range = NSMakeRange(index * frameLength, frameLength);
             
             void *ptr = malloc( frameLength);
-            if ( ptr)
+            if (ptr)
             {
-                if( [[_values objectAtIndex:0] length] < range.location + range.length)
+                if ([[_values objectAtIndex:0] length] < range.location + range.length)
                     subData = nil;
                 else
                 {
@@ -3385,7 +3420,7 @@ void info_callback(const char *msg, void *a) {
                     subData = [NSMutableData dataWithBytesNoCopy: ptr length: frameLength freeWhenDone: YES];
                 }
                 
-                if( subData == nil)
+                if (subData == nil)
                     free( ptr);
             }
             else
@@ -3393,11 +3428,11 @@ void info_callback(const char *msg, void *a) {
 		}
 		//only one fame
 		else {
-			
 			subData =[_values objectAtIndex:0];
 		}
-	}		
-	return subData;
+	}
+
+    return subData;
 }
 
 - (void)createFrames{
@@ -3406,11 +3441,14 @@ void info_callback(const char *msg, void *a) {
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		if (DCMDEBUG)
 			NSLog(@"Decode Data");
-		// if encapsulated we need to use offset table to create frames
-		if ( transferSyntax.isEncapsulated ) {
+
+        // If encapsulated we need to use offset table to create frames
+		if ( transferSyntax.isEncapsulated )
+        {
 			if (DCMDEBUG)
 				NSLog(@"Data is encapsulated");
-			NSMutableArray *offsetTable = [NSMutableArray array];
+
+            NSMutableArray *offsetTable = [NSMutableArray array];
 			/*offset table will be first fragment
 				if single image value = 0;
 				each offset is an unsigned long to the first byte of the Item tag. We have already removed the tags.
@@ -3419,9 +3457,11 @@ void info_callback(const char *msg, void *a) {
 				The 2 frame starts at offset - 16   ( three Item tag and lengths)
 				So will use 0 for first frame, and then  subtract (n-1) * 8
 			*/
-			unsigned  long offset;
+			unsigned long offset;
 				
-			if ([_values count] > 1  && [(NSData *)[_values objectAtIndex:0] length] > 0) {
+			if ([_values count] > 1 &&
+                [(NSData *)[_values objectAtIndex:0] length] > 0)
+            {
 				NSData *offsetData = [_values objectAtIndex:0];
 				unsigned long *offsets = (unsigned long *)[offsetData bytes];
 				int numberOfOffsets = [offsetData length]/4;
@@ -3437,8 +3477,6 @@ void info_callback(const char *msg, void *a) {
 			else 
 				[offsetTable addObject:[NSNumber numberWithLong:0L]];
 
-		
-			
 			//most likely way to have data with one frame per data object.
 			NSMutableArray *values = [NSMutableArray arrayWithArray:_values];
 			//remove offset table
@@ -3452,7 +3490,8 @@ void info_callback(const char *msg, void *a) {
             for (int i = 0; i < _numberOfFrames; i++) {
 				if (DCMDEBUG)
 					NSLog(@"Frame %d", i);
-				//one to one match between frames and items
+
+                // One-to-one match between frames and items
 				
 				if ([values count] == _numberOfFrames)
 					subData = [values objectAtIndex:i];
@@ -3463,13 +3502,14 @@ void info_callback(const char *msg, void *a) {
 					int currentOffset = [[offsetTable objectAtIndex:i] longValue];
 					int currentLength = 0;
 					if (i < _numberOfFrames - 1)
-						currentLength =  [[offsetTable objectAtIndex:i + 1] longValue] - currentOffset;
-					else{
+						currentLength = [[offsetTable objectAtIndex:i + 1] longValue] - currentOffset;
+					else {
 						//last offset - currentLength =  total length of items 
 						int itemsLength = 0;
 						for ( NSData *aData in values )
 							itemsLength += [aData length];
-						currentLength = itemsLength - currentOffset;
+
+                        currentLength = itemsLength - currentOffset;
 					}
 					/*now we need to find the item that == the start of the offset
 						find which items contain the data.
@@ -3523,9 +3563,9 @@ void info_callback(const char *msg, void *a) {
                         NSRange range = NSMakeRange(i * frameLength, frameLength);
                         
                         void *ptr = malloc( range.length);
-                        if( ptr)
+                        if (ptr)
                         {
-                            if( [rawData length] < range.location + range.length)
+                            if ([rawData length] < range.location + range.length)
                                 free( ptr);
                             else
                             {
@@ -3554,21 +3594,21 @@ void info_callback(const char *msg, void *a) {
 
 - (NSData *)decodeFrameAtIndex:(int)index
 {
-	[singleThread lock];
+    [singleThread lock];
 	
 	BOOL colorspaceIsConverted = NO;
 	NSMutableData *subData = nil;
 	
 	@try
 	{
-		if( _framesCreated)
+		if (_framesCreated)
 			subData = [_values objectAtIndex:index];
 		else
 			subData = [self createFrameAtIndex:index];
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"exception decodeFrameAtIndex: %@", e);
+		NSLog(@"exception decodeFrameAtIndex: %@", e);
 		[singleThread unlock];
 		
 		return nil;
@@ -3576,30 +3616,30 @@ void info_callback(const char *msg, void *a) {
 	
 	if ([_values count] > 0 && index < _numberOfFrames)
 	{
-		if( _framesDecoded == nil)
+		if (_framesDecoded == nil)
 		{
 			_framesDecoded = [[NSMutableArray array] retain];
-			for( int i = 0; i < _numberOfFrames; i++)
+			for (int i = 0; i < _numberOfFrames; i++)
 				[_framesDecoded addObject: @NO];
 		}
-		else if( [_framesDecoded count] != _numberOfFrames)
+		else if ([_framesDecoded count] != _numberOfFrames)
 		{
 			NSUInteger s = [_framesDecoded count];
-			for( NSUInteger i = s; i <= _numberOfFrames; i++)
+			for ( NSUInteger i = s; i <= _numberOfFrames; i++)
 				[_framesDecoded addObject: @NO];
 		}
 		
 		if (DCMDEBUG)
-			NSLog(@"to decoders:%@", transferSyntax.description );
+			NSLog(@"to decoders:%@", transferSyntax.description);
 		
 		// data to decoders
 		NSData *data = subData;
 		
-		if( transferSyntax.isEncapsulated == YES)
+		if (transferSyntax.isEncapsulated == YES)
 		{
 			short depth = 0;
 			
-//			if( JasperInitialized == NO)
+//			if (JasperInitialized == NO)
 //			{
 //				JasperInitialized = YES;
 //				jas_init();
@@ -3607,12 +3647,12 @@ void info_callback(const char *msg, void *a) {
 			
 			[singleThread unlock];
 			
-			if( [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] == NO &&
+			if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] == NO &&
 				[transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]] == NO &&
 				[transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax RLETransferSyntax]] == NO)
 			{
 				depth = scanJpegDataForBitDepth( (unsigned char *) [subData bytes], [subData length]);
-				if( depth == 0)
+				if (depth == 0)
 					depth = _pixelDepth;
 			}
 			
@@ -3687,9 +3727,9 @@ void info_callback(const char *msg, void *a) {
 		}
 		
 		//non encapsulated
-		if( transferSyntax.isEncapsulated == NO && _bitsAllocated > 8)
+		if (transferSyntax.isEncapsulated == NO && _bitsAllocated > 8)
 		{
-			if( [[_framesDecoded objectAtIndex: index] boolValue] == NO)
+			if ([[_framesDecoded objectAtIndex: index] boolValue] == NO)
 			{
 				if ((NSHostByteOrder() == NS_BigEndian) && ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]]))
 				{
@@ -3705,13 +3745,13 @@ void info_callback(const char *msg, void *a) {
 		}
 //		else if(transferSyntax.isEncapsulated == NO && [self.vr isEqualToString: @"OW"])
 //		{
-//			if( [[_framesDecoded objectAtIndex: index] boolValue] == NO)
+//			if ([[_framesDecoded objectAtIndex: index] boolValue] == NO)
 //			{
-//				if( (NSHostByteOrder() != NS_BigEndian && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]]) ||
+//				if ((NSHostByteOrder() != NS_BigEndian && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]]) ||
 //					(NSHostByteOrder() == NS_BigEndian && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]] == NO))
 //				{
 //					void *ptr = malloc( [subData length]);
-//					if( ptr)
+//					if (ptr)
 //					{
 //						memcpy( ptr, [subData bytes], [subData length]);
 //						
@@ -3797,7 +3837,7 @@ void info_callback(const char *msg, void *a) {
 //	else 
 //		rescaleSlope = 1.0;
 //		
-//	if( rescaleSlope == 0)
+//	if (rescaleSlope == 0)
 //		rescaleSlope = 1.0;
 //	
 //		// color 

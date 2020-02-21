@@ -22,13 +22,16 @@
 #import "mgl.h" // include first
 
 #import "GLRenderer.h"
+#import "GLProgramImage.h"
+#import "GLProgramOverlay.h"
+#import "GLProgramOverlayLine.h"
+#import "GLProgramLoupe.h"
+#import "GLProgramText.h"
+#import "GLScene.h"
 
-#ifdef WITH_GLM
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-//#define APPLY_TRANS_ROT_SCALE  // TODO: comment it in
-#endif
 
 #import <DCM/DCMAbstractSyntaxUID.h>
 #import "DCMView.h"
@@ -85,9 +88,12 @@ const char *stringCRSpaces = "\n                                                
 #define BS 10.
 //#define new_loupe
 
+#if defined(WITH_OPENGL_32)
+//#define WITH_SWIZZLE_MASK
+#endif
+
 SynchroType syncro = SYNCHRO_POSITION_ABS;
 
-static double deg2rad = M_PI / 180.0;
 static unsigned char *PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static BOOL NOINTERPOLATION = NO;
 static BOOL SOFTWAREINTERPOLATION = NO;
@@ -133,6 +139,16 @@ dest[2]=v1[0]*v2[1]-v1[1]*v2[0];
 //            2 = the segment lies in the plane
 Intersection3DType intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoint, float* resultPt )
 {
+#if 0 //def WITH_GLM
+    glm::vec3 u(P1[ 0] - P0[ 0],
+                P1[ 1] - P0[ 1],
+                P1[ 2] - P0[ 2]);
+    glm::vec3 w(P0[ 0] - Ppoint[ 0],
+                P0[ 1] - Ppoint[ 1],
+                P0[ 2] - Ppoint[ 2]);
+    float D =  glm::dot(glm::make_vec3(Pnormal), u);
+    float N = -glm::dot(glm::make_vec3(Pnormal), w);
+#else
     float u[ 3];
 	float w[ 3];
 	
@@ -146,7 +162,8 @@ Intersection3DType intersect3D_SegmentPlane( float *P0, float *P1, float *Pnorma
 	
     float D =  DOT(Pnormal, u);
     float N = -DOT(Pnormal, w);
-	
+#endif
+
     if (fabs(D) < SMALL_NUM) {          // segment is parallel to plane
         if (N == 0)                     // segment lies in plane
             return INTERSECT_3D_NONE;
@@ -186,15 +203,15 @@ void Normalise(XYZ *p)
    } 
 }
 
-XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
+// Angle 'theta' is in radians
+XYZ ArbitraryRotate(XYZ p, double theta, XYZ r)
 {
    XYZ q = {0.0, 0.0, 0.0};
-   double costheta, sintheta;
 
    Normalise(&r);
 	
-   costheta = cos(theta);
-   sintheta = sin(theta);
+   double costheta = cos(theta);
+   double sintheta = sin(theta);
 
    q.x += (costheta + (1.0 - costheta) * r.x * r.x) * p.x;
    q.x += ((1.0 - costheta) * r.x * r.y - r.z * sintheta) * p.y;
@@ -208,7 +225,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
    q.z += ((1.0 - costheta) * r.y * r.z + r.x * sintheta) * p.y;
    q.z += (costheta + (1.0 - costheta) * r.z * r.z) * p.z;
 
-   return(q);
+   return q;
 }
 
 short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP)
@@ -220,7 +237,7 @@ short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float
     float az = (u[2] >= 0 ? u[2] : -u[2]);
     
     if ([DCMView angleBetweenVector: Pn1 andVector:Pn2] < [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])
-		return -1;
+		return -1; // error
 	
     // Pn1 and Pn2 intersect in a line
     // first determine max abs coordinate of cross product
@@ -243,9 +260,14 @@ short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float
     // next, to get a point on the intersect line
     // zero the max coord, and solve for the other two
 	
-	// the constants in the 2 plane equations
+    // the constants in the 2 plane equations
+#if 0 //def WITH_GLM
+    float d1 = -glm::dot(glm::make_vec3(Pn1), glm::make_vec3(Pv1));
+    float d2 = -glm::dot(glm::make_vec3(Pn2), glm::make_vec3(Pv2));
+#else
     float d1 = -DOT(Pn1, Pv1); 		// note: could be pre-stored with plane
     float d2 = -DOT(Pn2, Pv2); 		// ditto
+#endif
 	
     switch (maxc)
 	{            // select max coordinate
@@ -301,194 +323,109 @@ static void DrawGLTexelGrid (float _textureWidth, float _textureHeight, float im
 	glEnd(); // end our set of lines
 }*/
 
+// Draw the DICOM image
 static void DrawGLImageTile (unsigned long drawType,
                              float imageWidth,
                              float imageHeight,
                              float zoom,
                              float _textureWidth,
                              float _textureHeight,
-                             float offsetX,
-                             float offsetY,
-                             float endX,
-                             float endY,
+                             float _offsetX,
+                             float _offsetY,
+                             float _endX,
+                             float _endY,
                              Boolean texturesOverlap,
                              Boolean textureRectangle)
 {
+//    NSLog(@"%s %d, img WH:(%.1f,%.1f), tex WH:(%.1f,%.1f), offset:(%.1f,%.1f)", __FUNCTION__, __LINE__,
+//          imageWidth, imageHeight,
+//          _textureWidth, _textureHeight,
+//          _offsetX, _offsetY);
+
     // left edge of poly: offset is in image local coordinates convert to world coordinates
-	float startXDraw = (offsetX - imageWidth * 0.5f) * zoom;
+	float startX = (_offsetX - imageWidth * 0.5f) * zoom;
 
     // right edge of poly: offset is in image local coordinates convert to world coordinates
-    float endXDraw = (endX - imageWidth * 0.5f) * zoom;
+    float endX = (_endX - imageWidth * 0.5f) * zoom;
 
     // top edge of poly: offset is in image local coordinates convert to world coordinates
-    float startYDraw = (offsetY - imageHeight * 0.5f) * zoom;
+    float startY = (_offsetY - imageHeight * 0.5f) * zoom;
 
     // bottom edge of poly: offset is in image local coordinates convert to world coordinates
-    float endYDraw = (endY - imageHeight * 0.5f) * zoom;
+    float endY = (_endY - imageHeight * 0.5f) * zoom;
 
     // size of texture overlap, switch based on whether we are using overlap or not
     float texOverlap = texturesOverlap ? 1.0f : 0.0f;
 
     // texture right edge coordinate (stepped in one pixel for border if required)
-    float startXTexCoord = texOverlap / (_textureWidth + 2.0f * texOverlap);
+    float startU = texOverlap / (_textureWidth + 2.0f * texOverlap);
 
     // texture left edge coordinate (stepped in one pixel for border if required)
-    float endXTexCoord = 1.0f - startXTexCoord;
+    float endU = 1.0f - startU;
 
     // texture top edge coordinate (stepped in one pixel for border if required)
-    float startYTexCoord = texOverlap / (_textureHeight + 2.0f * texOverlap);
+    float startV = texOverlap / (_textureHeight + 2.0f * texOverlap);
 
     // texture bottom edge coordinate (stepped in one pixel for border if required)
-    float endYTexCoord = 1.0f - startYTexCoord;
+    float endV = 1.0f - startV;
 
     if (textureRectangle)
 	{
-		startXTexCoord = texOverlap; // texture right edge coordinate (stepped in one pixel for border if required)
-		endXTexCoord = _textureWidth + texOverlap; // texture left edge coordinate (stepped in one pixel for border if required)
-		startYTexCoord = texOverlap; // texture top edge coordinate (stepped in one pixel for border if required)
-		endYTexCoord = _textureHeight + texOverlap; // texture bottom edge coordinate (stepped in one pixel for border if required)
+		startU = texOverlap; // texture right edge coordinate (stepped in one pixel for border if required)
+		endU = _textureWidth + texOverlap; // texture left edge coordinate (stepped in one pixel for border if required)
+		startV = texOverlap; // texture top edge coordinate (stepped in one pixel for border if required)
+		endV = _textureHeight + texOverlap; // texture bottom edge coordinate (stepped in one pixel for border if required)
 	}
     
     // handle odd image sizes, (+0.5 is to ensure there is no fp resolution problem in comparing two fp numbers)
-	if (endX > (imageWidth + 0.5))
+	if (_endX > (imageWidth + 0.5))
 	{
-		endXDraw = (imageWidth * 0.5f) * zoom; // end should never be past end of image, so set it there
+		endX = (imageWidth * 0.5f) * zoom; // end should never be past end of image, so set it there
 		if (textureRectangle)
-			endXTexCoord -= 1.0f;
+			endU -= 1.0f;
 		else
-			endXTexCoord = 1.0f - 2.0f * startXTexCoord; // for the last texture in odd size images there are two texels of padding so step in 2
+			endU = 1.0f - 2.0f * startU; // for the last texture in odd size images there are two texels of padding so step in 2
 	}
     
     // handle odd image sizes, (+0.5 is to ensure there is no fp resolution problem in comparing two fp numbers)
-	if (endY > (imageHeight + 0.5f))
+	if (_endY > (imageHeight + 0.5f))
 	{
-		endYDraw = (imageHeight * 0.5f) * zoom; // end should never be past end of image, so set it there
+		endY = (imageHeight * 0.5f) * zoom; // end should never be past end of image, so set it there
 		if (textureRectangle)
-			endYTexCoord -= 1.0f;
+			endV -= 1.0f;
 		else
-			endYTexCoord = 1.0f - 2.0f * startYTexCoord; // for the last texture in odd size images there are two texels of padding so step in 2
+			endV = 1.0f - 2.0f * startV; // for the last texture in odd size images there are two texels of padding so step in 2
 	}
 	
-#ifndef WITH_OPENGL_32
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if (cgl_ctx == nil)
-        return;
-#endif
+//#ifndef WITH_OPENGL_32
+//	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+//    if (cgl_ctx == nil)
+//        return;
+//#endif
     
-#ifdef WITH_OPENGL_32
-    // Draw the triangles
-    const GLfloat vertex_buffer_data[] = {
-#if 1
-        -1, 1, 0,
-         1, 1, 0,
-        -1,-1, 0,
-         1,-1, 0,
-#else
-        startXDraw, startYDraw, 0.0f,
-        endXDraw, startYDraw, 0.0f,
-        startXDraw, endYDraw, 0.0f,
-        endXDraw, endYDraw, 0.0f
-#endif
-    };
-    GLsizei n = (sizeof(vertex_buffer_data) / sizeof(vertex_buffer_data[0])) / 3;
-    const GLfloat uv_buffer_data[] = {
-        startXTexCoord, startYTexCoord,
-        endXTexCoord, startYTexCoord,
-        startXTexCoord, endYTexCoord,
-        endXTexCoord, endYTexCoord
-    };
+    const int nPoints = 4;
+    Point_xyz_uv pt[nPoints];
+    pt[0].p = glm::vec3(startX, startY, 0);    pt[0].t = glm::vec2(startU, startV);
+    pt[1].p = glm::vec3(endX,   startY, 0);    pt[1].t = glm::vec2(endU,   startV);
+    pt[2].p = glm::vec3(startX, endY, 0);      pt[2].t = glm::vec2(startU, endV);
+    pt[3].p = glm::vec3(endX,   endY, 0);      pt[3].t = glm::vec2(endU,   endV);
 
-    GLuint vao = 0;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    NSLog(@"DCMView.mm:%d DrawGLImageTile() [4] GL_APPLE_vertex_array_object:%d vao:%u", __LINE__,
-          checkExtension("GL_APPLE_vertex_array_object"), vao);
-#if 0 //ndef NDEBUG
-    NSLog(@"Line:%d vertex_buffer_data", __LINE__);
-    for (int i=0; i<n*3; i++) {
-        if (!(i%3)) printf("%s", stringCRSpaces);
-        printf("[%2d]:%7.2f, ", i, vertex_buffer_data[i]);
-    }
-    printf("\n");
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (int i = 0; i < nPoints; i++)
+        [pArray addObject: [NSValue valueWithBytes:&pt[i] objCType:@encode(Point_xyz_uv)]];
 
-    NSLog(@"Line:%d uv_buffer_data", __LINE__);
-    GLsizei m = (sizeof(uv_buffer_data) / sizeof(uv_buffer_data[0])) / 2;
-    for (int i=0; i<m*2; i++) {
-        if (!(i%2)) printf("%s", stringCRSpaces);
-        printf("[%d]:%.2f, ", i, uv_buffer_data[i]);
-    }
-    printf("\n");
-#endif
-    checkOpenGLErrors(__LINE__);
-    
-    GLuint vbo[2];
-    glGenBuffers(2, vbo);
-    
-    // glEnableVertexAttribArray and glVertexAttribPointer are "modern" replacement for glEnableClientState/glVertexPointer.
-    glEnableVertexAttribArray(0);           checkOpenGLErrors(__LINE__);
-    glEnableVertexAttribArray(1);           checkOpenGLErrors(__LINE__);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(vertex_buffer_data),
-                 vertex_buffer_data,
-                 GL_STATIC_DRAW);           checkOpenGLErrors(__LINE__);
-    glVertexAttribPointer(0,
-                          3,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          0,
-                          (GLvoid*) 0);     checkOpenGLErrors(__LINE__);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);  checkOpenGLErrors(__LINE__);
-    glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(uv_buffer_data),
-                 uv_buffer_data,
-                 GL_STATIC_DRAW);           checkOpenGLErrors(__LINE__);
-    glVertexAttribPointer(1,
-                          2,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          0,
-                          (GLvoid*) 0);     checkOpenGLErrors(__LINE__);
-    
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, n);  checkOpenGLErrors(__LINE__);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, 0); checkOpenGLErrors(__LINE__); // unbind
-    glDeleteBuffers(2, vbo);
-    glDisableVertexAttribArray(0);    checkOpenGLErrors(__LINE__);  // TBC
-    glDisableVertexAttribArray(1);    checkOpenGLErrors(__LINE__);
-    glBindVertexArray(0);
-    glDeleteVertexArrays(1, &vao);    checkOpenGLErrors(__LINE__);
-#else  // WITH_OPENGL_32
-    // draw either tri strips of line strips (so this will draw either 2 tris or 3 lines)
-	glBegin (drawType);
-    {
-		glTexCoord2f (startXTexCoord, startYTexCoord); // draw upper left in world coordinates
-		glVertex3d (startXDraw, startYDraw, 0.0);
-
-		glTexCoord2f (endXTexCoord, startYTexCoord); // draw upper right in world coordinates
-		glVertex3d (endXDraw, startYDraw, 0.0);
-
-		glTexCoord2f (startXTexCoord, endYTexCoord); // draw lower left in world coordinates
-		glVertex3d (startXDraw, endYDraw, 0.0);
-
-		glTexCoord2f (endXTexCoord, endYTexCoord); // draw lower right in world coordinates
-		glVertex3d (endXDraw, endYDraw, 0.0);
-    }
-	glEnd();
-#endif // WITH_OPENGL_32
+    renderer_drawTriangleStrip_xyz_uv([pArray copy]);
 	
 	// finish strips
 /*	if (drawType == GL_LINE_STRIP) // draw top and bottom lines which were not draw with above
 	{
 		glBegin (GL_LINES);
         {
-			glVertex3d(startXDraw, endYDraw, 0.0); // top edge
-			glVertex3d(startXDraw, startYDraw, 0.0);
+			glVertex3d(startX, endY, 0.0); // top edge
+			glVertex3d(startX, startY, 0.0);
 	
-			glVertex3d(endXDraw, startYDraw, 0.0); // bottom edge
-			glVertex3d(endXDraw, endYDraw, 0.0);
+			glVertex3d(endX, startY, 0.0); // bottom edge
+			glVertex3d(endX, endY, 0.0);
         }
 		glEnd();
 	}*/
@@ -498,13 +435,16 @@ static long GetNextTextureSize (long textureDimension,
                                 long maxTextureSize,
                                 Boolean textureRectangle)
 {
+#ifdef WITH_OPENGL_32
+    textureRectangle = true;  // workaround for issue #i21
+#endif
 	long targetTextureSize = maxTextureSize; // start at max texture size
 	if (textureRectangle)
 	{
 		if (textureDimension >= targetTextureSize) // the texture dimension is greater than the target texture size (i.e., it fits)
 			return targetTextureSize; // return corresponding texture size
-		else
-			return textureDimension; // jusr return the dimension
+
+        return textureDimension; // just return the dimension
 	}
 	else
 	{
@@ -524,26 +464,33 @@ static long GetTextureNumFromTextureDim(long textureDimension,
                                         Boolean texturesOverlap,
                                         Boolean textureRectangle)
 {
+//    NSLog(@"%s %d, textureDimension:%li, maxTextureSize:%li, %i %i)", __FUNCTION__, __LINE__,
+//          textureDimension, maxTextureSize, texturesOverlap, textureRectangle);
+
+#ifdef WITH_OPENGL_32
+    textureRectangle = true;
+#endif
 	// start at max texture size 
 	// loop through each texture size, removing textures in turn which are less than the remaining texture dimension
 	// each texture has 2 pixels of overlap (one on each side) thus effective texture removed is 2 less than texture size
 	
     //NSLog(@"GetTextureNumFromTextureDim(dim:%li,max:%li,overlap:%d,rect:%d)\n", textureDimension, maxTextureSize, texturesOverlap, textureRectangle);
     
-	long i = 0; // initially no textures
+	long textureCount = 0; // initially no textures
 	long bitValue = maxTextureSize; // start at max texture size
 	long texOverlapx2 = texturesOverlap ? 2 : 0;
 	textureDimension -= texOverlapx2; // ignore texture border since we are using effective texure size (by subtracting 2 from the initial size)
+    
 	if (textureRectangle)
 	{
 		// count number of full textures
 		while (textureDimension > (bitValue - texOverlapx2)) // while our texture dimension is greater than effective texture size (i.e., minus the border)
 		{
-			i++; // count a texture
+			textureCount++; // count a texture
 			textureDimension -= bitValue - texOverlapx2; // remove effective texture size
 		}
 		// add one partial texture
-		i++; 
+		textureCount++;
 	}
 	else
 	{
@@ -551,7 +498,7 @@ static long GetTextureNumFromTextureDim(long textureDimension,
 		{
 			while (textureDimension >= (bitValue - texOverlapx2)) // while our texture dimension is greater than effective texture size (i.e., minus the border)
 			{
-				i++; // count a texture
+				textureCount++; // count a texture
 				textureDimension -= bitValue - texOverlapx2; // remove effective texture size
 			}
 		}
@@ -561,7 +508,7 @@ static long GetTextureNumFromTextureDim(long textureDimension,
             NSLog(@"GetTextureNumFromTextureDim error: Texture to small to draw, should not ever get here, texture size remaining");
 	}
     
-	return i; // return textures counted
+	return textureCount; // return textures counted
 }
 
 float min(float a, float b)
@@ -644,43 +591,62 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 @interface DCMView ()
 {
-    BOOL f_ext_texture_rectangle;
-    
-    // GL_ARB_texture_rectangle provides support for non-power of-two textures
-    BOOL f_arb_texture_rectangle;
+#ifdef WITH_OPENGL_32
+    bool needToUpdateProjections;
+    GLScene *scene;
+    GLuint VAO;
+    NSMutableArray *_m_buffers; // VBOs
+    int seqId;  // TODO: remove
+#endif
 
-    // GL_APPLE_client_storage allows you to prevent OpenGL from copying your texture data into the client.
-    // Instead, OpenGL keeps the memory pointer you provided when creating the texture.
-    // Your application must keep the texture data at that location until the referencing OpenGL texture is deleted.
-    BOOL f_ext_client_storage;
+    struct oglExtensionFlags {
+        BOOL EXT_texture_rectangle;
+        
+        // GL_ARB_texture_rectangle provides support for non-power of-two textures
+        BOOL ARB_texture_rectangle;
 
-    BOOL f_ext_packed_pixel;
+        // GL_APPLE_client_storage allows you to prevent OpenGL from copying your texture data into the client.
+        // Instead, OpenGL keeps the memory pointer you provided when creating the texture.
+        // Your application must keep the texture data at that location until the referencing OpenGL texture is deleted.
+        BOOL APPLE_client_storage;
 
-    BOOL f_sgis_texture_edge_clamp;
-    BOOL f_gl_texture_edge_clamp;
-    
+        BOOL APPLE_packed_pixel;
+
+        BOOL SGIS_texture_edge_clamp;
+        BOOL EXT_texture_edge_clamp __deprecated;  // OpenGL 1.2 stuff ?
+    } ef;
+        
     long _minMaxTextureSize; // the minimum max texture size across all GPUs
     long _minMaxNOPTDTextureSize; // the minimum max texture size across all GPUs that support non-power of two texture dimensions
     GLenum _textRectMode;
 }
 
+#ifdef WITH_OPENGL_32
+- (void)addVBO: (int) dim
+              : (NSData *) data;
+#endif
+
 - (void) drawClutBar;
 - (void) drawRuler;
 - (void) drawKeyViewBox;
+- (void) drawKeyViewBox2;
+- (void) drawKeyViewBox3: (NSRect) rr;
 @end
 
 #pragma mark -
 
 @implementation DCMView
 
-@synthesize showDescriptionInLarge, curRoiList, cleanedOutDcmPixArray, mousePosUSRegion;
+@synthesize showDescriptionInLarge;
+@synthesize curRoiList, cleanedOutDcmPixArray, mousePosUSRegion;
 @synthesize drawingFrameRect;
 @synthesize rectArray, studyColorR, studyColorG, studyColorB, studyDateIndex;
 @synthesize timeIntervalForDrag;
 @synthesize dcmPixList, dcmFilesList, dcmRoiList;
 //@synthesize syncSeriesIndex;
 @synthesize syncRelativeDiff;
-@synthesize blendingMode, blendingView, blendingFactor;
+@synthesize blendingMode;
+@synthesize blendingView, blendingFactor;
 @synthesize xFlipped, yFlipped;
 @synthesize stringID;
 @synthesize currentTool, currentToolRight;
@@ -689,22 +655,25 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 @synthesize suppressLabels = suppress_labels;
 
 @synthesize scaleValue;
-@synthesize rotation;
 @synthesize origin;
 
 @synthesize curDCM;
 @synthesize dcmExportPlugin;
 @synthesize mouseXPos, mouseYPos;
 @synthesize contextualMenuInWindowPosX, contextualMenuInWindowPosY;
-@synthesize fontListGL, fontGL;
+@synthesize fontListGL;
+@synthesize fontGL;
 @synthesize tag = _tag;
 @synthesize curWW, curWL;
 @synthesize rows = _imageRows, columns = _imageColumns;
 @synthesize cursor;
 @synthesize eraserFlag;
 @synthesize drawing;
-@synthesize isKeyView, mouseDragging;
+@synthesize isKeyView;
+@synthesize mouseDragging;
 @synthesize annotationType;
+
+#pragma mark -
 
 - (BOOL) eventToPlugins: (NSEvent*) event
 {
@@ -969,7 +938,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 //	}
 //}
 
-- (void) computeColor
+- (void) computeStudyColor
 {
 	if ([self is2DViewer] == NO)
 		return;
@@ -1032,15 +1001,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                 
                 if ([colorsStudy objectForKey: studyUID] == nil)
                 {
-                    NSUInteger color = [allStudiesArray indexOfObject: studyUID];
-                    
-                    if (color != NSNotFound)
+                    NSUInteger colorIndex = [allStudiesArray indexOfObject: studyUID];
+                    if (colorIndex != NSNotFound)
                     {
-                        if (color >= colors.count) color = colors.count-1;
-                        [colorsStudy setObject: [colors objectAtIndex: color] forKey: studyUID];
+                        if (colorIndex >= colors.count)
+                            colorIndex = colors.count-1;
+
+                        [colorsStudy setObject: [colors objectAtIndex: colorIndex] forKey: studyUID];
                     }
-                }	
-                
+                }
             }
             
             if (allStudiesArray.count > 1)
@@ -1064,7 +1033,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	
 	@catch (NSException *e)
 	{
-		NSLog( @"**** computeColor exception: %@", e);
+		NSLog( @"**** %s exception: %@", __FUNCTION__, e);
 	}
 }
 
@@ -1111,7 +1080,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 - (void) updateTilingViews
 {
-	if ([self is2DViewer] && [[self window] isVisible])
+	if ([self is2DViewer] &&
+        [[self window] isVisible])
 	{
 		if ([[self windowController] updateTilingViewsValue] == NO)
 		{
@@ -1152,7 +1122,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
     oo = [DCMPix rotatePoint: oo
                  aroundPoint: NSZeroPoint
-                       angle: -[blendingView rotation]*deg2rad];
+                       angle: glm::radians(-[blendingView rotation])];
 
 	NSPoint cc = [self origin];
 	cc.x *= scaleRatio;
@@ -1163,7 +1133,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
     cc = [DCMPix rotatePoint: cc
                  aroundPoint: NSZeroPoint
-                       angle: -[self rotation]*deg2rad];
+                       angle: glm::radians(-[self rotation])];
 
 	oo.x -= cc.x;
 	oo.y -= cc.y;
@@ -1262,7 +1232,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		
 	//	r = NSMakeRect( 0, 0, [im size].width, [im size].height);
 		
-	//	NSWindow	*pwindow = [[NSWindow alloc]  initWithContentRect: r styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreNonretained defer: NO];
+	//	NSWindow *pwindow = [[NSWindow alloc]  initWithContentRect: r styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreNonretained defer: NO];
 		
 	//	[pwindow setContentView: imageView];
 		
@@ -1279,7 +1249,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	//	[printInfo setBottomMargin: 0.0f];
 	//	[printInfo setRightMargin: 0.0f];
 	//	[printInfo setLeftMargin: 0.0f];
-
 
 		// print imageView
 		
@@ -1302,86 +1271,90 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 - (void) draw2DPointMarker
 {
-	if (display2DPoint.x != 0 || display2DPoint.y != 0)
-	{
-        if (display2DPointIndex == curImage)
-        {
-			float crossx = display2DPoint.x - curDCM.pwidth/2.;
-            float crossy = display2DPoint.y - curDCM.pheight/2.;
+	if (display2DPoint.x == 0 &&
+        display2DPoint.y == 0)
+    {
+        return;
+    }
+
+    if (display2DPointIndex != curImage)
+    {
+        display2DPoint.x = 0;
+        display2DPoint.y = 0;
+        return;
+    }
+
+    float crossx = display2DPoint.x - curDCM.pwidth/2.;
+    float crossy = display2DPoint.y - curDCM.pheight/2.;
+
+    const int nPoints = 8;
+    NSPoint pMarker[nPoints];
+
+    pMarker[0] = NSMakePoint( scaleValue * (crossx - 40), scaleValue*(crossy));
+    pMarker[1] = NSMakePoint( scaleValue * (crossx -  5), scaleValue*(crossy));
+    pMarker[2] = NSMakePoint( scaleValue * (crossx + 40), scaleValue*(crossy));
+    pMarker[3] = NSMakePoint( scaleValue * (crossx +  5), scaleValue*(crossy));
+    
+    pMarker[4] = NSMakePoint( scaleValue * (crossx), scaleValue*(crossy-40));
+    pMarker[5] = NSMakePoint( scaleValue * (crossx), scaleValue*(crossy-5));
+    pMarker[6] = NSMakePoint( scaleValue * (crossx), scaleValue*(crossy+5));
+    pMarker[7] = NSMakePoint( scaleValue * (crossx), scaleValue*(crossy+40));
+    
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (int i=0; i<nPoints; i++) {
+        glm::vec2 a(pMarker[i].x, pMarker[i].y);
+        [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+    }
 
 #ifdef WITH_OPENGL_32
-#else
-            CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-            if (cgl_ctx == nil)
-                return;
-
-            glColor3f (0.0f, 0.5f, 1.0f);
-            glLineWidth(2.0 * self.window.backingScaleFactor);
-            glBegin(GL_LINES);
-            {
-                glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
-                glVertex2f( scaleValue * (crossx -  5), scaleValue*(crossy));
-                glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
-                glVertex2f( scaleValue * (crossx +  5), scaleValue*(crossy));
-                
-                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
-                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
-                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
-                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
-            }
-            glEnd();
+    [self setShaderProgramOverlay_withMode_Normal]; // Added 20200130
 #endif
-        }
-        else
-        {
-            display2DPoint.x = 0;
-            display2DPoint.y = 0;
-        }
-	}
+    renderer_set_rgb(0.0f, 0.5f, 1.0f); // blue-cyan
+    renderer_drawLine_xy([pArray copy], GL_LINES);
 }
 
 // Draw a yellow filled circle with opacity varying over time
+// The circle radius depends on how close we clicked to the ROI
 - (void)drawRepulsorToolArea;
 {
-#ifdef WITH_OPENGL_32
-#else // WITH_OPENGL_32
-CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	if (cgl_ctx == nil)
-        return;
+    int circleRes = 20;
+    circleRes = (repulsorRadius> 5) ? 30 : circleRes;
+    circleRes = (repulsorRadius>10) ? 40 : circleRes;
+    circleRes = (repulsorRadius>50) ? 60 : circleRes;
+    circleRes = (repulsorRadius>70) ? 80 : circleRes;
     
-	glEnable(GL_BLEND);
-	glDisable(GL_POLYGON_SMOOTH);
-#ifndef WITH_OPENGL_32
-    glDisable(GL_POINT_SMOOTH);
-#endif
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	int circleRes = 20;
-	circleRes = (repulsorRadius>5) ? 30 : circleRes;
-	circleRes = (repulsorRadius>10) ? 40 : circleRes;
-	circleRes = (repulsorRadius>50) ? 60 : circleRes;
-	circleRes = (repulsorRadius>70) ? 80 : circleRes;
-	
-	glColor4f(1.0, 1.0, 0.0, repulsorAlpha);  // yellow
-	
     NSPoint pt = repulsorPosition;
     pt = [self convertPointToBacking: pt];
-    
-    pt.y = [self drawingFrameRect].size.height - pt.y;		// inverse Y scaling system
-    
-	glBegin(GL_POLYGON);
-    {
-        for (long i = 0; i < circleRes ; i++)
-        {
-            // M_PI defined in cmath.h
-            float alpha = i * 2 * M_PI /circleRes;
-            glVertex2f(pt.x + repulsorRadius*cos(alpha)*scaleValue,
-                       pt.y + repulsorRadius*sin(alpha)*scaleValue);//*curDCM.pixelSpacingY/curDCM.pixelSpacingX
-        }
+    pt.y = [self drawingFrameRect].size.height - pt.y;  // inverse Y scaling system
+
+    glm::vec2 pCircle[circleRes];
+    for (long i = 0; i < circleRes ; i++) {
+        float alpha = i * 2 * M_PI / circleRes;
+        pCircle[i] = glm::vec2(pt.x + repulsorRadius * cos(alpha) * scaleValue,
+                               pt.y + repulsorRadius * sin(alpha) * scaleValue); //*curDCM.pixelSpacingY/curDCM.pixelSpacingX
     }
-	glEnd();
-	glDisable(GL_BLEND);
-#endif // WITH_OPENGL_32
+
+#ifndef WITH_OPENGL_32
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (cgl_ctx == nil)
+        return;
+    
+    glDisable(GL_POINT_SMOOTH);
+#endif
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_POLYGON_SMOOTH);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // default ?
+    
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (int i=0; i<circleRes; i++)
+        [pArray addObject: [NSValue valueWithBytes:&pCircle[i] objCType:@encode(glm::vec2)]];
+
+    renderer_set_rgba(1.0, 1.0, 0.0, repulsorAlpha); // yellow, pulsating alpha
+    renderer_drawPolygon([pArray copy]);
+
+    glDisable(GL_BLEND);
 }
 
 - (void)setAlphaRepulsor:(NSTimer*)theTimer
@@ -1411,7 +1384,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 #endif
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	glLineWidth( 1 * self.window.backingScaleFactor);
+#ifndef WITH_OPENGL_32
+	glLineWidth(self.window.backingScaleFactor);
+#endif
 	
 #define ROISELECTORREGION_R 0.8
 #define ROISELECTORREGION_G 0.8
@@ -1423,28 +1398,25 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     startPt = [self convertPointToBacking: startPt];
     endPt = [self convertPointToBacking: endPt];
     
-	// inside: fill
-	glColor4f(ROISELECTORREGION_R, ROISELECTORREGION_G, ROISELECTORREGION_B, 0.3);
-	glBegin(GL_POLYGON);
-    {
-        glVertex2f(startPt.x, startPt.y);
-        glVertex2f(startPt.x, endPt.y);
-        glVertex2f(endPt.x, endPt.y);
-        glVertex2f(endPt.x, startPt.y);
-    }
-	glEnd();
+    const int nPoints = 4;
+    glm::vec2 pSelector[nPoints];
+    pSelector[0] = glm::vec2(startPt.x, startPt.y);
+    pSelector[1] = glm::vec2(startPt.x, endPt.y);
+    pSelector[2] = glm::vec2(endPt.x, endPt.y);
+    pSelector[3] = glm::vec2(endPt.x, startPt.y);
+    
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (int i=0; i<nPoints; i++)
+        [pArray addObject: [NSValue valueWithBytes:&pSelector[i] objCType:@encode(glm::vec2)]];
 
-	// border
-	glColor4f(ROISELECTORREGION_R, ROISELECTORREGION_G, ROISELECTORREGION_B, 0.75);
-	glBegin(GL_LINE_LOOP);
-    {
-        glVertex2f(startPt.x, startPt.y);
-        glVertex2f(startPt.x, endPt.y);
-        glVertex2f(endPt.x, endPt.y);
-        glVertex2f(endPt.x, startPt.y);
-    }
-	glEnd();
-	
+    // Inside: fill
+    renderer_set_rgba(ROISELECTORREGION_R, ROISELECTORREGION_G, ROISELECTORREGION_B, 0.3);
+    renderer_drawPolygon([pArray copy]);
+
+    // Border
+    renderer_set_rgba(ROISELECTORREGION_R, ROISELECTORREGION_G, ROISELECTORREGION_B, 0.75);
+    renderer_drawLine_xy([pArray copy], GL_LINE_LOOP);
+
 	glDisable(GL_BLEND);
 }
 
@@ -1452,7 +1424,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 {
 	if (stringID == nil)
 	{
-		NSMutableArray	*v = [note object];
+		NSMutableArray *v = [note object];
 		
 		if (v == dcmPixList)
 		{
@@ -1470,7 +1442,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 -(OrthogonalMPRController*) controller
 {
-	return nil;	// Only defined in herited classes
+	return nil;	// Only defined in inherited classes
 }
 
 - (void) stopROIEditingForce:(BOOL) force
@@ -1480,23 +1452,28 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	drawingROI = NO;
 	for (ROI *r in curRoiList)
 	{
-		if (curROI != r )
-		{
-			if ([r ROImode] == ROI_selectedModify || [r ROImode] == ROI_drawing)
-				[r setROIMode: ROI_selected];
-		}
+		if (curROI == r)
+            continue;
+
+        if ([r ROImode] == ROI_selectedModify ||
+            [r ROImode] == ROI_drawing)
+        {
+            [r setROIMode: ROI_selected];
+        }
 	}
 	
-	if (curROI )
+	if (curROI)
 	{
-		if ([curROI ROImode] == ROI_selectedModify || [curROI ROImode] == ROI_drawing)
+		if ([curROI ROImode] == ROI_selectedModify ||
+            [curROI ROImode] == ROI_drawing)
 		{
 			no = 0;
 			
 			// Does this ROI have alias in other views?
 			for (NSArray *r in dcmRoiList)
 			{
-				if ([r containsObject: curROI]) no++;
+				if ([r containsObject: curROI])
+                    no++;
 			}
 			
 			if (no <= 1 || force == YES)
@@ -1535,8 +1512,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if (blendingView)
 	{
 		blendingView.scaleValue = scaleValue;
-		
-		blendingView.rotation = rotation;
+		[blendingView setRotation: self.rotation];
 		[blendingView setOrigin: origin];
 	}
 }
@@ -1588,7 +1564,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 {
 	BOOL valid = NO;
 	
-    if ([item action] == @selector(roiSaveSelected:) || [item action] == @selector(increaseThickness:) || [item action] == @selector(decreaseThickness:))
+    if ([item action] == @selector(roiSaveSelected:) ||
+        [item action] == @selector(increaseThickness:) ||
+        [item action] == @selector(decreaseThickness:))
 	{
 		for (ROI *r in curRoiList)
 		{
@@ -1706,7 +1684,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
     NSArray *pointsStringArray = [xml objectForKey: @"ROIPoints"];
     
-    int type = tCPolygon;
+    int type = tClosedPolygon;
     if ([pointsStringArray count] == 2) type = tMeasure;
     if ([pointsStringArray count] == 1) type = t2DPoint;
     
@@ -2008,10 +1986,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
          rightAlignment:(BOOL)right
        useStringTexture:(BOOL)stringTex
 {
-	if (right)
-		[self DrawNSStringGL:str :fontL :x :y align:DCMVVIEW_TEXT_ALIGN_RIGHT useStringTexture:stringTex];
-	else
-		[self DrawNSStringGL:str :fontL :x :y align:DCMVVIEW_TEXT_ALIGN_LEFT useStringTexture:stringTex];
+    //NSLog(@"DrawNSStringGL %d, <%@> at XY: %ld %ld", __LINE__, str, x, y);
+    [self DrawNSStringGL: str
+                        : fontL
+                        : x
+                        : y
+                   align: right ? DCMVVIEW_TEXT_ALIGN_RIGHT : DCMVVIEW_TEXT_ALIGN_LEFT
+        useStringTexture: stringTex];
 }
 
 + (void) purgeStringTextureCache
@@ -2023,6 +2004,16 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	}
 }
 
+/* Meaning of 'useStringTexture':
+ * Some of the image text annotations
+ * (e.g., mouse position (px and mm), zoom, image position, WLWW)
+ * are displayed only when the mouse
+ * is over the image and the change with each mouse movement. This is
+ * a lot of processing and updating, not suitable for "cached textures",
+ * therefore in OpenGL 2.1 they are displayed with
+ * "raster operations".
+ * For the time being force them to be used as cached textures
+ */
 - (void)DrawNSStringGL:(NSString*)str
                       :(GLuint)fontL
                       :(long)x
@@ -2030,31 +2021,37 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                  align:(DCMViewTextAlign)align
       useStringTexture:(BOOL)stringTex;
 {
-//    stringTex = YES;
-    
-	if (stringTex)
+    //NSLog(@"DCMView.mm %d DrawNSStringGL, <%@> at XY: %ld %ld", __LINE__, str, x, y);
+
+#ifdef WITH_OPENGL_32
+    if (!stringTex) {
+        // TODO: raster operation
+        stringTex = YES; // workaround
+    }
+#endif
+
+    if (stringTex)
 	{
-#define STRCAPACITY 800
-	
-		if (stringTextureCache == nil)
+		if (stringTextureDic == nil)
 		{
-			stringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
+			stringTextureDic = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
 			
 			if (globalStringTextureCache == nil)
                 globalStringTextureCache = [[NSMutableArray alloc] init];
 			
 			@synchronized( globalStringTextureCache)
 			{
-				[globalStringTextureCache addObject: stringTextureCache];
+				[globalStringTextureCache addObject: stringTextureDic];
 			}
 		}
 		
-		StringTexture *stringTex = [stringTextureCache objectForKey: str];
-		if (stringTex == nil)
+		StringTexture *stringTex = [stringTextureDic objectForKey: str];
+
+		if (stringTex == nil) // Not yet in the dictionary. Need to create it
 		{
-			if ([stringTextureCache count] > STRCAPACITY)
+			if ([stringTextureDic count] > STRCAPACITY)
 			{
-				[stringTextureCache removeAllObjects];
+				[stringTextureDic removeAllObjects];
 				NSLog(@"String texture cache purged.");
 			}
             
@@ -2062,8 +2059,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			
 			if (fontL == labelFontListGL)
                 [stanStringAttrib setObject:labelFont forKey:NSFontAttributeName];
+#ifdef WITH_ICHAT
 //			else if (fontL == iChatFontListGL)
 //                [stanStringAttrib setObject:iChatFontGL forKey:NSFontAttributeName];
+#endif
 			else
                 [stanStringAttrib setObject:fontGL forKey:NSFontAttributeName];
             
@@ -2071,8 +2070,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             
 			stringTex = [[StringTexture alloc] initWithString:str withAttributes:stanStringAttrib];
 			[stringTex genTextureWithBackingScaleFactor:self.window.backingScaleFactor];
-			[stringTextureCache setObject:stringTex forKey:str];
+			[stringTextureDic setObject:stringTex forKey:str];
 			[stringTex release];
+//            NSLog(@"%s %d, stringTextureDic count:%lu\n%@", __FUNCTION__, __LINE__, (unsigned long)[stringTextureDic count], stringTextureDic);
 		}
 		
 		if (align==DCMVVIEW_TEXT_ALIGN_RIGHT)
@@ -2083,7 +2083,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             x -= 5 * self.window.backingScaleFactor;
 		
 #ifdef WITH_OPENGL_32
-        checkOpenGLErrors(__LINE__);
+        // This would break the CLUT legend which is drawn here but it assumes the fone program
+        //[self setShaderProgramOverlay_withMode_TextureRgba];
 #else
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		if (cgl_ctx)
@@ -2094,35 +2095,55 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
             glEnable(GL_BLEND);
             glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-            glEnable(GL_TEXTURE_RECTANGLE_EXT);  // TODO: GLEW_EXT_texture_rectangle
+#ifdef WITH_OPENGL_32
+            //GLenum target = GL_TEXTURE_2D;
+#else
+            GLenum target = GL_TEXTURE_RECTANGLE_EXT;
+#ifndef DEBUG_TEXTURE_WITH_SHADER
+            glEnable(target);
+#endif
+#endif
+            checkOpenGLErrors(__LINE__);
 
             if (self.whiteBackground)
-                glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+                renderer_setTextColor(1.0, 1.0, 1.0, 1.0); // white
             else
-                glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+                renderer_setTextColor(0.0, 0.0, 0.0, 1.0); // black
             
+            //NSLog(@"DrawNSStringGL %d, ========== str:<%@> background", __LINE__, str);
             [stringTex drawWithBounds: NSMakeRect( xc+1, yc+1, [stringTex texSize].width, [stringTex texSize].height)];
-            
+           
+            checkOpenGLErrors(__LINE__);
             if (self.whiteBackground)
-                glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+                renderer_setTextColor(0.0, 0.0, 0.0, 1.0); // black
             else
-                glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+                renderer_setTextColor(1.0, 1.0, 1.0, 1.0); // white
             
+            checkOpenGLErrors(__LINE__);
+            //NSLog(@"DrawNSStringGL %d, ---------- str:<%@> foreground", __LINE__, str);
             [stringTex drawWithBounds: NSMakeRect( xc, yc, [stringTex texSize].width, [stringTex texSize].height)];
             
             glDisable(GL_BLEND);
-            glDisable(GL_TEXTURE_RECTANGLE_EXT);
-        }
+            
+#ifndef WITH_OPENGL_32
+            glDisable(target);
+#endif
+            checkOpenGLErrors(__LINE__);
+        } // if (cgl_ctx)
 	}
-	else
+	else // if (stringTex)
 	{
+        // The string is not displayed with a texture but with a "raster" operation
 		char *cstrOut = (char*) [str UTF8String];
-		if (align==DCMVVIEW_TEXT_ALIGN_RIGHT)
+
+        if (align==DCMVVIEW_TEXT_ALIGN_RIGHT)
 		{
 			if (fontL == labelFontListGL)
                 x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize] + 2*self.window.backingScaleFactor;
+#ifdef WITH_ICHAT
 //			else if (fontL == iChatFontListGL)
 //                x -= [DCMView lengthOfString:cstrOut forFont:iChatFontListGLSize] + 2*self.window.backingScaleFactor;
+#endif
 			else
                 x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize] + 2;
 		}
@@ -2130,58 +2151,86 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		{
 			if (fontL == labelFontListGL)
                 x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize]/2.0 + 2*self.window.backingScaleFactor;
+#ifdef WITH_ICHAT
 //			else if (fontL == iChatFontListGL)
 //                x -= [DCMView lengthOfString:cstrOut forFont:iChatFontListGLSize]/2.0 + 2*self.window.backingScaleFactor;
+#endif
 			else
                 x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize]/2.0 + 2*self.window.backingScaleFactor;
 		}
 		
 		unsigned char *lstr = (unsigned char*) cstrOut;
-		
+	
+#ifndef WITH_OPENGL_32
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		if (cgl_ctx)
+#endif
         {
             if (fontColor)
             {
-                glColor4f([fontColor redComponent],
-                          [fontColor greenComponent],
-                          [fontColor blueComponent],
-                          [fontColor alphaComponent]);
+                renderer_setTextColor([fontColor redComponent],
+                                      [fontColor greenComponent],
+                                      [fontColor blueComponent],
+                                      [fontColor alphaComponent]);
             }
             else
             {
                 if (self.whiteBackground)
-                    glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+                    renderer_setTextColor(1.0, 1.0, 1.0, 1.0); // white
                 else
-                    glColor4f (0.0, 0.0, 0.0, 1.0);
+                    renderer_setTextColor(0.0, 0.0, 0.0, 1.0); // black
             }
             
-            glRasterPos3d (x+1, y+1, 0);
+#ifdef WITH_OPENGL_32
+            // TODO:
+            NSLog(@"ROI.mm %d, TODO: OpenGL Core, lstr:<%s>", __LINE__, lstr);
+#else // WITH_OPENGL_32
+            glRasterPos3d(x+1, y+1, 0); // specify the raster position for pixel operations
+#endif // WITH_OPENGL_32
             
             GLint i = 0;
             while (lstr [i])
             {
                 long val = lstr[i++] - ' ';
-                if (val < 150 && val >= 0)
-                    glCallList (fontL+val);
+                if (val < NUM_DISPLAY_LISTS && val >= 0)
+                {
+#ifdef WITH_OPENGL_32
+                    // TODO:
+                    //NSLog(@"DrawNSStringGL %d, TODO: OpenGL Core, %d", __LINE__, i);
+#else
+                    glCallList(fontL+val);
+#endif
+                }
             }
             
             if (self.whiteBackground)
-                glColor4f (0.0, 0.0, 0.0, 1.0);
+                renderer_setTextColor(0.0, 0.0, 0.0, 1.0); // black
             else
-                glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+                renderer_setTextColor(1.0, 1.0, 1.0, 1.0); // white
             
-            glRasterPos3d (x, y, 0);
+#ifdef WITH_OPENGL_32
+            // TODO:
+            NSLog(@"DrawNSStringGL %d, TODO: OpenGL Core, <%s>", __LINE__, lstr);
+#else
+            glRasterPos3d(x, y, 0); // specify the raster position for pixel operations
+#endif
             
             i = 0;
-            while (lstr [i])
+            while (lstr[i])
             {
                 long val = lstr[i++] - ' ';
-                if (val < 150 && val >= 0)
+                if (val < NUM_DISPLAY_LISTS && val >= 0)
+                {
+#ifdef WITH_OPENGL_32
+                    // TODO:
+                    //NSLog(@"%s %d, TODO: OpenGL Core, i:%d", __FUNCTION__, __LINE__, i);
+#else
                     glCallList (fontL+val);
+#endif
+                }
             }
-        }
-	}
+        } // if (cgl_ctx)
+	} // else (stringTex)
 }
 
 - (void)DrawCStringGL:(char*)cstrOut
@@ -2319,7 +2368,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			{
 				if (clickCount == 2 &&
                     gClickCountSet == NO &&
-                    isKeyView == YES &&
+                    isKeyView &&
                     [[self window] isKeyWindow] == YES)
 				{
 					gClickCountSet = YES;
@@ -2396,12 +2445,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	self.scaleValue = [self scaleToFitForDCMPix: curDCM];
 	if (curDCM.shutterEnabled)
 	{
-		origin.x = ((curDCM.pwidth * 0.5f ) - ( curDCM.shutterRect.origin.x + ( curDCM.shutterRect.size.width * 0.5f ))) * scaleValue;
-        
-		origin.y = -((curDCM.pheight * 0.5f ) - ( curDCM.shutterRect.origin.y + ( curDCM.shutterRect.size.height * 0.5f ))) * scaleValue;
+		origin.x = (curDCM.pwidth * 0.5f - NSMidX(curDCM.shutterRect)) * scaleValue;
+		origin.y = -(curDCM.pheight * 0.5f - NSMidY(curDCM.shutterRect)) * scaleValue;
 	}
 	else
-		origin.x = origin.y = 0;
+		origin = NSZeroPoint;
 	
 	[self setNeedsDisplay:YES];
 	
@@ -2411,11 +2459,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 - (void) delete3DROIsAliases
 {
     NSMutableArray *aliasesToBeRemoved = [NSMutableArray array];
-    for (int x = 0 ; x < curRoiList.count ; x++)
+    for (int x = 0; x < curRoiList.count; x++)
     {
         ROI *r = [curRoiList objectAtIndex: x];
         
-        if (r.is3DROI && r.pix != self.curDCM && self.curDCM != nil)
+        if (r.is3DROI &&
+            r.pix != self.curDCM &&
+            self.curDCM != nil)
         {
 //            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: r userInfo: nil];
             
@@ -2603,7 +2653,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	[drawLock unlock];
 }
 
-- (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset
+- (void) setDCM:(NSMutableArray*) c
+               :(NSArray*) d
+               :(NSMutableArray*) e
+               :(short) firstImage
+               :(char) type
+               :(BOOL) reset
 {
 	[self setPixels: c files: d rois: e firstImage: firstImage level: type reset: reset];
 }
@@ -2671,24 +2726,29 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         if (cgl_ctx)
         {
             checkOpenGLErrors(__LINE__);
+#ifdef WITH_OPENGL_32
+            //NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+            renderer_setProgram(0, __LINE__);
+#else
             if (fontListGL)
-                glDeleteLists(fontListGL, 150);
+                glDeleteLists(fontListGL, NUM_DISPLAY_LISTS);
             fontListGL = 0;
             
             if (labelFontListGL)
-                glDeleteLists(labelFontListGL, 150);
+                glDeleteLists(labelFontListGL, NUM_DISPLAY_LISTS);
             labelFontListGL = 0;
+#endif
             
-            if (loupeTextureID)
-                glDeleteTextures( 1, &loupeTextureID);
-            
-            loupeTextureID = 0;
-            
-            if (loupeMaskTextureID)
-                glDeleteTextures( 1, &loupeMaskTextureID);
-            
-            loupeMaskTextureID = 0;
-            
+            if (loupeRingTextureID > 0) {
+                glDeleteTextures(1, &loupeRingTextureID);
+                loupeRingTextureID = 0;
+            }
+
+            if (loupeMaskTextureID > 0) {
+                glDeleteTextures(1, &loupeMaskTextureID);
+                loupeMaskTextureID = 0;
+            }
+
             if (pTextureName)
             {
                 glDeleteTextures(textureX * textureY, pTextureName);
@@ -2723,10 +2783,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         
         @synchronized( globalStringTextureCache)
         {
-            [globalStringTextureCache removeObject: stringTextureCache];
+            [globalStringTextureCache removeObject: stringTextureDic];
         }
-        [stringTextureCache autorelease];
-        stringTextureCache = 0L;
+        [stringTextureDic autorelease];
+        stringTextureDic = nil;
         
         [_mouseDownTimer invalidate];
         [_mouseDownTimer autorelease];
@@ -2764,8 +2824,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         
         [self deleteLens];
         
-        [loupeImage autorelease];
-        loupeImage = nil;
+        [loupeRingImage autorelease];
+        loupeRingImage = nil;
         
         [loupeMaskImage autorelease];
         loupeMaskImage = nil;
@@ -2838,9 +2898,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     else
                         [im setValue:nil forKey:@"scale"];
                     
-                    [im setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+                    [im setValue:[NSNumber numberWithFloat:self.rotation] forKey:@"rotationAngle"];
                     [im setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
-                    [im setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
+                    [im setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
                     [im setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
                     [im setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
                 }
@@ -2890,7 +2950,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                 [pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
                             else
                                 [pix.imageObj setValue:nil forKey:@"scale"];
-                            [pix.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+                            [pix.imageObj setValue:[NSNumber numberWithFloat:self.rotation] forKey:@"rotationAngle"];
                             [pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
                             [pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
                             [pix.imageObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
@@ -3088,7 +3148,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 {
     BOOL switchSeries = NO;
     
-    if ([self is2DViewer] && [[NSUserDefaults standardUserDefaults] boolForKey:@"scrollThroughSeries"] && [self containsScrollThroughModality])
+    if ([self is2DViewer] &&
+        [[NSUserDefaults standardUserDefaults] boolForKey:@"scrollThroughSeries"] &&
+        [self containsScrollThroughModality])
     {
         int imIndex = curImage;
         
@@ -3098,11 +3160,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         if (imIndex < 0)
         {
             NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: self.studyObj];
-            NSInteger index = [seriesArray indexOfObject: self.seriesObj];
-            
-            if (index != NSNotFound)
+            NSUInteger seriesIndex = [seriesArray indexOfObject: self.seriesObj];
+            if (seriesIndex != NSNotFound)
             {
-                if (index > 0)
+                //if (index > 0)
                 {
                     [NSObject cancelPreviousPerformRequestsWithTarget: [self windowController] selector: @selector(loadSeriesDown) object: nil];
                     [[self windowController] performSelector: @selector(loadSeriesDown) withObject: nil afterDelay: 0.01];
@@ -3113,11 +3174,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         else if (imIndex >= [dcmPixList count])
         {
             NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: self.studyObj];
-            NSInteger index = [seriesArray indexOfObject: self.seriesObj];
-            
-            if (index != NSNotFound)
+            NSUInteger seriesIndex = [seriesArray indexOfObject: self.seriesObj];
+            if (seriesIndex != NSNotFound)
             {
-                if (index + 1 < [seriesArray count])
+                if (seriesIndex + 1 < [seriesArray count])
                 {
                     [NSObject cancelPreviousPerformRequestsWithTarget: [self windowController] selector: @selector(loadSeriesUp) object: nil];
                     [[self windowController] performSelector: @selector(loadSeriesUp) withObject: nil afterDelay: 0.01];
@@ -3157,7 +3217,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
     if (dcmPixList)
     {
-        short inc, previmage = curImage;
+        short inc;
+        short previmage = curImage;
 		
 		if (self.flippedData)
 		{
@@ -3385,19 +3446,17 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			
 			if (currentTool == tTranslate)
 			{
-				float xmove, ymove, xx, yy;
-			//	GLfloat deg2rad = M_PI/180.0; 
-				
-				xmove = xMove*10;
-				ymove = yMove*10;
+				float xmove = xMove*10;
+				float ymove = yMove*10;
 				
 				if (xFlipped) xmove = -xmove;
 				if (yFlipped) ymove = -ymove;
 				
-				xx = xmove*cos(rotation*deg2rad) + ymove*sin(rotation*deg2rad);
-				yy = xmove*sin(rotation*deg2rad) - ymove*cos(rotation*deg2rad);
+				float xx = xmove*cos(glm::radians(_rotation)) + ymove*sin(glm::radians(_rotation));
+				float yy = xmove*sin(glm::radians(_rotation)) - ymove*cos(glm::radians(_rotation));
 				
-				[self setOriginX: origin.x + xx Y: origin.y + yy];
+				[self setOriginX: origin.x + xx
+                               Y: origin.y + yy];
 			}
 			
 			if (currentTool == tRotate)
@@ -3414,7 +3473,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				if (rot < 0) rot += 360;
 				if (rot > 360) rot -= 360;
 				
-				self.rotation =rot;
+				self.rotation = rot;
 			}
 			
 			if (currentTool == tNext)
@@ -3426,7 +3485,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				else
                     val = xMove/labs(xMove);
 				
-				short previmage = curImage;
+                short previmage = curImage;  //TODO: check if we need a new variable here
 				
 				if (val < 0)
 				{
@@ -3503,6 +3562,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	@try 
 	{
+        NSLog(@"%s %d", __FUNCTION__, __LINE__);
 		DicomSeries *curSeries = self.seriesObj;
 		DicomStudy *curStudy = self.studyObj;
 		
@@ -3526,7 +3586,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		{
 			if ([curStudy valueForKey: @"name"])
 			{
-				if ([description length])
+				if ([description length] > 0)
                     [description appendString:@"\r"];
                 
 				if ([curStudy valueForKey: @"name"])
@@ -3534,7 +3594,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			}
 		}
 		
-		if ([description length])
+		if ([description length] > 0)
             [description appendString:@"\r"];
 		
 		if ([NSUserDefaults formatDateTime: [curSeries valueForKey:@"date"]])
@@ -3544,7 +3604,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		{
 			if ([curStudy valueForKey: @"studyName"])
 			{
-				if ([description length])
+				if ([description length] > 0)
                     [description appendString:@"\r"];
                 
 				if ([curStudy valueForKey: @"studyName"])
@@ -3554,7 +3614,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 		if ([curSeries valueForKey:@"name"])
 		{
-			if ([description length])
+			if ([description length] > 0)
                 [description appendString:@"\r"];
             
 			if ([curSeries valueForKey:@"name"])
@@ -3569,7 +3629,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		
 		NSAttributedString *text = [[[NSAttributedString alloc] initWithString: description attributes: stanStringAttrib] autorelease];
 		
-        [self computeColor];
+        [self computeStudyColor];
         
         NSColor *boxColor = [ViewerController.studyColors objectAtIndex: 0];
         if (studyColorR != 0 || studyColorG != 0 || studyColorB != 0)
@@ -3707,6 +3767,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	[super flagsChanged:event];
 }
+
+#pragma mark - NSResponder mouseUp
 
 - (void)mouseUp:(NSEvent *)event
 {
@@ -3855,6 +3917,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     }
 }
 
+#pragma mark -
+
 -(void) roiSet:(ROI*) aRoi __deprecated
 {
 	aRoi.curView = self;
@@ -3877,8 +3941,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		case tMeasure:
 		case tROI:
 		case tOval:
-		case tOPolygon:
-		case tCPolygon:
+		case tOpenPolygon:
+		case tClosedPolygon:
 		case tDynAngle:
 		case tAxis:
 		case tAngle:
@@ -3926,6 +3990,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	}
 }
 
+// Define buffer 'lensTexture'
 -(void) computeMagnifyLens:(NSPoint) p
 {
 	if (p.x == 0 && p.y == 0)
@@ -3972,18 +4037,24 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		
 		if (lensTexture && src)
 		{
-			NSRect l = NSMakeRect( p.x*LENSRATIO - (LENSSIZE/2), p.y*LENSRATIO - (LENSSIZE/2), LENSSIZE, LENSSIZE);
+			NSRect l = NSMakeRect(p.x*LENSRATIO - (LENSSIZE/2),
+                                  p.y*LENSRATIO - (LENSSIZE/2),
+                                  LENSSIZE,
+                                  LENSSIZE);
 			
-			int sx = l.origin.x, sy = l.origin.y;
-			int ex = l.size.width, ey = l.size.height;
+            int sx = l.origin.x;
+            int sy = l.origin.y;
+            int ex = l.size.width;
+            int ey = l.size.height;
 			
-			if (ex+sx> textureWidth)
+			if (ex+sx > textureWidth)
                 ex = textureWidth-sx;
             
-			if (ey+sy> textureHeight)
+			if (ey+sy > textureHeight)
                 ey = textureHeight-sy;
 			
-			int sxx = 0, syy = 0;
+            int sxx = 0;
+            int syy = 0;
 			
 			if (sx < 0)
 			{
@@ -4001,7 +4072,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			
 			if (curDCM.isRGB || [curDCM thickSlabVRActivated] || curDCM.isLUT12Bit || colorTransfer)
 			{
-				for (int y = sy ; y < sy+ey ; y++)
+				for (int y = sy; y < sy+ey; y++)
 				{
 					char *sr = &src[ (sx * 4) + (y * dcmWidth * 4)];
 					char *dr = &lensTexture[ (sxx * 4) + (y-sy+syy) * LENSSIZE * 4];
@@ -4050,7 +4121,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				dst.width = LENSSIZE;
 				dst.rowBytes = dst.width * 4;
 				dst.data = calloc( dst.height * dst.rowBytes, 1);
-				if (dst.data)
+
+                if (dst.data)
 				{
 					vImageScale_ARGB8888( &src, &dst, nil, kvImageHighQualityResampling);
 					
@@ -4067,15 +4139,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			
 			// Apply the circle
 			{
-				int	x,y;
 //				int	xsqr;
 				int	rad = LENSSIZE/2;
-				
-				x = rad;
+				int x = rad;
 				while (x-- > 0)
 				{
 //					xsqr = x*x;
-					y = rad;
+					int y = rad;
 					while (y-- > 0)
 					{
 //						if ((xsqr + y*y) < radsqr)
@@ -4100,10 +4170,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	[self setNeedsDisplay: YES];
 }
 
-- (void)makeTextureFromImage:(NSImage *)image
-                  forTexture:(GLuint *)texName
-                      buffer:(GLubyte *)buffer
-                 textureUnit:(GLuint)textureUnit;
+- (void)makeTextureObjectFromImage: (NSImage *) image
+                        forTexture: (GLuint *) textureID
+                            buffer: (GLubyte *) buffer;
 {
 	NSSize imageSize = [image size];
 	NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithData:[image TIFFRepresentation]];	
@@ -4115,32 +4184,31 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     }
 
 	memcpy(buffer, [bitmap bitmapData], [bitmap bytesPerRow] * imageSize.height);
+    [bitmap release];
 	
-	CGLContextObj cgl_ctx = [[self openGLContext] CGLContextObj];
-    if (cgl_ctx)
-    {
-        glGenTextures(1, texName);
-        
-        glActiveTexture(textureUnit);
-        glBindTexture(GL_TEXTURE_RECTANGLE_EXT, *texName);
-        glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/[bitmap samplesPerPixel]);
-        glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
+#ifdef WITH_OPENGL_32
+    GLenum target = GL_TEXTURE_RECTANGLE;
+    //GLenum target = GL_TEXTURE_2D;
+#else
+    CGLContextObj cgl_ctx = [[self openGLContext] CGLContextObj];
+    GLenum target = GL_TEXTURE_RECTANGLE_EXT;
+#endif
+    glGenTextures(1, textureID);
+    glBindTexture(target, *textureID);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/[bitmap samplesPerPixel]);
+    glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
+    checkOpenGLErrors(__LINE__);
 
-        // The cached hint specifies to cache texture data in video memory. This hint is recommended when you have textures that you plan to use multiple times or that use linear filtering
-        glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
-        
-        glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0,
-                     ([bitmap samplesPerPixel]==4) ? GL_RGBA : GL_RGB,
-                     imageSize.width, imageSize.height, 0,
-                     ([bitmap samplesPerPixel]==4) ? GL_RGBA : GL_RGB,
-                     GL_UNSIGNED_BYTE,
-                     buffer);
-        // TODO: free(buffer) ?
-	}
-    else
-        free( buffer);
-    
-	[bitmap release];
+    // The cached hint specifies to cache texture data in video memory. This hint is recommended when you have textures that you plan to use multiple times or that use linear filtering
+#ifndef WITH_OPENGL_32
+    glTexParameteri(target, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+#endif
+    glTexImage2D(target, 0,
+                 ([bitmap samplesPerPixel]==4) ? GL_RGBA : GL_RGB,
+                 imageSize.width, imageSize.height, 0,
+                 ([bitmap samplesPerPixel]==4) ? GL_RGBA : GL_RGB,
+                 GL_UNSIGNED_BYTE,
+                 buffer);
 }
 
 -(void) mouseMovedInView: (NSPoint) eventLocationInWindow
@@ -4182,7 +4250,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         
         @try
         {
-#if 1
+#ifndef WITH_OPENGL_32
             [[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
             checkOpenGLErrors(__LINE__);  // error GL_INVALID_OPERATION 0x0502
 #endif
@@ -4194,9 +4262,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             
             mouseOnImage = NO;
             
-            if (imageLocation.x >= 0 && imageLocation.x < curDCM.pwidth)	//&& NSPointInRect( eventLocation, size)) <- this doesn't work in MPR Ortho
+            if (imageLocation.x >= 0 &&
+                imageLocation.x < curDCM.pwidth)	//&& NSPointInRect( eventLocation, size)) <- this doesn't work in MPR Ortho
             {
-                if (imageLocation.y >= 0 && imageLocation.y < curDCM.pheight)
+                if (imageLocation.y >= 0 &&
+                    imageLocation.y < curDCM.pheight)
                 {
                     mouseOnImage = YES;
                     
@@ -4206,7 +4276,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     {
                         [self sync3DPosition];
                     }
-                    else if ((modifierFlags & (NSEventModifierFlagShift|NSEventModifierFlagCommand|NSEventModifierFlagControl|NSEventModifierFlagOption)) == NSEventModifierFlagShift && mouseDragging == NO)
+                    else if ((modifierFlags & (NSEventModifierFlagShift|NSEventModifierFlagCommand|NSEventModifierFlagControl|NSEventModifierFlagOption)) == NSEventModifierFlagShift &&
+                             mouseDragging == NO)
                     {
                         if ([self roiTool: currentTool] == NO)
                         {
@@ -4217,9 +4288,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                         }
                     }
                     
-                    int
-                    xPos = (int)mouseXPos,
-                    yPos = (int)mouseYPos;
+                    int xPos = (int)mouseXPos;
+                    int yPos = (int)mouseYPos;
                     
                     if (curDCM.isRGB )
                     {
@@ -4353,7 +4423,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             }
             
             if ([NSUserDefaults.standardUserDefaults boolForKey:@"ROITextIfMouseIsOver"] &&
-               [NSUserDefaults.standardUserDefaults boolForKey:@"ROITEXTIFSELECTED"])
+                [NSUserDefaults.standardUserDefaults boolForKey:@"ROITEXTIFSELECTED"])
             {
                 if (mouseDragging == NO)
                 {
@@ -4463,12 +4533,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
 	if (![[self window] isVisible])
 	{
-		if ([self is2DViewer] && [[self windowController] FullScreenON])
+		if (![self is2DViewer] ||
+            ![[self windowController] FullScreenON])
 		{
-			
+            return;
 		}
-		else
-			return;
 	}
 	
 	if ([self eventToPlugins:theEvent])
@@ -4549,7 +4618,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             tool = tWL;
 	}
 	
-	if ([self roiTool:currentTool] != YES && currentTool != tROISelector)   // Not a ROI TOOL !
+	if ([self roiTool:currentTool] != YES &&
+        currentTool != tROISelector)   // Not a ROI TOOL !
 	{
 		if (([event modifierFlags] & NSEventModifierFlagCommand) &&
             ([event modifierFlags] & NSEventModifierFlagOption))
@@ -4560,7 +4630,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	}
 	else
 	{
-		if (([event modifierFlags] & NSEventModifierFlagCommand) && ([event modifierFlags] & NSEventModifierFlagOption))  tool = tRotate;
+		if (([event modifierFlags] & NSEventModifierFlagCommand) &&
+            ([event modifierFlags] & NSEventModifierFlagOption))
+        {
+            tool = tRotate;
+        }
+
 // 		if (([event modifierFlags] & NSEventModifierFlagCommand) && ([event modifierFlags] & NSEventModifierFlagOption)) tool = currentTool;
 //		if (([event modifierFlags] & NSEventModifierFlagCommand)) tool = currentTool;
 	}
@@ -4736,7 +4811,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (![self is2DViewer])
         return;
     
-	[self setRotation: rotation - anEvent.rotation * 1.5];	
+	[self setRotation: self.rotation - anEvent.rotation * 1.5];
 	[self setNeedsDisplay:YES];
 }
 
@@ -4799,6 +4874,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     }
 }
 
+#pragma mark - NSResponder mouse
+
 - (void) mouseDown:(NSEvent *)event
 {
     if (CGCursorIsVisible() == NO && lensTexture == nil)
@@ -4827,7 +4904,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             return;
 	}
 	
-	if ([self is2DViewer] == YES && [event type] == NSLeftMouseDown)
+	if ([self is2DViewer] == YES &&
+        [event type] == NSLeftMouseDown)
 	{
 		if (([event modifierFlags] & NSEventModifierFlagShift) == 0 &&
             ([event modifierFlags] & NSEventModifierFlagControl) == 0 &&
@@ -4883,8 +4961,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			{
 				NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 				tempPt = [self ConvertFromNSView2GL:tempPt];
-				if ([self clickInROI: tempPt testTextBox: YES])
+                if ([self clickInROI: tempPt testTextBox: YES]) {
 					roiHit = YES;
+                    NSLog(@"%s %d, roiHit", __FUNCTION__, __LINE__);
+                }
 			}
 			
 			if (roiHit == NO)
@@ -4895,7 +4975,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			startImage = curImage;
 			[self setStartWLWW];
 			startScaleValue = scaleValue;
-			rotationStart = rotation;
+			rotationStart = self.rotation;
 			blendingFactorStart = blendingFactor;
 			scrollMode = MY_SCROLL_MODE_UNDEFINED;
 			resizeTotal = 1;
@@ -4911,8 +4991,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			int clickCount = 1;
 			@try
 			{
-				if ([event type] ==	NSLeftMouseDown || [event type] ==	NSRightMouseDown || [event type] ==	NSLeftMouseUp || [event type] == NSRightMouseUp)
+				if ([event type] ==	NSLeftMouseDown ||
+                    [event type] ==	NSRightMouseDown ||
+                    [event type] ==	NSLeftMouseUp ||
+                    [event type] == NSRightMouseUp)
+                {
 					clickCount = [event clickCount];
+                }
 			}
 			@catch (NSException * e)
 			{
@@ -4922,7 +5007,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             if (clickCount > 1 && _mouseDownTimer)
                 [self deleteMouseDownTimer];
             
-			if (clickCount == 2 && [self window] == [[BrowserController currentBrowser] window])
+			if (clickCount == 2 &&
+                [self window] == [[BrowserController currentBrowser] window])
 			{
 				[[BrowserController currentBrowser] matrixDoublePressed:nil];
 			}
@@ -4963,8 +5049,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				if (xFlipped) sign = -sign;
 				if (yFlipped) sign = -sign;
 				
-				rotationStart -= sign*atan2( current.x, current.y) / deg2rad;
-			}
+				rotationStart -= sign * glm::degrees(atan2f(current.x, current.y));
+			} // tRotate
 			
 			if (tool == tRepulsor)
 			{
@@ -5025,7 +5111,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					if ([roiArray count]>0)
 					{
 						ROI *r = [roiArray objectAtIndex:0];
-						if (r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle && r.type != tTAGT)
+						if (r.type != tPlain &&
+                            r.type != tArrow &&
+                            r.type != tAngle &&
+                            r.type != tAxis &&
+                            r.type != tDynAngle &&
+                            r.type != tTAGT)
 						{
 							NSPoint pt = [[[[roiArray objectAtIndex:0] points] objectAtIndex:0] point];
 							float dx = (pt.x-tempPt.x);
@@ -5039,7 +5130,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					//NSMutableArray *points;
 					for (ROI *r in roiArray)
 					{
-						if (r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle && r.type != tTAGT)
+						if (r.type != tPlain &&
+                            r.type != tArrow &&
+                            r.type != tAngle &&
+                            r.type != tAxis &&
+                            r.type != tDynAngle &&
+                            r.type != tTAGT)
 						{
 							for (MyPoint *point in [r points])
 							{
@@ -5053,7 +5149,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 							}
 						}
 					}
-					repulsorRadius = (int) ((distance + 0.5) * 0.8);
+
+                    repulsorRadius = (int) ((distance + 0.5) * 0.8);
 					if (repulsorRadius < 1)
                         repulsorRadius = 1;
                     
@@ -5069,13 +5166,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                                 nil);
 					}
 				}
-			}
+			} // tRepulsor
 			
 			if (tool == tROISelector)
 			{
 				ROISelectorSelectedROIList = [[NSMutableArray array] retain];
 				
-				// if shift key is pressed, we need to keep track of the ROIs that were selected before the click 
+				// If Shift key is pressed, we need to keep track of the ROIs that were selected before the click 
 				if ([event modifierFlags] & NSEventModifierFlagShift)
 				{
 					for (ROI *r in curRoiList)
@@ -5123,10 +5220,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					tool = tPencil;
 					selectorROIEdition = YES;
 				}
-			}
+			} // tROISelector
 			
 			// ROI TOOLS
-			if ([self roiTool:tool] == YES && crossMove == -1 )
+			if ([self roiTool:tool] == YES &&
+                crossMove == -1)
 			{
                 mouseDraggedForROIUndo = NO;
                 
@@ -5140,7 +5238,6 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					[self deleteMouseDownTimer];
 					
 					BOOL DoNothing = NO;
-					NSInteger selected = -1;
 					NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 					tempPt = [self ConvertFromNSView2GL:tempPt];
 					
@@ -5150,6 +5247,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 						[DCMView setDefaults];
 					}
 					
+                    NSUInteger selectedIdx = NSNotFound;
 					BOOL roiFound = NO;
 					
 					if (!(([event modifierFlags] & NSEventModifierFlagCommand) &&
@@ -5159,7 +5257,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 						{
 							if ([r clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
 							{
-								selected = [curRoiList indexOfObject: r];
+                                NSLog(@"%s %d", __FUNCTION__, __LINE__);
+								selectedIdx = [curRoiList indexOfObject: r];
 								roiFound = YES;
                                 break;
 							}
@@ -5167,16 +5266,16 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					}
 					
 			//		if (roiFound)
-			//			if (curROI == [curRoiList objectAtIndex: selected])
+			//			if (curROI == [curRoiList objectAtIndex: selectedIdx])
 			//				DoNothing = YES;
 					
-					if (roiFound == NO)
+					if (!roiFound)
 					{
 						for (ROI *r in curRoiList)
 						{
 							if ([r clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
 							{
-								selected = [curRoiList indexOfObject: r];
+								selectedIdx = [curRoiList indexOfObject: r];
 								break;
 							}
 						}
@@ -5185,20 +5284,22 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					if ( ([event modifierFlags] & NSEventModifierFlagShift) &&
                         !([event modifierFlags] & NSEventModifierFlagCommand) )
 					{
-						if (selected != -1 )
+						if (selectedIdx != NSNotFound)
 						{
-							if ([[curRoiList objectAtIndex: selected] ROImode] == ROI_selected)
+							if ([[curRoiList objectAtIndex: selectedIdx] ROImode] == ROI_selected)
 							{
-								[[curRoiList objectAtIndex: selected] setROIMode: ROI_sleep];
+								[[curRoiList objectAtIndex: selectedIdx] setROIMode: ROI_sleep];
 								// unselect all ROIs in the same group
-								[[self windowController] setMode:ROI_sleep toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]];
+								[[self windowController] setMode:ROI_sleep toROIGroupWithID:[[curRoiList objectAtIndex:selectedIdx] groupID]];
 								DoNothing = YES;
 							}
 						}
 					}
 					else
 					{
-						if (selected == -1 || ( [[curRoiList objectAtIndex: selected] ROImode] != ROI_selected &&  [[curRoiList objectAtIndex: selected] ROImode] != ROI_selectedModify))
+						if (selectedIdx == NSNotFound ||
+                            ([[curRoiList objectAtIndex: selectedIdx] ROImode] != ROI_selected &&
+                             [[curRoiList objectAtIndex: selectedIdx] ROImode] != ROI_selectedModify))
 						{
 							// Unselect previous ROIs
 							for (ROI *r in curRoiList)
@@ -5208,20 +5309,22 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 							}
 						}
 					}
-							
+						
+                    NSLog(@"%s %d, DoNothing: %d", __FUNCTION__, __LINE__, DoNothing);
 					if (DoNothing == NO)
 					{
-						if (selected >= 0 && drawingROI == NO)
+						if (selectedIdx != NSNotFound &&
+                            drawingROI == NO)
 						{
 							[curROI autorelease];
 							curROI = nil;
 							
 							// Bring the selected ROI to the first position in array
-							ROI *roi = [curRoiList objectAtIndex: selected];
+							ROI *roi = [curRoiList objectAtIndex: selectedIdx];
 							
 							[[self windowController] bringToFrontROI: roi];
 							
-							selected = [curRoiList indexOfObject: roi];
+							selectedIdx = [curRoiList indexOfObject: roi];
 							
 							long roiVal = [roi clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES];
 							if (roiVal == ROI_sleep)
@@ -5261,6 +5364,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 						}
 						else // Start drawing a new ROI !
 						{
+                            NSLog(@"%s %d, Start drawing a new ROI", __FUNCTION__, __LINE__);
 							if (curROI)
 							{
 								drawingROI = [curROI mouseRoiDown:tempPt :scaleValue];
@@ -5275,7 +5379,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 									[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: curROI userInfo: nil];
 							}
 							else
-							{
+							{NSLog(@"%s %d, Unselect previous ROIs", __FUNCTION__, __LINE__);
 								// Unselect previous ROIs
 								for (ROI *r in curRoiList)
                                     [r setROIMode : ROI_sleep];
@@ -5303,53 +5407,53 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 											case tOval:
                                             case tOvalAngle:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Oval ", @"keep the space at the end of the string")];
-											break;
+                                                break;
 												
 											case tDynAngle:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Dynamic Angle ", @"keep the space at the end of the string")];
-											break;
+                                                break;
                                                 
                                             case tTAGT:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Perpendicular Distance ", @"keep the space at the end of the string")];
-                                            break;
+                                                break;
 											
-											case tAxis:
+                                            case tAxis:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Bone Axis ", @"keep the space at the end of the string")];
-											break;
+                                                break;
 											
-											case tOPolygon:
-											case tCPolygon:
+											case tOpenPolygon:
+											case tClosedPolygon:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Polygon ", @"keep the space at the end of the string")];
-											break;
+                                                break;
 												
 											case tAngle:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Angle ", @"keep the space at the end of the string")];
-											break;
+                                                break;
 												
 											case tArrow:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Arrow ", @"keep the space at the end of the string")];
-											break;
+                                                break;
 											
 											case tPlain:
 											case tPencil:
 												roiName = [NSString stringWithString: NSLocalizedString( @"ROI ", @"ROI = Region of Interest, keep the space at the end of the string")];
-											break;
+                                                break;
 												
 											case tMeasure:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Measurement ", @"keep the space at the end of the string")];
-											break;
+                                                break;
 												
 											case tROI:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Rectangle ", @"keep the space at the end of the string")];
-											break;
+                                                break;
 												
 											case t2DPoint:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Point ", @"keep the space at the end of the string")];
-											break;
+                                                break;
                                                 
                                             default:
-						break;
-										}
+                                                break;
+										} // switch (tool)
 										
 										if (roiName)
 										{
@@ -5370,8 +5474,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 													}
 												}
 												
-											}
-											 while (existsAlready != NO);
+											} while (existsAlready != NO);
 											
 											[aNewROI setName: finalName];
 										}
@@ -5435,7 +5538,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixAddROINotification object: self userInfo:userInfo];
 							}
 						}
-					}
+					} // if (DoNothing == NO)
 					
 					[self deleteInvalidROIs];
 				}
@@ -5544,7 +5647,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		}
 		else
 		{
-			if (fabs( [theEvent deltaY]) * 2.0f >  fabs( deltaX) )
+			if (fabs( [theEvent deltaY]) * 2.0f > fabs( deltaX) )
 			{
 				if ([theEvent modifierFlags] & NSEventModifierFlagCommand)
 				{
@@ -5824,6 +5927,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	[self mouseDragged:(NSEvent *)event];
 }
 
+#pragma mark -
+
 -(NSMenu*) menuForEvent:(NSEvent *)theEvent
 {
 	if ( pluginOverridesMouse )
@@ -5865,7 +5970,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	[self display];
 }
 
-#pragma mark - Mouse dragging methods
+#pragma mark - NSResponder mouse
 
 - (void)mouseDragged:(NSEvent *)event
 {
@@ -5882,42 +5987,46 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	mouseDragging = YES;
 	
-	// if window is not visible do nothing
+	// If window is not visible do nothing
 	if ([[self window] isVisible] == NO)
         return;
 	
-	// if window will close do nothing
+	// If window will close do nothing
 	if ([self is2DViewer] == YES)
 	{
 		if ([[self windowController] windowWillClose])
             return;
 	}
 	
-	// We have dragged before timer went off turn off timer and contine with drag
-	if (_dragInProgress == NO && ([event deltaX] != 0 || [event deltaY] != 0))
+	// We have dragged before timer went off, turn off timer and contine with drag
+	if (_dragInProgress == NO &&
+        ([event deltaX] != 0 || [event deltaY] != 0))
+    {
 		[self deleteMouseDownTimer];
+    }
 	
-	// we are dragging don't do anything
+	// We are dragging don't do anything
 	if (_dragInProgress == YES)
         return;
 	
-	// if we have images do drag
+	// If we have images do drag
     if (dcmPixList)
     {
 		[drawLock lock];
 		
 		@try 
 		{
-			NSPoint     eventLocation = [event locationInWindow];
-			NSPoint     current = [self convertPoint:eventLocation fromView: nil];
-			short       tool = currentMouseEventTool;
+			NSPoint eventLocation = [event locationInWindow];
+			NSPoint current = [self convertPoint:eventLocation fromView: nil];
+			short tool = currentMouseEventTool;
 			
 			[self mouseMoved: event];	// Update some variables...
 			
-			if (crossMove >= 0) tool = tCross;
+			if (crossMove >= 0)
+                tool = tCross;
 			
-			// if ROI tool is valid continue with drag
-			/**************** ROI actions *********************************/
+			// If ROI tool is valid continue with drag
+			/* *************** ROI actions *********************************/
 			if ([self roiTool: tool])
 			{
 				BOOL action = NO;
@@ -5927,7 +6036,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				// get point in Open GL
 				tempPt = [self ConvertFromNSView2GL:tempPt];
 				
-				// check rois for hit Test.
+				// check ROIs for hit Test.
 				action = [self checkROIsForHitAtPoint:tempPt forEvent:event];
 				
 				// if we have action the ROI is being drawn. Don't move and rotate ROI
@@ -5935,7 +6044,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					action = [self mouseDraggedForROIs: event];
 			}
 			
-			/********** Actions for Various Tools *********************/
+			/* ********* Actions for Various Tools *********************/
 			else
 			{
 				switch (tool)
@@ -5976,7 +6085,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				}
 			}
 			
-			/****************** Update Display ***********************/
+			/* ***************** Update Display ***********************/
 			
 			previous = current;
 
@@ -5995,7 +6104,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 }
 
 // Check to see if an ROI is selected at the OpenGL point
-- (BOOL)checkROIsForHitAtPoint:(NSPoint)point  forEvent:(NSEvent *)event
+- (BOOL)checkROIsForHitAtPoint:(NSPoint)point
+                      forEvent:(NSEvent *)event
 {
 	BOOL haveHit = NO;
 
@@ -6092,8 +6202,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			xx = offset.x;
             yy = offset.y;
 			
-			offset.x =  xx*cos(rotation*deg2rad) + yy*sin(rotation*deg2rad);
-			offset.y = -xx*sin(rotation*deg2rad) + yy*cos(rotation*deg2rad);
+			offset.x =  xx*cos(glm::radians(_rotation)) + yy*sin(glm::radians(_rotation));
+			offset.y = -xx*sin(glm::radians(_rotation)) + yy*cos(glm::radians(_rotation));
 			
 			offset.y /= curDCM.pixelRatio;
 			// hit test for text box
@@ -6168,7 +6278,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 {
 	[self setScaleValue: (startScaleValue + f / (80. * [curDCM pwidth] / 512.))];
 	
-	NSPoint o = NSMakePoint( 0, 0);
+	NSPoint o = NSZeroPoint;
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"MouseClickZoomCentered"] && mouseClickCenteredSupport)
 	{
@@ -6182,8 +6292,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		if (xFlipped) oo.x = -oo.x;
 		if (yFlipped) oo.y = -oo.y;
 		
-		o.x = oo.x*cos((rotation)*deg2rad) + oo.y*sin((rotation)*deg2rad);
-		o.y = oo.x*sin((rotation)*deg2rad) - oo.y*cos((rotation)*deg2rad);
+		o.x = oo.x*cos(glm::radians(_rotation)) + oo.y*sin(glm::radians(_rotation));
+		o.y = oo.x*sin(glm::radians(_rotation)) - oo.y*cos(glm::radians(_rotation));
 	}
 	
 	[self setOriginX: (((originStart.x ) * scaleValue) / startScaleValue) + o.x
@@ -6212,8 +6322,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if (xFlipped) xmove = -xmove;
 	if (yFlipped) ymove = -ymove;
 	
-	xx = xmove*cos((rotation)*deg2rad) + ymove*sin((rotation)*deg2rad);
-	yy = xmove*sin((rotation)*deg2rad) - ymove*cos((rotation)*deg2rad);
+	xx = xmove*cos(glm::radians(_rotation)) + ymove*sin(glm::radians(_rotation));
+	yy = xmove*sin(glm::radians(_rotation)) - ymove*cos(glm::radians(_rotation));
 	
 	[self setOriginX: originStart.x + xx Y: originStart.y + yy];
 	
@@ -6230,7 +6340,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	}
 }
 
-//Method for rotating
+// Method for rotating
 - (void)mouseDraggedRotate:(NSEvent *)event
 {
 	NSPoint current = [self convertPoint: event.locationInWindow fromView: nil];
@@ -6243,7 +6353,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if (xFlipped) sign = -sign;
 	if (yFlipped) sign = -sign;
 	
-	float rot = rotationStart + sign * atan2( current.x, current.y) / deg2rad;
+	float rot = rotationStart + sign * glm::degrees( atan2f(current.x, current.y) );
 	
 	while (rot < 0) rot += 360;
 	while (rot > 360) rot -= 360;
@@ -6571,7 +6681,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 						for (int delta = -1; delta <= 1; delta++ )
 						{
 							int k = j+delta;
-							if ([r type] == tCPolygon || [r type] == tPencil)
+							if ([r type] == tClosedPolygon || [r type] == tPencil)
 							{
 								if (k==-1)
 									k = (long)[points count]-1;
@@ -6600,7 +6710,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 									pt3.x = (pt2.x+pt.x)/2.0;
 									pt3.y = (pt2.y+pt.y)/2.0;
 									MyPoint *p = [[[MyPoint alloc] initWithPoint:pt3] autorelease];
-									int index = (delta==-1)? j : j+1 ;
+									int index = (delta==-1) ? j : j+1 ;
 									if (delta==-1)
                                         j++;
                                     
@@ -6611,7 +6721,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 						}
 						
                         if (r.type == tMeasure)
-                            r.type = tOPolygon;
+                            r.type = tOpenPolygon;
                         
 						[r recompute];
 						
@@ -6650,7 +6760,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	NSRect rect;
 	
-	if (rotation == 0)
+	if (_rotation == 0)
     {
         NSPoint tempStartPoint = [self ConvertFromUpLeftView2GL: [self convertPointToBacking: ROISelectorStartPoint]];
         NSPoint tempEndPoint = [self ConvertFromUpLeftView2GL: [self convertPointToBacking: ROISelectorEndPoint]];
@@ -6677,13 +6787,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		polyRect[ 3] = [self ConvertFromUpLeftView2GL:NSMakePoint(tempStartPoint.x - (tempStartPoint.x-tempEndPoint.x),tempStartPoint.y)];
 	}
 	
-	// select ROIs in the selection rectangle
+	// Select ROIs in the selection rectangle
 	for (ROI *roi in [NSArray arrayWithArray: curRoiList])
     {
 		BOOL intersected = NO;
 		ToolMode roiType = [roi type];
 		
-		if (rotation == 0)
+		if (_rotation == 0)
         {
 			if (roiType == tText)
             {
@@ -6715,12 +6825,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                         intersected = lineIntersectsRect(p1, p2,  rect);
                     }
                     
-                    // last segment: between last point and first one
+                    // Last segment: between first and last point
                     if (!intersected &&
                         roiType != tMeasure &&
                         roiType != tAngle &&
                         roiType != t2DPoint &&
-                        roiType != tOPolygon &&
+                        roiType != tOpenPolygon &&
                         roiType != tArrow)
                     {
                         p1 = [[points lastObject] point];
@@ -6798,7 +6908,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                             roiType != tMeasure &&
                             roiType != tAngle &&
                             roiType != t2DPoint &&
-                            roiType != tOPolygon &&
+                            roiType != tOpenPolygon &&
                             roiType != tArrow)
                         {
                             p1 = [[points lastObject] point];
@@ -6822,9 +6932,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			{
 				ROI_mode mode = [roi ROImode];
 				if (mode==ROI_sleep)
-                    mode=ROI_selected;
+                    mode = ROI_selected;
 				else if (mode==ROI_selected)
-                    mode=ROI_sleep;
+                    mode = ROI_sleep;
 					
 				// set the mode for the ROI and its group (if any)
 				[roi setROIMode:mode];
@@ -6839,7 +6949,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 #pragma mark - ww/wl
 
-- (void) getWLWW:(float*) wl :(float*) ww
+- (void) getWLWW:(float*) wl
+                :(float*) ww
 {
 	if (curDCM == nil)
 	{
@@ -6855,7 +6966,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 - (void) changeWLWW: (NSNotification*) note
 {
-	DCMPix	*otherPix = [note object];
+	DCMPix *otherPix = [note object];
 	
 	if (curImage < 0 || COPYSETTINGSINSERIES == NO)
 		return;
@@ -6884,12 +6995,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		
 		if ([dcmPixList containsObject: otherPix])
 		{
-			float iwl, iww;
+			float iww = otherPix.ww;
+			float iwl = otherPix.wl;
 			
-			iww = otherPix.ww;
-			iwl = otherPix.wl;
-			
-			if (iww != curDCM.ww || iwl != curDCM.wl)
+			if (iww != curDCM.ww ||
+                iwl != curDCM.wl)
 			{
 				[self setWLWW: iwl :iww];
 				if ([self is2DViewer])
@@ -6901,12 +7011,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		{
 			if ([[blendingView dcmPixList] containsObject: otherPix])
 			{
-				float iwl, iww;
+				float iww = otherPix.ww;
+				float iwl = otherPix.wl;
 				
-				iww = otherPix.ww;
-				iwl = otherPix.wl;
-				
-				if (iww != [[blendingView curDCM] ww] || iwl != [[blendingView curDCM] wl])
+				if (iww != [[blendingView curDCM] ww] ||
+                    iwl != [[blendingView curDCM] wl])
 				{
 					[blendingView setWLWW: iwl :iww];
 					[self loadTextures];
@@ -6999,7 +7108,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         }
         @catch (NSException *e)
         {
-            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            NSLog( @"***** %s exception: %@", __FUNCTION__, e);
         }
 	}
 }
@@ -7060,7 +7169,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                 }
             }
         }
-        @catch ( NSException *e) {
+        @catch (NSException *e) {
             N2LogException( e);
         }
 	}
@@ -7086,7 +7195,6 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRecomputeROINotification
                                                         object: self
                                                       userInfo: nil];
-    
 	[self setIndex: curImage];
 }
 
@@ -7240,7 +7348,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     [self setNeedsDisplay: YES];
 }
 
-#pragma mark
+#pragma mark -
 
 - (NSDictionary*) syncMessage:(short) inc
 {
@@ -7312,6 +7420,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         
 		if (instructions)
 		{
+            //NSLog(@"%s %d, postNotificationName: %@", __FUNCTION__, __LINE__, OsirixSyncNotification);
             [[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: nil userInfo: instructions];
 				
 			// most subclasses just need this. NO sync notification for subclasses.
@@ -7337,8 +7446,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	originB[ 0] += [oPix pixelSpacingX] / 2.;
 	originB[ 1] += [oPix pixelSpacingY] / 2.;
 
-	sft[ 0][ 0] = HUGE_VALF; sft[ 0][ 1] = HUGE_VALF; sft[ 0][ 2] = HUGE_VALF;
-	sft[ 1][ 0] = HUGE_VALF; sft[ 1][ 1] = HUGE_VALF; sft[ 1][ 2] = HUGE_VALF;
+	sft[ 0][ 0] = HUGE_VALF;
+    sft[ 0][ 1] = HUGE_VALF;
+    sft[ 0][ 2] = HUGE_VALF;
+	sft[ 1][ 0] = HUGE_VALF;
+    sft[ 1][ 1] = HUGE_VALF;
+    sft[ 1][ 2] = HUGE_VALF;
 	
 	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c1 pixelCenter: YES];
 	[oPix convertPixX: [oPix pwidth] pixY: 0 toDICOMCoords: c2 pixelCenter: YES];
@@ -7604,7 +7717,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (gDontListenToSyncMessage)
         return;
     
-//    NSLog( @"%ld %@", (long) note, self.superview);
+    //NSLog(@"%s %d, %ld %@", __FUNCTION__, __LINE__, (long) note, self.superview);
     
 	if (![[[note object] superview] isEqual:[self superview]] &&
         [self is2DViewer])
@@ -7621,7 +7734,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		avoidRecursiveSync++;
 		
 		if ([note object] != self &&
-            isKeyView == YES &&
+            isKeyView &&
             matrix == 0 &&
             newImage > -1)
 		{
@@ -7639,7 +7752,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			BOOL		point3D = NO;
 			BOOL		same3DReferenceWorld = NO;
 			
-			if (otherView == blendingView || self == [otherView blendingView])
+			if (otherView == blendingView ||
+                self == [otherView blendingView])
 			{
 				syncOnLocationImpossible = NO;
 				[otherView setSyncOnLocationImpossible: NO];
@@ -7707,9 +7821,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					{
 						float resultPoint[ 3];
 						
-						int newIndex = [self findPlaneAndPoint: destPoint3D :resultPoint];
-						
-						if (newIndex != -1)
+						NSUInteger newIndex = [self findPlaneAndPoint: destPoint3D :resultPoint];
+						if (newIndex != NSNotFound)
 						{
 							newImage = newIndex;
 							
@@ -7771,7 +7884,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                         newImage = 0;
 				}
 				
-				if ((syncro == SYNCHRO_POSITION_ABS && point3D == NO) || self.syncSeriesIndex != -1)
+				if ((syncro == SYNCHRO_POSITION_ABS && point3D == NO) ||
+                    self.syncSeriesIndex != -1)
 				{
                     BOOL selfVolumic = self.volumicData;
                     BOOL otherVolumic = otherView.volumicData;
@@ -7822,7 +7936,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 							{
                                 BOOL noSlicePosition = NO;
                                 BOOL everythingLoaded = YES;
-								int index = -1;
+								NSUInteger index = NSNotFound;
                                 float smallestdiff = -1;
                                 float fdiff, slicePosition;
 								
@@ -7891,7 +8005,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 								
 								if (noSlicePosition == NO)
 								{
-									if (index >= 0)
+									if (index != NSNotFound)
 										newImage = index;
 									
 									if ([dcmPixList count] >= 3)
@@ -8002,7 +8116,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                         }
                         else
 						{
-                            if (sliceFromTo[ 0][ 0] != HUGE_VALF && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
+                            if (sliceFromTo[ 0][ 0] != HUGE_VALF &&
+                                (sliceVector[ 0] != 0 || sliceVector[ 1] != 0 || sliceVector[ 2] != 0))
                             {
                                 sliceFromTo[ 0][ 0] = HUGE_VALF;
                                 sliceFromTo2[ 0][ 0] = HUGE_VALF;
@@ -8015,7 +8130,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					}
 					else
 					{
-						if (sliceFromTo[ 0][ 0] != HUGE_VALF && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
+						if (sliceFromTo[ 0][ 0] != HUGE_VALF &&
+                            (sliceVector[ 0] != 0 || sliceVector[ 1] != 0 || sliceVector[ 2] != 0))
                         {
                             sliceFromTo[ 0][ 0] = HUGE_VALF;
                             sliceFromTo2[ 0][ 0] = HUGE_VALF;
@@ -8045,8 +8161,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //		if ([[self window] isMainWindow])
 //			[self sendSyncMessage: 0];
 		
-		if (blendingView && [note object] != blendingView)
+        if (blendingView && [note object] != blendingView) {
 			[blendingView sync: [NSNotification notificationWithName: OsirixSyncNotification object: self userInfo: [self syncMessage: 0]]];
+        }
 			
 		avoidRecursiveSync--;
         
@@ -8102,16 +8219,19 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     [self setNeedsDisplay:YES];
 }
 
--(void) updateImage {
+-(void) updateImage
+{
 	float wl, ww;
-	
 	[self getWLWW: &wl :&ww];
 	
 	if (ww)
 		[self setWLWW: wl :ww];
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+-(void)observeValueForKeyPath:(NSString *)keyPath
+                     ofObject:(id)object
+                       change:(NSDictionary *)change
+                      context:(void *)context
 {
     if ([keyPath isEqualToString:ANNOTATIONS_KEY])
     {
@@ -8192,18 +8312,31 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (!cgl_ctx)
         return;
 #endif
+
+#ifdef WITH_GLEW // 20191122 added
+    if (checkExtension("GL_EXT_texture_rectangle")) {
+        glGetIntegerv(GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT, &NPOTDMaxTextureSize);
+        if (NPOTDMaxTextureSize < maxNOPTDTextureSize)
+            maxNOPTDTextureSize = NPOTDMaxTextureSize;
+    }
+#endif
     
     // Compare capabilities based on extension string and GL version
     // Turn them off if absent
     {
-        f_ext_texture_rectangle = checkExtension("GL_EXT_texture_rectangle");
-        f_arb_texture_rectangle = checkExtension("GL_ARB_texture_rectangle");
-        f_ext_client_storage = checkExtension("GL_APPLE_client_storage");
+#if 0 //def WITH_OPENGL_32
+        // maybe this is the right way, but it requires some other settings
+        ef.EXT_texture_rectangle = TRUE;
+#else
+        ef.EXT_texture_rectangle = checkExtension("GL_EXT_texture_rectangle");
+#endif
+        ef.ARB_texture_rectangle = checkExtension("GL_ARB_texture_rectangle");
+        ef.APPLE_client_storage = checkExtension("GL_APPLE_client_storage");   // 1 for both 2.1 and 4.1
 
-        f_ext_packed_pixel = checkExtension("GL_APPLE_packed_pixel"); // 2.1
+        ef.APPLE_packed_pixel = checkExtension("GL_APPLE_packed_pixel"); // 2.1
 
-        f_sgis_texture_edge_clamp = checkExtension("GL_SGIS_texture_edge_clamp");
-        f_gl_texture_edge_clamp = checkExtension("GL_EXT_texture_edge_clamp");
+        ef.SGIS_texture_edge_clamp = checkExtension("GL_SGIS_texture_edge_clamp");
+        ef.EXT_texture_edge_clamp = checkExtension("GL_EXT_texture_edge_clamp");  // 0 for both 2.1 and 4.1
     }
 
     // Get device max texture size
@@ -8213,7 +8346,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
     // Get max size of non-power of two texture on devices which support
 
-    if (f_ext_texture_rectangle)
+    if (ef.EXT_texture_rectangle)
     {
 #ifdef GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT
         glGetIntegerv (GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT, &NPOTDMaxTextureSize);
@@ -8225,38 +8358,48 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //	maxTextureSize = 500;
     
     // Set clamp param based on retrieved capabilities
-    if (f_gl_texture_edge_clamp)
+#ifdef WITH_OPENGL_32
+    edgeClampParam = GL_CLAMP_TO_BORDER; // TBC
+#else // WITH_OPENGL_32
+    if (ef.EXT_texture_edge_clamp)
         edgeClampParam = GL_CLAMP_TO_EDGE;  // use 1.2+ constant to clamp texture coords so as to not sample the border color
-    else if (f_sgis_texture_edge_clamp)
+    else if (ef.SGIS_texture_edge_clamp)
         edgeClampParam = GL_CLAMP_TO_EDGE_SGIS; // use extension to clamp texture coords so as to not sample the border color
     else
         edgeClampParam = GL_CLAMP; // clamp texture coords to [0, 1]
-        
-    if (f_arb_texture_rectangle && f_ext_texture_rectangle)
+#endif // WITH_OPENGL_32
+
+#ifdef WITH_OPENGL_32
+    _textRectMode = GL_TEXTURE_2D;
+    //_textRectMode = GL_TEXTURE_RECTANGLE;
+#else // WITH_OPENGL_32
+    assert(GL_TEXTURE_RECTANGLE_ARB == GL_TEXTURE_RECTANGLE_EXT);
+    if (ef.ARB_texture_rectangle && ef.EXT_texture_rectangle)
     {
-#ifndef NDEBUG
+        #ifndef NDEBUG
 		NSLog(@"ARB Rectangular Texturing!");
-#endif
+        #endif
         // Allow texture targets for textures of any dimensions
         _textRectMode = GL_TEXTURE_RECTANGLE_ARB;
         _minMaxTextureSize = _minMaxNOPTDTextureSize;
     }
-    else if (f_ext_texture_rectangle)
+    else if (ef.EXT_texture_rectangle)
     {
-#ifndef NDEBUG
+        #ifndef NDEBUG
 		NSLog(@"Rectangular Texturing!");
-#endif
+        #endif
         _textRectMode = GL_TEXTURE_RECTANGLE_EXT;
         _minMaxTextureSize = _minMaxNOPTDTextureSize;
     }
     else
     {
-#ifndef NDEBUG
+        #ifndef NDEBUG
         NSLog(@"Normal Texturing!");
-#endif
+        #endif
         // Note that OpenGL does not use DMA for a power-of-two texture target. So, unlike the rectangular texture, the power-of-two texture will incur one additional copy and performance won't be quite as fast.
         _textRectMode = GL_TEXTURE_2D;
     }
+#endif // WITH_OPENGL_32
 }
 
 #ifdef WITH_ICHAT
@@ -8295,8 +8438,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     a.y -= size.size.height/2;
   //  a.y /= scaleValue;
     
-    xx = a.x*cos(rotation*deg2rad) + a.y*sin(rotation*deg2rad);
-    yy = -a.x*sin(rotation*deg2rad) + a.y*cos(rotation*deg2rad);
+    xx =  a.x*cos(glm::radians(_rotation)) + a.y*sin(glm::radians(_rotation));
+    yy = -a.x*sin(glm::radians(_rotation)) + a.y*cos(glm::radians(_rotation));
     
     a.y = yy;
     a.x = xx;
@@ -8332,8 +8475,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	a.y -= (origin.y)/scaleValue;
 	a.x += (origin.x)/scaleValue;
 
-    float xx = a.x*cos(-rotation*deg2rad) + a.y*sin(-rotation*deg2rad);
-    float yy = -a.x*sin(-rotation*deg2rad) + a.y*cos(-rotation*deg2rad);
+    float xx =  a.x*cos(glm::radians(-self.rotation)) + a.y*sin(glm::radians(-self.rotation));
+    float yy = -a.x*sin(glm::radians(-self.rotation)) + a.y*cos(glm::radians(-self.rotation));
 
     a.y = yy;
     a.x = xx;
@@ -8344,8 +8487,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     a.x *= scaleValue;
 	a.x += size.size.width/2.;
 	
-	if (xFlipped) a.x = size.size.width - a.x;
-	if (yFlipped) a.y = size.size.height - a.y;
+	if (xFlipped)
+        a.x = size.size.width - a.x;
+    
+	if (yFlipped)
+        a.y = size.size.height - a.y;
 	
 	a.x -= size.size.width/2.;
 	a.y -= size.size.height/2.;
@@ -8357,8 +8503,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 {
 	a = [self ConvertFromGL2View: a];
    
-	a.y = [self drawingFrameRect].size.height - a.y;		// inverse Y scaling system
-	a.y -= [self drawingFrameRect].size.height/2.;			// Our viewing zero is centered in the view, NSView has the zero in left/bottom
+	a.y = [self drawingFrameRect].size.height - a.y;	// inverse Y scaling system
+	a.y -= [self drawingFrameRect].size.height/2.;		// Our viewing zero is centered in the view, NSView has the zero in left/bottom
 	a.x += [self drawingFrameRect].size.width/2.;					
 	
     a = [self convertPointFromBacking: a]; //retina
@@ -8380,7 +8526,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     a = [self convertPointToBacking: a]; //retina
 
 	//inverse Y scaling system
-	a.y = [self drawingFrameRect].size.height - a.y ;		// inverse Y scaling system
+	a.y = [self drawingFrameRect].size.height - a.y ;	// inverse Y scaling system
 	
 	return [self ConvertFromUpLeftView2GL: a];
 }
@@ -8409,8 +8555,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     a.y -= size.size.height/2;
     a.y /= scaleValue;
     
-    float xx = a.x*cos(rotation*deg2rad) + a.y*sin(rotation*deg2rad);
-    float yy = -a.x*sin(rotation*deg2rad) + a.y*cos(rotation*deg2rad);
+    float xx =  a.x*cos(glm::radians(_rotation)) + a.y*sin(glm::radians(_rotation));
+    float yy = -a.x*sin(glm::radians(_rotation)) + a.y*cos(glm::radians(_rotation));
     
     a.y = yy;
     a.x = xx;
@@ -8428,83 +8574,295 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     return a;
 }
 
-- (void) drawRectIn:(NSRect) size
-                   :(GLuint *) texture
+#pragma mark -
+
+// Use the geometry shader only if the thickness is > 1
+// This should be tested with devices that have backingScaleFactor != 1
+- (void) setShaderProgramForLineWidth:(GLfloat) w
+{
+    if (w == 1.0) {
+#ifdef WITH_OPENGL_32
+        [self setShaderProgramOverlay_withMode_Normal];
+        glLineWidth(1.0);
+#else
+        renderer_setLineWidth(w);
+#endif
+    }
+    else {
+        [self setShaderProgramOverlayLine];
+        renderer_setLineWidth(w);
+    }
+}
+
+- (void) setShaderProgramImage
+{
+#ifdef WITH_OPENGL_32
+    GLScene *s = [GLScene currentScene];
+    if (s.currentProgram != s.imageProgram.programHandle)
+        [s.imageProgram Bind];
+#endif
+}
+
+- (void) setShaderProgramOverlay __deprecated // use one of the specialized functions below
+{
+#ifdef WITH_OPENGL_32
+    GLScene *s = [GLScene currentScene];
+    if (s.currentProgram != s.overlayProgram.programHandle)
+        [s.overlayProgram Bind];
+#endif
+}
+
+#pragma mark pseudo-programs
+
+- (void) setShaderProgramOverlay_withMode:(ShaderModeType) mode
+{
+    GLScene *s = [GLScene currentScene];
+
+    if (s.currentProgram != s.overlayProgram.programHandle)
+        [s.overlayProgram Bind];
+
+    if (s.currentShaderMode != mode)
+        [s.overlayProgram setMode: mode];
+}
+
+- (void) setShaderProgramOverlay_withMode_Normal
+{
+    [self setShaderProgramOverlay_withMode:SHADER_MODE_NORMAL];
+}
+
+- (void) setShaderProgramOverlay_withMode_Point
+{
+    [self setShaderProgramOverlay_withMode:SHADER_MODE_ROUND_POINT];
+}
+
+- (void) setShaderProgramOverlay_withMode_TextureRgba
+{
+    [self setShaderProgramOverlay_withMode:SHADER_MODE_TEXTURE_RGBA];
+}
+
+- (void) setShaderProgramOverlay_withMode_TextureLuminosity
+{
+    [self setShaderProgramOverlay_withMode:SHADER_MODE_TEXTURE_LUMINOSITY];
+}
+
+- (void) setShaderProgramOverlayLine
+{
+#ifdef WITH_OPENGL_32
+    GLScene *s = [GLScene currentScene];
+    if (s.currentProgram != s.overlayLineProgram.programHandle)
+        [s.overlayLineProgram Bind];
+#endif
+}
+
+- (void) setShaderProgramFont
+{
+#ifdef WITH_OPENGL_32
+    GLScene *s = [GLScene currentScene];
+    if (s.currentProgram != s.fontShaderProgram.programHandle)
+        [s.fontShaderProgram Bind];
+#endif
+}
+
+- (void) setShaderProgramLoupe
+{
+#ifdef WITH_OPENGL_32
+    GLScene *s = [GLScene currentScene];
+    if (s.currentProgram != s.loupeProgram.programHandle)
+        [s.loupeProgram Bind];
+#endif
+}
+
+#pragma mark -
+
+- (void) reset_scale_translate_overlay_MV:(CGSize) scaleFactor
+                                translate:(CGPoint) translationOffset
+{
+#ifdef WITH_OPENGL_32
+    [self setShaderProgramOverlayLine];
+    renderer_reset_scale_translate_MV(scaleFactor, translationOffset);
+
+    [self setShaderProgramOverlay];
+#endif
+    renderer_reset_scale_translate_MV(scaleFactor, translationOffset);
+}
+
+- (void) reset_scale_overlay_MV:(CGSize) scaleFactor
+{
+#ifdef WITH_OPENGL_32
+    [self setShaderProgramOverlayLine];
+    renderer_reset_scale_MV(scaleFactor);
+
+    [self setShaderProgramOverlay];
+#endif
+    renderer_reset_scale_MV(scaleFactor);  // no rotation, same position, alter size
+}
+
+// Unused ?
+- (void) reset_imageShader_P:(NSRect) rrr
+                            :(BOOL) flipX
+                            :(BOOL) flipY
+{
+#ifdef WITH_OPENGL_32
+    float signX = xFlipped ? -1.0 : 1.0;
+    float signY = yFlipped ? -1.0 : 1.0;
+
+    glm::mat4 P = glm::ortho(-signX*NSWidth(rrr)/2.0,   signX*NSWidth(rrr)/2.0,  // LR
+                              signY*NSHeight(rrr)/2.0, -signY*NSHeight(rrr)/2.0, // BT
+                             -1.0, 1.0); // near, far
+
+    [scene.imageProgram Bind];
+    [scene.imageProgram setUniformMatrix: glm::value_ptr(P) name:"uProjectionM"];
+#endif
+}
+
+- (void) reset_fontShader_P:(NSRect) rrr
+{
+#ifdef WITH_OPENGL_32
+    glm::mat4 P = glm::ortho(0.0, NSWidth(rrr),  // LR
+                             NSHeight(rrr), 0.0, // BT
+                             -1.0, 1.0); // near, far
+    //renderer_setProgram(scene.fontShaderProgram.programHandle, __LINE__);
+    [scene.fontShaderProgram Bind];
+    [scene.fontShaderProgram setUniformMatrix: glm::value_ptr(P) name:"uProjectionM"];
+#endif
+}
+
+- (void) drawRectIn:(NSRect) rrr
+                   :(GLuint *) textureIDs
                    :(NSPoint) offset
                    :(long) tX :(long) tY :(long) tW :(long) tH
 {
-    if (texture == nil) {
+    if (textureIDs == nil) {
         NSLog(@"%s %d early return for %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
         return;
     }
 	
-	long effectiveTextureMod = 0; // texture size modification (inset) to account for borders
-    long offsetY, offsetX = 0, currTextureWidth, currTextureHeight;
-	
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if (cgl_ctx == nil) {
-        NSLog(@"%s %d early return for %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
+    long offsetY;
+    long offsetX = 0;
+    
+#ifdef WITH_OPENGL_32
+  #ifdef PLACE_3
+//    static float tempWL = 1.0;
+//    tempWL += 0.05;
+//    if (tempWL > 1.0) tempWL = 0.0;
+    [self applyColorCorrectionMatrix: scene.bias : scene.scale];
+  #endif
+#endif // WITH_OPENGL_32
+
+#ifdef WITH_OPENGL_32
+    [self reset_fontShader_P:rrr]; // FIXME: ok, but it shouldn't be here
+#else
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (cgl_ctx == nil)
         return;
-    }
 
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+#endif // WITH_OPENGL_32
 
-	glScalef( 2.0f / (xFlipped ? -(size.size.width) : size.size.width),
-			 -2.0f / (yFlipped ? -(size.size.height) : size.size.height),
-			  1.0f); // scale to port per pixel scale
-	glRotatef(rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-    
+    //NSLog(@"DCMView.mm drawRectIn %d, rotation(deg):%.1f", __LINE__, _rotation);
+#ifdef WITH_OPENGL_32
+     CGSize scaleFactor = rrr.size;
+     float rotationAngleDeg = _rotation;
+     float signX = xFlipped ? -1.0 : 1.0;
+     float signY = yFlipped ? -1.0 : 1.0;
+
+     glm::mat4 MV = glm::mat4(1.0);
+     MV = glm::scale(MV, glm::vec3(signX * 2.0f / scaleFactor.width,
+                                  -signY * 2.0f / scaleFactor.height,
+                                   1.0f));
+     
+     MV = glm::rotate(MV, glm::radians(rotationAngleDeg), glm::vec3(0,0,1));
+#else
+    glLoadIdentity();
+    glScalef ( 2.0f / (xFlipped ? -(rrr.size.width) : rrr.size.width),
+              -2.0f / (yFlipped ? -(rrr.size.height) : rrr.size.height),
+               1.0f); // scale to port per pixel scale
+    glRotatef(_rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+#endif // WITH_OPENGL_32
+     
     if (zoomIsSoftwareInterpolated) // Correction for Lanczos "zoom & shift" artefact
     {
         offset.x += resampledScale * 3. * scaleValue / 40.;
         offset.y += resampledScale * 3. * scaleValue / 40.;
 	}
-    
+
+    checkOpenGLErrors(__LINE__);
+
+#ifdef WITH_OPENGL_32
+    MV = glm::translate(MV, glm::vec3( origin.x - offset.x,
+                                      -origin.y - offset.y,
+                                       0.0f));
+    if (curDCM.pixelRatio != 1.0)
+        MV = glm::scale(MV, glm::vec3(1.f, curDCM.pixelRatio, 1.f));
+
+    [scene.imageProgram Bind];
+    [scene.imageProgram setUniformMatrix: glm::value_ptr(MV) name:"uModelViewM"];
+#else
     glTranslatef( origin.x - offset.x,
 				 -origin.y - offset.y,
 				  0.0f);
     
 	if (curDCM.pixelRatio != 1.0)
         glScalef( 1.f, curDCM.pixelRatio, 1.f);
-	
-	effectiveTextureMod = 0;	//2;	//OVERLAP
-	
-	glEnable (_textRectMode); // enable texturing
-	glColor4f (1.0f, 1.0f, 1.0f, 1.0f); // tint of the image
+#endif
+
+    long effectiveTextureMod = 0;   // texture size modification (inset) to account for borders
+                             //2;	//OVERLAP
+
+#ifdef WITH_OPENGL_32
+    //NSLog(@"drawRectIn %d, TODO: OpenGL Core", __LINE__);
+    //glEnable (_textRectMode); // OpenGL error 0x0500
+    //checkOpenGLErrors(__LINE__);
+#else
+    glEnable (_textRectMode); // enable texturing
+
+    // Currently it requires overlay program but we have the image program selected
+    renderer_set_rgba(1.0, 1.0, 1.0, 1.0); // white, tint of the image ?
+#endif
     
-//    float sf = self.window.backingScaleFactor;
-    
+    long currTextureWidth;
+    long currTextureHeight;
     long k = 0;
 	for (long x = 0; x < tX; x++) // for all horizontal textures
 	{
         // Use remaining to determine next texture size.
         // Current effective texture width for drawing:
-        currTextureWidth = GetNextTextureSize(tW - offsetX, _minMaxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // current effective texture width for drawing
+        currTextureWidth = GetNextTextureSize(tW - offsetX, _minMaxTextureSize, ef.EXT_texture_rectangle) - effectiveTextureMod; // current effective texture width for drawing
         offsetY = 0; // start at top
         for (long y = 0; y < tY; y++) // for a complete column
         {
             // Use remaining to determine next texture size.
             // Effective texture height for drawing:
-            currTextureHeight = GetNextTextureSize(tH - offsetY, _minMaxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // effective texture height for drawing
+            currTextureHeight = GetNextTextureSize(tH - offsetY, _minMaxTextureSize, ef.EXT_texture_rectangle) - effectiveTextureMod; // effective texture height for drawing
 
             // Work through textures in same order as stored, setting each texture name as current in turn
-            glBindTexture(_textRectMode, texture[k++]);
-            
-            //NSLog(@"%s %d DrawGLImageTile %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
-            DrawGLImageTile(GL_TRIANGLE_STRIP, curDCM.pwidth, curDCM.pheight, scaleValue,		//
+            glBindTexture(_textRectMode, textureIDs[k++]);
+#ifdef WITH_OPENGL_32
+            // Set our "uTextureS2D" sampler to user Texture Unit 0
+            [scene.imageProgram setUniformi:0 name:"uTextureS2D"];
+#endif
+
+//            NSLog(@"DCMView.mm %d, drawRectIn, class:%@, self:%p", __LINE__, NSStringFromClass([self class]), self);
+            DrawGLImageTile(GL_TRIANGLE_STRIP, curDCM.pwidth, curDCM.pheight, scaleValue,	//
                                 currTextureWidth, currTextureHeight, // draw this single texture on two tris
                                 offsetX,  offsetY,
                                 currTextureWidth + offsetX,
                                 currTextureHeight + offsetY,
-                                false, f_ext_texture_rectangle);		// OVERLAP
+                                false,		// OVERLAP
+                                ef.EXT_texture_rectangle);
             
             offsetY += currTextureHeight; // offset drawing position for next texture vertically
-        }
+        } // for y
+
         offsetX += currTextureWidth; // offset drawing position for next texture horizontally
-	}
+	} // for x
 	
+#ifdef WITH_OPENGL_32
+    renderer_setProgram(0, __LINE__);
+    checkOpenGLErrors(__LINE__);
+#else
     glDisable(_textRectMode); // done with texturing
+#endif
 }
 
 - (NSPoint) positionWithoutRotation: (NSPoint) tPt
@@ -8520,11 +8878,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     centeredRect.origin.y -= [self origin].y*ratio/scaleValue;
     centeredRect.origin.x += [self origin].x/scaleValue;
     
-    unrotatedRect.origin.x = centeredRect.origin.x*cos( -self.rotation*deg2rad) +
-                             centeredRect.origin.y*sin( -self.rotation*deg2rad)/ratio;
+    unrotatedRect.origin.x = centeredRect.origin.x*cos( glm::radians(-self.rotation)) +
+                             centeredRect.origin.y*sin( glm::radians(-self.rotation))/ratio;
     
-    unrotatedRect.origin.y = -centeredRect.origin.x*sin( -self.rotation*deg2rad) +
-                              centeredRect.origin.y*cos( -self.rotation*deg2rad)/ratio;
+    unrotatedRect.origin.y = -centeredRect.origin.x*sin( glm::radians(-self.rotation)) +
+                              centeredRect.origin.y*cos( glm::radians(-self.rotation))/ratio;
     
     unrotatedRect.origin.y *= ratio;
     
@@ -8542,10 +8900,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 - (double)pixelSpacingX { return curDCM.pixelSpacingX; }
 - (double)pixelSpacingY { return curDCM.pixelSpacingY; }
 
-- (void)getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv
+#define ORIENTATION_STRING_MAX_SIZE     10
+- (void)getOrientationText: (char *) orientation
+                          : (float *) vector
+                          : (BOOL) inv
 {
-	orientation[ 0] = 0;
-
 	NSString *orientationX;
 	NSString *orientationY;
 	NSString *orientationZ;
@@ -8597,7 +8956,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             break;
 	}
 	
-	strcpy(orientation, [optr UTF8String]);
+    // Truncate if the localized strings are too long
+    strncpy(orientation, [optr UTF8String], ORIENTATION_STRING_MAX_SIZE);
+    orientation[ORIENTATION_STRING_MAX_SIZE-1] = 0;
 }
 
 #pragma mark -
@@ -8633,16 +8994,14 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 + (float) pbase_Plane: (float*) point :(float*) planeOrigin :(float*) planeVector :(float*) pointProjection
 {
-    float	sb, sn, sd;
-	float	sub[ 3];
-	
+	float sub[ 3];
 	sub[ 0] = point[ 0] - planeOrigin[ 0];
 	sub[ 1] = point[ 1] - planeOrigin[ 1];
 	sub[ 2] = point[ 2] - planeOrigin[ 2];
 	
-    sn = -dot( planeVector, sub);
-    sd = dot( planeVector, planeVector);
-    sb = sn / sd;
+    float sn = -dot( planeVector, sub);
+    float sd = dot( planeVector, planeVector);
+    float sb = sn / sd;
 	
 	pointProjection[ 0] = point[ 0] + sb * planeVector[ 0];
 	pointProjection[ 1] = point[ 1] + sb * planeVector[ 1];
@@ -8679,6 +9038,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     return norm( sub);
 }
 
+// Returns angle in radians
 + (float) angleBetweenVector: (float*) v1 andVector: (float*) v2
 {
     if (v1[ 0] == 0 &&
@@ -8695,14 +9055,14 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         v1[ 1] == 0 &&
         v1[ 2] == 0)
     {
-        return deg2rad* 180;
+        return glm::radians(180.0f);
     }
     
     if (v2[ 0] == 0 &&
         v2[ 1] == 0 &&
         v2[ 2] == 0)
     {
-        return deg2rad* 180;
+        return glm::radians(180.0f);
     }
     
     float cosTheta = dot( v1, v2) / (norm( v1)*norm( v2));
@@ -8729,14 +9089,14 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         v1[ 1] == 0 &&
         v1[ 2] == 0)
     {
-        return deg2rad* 180;
+        return glm::radians(180.0f);
     }
     
     if (v2[ 0] == 0 &&
         v2[ 1] == 0 &&
         v2[ 2] == 0)
     {
-        return deg2rad* 180;
+        return glm::radians(180.0f);
     }
     
     double cosTheta = dot( v1, v2) / (norm( v1)*norm( v2));
@@ -8745,13 +9105,6 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         cosTheta = 1;
     
     return acos( cosTheta);
-}
-
-//===================================================================
-
-- (int) findPlaneAndPoint:(float*) pt :(float*) location
-{
-	return [self findPlaneForPoint: pt localPoint: location distanceWithPlane: nil];
 }
 
 + (NSArray*)cleanedOutDcmPixArray:(NSArray*)input
@@ -8799,19 +9152,52 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     {
         N2LogExceptionWithStackTrace(e);
     }
+
     return input;
 }
 
-- (int) findPlaneForPoint:(float*) pt preferParallelTo:(float*)parto localPoint:(float*) location distanceWithPlane: (float*) distanceResult
+- (NSUInteger) findPlaneAndPoint:(float*) pt
+                                :(float*) location
 {
-    return [self findPlaneForPoint: pt preferParallelTo: parto localPoint: location distanceWithPlane: distanceResult limitWithSliceThickness: YES];
+    return [self findPlaneForPoint: pt
+                        localPoint: location
+                 distanceWithPlane: nil];
 }
 
-- (int) findPlaneForPoint:(float*) pt preferParallelTo:(float*)parto localPoint:(float*) location distanceWithPlane: (float*) distanceResult limitWithSliceThickness: (BOOL) limitWithSliceThickness
+- (NSUInteger) findPlaneForPoint:(float*) pt
+                      localPoint:(float*) location
+               distanceWithPlane:(float*) distanceResult
 {
-	int		ii = -1;
-	float	vectors[ 9], orig[ 3], locationTemp[ 3];
-	float	distance = 999999, tempDistance;
+    return [self findPlaneForPoint:pt
+                  preferParallelTo:nil
+                        localPoint:location
+                 distanceWithPlane:distanceResult];
+}
+
+- (NSUInteger) findPlaneForPoint:(float*) pt
+                preferParallelTo:(float*) parto
+                      localPoint:(float*) location
+               distanceWithPlane:(float*) distanceResult
+{
+    return [self findPlaneForPoint: pt
+                  preferParallelTo: parto
+                        localPoint: location
+                 distanceWithPlane: distanceResult
+           limitWithSliceThickness: YES];
+}
+
+- (NSUInteger) findPlaneForPoint:(float*) pt
+                preferParallelTo:(float*) parto
+                      localPoint:(float*) location
+               distanceWithPlane:(float*) distanceResult
+         limitWithSliceThickness:(BOOL) limitWithSliceThickness
+{
+	NSUInteger planeIndex = NSNotFound;
+    float vectors[ 9];
+    float orig[ 3];
+    float locationTemp[ 3];
+    float distance = FLT_MAX;
+    float tempDistance;
 	
     BOOL vParallel = NO;
     
@@ -8827,7 +9213,6 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     }
     
     NSUInteger indexOfCurrentImage = [self.cleanedOutDcmPixArray indexOfObject: curDCM];
-    
     if (indexOfCurrentImage == NSNotFound)
         indexOfCurrentImage = 0;
     
@@ -8847,12 +9232,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         [pix origin: orig];
 		tempDistance = [DCMView pbase_Plane: pt :orig :&(vectors[ 6]) :locationTemp];
 		
-		if ((!vParallel && currParallel) || (currParallel == vParallel && tempDistance <= distance))
+		if ((!vParallel && currParallel) ||
+            (currParallel == vParallel && tempDistance <= distance))
 		{
-            if (ii != -1 &&
+            if (planeIndex != NSNotFound &&
                 currParallel == vParallel &&
                 tempDistance == distance &&
-                fabs( (float) indexOfCurrentImage - (float) i) > fabs( (float) indexOfCurrentImage - (float) ii))
+                fabs( (float) indexOfCurrentImage - (float) i) > fabs( (float) indexOfCurrentImage - (float) planeIndex))
             {
             }
             else
@@ -8866,77 +9252,76 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                 }
                 
                 distance = tempDistance;
-                ii = i;
+                planeIndex = i;
             }
         }
         
         i++;
 	}
 	
-	if ( ii != -1 && limitWithSliceThickness)
+	if (planeIndex != NSNotFound && limitWithSliceThickness)
 	{
-            if (curDCM.sliceThickness != 0 && distance > curDCM.sliceThickness * 2)
-                ii = -1;
+        if (curDCM.sliceThickness != 0 &&
+            distance > curDCM.sliceThickness * 2)
+        {
+            planeIndex = NSNotFound;
+        }
 	}
 	
-	if ( distanceResult)
+	if (distanceResult)
 		*distanceResult = distance;
 	
-    if ( ii != -1)
+    if (planeIndex != NSNotFound)
     {
-        NSUInteger index = [self.dcmPixList indexOfObject: [self.cleanedOutDcmPixArray objectAtIndex: ii]];
-        
-        if (index != NSNotFound)
-            ii = index;
-        else
-            ii = -1;
+        planeIndex = [self.dcmPixList indexOfObject: [self.cleanedOutDcmPixArray objectAtIndex: planeIndex]];
     }
     
-	return ii;
+	return planeIndex;
 }
 
-- (int) findPlaneForPoint:(float*) pt localPoint:(float*) location distanceWithPlane: (float*) distanceResult
-{
-    return [self findPlaneForPoint:pt
-                  preferParallelTo:nil
-                        localPoint:location
-                 distanceWithPlane:distanceResult];
-}
-
-- (void) drawOrientation:(NSRect) size
+- (void) drawOrientations:(NSRect) aRect
 {
     if (NSIsEmptyRect( screenCaptureRect) == NO)
-        size = screenCaptureRect;
+        aRect = screenCaptureRect;
     else
-        size.origin = NSMakePoint( 0, 0);
+        aRect.origin = NSZeroPoint;
     
 	// Determine Anterior, Posterior, Left, Right, Head, Foot
-	char	string[ 10];
-	float   vectors[ 9];
+	char string[ORIENTATION_STRING_MAX_SIZE];
+	float vectors[ 9];  // Why 9 ? It should be 3
 	
 	[self orientationCorrectedToView: vectors];
 	
-	// Left
+#ifdef WITH_OPENGL_32
+    [self setShaderProgramOverlay_withMode_TextureRgba];
+#endif
+
+    // Left
 	[self getOrientationText:string :vectors :YES];
-	[self DrawCStringGL: string : fontListGL :size.origin.x + 6 :size.origin.y + 2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
+	[self DrawCStringGL: string
+                       : fontListGL
+                       : NSMinX(aRect) + 6
+                       : NSMidY(aRect) + 2
+         rightAlignment: NO
+       useStringTexture: YES];
 	
 	// Right
 	[self getOrientationText:string :vectors :NO];
 	[self DrawCStringGL: string
                        : fontListGL
-                       : size.origin.x + size.size.width - (2 + stringSize.width * strlen(string))
-                       : size.origin.y +2+size.size.height/2
+                       : NSMaxX(aRect) - (2 + stringSize.width * strlen(string))
+                       : NSMidY(aRect) + 2
          rightAlignment: NO
        useStringTexture: YES];
 	
-	//Top
-    float yPosition = size.origin.y + stringSize.height + 3;
+	// Top
+    float yPosition = aRect.origin.y + stringSize.height + 3;
 	[self getOrientationText:string :vectors+3 :YES];
     if (strlen(string))
     {
         [self DrawCStringGL: string
                            : fontListGL
-                           : size.origin.x + size.size.width/2 - (stringSize.width * strlen(string)/2)
+                           : NSMidX(aRect) - (stringSize.width * strlen(string)/2)
                            : yPosition
              rightAlignment: NO
            useStringTexture: YES];
@@ -8948,7 +9333,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     {
         [self DrawNSStringGL: curDCM.laterality
                             : fontListGL
-                            : size.origin.x + size.size.width/2
+                            : NSMidX(aRect)
                             : yPosition
                        align: DCMVVIEW_TEXT_ALIGN_CENTER
             useStringTexture: YES];
@@ -8971,7 +9356,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         {
             [self DrawNSStringGL: flippedString
                                 : fontListGL
-                                : size.origin.x + size.size.width/2
+                                : NSMidX(aRect)
                                 : yPosition
                            align: DCMVVIEW_TEXT_ALIGN_CENTER
                 useStringTexture: YES];
@@ -8984,20 +9369,20 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     {
         [self DrawNSStringGL: @"VOI LUT Applied"
                             : fontListGL
-                            : size.origin.x + size.size.width/2
+                            : NSMidX(aRect)
                             : yPosition
                        align: DCMVVIEW_TEXT_ALIGN_CENTER
             useStringTexture: YES];
         
-        yPosition += stringSize.height + 3;
+        yPosition += stringSize.height + 3; // Value stored to 'yPosition' is never read
     }
 	
-	//Bottom
+	// Bottom
 	[self getOrientationText:string :vectors+3 :NO];
 	[self DrawCStringGL: string
                        : fontListGL
-                       : size.origin.x + size.size.width/2
-                       : size.origin.y + 2+size.size.height - 6
+                       : NSMidX(aRect)
+                       : NSMaxY(aRect) - 4
          rightAlignment: NO
        useStringTexture: YES];
 }
@@ -9044,7 +9429,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 - (float) displayedRotation
 {
-    return rotation;
+    return _rotation;
 }
 
 - (void) setStudyDateIndex:(NSUInteger)s
@@ -9055,59 +9440,73 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     studyDateIndex = s;
 }
 
-- (void) drawTextualData: (NSRect) size
+- (void) drawTextualData:(NSRect) size
+                        :(long) annotations
+{
+    [self drawTextualData: size
+         annotationsLevel: annotations
+                 fullText: YES
+          onlyOrientation: NO];
+}
+
+#pragma mark - fixed overlay, no rotation, no scaling
+
+// TEXT INFORMATION
+- (void) drawTextualData: (NSRect) rr
         annotationsLevel: (long) annotations
                 fullText: (BOOL) fullText
          onlyOrientation: (BOOL) onlyOrientation
 {
     float sf = [self.window backingScaleFactor]; //retina
-    
+
+#ifdef WITH_OPENGL_32
+    [self setShaderProgramOverlay];
+#else
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if (cgl_ctx == nil)
         return;
+#endif
 
-    //** TEXT INFORMATION
-	glLoadIdentity(); // eliminate rotation
-	glScalef( 2.0f / size.size.width,
-             -2.0f / size.size.height,
-              1.0f); // scale to port per pixel scale
-	glTranslatef (-(size.size.width) / 2.0f,
-                  -(size.size.height) / 2.0f,
-                  0.0f); // translate center to upper left
-	
-	// Draw line around edge for key Images only in 2D Viewer
-	
-	if ([self isKeyImage] &&
+    CGSize scaleFactor = rr.size;
+    CGPoint translationOffset;
+    translationOffset.x = -rr.size.width;
+    translationOffset.y = -rr.size.height;
+
+    // Eliminate rotation
+    [self reset_scale_translate_overlay_MV:scaleFactor
+                                 translate:translationOffset];
+
+	// Draw yellow line around edge for key Images only in 2D Viewer
+    if ([self isKeyImage] &&
         stringID == nil)
-	{
-		glLineWidth(8.0 * self.window.backingScaleFactor);
-		glColor3f (1.0f, 1.0f, 0.0f);
-		glBegin(GL_LINE_LOOP);
-        {
-			glVertex2f(0.0,                                      0.0);
-			glVertex2f(0.0,                   size.size.height - 0.0);
-			glVertex2f(size.size.width - 0.0, size.size.height - 0.0);
-			glVertex2f(size.size.width - 0.0,                    0.0);
-        }
-		glEnd();
-	}
+    {
+        [self drawKeyViewBox3: rr];
+    }
 	
-	glColor3f (0.0f, 0.0f, 0.0f);
+#ifndef WITH_OPENGL_32
+    renderer_set_rgb(0.0f, 0.0f, 0.0f); // black
+#endif
+
 //	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glLineWidth(self.window.backingScaleFactor);
+    
+#ifndef WITH_OPENGL_32
+    glLineWidth( 1 * self.window.backingScaleFactor);
+#endif
 	
-//	#ifndef MIELE_LIGHT
+//#ifndef MIELE_LIGHT
 //	if (iChatRunning && cgl_ctx==[_alternateContext CGLContextObj])
 //	{
-//		if (!iChatFontListGL) iChatFontListGL = glGenLists(150);
+//		if (!iChatFontListGL)
+//            iChatFontListGL = glGenLists(NUM_DISPLAY_LISTS);
+//
 //		iChatFontGL = [NSFont systemFontOfSize: 12];
-//		[iChatFontGL makeGLDisplayListFirst:' ' count:150 base:iChatFontListGL :iChatFontListGLSize :1];
+//		[iChatFontGL makeGLDisplayListFirst:' ' count:NUM_DISPLAY_LISTS base:iChatFontListGL :iChatFontListGLSize :1];
 //		iChatStringSize = [DCMView sizeOfString:@"B" forFont:iChatFontGL];
 //	}
-//	#endif
+//#endif
 	
 	GLuint fontList;
-	NSSize _stringSize;
+	NSSize strSize;
 //	if (cgl_ctx==[_alternateContext CGLContextObj])
 //	{
 //		fontList = iChatFontListGL;
@@ -9116,111 +9515,160 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //	else
 //	{
 		fontList = fontListGL;
-		_stringSize = stringSize;
+		strSize = stringSize;
 //	}
     
         if (NSIsEmptyRect( screenCaptureRect) == NO)
-            size = screenCaptureRect;
+            rr = screenCaptureRect;
         else
-            size.origin = NSMakePoint( 0, 0);
-	if (annotations == 4)
+            rr.origin = NSZeroPoint;
+
+    if (annotations == ANNOTATIONS_PLUGIN_ONLY)
+    {
         [[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawTextInfoNotification object: self];
+    }
 	else if (annotations > ANNOTATIONS_GRAPHICS)
 	{
-		NSMutableString *tempString, *tempString2, *tempString3, *tempString4;
-		long yRaster = 1, xRaster;
-		
 		if (onlyOrientation)
 		{
-			[self drawOrientation:size];
+			[self drawOrientations:rr];
 			return;
 		}
-		
-		int colorBoxSize = 0;
-		
+
+//        long yRaster = 1;
+//        long xRaster;
+
+#pragma mark Annot: color box with study seq number
+
+        int colorBoxSize = 0;
 		if (studyColorR != 0 || studyColorG != 0 || studyColorB != 0)
 			colorBoxSize = 30*sf;
-		
-		if (colorBoxSize && stringID == nil &&
+
+		if (colorBoxSize > 0 &&
+            stringID == nil &&
 			[self is2DViewer] == YES)
 		{
-            if (studyDateBox == nil && studyDateIndex != NSNotFound)
+            if (studyDateBox == nil &&  // create it if it doesn't exist
+                studyDateIndex != NSNotFound)
             {
-                NSColor *boxColor = [NSColor colorWithCalibratedRed: studyColorR green: studyColorG blue: studyColorB alpha: 1.0];
+                NSColor *boxColor = [NSColor colorWithCalibratedRed: studyColorR
+                                                              green: studyColorG
+                                                               blue: studyColorB
+                                                              alpha: 1.0];
                 
                 NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
                 [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica" size: 20] forKey: NSFontAttributeName];
+
+                NSString *format = @"%d";
                 if (studyDateIndex+1 < 10)
-                    studyDateBox = [[GLString alloc] initWithAttributedString: [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @" %d ", (int) studyDateIndex+1] attributes: stanStringAttrib] autorelease] withBoxColor: boxColor withBorderColor:boxColor];
-                else
-                    studyDateBox = [[GLString alloc] initWithAttributedString: [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%d", (int) studyDateIndex+1] attributes: stanStringAttrib] autorelease] withBoxColor: boxColor withBorderColor:boxColor];
+                    format = @" %d ";
+
+                NSString *str = [NSString stringWithFormat: format, studyDateIndex + 1];
+                NSAttributedString *astr = [[[NSAttributedString alloc] initWithString: str attributes: stanStringAttrib] autorelease];
+                studyDateBox = [[GLString alloc] initWithAttributedString: astr
+                                                             withBoxColor: boxColor
+                                                          withBorderColor: boxColor];
             }
-            
+
             if (studyDateBox)
             {
-                glColor4f( 1.0, 1.0, 1.0, 1.0);
-                [studyDateBox drawAtPoint: NSMakePoint( size.origin.x + 5*sf, size.origin.y + 4*sf) view: self];
+                // Draw a coloured little square showing a study sequential number
+#ifdef WITH_OPENGL_32
+                [self setShaderProgramFont];
+                //renderer_setProgram(scene.fontShaderProgram.programHandle, __LINE__);
+#endif
+                renderer_setTextColor(1.0, 1.0, 1.0, 1.0); // white (unused ?)
+                [studyDateBox drawAtPoint: NSMakePoint(rr.origin.x + 5*sf,
+                                                       rr.origin.y + 4*sf)
+                                     view: self];
             }
 		}
         else {
             colorBoxSize = 0;
         }
+        
+#pragma mark Annot: white text (for layout see Preferences)
 		
 		NSDictionary *annotationsDictionary = curDCM.annotationsDictionary;
 		
-		NSMutableDictionary *xRasterInit = [NSMutableDictionary dictionary];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + 6*sf] forKey:@"TopLeft"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + 6*sf] forKey:@"MiddleLeft"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + 6*sf] forKey:@"LowerLeft"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + size.size.width-2*sf] forKey:@"TopRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + size.size.width-2*sf] forKey:@"MiddleRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + size.size.width-2*sf] forKey:@"LowerRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + size.size.width/2] forKey:@"TopMiddle"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + size.size.width/2] forKey:@"LowerMiddle"];
+        // 8 possible positionings for annotations: 4 corners + 4 sides (in the middle of each side)
 
-		NSMutableDictionary *align = [NSMutableDictionary dictionary];
-		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_LEFT] forKey:@"TopLeft"];
-		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_LEFT] forKey:@"MiddleLeft"];
-		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_LEFT] forKey:@"LowerLeft"];
-		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_RIGHT] forKey:@"TopRight"];
-		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_RIGHT] forKey:@"MiddleRight"];
-		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_RIGHT] forKey:@"LowerRight"];
-		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_CENTER] forKey:@"TopMiddle"];
-		[align setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_CENTER] forKey:@"LowerMiddle"];
+        NSMutableDictionary *xRasterInitDic = [NSMutableDictionary dictionary];
+		[xRasterInitDic setObject:[NSNumber numberWithInt: NSMinX(rr) + 6*sf] forKey:@"TopLeft"];
+		[xRasterInitDic setObject:[NSNumber numberWithInt: NSMinX(rr) + 6*sf] forKey:@"MiddleLeft"];
+		[xRasterInitDic setObject:[NSNumber numberWithInt: NSMinX(rr) + 6*sf] forKey:@"LowerLeft"];
 
-		NSMutableDictionary *yRasterInit = [NSMutableDictionary dictionary];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + _stringSize.height+2*sf] forKey:@"TopLeft"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + _stringSize.height] forKey:@"TopMiddle"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + _stringSize.height+2*sf] forKey:@"TopRight"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + size.size.height/2] forKey:@"MiddleLeft"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + size.size.height/2] forKey:@"MiddleRight"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + size.size.height-2*sf] forKey:@"LowerLeft"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + size.size.height-2*sf-_stringSize.height] forKey:@"LowerRight"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + size.size.height-2*sf] forKey:@"LowerMiddle"];
-		
-		NSMutableDictionary *yRasterIncrement = [NSMutableDictionary dictionary];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"TopLeft"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"TopMiddle"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"TopRight"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"MiddleLeft"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"MiddleRight"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:-_stringSize.height] forKey:@"LowerLeft"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:-_stringSize.height] forKey:@"LowerRight"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:-_stringSize.height] forKey:@"LowerMiddle"];
+        [xRasterInitDic setObject:[NSNumber numberWithInt: NSMaxX(rr) - 2*sf] forKey:@"TopRight"];
+		[xRasterInitDic setObject:[NSNumber numberWithInt: NSMaxX(rr) - 2*sf] forKey:@"MiddleRight"];
+		[xRasterInitDic setObject:[NSNumber numberWithInt: NSMaxX(rr) - 2*sf] forKey:@"LowerRight"];
+
+        [xRasterInitDic setObject:[NSNumber numberWithInt: NSMidX(rr)] forKey:@"TopMiddle"];
+		[xRasterInitDic setObject:[NSNumber numberWithInt: NSMidX(rr)] forKey:@"LowerMiddle"];
+
+
+        NSMutableDictionary *alignDic = [NSMutableDictionary dictionary];
+		[alignDic setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_LEFT] forKey:@"TopLeft"];
+		[alignDic setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_LEFT] forKey:@"MiddleLeft"];
+		[alignDic setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_LEFT] forKey:@"LowerLeft"];
+
+        [alignDic setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_RIGHT] forKey:@"TopRight"];
+		[alignDic setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_RIGHT] forKey:@"MiddleRight"];
+		[alignDic setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_RIGHT] forKey:@"LowerRight"];
+
+        [alignDic setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_CENTER] forKey:@"TopMiddle"];
+		[alignDic setObject:[NSNumber numberWithInt:DCMVVIEW_TEXT_ALIGN_CENTER] forKey:@"LowerMiddle"];
+
+
+        NSMutableDictionary *yRasterInitDic = [NSMutableDictionary dictionary];
+		[yRasterInitDic setObject:[NSNumber numberWithInt: NSMinY(rr) + strSize.height + 2*sf] forKey:@"TopLeft"];
+		[yRasterInitDic setObject:[NSNumber numberWithInt: NSMinY(rr) + strSize.height] forKey:@"TopMiddle"];
+		[yRasterInitDic setObject:[NSNumber numberWithInt: NSMinY(rr) + strSize.height + 2*sf] forKey:@"TopRight"];
         
-        int increment;
-        NSArray *orientationPositionKeys = [NSArray arrayWithObjects:@"TopMiddle", @"MiddleLeft", @"MiddleRight", @"LowerMiddle", nil];
+		[yRasterInitDic setObject:[NSNumber numberWithInt: NSMidY(rr)] forKey:@"MiddleLeft"];
+		[yRasterInitDic setObject:[NSNumber numberWithInt: NSMidY(rr)] forKey:@"MiddleRight"];
+
+        [yRasterInitDic setObject:[NSNumber numberWithInt: NSMaxY(rr) - 2*sf] forKey:@"LowerLeft"];
+		[yRasterInitDic setObject:[NSNumber numberWithInt: NSMaxY(rr) - 2*sf - strSize.height] forKey:@"LowerRight"]; // move up by 'strSize.height' to make space for line "Made in ..."
+		[yRasterInitDic setObject:[NSNumber numberWithInt: NSMaxY(rr) - 2*sf] forKey:@"LowerMiddle"];
+
+
+		NSMutableDictionary *yRasterIncrementDic = [NSMutableDictionary dictionary];
+		[yRasterIncrementDic setObject:[NSNumber numberWithInt:strSize.height] forKey:@"TopLeft"];
+		[yRasterIncrementDic setObject:[NSNumber numberWithInt:strSize.height] forKey:@"TopMiddle"];
+		[yRasterIncrementDic setObject:[NSNumber numberWithInt:strSize.height] forKey:@"TopRight"];
+
+        [yRasterIncrementDic setObject:[NSNumber numberWithInt:strSize.height] forKey:@"MiddleLeft"];
+		[yRasterIncrementDic setObject:[NSNumber numberWithInt:strSize.height] forKey:@"MiddleRight"];
+
+        [yRasterIncrementDic setObject:[NSNumber numberWithInt:-strSize.height] forKey:@"LowerLeft"];
+		[yRasterIncrementDic setObject:[NSNumber numberWithInt:-strSize.height] forKey:@"LowerRight"];
+		[yRasterIncrementDic setObject:[NSNumber numberWithInt:-strSize.height] forKey:@"LowerMiddle"];
+        
+        long yRaster = 1;
+        long xRaster;
+        int increment; // Y increment
+        
+        // Positioning for the 'orientation' annotation is restricted to the middle of each side
+        NSArray *orientationPositionKeys = [NSArray arrayWithObjects:
+                                            @"TopMiddle",
+                                            @"MiddleLeft",
+                                            @"MiddleRight",
+                                            @"LowerMiddle",
+                                            nil];
         BOOL orientationDrawn = NO;
         {
            id annot;
            NSEnumerator *enumerator;
-            
+#ifdef WITH_OPENGL_32
+            [self setShaderProgramFont];
+            //renderer_setProgram(scene.fontShaderProgram.programHandle, __LINE__);
+#endif
             for (NSString *key in orientationPositionKeys)
             {
                 NSArray *annotations = [annotationsDictionary objectForKey: key];
-                xRaster = [[xRasterInit objectForKey: key] intValue];
-                yRaster = [[yRasterInit objectForKey: key] intValue];
-                increment = [[yRasterIncrement objectForKey: key] intValue];
+                xRaster = [[xRasterInitDic objectForKey: key] intValue];
+                yRaster = [[yRasterInitDic objectForKey: key] intValue];
+                increment = [[yRasterIncrementDic objectForKey: key] intValue];
                 
                 if ([key hasPrefix:@"Lower"])
                     enumerator = [annotations reverseObjectEnumerator];
@@ -9232,7 +9680,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                         if ([s isEqualToString:@"Orientation"])
                         {
                             if (!orientationDrawn)
-                                [self drawOrientation: size];
+                                [self drawOrientations: rr]; // draw all 4 orientation strings
                             
                             orientationDrawn = YES;
                         }
@@ -9241,33 +9689,33 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		
 		if (orientationDrawn)
 		{
-			[yRasterInit setObject:[NSNumber numberWithInt:
-                                    [[yRasterInit objectForKey:@"TopMiddle"] intValue] +
-                                    [[yRasterIncrement objectForKey:@"TopMiddle"] intValue]]
+			[yRasterInitDic setObject:[NSNumber numberWithInt:
+                                    [[yRasterInitDic objectForKey:@"TopMiddle"] intValue] +
+                                    [[yRasterIncrementDic objectForKey:@"TopMiddle"] intValue]]
                             forKey:@"TopMiddle"];
             
-			[yRasterInit setObject:[NSNumber numberWithInt:
-                                    [[yRasterInit objectForKey:@"MiddleLeft"] intValue] +
-                                    [[yRasterIncrement objectForKey:@"MiddleLeft"] intValue]]
+			[yRasterInitDic setObject:[NSNumber numberWithInt:
+                                    [[yRasterInitDic objectForKey:@"MiddleLeft"] intValue] +
+                                    [[yRasterIncrementDic objectForKey:@"MiddleLeft"] intValue]]
                             forKey:@"MiddleLeft"];
             
-			[yRasterInit setObject:[NSNumber numberWithInt:
-                                    [[yRasterInit objectForKey:@"MiddleRight"] intValue] +
-                                    [[yRasterIncrement objectForKey:@"MiddleRight"] intValue]]
+			[yRasterInitDic setObject:[NSNumber numberWithInt:
+                                    [[yRasterInitDic objectForKey:@"MiddleRight"] intValue] +
+                                    [[yRasterIncrementDic objectForKey:@"MiddleRight"] intValue]]
                             forKey:@"MiddleRight"];
             
-			[yRasterInit setObject:[NSNumber numberWithInt:
-                                    [[yRasterInit objectForKey:@"LowerMiddle"] intValue] +
-                                    [[yRasterIncrement objectForKey:@"LowerMiddle"] intValue]]
+			[yRasterInitDic setObject:[NSNumber numberWithInt:
+                                    [[yRasterInitDic objectForKey:@"LowerMiddle"] intValue] +
+                                    [[yRasterIncrementDic objectForKey:@"LowerMiddle"] intValue]]
                             forKey:@"LowerMiddle"];
 		}
 		
 		for (NSString *key in [annotationsDictionary allKeys])
 		{
 			NSArray *annotations = [annotationsDictionary objectForKey:key];
-			xRaster = [[xRasterInit objectForKey:key] intValue]; //* [self.window backingScaleFactor]; //Retina
-			yRaster = [[yRasterInit objectForKey:key] intValue]; //* [self.window backingScaleFactor]; //Retina
-			increment = [[yRasterIncrement objectForKey:key] intValue]; // * [self.window backingScaleFactor]; //retina
+			xRaster = [[xRasterInitDic objectForKey:key] intValue]; //* [self.window backingScaleFactor]; //Retina
+			yRaster = [[yRasterInitDic objectForKey:key] intValue]; //* [self.window backingScaleFactor]; //Retina
+			increment = [[yRasterIncrementDic objectForKey:key] intValue]; // * [self.window backingScaleFactor]; //retina
 			
 			NSEnumerator *enumerator;
 			if ([key hasPrefix:@"Lower"])
@@ -9277,6 +9725,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             
 			id annot;
 			BOOL useStringTexture;
+            NSMutableString *tempString;
+            NSMutableString *tempString2;
+            NSMutableString *tempString3;
+            NSMutableString *tempString4;
 						
 			if ([key hasPrefix:@"Lower"])
 				enumerator = [annotations reverseObjectEnumerator];
@@ -9287,25 +9739,26 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			{
 				@try
 				{
-					tempString = [NSMutableString stringWithString:@""];
-					tempString2 = [NSMutableString stringWithString:@""];
-					tempString3 = [NSMutableString stringWithString:@""];
-					tempString4 = [NSMutableString stringWithString:@""];
+					tempString  = [NSMutableString stringWithString:@""]; // regular
+					tempString2 = [NSMutableString stringWithString:@""]; // Fused image (blending)
+					tempString3 = [NSMutableString stringWithString:@""]; // SUV
+					tempString4 = [NSMutableString stringWithString:@""]; // SUV fused image (blending)
 					for (NSString *a in annot)
 					{
-#pragma mark - Image Size
+#pragma mark Annot: image size
 						if ([a isEqualToString:@"Image Size"] && fullText)
 						{
 							[tempString appendFormat: NSLocalizedString( @"Image size: %ld x %ld", nil), (long) curDCM.pwidth, (long) curDCM.pheight];
 							useStringTexture = YES;
 						}
-#pragma mark - View Size
+#pragma mark Annot: view size
 						else if ([a isEqualToString:@"View Size"] && fullText)
 						{
-							[tempString appendFormat: NSLocalizedString( @"View size: %ld x %ld", nil), (long) size.size.width, (long) size.size.height];
+							[tempString appendFormat: NSLocalizedString( @"View size: %ld x %ld", nil), (long) rr.size.width, (long) rr.size.height];
 							useStringTexture = YES;
 						}
-#pragma mark - Mouse Position (px)
+
+#pragma mark Annot: mouse position (px)
 
 						else if ([a isEqualToString:@"Mouse Position (px)"])
 						{
@@ -9374,7 +9827,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                         }
                                     }
                                     
-                                    if (curDCM.displaySUVValue )
+                                    if (curDCM.displaySUVValue)
                                     {
                                         if ([curDCM hasSUV] == YES && curDCM.SUVConverted == NO)
                                         {
@@ -9382,7 +9835,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                         }
                                     }
                                     
-                                    if (blendingView )
+                                    if (blendingView)
                                     {
                                         if ([[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
                                         {
@@ -9392,13 +9845,25 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                 }
                             }
 						}
-#pragma mark - Zoom
+
+#pragma mark Annot: zoom
 						else if ([a isEqualToString:@"Zoom"] && fullText)
 						{
 							[tempString appendFormat: NSLocalizedString( @"Zoom: %0.0f%%", @"No special characters for this string, only ASCII characters."), (float) [self displayedScaleValue]*100.0];
 							useStringTexture = NO;
 						}
-#pragma mark - Image Position
+            
+#pragma mark Annot: Rotation Angle
+                        // See AnnotationsDefault.plist, edited from Preferences
+                        else if ([a isEqualToString:@"Rotation Angle"] && fullText)
+                        {
+                            NSString *s = [NSString stringWithFormat:@"%@: %.0f\u00B0",
+                                           NSLocalizedString(@"Rotation Angle", nil), self.rotation];
+                            [tempString appendString:s];
+                            useStringTexture = NO;
+                        }
+
+#pragma mark Annot: image position
 						else if ([a isEqualToString:@"Image Position"] && fullText)
 						{
 							NSString *orientationStack = @"";
@@ -9420,7 +9885,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                     float v2 = yd;
                                     float v3 = zd;
 									float v[3] = { v1, v2, v3};
-									char stackOrientationStart[ 10], stackOrientationEnd[ 10];
+
+                                    char stackOrientationStart[ ORIENTATION_STRING_MAX_SIZE];
+                                    char stackOrientationEnd[ ORIENTATION_STRING_MAX_SIZE];
 									if (self.flippedData == NO)
 									{
 										[self getOrientationText: stackOrientationStart : v : YES];
@@ -9509,7 +9976,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 							useStringTexture = NO;
 						}
-#pragma mark - Mouse Position (mm)
+
+#pragma mark Annot: mouse position (mm)
 						else if ([a isEqualToString:@"Mouse Position (mm)"])
 						{
 							useStringTexture = NO;
@@ -9542,7 +10010,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                     
                                     if (mouseOnView)
                                     {
-                                        if (self.mousePosUSRegion.length)
+                                        if (self.mousePosUSRegion.length > 0)
                                             [tempString3 appendString: self.mousePosUSRegion];
                                 
                                         else if (curDCM.is3DPlane)
@@ -9563,7 +10031,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 								}
 							}
 						}
-#pragma mark - Window Level / Window Width
+
+#pragma mark Annot: Window Level / Window Width
 						else if ([a isEqualToString:@"Window Level / Window Width"])
 						{
 							useStringTexture = NO;
@@ -9591,13 +10060,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 								}
 							}
 						}
-#pragma mark - Plugin
+#pragma mark Annot: Plugin
 						else if ([a isEqualToString:@"Plugin"] )
 						{
                             NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
                                                       [NSNumber numberWithFloat: yRaster], @"yRaster",
                                                       [NSNumber numberWithFloat: xRaster], @"xRaster",
-                                                      [NSNumber numberWithInt: [[align objectForKey:key] intValue]], @"alignment",
+                                                      [NSNumber numberWithInt: [[alignDic objectForKey:key] intValue]], @"alignment",
                                                       nil];
 							
 							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawTextInfoNotification
@@ -9605,14 +10074,16 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 																			  userInfo: userInfo];
 							yRaster += increment;
 						}
-#pragma mark - Orientation
+#pragma mark Annot: Orientation
 						else if ([a isEqualToString:@"Orientation"])
 						{
-							if (!orientationDrawn) [self drawOrientation: size];
-							orientationDrawn = YES;
+							if (!orientationDrawn)
+                                [self drawOrientations: rr];
+
+                            orientationDrawn = YES;
 							useStringTexture = YES;
 						}
-#pragma mark - Thickness / Location / Position
+#pragma mark Annot: Thickness / Location / Position
 						else if ([a isEqualToString:@"Thickness / Location / Position"])
 						{
 							useStringTexture = YES;
@@ -9662,7 +10133,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 								 }	 
 							}
 						}
-#pragma mark - PatientName
+#pragma mark Annot: PatientName
 						else if ([a isEqualToString: @"PatientName"])
 						{
 							if (ANNOTATIONS_FULL == annotationType && self.studyObj.name)
@@ -9680,8 +10151,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					[tempString3 setString:[tempString3 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
 					[tempString4 setString:[tempString4 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
 
-					if (tempString.length > 0)
+					if (tempString.length > 0) // all white annotation in all 8 positionings, one at a time
 					{
+                        //NSLog(@"DCMView.mm %d <%@>", __LINE__, tempString);
                         long xAdd = 0;
                         if ([key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
                             xAdd = colorBoxSize;
@@ -9690,7 +10162,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                             :fontList
                                             :xRaster+xAdd
                                             :yRaster
-                                       align:(DCMViewTextAlign)[[align objectForKey:key] intValue]
+                                       align:(DCMViewTextAlign)[[alignDic objectForKey:key] intValue]
                             useStringTexture:useStringTexture];
                         
 						yRaster += increment;
@@ -9706,7 +10178,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                             :fontList
                                             :xRaster+xAdd
                                             :yRaster
-                                       align:(DCMViewTextAlign)[[align objectForKey:key] intValue]
+                                       align:(DCMViewTextAlign)[[alignDic objectForKey:key] intValue]
                             useStringTexture:useStringTexture];
                         
 						yRaster += increment;
@@ -9722,7 +10194,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                             :fontList
                                             :xRaster+xAdd
                                             :yRaster
-                                       align:(DCMViewTextAlign)[[align objectForKey:key] intValue]
+                                       align:(DCMViewTextAlign)[[alignDic objectForKey:key] intValue]
                             useStringTexture:useStringTexture];
                         
 						yRaster += increment;
@@ -9738,7 +10210,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                             :fontList
                                             :xRaster+xAdd
                                             :yRaster
-                                       align:(DCMViewTextAlign)[[align objectForKey:key] intValue]
+                                       align:(DCMViewTextAlign)[[alignDic objectForKey:key] intValue]
                             useStringTexture:useStringTexture];
                         
 						yRaster += increment;
@@ -9763,11 +10235,14 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			}// while
 		} // for k
 		
-		yRaster = size.origin.y + size.size.height-2;
-		xRaster = size.origin.x + size.size.width-2;
+#pragma mark Made in...
+
+        // Add one more annotation in fixed poiìsition, not contolled by the Preferences layout
+		yRaster = NSMaxY(rr) - 2;
+		xRaster = NSMaxX(rr) - 2;
         if (fullText) {
             NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-			[self DrawNSStringGL: [NSString stringWithFormat:@"Made in %@", bundleName]
+			[self DrawNSStringGL: [NSString stringWithFormat:@"Made with %@", bundleName]
                                 : fontList
                                 : xRaster
                                 : yRaster
@@ -9775,6 +10250,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                 useStringTexture: YES];
         }
      }
+
+#pragma mark Red caption (obsolete)
 
 #ifdef WITH_RED_CAPTION
     if (size.size.width > 500*sf &&
@@ -9786,7 +10263,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         {
             NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
             [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica" size: 17] forKey: NSFontAttributeName];
-            if (whiteBackground)
+            if (self.whiteBackground)
                 [stanStringAttrib setObject: [NSColor colorWithDeviceRed:0.2f green:0.2 blue:0.2 alpha: 1.0]
                                      forKey: NSForegroundColorAttributeName];
             else
@@ -9811,10 +10288,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         
         if (warningNotice)
         {
-            glColor4f( 1.0, 1.0, 1.0, 1.0);
+            renderer_set_rgba(1.0, 1.0, 1.0, 1.0); // white
             
-            NSRect r = NSMakeRect(size.origin.x + size.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2,
-                                  size.origin.y + size.size.height - 35*sf - [self convertSizeToBacking: [warningNotice frameSize]].height,
+            NSRect r = NSMakeRect(NSMidX(size) - [self convertSizeToBacking: [warningNotice frameSize]].width/2,
+                                  NSMaxY(size) - 35*sf - [self convertSizeToBacking: [warningNotice frameSize]].height,
                                   [self convertSizeToBacking: [warningNotice frameSize]].width,
                                   [self convertSizeToBacking: [warningNotice frameSize]].height);
             
@@ -9823,6 +10300,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     }
 #endif // WITH_RED_CAPTION
 }
+
+#pragma mark -
 
 - (void) setWhiteBackground:(BOOL)w
 {
@@ -9834,47 +10313,80 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 #endif
 }
 
-- (void) drawTextualData:(NSRect) size :(long) annotations
-{
-	[self drawTextualData: size
-         annotationsLevel: annotations
-                 fullText: YES
-          onlyOrientation: NO];
-}
+#pragma mark - Image transformation
 
-#pragma mark - image transformation
-
+// Unused ?
 - (void) loadOpenGLIdentityForDrawingFrame: (NSRect) r
 {
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+#ifndef WITH_OPENGL_32
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
-    
-    glLoadIdentity ();
+#endif
+
     glViewport(0, 0, r.size.width, r.size.height);
-    glScalef(2.0f /(xFlipped ? -(r.size.width) : r.size.width),
-			-2.0f /(yFlipped ? -(r.size.height) : r.size.height),
+
+    float signX = xFlipped ? -1.0 : 1.0;
+    float signY = yFlipped ? -1.0 : 1.0;
+
+#ifdef WITH_OPENGL_32
+    glm::mat4 MV = glm::mat4(1.0);
+    MV = glm::scale(MV, glm::vec3(signX * 2.0f / r.size.width,
+                                 -signY * 2.0f / r.size.height,
+                                  1.0f));
+    MV = glm::rotate(MV, glm::radians(_rotation), glm::vec3(0,0,1));
+    MV = glm::translate(MV, glm::vec3(origin.x, -origin.y, 0.0f));
+    MV = glm::scale(MV, glm::vec3(1.0f, curDCM.pixelRatio, 1.0f));
+
+    [scene.imageProgram Bind];
+    [scene.imageProgram setUniformMatrix: glm::value_ptr(MV) name:"uModelViewM"];
+#else
+    glLoadIdentity();
+    glScalef(signX * 2.0f / r.size.width,
+			-signY * 2.0f / r.size.height,
 			 1.0f);
-    glRotatef( rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+    glRotatef( _rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
     glTranslatef( origin.x, -origin.y, 0.0f);
     glScalef( 1.f, curDCM.pixelRatio, 1.f);
+#endif
 }
 
+// unused ?
 - (void) applyImageTransformation __deprecated
 {
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+#ifndef WITH_OPENGL_32
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
+#endif
 
-	glLoadIdentity();
-	glViewport(0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height);
+    glViewport(0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height);
 
-	glScalef( 2.0f /(xFlipped ? -(drawingFrameRect.size.width)  : drawingFrameRect.size.width),
-			 -2.0f /(yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height),
+    float signX = xFlipped ? -1.0 : 1.0;
+    float signY = yFlipped ? -1.0 : 1.0;
+
+#ifdef WITH_OPENGL_32
+    glm::mat4 MV = glm::mat4(1.0);
+    MV = glm::scale(MV, glm::vec3( signX * 2.0f / drawingFrameRect.size.width,
+                                  -signY * 2.0f / drawingFrameRect.size.height,
+                                   1.0f));
+    MV = glm::rotate(MV, glm::radians(_rotation), glm::vec3(0,0,1));
+    MV = glm::translate(MV, glm::vec3( origin.x, -origin.y, 0.0f));
+    MV = glm::scale(MV, glm::vec3(1.f, curDCM.pixelRatio, 1.f));
+
+    [scene.imageProgram Bind];
+    [scene.imageProgram setUniformMatrix: glm::value_ptr(MV) name:"uModelViewM"];
+#else
+    glLoadIdentity();
+	glScalef( signX * 2.0f / drawingFrameRect.size.width,
+			 -signY * 2.0f / drawingFrameRect.size.height,
 			 1.0f);
-	glRotatef(rotation, 0.0f, 0.0f, 1.0f);
+	glRotatef(_rotation, 0.0f, 0.0f, 1.0f);
 	glTranslatef( origin.x, -origin.y, 0.0f);
 	glScalef( 1.f, curDCM.pixelRatio, 1.f);
+#endif
 }
 
 #pragma mark -
@@ -9883,6 +10395,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 {
 	if (drawing == NO)
         return;
+
+    //NSLog(@"%s %d, self:%p %@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]));
 
     @synchronized (self)
 	{
@@ -9916,11 +10430,16 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         }
         
         checkOpenGLErrors(__LINE__);
+#ifdef WITH_OPENGL_32
+        [GLScene setCurrentScene: &scene];
+#endif
 
-		[self drawRect: backingBounds
+        [self drawRect: backingBounds
            withContext: [self openGLContext]];
 	}
 }
+
+#pragma mark - Crosslines
 
 - (void) drawCrossLines: (float[2][3]) sft
                     ctx: (CGLContextObj) cgl_ctx
@@ -9976,11 +10495,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                            half: NO];
 }
 
-- (void) drawCrossLines:(float[2][3]) sft
-                    ctx:(CGLContextObj) cgl_ctx
-          perpendicular:(BOOL) perpendicular
-              withShift:(double) shift
-                   half:(BOOL) half
+- (void) drawCrossLines: (float[2][3]) sft
+                    ctx: (CGLContextObj) cgl_ctx
+          perpendicular: (BOOL) perpendicular
+              withShift: (double) shift
+                   half: (BOOL) half
 {
 	return [self drawCrossLines: sft
                             ctx: cgl_ctx
@@ -9991,12 +10510,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 }
 
 - (void) drawCrossLines: (float[2][3]) sft
-                    ctx: (CGLContextObj) cgl_ctx
+                    ctx: (CGLContextObj) cgl_ctx  // do we really need this parameter ?
           perpendicular: (BOOL) perpendicular
               withShift: (double) shift
                    half: (BOOL) half
               showPoint: (BOOL) showPoint
 {
+    //NSLog(@"%s %d, showPoint:%d, perpendicular:%d", __FUNCTION__, __LINE__, showPoint, perpendicular);
 	float a[2] = {0, 0};	// perpendicular vector
 	float c[2][3];
 	
@@ -10006,7 +10526,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	if (perpendicular || shift != 0)
 	{
-		a[1] = c[ 0][ 0] - c[ 1][ 0];
+        NSLog(@"%s %d\n\t c[] %f, %f, %f, %f", __FUNCTION__, __LINE__,
+              c[0][0], c[0][1], c[1][0], c[1][1]);
+
+        a[1] = c[ 0][ 0] - c[ 1][ 0];
 		a[0] = c[ 0][ 1] - c[ 1][ 1];
 		
 		double t = a[ 1]*a[ 1] + a[ 0]*a[ 0];
@@ -10018,77 +10541,75 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         c[ 0][ 1] -= a[1]*shift;
 		c[ 1][ 0] += a[0]*shift;
         c[ 1][ 1] -= a[1]*shift;
+        NSLog(@"%s %d\n\t c[] %f, %f, %f, %f", __FUNCTION__, __LINE__, c[0][0], c[0][1], c[1][0], c[1][1]);
 	}
 	
 	if (showPoint)
 	{
         float mx = (c[ 0][ 0] + c[ 1][ 0]) / 2.;
         float my = (c[ 0][ 1] + c[ 1][ 1]) / 2.;
-        GLfloat x1 = scaleValue*(mx/curDCM.pixelSpacingX - curDCM.pwidth/2.);
-        GLfloat y1 = scaleValue*(my/curDCM.pixelSpacingY - curDCM.pheight/2.);
 
-#ifndef WITH_OPENGL_32
-        glEnable(GL_POINT_SMOOTH);
-#endif
-		glPointSize( 12 * self.window.backingScaleFactor);
-		
-		glBegin(GL_POINTS);
+        glm::vec2 pMarker(scaleValue*(mx/curDCM.pixelSpacingX - curDCM.pwidth/2.),
+                          scaleValue*(my/curDCM.pixelSpacingY - curDCM.pheight/2.));
+
+        NSMutableArray *pPointArray = [NSMutableArray array];
         {
-            glVertex2f( x1, y1);
+            [pPointArray addObject: [NSValue valueWithBytes:&pMarker objCType:@encode(glm::vec2)]];
         }
-		glEnd();
+
+        [self setShaderProgramOverlay_withMode_Point];
+        glPointSize( 12 * self.window.backingScaleFactor);
+        renderer_drawPoints([pPointArray copy]);
 	}
 	else
 	{
-        GLfloat x1 = scaleValue * (c[ 0][ 0]/curDCM.pixelSpacingX - curDCM.pwidth/2.);
-        GLfloat y1 = scaleValue * (c[ 0][ 1]/curDCM.pixelSpacingY - curDCM.pheight/2.);
-        GLfloat x2,y2;
-        if (half) {
-            x2 = y2 = 0.0f;
-        }
-        else {
-            x2 = scaleValue * (c[ 1][ 0]/curDCM.pixelSpacingX - curDCM.pwidth/2.);
-            y2 = scaleValue * (c[ 1][ 1]/curDCM.pixelSpacingY - curDCM.pheight/2.);
+        const int nPoints = 2;
+        NSPoint pMarker[nPoints];  // TODO: define glm::vec2 directly
+        pMarker[0] = NSMakePoint(scaleValue * (c[ 0][ 0]/curDCM.pixelSpacingX - curDCM.pwidth/2.),
+                                 scaleValue * (c[ 0][ 1]/curDCM.pixelSpacingY - curDCM.pheight/2.));
+        if (half)
+            pMarker[1] = NSZeroPoint;
+        else
+            pMarker[1] = NSMakePoint(scaleValue * (c[ 1][ 0]/curDCM.pixelSpacingX - curDCM.pwidth/2.),
+                                     scaleValue * (c[ 1][ 1]/curDCM.pixelSpacingY - curDCM.pheight/2.));
+        
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (int i=0; i<nPoints; i++) {
+            glm::vec2 a(pMarker[i].x, pMarker[i].y);
+            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
         }
         
 		glEnable(GL_LINE_SMOOTH);
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable(GL_BLEND);
-		glBegin(GL_LINES);
-        {
-			glVertex2f( x1, y1);
-			glVertex2f( x2, y2);
-        }
-		glEnd();
+        [self setShaderProgramOverlayLine]; // Issue #i23 ?
+        renderer_drawLine_xy([pArray copy], GL_LINES);
 	}
-	
 	
 	if (perpendicular)
 	{
-        GLfloat x1 = scaleValue * ((c[0][0] + a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX - curDCM.pwidth/2.);
-        GLfloat y1 = scaleValue * ((c[0][1] - a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight/2.);
-        GLfloat x2 = scaleValue * ((c[1][0] + a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX - curDCM.pwidth/2.);
-        GLfloat y2 = scaleValue * ((c[1][1] - a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight/2.);
-        
-        GLfloat x3 = scaleValue * ((c[0][0] - a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX - curDCM.pwidth/2.);
-        GLfloat y3 = scaleValue * ((c[0][1] + a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight/2.);
-        GLfloat x4 = scaleValue * ((c[1][0] - a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX - curDCM.pwidth/2.);
-        GLfloat y4 = scaleValue * ((c[1][1] + a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight/2.);
+        const int nPoints = 4;
+        glm::vec2 pMarker[nPoints];
+        pMarker[0] = glm::vec2(scaleValue * ((c[0][0] + a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX - curDCM.pwidth/2.),
+                               scaleValue * ((c[0][1] - a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight/2.));
 
-		glLineWidth(1.0 * self.window.backingScaleFactor);
-		glBegin(GL_LINES);
-        {
-			glVertex2f( x1, y1);
-			glVertex2f( x2, y2);
-        }
-		glEnd();
-		
-		glBegin(GL_LINES);
-        {
-			glVertex2f( x3, y3);
-			glVertex2f( x4, y4);
-        }
-		glEnd();
+        pMarker[1] = glm::vec2(scaleValue * ((c[1][0] + a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX - curDCM.pwidth/2.),
+                               scaleValue * ((c[1][1] - a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight/2.));
+        
+        pMarker[2] = glm::vec2(scaleValue * ((c[0][0] - a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX - curDCM.pwidth/2.),
+                               scaleValue * ((c[0][1] + a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight/2.));
+
+        pMarker[3] = glm::vec2(scaleValue * ((c[1][0] - a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX - curDCM.pwidth/2.),
+                               scaleValue * ((c[1][1] + a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight/2.));
+
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (int i=0; i<nPoints; i++)
+            [pArray addObject: [NSValue valueWithBytes:&pMarker[i] objCType:@encode(glm::vec2)]];
+
+        [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
+        renderer_drawLine_xy([pArray copy], GL_LINES);
+
+//        renderer_setProgram(scene.overlayProgram.programHandle, __LINE__);
 	}
 }
 
@@ -10137,102 +10658,154 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //	return c;
 //}
 
-////////////////////////////////////////////////////////////////////////////////
-//#define BARPOSX1 50.f
-//#define BARPOSX2 20.f
+#pragma mark - CLUT
 
-#define BARPOSX1    62.f
-#define BARPOSX2    32.f
+//#define BAR_POS_FROM_X    50.f
+//#define BAR_POS_TO_X      20.f
 
-#define BBARPOSX1   55.f
-#define BBARPOSX2   25.f
+// Margins from right
+#define BAR_POS_FROM_X      62.f
+#define BAR_POS_TO_X        32.f
+
+#define B_BAR_POS_FROM_X    55.f
+#define B_BAR_POS_TO_X      25.f
 
 - (void) drawClutBar
 {
+//    NSLog(@"%s %d, class:%@ %p, drawingFrameRect:%@", __FUNCTION__, __LINE__,
+//          [self class], self, NSStringFromRect(drawingFrameRect));
+
+    const long yy[3] = {-133, 0, 120};
     long clutBars = CLUTBARS;
     float sf = self.window.backingScaleFactor;
 
+    [self reset_scale_overlay_MV: drawingFrameRect.size];
+
+#ifndef WITH_OPENGL_32
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
-    
-    glLoadIdentity(); // eliminate rotation
-    glScalef( 2.0f / (drawingFrameRect.size.width),
-             -2.0f / (drawingFrameRect.size.height),
-              1.0f); // scale to port per pixel scale
+#endif
 
-    if (clutBars == CLUT_BAR_ORIGIN || clutBars == CLUT_BAR_BOTH)
+    if (clutBars == CLUT_BAR_ORIGIN ||
+        clutBars == CLUT_BAR_BOTH)
     {
-        float heighthalf = drawingFrameRect.size.height/2 - 1;
-        float widthhalf  = drawingFrameRect.size.width/2 - 1;
+        float clutBarX = drawingFrameRect.size.width/2 - 1;
+        float clutBarY = 0; //drawingFrameRect.size.height - 1;
         NSString *tempString = nil;
         
-        heighthalf = 0;
+        //heighthalf = 0; //???
         
-//        glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+//        glLoadIdentity();
 //        glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f);
-        
-        glLineWidth(1.0 * sf);
-        glBegin(GL_LINES);
-        {
-            for (int i = 0; i < 256; i++) {
-                glColor3ub ( redTable[ i], greenTable[ i], blueTable[ i]);
                 
-                glVertex2f(  widthhalf - BARPOSX1*sf, heighthalf - (-128.f*sf + i*sf));
-                glVertex2f(  widthhalf - BARPOSX2*sf, heighthalf - (-128.f*sf + i*sf));
-            }
-        }
-        glEnd();
+        NSMutableArray *arrayColorMap = [NSMutableArray array];
+        for (int i = 0; i < 256; i++) {
+            Point_xy_rgb pcFrom;
 
-        glColor3ub ( 128, 128, 128);
-        glBegin(GL_LINES);
-        {
-            glVertex2f( widthhalf - BARPOSX1*sf, heighthalf - (-128.f)*sf);
-            glVertex2f( widthhalf - BARPOSX2*sf, heighthalf - (-128.f)*sf);
-            
-            glVertex2f( widthhalf - BARPOSX1*sf, heighthalf - 127.f*sf);
-            glVertex2f( widthhalf - BARPOSX2*sf, heighthalf - 127.f*sf);
-            
-            glVertex2f( widthhalf - BARPOSX1*sf, heighthalf - (-128.f)*sf);
-            glVertex2f( widthhalf - BARPOSX1*sf, heighthalf - ( 127.f)*sf);
-            
-            glVertex2f( widthhalf - BARPOSX2*sf, heighthalf - (-128.f)*sf);
-            glVertex2f( widthhalf - BARPOSX2*sf, heighthalf - ( 127.f)*sf);
+#ifdef USE_COLOR_UB
+            pcFrom.c = glm::vec3(redTable[ i], greenTable[ i], blueTable[ i]);
+#else
+            pcFrom.c = glm::vec3(redTable[ i]/255., greenTable[ i]/255., blueTable[ i]/255.);
+#endif
+            // 0,0 is at the center of the screen
+            pcFrom.p.x = clutBarX - BAR_POS_FROM_X*sf;
+            pcFrom.p.y = clutBarY - (-128.f*sf + i*sf);
+
+            Point_xy_rgb pcTo;
+            pcTo.c = pcFrom.c; // use the same color for the second point
+            pcTo.p.x = clutBarX - BAR_POS_TO_X*sf;
+            pcTo.p.y = pcFrom.p.y;
+
+            [arrayColorMap addObject: [NSValue valueWithBytes:&pcFrom objCType:@encode(Point_xy_rgb)]];
+            [arrayColorMap addObject: [NSValue valueWithBytes:&pcTo objCType:@encode(Point_xy_rgb)]];
         }
-        glEnd();
+
+        [self setShaderProgramForLineWidth: 1.0 * sf];
+        renderer_drawLines_xy_rgb([arrayColorMap copy]);
+
+#pragma mark grey border
+
+#ifdef USE_COLOR_UB
+        glColor3ub( 128, 128, 128);
+#else
+        renderer_set_rgb(0.5, 0.5, 0.5);
+#endif
+
+        const int nPoints = 8;
+        glm::vec2 pGreyBorder[nPoints];
         
-        if (curWW < 50 )
+        glm::vec2 tl(clutBarX - BAR_POS_TO_X*sf,   clutBarY - (-128.f)*sf);
+        glm::vec2 br(clutBarX - BAR_POS_FROM_X*sf, clutBarY - ( 127.f)*sf);
+
+        // Hor
+        pGreyBorder[0] = glm::vec2(br.x, tl.y);
+        pGreyBorder[1] = tl;
+        
+        // Hor
+        pGreyBorder[2] = br;
+        pGreyBorder[3] = glm::vec2(tl.x, br.y);
+        
+        // Ver
+        pGreyBorder[4] = glm::vec2(br.x, tl.y);
+        pGreyBorder[5] = br;
+        
+        // Ver
+        pGreyBorder[6] = tl;
+        pGreyBorder[7] = glm::vec2(tl.x, br.y);
+
         {
-            tempString = [NSString stringWithFormat: @"%0.4f", curWL - curWW/2];
-            [self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - -133*sf rightAlignment: YES useStringTexture: NO];
-            
-            tempString = [NSString stringWithFormat: @"%0.4f", curWL];
-            [self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
-            
-            tempString = [NSString stringWithFormat: @"%0.4f", curWL + curWW/2];
-            [self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - 120*sf rightAlignment: YES useStringTexture: NO];
+            NSMutableArray *pArray = [NSMutableArray array];
+            for (int i=0; i<nPoints; i++)
+                [pArray addObject: [NSValue valueWithBytes:&pGreyBorder[i] objCType:@encode(glm::vec2)]];
+
+            renderer_drawLine_xy([pArray copy], GL_LINES);
         }
-        else
-        {
-            tempString = [NSString stringWithFormat: @"%0.0f", curWL - curWW/2];
-            [self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - -133*sf rightAlignment: YES useStringTexture: NO];
-            
-            tempString = [NSString stringWithFormat: @"%0.0f", curWL];
-            [self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
-            
-            tempString = [NSString stringWithFormat: @"%0.0f", curWL + curWW/2];
-            [self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - 120*sf rightAlignment: YES useStringTexture: NO];
+        
+#pragma mark Draw legend text on the right side of the tile, left of the CLUT bar
+
+#ifdef WITH_OPENGL_32
+        [self setShaderProgramFont];
+#endif
+        NSString *format = @"%0.0f";
+        if (curWW < 50 )
+            format = @"%0.3f";
+
+        float w[3] = {
+            curWL - curWW/2,
+            curWL,
+            curWL + curWW/2};
+
+#ifdef WITH_OPENGL_32
+        long x = drawingFrameRect.size.width - BAR_POS_FROM_X*sf;
+#else
+        long x = clutBarX - BAR_POS_FROM_X*sf;
+#endif
+
+        for (int i=0; i<3; i++) {
+#ifdef WITH_OPENGL_32
+            long y = drawingFrameRect.size.height/2 - yy[i]*sf;
+#else
+            long y = clutBarY - yy[i]*sf;
+#endif
+            tempString = [NSString stringWithFormat: format, w[i]];
+            [self DrawNSStringGL: tempString
+                                : fontListGL
+                                : x
+                                : y
+                  rightAlignment: YES
+                useStringTexture: NO];
         }
     } //clutBars == CLUT_BAR_ORIGIN || clutBars == CLUT_BAR_BOTH
     
-    if (blendingView)
+    // Draw blending CLUT bar on the left side of the window
+    if (blendingView) // TODO: avoid repeating the code
     {
         if (clutBars == CLUT_BAR_FUSED || clutBars == CLUT_BAR_BOTH)
         {
             unsigned char *bred = nil, *bgreen = nil, *bblue = nil;
-            float heighthalf = drawingFrameRect.size.height/2 - 1;
-            float widthhalf = drawingFrameRect.size.width/2 - 1;
-            float bwl, bww;
+            float clutBarX = drawingFrameRect.size.width/2 - 1;  // TBC
+            float clutBarY = 0; //drawingFrameRect.size.height/2 - 1; // TBC
             NSString *tempString = nil;
             
             if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
@@ -10247,101 +10820,149 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             else
                 [blendingView getCLUT:&bred :&bgreen :&bblue];
             
-            heighthalf = 0;
-            
-            glLineWidth(1.0 * sf);
+            //heighthalf = 0; // ??? TODO:
+        
+//#ifdef WITH_OPENGL_32
+//            renderer_setProgram(scene.overlayProgram.programHandle, __LINE__);
+//#endif
+            [self setShaderProgramForLineWidth: 1.0 * sf];
 
             if (bred)
             {
+#ifdef WITH_OPENGL_32
+                NSMutableArray *arrayColorMap = [NSMutableArray array];
+                for (int i = 0; i < 256; i++) {
+                    Point_xy_rgb pcFrom;
+                                    
+#ifdef USE_COLOR_UB
+                    pcFrom.c = glm::vec3( bred[ i], bgreen[ i], bblue[ i]);
+#else
+                    pcFrom.c = glm::vec3( bred[ i]/255., bgreen[ i]/255., bblue[ i]/255.);
+#endif
+                    // 0,0 is at the center of the screen
+                    pcFrom.p = glm::vec2(-clutBarX + B_BAR_POS_FROM_X*sf,
+                                          clutBarY - (-128.f*sf + i*sf));
+
+                    Point_xy_rgb pcTo;
+                    pcTo.c = pcFrom.c; // use the same color for the second point
+                    pcTo.p = glm::vec2(-clutBarX + B_BAR_POS_TO_X*sf,
+                                        clutBarY - (-128.f*sf + i*sf));
+                    
+                    [arrayColorMap addObject: [NSValue valueWithBytes:&pcFrom objCType:@encode(Point_xy_rgb)]];
+                    [arrayColorMap addObject: [NSValue valueWithBytes:&pcTo objCType:@encode(Point_xy_rgb)]];
+                }
+                
+                renderer_drawLines_xy_rgb([arrayColorMap copy]);
+#else
                 glBegin(GL_LINES);
                 {
                     for (int i = 0; i < 256; i++)
                     {
                         glColor3ub( bred[ i], bgreen[ i], bblue[ i]);
                         
-                        glVertex2f( -widthhalf + BBARPOSX1*sf, heighthalf - (-128.f*sf + i*sf));
-                        glVertex2f( -widthhalf + BBARPOSX2*sf, heighthalf - (-128.f*sf + i*sf));
+                        glVertex2f( -clutBarX + B_BAR_POS_FROM_X*sf, clutBarY - (-128.f*sf + i*sf));
+                        glVertex2f( -clutBarX + B_BAR_POS_TO_X*sf,   clutBarY - (-128.f*sf + i*sf));
                     }
                 }
                 glEnd();
+#endif
             }
 
+            // Draw gray box around blended CLUT
+            
+#ifdef WITH_OPENGL_32
+  #ifdef USE_COLOR_UB
+            glColor3ub( 128, 128, 128);
+  #else
+            renderer_set_rgb(0.5, 0.5, 0.5);
+  #endif
+            const int nPoints = 8;
+            glm::vec2 pGreyBorder[nPoints];
+            
+            glm::vec2 tl = glm::vec2(-clutBarX + B_BAR_POS_TO_X*sf,   clutBarY - (-128.f)*sf);
+            glm::vec2 br = glm::vec2(-clutBarX + B_BAR_POS_FROM_X*sf, clutBarY - (127.f)*sf);
+            
+            // Hor
+            pGreyBorder[0] = glm::vec2(br.x, tl.y);
+            pGreyBorder[1] = tl;
+            
+            // Hor
+            pGreyBorder[2] = br;
+            pGreyBorder[3] = glm::vec2(tl.x, br.y);
+            
+            // Ver
+            pGreyBorder[4] = glm::vec2(br.x, tl.y);
+            pGreyBorder[5] = br;
+            
+            // Ver
+            pGreyBorder[6] = tl;
+            pGreyBorder[7] = glm::vec2(tl.x, br.y);
+            
+            {
+                NSMutableArray *pArray = [NSMutableArray array];
+                for (int i=0; i<nPoints; i++)
+                    [pArray addObject: [NSValue valueWithBytes:&pGreyBorder[i] objCType:@encode(glm::vec2)]];
+
+                renderer_drawLine_xy([pArray copy], GL_LINES); // nPoints/2 lines
+            }
+#else
             glColor3ub( 128, 128, 128);
             glBegin(GL_LINES);
             {
-                glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - (-128.f)*sf);
-                glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - (-128.f)*sf);
+                glVertex2f(  -clutBarX + B_BAR_POS_FROM_X*sf, clutBarY - (-128.f)*sf);
+                glVertex2f(  -clutBarX + B_BAR_POS_TO_X*sf, clutBarY - (-128.f)*sf);
                 
-                glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - (127.f)*sf);
-                glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - (127.f)*sf);
+                glVertex2f(  -clutBarX + B_BAR_POS_FROM_X*sf, clutBarY - (127.f)*sf);
+                glVertex2f(  -clutBarX + B_BAR_POS_TO_X*sf, clutBarY - (127.f)*sf);
                 
-                glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - (-128.f)*sf);
-                glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - ( 127.f)*sf);
+                glVertex2f(  -clutBarX + B_BAR_POS_FROM_X*sf, clutBarY - (-128.f)*sf);
+                glVertex2f(  -clutBarX + B_BAR_POS_FROM_X*sf, clutBarY - ( 127.f)*sf);
                 
-                glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - (-128.f)*sf);
-                glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - ( 127.f)*sf);
+                glVertex2f(  -clutBarX + B_BAR_POS_TO_X*sf, clutBarY - (-128.f)*sf);
+                glVertex2f(  -clutBarX + B_BAR_POS_TO_X*sf, clutBarY - ( 127.f)*sf);
             }
             glEnd();
+#endif
             
+            // Draw legend text on the left side of the window, right of the CLUT
+#ifdef WITH_OPENGL_32
+            [self setShaderProgramFont];
+#endif
+            float bwl, bww;
             [blendingView getWLWW: &bwl :&bww];
-            
-            long x = -widthhalf + BBARPOSX1*sf + 4*sf;
-            long yy[3] = {-133, 0, 120};
-            float bw[3] = {bwl - bww/2, bwl, bwl + bww/2};
-            NSString *format;
-            if (curWW < 50)
-            {
+
+            NSString *format = @"%0.0f";
+            if (bww < 50)
                 format = @"%0.4f";
-                tempString = [NSString stringWithFormat: format, bwl - bww/2];
-                [self DrawNSStringGL: tempString
-                                    : fontListGL
-                                    : x
-                                    : heighthalf - (-133)*sf];
-                
-                tempString = [NSString stringWithFormat: format, bwl];
-                [self DrawNSStringGL: tempString
-                                    : fontListGL
-                                    : x
-                                    : heighthalf - 0];
-                
-                tempString = [NSString stringWithFormat: format, bwl + bww/2];
-                [self DrawNSStringGL: tempString
-                                    : fontListGL
-                                    : x
-                                    : heighthalf - 120*sf];
-            }
-            else
-            {
-                format = @"%0.0f";
-                tempString = [NSString stringWithFormat: format, bwl - bww/2];
-                [self DrawNSStringGL: tempString
-                                    : fontListGL
-                                    : x
-                                    : heighthalf - (-133)*sf];
-                
-                tempString = [NSString stringWithFormat: format, bwl];
-                [self DrawNSStringGL: tempString
-                                    : fontListGL
-                                    : x
-                                    : heighthalf - 0];
-                
-                tempString = [NSString stringWithFormat: format, bwl + bww/2];
-                [self DrawNSStringGL: tempString
-                                    : fontListGL
-                                    : x
-                                    : heighthalf - 120*sf];
-            }
-            for (int i=0; i<3; i++)
-            {
+
+            float bw[3] = {
+                bwl - bww/2,
+                bwl,
+                bwl + bww/2};
+
+#ifdef WITH_OPENGL_32
+            long x = (B_BAR_POS_FROM_X+4)*sf;
+#else
+            long x = -clutBarX + (B_BAR_POS_FROM_X+4)*sf; // TBC
+#endif
+
+            for (int i=0; i<3; i++) {
+#ifdef WITH_OPENGL_32
+                long y = drawingFrameRect.size.height/2 - yy[i]*sf;
+#else
+                long y= clutBarY - yy[i]*sf;
+#endif
                 tempString = [NSString stringWithFormat: format, bw[i]];
                 [self DrawNSStringGL: tempString
                                     : fontListGL
                                     : x
-                                    : heighthalf - yy[i]*sf];
+                                    : y];
             }
         }
     } //blendingView
 }
+
+#pragma mark - Ruler
 
 // PIXELSPACING LINES - RULER
 // Draw one horizontal and one vertical ruler with 11 marks each
@@ -10365,7 +10986,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         rr.origin.y += rr.size.height/2.;
     }
     else
-        rr.origin = NSMakePoint( 0, 0);
+        rr.origin = NSZeroPoint;
     
     float k1, k2;
     
@@ -10384,136 +11005,446 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     else
     {
         k1 = k2 = 1.0;
-        NSLog(@"DCMView.mm:%d %s Skip drawing ruler", __LINE__, __PRETTY_FUNCTION__);
+#ifndef NDEBUG
+        NSLog(@"%s %d, Skip", __PRETTY_FUNCTION__, __LINE__);
+#endif
         return;
     }
     
+#define NUM_POINTS_RULER    (2*2*(1+11))
+    glm::vec2 pRuler[NUM_POINTS_RULER];
+    int ii=0;
 
-    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if (cgl_ctx == nil)
-        return;
-    
-    glColor3f(0.0f, 1.0f, 0.0f);
-    glLineWidth(1.0 * sf);
-    glBegin(GL_LINES);
+    // horiz. ruler
+    pRuler[ii++] = glm::vec2(NSMinX(rr) + scaleValue * (-k1/curDCM.pixelSpacingX),
+                             NSMidY(rr) - yOffset);
+    pRuler[ii++] = glm::vec2(NSMinX(rr) + scaleValue * (k1/curDCM.pixelSpacingX),
+                             NSMidY(rr) - yOffset);
+
+    // vert. ruler
+    pRuler[ii++] = glm::vec2(NSMidX(rr) - NSWidth(rr) + xOffset,
+                             NSMinY(rr) + scaleValue * (-k1/curDCM.pixelSpacingY*curDCM.pixelRatio));
+    pRuler[ii++] = glm::vec2(NSMidX(rr) - NSWidth(rr) + xOffset,
+                             NSMinY(rr) + scaleValue * (k1/curDCM.pixelSpacingY*curDCM.pixelRatio));
+
+    for (short i = -5; i<=5; i++)
     {
-        // horiz. ruler
-        glVertex2f(rr.origin.x + scaleValue  * (-k1/curDCM.pixelSpacingX),
-                   rr.origin.y + rr.size.height/2 - yOffset);
-        glVertex2f(rr.origin.x + scaleValue  * (k1/curDCM.pixelSpacingX),
-                   rr.origin.y + rr.size.height/2 - yOffset);
+        short length = (i % 5 == 0) ? 10 : 5;
+        length *= sf;
         
-        // vert. ruler
-        glVertex2f(rr.origin.x + -rr.size.width/2 + xOffset,
-                   rr.origin.y + scaleValue  * (-k1/curDCM.pixelSpacingY*curDCM.pixelRatio));
-        glVertex2f(rr.origin.x + -rr.size.width/2 + xOffset,
-                   rr.origin.y + scaleValue  * (k1/curDCM.pixelSpacingY*curDCM.pixelRatio));
+        // Marks for horiz. ruler
+        pRuler[ii++] = glm::vec2(rr.origin.x + i*scaleValue *k2/curDCM.pixelSpacingX,
+                                 NSMidY(rr) - yOffset);
+        pRuler[ii++] = glm::vec2(rr.origin.x + i*scaleValue *k2/curDCM.pixelSpacingX,
+                                 NSMidY(rr) - yOffset - length);
         
-        for (short i = -5; i<=5; i++)
-        {
-            short length = (i % 5 == 0) ? 10 : 5;
-            length *= sf;
-            
-            // Marks for horiz. ruler
-            glVertex2f(rr.origin.x + i*scaleValue *k2/curDCM.pixelSpacingX,
-                       rr.origin.y + rr.size.height/2 - yOffset);
-            glVertex2f(rr.origin.x + i*scaleValue *k2/curDCM.pixelSpacingX,
-                       rr.origin.y + rr.size.height/2 - yOffset - length);
-            
-            // Marks for vert. ruler
-            glVertex2f(rr.origin.x + -rr.size.width/2 + xOffset + length,
-                       rr.origin.y + i* scaleValue *k2/curDCM.pixelSpacingY*curDCM.pixelRatio);
-            glVertex2f(rr.origin.x + -rr.size.width/2 + xOffset,
-                       rr.origin.y + i* scaleValue * k2/curDCM.pixelSpacingY*curDCM.pixelRatio);
-        }
+        // Marks for vert. ruler
+        pRuler[ii++] = glm::vec2(NSMidX(rr) - NSWidth(rr) + xOffset + length,
+                                 NSMinY(rr) + i* scaleValue *k2/curDCM.pixelSpacingY*curDCM.pixelRatio);
+        pRuler[ii++] = glm::vec2(NSMidX(rr) - NSWidth(rr) + xOffset,
+                                 NSMinY(rr) + i* scaleValue * k2/curDCM.pixelSpacingY*curDCM.pixelRatio);
     }
-    glEnd();
+
+    assert(ii==NUM_POINTS_RULER);
+
+    NSMutableArray *pArray = [NSMutableArray array];
+
+    for (int i=0; i<NUM_POINTS_RULER; i++)
+         [pArray addObject: [NSValue valueWithBytes:&pRuler[i] objCType:@encode(glm::vec2)]];
+
+    [self setShaderProgramForLineWidth: 1.0 * sf]; // and select program
+    renderer_set_rgb(0.0f, 1.0f, 0.0f); // green
+    renderer_drawLine_xy([pArray copy], GL_LINES);
 }
+
+#pragma mark -
+
+// Draw a dot line if the raw data overflows the displayed view
+- (void) drawOverflowLines
+{
+    NSRect dstRect = [curDCM usefulRectWithRotation: self.rotation
+                                              scale: scaleValue
+                                           xFlipped: xFlipped
+                                           yFlipped: yFlipped];
+
+    NSPoint oo = [DCMPix rotatePoint: [self origin]
+                         aroundPoint: NSZeroPoint
+                               angle: glm::radians(-self.rotation)];
+
+    dstRect.origin = NSMakePoint(
+            drawingFrameRect.size.width/2  + oo.x - dstRect.size.width/2,
+            drawingFrameRect.size.height/2 - oo.y - dstRect.size.height/2);
+    
+    const float margin = 5.0f;
+    
+    if ((NSMinX(dstRect) > -margin) && // left
+        (NSMinY(dstRect) > -margin) && // top
+        (NSMaxX(dstRect) < drawingFrameRect.size.width + margin) && // right
+        (NSMaxY(dstRect) < drawingFrameRect.size.height + margin)) // bottom
+    {
+        return; // no overflows
+    }
+
+    float sf = self.window.backingScaleFactor;
+    float heighthalf = drawingFrameRect.size.height/2;
+    float widthhalf = drawingFrameRect.size.width/2;
+    float offset = 4 * sf;
+                        
+#ifdef WITH_OPENGL_32
+    NSMutableArray *pArray = [NSMutableArray array];
+    renderer_setProgram(scene.overlayLineProgram.programHandle, __LINE__);
+#endif
+    
+    [self setShaderProgramForLineWidth: 3.0 * sf];
+    renderer_set_rgba(0, 1, 0.0f, 0.8f); // green 0.8
+
+    GLint stippleFactor = 4 * sf; // each bit in the pattern is used these many times before the next bit in the pattern is used.
+
+#ifdef WITH_OPENGL_32
+    #define STIPPLE_BY_CPU // If commented out it has to be implemented in a geometry shader
+#else
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+
+    glPushAttrib( GL_ENABLE_BIT);
+    GLushort stipplePattern = 0xAAAA;
+    glLineStipple(stippleFactor, stipplePattern);
+    glEnable(GL_LINE_STIPPLE);
+#endif
+    
+    // Left
+    if (NSMinX(dstRect) <= -margin)
+    {
+        float leftX = -widthhalf + offset;
+        float fromY = NSMinY(dstRect) - heighthalf;
+        float toY = NSMaxY(dstRect) - heighthalf;
+        glm::vec2 pLeftLine[2];
+        pLeftLine[0] = glm::vec2(leftX, fromY);
+        pLeftLine[1] = glm::vec2(leftX, toY);
+#ifdef WITH_OPENGL_32
+        #ifdef STIPPLE_BY_CPU
+        float lineLength = NSHeight(dstRect);
+        for (int i=0; i<lineLength; i += 2*stippleFactor) {
+            glm::vec2 pFrom(leftX, fromY + i);
+            glm::vec2 pTo(leftX, fromY + i + stippleFactor);
+            [pArray addObject: [NSValue valueWithBytes:&pFrom objCType:@encode(glm::vec2)]];
+            [pArray addObject: [NSValue valueWithBytes:&pTo objCType:@encode(glm::vec2)]];
+        }
+        #else
+        for (int i=0; i<2; i++)
+            [pArray addObject: [NSValue valueWithBytes:&pLeftLine[i] objCType:@encode(glm::vec2)]];
+        #endif
+#else
+        glBegin(GL_LINES);
+        {
+            for (int i=0; i<2; i++)
+                glVertex2f(pLeftLine[i].x, pLeftLine[i].y);
+        }
+        glEnd();
+#endif
+    }
+    
+    // Top
+    if (NSMinY(dstRect) <= -margin)
+    {
+        float topY = -heighthalf + offset;
+        float fromX = NSMinX(dstRect) - widthhalf;
+        float toX = NSMaxX(dstRect) - widthhalf;
+        glm::vec2 pTopLine[2];
+        pTopLine[0] = glm::vec2(fromX, topY);
+        pTopLine[1] = glm::vec2(toX, topY);
+#ifdef WITH_OPENGL_32
+        #ifdef STIPPLE_BY_CPU
+        float lineLength = NSWidth(dstRect);
+        for (int i=0; i<lineLength; i += 2*stippleFactor) {
+            glm::vec2 pFrom(fromX + i, topY);
+            glm::vec2 pTo(fromX + i + stippleFactor, topY);
+            [pArray addObject: [NSValue valueWithBytes:&pFrom objCType:@encode(glm::vec2)]];
+            [pArray addObject: [NSValue valueWithBytes:&pTo objCType:@encode(glm::vec2)]];
+        }
+        #else
+        for (int i=0; i<2; i++)
+            [pArray addObject: [NSValue valueWithBytes:&pTopLine[i] objCType:@encode(glm::vec2)]];
+        #endif
+#else
+        glBegin(GL_LINES);
+        {
+            for (int i=0; i<2; i++)
+                glVertex2f(pTopLine[i].x, pTopLine[i].y);
+        }
+        glEnd();
+#endif
+    }
+    
+    // Right
+    if (NSMaxX(dstRect) >= drawingFrameRect.size.width + margin)
+    {
+        float rightX = widthhalf - offset;
+        float fromY = NSMinY(dstRect) - heighthalf;
+        float toY = NSMaxY(dstRect) - heighthalf;
+        glm::vec2 pRightLine[2];
+        pRightLine[0] = glm::vec2(rightX, fromY);
+        pRightLine[1] = glm::vec2(rightX, toY);
+#ifdef WITH_OPENGL_32
+        #ifdef STIPPLE_BY_CPU
+        float lineLength = NSHeight(dstRect);
+        for (int i=0; i<lineLength; i += 2*stippleFactor) {
+            glm::vec2 pFrom(rightX, fromY + i);
+            glm::vec2 pTo(rightX, fromY + i + stippleFactor);
+            [pArray addObject: [NSValue valueWithBytes:&pFrom objCType:@encode(glm::vec2)]];
+            [pArray addObject: [NSValue valueWithBytes:&pTo objCType:@encode(glm::vec2)]];
+        }
+        #else
+        for (int i=0; i<2; i++)
+            [pArray addObject: [NSValue valueWithBytes:&pRightLine[i] objCType:@encode(glm::vec2)]];
+        #endif
+#else
+        glBegin(GL_LINES);
+        {
+            for (int i=0; i<2; i++)
+                glVertex2f(pRightLine[i].x, pRightLine[i].y);
+        }
+        glEnd();
+#endif
+    }
+    
+    // Bottom
+    if (NSMaxY(dstRect) >= drawingFrameRect.size.height + margin)
+    {
+        float bottomY = heighthalf - offset;
+        float fromX = NSMinX(dstRect) - widthhalf;
+        float toX = NSMaxX(dstRect) - widthhalf;
+        glm::vec2 pBottomLine[2];
+        pBottomLine[0] = glm::vec2(fromX, bottomY);
+        pBottomLine[1] = glm::vec2(toX, bottomY);
+#ifdef WITH_OPENGL_32
+        #ifdef STIPPLE_BY_CPU
+        float lineLength = NSWidth(dstRect);
+        for (int i=0; i<lineLength; i += 2*stippleFactor) {
+            glm::vec2 pFrom(fromX + i, bottomY);
+            glm::vec2 pTo(fromX + i + stippleFactor, bottomY);
+            [pArray addObject: [NSValue valueWithBytes:&pFrom objCType:@encode(glm::vec2)]];
+            [pArray addObject: [NSValue valueWithBytes:&pTo objCType:@encode(glm::vec2)]];
+        }
+        #else
+        for (int i=0; i<2; i++)
+            [pArray addObject: [NSValue valueWithBytes:&pBottomLine[i] objCType:@encode(glm::vec2)]];
+        #endif
+#else
+        glBegin(GL_LINES);
+        {
+            for (int i=0; i<2; i++)
+                glVertex2f(pBottomLine[i].x, pBottomLine[i].y);
+        }
+        glEnd();
+#endif
+    }
+    
+#ifdef WITH_OPENGL_32
+    renderer_drawLine_xy([pArray copy], GL_LINES);
+#endif
+   
+    // Restore
+    [self setShaderProgramForLineWidth: 1.0 * sf];
+#ifndef WITH_OPENGL_32
+    glPopAttrib();
+#endif
+}
+
+#pragma mark -
 
 - (void) drawKeyViewBox
 {
-    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if (cgl_ctx == nil)
-        return;
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
 
     float sf = self.window.backingScaleFactor;
     float heighthalf = drawingFrameRect.size.height/2 - 1;
     float widthhalf = drawingFrameRect.size.width/2 - 1;
 
-    GLfloat r,g,b;
-    GLfloat width;
-    
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+    //[self setShaderProgramOverlayLine];
 
     if (isKeyView &&
         [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController)
     {
-        r = 1.0f;     // KEY VIEW - RED BOX
-        g = b = 0.0f;
-        width = 2.0 * sf;
+        [self setShaderProgramForLineWidth: 2.0 * sf];
+        renderer_set_rgb(1.0f, 0.0f, 0.0f);  // KEY VIEW - red box
     }
     else {
-        r = g = b = 0.5f;
-        width = 1.0 * sf;
+        [self setShaderProgramForLineWidth: 1.0 * sf];
+        renderer_set_rgb(0.5f, 0.5f, 0.5f); // grey box
     }
-    
-    glColor3f(r, g, b);
-    glLineWidth(width);
-    glBegin(GL_LINE_LOOP);
+
+    const int nPoints = 4;
+    NSPoint pKeyBox[nPoints];
+    pKeyBox[0] = NSMakePoint(-widthhalf, -heighthalf);
+    pKeyBox[1] = NSMakePoint(-widthhalf,  heighthalf);
+    pKeyBox[2] = NSMakePoint( widthhalf,  heighthalf);
+    pKeyBox[3] = NSMakePoint( widthhalf, -heighthalf);
+
     {
-        glVertex2f( -widthhalf, -heighthalf);
-        glVertex2f( -widthhalf,  heighthalf);
-        glVertex2f(  widthhalf,  heighthalf);
-        glVertex2f(  widthhalf, -heighthalf);
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (int i=0; i<nPoints; i++) {
+            glm::vec2 a (pKeyBox[i].x, pKeyBox[i].y);
+            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+        }
+
+        renderer_drawLine_xy([pArray copy], GL_LINE_LOOP);
     }
-    glEnd();
-    glLineWidth(1.0 * sf);
+
+    // Restore
+#ifdef WITH_OPENGL_32
+    [self setShaderProgramOverlay];  // maybe superfluous
+#else
+    [self setShaderProgramForLineWidth: 1.0 * sf];
+#endif
 }
 
+// TODO: check if it's redundant, see also method drawKeyViewBox
+- (void) drawKeyViewBox2
+{
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+
+    float sf = self.window.backingScaleFactor;
+    float heighthalf = drawingFrameRect.size.height/2;
+    float widthhalf = drawingFrameRect.size.width/2;
+    
+    // red square
+    
+    [self setShaderProgramForLineWidth: 8.0 * sf];
+    renderer_set_rgba(1.0, 0.0, 0.0, 0.8); // red box
+    
+    const int nPoints = 4;
+    glm::vec2 pKeyBox[nPoints];
+    pKeyBox[0] = glm::vec2(-widthhalf, -heighthalf);
+    pKeyBox[1] = glm::vec2(-widthhalf,  heighthalf);
+    pKeyBox[2] = glm::vec2( widthhalf,  heighthalf);
+    pKeyBox[3] = glm::vec2( widthhalf, -heighthalf);
+    
+    NSMutableArray *pArray = [NSMutableArray array];
+    for (int i=0; i<nPoints; i++)
+        [pArray addObject: [NSValue valueWithBytes:&pKeyBox[i] objCType:@encode(glm::vec2)]];
+
+    renderer_drawLine_xy([pArray copy], GL_LINE_LOOP);
+
+    // Restore (superfluous ?)
+#ifdef WITH_OPENGL_32
+    [self setShaderProgramOverlay];
+#else
+    [self setShaderProgramForLineWidth: 1.0 * sf];
+#endif
+//  glDisable(GL_BLEND);
+}
+
+// Draw yellow line around edge for key Images only in 2D Viewer
+// TODO: check if it's redundant, see also method drawKeyViewBox and drawKeyViewBox2
+- (void) drawKeyViewBox3: (NSRect) rr
+{
+    glm::vec2 pYellowBorder[4];
+    pYellowBorder[0] = glm::vec2(0.0,                 0.0);
+    pYellowBorder[1] = glm::vec2(0.0,                 rr.size.height - 0.0);
+    pYellowBorder[2] = glm::vec2(rr.size.width - 0.0, rr.size.height - 0.0);
+    pYellowBorder[3] = glm::vec2(rr.size.width - 0.0, 0.0);
+
+    NSMutableArray *pArray = [NSMutableArray array];
+
+    for (int i=0; i<4; i++)
+        [pArray addObject: [NSValue valueWithBytes:&pYellowBorder[i] objCType:@encode(glm::vec2)]];
+
+    [self setShaderProgramForLineWidth: 8.0 * self.window.backingScaleFactor];
+    renderer_set_rgb(1.0f, 1.0f, 0.0f); // yellow
+    renderer_drawLine_xy([pArray copy], GL_LINE_LOOP);
+
+    // Restore
+    [self setShaderProgramOverlay]; // TBC: maybe not needed
+}
+
+#ifdef WITH_WAVEFORM_SUPPORT
 - (void)drawWaveform
 {
     checkOpenGLErrors(__LINE__);
 
+    NSSize size = drawingFrameRect.size;
+    
+    // The scene is now in sync with the standard Miele-LXIV DICOM viewer:
+    // the drawn pix would be in the rectangle at (-1,-1) with size (2,2)...
+    // since this is a waveform, we assume the dcmpix is square
+    float m = MIN(size.height, size.width);
+
+#ifdef WITH_OPENGL_32
+    NSLog(@"%s %d TODO:", __FUNCTION__, __LINE__);
+    glm::mat4 MV = glm::mat4(1.0);
+    MV = glm::scale(MV, glm::vec3( 2.0f / (xFlipped ? -(size.width) : size.width),
+                                  -2.0f / (yFlipped ? -(size.height) : size.height),
+                                   1.0f)); // scale to port per pixel scale
+    //MV = glm::rotate(MV, glm::radians(rotation), glm::vec3(0,0,1)); // no rotation for waveform
+    MV = glm::translate(MV, glm::vec3(origin.x , -origin.y, 0.0f));
+    if (curDCM.pixelRatio != 1.0)
+        MV = glm::scale(MV, glm::vec3( 1.f, curDCM.pixelRatio, 1.f)); // this is done for
+
+    MV = glm::scale(MV, glm::vec3(scaleValue/2*curDCM.pwidth, scaleValue/2*curDCM.pheight, 1.f));
+    
+    MV = glm::scale(MV, glm::vec3(size.width/m, size.height/m, 1)); // use the whole window, not just the part covered by the undrawn DCMPix...
+    // TODO: check that this can be used if we use regions...
+
+    MV = glm::translate(MV, glm::vec3(-1, -1, 0));
+    MV = glm::scale(MV, glm::vec3(2, 2, 1));
+    
+    [scene.imageProgram Bind];
+    [scene.imageProgram setUniformMatrix: glm::value_ptr(MV) name:"uModelViewM"];
+#else
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
-    
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    NSSize size = drawingFrameRect.size;
 	glScalef( 2.0f / (xFlipped ? -(size.width) : size.width),
              -2.0f / (yFlipped ? -(size.height) : size.height),
               1.0f); // scale to port per pixel scale
     
 //	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // no rotation for waveform
 	glTranslatef(origin.x , -origin.y, 0.0f);
-	if (curDCM.pixelRatio != 1.0)
+
+    if (curDCM.pixelRatio != 1.0)
         glScalef( 1.f, curDCM.pixelRatio, 1.f); // this is done for
     
     glScalef(scaleValue/2*curDCM.pwidth, scaleValue/2*curDCM.pheight, 1.f); // scaleValue/2*curDCM.pheight
 
-    // the scene is now in sync with the standard OsiriX DICOM viewer:
-    // the drawn pix would be in the rectangle at (-1,-1) with size (2,2)...
-    // since this is a waveform, we assume the dcmpix is square
-    float m = MIN(size.height, size.width);
     glScalef(size.width/m, size.height/m, 1); // use the whole window, not just the part covered by the undrawn DCMPix...
     // TODO: check that this can be used if we use regions...
     
     glTranslatef(-1, -1, 0);
     glScalef(2, 2, 1);
+#endif
     // (0,0,1,1) now covers the whole view, (0,0) is the top left
     
     // ok.... what is the current viewable range? so we can avoid drawing useless data...
-    GLint viewport[4];
-    GLdouble mvmatrix[16], projmatrix[16];
+    GLint viewport[4]; // XYWH
     glGetIntegerv(GL_VIEWPORT, viewport);
+#ifdef WITH_OPENGL_32
+    // TODO:
+    NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+#else
+    GLdouble mvmatrix[16];
     glGetDoublev(GL_MODELVIEW_MATRIX, mvmatrix);
+
+    GLdouble projmatrix[16];
     glGetDoublev(GL_PROJECTION_MATRIX, projmatrix);
+#endif
     /*  note viewport[3] is height of window in pixels  */
     GLdouble p0[3], p1[3];  /*  returned world x, y, z coords  */
 
-    gluUnProject(viewport[0], viewport[1], 0, mvmatrix, projmatrix, viewport, &p0[0], &p0[1], &p0[2]);
-    gluUnProject(viewport[0]+viewport[2], viewport[1]+viewport[3], 0, mvmatrix, projmatrix, viewport, &p1[0], &p1[1], &p1[2]);
+#ifdef WITH_OPENGL_32
+    // TODO:
+    NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+#else
+    gluUnProject(viewport[0], viewport[1], 0,
+                 mvmatrix, projmatrix, viewport,
+                 &p0[0], &p0[1], &p0[2]);
+
+    gluUnProject(viewport[0]+viewport[2], viewport[1]+viewport[3], 0,
+                 mvmatrix, projmatrix, viewport,
+                 &p1[0], &p1[1], &p1[2]);
+#endif
     // NSLog(@"X Range: %f -> %f = %f", p0[0], p1[0], p1[0]-p0[0]);
     
     DCMWaveformSequence* ws = [[curDCM.waveform sequences] objectAtIndex:0];
@@ -10529,33 +11460,62 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
     CGFloat h = 1./numberOfChannels;
     
+#ifdef WITH_OPENGL_32
+    // TODO: to be tested
+    NSMutableArray *pArray = [NSMutableArray array];
     for (size_t i = 1; i < numberOfChannels; ++i) {
-        glBegin(GL_LINE);
+        glm::vec2 pA(0, h*i);
+        glm::vec2 pB(1, h*i);
+        [pArray addObject: [NSValue valueWithBytes:&pA objCType:@encode(glm::vec2)]];
+        [pArray addObject: [NSValue valueWithBytes:&pB objCType:@encode(glm::vec2)]];
+    }
+
+    renderer_drawLine_xy([pArray copy], GL_LINES);
+#else
+    for (size_t i = 1; i < numberOfChannels; ++i) {
+        glBegin(GL_LINE);  // FIXME: Isn't GL_LINE a parameter for glPolygonMode() ?
         {
             glVertex2f(0,h*i);
             glVertex2f(1,h*i);
         }
         glEnd();
     }
+#endif
     
-    size_t step = sizeof(CGFloat)*numberOfChannels;
+    size_t step = sizeof(CGFloat)*numberOfChannels; // Value stored to 'step' during its initialization is never read
+
     for (size_t i = 0; i < numberOfChannels; ++i) {
         DCMWaveformChannelDefinition* cd = [ws.channelDefinitions objectAtIndex:i];
-        CGFloat min, max; [cd getValuesMin:&min max:&max];
+        CGFloat min, max;
+        [cd getValuesMin:&min max:&max];
         CGFloat mm = MAX(fabs(min), fabs(max));
-        CGFloat* v = &values[i];
+        CGFloat *v = &values[i];
+#ifdef WITH_OPENGL_32
+        {
+            NSMutableArray *pArray = [NSMutableArray array];
+            for (NSUInteger x = 0; x < numberOfSamples; ++x, v += numberOfChannels)
+            {
+                glm::vec2 a(1./numberOfSamples * x,
+                            h * (0.5+i) + (*v/mm/2) * h);
+                [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+            }
+
+            renderer_drawLine_xy([pArray copy], GL_LINE_STRIP);
+        }
+#else
         glBegin(GL_LINE_STRIP);
         {
             for (NSUInteger x = 0; x < numberOfSamples; ++x, v += numberOfChannels)
                 glVertex2d(1./numberOfSamples*x, h*(0.5+i)+(*v/mm/2)*h);
         }
         glEnd();
+#endif
     }
     
 //    // this is the test pattern.... a centered spiral...
 //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //    glEnable(GL_BLEND);
-//    glColor4f(249./255., 240./255., 140./255., 1);
+//    renderer_set_rgba(249./255., 240./255., 140./255., 1);
 //
 //    glBegin(GL_LINE_STRIP);
 //    {
@@ -10568,9 +11528,429 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //    }
 //    glEnd();
 }
+#endif // WITH_WAVEFORM_SUPPORT
 
-- (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
+#pragma mark -
+
+/* Creating Loupe textures (mask and border) */
+- (void)drawOldLoupe
 {
+    NSBundle *bundle = [NSBundle bundleForClass:[DCMView class]];
+    
+#pragma mark Define texture object 1, loupe border (ring)
+#ifdef DRAW_LOUPE_RING
+    // The ring (border)
+    if (!loupeRingImage)
+    {
+        loupeRingImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupe.png"]];
+        loupeTextureWidth = [loupeRingImage size].width;
+        loupeTextureHeight = [loupeRingImage size].height;
+    }
+
+    if (loupeRingTextureID==0)
+        [self makeTextureObjectFromImage: loupeRingImage
+                              forTexture: &loupeRingTextureID // GL_TEXTURE_RECTANGLE
+                                  buffer: loupeTextureBuffer];
+#endif
+ 
+#pragma mark Define texture object 2, loupe mask (disk)
+
+    // The inside disk where the magnified DICOM image is shown
+    if (!loupeMaskImage)
+    {
+        loupeMaskImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupeMask.png"]];
+        loupeMaskTextureWidth = [loupeMaskImage size].width;
+        loupeMaskTextureHeight = [loupeMaskImage size].height;
+    }
+
+    if (loupeMaskTextureID==0)
+        [self makeTextureObjectFromImage: loupeMaskImage
+                              forTexture: &loupeMaskTextureID // GL_TEXTURE_RECTANGLE
+                                  buffer: loupeMaskTextureBuffer];
+
+#pragma mark Mouse position
+
+    NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
+    eventLocation = [self convertPointToBacking: [self convertPoint:eventLocation fromView:nil]];
+    
+    if (xFlipped)
+        eventLocation.x = drawingFrameRect.size.width - eventLocation.x;
+    
+    if (yFlipped)
+        eventLocation.y = drawingFrameRect.size.height - eventLocation.y;
+    
+    eventLocation.y = drawingFrameRect.size.height - eventLocation.y;
+    eventLocation.y -= drawingFrameRect.size.height/2;
+    eventLocation.x -= drawingFrameRect.size.width/2;
+    
+    float xx =  eventLocation.x*cos(glm::radians(_rotation)) + eventLocation.y*sin(glm::radians(_rotation));
+    float yy = -eventLocation.x*sin(glm::radians(_rotation)) + eventLocation.y*cos(glm::radians(_rotation));
+    
+    eventLocation.x = xx;
+    eventLocation.y = yy;
+    
+    eventLocation.x -= LENSSIZE*2*scaleValue/LENSRATIO;
+    eventLocation.y -= LENSSIZE*2*scaleValue/LENSRATIO;
+
+#pragma mark Matrix
+
+    CGSize scaleFactor = drawingFrameRect.size;
+    float signX = xFlipped ? -1.0 : 1.0;
+    float signY = yFlipped ? -1.0 : 1.0;
+
+#ifdef WITH_OPENGL_32
+    [self setShaderProgramLoupe];
+
+    #if 1
+    renderer_reset_scale_rotate_MV(scaleFactor, _rotation, xFlipped, yFlipped);
+    #else
+    glm::mat4 MV = glm::mat4(1.0);
+    MV = glm::scale(MV, glm::vec3(signX * 2.0f / scaleFactor.width,
+                                 -signY * 2.0f / scaleFactor.height,
+                                  1.0f));
+    MV = glm::rotate(MV, glm::radians(_rotation), glm::vec3(0,0,1));
+    glUniformMatrix4fv(scene.loupeProgram.vertexUniformModelView, 1, GL_FALSE, glm::value_ptr(MV));
+    #endif
+#else // WITH_OPENGL_32
+    NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
+    CGLContextObj cgl_ctx = [currentContext CGLContextObj];
+
+    glMatrixMode (GL_MODELVIEW);
+    glLoadIdentity();
+    glScalef(signX * 2.0f / scaleFactor.width,
+            -signY * 2.0f / scaleFactor.height,
+             1.0f); // scale to port per pixel scale
+    glRotatef(_rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+#endif // WITH_OPENGL_32
+
+#pragma mark Define texture object 3, DICOM image
+
+    checkOpenGLErrors(__LINE__);
+
+#ifndef WITH_OPENGL_32
+    glEnable(_textRectMode);    checkOpenGLErrors(__LINE__);
+#endif
+
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, LENSSIZE);          checkOpenGLErrors(__LINE__);
+    glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE); checkOpenGLErrors(__LINE__);
+#ifdef WITH_OPENGL_32
+    // TODO:
+    #ifdef WITH_GLEW
+    if (checkExtension("GL_EXT_texture_rectangle") &&   // for GL_TEXTURE_RECTANGLE_EXT
+        checkExtension("GL_APPLE_texture_range") &&     // for GL_TEXTURE_STORAGE_HINT_APPLE
+        checkExtension("GL_APPLE_vertex_array_range"))  // for GL_STORAGE_CACHED_APPLE
+    {
+        glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+    }
+    #endif
+#else
+    glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+#endif
+    
+//#pragma mark glActiveTexture(GL_TEXTURE0) generate
+    //glActiveTexture(GL_TEXTURE0);           checkOpenGLErrors(__LINE__);
+    GLuint textID;
+    glGenTextures(1, &textID);              checkOpenGLErrors(__LINE__);
+    glBindTexture(_textRectMode, textID);   checkOpenGLErrors(__LINE__);
+
+#ifdef WITH_OPENGL_32
+//    // Set our "uTextureS2D" sampler to user Texture Unit 0
+//    glUniform1i(scene.loupeProgram.fragmentUniformSampler0, 0);
+//    checkOpenGLErrors(__LINE__);
+#endif
+    if (NOINTERPOLATION)
+        interpolationType = GL_NEAREST;
+    else
+        interpolationType = GL_LINEAR;     //GL_LINEAR_MIPMAP_LINEAR
+    
+    checkOpenGLErrors(__LINE__);
+    glTexParameteri(_textRectMode, GL_TEXTURE_MIN_FILTER, interpolationType);
+    checkOpenGLErrors(__LINE__);
+    glTexParameteri(_textRectMode, GL_TEXTURE_MAG_FILTER, interpolationType);
+    checkOpenGLErrors(__LINE__);
+
+#ifndef WITH_OPENGL_32
+    renderer_set_rgba(1.0, 1.0, 1.0, 1.0); // white
+#endif
+
+    // Allocate memory for a texture
+#if __BIG_ENDIAN__
+    GLenum _type = GL_UNSIGNED_INT_8_8_8_8_REV;
+#else
+    GLenum _type = GL_UNSIGNED_INT_8_8_8_8;
+#endif
+
+#ifdef WITH_OPENGL_32
+    assert(_textRectMode == GL_TEXTURE_2D); // make sure it matches sampler2D in shader
+#endif
+
+    // This defines the magnified DICOM image texture
+    // See 'computeMagnifyLens' for definition of source buffer 'lensTexture'
+    glTexImage2D(_textRectMode, 0,      // target, LOD
+                 GL_RGBA,               // internal format
+                 LENSSIZE, LENSSIZE, 0, // width (s), height (t), border
+                 GL_BGRA, _type,        // external format, type
+                 lensTexture);          // pixels
+    
+    checkOpenGLErrors(__LINE__);
+
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+#pragma mark Multitexturing starts (Legacy) >>>>>>>>>>>>>>>>>>>
+    
+#ifndef WITH_OPENGL_32
+    glPushAttrib( GL_TEXTURE_BIT);
+#endif
+
+    checkOpenGLErrors(__LINE__);
+    
+#pragma mark glActiveTexture(GL_TEXTURE0) bind object 2, mask
+    
+    glActiveTexture(GL_TEXTURE0);       checkOpenGLErrors(__LINE__);
+
+#ifdef WITH_OPENGL_32
+    GLenum target2 = GL_TEXTURE_RECTANGLE;
+    glBindTexture(target2, loupeMaskTextureID); checkOpenGLErrors(__LINE__);
+#else
+    glBindTexture(_textRectMode, loupeMaskTextureID);
+    glEnable(_textRectMode);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+
+    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);// REPLACE just need a SOURCE0 and OPERAND0
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+#endif
+
+#pragma mark glActiveTexture(GL_TEXTURE1) bind object 3, DICOM image
+
+    glActiveTexture(GL_TEXTURE1);           checkOpenGLErrors(__LINE__);
+    glBindTexture(_textRectMode, textID);   checkOpenGLErrors(__LINE__);
+#ifndef WITH_OPENGL_32
+    glEnable(_textRectMode);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+
+    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);// REPLACE just need a SOURCE0 and OPERAND0
+    glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
+    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+
+    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);// REPLACE just need a SOURCE0 and OPERAND0
+    glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
+    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+#endif
+
+    checkOpenGLErrors(__LINE__);
+
+#pragma mark Draw magnified pixels, masked
+
+#ifdef WITH_OPENGL_32
+    const int idx2 = 3; // swap them for GL_TRIANGLE_FAN
+    const int idx3 = 2;
+    GLfloat scaleX = 1; // normalized
+    GLfloat scaleY = 1;
+#else
+    const int idx2 = 2; // GL_QUAD_STRIP
+    const int idx3 = 3;
+    GLfloat scaleX = LENSSIZE;
+    GLfloat scaleY = LENSSIZE;
+#endif
+    
+    const int nPoints = 4;
+    Point_xyz_uv_uv pt[nPoints];
+
+    // upper left
+    pt[0].t1 = glm::vec2(0, 0); // lensTexture
+    pt[0].t0 = glm::vec2(0, 0); // mask texture
+    pt[0].p = glm::vec3(eventLocation.x, eventLocation.y, 0.0);
+    
+    // lower left
+    pt[1].t1 = glm::vec2( scaleX, 0); // lensTexture
+    pt[1].t0 = glm::vec2( loupeMaskTextureWidth, 0); // mask texture
+    pt[1].p = glm::vec3(eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO,
+                eventLocation.y,
+                0.0);
+
+    // upper right
+    pt[idx2].t1 = glm::vec2( 0, scaleY); // lensTexture
+    pt[idx2].t0 = glm::vec2( 0, loupeMaskTextureHeight); // mask texture
+    pt[idx2].p = glm::vec3(eventLocation.x,
+                eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO,
+                0.0);
+    
+    // lower right
+    pt[idx3].t1 = glm::vec2( scaleX, scaleY); // lensTexture
+    pt[idx3].t0 = glm::vec2( loupeMaskTextureWidth, loupeMaskTextureHeight); // mask texture
+    pt[idx3].p = glm::vec3(eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO,                eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO,
+                0.0);
+
+    NSMutableArray *pArray = [NSMutableArray array];
+    
+    for (int i = 0; i < nPoints; i++)
+        [pArray addObject: [NSValue valueWithBytes:&pt[i] objCType:@encode(Point_xyz_uv_uv)]];
+    
+    renderer_setTextureCount(2, __LINE__);
+    renderer_drawTriangleFan_xyz_uv_uv([pArray copy]); // GL_QUAD_STRIP for Legacy
+    
+#pragma mark glActiveTexture(GL_TEXTURE1) deactivate
+
+    glActiveTexture(GL_TEXTURE1); // deactivate multitexturing
+    #ifndef WITH_OPENGL_32
+    glDisable(_textRectMode);       checkOpenGLErrors(__LINE__); // TBC: only Legacy
+    #endif
+    glDeleteTextures(1, &textID);
+
+#pragma mark Multitexturing ends (Legacy) <<<<<<<<<<<<<<<<<<<<<<
+
+#pragma mark bind and draw object 1, loupe ring (border)
+
+    // Back to single texturing mode:
+    glActiveTexture(GL_TEXTURE0); // activate single texture unit
+    #ifndef WITH_OPENGL_32
+    glDisable(_textRectMode);       checkOpenGLErrors(__LINE__);
+    #endif
+
+#ifdef DRAW_LOUPE_RING
+    BOOL drawLensBorder = YES; // What's the point ? For debugging ?
+    if (loupeRingTextureID && drawLensBorder)
+    {
+        const int nPoints = 4;
+        Point_xyz_uv pt[nPoints];
+
+#ifdef WITH_OPENGL_32
+        const int idx2 = 3; // swap them for triangle fan
+        const int idx3 = 2;
+#else
+        const int idx2 = 2; // quad strip
+        const int idx3 = 3;
+#endif
+
+        pt[0].t = glm::vec2(0, 0);
+        pt[0].p = glm::vec3(eventLocation.x,
+                            eventLocation.y,
+                            0.0);
+    
+        pt[1].t = glm::vec2(loupeTextureWidth, 0);
+        pt[1].p = glm::vec3(eventLocation.x + LENSSIZE*4*scaleValue/LENSRATIO,
+                            eventLocation.y,
+                            0.0);
+    
+        pt[idx2].t = glm::vec2(0, loupeTextureHeight);
+        pt[idx2].p = glm::vec3(eventLocation.x,
+                               eventLocation.y + LENSSIZE*4*scaleValue/LENSRATIO,
+                               0.0);
+    
+        pt[idx3].t = glm::vec2(loupeTextureWidth, loupeTextureHeight);
+        pt[idx3].p = glm::vec3(eventLocation.x + LENSSIZE*4*scaleValue/LENSRATIO,
+                               eventLocation.y + LENSSIZE*4*scaleValue/LENSRATIO,
+                               0.0);
+
+#ifdef WITH_OPENGL_32
+        GLenum target1 = GL_TEXTURE_RECTANGLE;
+        renderer_setTextureCount(1, __LINE__);
+#else
+        renderer_set_rgba(1.0, 1.0, 1.0, 1.0); // white
+        GLenum target1 = GL_TEXTURE_RECTANGLE_EXT;
+        glEnable(target1);
+#endif
+        checkOpenGLErrors(__LINE__);
+        glBindTexture(target1, loupeRingTextureID);  checkOpenGLErrors(__LINE__);
+        
+#ifdef WITH_OPENGL_32
+        NSMutableArray *pArray = [NSMutableArray array];
+        for (int i = 0; i < nPoints; i++)
+            [pArray addObject: [NSValue valueWithBytes:&pt[i] objCType:@encode(Point_xyz_uv)]];
+
+        renderer_drawTriangleFan_xyz_uv([pArray copy]);
+#else
+        glBegin(GL_QUAD_STRIP);
+        {
+            for (int i = 0; i < nPoints; i++) {
+                glTexCoord2f(pt[i].t.s, pt[i].t.t);
+                glVertex3d(pt[i].p.x, pt[i].p.y, pt[i].p.z);
+            }
+        }
+        glEnd();
+
+        glDisable(target1);     checkOpenGLErrors(__LINE__);
+#endif
+    }
+#endif // DRAW_LOUPE_RING
+    
+    glDisable(GL_BLEND);        checkOpenGLErrors(__LINE__);
+    
+#ifndef WITH_OPENGL_32
+    glPopAttrib();
+#endif
+
+#pragma mark draw the lens ring as a line strip (obsolete)
+
+#if 0
+    eventLocation.x += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
+    eventLocation.y += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
+
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+#ifndef WITH_OPENGL_32
+    glEnable(GL_POINT_SMOOTH);
+#endif
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_POLYGON_SMOOTH);
+
+    NSMutableArray *pArray = [NSMutableArray array];
+    int resol = LENSSIZE*4*scaleValue;
+    float f = (LENSSIZE-1)*scaleValue*2/LENSRATIO;
+    for (int i = 0; i < resol; i++)
+    {
+        float angle = i * 2 * M_PI /resol;
+        glm::vec2 a(eventLocation.x + f *cos(angle),
+                    eventLocation.y + f *sin(angle));
+        [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+    }
+
+#if 0
+    // TODO
+    [scene.overlayLineProgram Bind];
+    [scene.overlayLineProgram setUniformMatrix: glm::value_ptr(MV) name:"uModelViewM"];
+#else
+    renderer_setProgram(scene.overlayLineProgram.program, __LINE__);
+    glUniformMatrix4fv(scene.overlayLineProgram.vertexUniformModelView, 1, GL_FALSE, glm::value_ptr(MV));
+#endif
+    renderer_set_rgba(0, 0, 0, 0.8);
+    renderer_setLineWidth(3 * self.window.backingScaleFactor);
+    renderer_drawLine_xy([pArray copy], GL_LINE_LOOP);
+
+
+    [scene.overlayProgram Bind];
+    [scene.overlayProgram setUniformMatrix: glm::value_ptr(MV) name:"uModelViewM"];
+    glPointSize(3 * self.window.backingScaleFactor);
+    renderer_drawPoints([pArray copy]);
+
+    glDisable(GL_LINE_SMOOTH);
+    glDisable(GL_POLYGON_SMOOTH);
+#ifndef WITH_OPENGL_32
+    glDisable(GL_POINT_SMOOTH);
+#endif
+#endif
+    checkOpenGLErrors(__LINE__);
+}
+
+#pragma mark -
+
+- (void) drawRect:(NSRect)aRect
+      withContext:(NSOpenGLContext *)ctx
+{
+    //NSLog(@"%s %d, self:%p %@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]));
+
+#if !WITH_OPENGL_32_STEP3
+#ifdef WITH_OPENGL_32
+    if (needToUpdateProjections)
+    {
+        [self updateAllProjections];
+        needToUpdateProjections = false;
+    }
+#endif
+#endif
     long annotations = annotationType;
     BOOL frontMost = NO;
     BOOL is2DViewer = [self is2DViewer];
@@ -10604,13 +11984,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		drawLock = nil;
 	}
 	
-#if 0 // @@@
-	[ctx makeCurrentContext];
-	if (!ctx)
-        return;
-#else
     [[self openGLContext] makeCurrentContext];
     
+#ifndef WITH_OPENGL_32
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (!cgl_ctx)
         return;
@@ -10621,7 +11997,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //        if ([self class] == [MPRDCMView class])
 //            NSLog(@"%s %d, %p needToLoadTexture:%d", __FUNCTION__, __LINE__, self, needToLoadTexture);
 
-		if (needToLoadTexture)// || iChatRunning)
+        if (needToLoadTexture)// || iChatRunning)
 			[self loadTexturesCompute];
 		
 		if (noScale)
@@ -10648,7 +12024,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             return;
 
         // Set the viewport to cover entire window
-		glViewport (0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height);
+        // OpenGL mapped to Window
+        // (-1,-1) ------> (0,0)
+        // ( 1, 1) ------> (width,height)
+		glViewport(0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height);
 
         if (self.whiteBackground)
             glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -10656,31 +12035,91 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
 		glClear (GL_COLOR_BUFFER_BIT);
+
+#if WITH_OPENGL_32_STEP2 || WITH_OPENGL_32_STEP3
+        checkOpenGLErrors(__LINE__);
+        NSLog(@"%s %d, class:%@, ctx:%@, programs: %d,%d, %lu buffers", __FUNCTION__, __LINE__,
+              [self class],
+              ctx,
+              scene.imageProgram.programHandle,
+              scene.overlayProgram.programHandle,
+              (unsigned long)[_m_buffers count]);
+        
+        // Draw - setup
+
+        GLint viewport[4];
+        glGetIntegerv(GL_VIEWPORT, viewport);
+
+        glClearColor(0.3f, 0.2f, 0.2f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  #if 1 //def WITH_GLM
+        CGSize scale = drawingFrameRect.size;
+        scale.height = -scale.height; // TODO: check why -1
+  #else
+        CGSize scale = NSMakeSize(1, 1);
+  #endif
+#endif
+        
+#if WITH_OPENGL_32_STEP2
+#include "DCMViewStep2.mm"
+#endif
+
+#if WITH_OPENGL_32_STEP3
+#include "DCMViewStep3.mm"
+#endif
+                
+#if WITH_OPENGL_32_STEP2 || WITH_OPENGL_32_STEP3
+        // Draw - tear down test code
+        glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind
+
+        renderer_setProgram(0, __LINE__);
+        // Swap buffer to screen
+        [ctx flushBuffer];
+
+        //[NSOpenGLContext clearCurrentContext];
+            
+        drawingFrameRect = [self convertRectToBacking: [self frame]];
+        return;
+#endif
+
+#ifdef WITH_OPENGL_32
+//  #ifdef WITH_GLM
+//        // Send our transformation to the currently bound shader,
+//        // in the "MVP" uniform
+//        NSLog(@"DCMView.mm:%d %s MatrixLocation:%d", __LINE__, __PRETTY_FUNCTION__, scene.imageProgram.MatrixLocation);
+//        glUniformMatrix4fv(scene.imageProgram.MatrixLocation, 1, GL_FALSE, &MVP[0][0]);
+//  #endif
+#endif // WITH_OPENGL_32
 		
 		if (dcmPixList && curImage > -1)
 		{
 			if (blendingView != nil &&
                 syncOnLocationImpossible == NO)// && ctx!=_alternateContext)
 			{
-				glBlendFunc(GL_ONE, GL_ONE);
-				glEnable( GL_BLEND);
+				glBlendFunc(GL_ONE, GL_ONE);    checkOpenGLErrors(__LINE__);
+				glEnable( GL_BLEND);            checkOpenGLErrors(__LINE__);
 			}
 			else
 			{
-				glBlendFunc(GL_ONE, GL_ONE);
-				glDisable( GL_BLEND);
+				glBlendFunc(GL_ONE, GL_ONE);    checkOpenGLErrors(__LINE__);
+				glDisable( GL_BLEND);           checkOpenGLErrors(__LINE__);
 			}
             
-//			if (curDCM.waveform) // [DCMAbstractSyntaxUID isWaveform:curDCM.SOPClassUID]
-//                [self drawWaveform];
-//          else
-            [self drawRectIn:drawingFrameRect
-                            :pTextureName
-                            :offset
-                            :textureX
-                            :textureY
-                            :textureWidth
-                            :textureHeight];
+            checkOpenGLErrors(__LINE__);
+
+            // Draw DICOM image (or waveform)
+#ifdef WITH_WAVEFORM_SUPPORT
+			if (curDCM.waveform) // [DCMAbstractSyntaxUID isWaveform:curDCM.SOPClassUID]
+                [self drawWaveform];
+            else
+#endif
+                [self drawRectIn:drawingFrameRect
+                                :pTextureName
+                                :offset
+                                :textureX
+                                :textureY
+                                :textureWidth
+                                :textureHeight];
 
 			BOOL noBlending = NO;
 			
@@ -10715,23 +12154,40 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			{
 				if ([[self windowController] highLighted] > 0)
 				{
-					glLoadIdentity(); // eliminate rotation
-					glScalef( 2.0f / drawingFrameRect.size.width,
-                             -2.0f / drawingFrameRect.size.height,
-                              1.0f); // scale to port per pixel scale
-					glTranslatef(-(drawingFrameRect.size.width) / 2.0f,
-                                 -(drawingFrameRect.size.height) / 2.0f,
-                                 0.0f); // translate center to upper left
+                    CGSize scaleFactor = drawingFrameRect.size;
+                    CGPoint translationOffset;
+                    translationOffset.x = -drawingFrameRect.size.width;
+                    translationOffset.y = -drawingFrameRect.size.height;
+
+                    [self reset_scale_translate_overlay_MV:scaleFactor
+                                                 translate:translationOffset];
 						
 					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 					glEnable(GL_BLEND);
 					
+                    [self setShaderProgramForLineWidth: 1.0 * sf];
+
                     if (gInvertColors)
-                        glColor4f ( 0, 0, 0, [[self windowController] highLighted]);
+                        renderer_set_rgba(0, 0, 0, [[self windowController] highLighted]);
                     else
-                        glColor4f (249./255., 240./255., 140./255., [[self windowController] highLighted]);
+                        renderer_set_rgba(249./255., 240./255., 140./255., [[self windowController] highLighted]);
                     
-					glLineWidth(1.0 * sf);
+#ifdef WITH_OPENGL_32
+                    {
+                        const int nPoints = 4;
+                        glm::vec2 p[nPoints];
+                        p[0] = glm::vec2(0.0, 0.0);
+                        p[1] = glm::vec2(0.0, drawingFrameRect.size.height);
+                        p[2] = glm::vec2(drawingFrameRect.size.width, drawingFrameRect.size.height);
+                        p[3] = glm::vec2(drawingFrameRect.size.width, 0);
+
+                        NSMutableArray *pArray = [NSMutableArray array];
+                        for (int i=0; i<nPoints; i++)
+                            [pArray addObject: [NSValue valueWithBytes:&p[i] objCType:@encode(glm::vec2)]];
+
+                        renderer_drawPolygon([pArray copy]);
+                    }
+#else
 					glBegin(GL_QUADS);
                     {
 						glVertex2f(0.0, 0.0);
@@ -10740,15 +12196,16 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 						glVertex2f(drawingFrameRect.size.width, 0);
                     }
 					glEnd();
+#endif
 					glDisable(GL_BLEND);
 				}
 			}
 			
 			// highlight the visible part of the view (the part visible through iChat)
-//			#ifndef MIELE_LIGHT
+//#ifndef MIELE_LIGHT
 //			if (iChatRunning && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
 //			{
-//				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+//				glLoadIdentity();
 //				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
 //				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
 //				NSPoint topLeft;
@@ -10759,7 +12216,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //				glEnable(GL_BLEND);
 //				
 //				glColor4f (0.0f, 0.0f, 0.0f, 0.7f);
-//				glLineWidth(1.0 * sf);
+//				renderer_setLineWidth(1.0 * sf);
 //				glBegin(GL_QUADS);
 //					glVertex2f(0.0, 0.0);
 //					glVertex2f(0.0, topLeft.y);
@@ -10796,7 +12253,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
 //				glEnd();
 //				
-//				glLineWidth(1.0 * sf);
+//				renderer_setLineWidth(1.0 * sf);
 //				glDisable(GL_BLEND);
 //				
 //				// label
@@ -10806,133 +12263,109 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //
 //				[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMVVIEW_TEXT_ALIGN_CENTER useStringTexture:YES];
 //			}
-//			#endif
+//#endif
 
-            // ***********************
-			// DRAW CLUT BARS ********
+#pragma mark CLUT bars
 			
 			if (is2DViewer == YES &&
                 annotations != ANNOTATIONS_NONE) // && ctx!=_alternateContext)
 			{
+                checkOpenGLErrors(__LINE__);
                 [self drawClutBar];
 			}
-			
+
+#pragma mark ANNOTATIONS
+            
+#ifdef WITH_OPENGL_32
+            glm::mat4 MV = glm::mat4(1.0);
+#endif
 			if (annotations != ANNOTATIONS_NONE)
 			{
-				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
+                CGSize scaleFactor = drawingFrameRect.size;
+#ifdef WITH_OPENGL_32
+                float signX = xFlipped ? -1.0 : 1.0;
+                float signY = yFlipped ? -1.0 : 1.0;
+                MV = glm::scale(MV, glm::vec3(signX * 2.0f / scaleFactor.width,
+                                             -signY * 2.0f / scaleFactor.height,
+                                              1.0f));
+                #if 0
+                // TODO
+                [scene.overlayLineProgram Bind];
+                [scene.overlayLineProgram setUniformMatrix: glm::value_ptr(MV) name:"uModelViewM"];
+                #else
+                renderer_setProgram(scene.overlayLineProgram.programHandle, __LINE__);
+                glUniformMatrix4fv(scene.overlayLineProgram.vertexUniformModelView, 1, GL_FALSE, glm::value_ptr(MV));
+                #endif
 
-				// FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST : BORDER AROUND THE IMAGE
+                [scene.overlayProgram Bind];
+                [scene.overlayProgram setUniformMatrix: glm::value_ptr(MV) name:"uModelViewM"];
+#else
+				glLoadIdentity();
+				glScalef(2.0f / (xFlipped ? -(scaleFactor.width) : scaleFactor.width),
+                        -2.0f / (yFlipped ? -(scaleFactor.height) : scaleFactor.height),
+                         1.0f); // scale to port per pixel scale
+#endif
+
+#pragma mark annotations: red border
+
+                // FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST : BORDER AROUND THE IMAGE
 				if ([ViewerController numberOf2DViewer] > 1 &&
                     is2DViewer &&
                     [stringID length] > 0)
 				{
 					// draw line around key View - RED BOX
 					
-					if (isKeyView && [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController)
+					if (isKeyView &&
+                        [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController &&
+                        [[self windowController] FullScreenON] == FALSE)
 					{
-                        if ([[self windowController] FullScreenON] == FALSE)
-                        {
-                            float heighthalf = drawingFrameRect.size.height/2;
-                            float widthhalf = drawingFrameRect.size.width/2;
-                            
-                            // red square
-                            
-        //					glEnable(GL_BLEND);
-                            glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
-                            glLineWidth(8.0 * sf);
-                            glBegin(GL_LINE_LOOP);
-                            {
-                                glVertex2f(  -widthhalf, -heighthalf);
-                                glVertex2f(  -widthhalf, heighthalf);
-                                glVertex2f(  widthhalf, heighthalf);
-                                glVertex2f(  widthhalf, -heighthalf);
-                            }
-                            glEnd();
-                            glLineWidth(1.0 * sf);
-        //					glDisable(GL_BLEND);
-                        }
+                        [self drawKeyViewBox2];
 					}
 				}  //drawLines for ImageView Frames
 				
-                // Draw a dot line if the raw data overflows the displayed view
-                if (OVERFLOWLINES && is2DViewer && stringID == nil)
-                {
-                    float heighthalf = drawingFrameRect.size.height/2;
-                    float widthhalf = drawingFrameRect.size.width/2;
-                    float offset = 4 * sf;
-                    
-                    NSRect dstRect = [curDCM usefulRectWithRotation: rotation scale: scaleValue xFlipped: xFlipped yFlipped: yFlipped];
-                    NSPoint oo = [DCMPix rotatePoint: [self origin] aroundPoint:NSMakePoint( 0, 0) angle: -rotation*deg2rad];
-                    dstRect.origin = NSMakePoint( drawingFrameRect.size.width/2 + oo.x - dstRect.size.width/2, drawingFrameRect.size.height/2 - oo.y - dstRect.size.height/2);
-                    
-                    glColor4f (0, 1, 0.0f, 0.8f);
-                    glLineWidth( 3.0 * sf);
+#pragma mark annotations: overflow lines
 
-                    glPushAttrib( GL_ENABLE_BIT);
-                    glLineStipple( 4 * sf, 0xAAAA);
-                    glEnable(GL_LINE_STIPPLE);
-                    
-                    // Left
-                    if (dstRect.origin.x <= -5)
-                    {
-                        glBegin(GL_LINES);
-                        {
-                            glVertex2f( -widthhalf +offset, dstRect.origin.y -heighthalf);
-                            glVertex2f( -widthhalf +offset, dstRect.origin.y +dstRect.size.height -heighthalf);
-                        }
-                        glEnd();
-                    }
-                    
-                    // Top
-                    if (dstRect.origin.y <= -5)
-                    {
-                        glBegin(GL_LINES);
-                        {
-                            glVertex2f( dstRect.origin.x -widthhalf, -heighthalf +offset);
-                            glVertex2f( dstRect.origin.x +dstRect.size.width -widthhalf, -heighthalf +offset);
-                        }
-                        glEnd();
-                    }
-                    
-                    // Right
-                    if (dstRect.origin.x + dstRect.size.width >= drawingFrameRect.size.width+5)
-                    {
-                        glBegin(GL_LINES);
-                        {
-                            glVertex2f( widthhalf -offset, dstRect.origin.y -heighthalf);
-                            glVertex2f( widthhalf -offset, dstRect.origin.y +dstRect.size.height -heighthalf);
-                        }
-                        glEnd();
-                    }
-                    
-                    // Bottom
-                    if (dstRect.origin.y + dstRect.size.height >= drawingFrameRect.size.height+5)
-                    {
-                        glBegin(GL_LINES);
-                        {
-                            glVertex2f( dstRect.origin.x -widthhalf, heighthalf -offset);
-                            glVertex2f( dstRect.origin.x +dstRect.size.width -widthhalf, heighthalf -offset);
-                        }
-                        glEnd();
-                    }
-                   
-                    glLineWidth(1.0 * sf);
-                    glPopAttrib();
+                // Draw a dotted line if the raw data overflows the displayed view
+                if (OVERFLOWLINES &&
+                    is2DViewer &&
+                    stringID == nil)
+                {
+                    [self drawOverflowLines];
                 }
-                    
-				if ((_imageColumns > 1 || _imageRows > 1) &&
+
+#pragma mark annotations: key view border
+
+                if ((_imageColumns > 1 || _imageRows > 1) &&
                     is2DViewer &&
                     [stringID length] > 0 )
 				{
                     [self drawKeyViewBox];
 				}
 				
-				glRotatef(rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+#ifdef WITH_OPENGL_32
+                // TODO:
+                MV = glm::rotate(MV, glm::radians(self.rotation), glm::vec3(0,0,1));
+                MV = glm::translate(MV, glm::vec3(origin.x, -origin.y, 0.0f));
+                MV = glm::scale(MV, glm::vec3(1.f, curDCM.pixelRatio, 1.f));
+
+                #if 0
+                // TODO
+                [scene.overlayLineProgram Bind];
+                [scene.overlayLineProgram setUniformMatrix: glm::value_ptr(MV) name:"uModelViewM"];
+                #else
+                renderer_setProgram(scene.overlayLineProgram.programHandle, __LINE__);
+                glUniformMatrix4fv(scene.overlayLineProgram.vertexUniformModelView, 1, GL_FALSE, glm::value_ptr(MV));
+                #endif
+
+                [scene.overlayProgram Bind];
+                [scene.overlayProgram setUniformMatrix: glm::value_ptr(MV) name:"uModelViewM"];
+#else
+				glRotatef(self.rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 				glTranslatef( origin.x, -origin.y, 0.0f);
 				glScalef( 1.f, curDCM.pixelRatio, 1.f);
+#endif
 				
-				// Draw ROIs
+#pragma mark annotations: draw ROIs
 				BOOL drawROI = NO;
 				
 				if (is2DViewer == YES)
@@ -10950,9 +12383,22 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 					
                     if ([curRoiList count] > 0)
                     {
-                        int n = [curRoiList count] - 1;
-                        for (int i = n; i >= 0; i--)
+#if 0 //def WITH_OPENGL_32
+                        NSLog(@"DCMView.mm:%d %s draw ROI setup", __LINE__, __PRETTY_FUNCTION__);
+                        renderer_setProgram(scene.overlayProgram.program, __LINE__);
+                        
+                        GLuint vao;
+                        glGenVertexArrays(1, &vao);
+                        glBindVertexArray(vao);
+                        checkOpenGLErrors(__LINE__);
+                        
+                        //glDisableVertexAttribArray(scene.overlayProgram.vertexAttribColor);
+#endif
+                        int n = [curRoiList count];
+                        //NSLog(@"DCMView.mm:%d drawRect, %d ROIs ==============", __LINE__, n);
+                        for (int i = (n-1); i >= 0; i--)
                         {
+                            //NSLog(@"DCMView.mm:%d drawRect, --- ROI index %d ---", __LINE__, i);
                             ROI *r = [[curRoiList objectAtIndex:i] retain];	// If we are not in the main thread (iChat), we want to be sure to keep our ROIs
 
                             if (resetData)
@@ -10960,21 +12406,32 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                             
                             r.curView = self;
 
-                            [r drawROI: scaleValue
-                                      : curDCM.pwidth / 2.
-                                      : curDCM.pheight / 2.
-                                      : curDCM.pixelSpacingX
-                                      : curDCM.pixelSpacingY];
+                            [r drawOneROI: scaleValue
+                                         : NSMakePoint(curDCM.pwidth / 2., curDCM.pheight / 2.)
+                                         : NSMakeSize(curDCM.pixelSpacingX, curDCM.pixelSpacingY)];
+
                             [r release];
                         }  // for
+#if 0 //def WITH_OPENGL_32
+                        NSLog(@"DCMView.mm:%d %s draw ROI cleanup", __LINE__, __PRETTY_FUNCTION__);
+                        glBindVertexArray(0);
+                        glDeleteVertexArrays(1, &vao);
+                        renderer_setProgram(0, __LINE__);
+                        checkOpenGLErrors(__LINE__);
+#endif
                     }
-					
-                    // let the pluginSDK draw anything it needs to draw, we use a notification for now, but that is nasty style, we really should be calling a method
+                    
+                    // Let the pluginSDK draw anything it needs to draw, we use a notification for now, but that is nasty style, we really should be calling a method
 #ifndef MIELE_LIGHT
                     [[OSIEnvironment sharedEnvironment] drawDCMView:self];
 #endif
-                    
-					if (!suppress_labels)
+
+#if 0 //ndef NDEBUG
+                    if ([NSStringFromClass([self class]) isEqualToString: @"PreviewView"])
+                        NSLog(@"%s %d, PreviewView" , __FUNCTION__, __LINE__); // TODO: debug why it's called so many times
+#endif
+					if ((!suppress_labels) &&
+                        (![NSStringFromClass([self class]) isEqualToString: @"PreviewView"]))
 					{
 						NSArray	*sortedROIs = [curRoiList sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"uniqueID" ascending:NO]]];
 						
@@ -10987,14 +12444,24 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 						
 						if (drawingRoiMode == NO)
 						{
-							for (int i = (long)[sortedROIs count]-1; i>=0; i--)
+//                            if ([sortedROIs count] > 0)
+//                                NSLog(@"%s %d, self:%p, class:%@, %lu textual data ==============", __FUNCTION__, __LINE__,
+//                                  self,
+//                                  NSStringFromClass([self class]),
+//                                  (unsigned long)[sortedROIs count]);
+
+#pragma mark annotations: draw Textualdata for each ROI
+
+                            for (int i = (long)[sortedROIs count]-1; i>=0; i--)
 							{
 								ROI *r = [[sortedROIs objectAtIndex:i] retain];
-								
+
+                                //NSLog(@"%s %d, self:%p, ROI type: %d, i: %d", __FUNCTION__, __LINE__, self, r.type, i);
+
 								@try
 								{
-									[r drawTextualData];
-								}
+                                    [r drawROITextualData];
+                                }
 								@catch (NSException * e)
 								{
 									NSLog( @"drawTextualData ROI Exception : %@", e);
@@ -11012,8 +12479,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				if (drawROI && is2DViewer == YES)
 					[[[self windowController] roiLock] unlock];
 				
-				// Draw 2D point cross (used when double-click in 3D panel)
-				// BLUE CROSS
+#pragma mark annotations: Draw 2D point cross (blue, used when double-click in 3D panel)
+
+                // BLUE CROSS
 				if (is2DViewer)
 				{
 					[self draw2DPointMarker];
@@ -11021,11 +12489,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                         [blendingView draw2DPointMarker];
 				}
                 
-				// Draw any Plugin objects
+#pragma mark annotations: Draw any Plugin objects
 				
                 NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
                                           [NSNumber numberWithFloat: scaleValue], @"scaleValue",
-                                          [NSNumber numberWithFloat: curDCM.pwidth /2. ], @"offsetx",
+                                          [NSNumber numberWithFloat: curDCM.pwidth /2.], @"offsetx",
                                           [NSNumber numberWithFloat: curDCM.pheight /2.], @"offsety",
                                           [NSNumber numberWithFloat: curDCM.pixelSpacingX], @"spacingX",
                                           [NSNumber numberWithFloat: curDCM.pixelSpacingY], @"spacingY",
@@ -11034,15 +12502,16 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawObjectsNotification
 																	object: self
 																  userInfo: userInfo];
-
+#pragma mark subclasses
 				[self subDrawRect: aRect];
-				self.scaleValue = scaleValue;
+
+                self.scaleValue = scaleValue;
 				
                 //NSLog(@"%s %d, %@, %p, Xref lines: %d", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, DISPLAYCROSSREFERENCELINES);
 
-				//** SLICE CUT BETWEEN SERIES - CROSS REFERENCE LINES
+#pragma mark annotations: SLICE CUT BETWEEN SERIES - CROSS REFERENCE LINES
 				
-				if (is2DViewer &&
+                if (is2DViewer &&
                     (stringID == nil || [stringID isEqualToString:@"export"]) &&
                     frontMost == NO)
 				{
@@ -11053,7 +12522,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 #endif
 					glEnable(GL_LINE_SMOOTH);
 					glEnable(GL_POLYGON_SMOOTH);
-					
+                    
+#pragma mark annotations: Cross-reference lines
+
+                    // TODO: make this into a function
 					if (DISPLAYCROSSREFERENCELINES)
 					{
 //						NSUInteger modifiers = [NSEvent modifierFlags];
@@ -11065,13 +12537,13 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //								
 //								if (sliceFromTo[ 0][ 0] != HUGE_VALF)
 //								{
-//									glColor3f (0.0f, 0.6f, 0.0f);
-//									glLineWidth(2.0 * sf);
+//                                  renderer_set_rgb(0.0f, 0.6f, 0.0f); // dark green
+//									renderer_setLineWidth(2.0 * sf);
 //									[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
 //									
 //									if (sliceFromTo2[ 0][ 0] != HUGE_VALF)
 //									{
-//										glLineWidth(2.0 * sf);
+//										renderer_setLineWidth(2.0 * sf);
 //										[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
 //									}
 //								}
@@ -11083,30 +12555,32 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 							{
 								if (sliceFromToS[ 0][ 0] != HUGE_VALF)
 								{
-									glColor3f (1.0f, 0.6f, 0.0f);
-									
-									glLineWidth(2.0 * sf);
+                                    //NSLog(@"%s %d, orange, ToS ToE", __FUNCTION__, __LINE__);
+                                    [self setShaderProgramForLineWidth: 2.0 * sf];
+                                    renderer_set_rgb(1.0f, 0.6f, 0.0f); // orange
 									[self drawCrossLines: sliceFromToS ctx: cgl_ctx perpendicular: NO];
 									
-									glLineWidth(2.0 * sf);
+                                    [self setShaderProgramForLineWidth: 2.0 * sf];
 									[self drawCrossLines: sliceFromToE ctx: cgl_ctx perpendicular: NO];
 								}
 								
-								glColor3f (0.0f, 0.6f, 0.0f);
-								glLineWidth(2.0 * sf);
+                                //NSLog(@"%s %d, dark green, To To2", __FUNCTION__, __LINE__);
+                                [self setShaderProgramForLineWidth: 2.0 * sf];
+                                renderer_set_rgb(0.0f, 0.6f, 0.0f); // dark green
 								[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
 								
 								if (sliceFromTo2[ 0][ 0] != HUGE_VALF)
 								{
-									glLineWidth(2.0 * sf);
+                                    [self setShaderProgramForLineWidth: 2.0 * sf];
 									[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
 								}
 							}
 						}
-					}
+					} // DISPLAYCROSSREFERENCELINES
 					
 					if (slicePoint3D[ 0] != HUGE_VALF)
 					{
+                        NSLog(@"%s %d", __FUNCTION__, __LINE__);
 						float tempPoint3D[2];
 						
 						tempPoint3D[0] = slicePoint3D[ 0] / curDCM.pixelSpacingX;
@@ -11115,17 +12589,16 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 						tempPoint3D[0] -= curDCM.pwidth * 0.5f;
 						tempPoint3D[1] -= curDCM.pheight * 0.5f;
 
-						glLineWidth(2.0 * sf);
-						glColor3f(0.0f, 0.6f, 0.0f);
-						glLineWidth(2.0 * sf);
+                        [self setShaderProgramForLineWidth: 2.0 * sf];
+                        renderer_set_rgb(0.0f, 0.6f, 0.0f); // dark green
+
+#define LINELENGTH 15
+                        NSMutableArray *pArray = [NSMutableArray array];
 
 						if (sliceFromTo[0][0] != HUGE_VALF &&
                            (sliceVector[0] != 0 || sliceVector[1] != 0 || sliceVector[2] != 0))
 						{
-                            NSLog(@"DCMView.mm:%d %s", __LINE__, __PRETTY_FUNCTION__);
-                            
 							float a[2];    // perpendicular vector
-							
 							a[1] = sliceFromTo[0][0] - sliceFromTo[1][0];
 							a[0] = sliceFromTo[0][1] - sliceFromTo[1][1];
 							
@@ -11135,56 +12608,74 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 							a[0] = a[0]/t;
 							a[1] = a[1]/t;
 							
-#define LINELENGTH 15
-							glBegin(GL_LINES);
-                            {
-								glVertex2f(scaleValue*(tempPoint3D[ 0]-LINELENGTH/curDCM.pixelSpacingX *  a[ 0]),
-                                           scaleValue*(tempPoint3D[ 1]+LINELENGTH/curDCM.pixelSpacingY * (a[ 1])));
-                            
-								glVertex2f(scaleValue*(tempPoint3D[ 0]+LINELENGTH/curDCM.pixelSpacingX *  a[ 0]),
-                                           scaleValue*(tempPoint3D[ 1]-LINELENGTH/curDCM.pixelSpacingY * (a[ 1])));
+                            const int nPoints = 2;
+                            NSPoint pLineMarker[nPoints];
+                            pLineMarker[0] = NSMakePoint(scaleValue*(tempPoint3D[0] - LINELENGTH/curDCM.pixelSpacingX * a[0]),
+                                                         scaleValue*(tempPoint3D[1] + LINELENGTH/curDCM.pixelSpacingY * a[1]));
+
+                            pLineMarker[1] = NSMakePoint(scaleValue*(tempPoint3D[0] + LINELENGTH/curDCM.pixelSpacingX * a[0]),
+                                                         scaleValue*(tempPoint3D[1] - LINELENGTH/curDCM.pixelSpacingY * a[1]));
+                            for (int i=0; i<nPoints; i++) {
+                                glm::vec2 a(pLineMarker[i].x, pLineMarker[i].y);
+                                [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
                             }
-							glEnd();
 						}
 						else
 						{
+                            // See also drawCrossLines
+                            NSLog(@"%s %d draw 4 segments to make up a cross marker", __FUNCTION__, __LINE__);
 							float crossx = tempPoint3D[0];
 							float crossy = tempPoint3D[1];
-							glBegin(GL_LINES);
-                            {
-                                glVertex2f( scaleValue * (crossx - LINELENGTH/curDCM.pixelSpacingX), scaleValue*(crossy));
-                                glVertex2f( scaleValue * (crossx - 5/curDCM.pixelSpacingX), scaleValue*(crossy));
-                                glVertex2f( scaleValue * (crossx + LINELENGTH/curDCM.pixelSpacingX), scaleValue*(crossy));
-                                glVertex2f( scaleValue * (crossx + 5/curDCM.pixelSpacingX), scaleValue*(crossy));
-                                
-                                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-LINELENGTH/curDCM.pixelSpacingX));
-                                glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5/curDCM.pixelSpacingX));
-                                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5/curDCM.pixelSpacingX));
-                                glVertex2f( scaleValue * (crossx), scaleValue*(crossy+LINELENGTH/curDCM.pixelSpacingX));
-                            }
-							glEnd();
+
+                            const int nPoints = 8;
+                            glm::vec2 pCrossMarker[nPoints];
+                            pCrossMarker[0] = glm::vec2(scaleValue * (crossx - LINELENGTH/curDCM.pixelSpacingX), scaleValue*(crossy));
+                            pCrossMarker[1] = glm::vec2(scaleValue * (crossx - 5/curDCM.pixelSpacingX), scaleValue*(crossy));
+                            pCrossMarker[2] = glm::vec2(scaleValue * (crossx + LINELENGTH/curDCM.pixelSpacingX), scaleValue*(crossy));
+                            pCrossMarker[3] = glm::vec2(scaleValue * (crossx + 5/curDCM.pixelSpacingX), scaleValue*(crossy));
+
+                            pCrossMarker[4] = glm::vec2(scaleValue * (crossx), scaleValue*(crossy-LINELENGTH/curDCM.pixelSpacingX));
+                            pCrossMarker[5] = glm::vec2(scaleValue * (crossx), scaleValue*(crossy-5/curDCM.pixelSpacingX));;
+                            pCrossMarker[6] = glm::vec2(scaleValue * (crossx), scaleValue*(crossy+5/curDCM.pixelSpacingX));;
+                            pCrossMarker[7] = glm::vec2(scaleValue * (crossx), scaleValue*(crossy+LINELENGTH/curDCM.pixelSpacingX));;
+
+                            for (int i=0; i<nPoints; i++)
+                                [pArray addObject: [NSValue valueWithBytes:&pCrossMarker[i] objCType:@encode(glm::vec2)]];
 						}
 
-                        glLineWidth(1.0 * sf);
+                        renderer_drawLine_xy([pArray copy], GL_LINES);
+                        
+                        // Restore
+                        [self setShaderProgramForLineWidth: 1.0 * sf];
 					}
 					
-					glDisable(GL_LINE_SMOOTH);
+#ifndef WITH_OPENGL_32
+                    glDisable(GL_POINT_SMOOTH);
+#endif
+                    glDisable(GL_LINE_SMOOTH);
 					glDisable(GL_POLYGON_SMOOTH);
-					glDisable(GL_POINT_SMOOTH);
 					glDisable(GL_BLEND);
 				}
-				
-				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-				
-				glColor3f (0.0f, 1.0f, 0.0f);
-				
-				 if (annotations >= ANNOTATIONS_BASE)
-				 {
-                     [self drawRuler];
-                 }
-			} //Annotation  != None
 			
+#pragma mark annotations: Ruler
+
+                //CGSize scaleFactor = drawingFrameRect.size; // already defined
+
+                // no rotation, same position, alter size
+                [self reset_scale_overlay_MV:scaleFactor]; // 8b,14a (redundant ?)
+
+//                { // TODO: TBC redundant ? it will be done later anyway
+//                    [self setShaderProgramOverlayLine];
+//                    renderer_set_rgb(0.0f, 1.0f, 0.0f); // green
+//                }
+
+                if (annotations >= ANNOTATIONS_BASE)
+                {
+                    [self drawRuler];
+                }
+			} //Annotation != None
+			
+#pragma mark TEXTUALDATA (unrotated, unscaled)
             @try
             {
                 [self drawTextualData: drawingFrameRect
@@ -11195,42 +12686,49 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                 NSLog( @"drawTextualData Annotations Exception : %@", e);
             }
             
-			if (repulsorRadius != 0)
+#pragma mark tRepulsor
+
+            if (repulsorRadius != 0)
 			{
-				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f / drawingFrameRect.size.width,
-                         -2.0f / drawingFrameRect.size.height,
-                          1.0f); // scale to port per pixel scale
-				glTranslatef(-(drawingFrameRect.size.width) / 2.0f,
-                             -(drawingFrameRect.size.height) / 2.0f,
-                             0.0f); // translate center to upper left
-				
-				[self drawRepulsorToolArea];
+                CGSize scaleFactor = drawingFrameRect.size;
+                CGPoint translationOffset;
+                translationOffset.x = -drawingFrameRect.size.width;
+                translationOffset.y = -drawingFrameRect.size.height;
+
+            #ifdef WITH_OPENGL_32
+                [self setShaderProgramOverlay];
+            #endif
+                renderer_reset_scale_translate_MV(scaleFactor, translationOffset);
+                [self drawRepulsorToolArea];
 			}
 			
-			if (ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y)
+#pragma mark tROISelector
+
+            if (ROISelectorStartPoint.x != ROISelectorEndPoint.x ||
+                ROISelectorStartPoint.y != ROISelectorEndPoint.y)
 			{
-				glLoadIdentity(); // eliminate rotation
-				glScalef(2.0f / drawingFrameRect.size.width,
-						-2.0f / drawingFrameRect.size.height,
-						 1.0f); // scale to port per pixel scale
-				glTranslatef(-(drawingFrameRect.size.width) / 2.0f,
-							 -(drawingFrameRect.size.height) / 2.0f,
-							 0.0f); // translate center to upper left
-				
+                CGSize scaleFactor = drawingFrameRect.size;
+                CGPoint translationOffset;
+                translationOffset.x = -drawingFrameRect.size.width;
+                translationOffset.y = -drawingFrameRect.size.height;
+
+            #ifdef WITH_OPENGL_32
+                [self setShaderProgramOverlay];
+            #endif
+                renderer_reset_scale_translate_MV(scaleFactor, translationOffset);
 				[self drawROISelectorRegion];
 			}
 			
 #ifdef WITH_ICHAT
 //			if (ctx == _alternateContext && [[NSApplication sharedApplication] isActive]) // iChat Theatre context
 //			{
-//				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+//				glLoadIdentity();
 //				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
 //				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
 //									
 //				NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
 //				
-//				// location of the mouse in the OsiriX View
+//				// Location of the mouse in the View
 //				eventLocation = [self convertPoint:eventLocation fromView:nil];
 //				eventLocation.y = [self frame].size.height - eventLocation.y;
 //				
@@ -11256,7 +12754,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //						glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
 //						glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
 //						glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
-//						glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+//						glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 //						
 //						glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, iChatCursorImageSize.width, iChatCursorImageSize.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, iChatCursorTextureBuffer);
 //					}
@@ -11275,7 +12773,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //					glEnable(GL_BLEND);
 //					
-//					glColor4f(1.0, 1.0, 1.0, 1.0);
+//                  renderer_set_rgba(1.0, 1.0, 1.0, 1.0);
 //					glBegin(GL_QUAD_STRIP);
 //                  {
 //						glTexCoord2f(0, 0);
@@ -11299,29 +12797,44 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //			} // end iChat Theatre context
 #endif
 			
-			if (showDescriptionInLarge)
+#pragma mark Large description
+
+            if (showDescriptionInLarge) // displayed when CTRL key is down
 			{
+#ifdef WITH_OPENGL_32
+                //renderer_setProgram(scene.fontShaderProgram.program, __LINE__);  // for text textures
+                // No need to redefine the MVP matrix, because for this shader it was never modified
+#else
 				glMatrixMode (GL_PROJECTION);
 				glPushMatrix();
-					glLoadIdentity ();
-					glMatrixMode (GL_MODELVIEW);
-					glPushMatrix();
-						glLoadIdentity ();
-						glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f);
-						glTranslatef (-drawingFrameRect.size.width / 2.0f, -drawingFrameRect.size.height / 2.0f, 0.0f);
-                        
-                        glColor4f( 1.0, 1.0, 1.0, 1.0);
-                        
-                        NSRect r = NSMakeRect( drawingFrameRect.size.width/2 - [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].width/2,
-                                              drawingFrameRect.size.height/2 - [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].height/2,
-                                              [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].width,
-                                              [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].height);
-                        
-						[showDescriptionInLargeText drawWithBounds: r];
+                glLoadIdentity();
+
+                {
+                glMatrixMode (GL_MODELVIEW);
+                glPushMatrix();
+                    
+                CGSize scaleFactor = drawingFrameRect.size;
+                CGPoint translationOffset;
+                translationOffset.x = -drawingFrameRect.size.width;
+                translationOffset.y = -drawingFrameRect.size.height;
+                renderer_reset_scale_translate_MV(scaleFactor, translationOffset);
+#endif
+                renderer_setTextColor(1.0, 1.0, 1.0, 1.0); // white
+                
+                NSRect r = NSMakeRect( drawingFrameRect.size.width/2 - [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].width/2,
+                                      drawingFrameRect.size.height/2 - [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].height/2,
+                                      [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].width,
+                                      [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].height);
+                
+                [showDescriptionInLargeText drawWithBounds: r];
 						
-						glPopMatrix(); // GL_MODELVIEW
-					glMatrixMode (GL_PROJECTION);
+#ifndef WITH_OPENGL_32
+                glPopMatrix(); // GL_MODELVIEW
+                }
+
+                glMatrixMode (GL_PROJECTION);
 				glPopMatrix();
+#endif
 			}
 		}  
 		else
@@ -11332,262 +12845,34 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			glClear (GL_COLOR_BUFFER_BIT);
 		}
 		
+#pragma mark Loupe (old)
+
 #ifndef new_loupe
-		if (lensTexture)
-		{
-			/* creating Loupe textures (mask and border) */
-			
-			NSBundle *bundle = [NSBundle bundleForClass:[DCMView class]];
-			if (!loupeImage)
-			{
-				loupeImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupe.png"]];
-				loupeTextureWidth = [loupeImage size].width;
-				loupeTextureHeight = [loupeImage size].height;
-			}
-            
-			if (!loupeMaskImage)
-			{
-				loupeMaskImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupeMask.png"]];
-				loupeMaskTextureWidth = [loupeMaskImage size].width;
-				loupeMaskTextureHeight = [loupeMaskImage size].height;
-			}
-			
-			if (loupeTextureID==0)
-				[self makeTextureFromImage:loupeImage
-                                forTexture:&loupeTextureID
-                                    buffer:loupeTextureBuffer
-                               textureUnit:GL_TEXTURE3];
-			
-			if (loupeMaskTextureID==0)
-				[self makeTextureFromImage:loupeMaskImage
-                                forTexture:&loupeMaskTextureID
-                                    buffer:loupeMaskTextureBuffer
-                               textureUnit:GL_TEXTURE0];
-					
-			/* mouse position */
-
-			NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
-			eventLocation = [self convertPointToBacking: [self convertPoint:eventLocation fromView:nil]];
-			
-			if (xFlipped)
-			{
-				eventLocation.x = drawingFrameRect.size.width - eventLocation.x;
-			}
-			
-			if (yFlipped)
-			{
-				eventLocation.y = drawingFrameRect.size.height - eventLocation.y;
-			}
-			
-			eventLocation.y = drawingFrameRect.size.height - eventLocation.y;
-			eventLocation.y -= drawingFrameRect.size.height/2;
-			eventLocation.x -= drawingFrameRect.size.width/2;
-			
-			float xx =  eventLocation.x*cos(rotation*deg2rad) + eventLocation.y*sin(rotation*deg2rad);
-			float yy = -eventLocation.x*sin(rotation*deg2rad) + eventLocation.y*cos(rotation*deg2rad);
-			
-			eventLocation.x = xx;
-			eventLocation.y = yy;
-			
-			eventLocation.x -= LENSSIZE*2*scaleValue/LENSRATIO;
-			eventLocation.y -= LENSSIZE*2*scaleValue/LENSRATIO;
-			
-			glMatrixMode (GL_MODELVIEW);
-			glLoadIdentity ();
-			
-			glScalef( 2.0f / (xFlipped ? -(drawingFrameRect.size.width)  : drawingFrameRect.size.width),
-					 -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height),
-					  1.0f); // scale to port per pixel scale
-			glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-			
-			/* binding lensTexture */
-			
-			GLuint textID;
-			
-			glEnable(_textRectMode);
-			glPixelStorei(GL_UNPACK_ROW_LENGTH, LENSSIZE); 
-			glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
-			glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
-			
-			glGenTextures(1, &textID);
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(_textRectMode, textID);
-            if (NOINTERPOLATION)
-                interpolationType = GL_NEAREST;
-            else
-                interpolationType = GL_LINEAR; 	//GL_LINEAR_MIPMAP_LINEAR
-            
-            glTexParameteri(_textRectMode, GL_TEXTURE_MIN_FILTER, interpolationType);
-            glTexParameteri(_textRectMode, GL_TEXTURE_MAG_FILTER, interpolationType);
-				
-			glColor4f( 1, 1, 1, 1);
-			// Allocate memory for a texture
-#if __BIG_ENDIAN__
-            GLenum _type = GL_UNSIGNED_INT_8_8_8_8_REV;
-#else
-            GLenum _type = GL_UNSIGNED_INT_8_8_8_8;
-#endif
-			glTexImage2D(_textRectMode, 0,      // target, LOD
-                         GL_RGBA,               // internal format
-                         LENSSIZE, LENSSIZE, 0, // width (s), height (t),border
-                         GL_BGRA, _type,        // external format, type
-                         lensTexture);          // pixels
-			
-			glEnable(GL_BLEND);
-			glBlendEquation(GL_FUNC_ADD);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			
-			/* multitexturing starts */
-			
-            glPushAttrib( GL_TEXTURE_BIT);
-
-			glActiveTexture(GL_TEXTURE0);
-			glEnable(loupeMaskTextureID);
-			glBindTexture(_textRectMode, loupeMaskTextureID);
-			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
-			glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
-			glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-            
-			glActiveTexture(GL_TEXTURE1);
-			glEnable(textID);
-			glBindTexture(_textRectMode, textID);
-			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-			glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
-			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
-			glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
-			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-
-			glActiveTexture(GL_TEXTURE0);
-			glEnable(_textRectMode);
-			glActiveTexture(GL_TEXTURE1);
-			glEnable(_textRectMode);
-			
-			glBegin (GL_QUAD_STRIP);
-            {
-				glMultiTexCoord2f (GL_TEXTURE1, 0, 0); // lensTexture : upper left in texture coordinates
-				glMultiTexCoord2f (GL_TEXTURE0, 0, 0); // mask texture : upper left in texture coordinates
-				glVertex3d (eventLocation.x, eventLocation.y, 0.0);
-			
-				glMultiTexCoord2f (GL_TEXTURE1, LENSSIZE, 0); // lensTexture : lower left in texture coordinates
-				glMultiTexCoord2f (GL_TEXTURE0, loupeMaskTextureWidth, 0); // mask texture : lower left in texture coordinates
-				glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO,
-                            eventLocation.y,
-                            0.0);
-
-				glMultiTexCoord2f (GL_TEXTURE1, 0, LENSSIZE); // lensTexture : upper right in texture coordinates
-				glMultiTexCoord2f (GL_TEXTURE0, 0, loupeMaskTextureHeight); // mask texture : upper right in texture coordinates
-				glVertex3d (eventLocation.x,
-                            eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO,
-                            0.0);
-				
-				glMultiTexCoord2f (GL_TEXTURE1, LENSSIZE, LENSSIZE); // lensTexture : lower right in texture coordinates
-				glMultiTexCoord2f (GL_TEXTURE0, loupeMaskTextureWidth, loupeMaskTextureHeight); // mask texture : lower right in texture coordinates
-				glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO,
-                            eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO,
-                            0.0);
-            }
-			glEnd();
-			
-			glActiveTexture(GL_TEXTURE1); // deactivate multitexturing
-			glDisable(_textRectMode);
-			glDeleteTextures( 1, &textID);
-
-			/* multitexturing ends */
-			
-			// back to single texturing mode:
-			glActiveTexture(GL_TEXTURE0); // activate single texture unit
-			glDisable(_textRectMode);
-		
-			/* drawing loupe border */
-			BOOL drawLensBorder = YES;
-			if (loupeTextureID && drawLensBorder)
-			{
-				glEnable(GL_TEXTURE_RECTANGLE_EXT);
-				
-				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, loupeTextureID);
-				
-				glColor4f(1.0, 1.0, 1.0, 1.0);
-				
-				glBegin(GL_QUAD_STRIP);
-                {
-                    glTexCoord2f(0, 0);
-                    glVertex3d (eventLocation.x, eventLocation.y, 0.0);
-                
-                    glTexCoord2f(loupeTextureWidth, 0);
-                    glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y, 0.0);
-                
-                    glTexCoord2f(0, loupeTextureHeight);
-                    glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
-                
-                    glTexCoord2f(loupeTextureWidth, loupeTextureHeight);
-                    glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
-                }
-				glEnd();
-				
-				glDisable(GL_TEXTURE_RECTANGLE_EXT);
-			}
-            
-            glDisable(GL_BLEND);
-            
-            glPopAttrib();
-
-//		glColor4f ( 0, 0, 0 , 0.8);
-//		glLineWidth( 3 * sf);
-//
-//		int resol = LENSSIZE*4*scaleValue;
-//
-//		eventLocation.x += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
-//		eventLocation.y += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
-//
-//		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-//		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-//#ifndef WITH_OPENGL_32
-//		glEnable(GL_POINT_SMOOTH);
-//#endif
-//		glEnable(GL_LINE_SMOOTH);
-//		glEnable(GL_POLYGON_SMOOTH);
-//
-//		float f = ((LENSSIZE-1)*scaleValue*2/LENSRATIO);
-//
-//		glBegin(GL_LINE_LOOP);
-//		for (int i = 0; i < resol ; i++ )
-//		{
-//			float angle = i * 2 * M_PI /resol;
-//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
-//		}
-//		glEnd();
-//		glPointSize( 3 * sf);
-//		glBegin( GL_POINTS);
-//		for (int i = 0; i < resol ; i++ )
-//		{
-//			float angle = i * 2 * M_PI /resol;
-//
-//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
-//		}
-//		glEnd();
-//		glDisable(GL_LINE_SMOOTH);
-//		glDisable(GL_POLYGON_SMOOTH);
-//#ifndef WITH_OPENGL_32
-//    glDisable(GL_POINT_SMOOTH);
-//#endif
-		}
+        if (lensTexture)
+            [self drawOldLoupe];
 #endif
         
-        [self drawRectAnyway:aRect];
+        [self drawRectAnyway:aRect]; // for subclasses
         
         if (gInvertColors &&
 			[stringID isEqualToString: @"export"] == NO)
         {
-            glMatrixMode (GL_MODELVIEW);
-            glLoadIdentity ();
-            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-            glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+#ifdef WITH_OPENGL_32
+            // TODO:
+            NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+#else
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+#endif
+            renderer_set_rgba(1.0, 1.0, 1.0, 1.0); // white
+
             glEnable(GL_BLEND);
+            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+#ifdef WITH_OPENGL_32
+            NSLog(@"%s %d, TODO: OpenGL Core, glRectf() to draw rectangle", __FUNCTION__, __LINE__);
+#else
             glRectf( -1.0f, -1.0f, 1.0f, 1.0f );
+#endif
             glDisable(GL_BLEND);
         }
 	}
@@ -11596,6 +12881,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		N2LogExceptionWithStackTrace(e);
 	}
 	
+#ifdef WITH_OPENGL_32
+    // unbind
+    renderer_setProgram(0, __LINE__);
+#endif
 	// Swap buffer to screen
 	[ctx flushBuffer];
     
@@ -11610,6 +12899,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	(void) [self _checkHasChanged:YES];
 }
+
+#pragma mark -
 
 - (void) setFrame:(NSRect)frameRect
 {
@@ -11631,123 +12922,162 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     [super renewGState];
 }
 
-#pragma mark -
-- (void) reshape	// scrolled, moved or resized
+- (void)updateAllProjections
+{
+#ifdef WITH_OPENGL_32
+#if 0 // FIXME: with this commented in the overlay is not drawn in the preview
+    NSRect r = [self frame];
+    NSLog(@"%s %d, class:%@ %p, r:%@", __FUNCTION__, __LINE__, [self class], self, NSStringFromRect(r));
+
+    glm::mat4 P = glm::ortho(-r.size.width/2.0,   r.size.width/2.0,  // LR
+                              r.size.height/2.0, -r.size.height/2.0, // BT
+                             -1.0, 1.0); // near, far
+
+    [self setShaderProgramImage];
+    //glUseProgram(scene.imageProgram.programHandle);
+    glUniformMatrix4fv(scene.imageProgram.vertexUniformProjection, 1, GL_FALSE, glm::value_ptr(P));
+
+    [self setShaderProgramOverlayLine];
+    //glUseProgram(scene.overlayLineProgram.program);
+    glUniformMatrix4fv(scene.overlayLineProgram.vertexUniformProjection, 1, GL_FALSE, glm::value_ptr(P));
+
+    [self setShaderProgramOverlay];
+    //glUseProgram(scene.overlayProgram.programHandle);
+    glUniformMatrix4fv(scene.overlayProgram.vertexUniformProjection, 1, GL_FALSE, glm::value_ptr(P));
+#endif
+#endif // WITH_OPENGL_32
+}
+
+#pragma mark - NSOpenGLView
+
+// scrolled, moved or resized
+- (void) reshape
 {
     [super reshape];
     
-	if (dcmPixList)
+	if (!dcmPixList)
+        return;
+
+    BOOL is2DViewer = [self is2DViewer];
+    [[self openGLContext] makeCurrentContext];
+    checkOpenGLErrors(__LINE__);
+    
+    NSRect rect = [self frame];
+    
+#ifdef WITH_OPENGL_32
+    needToUpdateProjections = true;  // defer to drawing time
+#endif
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"] && is2DViewer)
     {
-		BOOL is2DViewer = [self is2DViewer];
-		[[self openGLContext] makeCurrentContext];
-        checkOpenGLErrors(__LINE__);
-        
-		NSRect rect = [self frame];
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"] && is2DViewer)
-		{
-			if (NSEqualSizes( previousViewSize, rect.size) == NO)
-			{
-				if (is2DViewer)
-					[[self windowController] setUpdateTilingViewsValue: YES];
-				
-				[self scaleToFit];
-				
-				if (is2DViewer == YES)
-				{
-					if (curImage >= 0 && COPYSETTINGSINSERIES == NO)
-					{
-						ViewerController *v = [self windowController];
-						
-						for (int i = 0 ; i < [v  maxMovieIndex]; i++)
-						{
-							for (DCMPix *pix in [v pixList: i])
-							{
-								if (pix != curDCM)
-								{
-                                    pix.imageObj.scale = nil;
-									
-									NSPoint o = NSMakePoint( 0, 0);
-									if (pix.shutterEnabled)
-									{
-										o.x = ((curDCM.pwidth  * 0.5f ) - ( curDCM.shutterRect.origin.x + ( curDCM.shutterRect.size.width  * 0.5f ))) * scaleValue;
-                                        
-										o.y = -((curDCM.pheight * 0.5f ) - ( curDCM.shutterRect.origin.y + ( curDCM.shutterRect.size.height * 0.5f ))) * scaleValue;
-									}
-									
-									[pix.imageObj setValue: [NSNumber numberWithFloat: o.x] forKey:@"xOffset"];
-									[pix.imageObj setValue: [NSNumber numberWithFloat: o.y] forKey:@"yOffset"];
-								}
-							}
-						}
-					}
-					
-					[[self windowController] setUpdateTilingViewsValue: NO];
-					
-					if ([[self window] isMainWindow])
-						[[self windowController] propagateSettings];
-				}
-			}
-		}
-		else
-		{
-			if (previousViewSize.width != 0 && previousViewSize.height != 0)
-			{
-				float yChanged = sqrt( (rect.size.height / previousViewSize.height) * (rect.size.width / previousViewSize.width));
-				
-				if (yChanged > 0.01 && yChanged < 1000)
-                    yChanged = yChanged;
-				else
-                    yChanged = 0.01;
-				
-				if (is2DViewer)
-				{
-					[[self windowController] setUpdateTilingViewsValue: YES];
-				
-					if (curImage >= 0 && COPYSETTINGSINSERIES == NO)
-					{
-						ViewerController *v = [self windowController];
-						
-                        if ([[v imageViews] objectAtIndex: 0] == self)
+        if (NSEqualSizes( previousViewSize, rect.size) == NO)
+        {
+            if (is2DViewer)
+                [[self windowController] setUpdateTilingViewsValue: YES];
+            
+            [self scaleToFit];
+            
+            if (is2DViewer == YES)
+            {
+                if (curImage >= 0 && COPYSETTINGSINSERIES == NO)
+                {
+                    ViewerController *v = [self windowController];
+                    
+                    for (int i = 0 ; i < [v  maxMovieIndex]; i++)
+                    {
+                        for (DCMPix *pix in [v pixList: i])
                         {
-                            for (int i = 0 ; i < [v  maxMovieIndex]; i++)
+                            if (pix != curDCM)
                             {
-                                for (DCMPix *pix in [v pixList: i])
+                                pix.imageObj.scale = nil;
+                                
+                                NSPoint o = NSZeroPoint;
+                                if (pix.shutterEnabled)
                                 {
-                                    if (pix != curDCM)
-                                    {
-                                        float s = [[pix.imageObj valueForKey: @"scale"] floatValue];
-                                        
-                                        if (s)
-                                            [pix.imageObj setValue: [NSNumber numberWithFloat: s * yChanged] forKey: @"scale"];
-                                        else
-                                            [pix.imageObj setValue: nil forKeyPath: @"scale"];
-                                    }
+                                    o.x = (curDCM.pwidth * 0.5f - NSMidX(curDCM.shutterRect)) * scaleValue;
+                                    o.y = -(curDCM.pheight * 0.5f - NSMidY(curDCM.shutterRect)) * scaleValue;
+                                }
+                                
+                                [pix.imageObj setValue: [NSNumber numberWithFloat: o.x] forKey:@"xOffset"];
+                                [pix.imageObj setValue: [NSNumber numberWithFloat: o.y] forKey:@"yOffset"];
+                            }
+                        }
+                    }
+                }
+                
+                [[self windowController] setUpdateTilingViewsValue: NO];
+                
+                if ([[self window] isMainWindow])
+                    [[self windowController] propagateSettings];
+            }
+        }
+    }
+    else
+    {
+        if (previousViewSize.width != 0 &&
+            previousViewSize.height != 0)
+        {
+            float yChanged = sqrt( (rect.size.height / previousViewSize.height) * (rect.size.width / previousViewSize.width));
+            
+            if (yChanged > 0.01 && yChanged < 1000)
+                yChanged = yChanged;
+            else
+                yChanged = 0.01;
+            
+            if (is2DViewer)
+            {
+                [[self windowController] setUpdateTilingViewsValue: YES];
+            
+                if (curImage >= 0 && COPYSETTINGSINSERIES == NO)
+                {
+                    ViewerController *v = [self windowController];
+                    
+                    if ([[v imageViews] objectAtIndex: 0] == self)
+                    {
+                        for (int i = 0 ; i < [v  maxMovieIndex]; i++)
+                        {
+                            for (DCMPix *pix in [v pixList: i])
+                            {
+                                if (pix != curDCM)
+                                {
+                                    float s = [[pix.imageObj valueForKey: @"scale"] floatValue];
+                                    
+                                    if (s)
+                                        [pix.imageObj setValue: [NSNumber numberWithFloat: s * yChanged] forKey: @"scale"];
+                                    else
+                                        [pix.imageObj setValue: nil forKeyPath: @"scale"];
                                 }
                             }
                         }
-					}
-				}
-				
-				self.scaleValue = scaleValue * yChanged;
-				
-				if (is2DViewer)
-					[[self windowController] setUpdateTilingViewsValue: NO];
-				
-				origin.x *= yChanged;
-				origin.y *= yChanged;
-				
-				if (is2DViewer == YES)
-				{
-					if ([[self window] isMainWindow])
-						[[self windowController] propagateSettings];
-				}
-			}
-		}
+                    }
+                }
+            }
+            
+            self.scaleValue = scaleValue * yChanged;
+            
+            if (is2DViewer)
+                [[self windowController] setUpdateTilingViewsValue: NO];
+            
+            origin.x *= yChanged;
+            origin.y *= yChanged;
+            
+            if (is2DViewer == YES)
+            {
+                if ([[self window] isMainWindow])
+                    [[self windowController] propagateSettings];
+            }
+        }
     }
 }
 
--(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
+#pragma mark -
+
+-(unsigned char*) getRawPixels:(long*) width
+                              :(long*) height
+                              :(long*) spp
+                              :(long*) bpp
+                              :(BOOL) screenCapture
+                              :(BOOL) force8bits
 {
 	return [self getRawPixelsWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:NO allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:NO origin: nil spacing: nil];
 }
@@ -11943,7 +13273,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				if (intersect == NO)
 				{
 					curRect.origin.y++;
-					if (curRect.origin.y + curRect.size.height > unionRect.origin.y + unionRect.size.height)
+					if (NSMaxY(curRect) > NSMaxY(unionRect))
                         intersect = YES;
 				}
 			}
@@ -12087,7 +13417,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 {
 	NSPoint oo = [self origin];
 	
-	NSRect usefulRect = [curDCM usefulRectWithRotation: rotation scale: scaleValue xFlipped: xFlipped yFlipped: yFlipped];
+	NSRect usefulRect = [curDCM usefulRectWithRotation: self.rotation
+                                                 scale: scaleValue
+                                              xFlipped: xFlipped
+                                              yFlipped: yFlipped];
 	
 	NSSize rectSize = drawingFrameRect.size;
 	
@@ -12095,8 +13428,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if (yFlipped) oo.y = -oo.y;
 
 	oo = [DCMPix rotatePoint: oo
-                 aroundPoint: NSMakePoint( 0, 0)
-                       angle: -rotation*deg2rad];
+                 aroundPoint: NSZeroPoint
+                       angle: glm::radians(-self.rotation)];
 	
 	NSPoint cov = NSMakePoint(rectSize.width/2  + oo.x - usefulRect.size.width/2,
                               rectSize.height/2 - oo.y - usefulRect.size.height/2);
@@ -12134,8 +13467,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                         (usefulRect.origin.y+usefulRect.size.height - (smartRect.origin.y+smartRect.size.height)) / 2);
 			
 			*ori = [DCMPix rotatePoint: *ori
-                           aroundPoint: NSMakePoint( 0, 0)
-                                 angle: rotation*deg2rad];
+                           aroundPoint: NSZeroPoint
+                                 angle: glm::radians(_rotation)];
 		}
 	}
 	
@@ -12245,8 +13578,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //                    if (xFlipped) {oo.x = -oo.x; shiftOrigin.x *=-1;}
 //                    if (yFlipped) {oo.y = -oo.y; shiftOrigin.y *=-1;}
 //                    
-//                    shiftOrigin.x = oo.x*cos((rotation)*deg2rad) + oo.y*sin((rotation)*deg2rad) + shiftOrigin.x;
-//                    shiftOrigin.y = oo.x*sin((rotation)*deg2rad) - oo.y*cos((rotation)*deg2rad) + shiftOrigin.y;
+//                    shiftOrigin.x = oo.x*cos(rotation*deg2rad) + oo.y*sin(rotation*deg2rad) + shiftOrigin.x;
+//                    shiftOrigin.y = oo.x*sin(rotation*deg2rad) - oo.y*cos(rotation*deg2rad) + shiftOrigin.y;
 //                    
 //                    oo = NSMakePoint( NSRectCenterX(blendedViewRect) - NSRectCenterX(unionRect), NSRectCenterY(blendedViewRect) - NSRectCenterY(unionRect));
 //                    
@@ -12295,8 +13628,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                 if (c)
                 {
                     [c makeCurrentContext];
+#ifndef WITH_OPENGL_32
                     CGLContextObj cgl_ctx = [c CGLContextObj];
-                    
+#endif
                     NSString *str = nil;
                     
                     if (removeGraphical)
@@ -12337,7 +13671,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                         t_rgb += 3;
                     }
                     
-                    screenCaptureRect = NSMakeRect(0, 0, 0, 0);
+                    screenCaptureRect = NSZeroRect;
                 
                     [self setStringID: str];
                     [str release];
@@ -12491,7 +13825,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				
 				if (dcm.stackMode == STACK_MODE_VOLUME_RENDERING ||
                     dcm.stackMode == STACK_MODE_TBD)
+                {
                     isRGB = YES;
+                }
 			}
 			
 			if (isRGB)
@@ -12501,14 +13837,15 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				*spp = 3;
 				*bpp = 8;
 				
-				long i = *width * *height * *spp * *bpp / 8;
+				long i = (*width) * (*height) * (*spp) * (*bpp) / 8;
 				buf = (unsigned char *)malloc( i );
 				if (!buf)
                     NSLog(@"%s:%i %s", __FILE__, __LINE__, MALLOC_ERROR_MESSAGE);
                 else
 				{
-					unsigned char *dst = buf, *src = (unsigned char*) dcm.baseAddr;
-					i = *width * *height;
+                    unsigned char *dst = buf;
+                    unsigned char *src = (unsigned char*) dcm.baseAddr;
+					i = (*width) * (*height);
 					
 					// CONVERT ARGB TO RGB
 					while (i-- > 0)
@@ -12980,8 +14317,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         [exportDCM setOffset: offset];
         [exportDCM setSigned: isSigned];
 
-		float thickness, location;
-		
+        float thickness;
+        float location;
 		[self getThickSlabThickness:&thickness location:&location];
 		[exportDCM setSliceThickness: thickness];
 		[exportDCM setSlicePosition: location];
@@ -13028,10 +14365,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 - (NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers
 {
-	NSBitmapImageRep	*rep;
-	long				width, height, spp, bpp;
-	NSString			*colorSpace;
-	unsigned char		*data;
+	NSBitmapImageRep *rep;
+	long width, height, spp, bpp;
+	NSString *colorSpace;
+	unsigned char *data;
 	
 	NSDisableScreenUpdates();
 	
@@ -13321,19 +14658,19 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 -(void) setAlpha:(float) a
 {
-	float   val, ii;
-	float   src[ 256];
+	float val, ii;
+	float src[ 256];
 	long i;
 	
-	switch (blendingMode )
+	switch (blendingMode)
 	{
-		case 0:				// LINEAR FUSION
+		case BLENDING_MODE_LINEAR_FUSION:
 			for (i = 0; i < 256; i++ )
                 src[ i] = i;
             
             break;
 		
-		case 1:				// HIGH-LOW-HIGH
+		case BLENDING_MODE_HIGH_LOW_HIGH:
 			for (i = 0; i < 128; i++)
                 src[ i] = (127 - i)*2;
             
@@ -13342,7 +14679,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             
             break;
 		
-		case 2:				// LOW-HIGH-LOW
+		case BLENDING_MODE_LOW_HIGH_LOW:
 			for (i = 0; i < 128; i++)
                 src[ i] = i*2;
             
@@ -13351,19 +14688,19 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             
             break;
 		
-		case 3:				// LOG
+		case BLENDING_MODE_LOG:
 			for (i = 0; i < 256; i++)
                 src[ i] = 255. * log10( 1. + (i/255.)*9.);
             
             break;
 		
-		case 4:				// LOG INV
+		case BLENDING_MODE_LOG_INV:
 			for (i = 0; i < 256; i++)
                 src[ i] = 255. * (1. - log10( 1. + ((255-i)/255.)*9.));
             
             break;
 		
-		case 5:				// FLAT
+		case BLENDING_MODE_FLAT:
 			for (i = 0; i < 256; i++)
                 src[ i] = 128;
             
@@ -13436,7 +14773,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	}
 }
 
--(void) setBlendingMode:(long) f
+// Setter
+-(void) setBlendingMode:(BlendingMode2DType) f
 {
 	blendingMode = f;
     
@@ -13451,34 +14789,35 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 -(void) setRotation:(float) x
 {
-	if (rotation != x )
-	{
-		rotation = x;
-		
-		if (rotation < 0)
-            rotation += 360;
-        
-		if (rotation > 360)
-            rotation -= 360;
-		
-        [self.seriesObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-        
-        // Image Level
-        if (curImage >= 0 && COPYSETTINGSINSERIES == NO)
-            [self.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-        else
-            [self.imageObj setValue: nil forKey:@"rotationAngle"];
-		
-		[self updateTilingViews];        
-        [self setNeedsDisplay: YES];
-	}
+	if (_rotation == x)
+        return;
+
+    _rotation = x;
+    
+    if (_rotation < 0)
+        _rotation += 360;
+    
+    if (_rotation > 360)
+        _rotation -= 360;
+    
+    [self.seriesObj setValue:[NSNumber numberWithFloat:_rotation] forKey:@"rotationAngle"];
+    
+    // Image Level
+    if (curImage >= 0 && COPYSETTINGSINSERIES == NO)
+        [self.imageObj setValue:[NSNumber numberWithFloat:_rotation] forKey:@"rotationAngle"];
+    else
+        [self.imageObj setValue: nil forKey:@"rotationAngle"];
+    
+    [self updateTilingViews];
+    [self setNeedsDisplay: YES];
 }
 
 - (void) orientationCorrectedToView:(float*) correctedOrientation
 {
-	float	o[ 9];
-	float   yRot = -1, xRot = -1;
-	float	rot = rotation;
+	float o[ 9];
+    float yRot = -1;
+    float xRot = -1;
+	float rot = self.rotation;
 	
 	[curDCM orientation: o];
 	
@@ -13523,7 +14862,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	vector.x = o[0];
     vector.y = o[1];
     vector.z = o[2];
-	vector = ArbitraryRotate(vector, xRot*rot*deg2rad, rotationVector);
+	vector = ArbitraryRotate(vector, glm::radians(xRot*rot), rotationVector);
 	o[0] = vector.x;
     o[1] = vector.y;
     o[2] = vector.z;
@@ -13531,7 +14870,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	vector.x = o[3];
     vector.y = o[4];
     vector.z = o[5];
-	vector = ArbitraryRotate(vector, yRot*rot*deg2rad, rotationVector);
+	vector = ArbitraryRotate(vector, glm::radians(yRot*rot), rotationVector);
 	o[3] = vector.x;
     o[4] = vector.y;
     o[5] = vector.z;
@@ -13609,8 +14948,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 -(void) setOriginWithRotationX:(float) x Y:(float) y
 {
-    x = x*cos(rotation*deg2rad) + y*sin(rotation*deg2rad);
-    y = x*sin(rotation*deg2rad) - y*cos(rotation*deg2rad);
+    x = x*cos(glm::radians(_rotation)) + y*sin(glm::radians(_rotation));
+    y = x*sin(glm::radians(_rotation)) - y*cos(glm::radians(_rotation));
 
     [self setOriginX: x Y: y];
 }
@@ -13716,7 +15055,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
          resampledBaseAddr: (char**) rAddr
      resampledBaseAddrSize: (int*) rBAddrSize
 {
-    //NSLog(@"DCmView.mm %d loadTextureIn %@ %p", __LINE__, NSStringFromClass([self class]), self);
+#if WITH_OPENGL_32_STEP2 || WITH_OPENGL_32_STEP3
+    return nil;
+#endif
+
+    //NSLog(@"DCmView.mm %d loadTextureIn >>> START %@ %p", __LINE__, NSStringFromClass([self class]), self);
 	// *tX, *tY, *tW, *tH are output parameters ?
     checkOpenGLErrors(__LINE__);
 
@@ -13757,15 +15100,18 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if (noScale)
 		[curDCM changeWLWW :127.0 : 256.0];
 	
+#ifndef WITH_OPENGL_32
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if (cgl_ctx == nil) {
-        NSLog(@"%s %d early return for %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
+    if (!cgl_ctx) {
+        NSLog(@"loadTextureIn %d early return for %@ %p", __LINE__, NSStringFromClass([self class]), self);
         return nil;
     }
+#endif
     
     if (texture)
 	{
-		glDeleteTextures( *tX * *tY, texture);        checkOpenGLErrors(__LINE__);
+		glDeleteTextures( *tX * *tY, texture);
+        checkOpenGLErrors(__LINE__);
 		free( (char*) texture);
 		texture = nil;
 	}
@@ -13803,6 +15149,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
 	if (isRGB)
 	{
+#pragma mark RGB
 		if (curDCM.isLUT12Bit)
 		{
 		}
@@ -13901,8 +15248,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	}
 	else if (localColorTransfer || blending)  // && grayscale
 	{
-        // not isRGB
-	    if (*colorBufPtr)
+#pragma mark grayscale
+
+        if (*colorBufPtr)
             free( *colorBufPtr);
 
 		*colorBufPtr = (unsigned char *)malloc( 4 * curDCM.pwidth * curDCM.pheight);
@@ -13954,10 +15302,11 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
     checkOpenGLErrors(__LINE__);
 
-    if (!glIsEnabled(_textRectMode)) {
+#ifndef WITH_OPENGL_32
+    if (!glIsEnabled(_textRectMode))
         glEnable(_textRectMode);
-        checkOpenGLErrors(__LINE__); // GL_INVALID_ENUM 0x0500
-    }
+#endif
+    checkOpenGLErrors(__LINE__);
     
 	float *computedfImage = nil;
 	char *baseAddr = nil;
@@ -13979,8 +15328,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		
 		*tW = curDCM.pwidth  * resampledScale;
 		*tH = curDCM.pheight * resampledScale;
-		
-		if (*tW >= _minMaxTextureSize)
+        
+ 		if (*tW >= _minMaxTextureSize)
 			intFULL32BITPIPELINE = NO;
 		
 		if (*tH >= _minMaxTextureSize)
@@ -14035,7 +15384,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		dst.width = *tW;
 		dst.height = *tH;
 		
-		if (*rBAddrSize < rowBytes * *tH )
+		if (*rBAddrSize < rowBytes * *tH)
 		{
 			if (*rAddr)
                 free( *rAddr);
@@ -14133,9 +15482,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     checkOpenGLErrors(__LINE__);
     
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, *tW);    checkOpenGLErrors(__LINE__);
-	
-	*tX = GetTextureNumFromTextureDim( *tW, _minMaxTextureSize, false, f_ext_texture_rectangle );
-	*tY = GetTextureNumFromTextureDim( *tH, _minMaxTextureSize, false, f_ext_texture_rectangle );
+
+	*tX = GetTextureNumFromTextureDim( *tW, _minMaxTextureSize, false, ef.EXT_texture_rectangle );
+	*tY = GetTextureNumFromTextureDim( *tH, _minMaxTextureSize, false, ef.EXT_texture_rectangle );
+    //NSLog(@"DCMView.mm %d loadTextureIn, total tiles:(%li,%li)", __LINE__, *tX, *tY);
 
 	if (*tX * *tY == 0)
 		NSLog(@"****** *tX * *tY == 0");
@@ -14164,11 +15514,14 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     checkOpenGLErrors(__LINE__);
 
 	{
-        int k = 0, offsetX = 0;
-        int currWidth=0, currHeight=0;
+        int k = 0;
+        int offsetX = 0;
+        int currWidth = 0;
+        int currHeight = 0;
+
 		for (int x = 0; x < *tX; x++)
 		{
-			currWidth = GetNextTextureSize(*tW - offsetX, _minMaxTextureSize, f_ext_texture_rectangle);
+			currWidth = GetNextTextureSize(*tW - offsetX, _minMaxTextureSize, ef.EXT_texture_rectangle);
 			
 			int offsetY = 0;
 			for (int y = 0; y < *tY; y++)
@@ -14204,22 +15557,30 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				}
                 
                 // Use remaining to determine next texture size
-				currHeight = GetNextTextureSize(*tH - offsetY, _minMaxTextureSize, f_ext_texture_rectangle);
-
+				currHeight = GetNextTextureSize(*tH - offsetY, _minMaxTextureSize, ef.EXT_texture_rectangle);
 				checkOpenGLErrors(__LINE__);
 
-                glBindTexture(_textRectMode, texture[k++]);      checkOpenGLErrors(__LINE__);
+                glBindTexture(_textRectMode, texture[k++]);
+                checkOpenGLErrors(__LINE__);
                 
+#ifdef WITH_OPENGL_32
+                // TODO:
+//                GLfloat priority;
+//                glGetTexParameterfv(_textRectMode, GL_TEXTURE_PRIORITY, &priority);  checkOpenGLErrors(__LINE__);
+//                NSLog(@"glGetTexParameterfv(0x%04x, GL_TEXTURE_PRIORITY, %.2f)", _textRectMode, priority);
+//                //glTexParameterf(_textRectMode, GL_TEXTURE_PRIORITY, 1.0f);   checkOpenGLErrors(__LINE__);  // error 0x0500
+#else
 				glTexParameterf(_textRectMode, GL_TEXTURE_PRIORITY, 1.0f);   checkOpenGLErrors(__LINE__);
+#endif
                 
-				if (f_ext_client_storage)
+				if (ef.APPLE_client_storage)
 					glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
 				else 
 					glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_FALSE);
 				
                 checkOpenGLErrors(__LINE__);
 
-				if (f_arb_texture_rectangle && f_ext_texture_rectangle)
+				if (ef.ARB_texture_rectangle && ef.EXT_texture_rectangle)
 				{
 //					if (*tW >= 1024 && *tH >= 1024 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
 					{
@@ -14233,15 +15594,19 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                     interpolationType = GL_NEAREST;
 				else
                     interpolationType = GL_LINEAR; 	// GL_LINEAR_MIPMAP_LINEAR
-                
-                // _textRectMode: GL_TEXTURE_RECTANGLE_EXT == GL_TEXTURE_RECTANGLE_EXT == 0x84F5
+
+                // _textRectMode: GL_TEXTURE_RECTANGLE_ARB == GL_TEXTURE_RECTANGLE_EXT == 0x84F5
                 // edgeClampParam: GL_CLAMP_TO_EDGE == GL_CLAMP_TO_EDGE_SGIS == 0x812F
                 glTexParameteri(_textRectMode, GL_TEXTURE_WRAP_S, edgeClampParam);          checkOpenGLErrors(__LINE__);
                 glTexParameteri(_textRectMode, GL_TEXTURE_WRAP_T, edgeClampParam);          checkOpenGLErrors(__LINE__);
                 glTexParameteri(_textRectMode, GL_TEXTURE_MIN_FILTER, interpolationType);   checkOpenGLErrors(__LINE__);
                 glTexParameteri(_textRectMode, GL_TEXTURE_MAG_FILTER, interpolationType);   checkOpenGLErrors(__LINE__);
 
-				glColor4f(1.0f, 1.0f, 1.0f, 1.0f);     checkOpenGLErrors(__LINE__); // GL_INVALID_ENUM, 0x0500
+#ifdef WITH_OPENGL_32
+                // TODO: make sure the current program is not 0
+#else
+                renderer_set_rgba(1.0, 1.0, 1.0, 1.0); // white
+#endif
                 
 				if (currWidth > 0 && currHeight > 0)
 				{
@@ -14251,47 +15616,78 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 #else
                     GLenum _type = GL_UNSIGNED_INT_8_8_8_8;
 #endif
+#ifdef WITH_OPENGL_32
+                    GLenum _format = GL_BGRA;  // TODO: just a guess for now
+#else
+                    GLenum _format = GL_BGRA_EXT;
+#endif
                     // Allocate memory for a texture
                     if (isRGB || [curDCM thickSlabVRActivated])
                     {
                         glTexImage2D (_textRectMode, 0,
                                       GL_RGBA,
                                       currWidth, currHeight, 0,
-                                      GL_BGRA_EXT, _type,
+                                      _format, _type,
                                       pBuffer);
                     }
                     else if (localColorTransfer || blending)
                     {
+#ifdef WITH_OPENGL_32
+                        glm::mat4 CCM = glm::mat4(1.0);
+                        [scene.imageProgram Bind];
+                        [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
+#endif
                         // grayscale image with LUT
                         glTexImage2D (_textRectMode, 0,
                                       GL_RGBA,
                                       currWidth, currHeight, 0,
-                                      GL_BGRA_EXT, _type,
-                                      pBuffer);                 checkOpenGLErrors(__LINE__);
+                                      _format, _type,
+                                      pBuffer);
+#ifdef WITH_OPENGL_32
+                        renderer_setProgram(0, __LINE__);
+                        checkOpenGLErrors(__LINE__);
+#endif
                     }
                     else
                     {
                         if (!intFULL32BITPIPELINE)
                         {
-                              glTexImage2D (_textRectMode, 0,
-                                            GL_INTENSITY8,
-                                            currWidth, currHeight, 0,
-                                            GL_LUMINANCE, GL_UNSIGNED_BYTE,
-                                            pBuffer);
+#ifdef WITH_OPENGL_32
+                            GLenum target = GL_TEXTURE_RECTANGLE;
+                            GLint internalFormat = GL_R8;
+                            GLenum format = GL_RED;
+#else
+                            GLenum target = _textRectMode;
+                            GLint internalFormat = GL_INTENSITY8;
+                            GLenum format = GL_LUMINANCE;
+#endif
+                            glTexImage2D(target, 0,
+                                         internalFormat,
+                                         currWidth, currHeight, 0,
+
+                                         format, GL_UNSIGNED_BYTE,
+                                         pBuffer);
                         }
                         else  // intFULL32BITPIPELINE
                         {
 							float min = curWL - curWW / 2;
 							float max = curWL + curWW / 2;
-							
 							if (max-min == 0)
 							{
+                                // Calculate the max and min from the actual pixel values
 								min = [curDCM fullwl] - [curDCM fullww] / 2;
 								max = [curDCM fullwl] + [curDCM fullww] / 2;
 							}
 
-#ifndef WITH_OPENGL_32
                             // Window width and level is implemented here
+#ifdef WITH_OPENGL_32
+                            scene.bias = -min; // Issue i30
+                            scene.scale = 1./(max-min);
+
+                            [self setShaderProgramImage];
+                            [self applyColorCorrectionMatrix: scene.bias
+                                                            : scene.scale];
+#else
                             glPixelTransferf( GL_RED_BIAS, -min/(max-min));
                             glPixelTransferf( GL_RED_SCALE, 1./(max-min));
                             checkOpenGLErrors(__LINE__);
@@ -14299,10 +15695,19 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
                             if (checkExtension("GL_APPLE_float_pixels"))
                             {
-                                glTexImage2D(_textRectMode, 0,
-                                             GL_LUMINANCE_FLOAT32_APPLE,  // deprecated rendering engine ?
+            #ifdef WITH_OPENGL_32
+                                GLenum target = GL_TEXTURE_RECTANGLE;
+                                GLint internalFormat = GL_R8;
+                                GLenum format = GL_RED;
+            #else
+                                GLenum target = _textRectMode;
+                                GLint internalFormat = GL_LUMINANCE_FLOAT32_APPLE;  // deprecated rendering engine ?
+                                GLenum format = GL_LUMINANCE;
+            #endif
+                                glTexImage2D(target, 0,
+                                             internalFormat,
                                              currWidth, currHeight, 0,
-                                             GL_LUMINANCE, GL_FLOAT,
+                                             format, GL_FLOAT,
                                              pBuffer);
                             }
 #ifdef WITH_OPENGL_32
@@ -14334,7 +15739,10 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 #endif // WITH_OPENGL_32
                             checkOpenGLErrors(__LINE__);
 
-#ifndef WITH_OPENGL_32
+#ifdef WITH_OPENGL_32
+                            renderer_setProgram(0, __LINE__);
+                            checkOpenGLErrors(__LINE__);
+#else
                             // Restore
 							glPixelTransferf( GL_RED_BIAS, 0);
                             //glPixelTransferf( GL_GREEN_BIAS, 0);
@@ -14354,7 +15762,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                 } // if (currWidth > 0 && currHeight > 0)
 
 #ifndef NDEBUG
-                checkOpenGLErrors(__LINE__);  // error 0x0500
+                checkOpenGLErrors(__LINE__);  // (error 0x0500)
 #endif
 				offsetY += currHeight;
 			}
@@ -14362,14 +15770,20 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		}
 	}
 
-    glDisable(_textRectMode);    checkOpenGLErrors(__LINE__);
-	
+    checkOpenGLErrors(__LINE__);
+#ifndef WITH_OPENGL_32
+    glDisable(_textRectMode);
+    checkOpenGLErrors(__LINE__);
+#endif
+
 	if (computedfImage)
 	{
 		if (computedfImage != curDCM.fImage)
 			free( computedfImage);
 	}
 	
+    //NSLog(@"DCmView.mm %d loadTextureIn <<< END %@ %p", __LINE__, NSStringFromClass([self class]), self);
+
 	return texture;
 }
 
@@ -14412,7 +15826,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if ([[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] < 60)
 	{
 		[[NSUserDefaults standardUserDefaults] setFloat: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] + 1 forKey: @"LabelFONTSIZE"];
-		[NSFont resetFont: 2];
+		[NSFont resetFont: FONT_TYPE_ROI];
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: sender];
 	}
 }
@@ -14422,43 +15836,47 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if ([[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] > 6)
 	{
 		[[NSUserDefaults standardUserDefaults] setFloat: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] - 1 forKey: @"LabelFONTSIZE"];
-		[NSFont resetFont: 2];
+		[NSFont resetFont: FONT_TYPE_ROI];
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: sender];
 	}
 }
 
 - (void) changeLabelGLFontNotification:(NSNotification*) note
 {
-    if (self.window.backingScaleFactor != 0)
-    {
-        [[self openGLContext] makeCurrentContext];
-        
-        CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-        if (cgl_ctx == nil)
-            return;
+    if (self.window.backingScaleFactor == 0)
+        return;
 
-        if (labelFontListGL)
-            glDeleteLists(labelFontListGL, 150);
-        
-        labelFontListGL = glGenLists(150);
-        
-        [labelFont release];
-        
-        labelFont = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"LabelFONTNAME"]
-                                     size: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"]] retain];
-        if (labelFont == nil)
-            labelFont = [[NSFont fontWithName:@"Monaco" size:12] retain];
-        
-        [labelFont makeGLDisplayListFirst:' '
-                                    count:150
-                                     base:labelFontListGL
-                                         :labelFontListGLSize
-                                         :2
-                                         :self.window.backingScaleFactor];
-        
-        [ROI setFontHeight: [DCMView sizeOfString: @"B" forFont: labelFont].height];
-        [self setNeedsDisplay:YES];
-    }
+    [[self openGLContext] makeCurrentContext];
+#ifndef WITH_OPENGL_32
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (cgl_ctx == nil)
+        return;
+
+    if (labelFontListGL)
+        glDeleteLists(labelFontListGL, NUM_DISPLAY_LISTS);
+    
+    labelFontListGL = glGenLists(NUM_DISPLAY_LISTS);
+    assert(labelFontListGL != 0);
+#endif
+    
+    [labelFont release];
+    
+    NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:@"LabelFONTNAME"];
+    CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"];
+    labelFont = [[NSFont fontWithName:fontName
+                                 size:fontSize] retain];
+    if (labelFont == nil)
+        labelFont = [[NSFont fontWithName:@"Monaco" size:12] retain];
+    
+    [labelFont makeGLDisplayListFirst:' '
+                                count:NUM_DISPLAY_LISTS
+                                 base:labelFontListGL
+                                     :labelFontListGLSize
+                                     :FONT_TYPE_ROI
+                                     :self.window.backingScaleFactor];
+    
+    [ROI setFontHeight: [DCMView sizeOfString: @"B" forFont: labelFont].height];
+    [self setNeedsDisplay:YES];
 }
 
 - (void) changeGLFontNotification:(NSNotification*) note
@@ -14466,14 +15884,18 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (self.window.backingScaleFactor != 0)
     {
         [[self openGLContext] makeCurrentContext];
-        
+
+#ifndef WITH_OPENGL_32
         CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         if (cgl_ctx == nil)
             return;
         
         if (fontListGL)
-            glDeleteLists(fontListGL, 150);
-        fontListGL = glGenLists(150);
+            glDeleteLists(fontListGL, NUM_DISPLAY_LISTS);
+
+        fontListGL = glGenLists(NUM_DISPLAY_LISTS);
+        assert(fontListGL != 0);
+#endif
         
         [fontGL release];
 
@@ -14483,20 +15905,20 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
             fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
         
         [fontGL makeGLDisplayListFirst:' '
-                                 count:150
+                                 count:NUM_DISPLAY_LISTS
                                   base:fontListGL
                                       :fontListGLSize
-                                      :0
+                                      :FONT_TYPE_0
                                       :self.window.backingScaleFactor];
         stringSize = [self convertSizeToBacking: [DCMView sizeOfString:@"B" forFont:fontGL]];
         
         @synchronized( globalStringTextureCache)
         {
-            [globalStringTextureCache removeObject: stringTextureCache];
+            [globalStringTextureCache removeObject: stringTextureDic];
         }
         
-        [stringTextureCache release];
-        stringTextureCache = nil;
+        [stringTextureDic release];
+        stringTextureDic = nil;
         [self setNeedsDisplay:YES];
     }
 }
@@ -14508,7 +15930,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	[[NSUserDefaults standardUserDefaults] setObject: [newFont fontName] forKey: @"FONTNAME"];
 	[[NSUserDefaults standardUserDefaults] setFloat: [newFont pointSize] forKey: @"FONTSIZE"];
-	[NSFont resetFont: 0];
+	[NSFont resetFont: FONT_TYPE_0];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: sender];
 }
@@ -14519,26 +15941,25 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 	@try
 	{
-		pTextureName = [self loadTextureIn:pTextureName
-                                  blending:NO
-                                  colorBuf:&colorBuf
-                                  textureX:&textureX
-                                  textureY:&textureY
-                                  redTable:redTable
-                                greenTable:greenTable
-                                 blueTable:blueTable
-                              textureWidth:&textureWidth
-                             textureHeight:&textureHeight
-                         resampledBaseAddr:&resampledBaseAddr
-                     resampledBaseAddrSize:&resampledBaseAddrSize];
+		pTextureName = [self loadTextureIn: pTextureName
+                                  blending: NO
+                                  colorBuf: &colorBuf
+                                  textureX: &textureX
+                                  textureY: &textureY
+                                  redTable: redTable
+                                greenTable: greenTable
+                                 blueTable: blueTable
+                              textureWidth: &textureWidth
+                             textureHeight: &textureHeight
+                         resampledBaseAddr: &resampledBaseAddr
+                     resampledBaseAddrSize: &resampledBaseAddrSize];
         
-#ifndef NDEBUG
-        if (pTextureName)
-            NSLog(@"%s %d %@ %p, pTextureName: %p %u", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, pTextureName, *pTextureName);
-        else
-            NSLog(@"%s %d %@ %p, pTextureName is NULL", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
-#endif
-
+//#ifndef NDEBUG
+//        if (pTextureName)
+//            NSLog(@"%s %d %@ %p, pTextureName: %p %u", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, pTextureName, *pTextureName);
+//        else
+//            NSLog(@"%s %d %@ %p, pTextureName is NULL", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
+//#endif
 
 		if (blendingView)
 		{
@@ -14591,7 +16012,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	slicePoint3D[ 0] = HUGE_VALF;
 	
 	[self sendSyncMessage: 0];
-	[self computeColor];
+	[self computeStudyColor];
 	[self setNeedsDisplay:YES];
 }
 
@@ -14663,12 +16084,12 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	return YES;
 }
 
-#pragma mark
+#pragma mark - NSView
 
 - (id)initWithFrame:(NSRect)frame
 {
 #ifndef NDEBUG
-    NSLog(@"%s %d %@", __FUNCTION__, __LINE__, NSStringFromClass([self class]));
+    NSLog(@"%s %d, class:%@", __FUNCTION__, __LINE__, NSStringFromClass([self class]));
 #endif
     
 	[AppController initialize];
@@ -14676,18 +16097,22 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	return [self initWithFrame:frame imageRows:1 imageColumns:1];
 }
 
-// ** TILING SUPPORT
+#pragma mark - TILING SUPPORT
 
 - (instancetype)initWithFrame:(NSRect)frame
                     imageRows:(int)rows
                  imageColumns:(int)columns
 {
-    //NSLog(@"%s %d %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
-
-	self = [self initWithFrameInternal:frame];
+    [self createOpenGLView:frame];
     if (self)
 	{
-		drawing = YES;
+        NSLog(@"%s %d %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
+        [self initWithFrameInternal:frame];
+
+#ifdef WITH_OPENGL_32
+        needToUpdateProjections = false;
+#endif
+        drawing = YES;
         _tag = 0;
 		_imageRows = rows;
 		_imageColumns = columns;
@@ -14700,9 +16125,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		noScale = NO;
 		_flippedData = NO;
 		
-		//notifications
-		NSNotificationCenter *nc;
-		nc = [NSNotificationCenter defaultCenter];
+		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver: self
                selector: @selector(updateCurrentImage:)
                    name: OsirixDCMUpdateCurrentImageNotification
@@ -14720,10 +16143,61 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     return self;
 }
 
-- (instancetype)initWithFrameInternal:(NSRect)frameRect
+- (instancetype)createOpenGLView:(NSRect)frameRect
 {
-    NSLog(@"%s", __FUNCTION__);
+    NSOpenGLPixelFormatAttribute attrs[] =
+    {
+#ifdef WITH_OPENGL_32
 
+    #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_10
+        NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion4_1Core,
+    #elif MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+        NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
+    #endif
+
+#else
+        NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersionLegacy,  // for immediate mode
+#endif
+        
+//        NSOpenGLPFAColorSize    , 24,
+//        NSOpenGLPFAAlphaSize    , 8,
+//        NSOpenGLPFAAccelerated,
+
+        NSOpenGLPFADoubleBuffer ,
+        NSOpenGLPFADepthSize    , 32,
+        
+        // Specifying "NoRecovery" gives us a context that cannot fall back to the software renderer.  This makes the View-based context a compatible with the layer-backed context, enabling us to use the "shareContext" feature to share textures, display lists, and other OpenGL objects between the two.
+        NSOpenGLPFANoRecovery, // Enable automatic use of OpenGL "share" contexts.
+
+        NSOpenGLPFAMinimumPolicy,
+        0
+    };
+
+    NSOpenGLPixelFormat *pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
+    if ( !pixFmt )
+    {
+        NSLog(@"DCMView.mm:%d %s OPENGL ERROR %@", __LINE__, __PRETTY_FUNCTION__, NSStringFromClass([self class]));
+        [NSException raise:NSGenericException
+                    format:NSLocalizedString(@"Not able to run Quartz Extreme: OpenGL+Quartz. Update your video hardware!",nil)];
+//        NSRunCriticalAlertPanel(NSLocalizedString(@"OPENGL ERROR",nil),
+//                                NSLocalizedString(@"Not able to run Quartz Extreme: OpenGL+Quartz. Update your video hardware!",nil),
+//                                NSLocalizedString(@"OK",nil),
+//                                nil,
+//                                nil);
+//        exit(1);
+    }
+
+    self = [super initWithFrame:frameRect pixelFormat:pixFmt];
+#if 1
+    [[self openGLContext] makeCurrentContext];
+    NSLog(@"%s %d, class %@, OpenGL legacy:%i", __FUNCTION__, __LINE__,
+          NSStringFromClass([self class]), checkOGLVersion());
+#endif
+    return self;
+}
+
+- (void)initWithFrameInternal:(NSRect)frameRect
+{
     if (PETredTable == nil)
         [DCMView computePETBlendingCLUT];
     
@@ -14735,7 +16209,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     pixelMouseValue = 0;
     curDCM = nil;
     curRoiList = nil;
-    blendingMode = 0;
+    blendingMode = BLENDING_MODE_LINEAR_FUSION;
     display2DPoint = NSMakePoint(0,0);
     colorBuf = nil;
     blendingColorBuf = nil;
@@ -14772,52 +16246,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
                                                options:NSKeyValueObservingOptionNew
                                                context:nil];
 
-    NSOpenGLPixelFormatAttribute attrs[] =
-    {
-#ifdef WITH_OPENGL_32
-
-    #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_10
-        NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion4_1Core,
-    #elif MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
-        NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,  // results in "OpenGL version:4.1 INTEL-10.14.73"
-    #endif
-
-#else
-        NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersionLegacy,  // for immediate mode
-#endif
-        
-//        NSOpenGLPFAColorSize    , 24,
-//        NSOpenGLPFAAlphaSize    , 8,
-//        NSOpenGLPFAAccelerated,
-
-        NSOpenGLPFADoubleBuffer ,
-        NSOpenGLPFADepthSize    , 32,
-        
-        // Specifying "NoRecovery" gives us a context that cannot fall back to the software renderer.  This makes the View-based context a compatible with the layer-backed context, enabling us to use the "shareContext" feature to share textures, display lists, and other OpenGL objects between the two.
-        NSOpenGLPFANoRecovery, // Enable automatic use of OpenGL "share" contexts.
-
-        NSOpenGLPFAMinimumPolicy,
-        0
-    };
-
-    NSOpenGLPixelFormat *pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
-    if ( !pixFmt )
-    {
-        NSLog(@"DCMView.mm:%d %s OPENGL ERROR %@", __LINE__, __PRETTY_FUNCTION__, NSStringFromClass([self class]));
-        [NSException raise:NSGenericException
-                    format:NSLocalizedString(@"Not able to run Quartz Extreme: OpenGL+Quartz. Update your video hardware!",nil)];
-//        NSRunCriticalAlertPanel(NSLocalizedString(@"OPENGL ERROR",nil),
-//                                NSLocalizedString(@"Not able to run Quartz Extreme: OpenGL+Quartz. Update your video hardware!",nil),
-//                                NSLocalizedString(@"OK",nil),
-//                                nil,
-//                                nil);
-//		exit(1);
-    }
-	self = [super initWithFrame:frameRect pixelFormat:pixFmt];
-
 #ifndef WITH_OPENGL_32
     [self setWantsBestResolutionOpenGLSurface:YES]; // Retina https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
-#endif
+#endif // WITH_OPENGL_32
     
     drawingFrameRect = [self convertRectToBacking: [self frame]]; //retina
     
@@ -14911,10 +16342,16 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     dcmPixList = nil;
     dcmFilesList = nil;
     
+#ifdef WITH_OPENGL_32
+    _m_buffers = [[NSMutableArray array] retain];
+#endif
+    
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+    // Make the context current
     //checkOpenGLErrors(__LINE__); // Will get a warning as there is no context
     [[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
     checkOpenGLErrors(__LINE__);
-        
+
 #ifdef WITH_GLEW
     #if defined(WITH_OPENGL_32)
     glewExperimental = true; // Needed for core profile
@@ -14927,7 +16364,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (glewReturnCode != GLEW_OK)
         NSLog(@"Failed to initialize GLEW");
     #endif
-#else
+#endif
+
+#ifndef WITH_OPENGL_32
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 #endif
 
@@ -14936,7 +16375,9 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 	[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
     
+#if !WITH_OPENGL_32_STEP2 && !WITH_OPENGL_32_STEP3
 	[self FindMinimumOpenGLCapabilities];
+#endif
 
 //  glEnable(GL_MULTISAMPLE_ARB);
 //  glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
@@ -14971,8 +16412,80 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //    }
 
     gInvertColors = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue];
+
+#ifdef WITH_OPENGL_32
+    scene = [GLScene new];
+    [scene addProgramImage];
+    [scene addProgramLoupe];
+    [scene addProgramOverlay];
+    [scene addProgramOverlayLine];
+    [scene addProgramFont];
     
-    return self;
+    [GLScene setCurrentScene: &scene];// Maybe not needed here
+    
+    [self setShaderProgramOverlay];
+    //[self setShaderProgramOverlay_withMode_Normal];
+    [self setShaderProgramLoupe];
+    //renderer_setProgram(scene.loupeProgram.programHandle);
+    renderer_setTextureCount(1, __LINE__);
+    
+    renderer_setProgram(0, __LINE__);
+
+#if WITH_OPENGL_32_STEP2 // init overlay
+    // Pre
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+  #if 1 //def WITH_GLM
+    GLfloat scaleWidth = frameRect.size.width;
+    GLfloat scaleHeight = -frameRect.size.height;
+  #else
+    GLfloat scaleWidth = 1;
+    GLfloat scaleHeight = 1;
+  #endif
+#define VP      0.5f    // vertex position
+    const GLfloat vertex_buffer_data[] = {
+        0.0f * scaleWidth,  VP * scaleHeight,
+         VP * scaleWidth, -VP * scaleHeight,
+        -VP * scaleWidth, -VP * scaleHeight
+    };
+    
+    int dim=2;
+
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    NSLog(@"%s %d, seqId:%d, generated VBO:%u", __FUNCTION__, __LINE__, seqId, vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER,
+                 sizeof(vertex_buffer_data),
+                 vertex_buffer_data,
+                 GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(scene.overlayProgram.vertexAttribXY);
+    glVertexAttribPointer(scene.overlayProgram.vertexAttribXY, dim, GL_FLOAT, GL_FALSE, 0, (GLvoid*) 0);
+    
+    NSLog(@"%lu _m_buffers before", (unsigned long)[_m_buffers count]);
+    [_m_buffers addObject:[NSNumber numberWithUnsignedInteger:vbo]];
+    NSLog(@"%lu _m_buffers after", (unsigned long)[_m_buffers count]);
+
+    // Post
+    glBindVertexArray(0);
+#endif // WITH_OPENGL_32_STEP2
+
+#if 0
+    glGenVertexArrays(1, &VAO);  // @@@ called first but unused ???
+    glBindVertexArray(VAO);
+    NSLog(@"%s %d, GL_APPLE_vertex_array_object:%d, VAO:%u", __FUNCTION__, __LINE__,
+          checkExtension("GL_APPLE_vertex_array_object"), VAO);
+
+    // 6. Upload vertices and colours
+    [self addVBO:3 :[NSData dataWithBytes:vertex_buffer_data length:sizeof(vertex_buffer_data)]];
+    [self addVBO:2 :[NSData dataWithBytes:uv_buffer_data     length:sizeof(uv_buffer_data)]];
+    
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind
+#endif
+#endif // WITH_OPENGL_32
 }
 
 - (void) prepareToRelease
@@ -14990,7 +16503,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     {
         [[self window] setAcceptsMouseMovedEvents: NO];
         [self prepareToRelease];
-        [self computeColor];
+        [self computeStudyColor];
     }
 }
 
@@ -15350,20 +16863,20 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //	if (stringID == nil || [stringID isEqualToString: @"previewDatabase"])  <- this will break the DICOM export function: no sourceFilePath in DICOMExport
 	{
 #ifndef NDEBUG
-        if ([NSThread isMainThread] == NO)
-            NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
+    if ([NSThread isMainThread] == NO)
+        NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
 #endif
-        if ([stringID isEqualToString:@"previewDatabase"])
-            return curDCM.imageObj;
-        
-        if (curImage >= 0 && curImage < dcmFilesList.count)
-            return [dcmFilesList objectAtIndex: curImage];
-        
-        else if ([dcmPixList indexOfObject: curDCM] != NSNotFound && dcmFilesList.count == dcmPixList.count)
-            return [dcmFilesList objectAtIndex: [dcmPixList indexOfObject: curDCM]];
-        
-        else
-            return [curDCM imageObj];
+
+    if ([stringID isEqualToString:@"previewDatabase"])
+        return curDCM.imageObj;
+    
+    if (curImage >= 0 && curImage < dcmFilesList.count)
+        return [dcmFilesList objectAtIndex: curImage];
+    
+    if ([dcmPixList indexOfObject: curDCM] != NSNotFound && dcmFilesList.count == dcmPixList.count)
+        return [dcmFilesList objectAtIndex: [dcmPixList indexOfObject: curDCM]];
+    
+    return [curDCM imageObj];
 	}
     
     return nil;
@@ -15373,17 +16886,18 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 {
 //	if (stringID == nil || [stringID isEqualToString:@"previewDatabase"]) <- this will break the DICOM export function: no sourceFilePath in DICOMExport
 	{
-#ifdef NDEBUG
-#else
-        if ([NSThread isMainThread] == NO)
-            NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
+#ifndef NDEBUG
+    if ([NSThread isMainThread] == NO)
+        NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
 #endif
-		if (curImage >= 0 && curImage < dcmFilesList.count)
-            return [[dcmFilesList objectAtIndex: curImage] valueForKey: @"series"];
-        else if ([dcmPixList indexOfObject: curDCM] != NSNotFound)
-            return [[dcmFilesList objectAtIndex: [dcmPixList indexOfObject: curDCM]] valueForKey: @"series"];
-        else
-            return [curDCM seriesObj];
+
+    if (curImage >= 0 && curImage < dcmFilesList.count)
+        return [[dcmFilesList objectAtIndex: curImage] valueForKey: @"series"];
+
+    if ([dcmPixList indexOfObject: curDCM] != NSNotFound)
+        return [[dcmFilesList objectAtIndex: [dcmPixList indexOfObject: curDCM]] valueForKey: @"series"];
+    
+    return [curDCM seriesObj];
 	}
     
     return nil;
@@ -15393,17 +16907,17 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 {
 //	if (stringID == nil || [stringID isEqualToString:@"previewDatabase"]) <- this will break the DICOM export function: no sourceFilePath in DICOMExport
 	{
-#ifdef NDEBUG
-#else
-        if ([NSThread isMainThread] == NO)
-            NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
+#ifndef NDEBUG
+    if ([NSThread isMainThread] == NO)
+        NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
 #endif
-		if (curImage >= 0 && curImage < dcmFilesList.count)
-            return [[dcmFilesList objectAtIndex: curImage] valueForKeyPath: @"series.study"];
-        else if ([dcmPixList indexOfObject: curDCM] != NSNotFound)
-            return [[dcmFilesList objectAtIndex: [dcmPixList indexOfObject: curDCM]] valueForKeyPath: @"series.study"];
-        else
-            return [curDCM studyObj];
+    if (curImage >= 0 && curImage < dcmFilesList.count)
+        return [[dcmFilesList objectAtIndex: curImage] valueForKeyPath: @"series.study"];
+    
+    if ([dcmPixList indexOfObject: curDCM] != NSNotFound)
+        return [[dcmFilesList objectAtIndex: [dcmPixList indexOfObject: curDCM]] valueForKeyPath: @"series.study"];
+
+    return [curDCM studyObj];
 	}
     
     return nil;
@@ -15663,8 +17177,8 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	float newWidth = windowFrame.size.width - (frameWidth - curImageWidth) * _imageColumns;
 	float newHeight = windowFrame.size.height - (frameHeight - curImageHeight) * _imageRows;
 	NSPoint center;
-	center.x = windowFrame.origin.x + windowFrame.size.width/2.0;
-	center.y = windowFrame.origin.y + windowFrame.size.height/2.0;
+	center.x = NSMidX(windowFrame);
+	center.y = NSMidY(windowFrame);
 	
 	NSArray *screens = [NSScreen screens];
 	
@@ -15672,7 +17186,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	{
 		if (NSPointInRect( center, [loopItem frame]))
 		{
-			NSRect screenFrame = [AppController usefullRectForScreen: loopItem];
+			NSRect screenFrame = [AppController usefulRectForScreen: loopItem];
             
 			if (newHeight > screenFrame.size.height)
                 newHeight = screenFrame.size.height;
@@ -15814,7 +17328,7 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         
         NSString *path = [[NSFileManager defaultManager] tmpDirPath];
         
-        if (description.length)
+        if (description.length > 0)
             path = [path stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", self.studyObj.name, description]];
         else
             path = [path stringByAppendingPathComponent: self.studyObj.name];
@@ -16270,5 +17784,76 @@ CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //	if ([[loupeController window] isVisible])
 //		[[loupeController window] orderOut:self];
 //}
+
+#ifdef WITH_OPENGL_32
+- (void)addVBO: (int) dim
+              : (NSData *) data
+{
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    NSLog(@"%s %d, seqId:%d, generated VBO:%u", __FUNCTION__, __LINE__, seqId, vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER,
+                 data.length,
+                 data.bytes,
+                 GL_STATIC_DRAW);
+    glVertexAttribPointer((GLuint)_m_buffers.count,  // attribute. Must match the layout in the shader.
+                          dim,
+                          GL_FLOAT,
+                          GL_FALSE,     // normalized?
+                          0,            // stride
+                          (GLvoid*) 0); // array buffer offset
+    
+    glEnableVertexAttribArray((GLuint)_m_buffers.count);
+    
+    [_m_buffers addObject:[NSNumber numberWithUnsignedInteger:vbo]];
+    //[m_buffers addObject: [NSValue valueWithRect: bounds]];
+}
+
+- (void)applyColorCorrectionMatrix: (float) bias
+                                  : (float) scale
+{
+    if (scene.imageProgram.fragmentUniformCCM == -1)
+        return;
+    
+    // Grayscale from Red channel (alternative to swizzle mask)
+    glm::mat4 grayM = glm::mat4(0.0);
+    grayM[0].r = 1.0;     // copy R to R
+    grayM[0].g = 1.0;     // copy R to G
+    grayM[0].b = 1.0;     // copy R to B
+    grayM[3].w = 1.0;
+    
+    // Brightness
+    glm::mat4 brightnesstM = glm::mat4(1.0);
+    brightnesstM[3].r = brightnesstM[3].g = brightnesstM[3].b = bias; // translation
+    
+    // Contrast
+    glm::mat4 contrastM = glm::mat4(1.0);
+    float c = scale;
+    contrastM[0].r = contrastM[1].g = contrastM[2].b = c; // scaling
+#ifdef WITH_TRANSLATION_IN_CONTRAST_MATRIX // Issue i30
+    // Shift the base color (when c=0) from black to gray
+    float t = (1.0 - c) / 2.0;
+    contrastM[3].r = contrastM[3].g = contrastM[3].b = t; // translation
+#endif
+    
+#ifdef WITH_COLOR_SATURATION
+    // Saturation
+    float s = 0.0; // -1: color complement, 0: convert to luminance, 1 : identity
+    // Re-adjust the RGB color distribution
+    glm::mat4 saturationM = glm::mat4(1.0);
+    float sr = (1.0-s)*0.3086;
+    float sg = (1.0-s)*0.6094;
+    float sb = (1.0-s)*0.0820;
+    saturationM[0].r = sr+s; saturationM[0].g = sr;   saturationM[0].b = sr;
+    saturationM[1].r = sg;   saturationM[1].g = sg+s; saturationM[1].b = sg;
+    saturationM[2].r = sb;   saturationM[2].g = sb;   saturationM[2].b = sb+s;
+    glm::mat4 CCM = saturationM * contrastM * brightnesstM * grayM;
+#else
+    glm::mat4 CCM = contrastM * brightnesstM * grayM;
+#endif
+    [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
+}
+#endif // #ifdef WITH_OPENGL_32
 
 @end

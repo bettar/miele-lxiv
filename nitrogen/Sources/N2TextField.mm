@@ -49,7 +49,7 @@
 		
 		// ok if filled and respects format
 		// also ok if NOT filled and placeholder string defined
-		if (self.stringValue.length)
+		if (self.stringValue.length > 0)
 			self.formatIsOk = [self.formatter getObjectValue:&obj forString:self.stringValue errorDescription:NULL];
 		else {
 			if ([[self cell] placeholderString])

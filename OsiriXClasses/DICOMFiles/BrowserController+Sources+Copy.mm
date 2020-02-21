@@ -39,7 +39,7 @@
 {
     @autoreleasepool
     {
-        if( io.count < 4)
+        if (io.count < 4)
         {
             NSLog( @"******* copyImagesToLocalBrowserSourceThread : io.count < 4");
             return;
@@ -76,22 +76,22 @@
                 NSString* srcPath = [imagePaths objectAtIndex:i];
                 NSString* dstPath = [dstDatabase uniquePathForNewDataFileWithExtension: @"dcm"];
                 
-                if( dstPath.length)
+                if (dstPath.length > 0)
                 {
                     static NSString *oneCopyAtATime = @"oneCopyAtATime";
                     @synchronized( oneCopyAtATime)
                     {
-                        if( srcDatabase.isReadOnly)
+                        if (srcDatabase.isReadOnly)
                         {
                             NSTask *t = [NSTask launchedTaskWithLaunchPath: @"/bin/cp" arguments: @[srcPath, dstPath]];
                             while( [t isRunning]){};
                         }
-                        else if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil] == NO)
+                        else if ([[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil] == NO)
                             NSLog( @"**** copyItemAtPath failed: %@", dstPath);
 
-                        if( [[NSFileManager defaultManager] fileExistsAtPath: dstPath])
+                        if ([[NSFileManager defaultManager] fileExistsAtPath: dstPath])
                         {
-                            if( [DicomFile isDICOMFile: dstPath] == NO)
+                            if ([DicomFile isDICOMFile: dstPath] == NO)
                                 [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: [srcPath pathExtension]] error: nil];
                             
                             [dstPaths addObject:dstPath];
@@ -99,7 +99,7 @@
                     }
                 }
                 
-                if( fiveSeconds < [NSDate timeIntervalSinceReferenceDate])
+                if (fiveSeconds < [NSDate timeIntervalSinceReferenceDate])
                 {
                     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %@ %@...", nil), N2LocalizedDecimal( dstPaths.count), (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
                     
@@ -110,7 +110,7 @@
                     fiveSeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
                 }
                 
-                if( oneSecond < [NSDate timeIntervalSinceReferenceDate])
+                if (oneSecond < [NSDate timeIntervalSinceReferenceDate])
                 {
                     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %@ %@...", nil), N2LocalizedDecimal( (long)imagePaths.count-i), ((long)imagePaths.count-i == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
                     
@@ -196,7 +196,7 @@
                 NSString* ext = [DicomFile isDICOMFile:srcPath]? @"dcm" : srcPath.pathExtension;
                 NSString* dstPath = [idatabase uniquePathForNewDataFileWithExtension:ext];
                 
-                if( dstPath.length)
+                if (dstPath.length > 0)
                     if ([[NSFileManager defaultManager] moveItemAtPath:srcPath toPath:dstPath error:NULL])
                         [dstPaths addObject:dstPath];
             }

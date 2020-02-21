@@ -60,13 +60,13 @@ static ThreeDPositionController *nav = nil;
 
 - (void) movePositionPosition:(float*) move
 {
-	for( int i = 0; i < [viewerController maxMovieIndex]; i++)
+	for (int i = 0; i < [viewerController maxMovieIndex]; i++)
 	{
-		for( DCMPix *p in [viewerController pixList: i])
+		for (DCMPix *p in [viewerController pixList: i])
 		{
 			float o[ 3];
 			
-			if( move)
+			if (move)
 			{
 				o[ 0] = [p originX] + move[ 0]*[p pixelSpacingX];
 				o[ 1] = [p originY] + move[ 1]*[p pixelSpacingY];
@@ -80,9 +80,7 @@ static ThreeDPositionController *nav = nil;
 			}
 			
 			[p setOrigin: o];
-			
             [p setSliceInterval: 0];
-			
             [p computeSliceLocation];
 		}
 	}
@@ -90,24 +88,24 @@ static ThreeDPositionController *nav = nil;
 	[viewerController computeInterval];
 	[viewerController propagateSettings];
 	
-	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+	for (ViewerController *v in [ViewerController getDisplayed2DViewers])
 	{
 		[[v imageView] sendSyncMessage: 0];
 		[v refresh];
 	}
-	#ifndef MIELE_LIGHT
-	for( NSWindow *w in [[NSApplication sharedApplication] windows])
+	
+#ifndef MIELE_LIGHT
+	for (NSWindow *w in [[NSApplication sharedApplication] windows])
 	{
-		if( [[w windowController] isKindOfClass: [OrthogonalMPRPETCTViewer class]])
+		if ([[w windowController] isKindOfClass: [OrthogonalMPRPETCTViewer class]])
 			[[w windowController] realignDataSet: self];
 	}
-	#endif
+#endif
 }
 
 - (IBAction) reset:(id) sender
 {
 	[viewerController executeRevert];
-	
 	[self movePositionPosition: nil];
 }
 
@@ -118,17 +116,17 @@ static ThreeDPositionController *nav = nil;
 		case 0:
 			[axialPan setImage: [NSImage imageNamed: @"AxialSmall.tif"]];
 			[verticalPan setImage: [NSImage imageNamed: @"CorSmall.tif"]];
-		break;
+            break;
 		
 		case 1:
 			[axialPan setImage: [NSImage imageNamed: @"CorSmall.tif"]];
 			[verticalPan setImage: [NSImage imageNamed: @"AxialSmall.tif"]];
-		break;
+            break;
 		
 		case 2:
 			[axialPan setImage: [NSImage imageNamed: @"SagSmall.tif"]];
 			[verticalPan setImage: [NSImage imageNamed: @"AxialSmall.tif"]];
-		break;
+            break;
 	}
 }
 
@@ -141,47 +139,47 @@ static ThreeDPositionController *nav = nil;
 {
 	float move[ 3] = { 0, 0, 0};
 	
-	switch( [matrixMode selectedTag])
+	switch ([matrixMode selectedTag])
 	{
 		case 0:
 			switch( [sender tag])
 			{
-				case 0:			move[ 0] -= 1/2.;		break;
-				case 1:			move[ 0] += 1/2.;		break;
-				case 2:			move[ 1] += 1/2.;		break;
-				case 3:			move[ 1] -= 1/2.;		break;
-				case 4:			move[ 2] += 1/2.;		break;
-				case 5:			move[ 2] -= 1/2.;		break;
-				case 6:			move[ 0] -= 1/2.;		break;
-				case 7:			move[ 0] += 1/2.;		break;
+				case 0:	move[ 0] -= 1/2.; break;
+				case 1:	move[ 0] += 1/2.; break;
+				case 2:	move[ 1] += 1/2.; break;
+				case 3:	move[ 1] -= 1/2.; break;
+				case 4:	move[ 2] += 1/2.; break;
+				case 5:	move[ 2] -= 1/2.; break;
+				case 6:	move[ 0] -= 1/2.; break;
+				case 7:	move[ 0] += 1/2.; break;
 			}
 		break;
 		
 		case 1:
 			switch( [sender tag])
 			{
-				case 0:			move[ 0] -= 1/2.;		break;
-				case 1:			move[ 0] += 1/2.;		break;
-				case 2:			move[ 2] += 1/2.;		break;
-				case 3:			move[ 2] -= 1/2.;		break;
-				case 4:			move[ 1] += 1/2.;		break;
-				case 5:			move[ 1] -= 1/2.;		break;
-				case 6:			move[ 0] -= 1/2.;		break;
-				case 7:			move[ 0] += 1/2.;		break;
+				case 0:	move[ 0] -= 1/2.; break;
+				case 1:	move[ 0] += 1/2.; break;
+				case 2:	move[ 2] += 1/2.; break;
+				case 3:	move[ 2] -= 1/2.; break;
+				case 4:	move[ 1] += 1/2.; break;
+				case 5:	move[ 1] -= 1/2.; break;
+				case 6:	move[ 0] -= 1/2.; break;
+				case 7:	move[ 0] += 1/2.; break;
 			}
 		break;
 		
 		case 2:
 			switch( [sender tag])
 			{
-				case 0:			move[ 1] -= 1/2.;		break;
-				case 1:			move[ 1] += 1/2.;		break;
-				case 2:			move[ 2] += 1/2.;		break;
-				case 3:			move[ 2] -= 1/2.;		break;
-				case 4:			move[ 0] += 1/2.;		break;
-				case 5:			move[ 0] -= 1/2.;		break;
-				case 6:			move[ 0] -= 1/2.;		break;
-				case 7:			move[ 0] += 1/2.;		break;
+				case 0: move[ 1] -= 1/2.; break;
+				case 1: move[ 1] += 1/2.; break;
+				case 2: move[ 2] += 1/2.; break;
+				case 3: move[ 2] -= 1/2.; break;
+				case 4: move[ 0] += 1/2.; break;
+				case 5: move[ 0] -= 1/2.; break;
+				case 6: move[ 0] -= 1/2.; break;
+				case 7: move[ 0] += 1/2.; break;
 			}
 		break;
 	}
@@ -198,19 +196,19 @@ static ThreeDPositionController *nav = nil;
 {
 	[viewer checkEverythingLoaded];
 	
-	if( viewerController == nil)
+	if (viewerController == nil)
 	{
 		[matrixMode selectCellWithTag: [viewer currentOrientationTool]];
 		[self changeMatrixMode: self];
 	}
 	
-	if( viewerController != viewer)
+	if (viewerController != viewer)
 	{
 		[viewerController release];
 		viewerController = [viewer retain];
 	}
 	
-	if( [viewerController isDataVolumicIn4D: YES] == NO)
+	if ([viewerController isDataVolumicIn4D: YES] == NO)
 	{
 		NSLog( @"unsupported data for ThreeDPositionController");
 		[[self window] close];
@@ -220,7 +218,7 @@ static ThreeDPositionController *nav = nil;
 
 - (void)closeViewerNotification:(NSNotification*)notif;
 {
-	if([[ViewerController getDisplayed2DViewers] count] == 0)
+	if ([[ViewerController getDisplayed2DViewers] count] == 0)
 	{
 		[[self window] close];
 	}
@@ -229,9 +227,7 @@ static ThreeDPositionController *nav = nil;
 - (void)windowWillClose:(NSNotification *)notification
 {
 	[[self window] setAcceptsMouseMovedEvents: NO];
-	
 	[[self window] orderOut:self];
-    
 	[self autorelease];
 }
 
@@ -247,9 +243,9 @@ static ThreeDPositionController *nav = nil;
 - (void)setWindowLevel:(NSNotification*)notification;
 {
 	NSString *name = [notification name];
-	if([name isEqualToString:NSApplicationWillBecomeActiveNotification])
+	if ([name isEqualToString:NSApplicationWillBecomeActiveNotification])
 		[[self window] setLevel:NSFloatingWindowLevel];
-	else if([name isEqualToString:NSApplicationWillResignActiveNotification])
+	else if ([name isEqualToString:NSApplicationWillResignActiveNotification])
 		[[self window] setLevel:[[viewerController window] level]];
 }
 @end

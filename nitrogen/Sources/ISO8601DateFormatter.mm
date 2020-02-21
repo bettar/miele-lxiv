@@ -120,13 +120,21 @@ static BOOL is_leap_year(unsigned year);
  *  -W-d
  */
 
-- (NSDateComponents *) dateComponentsFromString:(NSString *)string {
+- (NSDateComponents *) dateComponentsFromString:(NSString *)string
+{
 	return [self dateComponentsFromString:string timeZone:NULL];
 }
-- (NSDateComponents *) dateComponentsFromString:(NSString *)string timeZone:(out NSTimeZone **)outTimeZone {
+
+- (NSDateComponents *) dateComponentsFromString:(NSString *)string
+                                       timeZone:(out NSTimeZone **)outTimeZone
+{
 	return [self dateComponentsFromString:string timeZone:outTimeZone range:NULL];
 }
-- (NSDateComponents *) dateComponentsFromString:(NSString *)string timeZone:(out NSTimeZone **)outTimeZone range:(out NSRange *)outRange {
+
+- (NSDateComponents *) dateComponentsFromString:(NSString *)string
+                                       timeZone:(out NSTimeZone **)outTimeZone
+                                          range:(out NSRange *)outRange
+{
 	NSCalendar *calendar = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
 	calendar.firstWeekday = 2; //Monday
 	NSDate *now = [NSDate date];
@@ -157,7 +165,8 @@ static BOOL is_leap_year(unsigned year);
 	BOOL strict = self.parsesStrictly;
 	unichar timeSep = self.timeSeparator;
 
-	if (strict) timeSep = ISO8601DefaultTimeSeparatorCharacter;
+	if (strict)
+        timeSep = ISO8601DefaultTimeSeparatorCharacter;
 	NSAssert(timeSep != '\0', @"Time separator must not be NUL.");
 
 	BOOL isValidDate = ([string length] > 0U);
@@ -170,7 +179,8 @@ static BOOL is_leap_year(unsigned year);
 	if (strict && isspace(*ch)) {
 		range.location = NSNotFound;
 		isValidDate = NO;
-	} else {
+	}
+    else {
 		//Skip leading whitespace.
 		unsigned i = 0U;
 		for (unsigned len = strlen((const char *)ch); i < len; ++i) {
@@ -183,7 +193,8 @@ static BOOL is_leap_year(unsigned year);
 		start_of_date = ch;
 
 		unsigned segment;
-		unsigned num_leading_hyphens = 0U, num_digits = 0U;
+        unsigned num_leading_hyphens = 0U;
+        unsigned num_digits = 0U;
 
 		if (*ch == 'T') {
 			//There is no date here, only a time. Set the date to now; then we'll parse the time.
@@ -192,8 +203,9 @@ static BOOL is_leap_year(unsigned year);
 			year = nowComponents.year;
 			month_or_week = nowComponents.month;
 			day = nowComponents.day;
-		} else {
-			segment = 0U;
+		}
+        else {
+			segment = 0U; // Value stored to 'segment' is never read
 
 			while(*ch == '-') {
 				++num_leading_hyphens;

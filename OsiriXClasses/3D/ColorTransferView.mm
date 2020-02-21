@@ -28,7 +28,7 @@
     self = [super initWithFrame:frame];
     if (self)
 	{
-        curIndex = -1;
+        curIndex = NSNotFound;
 		points =  [[NSMutableArray array] retain];
 		colors =  [[NSMutableArray array] retain];
     }
@@ -50,7 +50,7 @@
 
 -(void) selectPicker:(id) sender
 {
-	if( curIndex >= 0)
+	if (curIndex != NSNotFound)
 	{
 		NSColor *newColor = [[pick color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
 		
@@ -64,7 +64,7 @@
 {
 	[points removeObjectAtIndex: curIndex];
 	[colors removeObjectAtIndex: curIndex];
-	curIndex = -1;
+	curIndex = NSNotFound;
 	
 	[position setStringValue: @""];
 	
@@ -73,20 +73,19 @@
 
 - (void)mouseDragged:(NSEvent *)event
 {
-    NSPoint		eventLocation = [event locationInWindow];
+    NSPoint eventLocation = [event locationInWindow];
+    NSPoint center;
 	
-		NSPoint		center;
-	
-	if( curIndex >= 0)
+	if (curIndex != NSNotFound)
 	{
 		center = [self convertPoint:eventLocation fromView:nil];
 		
 		if( center.x < 0) center.x = 0;
 		if( center.x > 512) center.x = 512;
 		
-		NSNumber	*curPt = [NSNumber numberWithLong: center.x/2];
+		NSNumber *curPt = [NSNumber numberWithLong: center.x/2];
 		
-		if( center.y < 0 || center.y > [self bounds].size.height)
+		if (center.y < 0 || center.y > [self bounds].size.height)
 		{
 			[self deleteCurrent];
 		}
@@ -104,18 +103,17 @@
 
 - (void)mouseDown:(NSEvent *) event
 {
-    NSPoint		eventLocation = [event locationInWindow];
-	NSPoint		center;
-	BOOL		found = NO;
-	long		i;
+    NSPoint eventLocation = [event locationInWindow];
+	NSPoint center;
+	BOOL found = NO;
 	
     center = [self convertPoint:eventLocation fromView:nil];
 	
-	for( i = 0; i < [ points count]; i++)
+	for (long i = 0; i < [ points count]; i++)
 	{
 		NSNumber *curPt = [points objectAtIndex: i];
 		
-		if( center.x/2 >= [curPt longValue]-2 && center.x/2 <= [curPt longValue]+2) // We found a point!
+		if (center.x/2 >= [curPt longValue]-2 && center.x/2 <= [curPt longValue]+2) // We found a point!
 		{
 			NSArray	*color;
 			
@@ -199,13 +197,13 @@
     [[NSColor whiteColor] set];
     NSRectFill([self bounds]);   // Equiv to [[NSBezierPath bezierPathWithRect:[self bounds]] fill]
 
-	long	cur, last = 0;
+	long cur, last = 0;
     NSColor	*curColor  = [NSColor colorWithCalibratedRed: 1 green: 1 blue: 1 alpha: 1.0];
     NSColor *prevColor = [NSColor colorWithCalibratedRed: 0 green: 0 blue: 0 alpha: 1.0];
-	NSRect	crect = NSZeroRect;
+	NSRect crect = NSZeroRect;
 	
-	if (curIndex >= [points count])
-        curIndex = -1;
+	if (curIndex != NSNotFound && curIndex >= [points count])
+        curIndex = NSNotFound;
 	
 	for (long i = 0; i < [points count]; i++)
 	{
@@ -232,7 +230,7 @@
 			NSRectFill( crect);
 		}
 		
-		if( i == curIndex)
+		if (i == curIndex)
             [[NSColor whiteColor] set];
 		else
             [[NSColor blackColor] set];

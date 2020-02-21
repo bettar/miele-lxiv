@@ -260,7 +260,6 @@ static int validFilePathDepth = 0;
 //	
 //	fclose(fp);
 //
-
         // create the subprocess
         NSTask *aTask = [[NSTask alloc] init];
         

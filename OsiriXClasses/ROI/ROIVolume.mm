@@ -94,7 +94,7 @@
 	for (int i = 0; i < [newRoiList count]; i++)
 	{
 		ROI *curROI = [newRoiList objectAtIndex:i];
-		if([curROI type]==tPencil || [curROI type]==tCPolygon || [curROI type]==tPlain)
+		if([curROI type]==tPencil || [curROI type]==tClosedPolygon || [curROI type]==tPlain)
 		{
 			[roiList addObject:curROI];
 			// volume

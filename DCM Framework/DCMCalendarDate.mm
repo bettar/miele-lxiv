@@ -25,14 +25,13 @@
 
 + (id)dicomDate:(NSString *)string{
 
-	if( string == nil) 
+	if (string == nil)
 		return nil;
 		
 	if ([string rangeOfString:@"-"].location == NSNotFound)
 	{
 		//format for DA is YYMMDD = @"%Y%m%d"
-		if (DCMDEBUG)
-			NSLog (@"date string: %@ intValue: %d", string,[string intValue] );
+		//if (DCMDEBUG) NSLog (@"date string: %@ intValue: %d", string,[string intValue] );
 
         NSString *format = @"%Y%m%d";
 		if (string && [string intValue]) {
@@ -59,14 +58,13 @@
 }
 + (id)dicomTime:(NSString *)string
 {
-	if( string == nil) 
+	if (string == nil)
 		return nil;
 		
 	if ([string rangeOfString:@"-"].location == NSNotFound)
 	{
 		//format for TM is HHMMSS.ffffff = @"%H%M%S.%U";
-        if (DCMDEBUG)
-            NSLog (@"time string: %@", string);
+        //if (DCMDEBUG) NSLog (@"time string: %@", string);
 
         if (string  && [string intValue]) {
 			NSArray *timeComponents = [string componentsSeparatedByString:@"."];
@@ -100,18 +98,18 @@
 
 + (id)dicomDateTime:(NSString *)string
 {
-	if( string == nil) 
+	if (string == nil)
 		return nil;
     
     if (DCMDEBUG)
         NSLog (@"date time string: %@", string);
     
-    if (string.length) {
+    if (string.length > 0) {
         NSArray *timeComponents = [string componentsSeparatedByString:@"."];
         NSString *format = nil;
         //NSUInteger length = [string length];
         
-        if( timeComponents.count > 2)
+        if (timeComponents.count > 2)
             NSLog( @"****** DICOM DateTime invalid format: %@", string);
         
         switch ([(NSString *)[timeComponents objectAtIndex:0] length]) {
@@ -141,12 +139,12 @@
             NSString *timeZone = nil;
             NSString *usecondsString = nil;
             
-            if( [[timeComponents objectAtIndex:1] rangeOfString: @"+"].location != NSNotFound)
+            if ([[timeComponents objectAtIndex:1] rangeOfString: @"+"].location != NSNotFound)
             {
                 usecondsString = [[timeComponents objectAtIndex:1] substringToIndex: [[timeComponents objectAtIndex:1] rangeOfString: @"+"].location];
                 timeZone = [[timeComponents objectAtIndex:1] substringFromIndex: [[timeComponents objectAtIndex:1] rangeOfString: @"+"].location];
             }
-            else if( [[timeComponents objectAtIndex:1] rangeOfString: @"-"].location != NSNotFound)
+            else if ([[timeComponents objectAtIndex:1] rangeOfString: @"-"].location != NSNotFound)
             {
                 usecondsString = [[timeComponents objectAtIndex:1] substringToIndex: [[timeComponents objectAtIndex:1] rangeOfString: @"-"].location];
                 timeZone = [[timeComponents objectAtIndex:1] substringFromIndex: [[timeComponents objectAtIndex:1] rangeOfString: @"-"].location];
@@ -157,11 +155,12 @@
                 timeZone = nil;
             }
             
-            if( timeZone.length) {
+            if (timeZone.length > 0) {
                 int tzHours = [[timeZone substringToIndex:3] intValue];
                 int tzMinutes = [[timeZone substringFromIndex:3] intValue];
                 if (tzHours < 0)
                     tzMinutes = -tzMinutes;
+
                 tz = [NSTimeZone timeZoneForSecondsFromGMT:(tzHours * 3600) + (tzMinutes * 60)];
             }
             
@@ -169,7 +168,7 @@
         }
         
         DCMCalendarDate *date = [[[DCMCalendarDate alloc] initWithString:[timeComponents objectAtIndex:0] calendarFormat:format microseconds: useconds] autorelease];
-        if( tz)
+        if (tz)
             [date setTimeZone: tz];
         
         [date setIsQuery:NO];
@@ -235,10 +234,10 @@
 {
     NSCalendarDate *d = [NSCalendarDate dateWithString: description calendarFormat: format];
     
-    if( usecs != 0)
+    if (usecs != 0)
         d = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[d dateByAddingTimeInterval: (NSTimeInterval) usecs / (NSTimeInterval) 1e6] timeIntervalSinceReferenceDate]];
     
-    if( self = [super initWithTimeIntervalSinceReferenceDate: d.timeIntervalSinceReferenceDate])
+    if (self = [super initWithTimeIntervalSinceReferenceDate: d.timeIntervalSinceReferenceDate])
     {
         [self setCalendarFormat: format];
     }

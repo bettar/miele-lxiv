@@ -128,7 +128,6 @@ static NSMutableArray *nonLinearWLWWThreads = nil;
 static NSMutableArray *minmaxThreads = nil;
 static NSConditionLock *processorsLock = nil;
 static NSConditionLock *purgeCacheLock = nil;
-static float deg2rad = M_PI / 180.0; 
 
 NSString* filenameWithDate( NSString *inputfile);
 
@@ -187,17 +186,23 @@ void SwitchFloat (float *theFloat)
 //	return time.i * 1e-9;
 //}
 
-unsigned char* CreateIconFrom16 (float* image, unsigned char* icon,  int height, int width, int iconWidth, long wl, long ww, BOOL isRGB)
-// create an icon from an 12 or 16 bit image
+// Create an icon from an 12 or 16 bit image
+unsigned char* CreateIconFrom16 (float* image,
+                                 unsigned char* icon,
+                                 int height,
+                                 int width,
+                                 int iconWidth,
+                                 long wl,
+                                 long ww,
+                                 BOOL isRGB)
 {
 	float ratio;
 	long line, destWidth, destHeight;
 	long value;
-	long min, max, diff;
 	
-	min = wl - ww / 2; //if (min < 0) min = 0;
-	max = wl + ww / 2;
-	diff = max - min;
+	long min = wl - ww / 2; //if (min < 0) min = 0;
+	long max = wl + ww / 2;
+	long diff = max - min;
 	
 	if (diff <= 0) {
 		diff = 1;
@@ -229,12 +234,14 @@ unsigned char* CreateIconFrom16 (float* image, unsigned char* icon,  int height,
 				iconPtr = icon + rowBytes*i;
 				for (long j = 0; j < destWidth; j++)         // columns
 				{
-					for (int x = 1; x< 4;x++, iconPtr++)		// Don't take alpha channel
+					for (int x = 1; x< 4; x++, iconPtr++)		// Don't take alpha channel
 					{
 						value = *( rgbImage + line + x + (long) (j * ratio)*4); //ARGB
 						
-						if (value > max) value = max;
-						else if (value < min) value = min;
+						if (value > max)
+                            value = max;
+						else if (value < min)
+                            value = min;
 						
 						*iconPtr = (((value-min) * 255L) / diff);
 					}
@@ -252,8 +259,10 @@ unsigned char* CreateIconFrom16 (float* image, unsigned char* icon,  int height,
 				{ 
 					value = *( image + line + (long) (j * ratio));
 					
-					if (value > max) value = max;
-					else if (value < min) value = min;
+					if (value > max)
+                        value = max;
+					else if (value < min)
+                        value = min;
 					
 					*iconPtr = (((value-min) * 255L) / diff);
 				}
@@ -1419,7 +1428,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize full32bitPipeline;
 @synthesize frameNo, notAbleToLoadImage, shutterPolygonal, SOPClassUID, frameofReferenceUID;
 @synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV, slope, offset;
-@synthesize isRGB, pwidth = width, pheight = height, checking, shutterRect;
+@synthesize isRGB;
+@synthesize pwidth = width;
+@synthesize pheight = height;
+@synthesize checking;
+@synthesize shutterRect;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined, shutterEnabled;
 @synthesize imageType, waveform, VOILUTApplied, VOILUT_table, dcmtkDcmFileFormat;
 
@@ -1652,7 +1665,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
 	if (destPixelSpacingX == 0 || destPixelSpacingY == 0 || senderPixelSpacingX == 0 || senderPixelSpacingY == 0)
 	{
-		return NSMakePoint( 0, 0);
+		return NSZeroPoint;
 	}
 	
 	double destWidth = [pix1 pwidth];
@@ -2363,7 +2376,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         NSPointInt *pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
                         if (pTemp)
                         {
-                            CLIP_Polygon( pts, no, pTemp, &newNo, NSMakePoint( 0, 0), NSMakePoint( width, height));
+                            CLIP_Polygon( pts, no, pTemp, &newNo, NSZeroPoint, NSMakePoint( width, height));
                             
                             free( pts);
                             pts = pTemp;
@@ -2538,7 +2551,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	unsigned char *map = nil;
 	float *tempImage = nil;
 	
-	if ([roi type] == tCPolygon || [roi type] == tOPolygon || [roi type] == tPencil)
+	if ([roi type] == tClosedPolygon || [roi type] == tOpenPolygon || [roi type] == tPencil)
 	{
 		NSArray *ptsTemp = [roi points];
 		
@@ -2546,7 +2559,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		struct NSPointInt *ptsInt = (struct NSPointInt*) malloc( no * sizeof(struct NSPointInt));
 		
 		if (no == 0)
-            NSLog( @"******** ERROR no == 0 getMapFromPolygonROI");
+            NSLog(@"%s %d, ERROR no == 0", __FUNCTION__, __LINE__);
 		
 		NSInteger minX,maxX,minY,maxY;
 		
@@ -2656,23 +2669,43 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     {
         switch (orientationStack)
         {
-            case 0:	clipMin = NSMakePoint( 0, 0);   clipMax = NSMakePoint( height, pixArray.count); break;
-            case 1:	clipMin = NSMakePoint( 0, 0);   clipMax = NSMakePoint( width, pixArray.count); break;
-            case 2:	clipMin = NSMakePoint( 0, 0);   clipMax = NSMakePoint( width, height); break;
+            case 0:	clipMin = NSZeroPoint; clipMax = NSMakePoint( height, pixArray.count); break;
+            case 1:	clipMin = NSZeroPoint; clipMax = NSMakePoint( width, pixArray.count); break;
+            case 2:	clipMin = NSZeroPoint; clipMax = NSMakePoint( width, height); break;
         }
     }
     
     if (clipMin.x < 0)
         clipMin.x = 0;
+
     if (clipMin.y < 0)
         clipMin.y = 0;
     
-    
     switch (orientationStack)
     {
-        case 0:	if (clipMax.x > height) clipMax.x = height; if (clipMax.y > pixArray.count) clipMax.y = pixArray.count; break;
-        case 1:	if (clipMax.x > width) clipMax.x = width; if (clipMax.y > pixArray.count) clipMax.y = pixArray.count; break;
-        case 2:	if (clipMax.x > width) clipMax.x = width; if (clipMax.y > height) clipMax.y = height; break;
+        case 0:
+            if (clipMax.x > height)
+                clipMax.x = height;
+
+            if (clipMax.y > pixArray.count)
+                clipMax.y = pixArray.count;
+            break;
+
+        case 1:
+            if (clipMax.x > width)
+                clipMax.x = width;
+
+            if (clipMax.y > pixArray.count)
+                clipMax.y = pixArray.count;
+            break;
+
+        case 2:
+            if (clipMax.x > width)
+                clipMax.x = width;
+
+            if (clipMax.y > height)
+                clipMax.y = height;
+            break;
     }
     
 	if (roi)
@@ -3294,7 +3327,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     return [self computeROI: roi :mean :total :dev :min :max :nil :nil];
 }
 
-- (void) computeROI:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max :(float *)skewness :(float*) kurtosis
+- (void) computeROI:(ROI*) roi
+                   :(float*) mean
+                   :(float *) total
+                   :(float *) dev
+                   :(float *) min
+                   :(float *) max
+                   :(float *) skewness
+                   :(float*) kurtosis
 {
 //    if (total)
 //        *total = rand();
@@ -3395,6 +3435,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 -(void) setfImage:(float *) ptr
 {
+    //NSLog(@"%s %d, %p", __FUNCTION__, __LINE__, ptr);
 	[checking lock];
 	
 	if (fExternalOwnedImage == nil)
@@ -5364,7 +5405,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     continue;
                 }
                 
-                ToolMode type = tCPolygon;
+                ToolMode type = tClosedPolygon;
                 
                 NSArray *dcmPoints = [contourItem attributeArrayWithName: @"ContourData"];
                 
@@ -5482,11 +5523,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                 if (roi.type == tROI)
                                     roi.isSpline = NO;
                                 
-                                roi.type = tCPolygon;
+                                roi.type = tClosedPolygon;
                                 roi.points = points;
                             }
                             
-                            if (roi.type == tCPolygon || roi.type == tOPolygon || roi.type == tPencil)
+                            if (roi.type == tClosedPolygon || roi.type == tOpenPolygon || roi.type == tPencil)
                             {
                                 NSSize s;
                                 NSPoint o;
@@ -5992,7 +6033,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         [usRegions release];
         usRegions = [[NSMutableArray array] retain];
         
-        for ( DCMObject *sequenceItem in seq.sequence)
+        for (DCMObject *sequenceItem in seq.sequence)
         {
             /* US Regions --->
              if (spacingFound == NO)
@@ -6092,10 +6133,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         }
     }
     
-    //PhotoInterpret
+    // PhotoInterpret
     if ([[dcmObject attributeValueWithName:@"PhotometricInterpretation"] rangeOfString:@"PALETTE"].location != NSNotFound)
     {
-        // palette conversions done by dcm Object
+        // palette conversions done by dcm object
         isRGB = YES;
     }
 }
@@ -6722,7 +6763,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 }
             }
             
-            //get PixelData
+            // Get PixelData
             short *oImage = nil;
             NSData *pixData = [pixelAttr decodeFrameAtIndex:imageNb];
             if ([pixData length] > 0)
@@ -6941,7 +6982,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             unsigned int *usint = (unsigned int*) oImage;
                             int *sint = (int*) oImage;
                             float *tDestF = fImage;
-                            double dOffset = offset, dSlope = slope;
+                            double dOffset = offset;
+                            double dSlope = slope;
                             
                             if (fIsSigned > 0)
                             {
@@ -8387,15 +8429,17 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 # pragma mark-
 
-+ (NSPoint) rotatePoint:(NSPoint)pt aroundPoint:(NSPoint)c angle:(float)a;
++ (NSPoint) rotatePoint:(NSPoint)pt
+            aroundPoint:(NSPoint)c
+                  angle:(float)angleRad;
 {
 	NSPoint rot;
 	
 	pt.x -= c.x;
 	pt.y -= c.y;
 	
-	rot.x = cos(a)*pt.x - sin(a)*pt.y;
-	rot.y = sin(a)*pt.x + cos(a)*pt.y;
+	rot.x = cos(angleRad)*pt.x - sin(angleRad)*pt.y;
+	rot.y = sin(angleRad)*pt.x + cos(angleRad)*pt.y;
 
 	rot.x += c.x;
 	rot.y += c.y;
@@ -8403,12 +8447,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return rot;
 }
 
-- (void) drawImage: (vImage_Buffer*) src inImage: (vImage_Buffer*) dst offset:(NSPoint) oo background:(float) b transparency: (BOOL) t
+- (void) drawImage: (vImage_Buffer*) src
+           inImage: (vImage_Buffer*) dst
+            offset: (NSPoint) oo
+        background: (float) b
+      transparency: (BOOL) t
 {
 	if (t == NO)
 	{
 		float *f = (float*) dst->data;
-		int i = dst->height * dst->width;
+		long i = dst->height * dst->width;
 		while (i-- > 0)
             *f++ = b;
 	}
@@ -8416,7 +8464,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	int ox = oo.x;
 	int oy = oo.y;
 	
-	NSRect dstRect = NSMakeRect( 0, 0, dst->width, dst->height);
+	NSRect dstRect = NSMakeRect(  0,  0, dst->width, dst->height);
 	NSRect srcRect = NSMakeRect( ox, oy, src->width, src->height);
 	
 	NSRect unionRect = NSIntersectionRect( dstRect, srcRect);
@@ -8435,7 +8483,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	{
 		for (int y = y1; y < y2; y++)
 		{
-			memcpy( dstData + (y*dst->width + x1), srcData +((y-oy)*src->width + (x1-ox)), lineBytes);
+			memcpy(dstData + (y*dst->width + x1),
+                   srcData + ((y-oy)*src->width + (x1-ox)),
+                   lineBytes);
 		}
 	}
 	else
@@ -8456,9 +8506,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 }
 
-- (void) drawImage: (vImage_Buffer*) src inImage: (vImage_Buffer*) dst offset:(NSPoint) oo background:(float) b
+- (void) drawImage: (vImage_Buffer*) src
+           inImage: (vImage_Buffer*) dst
+            offset: (NSPoint) oo
+        background: (float) b
 {
-	return [self drawImage:  src inImage:  dst offset: oo background: b transparency:  NO];
+	return [self drawImage: src
+                   inImage: dst
+                    offset: oo
+                background: b
+              transparency: NO];
 }
 
 -(DCMPix*) mergeWithDCMPix:(DCMPix*) o offset:(NSPoint) oo
@@ -8476,7 +8533,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		NSRect dstRect = NSMakeRect( 0, 0, [self pwidth], [self pheight]);
 		
-		NSPoint center = NSMakePoint( [self pwidth]/2 - [o pwidth]/2, [self pheight]/2 - [o pheight]/2);
+		NSPoint center = NSMakePoint([self pwidth]/2 - [o pwidth]/2,
+                                     [self pheight]/2 - [o pheight]/2);
 		NSRect srcRect = NSMakeRect( ox + center.x, oy + center.y, [o pwidth], [o pheight]);
 		
 		NSRect unionRect = NSUnionRect( dstRect, srcRect);
@@ -8495,7 +8553,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		src.rowBytes = [self pwidth]*4;
 		src.data = [self fImage];
 			
-		[self drawImage:&src inImage:&dst offset:NSMakePoint( -unionRect.origin.x, -unionRect.origin.y) background: [self minValueOfSeries]-1024 transparency: NO];
+		[self drawImage: &src
+                inImage: &dst
+                 offset: NSMakePoint(-unionRect.origin.x, -unionRect.origin.y)
+             background: [self minValueOfSeries]-1024
+           transparency: NO];
 		
 		// Adapt the window level
 		
@@ -8542,21 +8604,22 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return newPix;
 }
 
-- (void) orientationCorrected:(float*) correctedOrientation
-                     rotation:(float) rotation
+- (void) orientationCorrected: (float*) correctedOrientation
+                     rotation: (float) rotationDeg
                      xFlipped: (BOOL) xFlipped
                      yFlipped: (BOOL) yFlipped
 {
-#ifdef OSIRIX_VIEWER
+#ifdef OSIRIX_VIEWER // Don't compile this code for target "Decompress"
 	float o[ 9];
-	float yRot = -1, xRot = -1;
-	float rot = rotation;
+    float yRot = -1;
+    float xRot = -1;
+	float rotDeg = rotationDeg;
 	
 	[self orientation: o];
 	
 	if (yFlipped && xFlipped)
 	{
-		rot = rot + 180;
+		rotDeg += 180.0f;
 	}
 	else
 	{
@@ -8595,7 +8658,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	vector.x = o[ 0];
     vector.y = o[ 1];
     vector.z = o[ 2];
-	vector = ArbitraryRotate(vector, xRot*rot*deg2rad, rotationVector);
+	vector = ArbitraryRotate(vector,  glm::radians(xRot*rotDeg), rotationVector);
 	o[ 0] = vector.x;
     o[ 1] = vector.y;
     o[ 2] = vector.z;
@@ -8603,7 +8666,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	vector.x = o[ 3];
     vector.y = o[ 4];
     vector.z = o[ 5];
-	vector = ArbitraryRotate(vector, yRot*rot*deg2rad, rotationVector);
+	vector = ArbitraryRotate(vector,  glm::radians(yRot*rotDeg), rotationVector);
 	o[ 3] = vector.x;
     o[ 4] = vector.y;
     o[ 5] = vector.z;
@@ -8617,12 +8680,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #endif
 }
 
-- (NSRect) usefulRectWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
+- (NSRect) usefulRectWithRotation:(float) rDeg
+                            scale:(float) scale
+                         xFlipped:(BOOL) xF
+                         yFlipped: (BOOL) yF
 {
 	int newHeight;
 	int newWidth;
 	
-	float rot = r*deg2rad;
+	float rot = glm::radians(rDeg);
 	
 	// Apply scale
 	newWidth = [self pwidth] * scale;
@@ -8631,7 +8697,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	// Apply rotation
 	NSPoint pt[ 4];
 	NSPoint centerPt = NSMakePoint( newWidth/2., newHeight/2.);
-	NSPoint zeroPt = NSMakePoint( 0, 0);
+	NSPoint zeroPt = NSZeroPoint;
 	
 	pt[ 0] = [DCMPix rotatePoint: zeroPt aroundPoint: centerPt angle: rot];
 	pt[ 1] = [DCMPix rotatePoint: NSMakePoint( zeroPt.x+newWidth, zeroPt.y) aroundPoint: centerPt angle: rot];
@@ -8661,14 +8727,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return [self renderWithRotation: r scale: scale xFlipped: xF yFlipped: yF backgroundOffset: -1024];
 }
 
-- (DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF backgroundOffset: (float) bgO
+- (DCMPix*) renderWithRotation: (float) rDeg
+                         scale: (float) scale
+                      xFlipped: (BOOL) xF
+                      yFlipped: (BOOL) yF
+              backgroundOffset: (float) bgO
 {
 	if ([self isRGB])
         return nil;
 	
-	NSRect dstRect = [self usefulRectWithRotation: r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF];
+	NSRect dstRect = [self usefulRectWithRotation: rDeg scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF];
 	
-	float rot = r*deg2rad;
+	float rotRad = glm::radians(rDeg);
 	int newHeight;
 	int newWidth;
 	
@@ -8683,7 +8753,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	vImage_Buffer src;
 	vImage_Buffer dst;
 	
-	if ([self isRGB] == NO)
+	if (![self isRGB])
 	{
 		src.height = [self pheight];
 		src.width = [self pwidth];
@@ -8699,20 +8769,27 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             shutterRect.size.width = roundf( shutterRect.size.width);
             shutterRect.size.height = roundf( shutterRect.size.height);
 
-		if (shutterRect.origin.x < 0) { shutterRect.size.width += shutterRect.origin.x; shutterRect.origin.x = 0;}
-		if (shutterRect.origin.y < 0) { shutterRect.size.height += shutterRect.origin.y; shutterRect.origin.y = 0;}
+		if (shutterRect.origin.x < 0) {
+            shutterRect.size.width += shutterRect.origin.x;
+            shutterRect.origin.x = 0;
+        }
+
+        if (shutterRect.origin.y < 0) {
+            shutterRect.size.height += shutterRect.origin.y;
+            shutterRect.origin.y = 0;
+        }
 			
-		if (shutterRect.origin.x + shutterRect.size.width > [self pwidth])
+		if (NSMaxX(shutterRect) > [self pwidth])
             shutterRect.size.width = [self pwidth] - shutterRect.origin.x;
 
-		if (shutterRect.origin.y + shutterRect.size.height > [self pheight])
+		if (NSMaxY(shutterRect) > [self pheight])
             shutterRect.size.height = [self pheight] - shutterRect.origin.y;
 
 			float *tempMem = (float *)malloc( [self pwidth] * [self pheight] * sizeof(float));
-			
 			if (tempMem)
 			{
-				float *s = tempMem, m = [self minValueOfSeries]-1024;
+                float *s = tempMem;
+                float m = [self minValueOfSeries]-1024;
 				
 				long i = [self pwidth] * [self pheight];
 				
@@ -8754,8 +8831,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 return nil;
             
 			src = dst;
-			
-			rot *= -1.;
+			rotRad *= -1.;
 		}
 		
 		if (yF)
@@ -8772,8 +8848,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 return nil;
             
 			src = dst;
-			
-			rot *= -1.;
+			rotRad *= -1.;
 		}
 		
 		// Scaling
@@ -8801,11 +8876,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if (dst.data && src.data)
 		{
-			int v = r;
+			int v = rDeg;
 			if (v % 90 == 0)
-				vImageRotate_PlanarF( &src, &dst, nil, -rot, [self minValueOfSeries], kvImageHighQualityResampling);
+				vImageRotate_PlanarF( &src, &dst, nil, -rotRad, [self minValueOfSeries], kvImageHighQualityResampling);
 			else
-				vImageRotate_PlanarF( &src, &dst, nil, -rot, [self minValueOfSeries] + bgO, kvImageHighQualityResampling+kvImageBackgroundColorFill);
+				vImageRotate_PlanarF( &src, &dst, nil, -rotRad, [self minValueOfSeries] + bgO, kvImageHighQualityResampling+kvImageBackgroundColorFill);
 		}
 		
 		if (src.data != [self fImage])
@@ -8828,13 +8903,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	// New orientation
 	float v[ 9];
-	[newPix orientationCorrected: v rotation: r xFlipped: xF yFlipped: yF];
+	[newPix orientationCorrected: v rotation: rDeg xFlipped: xF yFlipped: yF];
 	[newPix setOrientation: v];
 	
 	// New origin
 	float o[ 3];
 	NSPoint a = NSMakePoint( dstRect.origin.x, dstRect.origin.y);
-	a = [DCMPix rotatePoint: a aroundPoint: centerPt angle: -rot];
+	a = [DCMPix rotatePoint: a aroundPoint: centerPt angle: -rotRad];
 	if (xF)
         a.x = newWidth - a.x -1;
     
@@ -8852,12 +8927,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return [self renderInRectSize: rectSize atPosition: oo rotation: r scale: scale xFlipped: xF yFlipped:  yF smartCrop: YES];
 }
 
-- (DCMPix*) renderInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF smartCrop: (BOOL) smartCrop;
+- (DCMPix*) renderInRectSize: (NSSize) rectSize
+                  atPosition: (NSPoint) oo
+                    rotation: (float) rDeg
+                       scale: (float) scale
+                    xFlipped: (BOOL) xF
+                    yFlipped: (BOOL) yF
+                   smartCrop: (BOOL) smartCrop;
 {
 	if ([self isRGB])
         return nil;
 	
-	DCMPix *newPix = [self renderWithRotation: r scale: scale xFlipped: xF yFlipped:  yF backgroundOffset: 0];
+	DCMPix *newPix = [self renderWithRotation: rDeg scale: scale xFlipped: xF yFlipped:  yF backgroundOffset: 0];
 	if (newPix == nil)
         return nil;
 	
@@ -8872,10 +8953,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if (xF) oo.x = - oo.x;
 	if (yF) oo.y = - oo.y;
 	
-	oo = [DCMPix rotatePoint: oo aroundPoint:NSMakePoint( 0, 0) angle: -r*deg2rad];
+	oo = [DCMPix rotatePoint: oo
+                 aroundPoint: NSZeroPoint
+                       angle: glm::radians(-rDeg)];
 		
 	// zero coordinate is in the center of the view
-	NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - [newPix pwidth]/2, rectSize.height/2 - oo.y - [newPix pheight]/2);
+	NSPoint cov = NSMakePoint(rectSize.width/2 + oo.x - [newPix pwidth]/2,
+                              rectSize.height/2 - oo.y - [newPix pheight]/2);
 	
 	if (smartCrop)	// remove the black part of the image
 	{
@@ -9164,13 +9248,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void)computePixMinPixMax
 {
-	float pixmin, pixmax;
-	
-	if (fImage == nil || width * height <= 0)
+	if (fImage == nil)
         return;
-	
+
+    if (width * height <= 0)
+        return;
+    
 	[checking lock];
-	
+
+    float pixmin, pixmax;
+
 	@try 
 	{
 		if (isRGB)
@@ -9195,7 +9282,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 		
 		fullwl = pixmin + (pixmax - pixmin)/2;
-		fullww = (pixmax - pixmin);
+		fullww = pixmax - pixmin;
 	}
 	@catch (NSException * e) 
 	{
@@ -9918,7 +10005,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	[self CheckLoad];
 	
 	float *result = [self applyConvolutionOnImage: fImage RGB: isRGB];
-	
     if (result != fImage)
     {
         memcpy( fImage, result, height*width*sizeof(float));
@@ -10020,12 +10106,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (float*) computeThickSlab
 {
-	long			stacksize;
-	unsigned char   *rgbaImage;
-	float			iwl, iww;
-	float			*fResult = nil;
+	long stacksize;
+	unsigned char *rgbaImage;
+	float iwl, iww;
+	float *fResult = nil;
 	
-    NSLog(@"DCMPix.mm:%d %s", __LINE__, __PRETTY_FUNCTION__);
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	if (fixed8bitsWLWW)
 	{
 		iww = 256;

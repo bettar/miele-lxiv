@@ -55,19 +55,16 @@ static NSMutableSet *kfInUsePositionNames;
 
 #define KFMAX(a,b) ((a)>(b)?(a):(b))
 
-// proportionally scale a list of integers so that the sum of the resulting list is targetTotal
+// Proportionally scale a list of integers so that the sum of the resulting list is targetTotal
 // Will fail (return NO) if all integers are zero 
 // Favors not completely zeroing out a nonzero int
 static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal) 
 {
-    unsigned total;
-    float scalingFactor;
-    int i, numNonZeroInts;
-    
     // compute total
-    total = 0;
-    numNonZeroInts = 0;
-    for (i = 0; i < numInts; i++)
+    unsigned total = 0;
+    int numNonZeroInts = 0;
+
+    for (int i = 0; i < numInts; i++)
     {
         if (integers[i] != 0)
         {
@@ -77,16 +74,14 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     }
     
     if (numNonZeroInts == 0) // fail
-    {
         return NO;
-    }
     
     // compute scalingFactor
-    scalingFactor = (float)targetTotal / total;
+    float scalingFactor = (float)targetTotal / total;
     
     // scale all ints and recompute total (which may not equal targetTotal due to roundoff error)
     total = 0;
-    for (i = 0; i < numInts; i++)
+    for (int i = 0; i < numInts; i++)
     {
         if (integers[i] != 0)
         {
@@ -103,7 +98,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     int gap = abs((int)(targetTotal - total));
     int closeGapIncrement =  (targetTotal > total) ? 1 : -1;
     int numRemainingNonZeroInts = numNonZeroInts;
-    for (i = 0; i < numInts && gap > 0; i++)
+    for (int i = 0; i < numInts && gap > 0; i++)
     {
         if (integers[i] > 0)
         {
@@ -549,16 +544,12 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 	NSEnableScreenUpdates();
 }
 
-
 // See Apple's NSSplitView docs.  However, note that in general you want to call
 // resizeSubviewsWithOldSize:, not this method.  The exception is that you might
 // want to call adjustSubviews from splitView:resizeSubviewsWithOldSize: in the
 // the delegate
 - (void)adjustSubviews
 {
-    int i, numSubviews;
-    NSArray *subviews;
-    
     // The 'thickness' of a subview will mean the amount of space along
     // the major axis that the subview occupies in the splitview. 
     // We work in integral values, though actual thicknesses are floats.
@@ -570,12 +561,10 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     unsigned int *subviewThicknesses;
     
     // setup 
-    subviews = [self subviews];
-    numSubviews = [subviews count];
+    NSArray *subviews = [self subviews];
+    int numSubviews = [subviews count];
     if (numSubviews == 0)
-    {
         return;
-    }
     
     subviewThicknesses = (unsigned int *)malloc(sizeof(unsigned int)*numSubviews);
     
@@ -584,7 +573,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     // of the first expanded subview
     unsigned totalSubviewThicknesses = 0;
     NSInteger firstExpandedSubviewIndex = NSNotFound;
-    for (i = 0; i < numSubviews; i++)
+    for (int i = 0; i < numSubviews; i++)
     {
         NSView *subview = [subviews objectAtIndex:i];
         if (![self isSubviewCollapsed:subview])
@@ -741,13 +730,9 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 
 - (void)drawRect:(NSRect)rect
 {
-    int i, numDividers;
-
-    numDividers = [kfDividerRects count];
-    for (i = 0; i < numDividers; i++)
-    {
+    int numDividers = [kfDividerRects count];
+    for (int i = 0; i < numDividers; i++)
         [self drawDividerInRect:[[kfDividerRects objectAtIndex:i] rectValue]];
-    }
 }
 
 // returns the index ('offset' in Apple's docs) of the divider under the
@@ -834,19 +819,13 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 
 - (void)resetCursorRects
 {
-    int i, numDividers;
-
-    numDividers = [kfDividerRects count];
-    for (i = 0; i < numDividers; i++)
-    {
+    int numDividers = [kfDividerRects count];
+    for (int i = 0; i < numDividers; i++)
         [self addCursorRect:[[kfDividerRects objectAtIndex:i] rectValue]
                      cursor:kfCurrentResizeCursor];
-    }
 }
 
-/******************
- * Accessors
- ******************/
+#pragma mark - Accessors
 
 - (void)setVertical:(BOOL)flag
 {
@@ -872,7 +851,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 - (void)setDelegate:(id)delegate
 {
     id delegateAutoRegNotifications, delegateMethodNames;
-    int i, numAutoRegNotifications;
+    int numAutoRegNotifications;
     SEL methodSelector;
 
     delegateAutoRegNotifications = [NSArray arrayWithObjects:
@@ -889,7 +868,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 
     if (kfDelegate)
     {
-        for (i = 0; i < numAutoRegNotifications; i++)
+        for (int i = 0; i < numAutoRegNotifications; i++)
         {
             [kfNotificationCenter removeObserver:kfDelegate
                                             name:[delegateAutoRegNotifications objectAtIndex:i]
@@ -901,7 +880,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 
     if (kfDelegate)
     {
-        for (i = 0; i < numAutoRegNotifications; i++)
+        for (int i = 0; i < numAutoRegNotifications; i++)
         {
             methodSelector = sel_registerName([[delegateMethodNames objectAtIndex:i] cString]);
             if ([kfDelegate respondsToSelector:methodSelector])

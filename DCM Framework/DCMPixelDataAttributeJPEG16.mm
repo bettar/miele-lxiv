@@ -48,7 +48,7 @@ readFromData16(NSData *data, JOCTET *buffer, int currentPosition, int length)
 		range = NSMakeRange(currentPosition, length);
 		lengthToRead = length;
 	}
-	else{
+	else {
 		lengthToRead = [data length] - currentPosition;
 		range = NSMakeRange(currentPosition, lengthToRead);
 	}
@@ -160,29 +160,30 @@ init_source (j_decompress_ptr cinfo)
 METHODDEF(boolean)
 fill_input_buffer (j_decompress_ptr cinfo)
 {
-	
-  data16_src_ptr src = (data16_src_ptr) cinfo->src;
-  size_t nbytes;
-	nbytes = readFromData16(src->data, src->buffer, src->currentPosition, INPUT_BUF_SIZE);
-  //nbytes = JFREAD(src->infile, src->buffer, INPUT_BUF_SIZE);
+    data16_src_ptr src = (data16_src_ptr) cinfo->src;
+    size_t nbytes = readFromData16(src->data, src->buffer, src->currentPosition, INPUT_BUF_SIZE);
+    //nbytes = JFREAD(src->infile, src->buffer, INPUT_BUF_SIZE);
 
-  if (nbytes <= 0) {
-	if (src->start_of_data)	/* Treat empty input file as fatal error */
-	  ERREXIT(cinfo, JERR_INPUT_EMPTY);
-	WARNMS(cinfo, JWRN_JPEG_EOF);
-	/* Insert a fake EOI marker */
-	src->buffer[0] = (JOCTET) 0xFF;
-	src->buffer[1] = (JOCTET) JPEG_EOI;
-	nbytes = 2;
-  }
-	src->currentPosition += nbytes;
-  src->pub.next_input_byte = src->buffer;
-  src->pub.bytes_in_buffer = nbytes;
-  src->start_of_data = FALSE;
-	//NSLog(@"end fill_input_buffer");
-  return TRUE;
+    if (nbytes <= 0) {
+        if (src->start_of_data)    /* Treat empty input file as fatal error */
+            ERREXIT(cinfo, JERR_INPUT_EMPTY);
+
+        WARNMS(cinfo, JWRN_JPEG_EOF);
+      /* Insert a fake EOI marker */
+      src->buffer[0] = (JOCTET) 0xFF;
+      src->buffer[1] = (JOCTET) JPEG_EOI;
+      nbytes = 2;
+    }
+
+    src->currentPosition += nbytes;
+    src->pub.next_input_byte = src->buffer;
+    src->pub.bytes_in_buffer = nbytes;
+    src->start_of_data = FALSE;
+      
+    //NSLog(@"end fill_input_buffer");
+
+    return TRUE;
 }
-
 
 /*
  * Skip data --- used to skip over a potentially large amount of

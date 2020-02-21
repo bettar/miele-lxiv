@@ -38,7 +38,7 @@ typedef enum {SyncSeriesBehaviorAbsolutePosWithSameStudy, SyncSeriesBehaviorRela
 
 @interface OrthogonalMPRViewer : Window3DController <NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
-    ViewerController					*viewer;
+    ViewerController *viewer;
 
 	IBOutlet OrthogonalMPRController	*controller;
 	IBOutlet NSSplitView				*splitView;
@@ -82,7 +82,7 @@ typedef enum {SyncSeriesBehaviorAbsolutePosWithSameStudy, SyncSeriesBehaviorRela
     float                               syncOriginPosition[3];
 }
 
-- (id) initWithPixList: (NSMutableArray*) pixList :(NSArray*) filesList :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC;
+- (instancetype) initWithPixList: (NSMutableArray*) pixList :(NSArray*) filesList :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC;
 
 - (OrthogonalMPRController*) controller;
 

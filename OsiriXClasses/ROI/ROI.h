@@ -72,9 +72,9 @@ typedef enum ToolMode_
     t3DRotate,					//	7
     tCross,						//	8
     tOval,						//	9
-    tOPolygon,					//	10
-    tCPolygon,					//	11
-    tAngle ,					//	12
+    tOpenPolygon,				//	10
+    tClosedPolygon,			    //	11
+    tAngle,					    //	12
     tText,						//	13
     tArrow,						//	14
     tPencil,					//	15
@@ -82,7 +82,7 @@ typedef enum ToolMode_
     t3DCut,						//	17
     tCamera3D,					//	18
     t2DPoint,					//	19
-    tPlain,						//	20
+    tPlain,						//	20 // Brush
     tBonesRemoval,				//	21
     tWLBlended,					//  22
     tRepulsor,					//  23
@@ -91,7 +91,7 @@ typedef enum ToolMode_
     tAxis,						//	26
     tDynAngle,					//	27
     tCurvedROI,					//	28
-    tTAGT,                      //  29
+    tTAGT,                      //  29 // Perpendicular Lines
     tBall,                      //  30
     tOvalAngle                  //  31
 } ToolMode;
@@ -107,15 +107,20 @@ typedef enum ToolMode_
 {
 	NSRecursiveLock *roiLock;
 	
-	int				textureWidth, textureHeight;
+    int	textureWidth;
+    int textureHeight;
+    unsigned char *textureBuffer;
 
-	unsigned char   *textureBuffer, *textureBufferSelected;
+    unsigned char *textureBufferSelected;
     
-	NSMutableArray *ctxArray;	//All contexts where this texture is used
-	NSMutableArray *textArray;	//All texture id
+	NSMutableArray *ctxArray;	// All contexts where this texture is used
+	NSMutableArray *textArray;	// All texture id
 
-	int				textureUpLeftCornerX,textureUpLeftCornerY,textureDownRightCornerX,textureDownRightCornerY;
-	int				textureFirstPoint;
+    int textureUpLeftCornerX;
+    int textureUpLeftCornerY;
+    int textureDownRightCornerX;
+    int textureDownRightCornerY;
+	int textureFirstPoint;
 	
 	NSMutableArray  *points;
 	NSMutableArray  *zPositions;
@@ -140,13 +145,14 @@ typedef enum ToolMode_
 	
 	double			pixelSpacingX, pixelSpacingY;
 	NSPoint			imageOrigin;
-	
-	// **** **** **** **** **** **** **** **** **** **** TRACKING
-	
-    BOOL            mouseOverROI;
-	int				PointUnderMouse;
-	long			selectedModifyPoint;
-	NSPoint			clickPoint, previousPoint, originAnchor;
+
+    ///
+
+    BOOL mouseOverROI;
+	int PointUnderMouse;
+	long selectedModifyPoint;
+    NSPoint clickPoint, previousPoint;
+    NSPoint originAnchor;
 	
 	DCMView			*curView;
 	DCMPix			*_pix, *_previousDrawingPix;
@@ -191,7 +197,7 @@ typedef enum ToolMode_
 	NSTimeInterval	groupID;		// timestamp of a ROI group. Grouped ROI will be selected/deleted together.
 	
 	BOOL			displayTextualData;
-	BOOL			displayCMOrPixels;
+	//BOOL			displayCMOrPixels;
 	
 	BOOL			locked;
 	BOOL			selectable;
@@ -200,27 +206,36 @@ typedef enum ToolMode_
     
     BOOL            hidden;
     
-	StringTexture *stringTexA, *stringTexB, *stringTexC;
-    NSString        *savedStudyInstanceUID;
-    
-    BOOL            is3DROI;
-    
-#define ovalAngle1  ovalAngle[0]
-#define ovalAngle2  ovalAngle[1]
-    float           ovalAngle[2];        // in Radians
-    float           roiRotation;
+	StringTexture *stringTexA, *stringTexB, *stringTexC; // for tTAGT
 
-    NSPoint         arh1, arh2, arh3;   // Arrow head
+    NSString *savedStudyInstanceUID;
+    
+    BOOL is3DROI;
+    
+#define ovalAngle1  ovalAngle[0]        // in Radians
+#define ovalAngle2  ovalAngle[1]        // in Radians
+    float           ovalAngle[2];       // in Radians
+    float           roiRotationDeg;     // in Degrees
+
+//    NSPoint         arh1, arh2, arh3;   // Arrow head
+
+//#ifdef WITH_OPENGL_32
+//    GLuint _overlayProgram;
+//    GLuint _textProgram __deprecated;
+//#endif
 }
 
 @property NSPoint imageOrigin;
 @property(readonly) int textureWidth, textureHeight;
-@property(readonly) int textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
+@property(readonly) int textureDownRightCornerX, textureDownRightCornerY;
+@property(readonly) int textureUpLeftCornerX, textureUpLeftCornerY;
 @property(readonly) unsigned char *textureBuffer;
 @property(nonatomic) float opacity, zLocation;
 @property(nonatomic) int originalIndexForAlias;
 @property(nonatomic) BOOL hidden, locked, selectable, is3DROI;
-@property BOOL isAliased, displayCMOrPixels, mouseOverROI;
+@property BOOL isAliased;
+@property BOOL displayCMOrPixels;
+@property BOOL mouseOverROI;
 @property(nonatomic, copy) NSString *name;
 @property(retain) NSString *comments;
 @property ToolMode type;
@@ -278,7 +293,7 @@ typedef enum ToolMode_
 * @param ipixelSpacing  Assumes pixel size is same in both x and y
 * @param iimageOrigin  Origin on image
 */
-- (id) initWithType: (long) itype :(float) ipixelSpacing :(NSPoint) iimageOrigin;
+- (instancetype) initWithType: (long) itype :(float) ipixelSpacing :(NSPoint) iimageOrigin;
 - (id) initWithType: (long) itype inView: (DCMView*) v;
 + (id) roiWithType: (long) itype inView: (DCMView*) v;
 
@@ -300,18 +315,26 @@ typedef enum ToolMode_
 * @param ipixelSpacingy  Pixel height 
 * @param iimageOrigin  Origin on image
 */
-- (id) initWithTexture: (unsigned char*)tBuff  textWidth:(int)tWidth textHeight:(int)tHeight textName:(NSString*)tName
-			 positionX:(int)posX positionY:(int)posY
-			  spacingX:(float) ipixelSpacingx spacingY:(float) ipixelSpacingy imageOrigin:(NSPoint) iimageOrigin;
-
-
+// tPlain
+- (instancetype) initWithTexture:(unsigned char*)tBuff
+                       textWidth:(int)tWidth
+                      textHeight:(int)tHeight
+                        textName:(NSString*)tName
+                       positionX:(int)posX
+                       positionY:(int)posY
+                        spacingX:(float) ipixelSpacingx
+                        spacingY:(float) ipixelSpacingy
+                     imageOrigin:(NSPoint) iimageOrigin;
 
 /** Set offset for text box */
 - (void) setTextBoxOffset:(NSPoint) o;
 
-
+#ifndef NDEBUG
 /** Prints info about texture to output */
-- (void)displayTexture;
+- (void)displayTexture: (unsigned char *)texture
+                 width: (int) w
+                height: (int) h;
+#endif
 
 /** Set resolution and origin associated to the ROI */
 - (void) setOriginAndSpacing :(float) ipixelSpacing :(NSPoint) iimageOrigin;
@@ -388,9 +411,16 @@ typedef enum ToolMode_
 + (void) deleteROIs: (NSArray*) array;
 + (void) deleteROI: (ROI*) r;
 
-/** Draw the ROI */
-- (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingx :(float) spacingy;
-- (void) drawROIWithScaleValue:(float)scaleValue offsetX:(float)offsetx offsetY:(float)offsety pixelSpacingX:(float)spacingX pixelSpacingY:(float)spacingY highlightIfSelected:(BOOL)highlightIfSelected thickness:(float)thick prepareTextualData:(BOOL) prepareTextualData;
+- (void) drawOneROI:(float) scaleValue
+                   :(NSPoint) offset
+                   :(NSSize) spacing;
+
+- (void) drawROIWithScaleValue:(float)scaleValue
+                        offset:(NSPoint)offset
+                  pixelSpacing:(NSSize)spacing
+           highlightIfSelected:(BOOL)highlightIfSelected
+                     thickness:(float)thick
+            prepareTextualData:(BOOL)prepareTextualData;
 
 /** Always returns NO */
 - (BOOL) needQuartz;
@@ -432,7 +462,7 @@ typedef enum ToolMode_
 - (void) addMarginToBuffer: (int) margin;
 
 /** Draw text box for ROI */
-- (void) drawTextualData;
+- (void) drawROITextualData;
 
 /** is Spline rendered ? */
 - (BOOL)isSpline;

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14868" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15702" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14868"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15702"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -140,7 +140,7 @@
         </window>
         <objectController id="342" userLabel="CPRController">
             <declaredKeys>
-                <string>clippingRangeThickness</string>
+                <string>controllerCprType</string>
                 <string>clippingRangeMode</string>
                 <string>clippingRangeActivated</string>
                 <string>LOD</string>
@@ -192,7 +192,7 @@
                         </constraints>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" tag="1" inset="2" id="465">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                             <string key="keyEquivalent" base64-UTF8="YES">
 DQ
 </string>
@@ -208,7 +208,7 @@ DQ
                         </constraints>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="466">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                             <string key="keyEquivalent" base64-UTF8="YES">
 Gw
 </string>
@@ -224,17 +224,17 @@ Gw
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="429">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                         </buttonCell>
                         <cells>
                             <column>
                                 <buttonCell type="radio" title="Current image only" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="432">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
+                                    <font key="font" metaFont="label" size="13"/>
                                 </buttonCell>
                                 <buttonCell type="radio" title="A series, with following settings:" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="430">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
+                                    <font key="font" metaFont="label" size="13"/>
                                 </buttonCell>
                             </column>
                         </cells>
@@ -255,21 +255,21 @@ Gw
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="479">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                     </buttonCell>
                                     <cells>
                                         <column>
                                             <buttonCell type="radio" title="Rotation:" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="477">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="label" size="13"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="Slab:" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="509">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="label" size="13"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="Transverse Views" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="1360">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="label" size="13"/>
                                             </buttonCell>
                                         </column>
                                     </cells>
@@ -284,7 +284,7 @@ Gw
                                         <constraint firstAttribute="width" constant="200" id="gLH-sN-hxC"/>
                                     </constraints>
                                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="1" maxValue="360" doubleValue="307.20588235294116" tickMarkPosition="below" numberOfTickMarks="50" sliderType="linear" id="442">
-                                        <font key="font" size="12" name="Helvetica"/>
+                                        <font key="font" metaFont="user"/>
                                     </sliderCell>
                                     <connections>
                                         <binding destination="342" name="value" keyPath="selection.exportNumberOfRotationFrames" id="1394"/>
@@ -364,7 +364,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="440">
                                     <rect key="frame" x="37" y="251" width="118" height="16"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Number of frames:" id="443">
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -384,7 +384,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="487">
                                     <rect key="frame" x="69" y="87" width="86" height="16"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Slice Interval:" id="488">
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -410,7 +410,7 @@ Gw
                                             <nil key="negativeInfinitySymbol"/>
                                             <nil key="positiveInfinitySymbol"/>
                                         </numberFormatter>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -455,7 +455,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1362">
                                     <rect key="frame" x="69" y="28" width="86" height="16"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Slice Interval:" id="1366">
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -481,7 +481,7 @@ Gw
                                             <nil key="negativeInfinitySymbol"/>
                                             <nil key="positiveInfinitySymbol"/>
                                         </numberFormatter>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -508,7 +508,7 @@ Gw
                                             <nil key="negativeInfinitySymbol"/>
                                             <nil key="positiveInfinitySymbol"/>
                                         </numberFormatter>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -523,7 +523,7 @@ Gw
                                         <constraint firstAttribute="width" constant="55" id="cQE-iy-UCK"/>
                                     </constraints>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="40" id="508">
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -547,17 +547,17 @@ Gw
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="447">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                     </buttonCell>
                                     <cells>
                                         <column>
                                             <buttonCell type="radio" title="180 degrees" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="445">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="label" size="13"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="360 degrees" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="446">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="label" size="13"/>
                                             </buttonCell>
                                         </column>
                                     </cells>
@@ -581,7 +581,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="437">
                                     <rect key="frame" x="96" y="227" width="59" height="16"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Rotation:" id="448">
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -601,7 +601,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1192">
                                     <rect key="frame" x="42" y="114" width="113" height="16"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Export Thickness:" id="1193">
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -620,7 +620,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1218">
                                     <rect key="frame" x="27" y="139" width="128" height="16"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Reverse Slice Order:" id="1219">
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -640,7 +640,7 @@ Gw
                                     <rect key="frame" x="156" y="86" width="200" height="18"/>
                                     <buttonCell key="cell" type="check" title="Same as volume slice interval" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="494">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSequenceType" previousBinding="1291" id="1293">
@@ -658,7 +658,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1354">
                                     <rect key="frame" x="10" y="291" width="118" height="16"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Number of frames:" id="1355">
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -678,7 +678,7 @@ Gw
                                     <rect key="frame" x="158" y="135" width="24" height="23"/>
                                     <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSRefreshFreestandingTemplate" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1086">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="label" size="13"/>
                                     </buttonCell>
                                     <connections>
                                         <binding destination="342" name="value" keyPath="selection.exportReverseSliceOrder" id="1226"/>
@@ -751,7 +751,7 @@ Gw
                             <constraint firstAttribute="width" constant="176" id="KkT-KA-s3w"/>
                         </constraints>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="3D MPR" drawsBackground="YES" id="456">
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -762,7 +762,7 @@ Gw
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="424">
                         <rect key="frame" x="11" y="499" width="83" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Series name:" id="457">
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -770,7 +770,7 @@ Gw
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="423">
                         <rect key="frame" x="25" y="429" width="69" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Sequence:" id="458">
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -778,7 +778,7 @@ Gw
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="422">
                         <rect key="frame" x="300" y="499" width="34" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Size:" id="459">
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -786,7 +786,7 @@ Gw
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="894">
                         <rect key="frame" x="43" y="472" width="51" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Format:" id="895">
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -795,7 +795,7 @@ Gw
                         <rect key="frame" x="336" y="493" width="92" height="25"/>
                         <popUpButtonCell key="cell" type="push" title="Current" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="463" id="460">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="label" size="13"/>
                             <menu key="menu" title="OtherViews" id="461">
                                 <items>
                                     <menuItem title="Current" state="on" id="463"/>
@@ -813,7 +813,7 @@ Gw
                         <rect key="frame" x="21" y="14" width="276" height="18"/>
                         <buttonCell key="cell" type="check" title="After export, send them to a DICOM Node" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="467">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                         </buttonCell>
                         <connections>
                             <binding destination="753" name="value" keyPath="values.afterExportSendToDICOMNode" id="1104"/>
@@ -823,7 +823,7 @@ Gw
                         <rect key="frame" x="21" y="34" width="178" height="18"/>
                         <buttonCell key="cell" type="check" title="Mark them as Key Images" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="468">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                         </buttonCell>
                         <connections>
                             <binding destination="753" name="value" keyPath="values.afterExportMarkThemAsKeyImages" id="1103"/>
@@ -833,7 +833,7 @@ Gw
                         <rect key="frame" x="21" y="54" width="264" height="18"/>
                         <buttonCell key="cell" type="check" title="Include CPR View and Transverse Views" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="1340">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                         </buttonCell>
                         <connections>
                             <binding destination="342" name="enabled" keyPath="selection.exportImageFormat" id="1348">
@@ -851,17 +851,17 @@ Gw
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="897">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                         </buttonCell>
                         <cells>
                             <column>
                                 <buttonCell type="radio" title="Screen Capture in 8-bit RGB" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="899">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
+                                    <font key="font" metaFont="label" size="13"/>
                                 </buttonCell>
                                 <buttonCell type="radio" title="Full 16-bit BW" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="898">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
+                                    <font key="font" metaFont="label" size="13"/>
                                 </buttonCell>
                             </column>
                         </cells>
@@ -911,6 +911,7 @@ Gw
                     <constraint firstItem="426" firstAttribute="top" secondItem="428" secondAttribute="bottom" constant="11" id="zR5-qb-ltw"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="836" y="168"/>
         </window>
         <arrayController automaticallyPreparesContent="YES" preservesSelection="NO" id="595" userLabel="shadings" customClass="ShadingArrayController">
             <declaredKeys>
@@ -932,7 +933,7 @@ Gw
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="994" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="655">
                         <rect key="frame" x="-1" y="15" width="25" height="13"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Fine" id="656">
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -940,7 +941,7 @@ Gw
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="653">
                         <rect key="frame" x="1" y="0.0" width="116" height="15"/>
                         <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="6" doubleValue="2" tickMarkPosition="below" numberOfTickMarks="6" sliderType="linear" id="658">
-                            <font key="font" size="12" name="Helvetica"/>
+                            <font key="font" metaFont="user"/>
                         </sliderCell>
                         <connections>
                             <binding destination="342" name="value" keyPath="selection.LOD" id="744"/>
@@ -949,7 +950,7 @@ Gw
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="994" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="654">
                         <rect key="frame" x="81" y="15" width="38" height="13"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Coarse" id="657">
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -965,6 +966,7 @@ Gw
                 <constraint firstItem="653" firstAttribute="leading" secondItem="655" secondAttribute="leading" id="TP7-kY-gyu"/>
                 <constraint firstItem="655" firstAttribute="baseline" secondItem="654" secondAttribute="baseline" id="Zfq-kQ-Rnw"/>
             </constraints>
+            <point key="canvasLocation" x="835" y="529"/>
         </box>
         <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="659" userLabel="tb Thick Slab">
             <rect key="frame" x="0.0" y="0.0" width="225" height="40"/>
@@ -976,7 +978,7 @@ Gw
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="663">
                         <rect key="frame" x="61" y="4" width="155" height="15"/>
                         <sliderCell key="cell" controlSize="mini" continuous="YES" enabled="NO" alignment="left" maxValue="200" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="20" sliderType="linear" id="664">
-                            <font key="font" size="12" name="Helvetica"/>
+                            <font key="font" metaFont="user"/>
                         </sliderCell>
                         <connections>
                             <binding destination="342" name="value" keyPath="selection.clippingRangeThickness" id="746"/>
@@ -1160,55 +1162,55 @@ Gw
                         <size key="intercellSpacing" width="-2" height="0.0"/>
                         <buttonCell key="prototype" type="bevel" bezelStyle="regularSquare" image="WLWW" imagePosition="above" alignment="center" borderStyle="border" tag="-1" imageScaling="proportionallyDown" inset="2" id="708">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="system" size="10"/>
                         </buttonCell>
                         <cells>
                             <column>
                                 <buttonCell type="bevel" bezelStyle="regularSquare" image="curvedROI" imagePosition="overlaps" alignment="center" borderStyle="border" tag="28" imageScaling="proportionallyUpOrDown" inset="2" id="1338">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                    <font key="font" metaFont="label"/>
+                                    <font key="font" metaFont="system" size="10"/>
                                 </buttonCell>
                             </column>
                             <column>
                                 <buttonCell type="bevel" bezelStyle="regularSquare" image="WLWW" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" toolTip="Window Level (Option + click)" imageScaling="proportionallyUpOrDown" inset="2" id="702">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                    <font key="font" metaFont="label"/>
+                                    <font key="font" metaFont="system" size="10"/>
                                 </buttonCell>
                             </column>
                             <column>
                                 <buttonCell type="bevel" bezelStyle="regularSquare" image="Move" imagePosition="overlaps" alignment="center" borderStyle="border" toolTip="Move (Apple + click)" tag="1" imageScaling="proportionallyUpOrDown" inset="2" id="703">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                    <font key="font" metaFont="label"/>
+                                    <font key="font" metaFont="system" size="10"/>
                                 </buttonCell>
                             </column>
                             <column>
                                 <buttonCell type="bevel" bezelStyle="regularSquare" image="Zoom" imagePosition="overlaps" alignment="center" borderStyle="border" toolTip="Zoom (Shift + click)" tag="2" imageScaling="proportionallyUpOrDown" inset="2" id="704">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                    <font key="font" metaFont="label"/>
+                                    <font key="font" metaFont="system" size="10"/>
                                 </buttonCell>
                             </column>
                             <column>
                                 <buttonCell type="bevel" bezelStyle="regularSquare" image="Rotate" imagePosition="overlaps" alignment="center" borderStyle="border" toolTip="Rotate (Apple + Option + click)" tag="3" imageScaling="proportionallyUpOrDown" inset="2" id="705">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                    <font key="font" metaFont="label"/>
+                                    <font key="font" metaFont="system" size="10"/>
                                 </buttonCell>
                             </column>
                             <column>
                                 <buttonCell type="bevel" bezelStyle="regularSquare" image="Stack" imagePosition="overlaps" alignment="center" borderStyle="border" toolTip="Animate" tag="4" imageScaling="proportionallyUpOrDown" inset="2" id="706">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                    <font key="font" metaFont="label"/>
+                                    <font key="font" metaFont="system" size="10"/>
                                 </buttonCell>
                             </column>
                             <column>
                                 <buttonCell type="bevel" bezelStyle="regularSquare" image="3DRotateCamera" imagePosition="overlaps" alignment="center" borderStyle="border" toolTip="ROI Tool - Click on small arrow to see others" tag="18" imageScaling="proportionallyUpOrDown" inset="2" id="707">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                    <font key="font" metaFont="label"/>
+                                    <font key="font" metaFont="system" size="10"/>
                                 </buttonCell>
                             </column>
                             <column>
                                 <buttonCell type="bevel" bezelStyle="regularSquare" image="Length" imagePosition="overlaps" alignment="center" borderStyle="border" tag="5" imageScaling="proportionallyUpOrDown" inset="2" id="701">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                    <font key="font" metaFont="label"/>
+                                    <font key="font" metaFont="system" size="10"/>
                                 </buttonCell>
                             </column>
                         </cells>
@@ -1223,7 +1225,7 @@ Gw
                         </constraints>
                         <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="1615" id="1607">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="label" size="13"/>
                             <menu key="menu" title="OtherViews" id="1608">
                                 <items>
                                     <menuItem hidden="YES" id="1615"/>
@@ -1263,7 +1265,7 @@ Gw
                                             <action selector="setTool:" target="-2" id="1626"/>
                                         </connections>
                                     </menuItem>
-                                    <menuItem title="Opened Polygon" tag="10" keyEquivalent="" id="1617">
+                                    <menuItem title="Open Polygon" tag="10" keyEquivalent="" id="1617">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                         <connections>
                                             <action selector="setTool:" target="-2" id="1627"/>
@@ -1350,6 +1352,7 @@ Gw
                 <constraint firstAttribute="bottom" secondItem="817" secondAttribute="bottom" constant="20" symbolic="YES" id="kD5-fk-BMI"/>
                 <constraint firstItem="817" firstAttribute="top" secondItem="816" secondAttribute="top" id="kag-v6-fnC"/>
             </constraints>
+            <point key="canvasLocation" x="141" y="270"/>
         </customView>
         <customView id="843" userLabel="tbMovie">
             <rect key="frame" x="0.0" y="0.0" width="173" height="36"/>
@@ -1381,7 +1384,7 @@ Gw
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="846">
                     <rect key="frame" x="41" y="22" width="95" height="12"/>
                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="60" doubleValue="10" tickMarkPosition="above" allowsTickMarkValuesOnly="YES" sliderType="linear" id="853">
-                        <font key="font" size="12" name="Helvetica"/>
+                        <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
                         <binding destination="342" name="enabled" keyPath="selection.movieDataAvailable" id="882"/>
@@ -1391,7 +1394,7 @@ Gw
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="847">
                     <rect key="frame" x="41" y="8" width="95" height="15"/>
                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="1" allowsTickMarkValuesOnly="YES" sliderType="linear" id="852">
-                        <font key="font" size="12" name="Helvetica"/>
+                        <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
                         <binding destination="342" name="value" keyPath="selection.curMovieIndex" previousBinding="874" id="875"/>
@@ -1472,7 +1475,7 @@ Gw
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="858">
                     <rect key="frame" x="8" y="28" width="35" height="13"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Mode:" id="863">
-                        <font key="font" metaFont="label"/>
+                        <font key="font" metaFont="system" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -1480,7 +1483,7 @@ Gw
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="859">
                     <rect key="frame" x="0.0" y="10" width="86" height="15"/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" enabled="NO" alignment="left" maxValue="100" doubleValue="1.421085e-14" tickMarkPosition="below" sliderType="linear" id="862">
-                        <font key="font" size="12" name="Helvetica"/>
+                        <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
                         <binding destination="342" name="enabled" keyPath="selection.blendingModeAvailable" id="907"/>
@@ -1497,7 +1500,7 @@ Gw
                             <nil key="negativeInfinitySymbol"/>
                             <nil key="positiveInfinitySymbol"/>
                         </numberFormatter>
-                        <font key="font" metaFont="label"/>
+                        <font key="font" metaFont="system" size="10"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         <connections>
@@ -1535,7 +1538,7 @@ Gw
                         <rect key="frame" x="1" y="5" width="40" height="32"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Propagate" imagePosition="only" alignment="center" alternateImage="PropagateOn" inset="2" id="1141">
                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                         </buttonCell>
                         <connections>
                             <binding destination="753" name="value" keyPath="values.syncZoomLevelMPR" id="1142"/>
@@ -1562,7 +1565,7 @@ Gw
                             <constraint firstAttribute="width" constant="25" id="Wz3-HH-dga"/>
                         </constraints>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="0" id="1169">
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -1570,7 +1573,7 @@ Gw
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1166">
                         <rect key="frame" x="1" y="3" width="117" height="15"/>
                         <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" maxValue="360" tickMarkPosition="below" numberOfTickMarks="9" sliderType="linear" id="1167">
-                            <font key="font" size="12" name="Helvetica"/>
+                            <font key="font" metaFont="user"/>
                         </sliderCell>
                         <connections>
                             <binding destination="342" name="value" keyPath="selection.straightenedCPRAngle" id="1171"/>
@@ -1582,7 +1585,7 @@ Gw
                             <constraint firstAttribute="width" constant="28" id="jR1-1s-cV1"/>
                         </constraints>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="360" id="1168">
-                            <font key="font" metaFont="label"/>
+                            <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -1613,22 +1616,22 @@ Gw
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1426">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <cells>
                             <column>
                                 <buttonCell type="radio" title="Straightened" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1427">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="message" size="11"/>
                                 </buttonCell>
                                 <buttonCell type="radio" title="Stretched" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="1428">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="message" size="11"/>
                                 </buttonCell>
                             </column>
                         </cells>
                         <connections>
-                            <binding destination="342" name="selectedTag" keyPath="selection.cprType" id="1429"/>
+                            <binding destination="342" name="selectedTag" keyPath="selection.controllerCprType" id="c9A-rK-tRV"/>
                         </connections>
                     </matrix>
                 </subviews>
@@ -1656,17 +1659,17 @@ Gw
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1453">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <cells>
                             <column>
                                 <buttonCell type="radio" title="Standard" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1452">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="message" size="11"/>
                                 </buttonCell>
                                 <buttonCell type="radio" title="High-Res" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="1451">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="message" size="11"/>
                                 </buttonCell>
                             </column>
                         </cells>
@@ -1692,17 +1695,17 @@ Gw
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1444">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
                         <cells>
                             <column>
                                 <buttonCell type="radio" title="Creation Mode" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="1443">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="message" size="11"/>
                                 </buttonCell>
                                 <buttonCell type="radio" title="Editing Mode" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="1442">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="message" size="11"/>
                                 </buttonCell>
                             </column>
                         </cells>
@@ -1717,6 +1720,7 @@ Gw
                 <constraint firstAttribute="trailing" secondItem="1441" secondAttribute="trailing" constant="8" id="i0r-Da-XOu"/>
                 <constraint firstItem="1441" firstAttribute="top" secondItem="1440" secondAttribute="top" id="q0i-lq-3nd"/>
             </constraints>
+            <point key="canvasLocation" x="-360" y="-156"/>
         </box>
         <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1430" userLabel="tbViewsPosition">
             <rect key="frame" x="0.0" y="0.0" width="123" height="44"/>
@@ -1731,7 +1735,7 @@ Gw
                             <constraint firstAttribute="height" constant="22" id="Lxc-tS-G2S"/>
                         </constraints>
                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="1437">
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="label" size="13"/>
                             <segments>
                                 <segment image="normalPosition" width="32">
                                     <nil key="label"/>
@@ -1790,7 +1794,7 @@ Gw
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1571">
                         <rect key="frame" x="49" y="32" width="148" height="14"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Curved Path simplification" id="1572">
-                            <font key="font" metaFont="smallSystem"/>
+                            <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -1809,6 +1813,7 @@ Gw
                 <constraint firstAttribute="bottom" secondItem="1466" secondAttribute="bottom" constant="9" id="tFh-fQ-7w9"/>
                 <constraint firstItem="1571" firstAttribute="leading" secondItem="1466" secondAttribute="trailing" constant="18" id="uTD-1b-8vd"/>
             </constraints>
+            <point key="canvasLocation" x="1266" y="-125"/>
         </box>
     </objects>
     <resources>

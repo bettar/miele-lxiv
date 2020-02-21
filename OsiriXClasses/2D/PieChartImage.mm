@@ -30,13 +30,16 @@
 	return [NSImage pieChartImageWithPercentage:percentage borderColor:borderColor insideColor:insideColor fullColor:fullColor];
 }
 
-+ (NSImage*) pieChartImageWithPercentage:(float)percentage borderColor:(NSColor*)borderColor insideColor:(NSColor*)insideColor fullColor:(NSColor*)fullColor;
++ (NSImage*) pieChartImageWithPercentage:(float)percentage
+                             borderColor:(NSColor*)borderColor
+                             insideColor:(NSColor*)insideColor
+                               fullColor:(NSColor*)fullColor;
 {
 	NSRect pieRect = NSMakeRect(0,0,14.0,14.0);
 	NSImage* pieImage = [[self alloc] initWithSize:pieRect.size];
 	[pieImage setScalesWhenResized:YES];
 	
-	if( [pieImage size].width > 0 && [pieImage size].height > 0)
+	if ([pieImage size].width > 0 && [pieImage size].height > 0)
 	{
 		[pieImage lockFocus];
 		
@@ -45,7 +48,7 @@
 
 		NSBezierPath* circle = [NSBezierPath bezierPathWithOvalInRect:targetRect];
 		
-		if(percentage==0)
+		if (percentage==0)
 		{	
 			// Fill the circle
 			[insideColor set];
@@ -56,7 +59,7 @@
 			[borderColor set];
 			[circle stroke];
 		}
-		else if(percentage==1)
+		else if (percentage==1)
 		{
 			// Fill the circle
 			[fullColor set];
@@ -94,6 +97,8 @@
 }
 
 @end
+
+#pragma mark -
 
 @implementation NSBezierPath (RSPieChartUtilities)
 

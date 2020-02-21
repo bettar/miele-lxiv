@@ -35,13 +35,13 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 
 - (NSArray*)shuffledArray {
     NSArray* finalArray;
-    int i, count=[self count];
+    int count=[self count];
     id* buff = (id *)malloc(count*sizeof(id));
     if (!buff)
         return nil;
 
     [self getObjects:buff];
-    for (i=count-1; i > 0; i--) {
+    for (int i=count-1; i > 0; i--) {
         int newPos=(rand() / (RAND_MAX / i + 1));
         id temp=buff[i];
         buff[i]=buff[newPos];
@@ -54,13 +54,13 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 #else
 - (NSArray*)shuffledArray {
     NSArray* finalArray;
-    int i, count=[self count];
+    int count=[self count];
     id* buff=malloc(count*sizeof(id));
     if (!buff)
         return nil;
     
     [self getObjects:buff];
-    for (i=0; i < count; i++) {
+    for (int i=0; i < count; i++) {
         int newPos=(rand() / (RAND_MAX / count + 1));
         id temp=buff[i];
         buff[i]=buff[newPos];
@@ -77,11 +77,13 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 
 @implementation NSMutableArray (MutableArrayCategory) 
 
-- (void)mergeWithArray:(NSArray*)array {
+- (void)mergeWithArray:(NSArray*)array
+{
     NSRange searchRange=NSMakeRange(0, [self count]);
     for (id object in array) {
         NSInteger index=[self indexOfObject:object inRange:searchRange];
-        if (index == NSNotFound) [self addObject:object];
+        if (index == NSNotFound)
+            [self addObject:object];
     }
 }
 
@@ -155,8 +157,8 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 #ifdef ExperimentalShuffle
 
 - (void)shuffle {
-    int i, max=[self count];
-    for (i=max-1; i > 0; i--) {
+    int max=[self count];
+    for (int i=max-1; i > 0; i--) {
         int newPos=(rand() / (RAND_MAX / i + 1));
         id temp=[[self objectAtIndex:i] retain];
         [self replaceObjectAtIndex:i withObject:[self objectAtIndex:newPos]];
@@ -167,8 +169,8 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 #else
 
 - (void)shuffle {
-    int i, count=[self count];
-    for (i=0; i < count; i++) {
+    int count=[self count];
+    for (int i=0; i < count; i++) {
         int newPos=(rand() / (RAND_MAX / count + 1));
         id temp=[[self objectAtIndex:i] retain];
         [self replaceObjectAtIndex:i withObject:[self objectAtIndex:newPos]];

@@ -244,23 +244,36 @@ NSString* const OSIPasteboardTypeCodingROI = @BUNDLE_IDENTIFIER@".codingROI";
     return N3VectorZero;
 }
 
-- (void)drawRect:(NSRect)rect inSlab:(OSISlab)slab inCGLContext:(CGLContextObj)glContext pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
+- (void)drawRect:(NSRect)rect
+          inSlab:(OSISlab)slab
+    inCGLContext:(CGLContextObj)glContext
+     pixelFormat:(CGLPixelFormatObj)pixelFormat
+dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
-    [self drawSlab:slab inCGLContext:glContext pixelFormat:pixelFormat dicomToPixTransform:dicomToPixTransform];
+    [self drawSlab:slab
+      inCGLContext:glContext
+       pixelFormat:pixelFormat
+dicomToPixTransform:dicomToPixTransform];
 }
 
-- (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)glContext pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
+- (void)drawSlab:(OSISlab)slab
+    inCGLContext:(CGLContextObj)glContext
+     pixelFormat:(CGLPixelFormatObj)pixelFormat
+dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
 {
-    
+    // Why is this empty ?    
 }
 
 - (id)initWithPasteboardPropertyList:(id)propertyList ofType:(NSString *)type
 {
     [self autorelease];
     self = nil;
-    if ([type isEqualToString:OSIPasteboardTypeMaskROI] || [type isEqualToString:OSIPasteboardTypeCodingROI]) {
+    if ([type isEqualToString:OSIPasteboardTypeMaskROI] ||
+        [type isEqualToString:OSIPasteboardTypeCodingROI])
+    {
         self = [[NSKeyedUnarchiver unarchiveObjectWithData:propertyList] retain];
     }
+
     return self;
 }
 
@@ -308,20 +321,23 @@ NSString* const OSIPasteboardTypeCodingROI = @BUNDLE_IDENTIFIER@".codingROI";
 
 @implementation OSIROI (Private)
 
-+ (id)ROIWithOsiriXROI:(ROI *)roi pixToDICOMTransfrom:(N3AffineTransform)pixToDICOMTransfrom;
++ (id)ROIWithOsiriXROI:(ROI *)roi
+   pixToDICOMTransfrom:(N3AffineTransform)pixToDICOMTransfrom;
 {
 	switch ([roi type]) {
 		case tMeasure:
-		case tOPolygon:
-		case tCPolygon:
+		case tOpenPolygon:
+		case tClosedPolygon:
 		case tOval:
 		case tROI:
         case tPencil:
 			return [[[OSIPlanarPathROI alloc] initWithOsiriXROI:roi pixToDICOMTransfrom:pixToDICOMTransfrom] autorelease];
 			break;
+
         case tPlain:
             return [[[OSIPlanarBrushROI alloc] initWithOsiriXROI:roi pixToDICOMTransfrom:pixToDICOMTransfrom] autorelease];
-		default:
+
+        default:
 			return nil;
 	}
 }

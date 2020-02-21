@@ -28,37 +28,38 @@
 
 - (void) changeGLFontNotification:(NSNotification*) note
 {
-	if ( [note object] != self)
+	if ([note object] != self)
         return;
 
     [[self openGLContext] makeCurrentContext];
     
+#ifndef WITH_OPENGL_32
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
     
-#ifndef WITH_OPENGL_32
     if (fontListGL)
-        glDeleteLists (fontListGL, 150);
+        glDeleteLists (fontListGL, NUM_DISPLAY_LISTS);
     
-    fontListGL = glGenLists (150);
+    fontListGL = glGenLists (NUM_DISPLAY_LISTS);
+    assert(fontListGL != 0);
 #endif
 
     [fontGL release];
     fontGL = [[NSFont systemFontOfSize: 12] retain];
     
     [fontGL makeGLDisplayListFirst:' '
-                             count:150
+                             count:NUM_DISPLAY_LISTS
                               base:fontListGL
                                   :fontListGLSize
-                                  :1
+                                  :FONT_TYPE_PREVIEW
                                   :self.window.backingScaleFactor];
 
     stringSize = [self convertSizeToBacking: [DCMView sizeOfString:@"B" forFont:fontGL]];
     
     [DCMView purgeStringTextureCache];
-    [stringTextureCache release];
-    stringTextureCache = nil;
+    [stringTextureDic release];
+    stringTextureDic = nil;
     
     [self setNeedsDisplay:YES];
 }

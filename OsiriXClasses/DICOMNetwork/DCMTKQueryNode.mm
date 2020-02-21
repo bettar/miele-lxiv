@@ -963,18 +963,21 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	if( [wadoSubUrl hasPrefix: @"/"])
 		wadoSubUrl = [wadoSubUrl substringFromIndex: 1];
 	
-    NSString* lpbit = @"";
-    if ([[_extraParameters valueForKey:@"WADOUsername"] length] && [[_extraParameters valueForKey:@"WADOPassword"] length])
+    NSString *lpbit = @"";
+    if ([[_extraParameters valueForKey:@"WADOUsername"] length] > 0 &&
+        [[_extraParameters valueForKey:@"WADOPassword"] length] > 0)
+    {
         lpbit = [NSString stringWithFormat:@"%@:%@@", [_extraParameters valueForKey:@"WADOUsername"], [_extraParameters valueForKey:@"WADOPassword"]];
+    }
     
 	NSString *baseURL = [NSString stringWithFormat: @"%@://%@%@:%d/%@?requestType=WADO", protocol, lpbit, _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], wadoSubUrl];
 	
-    if( baseURL == nil)
+    if (baseURL == nil)
         N2LogStackTrace( @"No baseURL !");
     
 	@try
 	{
-		if( [protocol isEqualToString: @"https"])
+		if ([protocol isEqualToString: @"https"])
 			[NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[[NSURL URLWithString: baseURL] host]];
 	}
 	@catch (NSException *e)
@@ -1624,7 +1627,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	  default:
       case EXS_LittleEndianExplicit:
         /* we prefer Little Endian Explicit */
-        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;	//;
+        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianImplicitTransferSyntax;
         transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
 		transferSyntaxes[3] = UID_JPEG2000LosslessOnlyTransferSyntax ;			//jpeg 2000
@@ -1830,7 +1833,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) requestAssociationThread: (NSMutableDictionary*) dict
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	T_ASC_Network *net = (T_ASC_Network*) [[dict objectForKey: @"net"] pointerValue];
 	T_ASC_Parameters *params = (T_ASC_Parameters*) [[dict objectForKey: @"params"] pointerValue];
@@ -1999,9 +2002,14 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
     }
 }
 
-// common network code for move and query
-- (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset destination:(NSString*) destination
+// Common network code for move and query
+- (BOOL)setupNetworkWithSyntax: (const char *) abstractSyntax
+                       dataset: (DcmDataset *) dataset
+                   destination: (NSString*) destination
 {
+#ifdef DEBUG_DCMTK_NETWORKING_VERBOSE
+    _verbose = TRUE;
+#endif
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL succeed = YES;
 	
@@ -2050,7 +2058,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 		
 		WaitRendering *wait = nil;
 		
-		if( [NSThread isMainThread] == YES)// && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
+		if ([NSThread isMainThread] == YES)// && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 		{
 			wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Connecting to %@...", nil), _hostname]];
 			[wait setCancel: YES];
@@ -2312,7 +2320,8 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			{
                 if (_verbose)
                     DimseCondition::dump(cond);
-				[[NSException exceptionWithName:@"DICOM Network Failure (query)"
+
+                [[NSException exceptionWithName:@"DICOM Network Failure (query)"
                                          reason:[NSString stringWithFormat: @"addPresentationContext - %04x:%04x %s", cond.module(), cond.code(), cond.text()]
                                        userInfo:nil] raise];
 			}
@@ -2349,7 +2358,9 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 				
 				globalCondition = EC_Normal;
                 
-                [NSThread detachNewThreadSelector: @selector(requestAssociationThread:) toTarget: self withObject: dict];
+                [NSThread detachNewThreadSelector: @selector(requestAssociationThread:)
+                                         toTarget: self
+                                       withObject: dict];
 				[NSThread sleepForTimeInterval: 0.05];
 				
                 NSString *pathKillAll = [NSTemporaryDirectory() stringByAppendingPathComponent:@"kill_all_storescu"];
@@ -2418,15 +2429,15 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 				}
 			}
 			
-			  /* dump the presentation contexts which have been accepted/refused */
+            /* Dump the presentation contexts which have been accepted/refused */
 			if (_verbose)
 			{
 				if (strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
                     strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
                     strcmp(abstractSyntax, UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
 				{
-	//				printf("Association Parameters Negotiated:\n");
-	//				ASC_dumpParameters(params, COUT);
+//                    printf("Association Parameters Negotiated:\n");
+//					ASC_dumpParameters(params, COUT);
 				}
 				else
 				{
@@ -2434,9 +2445,10 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 				}
 			}
 			
-            /* count the presentation contexts which have been accepted by the SCP */
+            /* Count the presentation contexts which have been accepted by the SCP */
 			/* If there are none, finish the execution */
-			if (ASC_countAcceptedPresentationContexts(params) == 0) {
+			if (ASC_countAcceptedPresentationContexts(params) == 0)
+            {
                 DCMNET_ERROR("No Acceptable Presentation Contexts");
                 
 				[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"No acceptable presentation contexts" userInfo:nil] raise];
@@ -2445,7 +2457,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
             /* dump general information concerning the establishment of the network connection if required */
             DCMNET_INFO("Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")");
             
-			//specific for Move vs Find
+            // Specific for Move vs Find
 			if (strcmp(abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0)
 			{
 				if (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
@@ -2512,10 +2524,10 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			}
 			else
 			{
-				NSLog(@"Q/R SCU bad Abstract Sytnax: %s", abstractSyntax);
+				NSLog(@"Q/R SCU bad Abstract Syntax: %s", abstractSyntax);
 				//shouldn't get here
 			}
-			
+
 			/* tear down association, i.e. terminate network connection to SCP */
 			if (cond == EC_Normal)
 			{
@@ -2602,7 +2614,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			
             if (_abortAssociation == NO)
             {
-                if( showErrorMessage == YES)
+                if (showErrorMessage == YES)
                 {
                     [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:)
                                                      withObject:[NSArray arrayWithObjects:

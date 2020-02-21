@@ -72,8 +72,8 @@ static int fixedHeight = 92;
 	NSRect dstframe;
 	dstframe.size.height = [self fixedHeight];
 	dstframe.size.width = screenRect.size.width;
-	dstframe.origin.x = screenRect.origin.x;
-	dstframe.origin.y = screenRect.origin.y + screenRect.size.height - dstframe.size.height + [ToolbarPanelController hiddenHeight];
+	dstframe.origin.x = NSMinX(screenRect);
+	dstframe.origin.y = NSMaxY(screenRect) - dstframe.size.height + [ToolbarPanelController hiddenHeight];
 	
     if( NSEqualRects( dstframe, self.window.frame) == NO)
         [[self window] setFrame:dstframe display:YES];

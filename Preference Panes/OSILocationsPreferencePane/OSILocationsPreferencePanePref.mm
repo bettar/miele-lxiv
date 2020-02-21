@@ -444,8 +444,10 @@
 	NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex: [[dicomNodes tableView] selectedRow]];
 	
     NSString* lpbit = @"";
-    if ([WADOUsername length] && [WADOPassword length])
+    if ([WADOUsername length] > 0 &&
+        [WADOPassword length] > 0) {
         lpbit = [NSString stringWithFormat:@"%@:%@@", WADOUsername, WADOPassword];
+    }
 
 	NSString *baseURL = [NSString stringWithFormat: @"%@://%@%@:%d/%@?requestType=WADO",
                          protocol,
@@ -604,15 +606,13 @@
 			
 			[osiriXServers addObjects: r];
 			
-			int i, x;
-			
-			for (i = 0; i < [[osiriXServers arrangedObjects] count]; i++)
+			for (int i = 0; i < [[osiriXServers arrangedObjects] count]; i++)
 			{
-				NSDictionary	*server = [[osiriXServers arrangedObjects] objectAtIndex: i];
+				NSDictionary *server = [[osiriXServers arrangedObjects] objectAtIndex: i];
 				
-				for (x = 0; x < [[osiriXServers arrangedObjects] count]; x++)
+				for (int x = 0; x < [[osiriXServers arrangedObjects] count]; x++)
 				{
-					NSDictionary	*c = [[osiriXServers arrangedObjects] objectAtIndex: x];
+					NSDictionary *c = [[osiriXServers arrangedObjects] objectAtIndex: x];
 					
 					if (c != server)
 					{
@@ -705,26 +705,24 @@
 			
 			[dicomNodes addObjects: r];
 			
-			int i, x;
-			
-			for (i = 0; i < [[dicomNodes arrangedObjects] count]; i++)
+			for (int i = 0; i < [[dicomNodes arrangedObjects] count]; i++)
 			{
-				NSDictionary	*server = [[dicomNodes arrangedObjects] objectAtIndex: i];
+				NSDictionary *server = [[dicomNodes arrangedObjects] objectAtIndex: i];
 				
-				for (x = 0; x < [[dicomNodes arrangedObjects] count]; x++)
+				for (int x = 0; x < [[dicomNodes arrangedObjects] count]; x++)
 				{
-					NSDictionary	*c = [[dicomNodes arrangedObjects] objectAtIndex: x];
+					NSDictionary *c = [[dicomNodes arrangedObjects] objectAtIndex: x];
 					
 					if (c != server)
 					{
 						if ([[server valueForKey:@"AETitle"] isEqualToString: [c valueForKey:@"AETitle"]] &&
 							[[server valueForKey:@"Address"] isEqualToString: [c valueForKey:@"Address"]] &&
 							[[server valueForKey:@"Port"] intValue] == [[c valueForKey:@"Port"] intValue])
-							{
-								[dicomNodes removeObjectAtArrangedObjectIndex: i];
-								i--;
-								x = [[dicomNodes arrangedObjects] count];
-							}
+                        {
+                            [dicomNodes removeObjectAtArrangedObjectIndex: i];
+                            i--;
+                            x = [[dicomNodes arrangedObjects] count];
+                        }
 					}
 				}
 			}

@@ -47,6 +47,8 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
     N3AffineTransform volumeTransform;
 } CPRVolumeDataInlineBuffer;
 
+#pragma mark -
+
 // Interface to the data
 @interface CPRVolumeData : NSObject {
     NSData *_floatData;

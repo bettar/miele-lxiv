@@ -41,16 +41,17 @@
 	return nil;
 }
 
-- (void)drawBezelWithFrame:(NSRect)frame inView:(NSView *)controlView {
+- (void)drawBezelWithFrame:(NSRect)frame inView:(NSView *)controlView
+{
     [super drawBezelWithFrame:frame inView:controlView];
-    if (self.backgroundColor) {
-        
-        if( !invertedSet)
+    if (self.backgroundColor)
+    {
+        if (!invertedSet)
             invertedColors = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue];
         
         NSColor *backc = [[self.backgroundColor copy] autorelease];
         
-        if( invertedColors)
+        if (invertedColors)
             backc = [NSColor colorWithCalibratedRed: 1.0-backc.redComponent
                                               green: 1.0-backc.greenComponent
                                                blue: 1.0-backc.blueComponent
@@ -63,8 +64,13 @@
     }
 }
 
-- (NSRect)drawTitle:(NSAttributedString*)title withFrame:(NSRect)frame inView:(NSView*)controlView {
-    return [super drawTitle:title withFrame:NSInsetRect(frame, -2,0) inView:controlView]; // very precious 4px/pt
+- (NSRect)drawTitle:(NSAttributedString*)title
+          withFrame:(NSRect)frame
+             inView:(NSView*)controlView
+{
+    return [super drawTitle:title
+                  withFrame:NSInsetRect(frame, -2,0)
+                     inView:controlView]; // very precious 4px/pt
 }
 
 - (NSSize)cellSize
@@ -78,7 +84,7 @@
     else
         h = HALFSIZEHEIGHT;
     
-    switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
+    switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
     {
         case -1:   return NSMakeSize( [ThumbnailCell thumbnailCellWidth], h * 0.8); break;
         case 0:    return NSMakeSize( [ThumbnailCell thumbnailCellWidth], h); break;

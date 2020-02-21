@@ -61,7 +61,6 @@ extern void setvtkMeanIPMode( int m);
 #endif
 
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
-static float deg2rad = M_PI / 180.0; 
 
 @interface CPRController ()
 @property (nonatomic, readwrite, copy) CPRCurvedPath *curvedPath;
@@ -71,10 +70,13 @@ static float deg2rad = M_PI / 180.0;
 
 @implementation CPRController
 
-@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
+@synthesize clippingRangeThickness, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
+//@synthesize clippingRangeMode;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit1, horizontalSplit2, verticalSplit, lowLOD;
-@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, blendingModeAvailable, highResolutionMode;
-@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType, cprView;//, assistantPathMode;
+@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingModeAvailable, highResolutionMode;
+//@synthesize blendingMode;
+@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprView;//, assistantPathMode;
+@synthesize controllerCprType;
 @synthesize topTransverseView, middleTransverseView, bottomTransverseView;
 
 // export related synthesize
@@ -86,7 +88,8 @@ static float deg2rad = M_PI / 180.0;
 @synthesize exportReverseSliceOrder;
 @synthesize exportSlabThickness, exportNumberOfRotationFrames;
 @synthesize exportSliceIntervalSameAsVolumeSliceInterval;
-@synthesize exportSliceInterval, exportTransverseSliceInterval;
+@synthesize exportSliceInterval;
+@synthesize exportTransverseSliceInterval;
 @synthesize dcmIntervalMin, dcmIntervalMax;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
@@ -103,7 +106,7 @@ static float deg2rad = M_PI / 180.0;
 	sc[ 0 ] = a[ 0] * orientation[ 0 ] + a[ 1] * orientation[ 1 ] + a[ 2] * orientation[ 2 ];
 	sc[ 1 ] = a[ 0] * orientation[ 3 ] + a[ 1] * orientation[ 4 ] + a[ 2] * orientation[ 5 ];
 	
-	return ((atan2( sc[1], sc[0])) / deg2rad);
+	return glm::degrees((atan2( sc[1], sc[0])));
 }
 
 - (DCMPix*) emptyPix: (DCMPix*) oP width: (long) w height: (long) h
@@ -209,7 +212,7 @@ static float deg2rad = M_PI / 180.0;
              fusedViewerController:(ViewerController*)fusedViewer
 {
 #ifndef NDEBUG
-    NSLog(@"%s %d %@ %p, pix count: %lu", __FUNCTION__, __LINE__,
+    NSLog(@"CPRController.mm %d, initWithDCMPixList, class:%@, self:%p, pix count: %lu", __LINE__,
           NSStringFromClass([self class]), self, (unsigned long)pix.count);
 #endif
 	@try
@@ -225,13 +228,12 @@ static float deg2rad = M_PI / 180.0;
 		
 		if ([originalPix isRGB])
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"RGB",nil),
-                                    NSLocalizedString( @"RGB images are not supported.",nil),
-                                    NSLocalizedString(@"OK",nil),
+			NSRunCriticalAlertPanel(NSLocalizedString(@"RGB", nil),
+                                    NSLocalizedString(@"RGB images are not supported.", nil),
+                                    NSLocalizedString(@"OK", nil),
                                     nil,
                                     nil);
-            [self autorelease];
-            
+            [self autorelease];            
 			return nil;
 		}
 		
@@ -243,8 +245,9 @@ static float deg2rad = M_PI / 180.0;
 		volumeData[0] = volume;
 		
 		fusedViewer2D = fusedViewer;
-		clippingRangeMode = 1;
-		LOD = 1;
+		_clippingRangeMode = CPR_PROJECTION_MODE_MIP;
+
+        LOD = 1;
 		if (LOD < 1)
             LOD = 1;
 		
@@ -329,15 +332,15 @@ static float deg2rad = M_PI / 180.0;
         
         topTransverseView.delegate = self;
         topTransverseView.curvedPath = curvedPath;
-        topTransverseView.sectionType = CPRTransverseViewLeftSectionType;
+        topTransverseView.sectionType = CPR_TRANSVERSE_VIEW_SECTION_LEFT;
         
         middleTransverseView.delegate = self;
         middleTransverseView.curvedPath = curvedPath;
-        middleTransverseView.sectionType = CPRTransverseViewCenterSectionType;
+        middleTransverseView.sectionType = CPR_TRANSVERSE_VIEW_SECTION_CENTER;
         
         bottomTransverseView.delegate = self;
         bottomTransverseView.curvedPath = curvedPath;
-        bottomTransverseView.sectionType = CPRTransverseViewRightSectionType;
+        bottomTransverseView.sectionType = CPR_TRANSVERSE_VIEW_SECTION_RIGHT;
         
         topTransverseView.sectionWidth = cprView.generatedHeight;
         middleTransverseView.sectionWidth = cprView.generatedHeight;
@@ -399,7 +402,7 @@ static float deg2rad = M_PI / 180.0;
 			[blendedMprView3 setWLWW: [[fusedViewer2D imageView] curDCM].wl :[[fusedViewer2D imageView] curDCM].ww];
 			
 			self.blendingPercentage = 50;
-			self.blendingMode = 0;
+			_blendingMode = BLENDING_MODE_LINEAR_FUSION;
 		}
 		        
 		hiddenVRController = [[VRController alloc] initWithPix:pix
@@ -469,24 +472,21 @@ static float deg2rad = M_PI / 180.0;
         self.exportSeriesType = CPRRotationExportSeriesType;
         self.exportRotationSpan = CPR180ExportRotationSpan;
         self.exportReverseSliceOrder = NO;
-        
-        float r1, g1, b1, a1;
-        float r2, g2, b2, a2;
-        float r3, g3, b3, a3;
-		r1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_RED"];
-		g1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_GREEN"];
-		b1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_BLUE"];
-		a1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_ALPHA"];
+
+		float r1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_RED"];
+		float g1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_GREEN"];
+		float b1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_BLUE"];
+		float a1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_ALPHA"];
 		
-		r2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_RED"];
-		g2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_GREEN"];
-		b2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_BLUE"];
-		a2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_ALPHA"];
+		float r2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_RED"];
+		float g2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_GREEN"];
+		float b2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_BLUE"];
+		float a2 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_2_ALPHA"];
 		
-		r3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_RED"];
-		g3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_GREEN"];
-		b3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_BLUE"];
-		a3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_ALPHA"];
+		float r3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_RED"];
+		float g3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_GREEN"];
+		float b3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_BLUE"];
+		float a3 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_3_ALPHA"];
 		
 		if (r1==0.0 && g1==0.0 && b1==0.0 && a1==0.0 &&
             r2==0.0 && g2==0.0 && b2==0.0 && a2==0.0 &&
@@ -516,7 +516,7 @@ static float deg2rad = M_PI / 180.0;
 		
 		[self setToolIndex: tWL];
         
-        self.cprType = (CPRType)[[NSUserDefaults standardUserDefaults] integerForKey: @"SavedCPRType"];
+        self.controllerCprType = (CPRType)[[NSUserDefaults standardUserDefaults] integerForKey: @"SavedCPRType"];
         
         [[self window] registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, nil]];
         
@@ -595,7 +595,7 @@ static float deg2rad = M_PI / 180.0;
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"syncZoomLevelMPR"];
 	
 	// Default Init
-	[self setClippingRangeMode: 1]; // MIP
+	[self setClippingRangeMode: CPR_PROJECTION_MODE_MIP];    // #i18 stack 12
 	self.clippingRangeThickness = 0.5;
 	
     int min = [self getClippingRangeThicknessInMm] * 100.;
@@ -898,7 +898,7 @@ static float deg2rad = M_PI / 180.0;
 			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
 			
 			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
-			vector =  ArbitraryRotate(vector, (angle-180.)*deg2rad, rotationVector);
+			vector = ArbitraryRotate(vector, glm::radians(angle-180.), rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
@@ -907,7 +907,7 @@ static float deg2rad = M_PI / 180.0;
 			mprView2.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
 			
 			vector.x = cos[ 0];	vector.y = cos[ 1];	vector.z = cos[ 2];
-			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
+			vector =  ArbitraryRotate(vector, glm::radians(angle), rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView3.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
@@ -923,7 +923,7 @@ static float deg2rad = M_PI / 180.0;
 			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
 			
 			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
-			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
+			vector =  ArbitraryRotate(vector, glm::radians(angle), rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView3.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
@@ -932,7 +932,7 @@ static float deg2rad = M_PI / 180.0;
 			mprView3.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
 			
 			vector.x = cos[ 0];	vector.y = cos[ 1];	vector.z = cos[ 2];
-			vector =  ArbitraryRotate(vector, (angle-180.)*deg2rad, rotationVector);
+			vector =  ArbitraryRotate(vector, glm::radians(angle-180.), rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView1.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
@@ -948,7 +948,7 @@ static float deg2rad = M_PI / 180.0;
 			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
 			
 			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
-			vector =  ArbitraryRotate(vector, (angle-180.)*deg2rad, rotationVector);
+			vector =  ArbitraryRotate(vector, glm::radians(angle-180.), rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
@@ -957,7 +957,7 @@ static float deg2rad = M_PI / 180.0;
 			mprView2.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
 			
 			vector.x = -cos[ 0];	vector.y = -cos[ 1];	vector.z = -cos[ 2];
-			vector =  ArbitraryRotate(vector, angle*deg2rad, rotationVector);
+			vector =  ArbitraryRotate(vector, glm::radians(angle), rotationVector);
 			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
 			mprView1.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
@@ -973,7 +973,7 @@ static float deg2rad = M_PI / 180.0;
 		{
 			[mprView1 restoreCamera];
 			
-			if (clippingRangeMode == 0) // VR mode
+			if (_clippingRangeMode == (CPRProjectionMode)0) // VR mode  // TODO: CPRProjectionMode
 			{
 				[mprView1.vrView setOpacity: [sender.vrView currentOpacityArray]];
 				[mprView1.vrView setWLWW: l : w];
@@ -986,7 +986,7 @@ static float deg2rad = M_PI / 180.0;
 		{
 			[mprView2 restoreCamera];
 			
-			if (clippingRangeMode == 0) // VR mode
+			if (_clippingRangeMode == (CPRProjectionMode)0) // VR mode // TODO: CPRProjectionMode
 			{
 				[mprView2.vrView setOpacity: [sender.vrView currentOpacityArray]];
 				[mprView2.vrView setWLWW: l : w];
@@ -999,7 +999,7 @@ static float deg2rad = M_PI / 180.0;
 		{
 			[mprView3 restoreCamera];
 			
-			if (clippingRangeMode == 0) // VR mode
+			if (_clippingRangeMode == (CPRProjectionMode)0) // VR mode
 			{
 				[mprView3.vrView setOpacity: [sender.vrView currentOpacityArray]];
 				[mprView3.vrView setWLWW: l : w];
@@ -1313,8 +1313,8 @@ static float deg2rad = M_PI / 180.0;
 		case tOval:			filename = @"Oval";				break;
 		case tText:			filename = @"Text";				break;
 		case tArrow:		filename = @"Arrow";			break;
-		case tOPolygon:		filename = @"Opened Polygon";	break;
-		case tCPolygon:		filename = @"Closed Polygon";	break;
+		case tOpenPolygon:	filename = @"Open Polygon";	break;
+		case tClosedPolygon: filename = @"Closed Polygon";	break;
 		case tPencil:		filename = @"Pencil";			break;
 		case t2DPoint:		filename = @"Point";			break;
 		case tPlain:		filename = @"Brush";			break;
@@ -1823,7 +1823,7 @@ static float deg2rad = M_PI / 180.0;
 	mprView2.camera.forceUpdate = YES;
 	mprView3.camera.forceUpdate = YES;
 	
-	if (clippingRangeMode == 0) //VR
+	if (_clippingRangeMode == (CPRProjectionMode)0) // VR // TODO: CPRProjectionMode
 	{
 		[mprView1 setCLUT: nil :nil :nil];
 		[mprView2 setCLUT: nil :nil :nil];
@@ -1846,7 +1846,7 @@ static float deg2rad = M_PI / 180.0;
 	
 	if ([str isEqualToString:NSLocalizedString(@"No CLUT", nil)])
 	{
-		if (clippingRangeMode==0)
+		if (_clippingRangeMode == (CPRProjectionMode)0) // TODO: CPRProjectionMode
 		{
 			[mprView1.vrView setCLUT: nil :nil :nil];
 			
@@ -1921,7 +1921,7 @@ static float deg2rad = M_PI / 180.0;
 				blue[i] = [[array objectAtIndex: i] longValue];
 			}
 			
-			if (clippingRangeMode==0)
+			if (_clippingRangeMode == (CPRProjectionMode)0) // TODO: CPRProjectionMode
 			{
 				[mprView1.vrView setCLUT:red :green: blue];
                 
@@ -2018,7 +2018,9 @@ static float deg2rad = M_PI / 180.0;
 
 - (void)ApplyOpacityString:(NSString*)str
 {
-	if (clippingRangeMode == 1 || clippingRangeMode == 3  || clippingRangeMode == 2)
+	if (_clippingRangeMode == (CPRProjectionMode)1 ||
+        _clippingRangeMode == (CPRProjectionMode)3 ||
+        _clippingRangeMode == (CPRProjectionMode)2) // TODO: CPRProjectionMode
 	{
 		[self Apply2DOpacityString:str];
 	}
@@ -2238,12 +2240,14 @@ static float deg2rad = M_PI / 180.0;
 	[self didChangeValueForKey:@"clippingRangeThicknessInMm"];
 }
 
-- (void) setClippingRangeMode:(int) f
+- (void) setClippingRangeMode:(CPRProjectionMode) f // TODO: CPRProjectionMode
 {
 	float pWL, pWW;
 	float bpWL, bpWW;
 	
-	if (clippingRangeMode == 1 || clippingRangeMode == 3 || clippingRangeMode == 2)		// MIP
+	if (_clippingRangeMode == (CPRProjectionMode)1 ||
+        _clippingRangeMode == (CPRProjectionMode)3 ||
+        _clippingRangeMode == (CPRProjectionMode)2)		// MIP
 	{
 		[mprView1 getWLWW: &pWL :&pWW];
 		[blendedMprView1 getWLWW: &bpWL :&bpWW];
@@ -2254,14 +2258,16 @@ static float deg2rad = M_PI / 180.0;
 		[mprView1.vrView getBlendingWLWW: &bpWL :&bpWW];
 	}
 	
-	clippingRangeMode = f;
+	_clippingRangeMode = f;
 	
-	[mprView1.vrView setMode: clippingRangeMode];
-	[mprView1.vrView setBlendingMode: clippingRangeMode];
+	[mprView1.vrView setMode: _clippingRangeMode];
+	[mprView1.vrView setBlendingMode: _clippingRangeMode];
     
-	if (clippingRangeMode == 1 || clippingRangeMode == 3 || clippingRangeMode == 2)	// MIP - Mean - minIP
+	if (_clippingRangeMode == (CPRProjectionMode)1 ||   // MIP
+        _clippingRangeMode == (CPRProjectionMode)3 ||   // Mean
+        _clippingRangeMode == (CPRProjectionMode)2)	    // minIP
 	{
-		if (clippingRangeMode == 3) //mean
+		if (_clippingRangeMode == (CPRProjectionMode)3) //mean
 			setvtkMeanIPMode( 1);
 		else
 			setvtkMeanIPMode( 0);
@@ -2302,7 +2308,9 @@ static float deg2rad = M_PI / 180.0;
 	
 	[mprView1 restoreCamera];
 	mprView1.camera.forceUpdate = YES;
-	if (clippingRangeMode == 1  || clippingRangeMode == 3 || clippingRangeMode == 2)
+	if (_clippingRangeMode == (CPRProjectionMode)1 ||  // TODO: CPRProjectionMode
+        _clippingRangeMode == (CPRProjectionMode)3 ||
+        _clippingRangeMode == (CPRProjectionMode)2)
 	{
 		[mprView1 setWLWW: pWL :pWW];
 		[blendedMprView1 setWLWW: bpWL :bpWW];
@@ -2312,11 +2320,13 @@ static float deg2rad = M_PI / 180.0;
 		[mprView1.vrView setWLWW: pWL :pWW];
 		[mprView1.vrView setBlendingWLWW: bpWL :bpWW];
 	}
-	[mprView1 updateViewMPR];
+	[mprView1 updateViewMPR];   // #i18 stack 8
 	
 	[mprView2 restoreCamera];
 	mprView2.camera.forceUpdate = YES;
-	if (clippingRangeMode == 1  || clippingRangeMode == 3 || clippingRangeMode == 2)
+	if (_clippingRangeMode == (CPRProjectionMode)1 ||
+        _clippingRangeMode == (CPRProjectionMode)3 ||
+        _clippingRangeMode == (CPRProjectionMode)2)
 	{
 		[mprView2 setWLWW: pWL :pWW];
 		[blendedMprView2 setWLWW: bpWL :bpWW];
@@ -2330,7 +2340,9 @@ static float deg2rad = M_PI / 180.0;
 	
 	[mprView3 restoreCamera];
 	mprView3.camera.forceUpdate = YES;
-	if (clippingRangeMode == 1  || clippingRangeMode == 3 || clippingRangeMode == 2)
+	if (_clippingRangeMode == (CPRProjectionMode)1 ||
+        _clippingRangeMode == (CPRProjectionMode)3 ||
+        _clippingRangeMode == (CPRProjectionMode)2)
 	{
 		[mprView3 setWLWW: pWL :pWW];
 		[blendedMprView3 setWLWW: bpWL :bpWW];
@@ -2342,7 +2354,7 @@ static float deg2rad = M_PI / 180.0;
 	}
 	[mprView3 updateViewMPR];
     
-    [cprView setClippingRangeMode:clippingRangeMode];
+    [cprView setClippingRangeMode:_clippingRangeMode];
 }
 
 #pragma mark - Export	
@@ -2587,10 +2599,10 @@ static float deg2rad = M_PI / 180.0;
 
 - (BOOL) isPlaneMeasurable
 {
-    if (cprType == CPRStretchedType)
+    if (controllerCprType == CPRStretchedType)
         return YES;
     
-    if (cprType == CPRStraightenedType)
+    if (controllerCprType == CPRStraightenedType)
     {
         return [cprView.curvedPath isPlaneMeasurable];
     }
@@ -2737,7 +2749,7 @@ static float deg2rad = M_PI / 180.0;
 		{
 			if (self.exportImageFormat == CPR16BitExportImageFormat)
 			{
-                if (cprType == CPRStraightenedType)
+                if (controllerCprType == CPRStraightenedType)
                 {
                     requestStraightened = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
                     requestStraightened.pixelsWide = exportWidth;
@@ -2816,7 +2828,7 @@ static float deg2rad = M_PI / 180.0;
 			{
                 NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
                 
-                if (cprType == CPRStraightenedType)
+                if (controllerCprType == CPRStraightenedType)
                 {
                     requestStraightened = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
                     requestStraightened.pixelsWide = exportWidth;
@@ -2859,7 +2871,7 @@ static float deg2rad = M_PI / 180.0;
                         
                         if (self.exportImageFormat == CPR16BitExportImageFormat)
                         {
-                            if (cprType == CPRStraightenedType)
+                            if (controllerCprType == CPRStraightenedType)
                             {
                                 requestStraightened.initialNormal = N3VectorApplyTransform(curvedPath.initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [curvedPath.bezierPath tangentAtStart]));
                                 
@@ -2949,7 +2961,7 @@ static float deg2rad = M_PI / 180.0;
 				[progress setCancel: YES];
 				[[progress progress] setMaxValue: self.exportSequenceNumberOfFrames];
                 
-                if (cprType == CPRStraightenedType)
+                if (controllerCprType == CPRStraightenedType)
                 {
                     requestStraightened = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
                     requestStraightened.pixelsWide = exportWidth;
@@ -3188,7 +3200,8 @@ static float deg2rad = M_PI / 180.0;
 {
 	if ([quicktimeWindow isVisible])
 		return;
-	if ([dcmWindow isVisible])
+
+    if ([dcmWindow isVisible])
 		return;
 	
 	curExportView = [self selectedView];
@@ -3237,6 +3250,7 @@ static float deg2rad = M_PI / 180.0;
 //{
 //	if ([quicktimeWindow isVisible])
 //		return;
+//
 //	if ([dcmWindow isVisible])
 //		return;
 //    
@@ -3660,7 +3674,7 @@ static float deg2rad = M_PI / 180.0;
 		windowWillClose = YES;
 		
 		[[NSUserDefaults standardUserDefaults] setBool: self.displayMousePosition forKey: @"MPRDisplayMousePosition"];
-        [[NSUserDefaults standardUserDefaults] setInteger: self.cprType forKey: @"SavedCPRType"];
+        [[NSUserDefaults standardUserDefaults] setInteger: self.controllerCprType forKey: @"SavedCPRType"];
         
 		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(updateViewsAccordingToFrame:) object: nil];
 		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(delayedFullLODRendering:) object: nil];
@@ -4224,7 +4238,7 @@ static float deg2rad = M_PI / 180.0;
 		
 		if (iww != [blendedMprView1 curWW] || iwl != [blendedMprView1 curWL])
 		{
-			if (clippingRangeMode == 0)
+			if (_clippingRangeMode == (CPRProjectionMode)0)  // TODO: CPRProjectionMode
 			{
 				[blendedMprView1 setWLWW:128 :256];
 				[blendedMprView2 setWLWW:128 :256];
@@ -4258,9 +4272,9 @@ static float deg2rad = M_PI / 180.0;
 	}
 }
 
-- (void) setBlendingMode: (int) m
+- (void) setBlendingMode: (BlendingMode2DType) m
 {
-	blendingMode = m;
+	_blendingMode = m;
 	
 	[mprView1 setBlendingMode: m];
 	[mprView2 setBlendingMode: m];
@@ -4301,7 +4315,7 @@ static float deg2rad = M_PI / 180.0;
 	
 	[hiddenVRController addMoviePixList: pix :vData];	
     
-	if (clippingRangeMode == 1 || clippingRangeMode == 3 || clippingRangeMode == 2)
+	if (_clippingRangeMode == (CPRProjectionMode)1 || _clippingRangeMode == (CPRProjectionMode)3 || _clippingRangeMode == (CPRProjectionMode)2)
 		[mprView1.vrView prepareFullDepthCapture];
 	else
 		[mprView1.vrView restoreFullDepthCapture];
@@ -4322,7 +4336,7 @@ static float deg2rad = M_PI / 180.0;
 	
 	[hiddenVRController setMovieFrame: m];
 	
-	if (clippingRangeMode == 1 || clippingRangeMode == 3 || clippingRangeMode == 2)
+	if (_clippingRangeMode == (CPRProjectionMode)1 || _clippingRangeMode == (CPRProjectionMode)3 || _clippingRangeMode == (CPRProjectionMode)2)
 		[mprView1.vrView prepareFullDepthCapture];
 	else
 		[mprView1.vrView restoreFullDepthCapture];
@@ -4536,18 +4550,22 @@ static float deg2rad = M_PI / 180.0;
     }
 }
 
-- (void)setCprType:(CPRType)newCprType
+- (void)setControllerCprType:(CPRType)newCprType
 {
-    if (newCprType != cprType) {
-        cprType = newCprType;
-        mprView1.CPRType = cprType;
-        mprView2.CPRType = cprType;
-        mprView3.CPRType = cprType;
-        cprView.reformationType = cprType;
-        topTransverseView.reformationDisplayStyle = cprType;
-        middleTransverseView.reformationDisplayStyle = cprType;
-        bottomTransverseView.reformationDisplayStyle = cprType;
-    }
+    if (newCprType == controllerCprType)
+        return;
+
+    controllerCprType = newCprType;
+
+    mprView1.viewCprType = controllerCprType;
+    mprView2.viewCprType = controllerCprType;
+    mprView3.viewCprType = controllerCprType;
+
+    cprView.reformationType = controllerCprType;
+
+    topTransverseView.reformationDisplayStyle = controllerCprType;
+    middleTransverseView.reformationDisplayStyle = controllerCprType;
+    bottomTransverseView.reformationDisplayStyle = controllerCprType;
 }
 
 - (void)setViewsPosition:(CPRLayoutType) newViewsPosition

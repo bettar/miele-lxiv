@@ -28,18 +28,17 @@
     self = [super initWithFrame:frame];
     if (self)
 	{
-		long i;
+        curIndex = NSNotFound;
+		points = [[NSMutableArray array] retain];
 		
-        curIndex = -1;
-		points =  [[NSMutableArray array] retain];
-		
-		for( i = 0; i < 256; i++)
+		for (long  i = 0; i < 256; i++)
 		{
 			red[ i] = i;
 			green[ i] = i;
 			blue[ i] = i;
 		}
     }
+
     return self;
 }
 
@@ -51,17 +50,18 @@
 
 - (void)mouseDragged:(NSEvent *)event
 {
-    NSPoint		eventLocation = [event locationInWindow];
-	NSPoint		center;
+    NSPoint eventLocation = [event locationInWindow];
+	NSPoint center;
 	
-	if( curIndex >= 0)
+	if (curIndex != NSNotFound)
 	{
 		center = [self convertPoint:eventLocation fromView:nil];
 				
-		if( center.y < 0 || center.y > [self bounds].size.height)
+		if (center.y < 0 ||
+            center.y > [self bounds].size.height)
 		{
 			[points removeObjectAtIndex: curIndex];
-			curIndex = -1;
+			curIndex = NSNotFound;
 			
 			[position setStringValue: @""];
 		}
@@ -74,7 +74,7 @@
 			if( center.y > 100) center.y = 100;
 			
 			NSPoint	curPt = NSMakePoint(1000 + center.x/2., center.y/100.);
-			NSString	*ptString = NSStringFromPoint( curPt);
+			NSString *ptString = NSStringFromPoint( curPt);
 			
 			[points replaceObjectAtIndex: curIndex withObject: ptString];
 			[points sortUsingSelector:@selector(compare:)];
@@ -88,32 +88,31 @@
 
 - (void)mouseDown:(NSEvent *) event
 {
-    NSPoint		eventLocation = [event locationInWindow];
-	NSPoint		center;
-	BOOL		found = NO;
-	long		i;
+    NSPoint eventLocation = [event locationInWindow];
+	NSPoint center;
+	BOOL found = NO;
 	
     center = [self convertPoint:eventLocation fromView:nil];
 	
-	for( i = 0; i < [ points count]; i++)
+	for (long i = 0; i < [ points count]; i++)
 	{
-		NSPoint  curPt = NSPointFromString( [points objectAtIndex: i]);
+		NSPoint curPt = NSPointFromString( [points objectAtIndex: i]);
 		
-		curPt.x -=1000;
+		curPt.x -= 1000;
 		
-		if( center.x/2 >= curPt.x-2 && center.x/2 <= curPt.x+2) // We found a point!
+		if (center.x/2 >= curPt.x-2 &&
+            center.x/2 <= curPt.x+2) // We found a point!
 		{
 			found = YES;
 			curIndex = i;
-			
 			break;
 		}
 	}
 	
-	if( found == NO)
+	if (!found)
 	{
-		NSPoint		newPt = NSMakePoint( center.x/2., center.y/100.);
-		NSString	*newPtString;
+		NSPoint newPt = NSMakePoint( center.x/2., center.y/100.);
+		NSString *newPtString;
 		
 		if( newPt.x < 0) newPt.x = 0;
 		if( newPt.x > 256) newPt.x = 256;		

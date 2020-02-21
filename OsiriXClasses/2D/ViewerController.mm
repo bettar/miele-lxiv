@@ -124,6 +124,11 @@ int delayedTileWindows = NO;
 
 #define EXIF_USER_COMMENT                       @"Exported from Miele-LXIV"
 
+typedef NS_ENUM(NSInteger, ResliceType) {
+    RESLICE_X = 0,
+    RESLICE_Y = 1
+};
+
 extern ThumbnailsListPanel *thumbnailsListPanel[ MAXSCREENS];
 
 extern BOOL FULL32BITPIPELINE;
@@ -181,8 +186,6 @@ static NSString*	SetPixelValueItemIdentifier			= @"SetPixelValue.pdf";
 static NSString*	GrowingRegionItemIdentifier			= @"GrowingRegion.png";
 
 static NSArray*		DefaultROINames = nil;
-
-static	float deg2rad									= M_PI/180.0; 
 
 static NSMutableDictionary *hiddenCellMatrix = nil;
 
@@ -404,8 +407,8 @@ static int hotKeyToolCrossTable[] =
 	Rotate3DHotKeyAction,		//t3DRotate			7
 	OrthoMPRCrossHotKeyAction,	//tCross			8
 	OvalHotKeyAction,			//tOval				9
-	OpenPolygonHotKeyAction,	//tOPolygon			10
-	ClosedPolygonHotKeyAction, //tCPolygon			11
+	OpenPolygonHotKeyAction,	//tOpenPolygon		10
+	ClosedPolygonHotKeyAction,  //tClosedPolygon	11
 	AngleHotKeyAction,			//tAngle			12
 	TextHotKeyAction,			//tText				13
 	ArrowHotKeyAction,			//tArrow			14
@@ -679,8 +682,18 @@ return YES;
     }
     else if ([item action] == @selector( navigator:))
     {
-        if ([[[self imageView] curDCM] isRGB] && [self isDataVolumicIn4D: YES])
-            valid = YES;
+        BOOL isRgb = [[[self imageView] curDCM] isRGB];
+        NSLog(@"%s %d, isRgb:%d", __FUNCTION__, __LINE__, isRgb);
+        
+#ifndef DEBUG_NAVIGATOR_PANEL
+        if (isRgb)
+#endif
+        {
+            BOOL is4D = [self isDataVolumicIn4D: YES];
+            NSLog(@"%s %d, is4D:%d", __FUNCTION__, __LINE__, is4D);
+            if (is4D)
+                valid = YES;
+        }
     }
     else if ([item action] == @selector( threeDPanel:))
     {
@@ -1114,7 +1127,7 @@ return YES;
                 NSRect	r = [[win window] frame];
                 [dict setObject: name forKey: @"name"];
                 [dict setObject: [NSString stringWithFormat: @"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
-                [dict setObject: NSStringFromRect( [AppController usefullRectForScreen: win.window.screen]) forKey: @"screen"];
+                [dict setObject: NSStringFromRect( [AppController usefulRectForScreen: win.window.screen]) forKey: @"screen"];
                 [dict setObject: @([[NSScreen screens] indexOfObject: win.window.screen]) forKey:@"screenIndex"];
                 [dict setObject: @([view rows]) forKey:@"rows"];
                 [dict setObject: @([view columns]) forKey:@"columns"];
@@ -1706,30 +1719,37 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[pool release];
 }
 
--(BOOL) processReslice:(long) directionm :(BOOL) newViewer
+-(BOOL) processReslice:(ResliceType) directionXY :(BOOL) newViewer
 {
-	DCMPix				*firstPix = [pixList[ curMovieIndex] objectAtIndex: 0];
-	DCMPix				*lastPix = nil;
-	long				i, newTotal;
-	unsigned char		*emptyData;
-	long				imageSize, size, y, newX, newY;
-	double				orientation[ 9], newXSpace, newYSpace, origin[ 3], sign;
-	BOOL				square = NO;
-	BOOL				succeed = YES;
+    NSLog(@"%s %d, class:%@" , __FUNCTION__, __LINE__, NSStringFromClass([self class]));
+
+    DCMPix *firstPix = [pixList[ curMovieIndex] objectAtIndex: 0];
+	DCMPix *lastPix = nil;
+	long i, newTotal;
+	unsigned char *emptyData;
+    //long imageSize, size;
+    long y, newX, newY;
+    double orientation[ 9], newXSpace, newYSpace, origin[ 3];
+    //double sign;
+
+	NSString *previousCLUT = [curCLUTMenu retain];
+	NSString *previousOpacity = [curOpacityMenu retain];
 	
-	NSString			*previousCLUT = [curCLUTMenu retain];
-	NSString			*previousOpacity = [curOpacityMenu retain];
-	
+    NSLog(@"%s %d", __FUNCTION__, __LINE__); // Issue #50
+
+    BOOL square = NO;
     if ([pixList[ curMovieIndex] count] < 100 &&
        firstPix.pheight <= 256 &&
        firstPix.pwidth <= 256)
     {
+        NSLog(@"%s %d, square", __FUNCTION__, __LINE__);
         square = YES;
     }
     
 	// Get Values
-	if (directionm == 0)		// X - RESLICE
+	if (directionXY == RESLICE_X)
 	{
+        NSLog(@"%s %d, RESLICE_X", __FUNCTION__, __LINE__);
 		newTotal = [firstPix pheight];
 		newX = [firstPix pwidth];
 		
@@ -1757,9 +1777,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 			newY = [pixList[ curMovieIndex] count];
 		}
 	}
-	else
+	else // RESLICE_Y
 	{
-		newTotal = [firstPix pwidth];	// Y - RESLICE
+        NSLog(@"%s %d, RESLICE_Y", __FUNCTION__, __LINE__);
+		newTotal = [firstPix pwidth];
 		newX = [firstPix pheight];
 		
 		if (square)
@@ -1800,16 +1821,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 	i--;
 	lastPix = [pixList[ curMovieIndex] objectAtIndex: i];
 		
-	sign = 1.0;
+	double sign = 1.0;
 	
-	imageSize = sizeof(float) * newX * newY;
-	size = newTotal * imageSize;
+	long imageSize = sizeof(float) * newX * newY;
+	long size = newTotal * imageSize;
+    NSLog(@"%s %d, size:%ld, newTotal:%ld, imageSize:%ld", __FUNCTION__, __LINE__, size, newTotal, imageSize);
 	
 	NSMutableArray *xPix = [NSMutableArray array];
 	NSMutableArray *xFiles = [NSMutableArray array];
 	NSMutableArray *xData = [NSMutableArray array];
 	
-	succeed = YES;
+    BOOL succeed = YES;
 	
 	for (int j = 0 ; j < maxMovieIndex && succeed == YES; j++)
 	{
@@ -1817,220 +1839,200 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		// CREATE A NEW SERIES WITH ALL IMAGES !
 		emptyData = (unsigned char *)malloc( size);
-		if (emptyData)
-		{
-			NSMutableArray	*newPixList = [NSMutableArray array];
-			NSMutableArray	*newDcmList = [NSMutableArray array];
-			
-			NSData	*newData = [NSData dataWithBytesNoCopy:emptyData length: size freeWhenDone:YES];
-			
-			NSLog( @"reslice start");
-			
-#ifdef VIMAGEYRESLICE
-            if (directionm)
-            {
-                vImage_Buffer src;
-                vImage_Buffer dst;
-                
-                src.height = firstPix.pheight * newY;
-                src.width = firstPix.pwidth;
-                src.rowBytes = src.width*4;
-                src.data = firstPix.fImage;
-                
-                dst.width = firstPix.pheight * newY;
-                dst.height = firstPix.pwidth;
-                dst.rowBytes = dst.width*4;
-                dst.data = emptyData;
-                
-                vImageRotate90_PlanarF( &src, &dst, kRotate270DegreesClockwise, 0, 0);
-            }
-#endif
-            
-            // Display a waiting window
-            id waitWindow = [self startWaitProgressWindow: NSLocalizedString( @"Reslicing...", nil) :newTotal];
-            
-			for (i = 0 ; i < newTotal; i ++)
-			{
-				[newPixList addObject: [[[pixList[ j] objectAtIndex: 0] copy] autorelease]];
-				
-				// SUV
-				[[newPixList lastObject] setDisplaySUVValue: [firstPix displaySUVValue]];
-				[[newPixList lastObject] setSUVConverted: [firstPix SUVConverted]];
-				[[newPixList lastObject] setFactorPET2SUV: [firstPix factorPET2SUV]];
-				[[newPixList lastObject] setRadiopharmaceuticalStartTime: [firstPix radiopharmaceuticalStartTime]];
-				[[newPixList lastObject] setPatientsWeight: [firstPix patientsWeight]];
-				[[newPixList lastObject] setRadionuclideTotalDose: [firstPix radionuclideTotalDose]];
-				[[newPixList lastObject] setRadionuclideTotalDoseCorrected: [firstPix radionuclideTotalDoseCorrected]];
-				[[newPixList lastObject] setAcquisitionTime: [firstPix acquisitionTime]];
-				[[newPixList lastObject] setDecayCorrection: [firstPix decayCorrection]];
-				[[newPixList lastObject] setDecayFactor: [firstPix decayFactor]];
-				[[newPixList lastObject] setUnits: [firstPix units]];
-				
-				[[newPixList lastObject] setPwidth: newX];
-//				[[newPixList lastObject] setRowBytes: newX*sizeof(float)];
-				[[newPixList lastObject] setPheight: newY];
-				
-				[[newPixList lastObject] setfImage: (float*) (emptyData + imageSize * ([newPixList count] - 1))];
-				[[newPixList lastObject] setTot: newTotal];
-				[[newPixList lastObject] setFrameNo: (long)[newPixList count]-1];
-				[[newPixList lastObject] setID: (long)[newPixList count]-1];
-				
-				if ([fileList[ j] count])
-					[newDcmList addObject: [fileList[ j] objectAtIndex: 0]];
-				
-				if (directionm == 0)		// X - RESLICE
-				{
-					DCMPix *curPix = [newPixList lastObject];
-					
-					int count = [pixList[ j] count];
-					int pwidth = [[pixList[ j] objectAtIndex: 0] pwidth];
-					
-					count /= 2;
-					count *= 2;
-					
-					if (sign > 0)
-					{
-						for (y = 0; y < count; y++)
-						{
-							memcpy(	[curPix fImage] + (count-y-1) * newX,
-									[[pixList[ j] objectAtIndex: y] fImage] + i * pwidth,
-									newX * sizeof( float));
-						}
-					}
-					else
-					{
-						for (y = 0; y < count; y++)
-						{
-							memcpy(	[curPix fImage] + y * newX,
-									[[pixList[ j] objectAtIndex: y] fImage] + i * pwidth,
-									newX * sizeof( float));
-						}
-					}
-					
-					if (square)
-					{
-						vImage_Buffer	srcVimage, dstVimage;
-						
-						srcVimage.data = [curPix fImage];
-						srcVimage.height = count;
-						srcVimage.width = newX;
-						srcVimage.rowBytes = newX*4;
-						
-						dstVimage.data = [curPix fImage];
-						dstVimage.height = newY;
-						dstVimage.width = newX;
-						dstVimage.rowBytes = newX*4;
-						
-						vImageScale_PlanarF( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
-					}
-					
-					[lastPix orientationDouble: orientation];
-					
-					orientation[ 3] = orientation[ 6] * -sign;
-					orientation[ 4] = orientation[ 7] * -sign;
-					orientation[ 5] = orientation[ 8] * -sign;
-					
-					[curPix setOrientationDouble: orientation];	// Normal vector is recomputed in this procedure
-					
-					[curPix setPixelSpacingX: newXSpace];
-					[curPix setPixelSpacingY: newYSpace];
-					
-					[curPix setPixelRatio:  newYSpace / newXSpace];
-					
-					[curPix orientationDouble: orientation];
-					
-					[lastPix convertPixDoubleX:0 pixY: i toDICOMCoords: origin pixelCenter: NO];
-					
-					[curPix setOriginDouble: origin];
-					
-                    [curPix computeSliceLocation];
-                    
-					[curPix setSliceThickness: [firstPix pixelSpacingY]];
-					[curPix setSliceInterval: 0];
-					
-				}
-				else											// Y - RESLICE
-				{
-					DCMPix	*curPix = [newPixList lastObject];
-					long	rowBytes = [firstPix pwidth]*4;
-					
-#ifndef VIMAGEYRESLICE
-					[self waitForAProcessor];
-					
-                    NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       @(i), @"i",
-                                       @(sign), @"sign",
-                                       @(newX), @"newX",
-                                       @(newY), @"newY",
-                                       @(square), @"square",
-                                       [NSNumber numberWithInt: rowBytes], @"rowBytes",
-                                       curPix, @"curPix",
-                                       @(j), @"curMovieIndex",
-                                       nil];
-                    
-                    [NSThread detachNewThreadSelector: @selector(resliceThread:) toTarget:self withObject: d];
-#endif 
-					[lastPix orientationDouble: orientation];
-					
-					// Y Vector = Normal Vector
-					orientation[ 0] = orientation[ 3];
-					orientation[ 1] = orientation[ 4];
-					orientation[ 2] = orientation[ 5];
-					
-					orientation[ 3] = orientation[ 6] * -sign;
-					orientation[ 4] = orientation[ 7] * -sign;
-					orientation[ 5] = orientation[ 8] * -sign;
-					
-					[curPix setOrientationDouble: orientation];	// Normal vector is recomputed in this procedure
-					
-					[curPix setPixelSpacingX: newXSpace];
-					[curPix setPixelSpacingY: newYSpace];
-					
-					[curPix setPixelRatio:  newYSpace / newXSpace];
-					
-					[curPix orientationDouble: orientation];
-					
-					[lastPix convertPixDoubleX:i pixY:0 toDICOMCoords: origin pixelCenter: NO];
-					
-                    [curPix setOriginDouble: origin];
-                    
-                    [curPix computeSliceLocation];
-                    
-					[curPix setSliceThickness: [firstPix pixelSpacingX]];
-					[curPix setSliceInterval: 0];
-				}
-                
-                [self waitIncrementBy:waitWindow :1];
-			}
-			
-			BOOL finished = NO;
-			do
-			{
-				[processorsLock lockWhenCondition: 1];
-				if (numberOfThreadsForRelisce <= 0)
-				{
-					finished = YES;
-					[processorsLock unlockWithCondition: 1];
-				}
-				else
-                    [processorsLock unlockWithCondition: 0];
-			}
-			while (finished == NO);
-			
-			NSLog( @"reslice end");
-			
-			[xData addObject: newData];
-			[xFiles addObject: newDcmList];
-			[xPix addObject: newPixList];
-			
-			postprocessed = YES;
-            
-            // Close the waiting window
-            [self endWaitWindow: waitWindow];
-		}
-		else
+        if (!emptyData) {
             succeed = NO;
-	}
+            break;
+        }
+            
+        NSMutableArray *newPixList = [NSMutableArray array];
+        NSMutableArray *newDcmList = [NSMutableArray array];
+        NSData *newData = [NSData dataWithBytesNoCopy:emptyData length: size freeWhenDone:YES];
+        
+        NSLog(@"%s %d Reslice start", __FUNCTION__, __LINE__);
+        
+#ifdef VIMAGEYRESLICE
+        if (directionXY != RESLICE_X)
+        {
+            vImage_Buffer src;
+            vImage_Buffer dst;
+            
+            src.height = firstPix.pheight * newY;
+            src.width = firstPix.pwidth;
+            src.rowBytes = src.width*4;
+            src.data = firstPix.fImage;
+            
+            dst.width = firstPix.pheight * newY;
+            dst.height = firstPix.pwidth;
+            dst.rowBytes = dst.width*4;
+            dst.data = emptyData;
+            
+            vImageRotate90_PlanarF( &src, &dst, kRotate270DegreesClockwise, 0, 0);
+        }
+#endif
+        // Display a waiting window
+        id waitWindow = [self startWaitProgressWindow: NSLocalizedString( @"Reslicing...", nil) :newTotal];
+        
+        NSLog(@"%s %d, newTotal: %ld", __FUNCTION__, __LINE__, newTotal);
+        for (i = 0 ; i < newTotal; i ++)
+        {
+            [newPixList addObject: [[[pixList[ j] objectAtIndex: 0] copy] autorelease]];
+            
+            // SUV
+            [[newPixList lastObject] setDisplaySUVValue: [firstPix displaySUVValue]];
+            [[newPixList lastObject] setSUVConverted: [firstPix SUVConverted]];
+            [[newPixList lastObject] setFactorPET2SUV: [firstPix factorPET2SUV]];
+            [[newPixList lastObject] setRadiopharmaceuticalStartTime: [firstPix radiopharmaceuticalStartTime]];
+            [[newPixList lastObject] setPatientsWeight: [firstPix patientsWeight]];
+            [[newPixList lastObject] setRadionuclideTotalDose: [firstPix radionuclideTotalDose]];
+            [[newPixList lastObject] setRadionuclideTotalDoseCorrected: [firstPix radionuclideTotalDoseCorrected]];
+            [[newPixList lastObject] setAcquisitionTime: [firstPix acquisitionTime]];
+            [[newPixList lastObject] setDecayCorrection: [firstPix decayCorrection]];
+            [[newPixList lastObject] setDecayFactor: [firstPix decayFactor]];
+            [[newPixList lastObject] setUnits: [firstPix units]];
+            
+            [[newPixList lastObject] setPwidth: newX];
+//				[[newPixList lastObject] setRowBytes: newX*sizeof(float)];
+            [[newPixList lastObject] setPheight: newY];
+            
+            [[newPixList lastObject] setfImage: (float*) (emptyData + imageSize * ([newPixList count] - 1))];
+            [[newPixList lastObject] setTot: newTotal];
+            [[newPixList lastObject] setFrameNo: (long)[newPixList count]-1];
+            [[newPixList lastObject] setID: (long)[newPixList count]-1];
+            
+            if ([fileList[ j] count])
+                [newDcmList addObject: [fileList[ j] objectAtIndex: 0]];
+            
+            if (directionXY == RESLICE_X)
+            {
+                DCMPix *curPix = [newPixList lastObject];
+                
+                int count = [pixList[ j] count];
+                int pwidth = [[pixList[ j] objectAtIndex: 0] pwidth];
+                
+                // Make sure the count is an even number ?
+                count /= 2;
+                count *= 2;
+
+                for (y = 0; y < count; y++)
+                {
+                    long positionX = (sign > 0) ? (count-y-1) : y;
+                    memcpy( [curPix fImage] + positionX * newX,
+                            [[pixList[ j] objectAtIndex: y] fImage] + i * pwidth,
+                            newX * sizeof( float));
+                }
+                
+                if (square)
+                {
+                    vImage_Buffer srcVimage, dstVimage;
+                    
+                    srcVimage.data = [curPix fImage];
+                    srcVimage.height = count;
+                    srcVimage.width = newX;
+                    srcVimage.rowBytes = newX*4;
+                    
+                    dstVimage.data = [curPix fImage];
+                    dstVimage.height = newY;
+                    dstVimage.width = newX;
+                    dstVimage.rowBytes = newX*4;
+                    
+                    vImageScale_PlanarF( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
+                }
+                
+                [lastPix orientationDouble: orientation];
+                
+                orientation[ 3] = orientation[ 6] * -sign;
+                orientation[ 4] = orientation[ 7] * -sign;
+                orientation[ 5] = orientation[ 8] * -sign;
+                
+                [curPix setOrientationDouble: orientation];	// Normal vector is recomputed in this procedure
+                [curPix setPixelSpacingX: newXSpace];
+                [curPix setPixelSpacingY: newYSpace];
+                [curPix setPixelRatio:  newYSpace / newXSpace];
+                [curPix orientationDouble: orientation];
+                
+                [lastPix convertPixDoubleX:0 pixY: i toDICOMCoords: origin pixelCenter: NO];
+                
+                [curPix setOriginDouble: origin];
+                [curPix computeSliceLocation];
+                [curPix setSliceThickness: [firstPix pixelSpacingY]];
+                [curPix setSliceInterval: 0];
+            }
+            else // RESLICE_Y
+            {
+                NSLog(@"%s %d, RESLICE_Y, i:%li", __FUNCTION__, __LINE__, i);
+
+                DCMPix *curPix = [newPixList lastObject];
+                long rowBytes = [firstPix pwidth]*4;
+                
+#ifndef VIMAGEYRESLICE
+                [self waitForAProcessor];
+                
+                NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   @(i), @"i",
+                                   @(sign), @"sign",
+                                   @(newX), @"newX",
+                                   @(newY), @"newY",
+                                   @(square), @"square",
+                                   [NSNumber numberWithInt: rowBytes], @"rowBytes",
+                                   curPix, @"curPix",
+                                   @(j), @"curMovieIndex",
+                                   nil];
+                
+                [NSThread detachNewThreadSelector: @selector(resliceThread:) toTarget:self withObject: d];
+#endif 
+                [lastPix orientationDouble: orientation];
+                
+                // Y Vector = Normal Vector
+                orientation[ 0] = orientation[ 3];
+                orientation[ 1] = orientation[ 4];
+                orientation[ 2] = orientation[ 5];
+                
+                orientation[ 3] = orientation[ 6] * -sign;
+                orientation[ 4] = orientation[ 7] * -sign;
+                orientation[ 5] = orientation[ 8] * -sign;
+                
+                [curPix setOrientationDouble: orientation];	// Normal vector is recomputed in this procedure
+                [curPix setPixelSpacingX: newXSpace];
+                [curPix setPixelSpacingY: newYSpace];
+                [curPix setPixelRatio:  newYSpace / newXSpace];
+                [curPix orientationDouble: orientation];
+                
+                [lastPix convertPixDoubleX:i pixY:0 toDICOMCoords: origin pixelCenter: NO];
+                
+                [curPix setOriginDouble: origin];
+                [curPix computeSliceLocation];
+                [curPix setSliceThickness: [firstPix pixelSpacingX]];
+                [curPix setSliceInterval: 0];
+            }
+            
+            [self waitIncrementBy:waitWindow :1];
+        }
+        
+        BOOL finished = NO;
+        do
+        {
+            [processorsLock lockWhenCondition: 1];
+            if (numberOfThreadsForRelisce <= 0)
+            {
+                finished = YES;
+                [processorsLock unlockWithCondition: 1];
+            }
+            else
+                [processorsLock unlockWithCondition: 0];
+        }
+        while (finished == NO);
+        
+        NSLog(@"%s %d Reslice end", __FUNCTION__, __LINE__);
+        
+        [xData addObject: newData];
+        [xFiles addObject: newDcmList];
+        [xPix addObject: newPixList];
+        
+        postprocessed = YES;
+        
+        // Close the waiting window
+        [self endWaitWindow: waitWindow];
+	} // for
 	
 	if (succeed)
 	{
@@ -2042,7 +2044,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			{
 				if (newViewer)
 				{
-					ViewerController	*new2DViewer;
+					ViewerController *new2DViewer;
 					
 					// CREATE A SERIES
 					new2DViewer = [self newWindow: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
@@ -2303,7 +2305,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			vector.x = o[ 0];
             vector.y = o[ 1];
             vector.z = o[ 2];
-			vector = ArbitraryRotate(vector, -rot*deg2rad, rotationVector);
+			vector = ArbitraryRotate(vector, glm::radians(-rot), rotationVector);
 			o[ 0] = vector.x;
             o[ 1] = vector.y;
             o[ 2] = vector.z;
@@ -2311,7 +2313,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			vector.x = o[ 3];
             vector.y = o[ 4];
             vector.z = o[ 5];
-			vector = ArbitraryRotate(vector, -rot*deg2rad, rotationVector);
+			vector = ArbitraryRotate(vector, glm::radians(-rot), rotationVector);
 			o[ 3] = vector.x;
             o[ 4] = vector.y;
             o[ 5] = vector.z;
@@ -2375,6 +2377,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (BOOL) setOrientation: (OrientationToolType) newOrientationTool
 {
+    NSLog(@"%s %d, newOrientationTool: %ld", __FUNCTION__, __LINE__, (long)newOrientationTool);
+
     BOOL succeed = YES;
     
     [self checkEverythingLoaded];
@@ -2392,16 +2396,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 		int previousFusion = [popFusion selectedTag];
 		int previousFusionActivated = [activatedFusion state];
 		
-        if ([self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: YES] == NO)
+        if (![self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: YES] &&
+            ![self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: NO])
         {
-            if ([self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: NO])
-            {
-                
-            }
-            else
-            {
-                return NO;
-            }
+            return NO;
         }
 		
 		// To stop any attempt to reload the data...
@@ -2417,7 +2415,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if (blendingController)
 			[self ActivateBlending: nil];
 		
-        NSLog( @"Orientation : current: %ld new: %ld", (long)currentOrientationTool, (long)newOrientationTool);
+        NSLog(@"Orientation : current: %ld new: %ld", (long)currentOrientationTool, (long)newOrientationTool);
 		
         // Copy 2D Point & 3D Ball ROIs
         NSMutableArray *roisToCopy = [NSMutableArray array];
@@ -2450,12 +2448,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					case ORIENTATION_CORONAL:
 						[self checkEverythingLoaded];
-						succeed = [self processReslice: 0 :newViewer];
+						succeed = [self processReslice: RESLICE_X :newViewer];
                         break;
 					
 					case ORIENTATION_SAGITTAL:
 						[self checkEverythingLoaded];
-						succeed = [self processReslice: 1 :newViewer];
+						succeed = [self processReslice: RESLICE_Y :newViewer];
                         break;
                         
                     default:
@@ -2468,10 +2466,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 				{
 					case ORIENTATION_AXIAL:
 						[self checkEverythingLoaded];
-						succeed = [self processReslice: 0 :newViewer];
-						
+						succeed = [self processReslice: RESLICE_X :newViewer];
 						if (succeed)
 							[self vertFlipDataSet: self];
+
                         break;
 					
 					case ORIENTATION_CORONAL:
@@ -2482,10 +2480,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					case ORIENTATION_SAGITTAL:
 						[self checkEverythingLoaded];
-						succeed = [self processReslice: 1 :newViewer];
-						
+						succeed = [self processReslice: RESLICE_Y :newViewer];
 						if (succeed)
 							[self rotateDataSet: kRotate90DegreesClockwise];
+
                         break;
                         
                     default:
@@ -2498,7 +2496,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				{
 					case ORIENTATION_AXIAL:
 						[self checkEverythingLoaded];
-						succeed = [self processReslice: 0 :newViewer];
+						succeed = [self processReslice: RESLICE_X :newViewer];
 						if (succeed) {
 							[self rotateDataSet: kRotate90DegreesClockwise];
 							[self horzFlipDataSet: self];
@@ -2507,7 +2505,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					case ORIENTATION_CORONAL:
 						[self checkEverythingLoaded];
-						succeed = [self processReslice: 1 :newViewer];
+						succeed = [self processReslice: RESLICE_Y :newViewer];
 						
 						if (succeed) {
 							[self rotateDataSet: kRotate90DegreesClockwise];
@@ -2540,9 +2538,9 @@ static volatile int numberOfThreadsForRelisce = 0;
             {
                 ROI *r = [[[ROI alloc] initWith3DRepresentation: d inView: imageView] autorelease];
                 
-                int index = [pixList[ curMovieIndex] indexOfObject: r.pix];
+                NSUInteger index = [pixList[ curMovieIndex] indexOfObject: r.pix];
                 
-                if (r)
+                if (r && index != NSNotFound)
                     [[roiList[ curMovieIndex] objectAtIndex: index] addObject: r];
             }
             
@@ -2552,7 +2550,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         if (newViewer == NO)
 			[orientationMatrix selectCellWithTag: currentOrientationTool];
 
-		float   iwl, iww;
+		float iwl, iww;
 		[imageView getWLWW:&iwl :&iww];
 		[imageView setWLWW:iwl :iww];
 		
@@ -2584,6 +2582,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (IBAction) setOrientationTool:(id) sender
 {
     OrientationToolType n = (OrientationToolType)[[sender selectedCell] tag];
+    NSLog(@"%s %d, type %ld", __FUNCTION__, __LINE__, (long)n);
 
     if ([self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: YES] == NO)
     {
@@ -2652,7 +2651,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) computeContextualMenu
 {
-	NSLog(@"2D Viewer Contextual Menu - Generate");
+	//NSLog(@"2D Viewer Contextual Menu - Generate");
 	NSMenu* menu = [[self contextualMenu] copy];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixPopulatedContextualMenuNotification
                                                         object:menu
@@ -2664,7 +2663,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)computeContextualMenuForROI:(ROI*)roi
 {
-	NSLog(@"2D Viewer Contextual Menu - Generate for ROI: %@", roi);
+	//NSLog(@"2D Viewer Contextual Menu - Generate for ROI: %@", roi);
 	NSMenu* menu = [[self contextualMenuForROI:roi] copy];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixPopulatedContextualMenuNotification
                                                         object:menu
@@ -2841,7 +2840,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     NSMutableArray *a = [NSMutableArray array];
     
-    if (modalities.length)
+    if (modalities.length > 0)
     {
         NSMutableArray *mArray = [NSMutableArray arrayWithObject: modalities];
         [mArray addObjectsFromArray: [modalities componentsSeparatedByString: @"\\"]];
@@ -3070,7 +3069,7 @@ static volatile int numberOfThreadsForRelisce = 0;
             
 			if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] == ANNOTATIONS_FULL)
 			{
-                if (curImage.series.study.name.length)
+                if (curImage.series.study.name.length > 0)
                     [c addObject: curImage.series.study.name];
                     
                 if (curImage.series.study.dateOfBirth)
@@ -3081,21 +3080,21 @@ static volatile int numberOfThreadsForRelisce = 0;
             if (seriesName.length == 0)
                 seriesName = @"";
             
-            if ([[curImage.series.id stringValue] length])
+            if ([[curImage.series.id stringValue] length] > 0)
                 seriesName = [seriesName stringByAppendingFormat: @" (%@)", [curImage.series.id stringValue]];
             
-            if (seriesName.length)
+            if (seriesName.length > 0)
                 [c addObject: seriesName];
             
             DCMPix *p = [pixList[ curMovieIndex] objectAtIndex:0];
             
-            if (p.generated && p.generatedName.length)
+            if (p.generated && p.generatedName.length > 0)
 				[c addObject: p.generatedName];
             
             if ([[imageView curDCM] SUVConverted])
                 [c addObject: NSLocalizedString( @"SUV Converted", nil)];
             
-            if (loading.length)
+            if (loading.length > 0)
                 [c addObject: loading];
 			
 			[[self window] setTitle: [c componentsJoinedByString: @" - "]];
@@ -3180,8 +3179,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
 }
 
-+ (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v frame: (NSRect) frame
++ (ViewerController *) newWindow:(NSMutableArray*) f
+                                :(NSMutableArray*) d
+                                :(NSData*) v
+                           frame:(NSRect) frame
 {
+    NSLog(@"%s %d" , __FUNCTION__, __LINE__);
     ViewerController *win = [[ViewerController alloc] initWithPix:f withFiles:d withVolume:v];
 		
 	[win showWindowTransition];
@@ -3271,11 +3274,10 @@ static volatile int numberOfThreadsForRelisce = 0;
         }
         
         NSUInteger index = [seriesArray indexOfObject: [imageView seriesObj]];
-        
         if (index == NSNotFound)
             index = 0;
         
-        for (int i = displayedViewersCount ; i < rows*columns; i++)
+        for (int i = displayedViewersCount; i < rows*columns; i++)
         {
             ViewerController *newViewer = nil;
             if (seriesArray.count > 0)
@@ -3321,7 +3323,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (NSRect)windowWillUseStandardFrame:(NSWindow *)sender defaultFrame:(NSRect)defaultFrame
 {
 	NSRect currentFrame = [sender frame];
-	NSRect screenRect = [AppController usefullRectForScreen: [sender screen]];
+	NSRect screenRect = [AppController usefulRectForScreen: [sender screen]];
 	
 	if (NSIsEmptyRect( standardRect))
         standardRect = currentFrame;
@@ -4432,10 +4434,10 @@ static volatile int numberOfThreadsForRelisce = 0;
                         
                         NSMutableArray* components = [NSMutableArray array];
                         if (dcmStudy.date)   [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate: dcmStudy.date]];
-                        if (patName.length)  [components addObject:patName];
-                        if (name.length)     [components addObject:name];
-                        if (modality.length) [components addObject:modality];
-                        if (comment.length)  [components addObject:comment];
+                        if (patName.length > 0)  [components addObject:patName];
+                        if (name.length > 0)     [components addObject:name];
+                        if (modality.length > 0) [components addObject:modality];
+                        if (comment.length > 0)  [components addObject:comment];
                         
                         NSAttributedString *finalString = [[[NSAttributedString alloc] initWithString: [components componentsJoinedByString:@" / "] attributes: [NSDictionary dictionaryWithObject: [NSFont boldSystemFontOfSize: 14] forKey: NSFontAttributeName]] autorelease];
                         [cell setAttributedTitle: finalString];
@@ -4484,9 +4486,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                         
                         NSMutableArray* components = [NSMutableArray array];
                         if (queryStudy.date) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate: queryStudy.date]];
-                        if (patName.length)  [components addObject:patName];
-                        if (name.length)     [components addObject:name];
-                        if (modality.length) [components addObject:modality];
+                        if (patName.length > 0)  [components addObject:patName];
+                        if (name.length > 0)     [components addObject:name];
+                        if (modality.length > 0) [components addObject:modality];
                         
                         NSAttributedString *title = [[[NSAttributedString alloc] initWithString: [components componentsJoinedByString:@" / "] attributes: [NSDictionary dictionaryWithObject: [NSFont boldSystemFontOfSize: 14] forKey: NSFontAttributeName]] autorelease];
                         [cell setAttributedTitle: title];
@@ -4612,7 +4614,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     [seriesPopupContextualMenu setTitle: (self.currentSeries.name ? self.currentSeries.name : NSLocalizedString( @"Unnamed", nil))];
     
     for (DCMView *v in self.imageViews)
-        [v computeColor];
+        [v computeStudyColor];
 }
 
 - (void) loadSelectedSeries: (id) series
@@ -4734,7 +4736,6 @@ static volatile int numberOfThreadsForRelisce = 0;
         else if (series != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]) // Select it in 4D !
         {
             NSUInteger idx = [viewerSeries indexOfObject: series];
-            
             if (idx != NSNotFound)
             {
                 [self setMovieIndex: idx];
@@ -5263,8 +5264,11 @@ static volatile int numberOfThreadsForRelisce = 0;
         {
             id study = [[cell representedObject] object];
             
-            if ([[study valueForKey: @"type"] isEqualToString: @"Series"] && [[study valueForKeyPath: @"study.studyInstanceUID"] isEqualToString: studyInstanceUID])
+            if ([[study valueForKey: @"type"] isEqualToString: @"Series"] &&
+                [[study valueForKeyPath: @"study.studyInstanceUID"] isEqualToString: studyInstanceUID])
+            {
                 [cells addObject: cell];
+            }
         }
     }
     
@@ -5391,7 +5395,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) checkBuiltMatrixPreview
 {
-	if ([self checkFrameSize] == YES && matrixPreviewBuilt == NO)
+	if ([self checkFrameSize] == YES &&
+        matrixPreviewBuilt == NO)
 	{
 		if ([[self window] isKeyWindow])
 			[self buildMatrixPreview: YES];
@@ -5445,7 +5450,8 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     // *************
     
-    BOOL hasComparatives = NO, hasComparativesNewerThanMostRecentLoaded = NO;
+    BOOL hasComparatives = NO;
+    BOOL hasComparativesNewerThanMostRecentLoaded = NO;
     
     if (hiddenCellMatrix == nil)
         hiddenCellMatrix = [NSMutableDictionary new];
@@ -5454,7 +5460,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
         DicomDatabase *db = [[BrowserController currentBrowser] database];
         NSPredicate *predicate = nil;
-        long i = 0, index = 0;
+        long i = 0;
+        long index = 0;
         Dicom_Image *curImage = [fileList[0] objectAtIndex:0];
         NSPoint origin = [[previewMatrix superview] bounds].origin;
         
@@ -5714,7 +5721,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                             modality = @"OT:";
                         
                         NSString *action = nil;
-    #ifndef MIELE_LIGHT
+#ifndef MIELE_LIGHT
                         if ([[cell.representedObject object] isKindOfClass:[DCMTKStudyQueryNode class]]) { // this is an incomplete study
                                                         
                             switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
@@ -5729,14 +5736,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 
                         }
                         else {
-    #endif
+#endif
                             if ([curStudy isHidden])
                                 action = NSLocalizedString(@"Show Series", nil);
                             else
                                 action = NSLocalizedString(@"Hide Series", nil);
-    #ifndef MIELE_LIGHT
+#ifndef MIELE_LIGHT
                         }
-    #endif
+#endif
                         
                         NSString *patName = @"";
                         
@@ -5752,10 +5759,10 @@ static volatile int numberOfThreadsForRelisce = 0;
                         NSMutableArray* components = [NSMutableArray array];
                         [components addObject: [NSString stringWithFormat: @" %d ", (int) curStudyIndexAll+1]];
                         
-                        if (patName.length)
+                        if (patName.length > 0)
                             [components addObject:patName];
                         
-                        if (name.length)
+                        if (name.length > 0)
                             [components addObject:name];
                         
                         if (dcmStudy.date)
@@ -5763,13 +5770,13 @@ static volatile int numberOfThreadsForRelisce = 0;
                         
                         [components addObject:[NSString stringWithFormat:NSLocalizedString(@"%@: %@", @"semicolon separator for spacing"), modality, N2SingularPluralCount([series count], NSLocalizedString(@"series", @"can be plural or singular"), NSLocalizedString(@"series", @"can be plural or singular"))]];
                         
-                        if (stateText.length)
+                        if (stateText.length > 0)
                             [components addObject:stateText];
                         
-                        if (comment.length)
+                        if (comment.length > 0)
                             [components addObject:comment];
                         
-                        if (action.length)
+                        if (action.length > 0)
                             [components addObject:[NSString stringWithFormat:@"\r%@", action]];
                         
                         NSMutableAttributedString *finalString = [[[NSMutableAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"]] autorelease];
@@ -5802,8 +5809,8 @@ static volatile int numberOfThreadsForRelisce = 0;
                     }
                     index++;
                 }
-                
-                #ifndef MIELE_LIGHT
+                            
+#ifndef MIELE_LIGHT
                 if ([curStudy isKindOfClass: [DCMTKQueryNode class]]) //Distant Study DCMTKQueryStudyNode
                 {
                     DCMTKStudyQueryNode *queryStudy = curStudy;
@@ -5855,19 +5862,19 @@ static volatile int numberOfThreadsForRelisce = 0;
                         NSMutableArray* components = [NSMutableArray array];
                         [components addObject: [NSString stringWithFormat: @" %d ", (int) curStudyIndexAll+1]];
                         
-                        if (patName.length)
+                        if (patName.length > 0)
                             [components addObject:patName];
                         
-                        if (name.length)
+                        if (name.length > 0)
                             [components addObject:name];
                         
                         if (queryStudy.date)
                             [components addObject: [[NSUserDefaults dateTimeFormatter] stringFromDate: queryStudy.date]];
                         
-                        if (modality.length)
+                        if (modality.length > 0)
                             [components addObject:modality];
                         
-                        if (action.length)
+                        if (action.length > 0)
                             [components addObject:[NSString stringWithFormat:@"\r%@", action]];
                         
                         NSMutableAttributedString *finalString = [[[NSMutableAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"]] autorelease];
@@ -5913,7 +5920,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                     }
                     index++;
                 }
-                #endif
+#endif // MIELE_LIGHT
                 
                 if ([curStudy isHidden] == NO)
                 {
@@ -6100,7 +6107,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         
 		if (showSelected)
 		{
-			NSInteger index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
+			NSUInteger index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
 			
 			if (index != NSNotFound)
 				[previewMatrix scrollCellToVisibleAtRow: index column:0];
@@ -6141,7 +6148,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         
         if (hasComparatives)
         {
-            if (tip.length)
+            if (tip.length > 0)
                 tip = [tip stringByAppendingString:@", "];
             
             if (self.flagListPODComparatives.boolValue)
@@ -6169,7 +6176,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     }
     
     for (DCMView *v in self.imageViews)
-        [v computeColor];
+        [v computeStudyColor];
 }
 
 - (void) matrixPreviewSelectCurrentSeries
@@ -6179,7 +6186,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) showCurrentThumbnail:(id) sender;
 {
-	NSInteger index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
+	NSUInteger index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
 		
 	if (index != NSNotFound)
 		[previewMatrix scrollCellToVisibleAtRow: index column:0];
@@ -6250,8 +6257,6 @@ static ViewerController *draggedController = nil;
 		}
 	}
 	
-	int iz, xz;
-	
 	if ([[[vc imageView] curDCM] pwidth] != [[imageView curDCM] pwidth] ||
 		[[[vc imageView] curDCM] pheight] != [[imageView curDCM] pheight])
 		{
@@ -6267,15 +6272,15 @@ static ViewerController *draggedController = nil;
 		[blendingResample setEnabled: NO];
 	
 	// Prepare fusion plug-ins menu
-	for (iz = 0; iz < [[PluginManager fusionPluginsMenu] numberOfItems]; iz++)
+	for (int iz = 0; iz < [[PluginManager fusionPluginsMenu] numberOfItems]; iz++)
 	{
 		[[[PluginManager fusionPluginsMenu] itemAtIndex:iz] setTag: -iz];
 		
 		if ([[[PluginManager fusionPluginsMenu] itemAtIndex:iz] hasSubmenu])
 		{
-			NSMenu  *subMenu = [[[PluginManager fusionPluginsMenu] itemAtIndex:iz] submenu];
+			NSMenu *subMenu = [[[PluginManager fusionPluginsMenu] itemAtIndex:iz] submenu];
 			
-			for (xz = 0; xz < [subMenu numberOfItems]; xz++)
+			for (int xz = 0; xz < [subMenu numberOfItems]; xz++)
 			{
 				[[subMenu itemAtIndex:xz] setTag: -iz];
 				[[subMenu itemAtIndex:xz] setTarget:self];
@@ -7509,7 +7514,8 @@ return YES;
 	{
 	   if ([fileList[ curMovieIndex] count] == 1 &&
            [imageView.imageObj.numberOfFrames intValue] <= 1 &&
-           maxMovieIndex == 1 && blendingController == nil)
+           maxMovieIndex == 1 &&
+           blendingController == nil)
        {
            enable = NO;
        }
@@ -7580,8 +7586,8 @@ return YES;
 		case tOval:
 		case tText:
 		case tArrow:
-		case tOPolygon:
-		case tCPolygon:
+		case tOpenPolygon:
+		case tClosedPolygon:
 		case tPencil:
 		case t2DPoint:
 		case tPlain:
@@ -7694,7 +7700,7 @@ return YES;
 	
 	DCMPix *curPix = [[imageView dcmPixList] objectAtIndex:[imageView curImage]];
 	
-	NSRect shutterRect = NSMakeRect( 0, 0, 0, 0);
+	NSRect shutterRect = NSZeroRect;
 
 	if ([shutterOnOff state] == NSOnState)
 	{
@@ -7718,10 +7724,23 @@ return YES;
 			for (DCMPix *p in [imageView dcmPixList])
 			{
                 //shutterRect inside frame?
-                if (shutterRect.origin.x < 0) { shutterRect.size.width += shutterRect.origin.x; shutterRect.origin.x = 0;}
-                if (shutterRect.origin.y < 0) { shutterRect.size.height += shutterRect.origin.y; shutterRect.origin.y = 0;}
-                if (shutterRect.origin.x + shutterRect.size.width > p.pwidth) shutterRect.size.width = p.pwidth - shutterRect.origin.x;
-                if (shutterRect.origin.y + shutterRect.size.height > p.pheight) shutterRect.size.height = p.pheight - shutterRect.origin.y;
+                if (NSMinX(shutterRect) < 0)
+                {
+                    shutterRect.size.width += shutterRect.origin.x;
+                    shutterRect.origin.x = 0;
+                }
+
+                if (NSMinY(shutterRect) < 0)
+                {
+                    shutterRect.size.height += shutterRect.origin.y;
+                    shutterRect.origin.y = 0;
+                }
+
+                if (NSMaxX(shutterRect) > p.pwidth)
+                    shutterRect.size.width = p.pwidth - shutterRect.origin.x;
+
+                if (NSMaxY(shutterRect) > p.pheight)
+                    shutterRect.size.height = p.pheight - shutterRect.origin.y;
                 
 				p.shutterRect = shutterRect;
 				p.shutterEnabled = NSOnState;
@@ -7945,18 +7964,29 @@ return YES;
 
 - (BOOL) isDataVolumicIn4D: (BOOL) check4D checkEverythingLoaded:(BOOL) c;
 {
-	return [self isDataVolumicIn4D: check4D checkEverythingLoaded: c tryToCorrect: YES];
+	return [self isDataVolumicIn4D: check4D
+             checkEverythingLoaded: c
+                      tryToCorrect: YES];
 }
 
-- (BOOL) isDataVolumicIn4D: (BOOL) check4D checkEverythingLoaded:(BOOL) c tryToCorrect: (BOOL) tryToCorrect
+- (BOOL) isDataVolumicIn4D: (BOOL) check4D
+     checkEverythingLoaded: (BOOL) c
+              tryToCorrect: (BOOL) tryToCorrect
 {
-    return [self isDataVolumicIn4D: check4D checkEverythingLoaded: c tryToCorrect: tryToCorrect checkForSliceInterval: YES];
+    return [self isDataVolumicIn4D: check4D
+             checkEverythingLoaded: c
+                      tryToCorrect: tryToCorrect
+             checkForSliceInterval: YES];
 }
 
-- (BOOL) isDataVolumicIn4D: (BOOL) check4D checkEverythingLoaded:(BOOL) c tryToCorrect: (BOOL) tryToCorrect checkForSliceInterval: (BOOL) checkForSliceInterval
+- (BOOL) isDataVolumicIn4D: (BOOL) check4D
+     checkEverythingLoaded: (BOOL) c
+              tryToCorrect: (BOOL) tryToCorrect
+     checkForSliceInterval: (BOOL) checkForSliceInterval
 {
 	BOOL volumicData = YES;
-	BOOL firstImage = NO, lastImage = NO;
+    BOOL firstImage = NO;
+    BOOL lastImage = NO;
 	
 	if (c == NO)
 	{
@@ -7976,7 +8006,7 @@ return YES;
 	
 	@try
 	{
-		for (int x = 0 ; x < maxMovieIndex ; x++)
+		for (int x = 0; x < maxMovieIndex; x++)
 		{
 			if (check4D == YES || x == curMovieIndex)
 			{
@@ -8306,7 +8336,7 @@ return YES;
 			}
 		}
         
-        for (int x = 0 ; x < maxMovieIndex ; x++)
+        for (int x = 0; x < maxMovieIndex; x++)
         {
             if (check4D == YES || x == curMovieIndex)
             {
@@ -8343,7 +8373,8 @@ return YES;
 
 - (BOOL) isDataVolumicIn4D: (BOOL) check4D
 {
-	return [self isDataVolumicIn4D: check4D checkEverythingLoaded: YES];
+	return [self isDataVolumicIn4D: check4D
+             checkEverythingLoaded: YES];
 }
 
 static NSMutableArray *poolOf2DViewers = nil;
@@ -8448,8 +8479,11 @@ static NSMutableArray *poolOf2DViewers = nil;
 	return self;
 }
 
-- (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*)d withVolume:(NSData*) v
+- (id) initWithPix:(NSMutableArray*)f
+         withFiles:(NSMutableArray*)d
+        withVolume:(NSData*)v
 {
+    NSLog(@"%s %d, class:%@" , __FUNCTION__, __LINE__, NSStringFromClass([self class]));
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"usePoolOfNSWindowControllerFor2DViewers"])
     {
         NSLog( @"---- poolOf2DViewers ACTIVATED");
@@ -8490,6 +8524,7 @@ static NSMutableArray *poolOf2DViewers = nil;
 
 -(void)awakeFromNib
 {
+    //NSLog(@"%s %d, class:%@", __FUNCTION__, __LINE__, NSStringFromClass([self class]));
     flagAwakeFromNib = YES;
     
     DisplayUseInvertedPolarity = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue];
@@ -8942,6 +8977,8 @@ static int avoidReentryRefreshDatabase = 0;
 	int			previousCurImage = [imageView curImage];
 	BOOL		wasFlipped = [imageView flippedData];
 	
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+
 	@synchronized( self)
 	{
         NSDisableScreenUpdates();
@@ -9008,7 +9045,7 @@ static int avoidReentryRefreshDatabase = 0;
                 [[[AppController sharedAppController] FindRelatedViewers:pixList[0]] count] > minWindows)
 			{
 				NSBeep();
-				NSLog( @"changeImageData not possible with other post-processing windows opened");
+				NSLog( @"changeImageData not possible with other post-processing windows open");
 			}
 			else
 			{
@@ -9216,7 +9253,7 @@ static int avoidReentryRefreshDatabase = 0;
 					else
                         [CommentsField setTitle: com];
 					
-					////////
+					// //////
 					
 					if ([previousPatientUID compare: imageView.studyObj.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 					{
@@ -9518,7 +9555,7 @@ static int avoidReentryRefreshDatabase = 0;
 					[[self window] close];
 				}
 				
-				[imageView computeColor];
+				[imageView computeStudyColor];
                 
                 [self redrawToolbar];
 			}
@@ -9528,7 +9565,7 @@ static int avoidReentryRefreshDatabase = 0;
 			[self willChangeValueForKey: @"KeyImageCounter"];
 			[self didChangeValueForKey: @"KeyImageCounter"];
 			
-			[imageView computeColor];
+			[imageView computeStudyColor];
             
             if (exportDCM)
             {
@@ -9580,7 +9617,7 @@ static int avoidReentryRefreshDatabase = 0;
             break;
 	}
 	
-    NSRect screenRect = [AppController usefullRectForScreen: screen];
+    NSRect screenRect = [AppController usefulRectForScreen: screen];
     
 	[[self window] setFrame:screenRect display:YES];
 	
@@ -9912,6 +9949,7 @@ static int avoidReentryRefreshDatabase = 0;
     }
 }
 
+// It runs on its own thread
 + (void) loadImageData:(id) dict
 {
     NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
@@ -9998,8 +10036,12 @@ static int avoidReentryRefreshDatabase = 0;
             
             queue.maxConcurrentOperationCount = mpprocessors;
             
-            while (viewer.window.isVisible == NO && [[NSThread currentThread] isCancelled] == NO)
+            // FIXME: UI API called on a background thread: -[NSWindow isVisible]
+            while (viewer.window.isVisible == NO &&
+                   [[NSThread currentThread] isCancelled] == NO)
+            {
                 [NSThread sleepForTimeInterval: 0.01];
+            }
             
             for (NSArray *a in pixListArray)
             {
@@ -11046,7 +11088,7 @@ static int avoidReentryRefreshDatabase = 0;
 	
 	for (DCMView *v in [seriesView imageViews])
 	{
-		[v setOrigin: NSMakePoint( 0, 0)];
+		[v setOrigin: NSZeroPoint];
 		[v scaleToFit];
 		[v setRotation: 0];
 	
@@ -11419,18 +11461,18 @@ static int avoidReentryRefreshDatabase = 0;
         double vectors[ 9];
         [[pixList[ 0] objectAtIndex:1] orientationDouble: vectors];
         
-        double angle = fabs( [DCMView angleBetweenVectorD: Pn1 andVectorD: vectors+6]);
-        angle /= deg2rad;
-        if (angle < 90)
+        double angleRad = fabs( [DCMView angleBetweenVectorD: Pn1 andVectorD: vectors+6]);
+        double angleDeg = glm::degrees(angleRad);
+        if (angleDeg < 90)
         {
-            if (angle > [[NSUserDefaults standardUserDefaults] floatForKey: @"MinimumTitledGantryTolerance"]) {
-                NSLog( @"---- titledGantry - Not a real 3D data set: %f degrees", angle);
+            if (angleDeg > [[NSUserDefaults standardUserDefaults] floatForKey: @"MinimumTitledGantryTolerance"]) {
+                NSLog( @"---- titledGantry - Not a real 3D data set: %f degrees", angleDeg);
                 v = YES;
             }
-            else if (angle > 0.001)
-                NSLog( @"---- titledGantry (tolerated) - Not a real 3D data set: %f degrees", angle);
+            else if (angleDeg > 0.001)
+                NSLog( @"---- titledGantry (tolerated) - Not a real 3D data set: %f degrees", angleDeg);
             
-            titledGantryDegrees = angle;
+            titledGantryDegrees = angleDeg;
         }
     }
     
@@ -11977,8 +12019,10 @@ static int avoidReentryRefreshDatabase = 0;
 
 - (void) SetThicknessInterval:(id) sender
 {
+    NSLog(@"%s %d, class:%@" , __FUNCTION__, __LINE__, NSStringFromClass([self class]));
+
 	float v[ 9], o[ 3];
-	DCMPix *p = [pixList[ curMovieIndex] objectAtIndex:0];
+	DCMPix *p = [pixList[curMovieIndex] objectAtIndex:0];
     
     if ([p sliceInterval])
         [customInterval setFloatValue: [p sliceInterval]];
@@ -12010,12 +12054,18 @@ static int avoidReentryRefreshDatabase = 0;
 	for (long i = 0; i < 3; i++)
         [[customOrigin cellWithTag: i] setFloatValue: o[ i]];
     
-	[NSApp beginSheet: ThickIntervalWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:(void*) sender];
+	[NSApp beginSheet: ThickIntervalWindow
+       modalForWindow: [self window]
+        modalDelegate: self
+       didEndSelector: @selector(sheetDidEnd:returnCode:contextInfo:)
+          contextInfo: (void*)sender];
 }
 
-- (void)deleteWLWW:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
+- (void)deleteWLWW:(NSWindow *)sheet
+        returnCode:(int)returnCode
+       contextInfo:(void *)contextInfo
 {
-	NSString	*name = (id) contextInfo;
+	NSString *name = (id) contextInfo;
 	
     if (returnCode == 1)
     {
@@ -13378,7 +13428,7 @@ long				x, y;
 {
 	NSMutableArray *viewersCT = [ViewerController getDisplayed2DViewers];
 	NSMutableArray *viewersPET = [ViewerController getDisplayed2DViewers];
-	BOOL	fused = NO;
+	BOOL fused = NO;
 	
 	if (sender && blendingController)
 	{
@@ -13394,22 +13444,26 @@ long				x, y;
 			{
 				if (vPET != vCT)
 				{
-					if (([[vPET modality] isEqualToString:@"PT"] || [[vPET modality] isEqualToString:@"NM"]) && [[vPET studyInstanceUID] isEqualToString: [vCT studyInstanceUID]])
+					if (([[vPET modality] isEqualToString:@"PT"] ||
+                         [[vPET modality] isEqualToString:@"NM"]) &&
+                        [[vPET studyInstanceUID] isEqualToString: [vCT studyInstanceUID]])
 					{
-						ViewerController* a = vCT;
+						ViewerController *a = vCT;
 						
 						if ([a blendingController] == nil)
 						{
-							ViewerController* b = vPET;
+							ViewerController *b = vPET;
 							
-							float orientA[ 9], orientB[ 9];
+                            float orientA[ 9];
+                            float orientB[ 9];
 							
 							[[[a imageView] curDCM] orientation:orientA];
 							[[[b imageView] curDCM] orientation:orientB];
 							
 							if ([DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])
 							{
-                                if ([a isGantryTitled] == NO && [b isGantryTitled] == NO)
+                                if ([a isGantryTitled] == NO &&
+                                    [b isGantryTitled] == NO)
                                 {
                                     [[a imageView] sendSyncMessage: 0];
                                     [a ActivateBlending: b];
@@ -13424,7 +13478,8 @@ long				x, y;
 		}
 	}
 	
-	if (fused == NO && sender != nil)
+	if (fused == NO &&
+        sender != nil)
 	{
 		NSRunCriticalAlertPanel(NSLocalizedString(@"PET-CT Fusion", nil),
                                 NSLocalizedString(@"This function requires two parallel series: a PT/NM series and a CT series in the same study.", nil),
@@ -13471,13 +13526,13 @@ long				x, y;
                 [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"COPYSETTINGS"];
             }
             
-            float orientA[9], orientB[9];
-        
-            BOOL proceed = NO;
-            
+            float orientA[9];
             [[[self imageView] curDCM] orientation:orientA];
+
+            float orientB[9];
             [[[blendingController imageView] curDCM] orientation:orientB];
             
+            BOOL proceed = NO;
             if (orientB[ 6] == 0 && orientB[ 7] == 0 && orientB[ 8] == 0) proceed = YES;
             if (orientA[ 6] == 0 && orientA[ 7] == 0 && orientA[ 8] == 0) proceed = YES;
             
@@ -13500,13 +13555,13 @@ long				x, y;
                             proceed = NO;
                         break;
                         
-                        #ifndef MIELE_LIGHT
+#ifndef MIELE_LIGHT
                         case NSAlertDefaultReturn:		// Resample
                             blendingController = [self resampleSeries: blendingController rescale: NO];
                             if (blendingController)
                                 proceed = YES;
                         break;
-                        #endif
+#endif
                         
                         case NSAlertOtherReturn:
                             proceed = YES;
@@ -13556,8 +13611,8 @@ long				x, y;
                 [imageView setBlendingFactor: [blendingSlider floatValue]];
                 
                 [blendingPopupMenu selectItemWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
-                [imageView setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
-                [seriesView setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+                [imageView setBlendingMode: (BlendingMode2DType)[[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+                [seriesView setBlendingMode: (BlendingMode2DType)[[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
                 
                 [seriesView ActivateBlending:blendingController blendingFactor:[blendingSlider floatValue]];
             }
@@ -13618,7 +13673,9 @@ long				x, y;
     [blendingTypeWindow orderOut:sender];
 }
 
-- (void)blendingSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
+- (void)blendingSheetDidEnd:(NSWindow *)sheet
+                 returnCode:(int)returnCode
+                contextInfo:(void *)contextInfo
 {
 	if (returnCode < 0)
 	{
@@ -13888,8 +13945,8 @@ long				x, y;
 
 - (IBAction) blendingMode:(id) sender
 {
-	[imageView setBlendingMode: [sender tag]];
-	[seriesView setBlendingMode: [sender tag]];
+	[imageView setBlendingMode: (BlendingMode2DType)[sender tag]];
+	[seriesView setBlendingMode: (BlendingMode2DType)[sender tag]];
 }
 
 -(void) copySettingsToOthers: (id)sender
@@ -14222,8 +14279,8 @@ long				x, y;
 		case tOval:			filename = @"Oval";				break;
 		case tText:			filename = @"Text";				break;
 		case tArrow:		filename = @"Arrow";			break;
-		case tOPolygon:		filename = @"Opened Polygon";	break;
-		case tCPolygon:		filename = @"Closed Polygon";	break;
+		case tOpenPolygon:		filename = @"Open Polygon";	break;
+		case tClosedPolygon:		filename = @"Closed Polygon";	break;
 		case tPencil:		filename = @"Pencil";			break;
 		case t2DPoint:		filename = @"Point";			break;
 		case tPlain:		filename = @"Brush";			break;
@@ -14552,7 +14609,10 @@ long				x, y;
 {
 	[self addRoiFromFullStackBuffer:buff forSpecificValue:value withColor:aColor withName:@""];
 }
--(void)addRoiFromFullStackBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name
+-(void)addRoiFromFullStackBuffer:(unsigned char*)buff
+                forSpecificValue:(unsigned char)value
+                       withColor:(RGBColor)aColor
+                        withName:(NSString*)name
 {
 	ROI *theNewROI;
 	DCMPix *curPix = [[self pixList] objectAtIndex: [imageView curImage]];
@@ -14621,7 +14681,10 @@ long				x, y;
 }
 
 //- (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path layerPixelSpacingX:(float)layerPixelSpacingX layerPixelSpacingY:(float)layerPixelSpacingY;
-- (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image referenceFilePath:(NSString*)path layerPixelSpacingX:(float)layerPixelSpacingX layerPixelSpacingY:(float)layerPixelSpacingY;
+- (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image
+                         referenceFilePath:(NSString*)path
+                        layerPixelSpacingX:(float)layerPixelSpacingX
+                        layerPixelSpacingY:(float)layerPixelSpacingY;
 {
 	DCMPix *curPix = [[self pixList] objectAtIndex:[imageView curImage]];
 
@@ -16326,7 +16389,7 @@ long				x, y;
         numberOfPoints: (int) nof
 {
 #ifndef MIELE_LIGHT
-	if ([a type] == tCPolygon || [a type] == tOPolygon || [a type] == tPencil)
+	if ([a type] == tClosedPolygon || [a type] == tOpenPolygon || [a type] == tPencil)
 	{
 		[a setPoints: [ROI resamplePoints: [a splinePoints] number: nof]];
 		return a;
@@ -16372,7 +16435,7 @@ long				x, y;
                                                             andPoint:[a pointAtIndex:1]
                                                                ratio:0.5]]
                        atIndex:1];
-        a.type = tOPolygon;
+        a.type = tOpenPolygon;
     }
     
     if (b.type == tMeasure)
@@ -16381,7 +16444,7 @@ long				x, y;
                                                             andPoint:[b pointAtIndex:1]
                                                                ratio:0.5]]
                        atIndex:1];
-        b.type = tOPolygon;
+        b.type = tOpenPolygon;
     }
     
     if (a.type == tROI || a.type == tOval)
@@ -16390,7 +16453,7 @@ long				x, y;
         if (a.type == tROI)
             a.isSpline = NO;
         
-        a.type = tCPolygon;
+        a.type = tClosedPolygon;
         a.points = points;
     }
     
@@ -16400,7 +16463,7 @@ long				x, y;
         if (b.type == tROI)
             b.isSpline = NO;
         
-        b.type = tCPolygon;
+        b.type = tClosedPolygon;
         b.points = points;
     }
     
@@ -16437,10 +16500,10 @@ long				x, y;
 	bPts = [b points];
 	
     ROI* newROI = nil;
-    if ( a.type == tOPolygon)
-        newROI = [self newROI: tOPolygon];
+    if ( a.type == tOpenPolygon)
+        newROI = [self newROI: tOpenPolygon];
     else
-        newROI = [self newROI: tCPolygon];
+        newROI = [self newROI: tClosedPolygon];
     
     NSMutableArray *pts = [newROI points];
 	
@@ -16883,7 +16946,7 @@ long				x, y;
 	if ([selectedROI type] == tPlain)
 	{
 		// Convert it to Brush
-		newROI = [self newROI: tCPolygon];
+		newROI = [self newROI: tClosedPolygon];
 		
         newROI.pix = selectedROI.pix;
         newROI.curView = imageView;
@@ -17703,8 +17766,8 @@ long				x, y;
 
 - (void) propagateSettingsToViewer: (ViewerController*) vC
 {
-	float   iwl, iww;
-	float   dwl, dww;
+	float iwl, iww;
+	float dwl, dww;
 	
 	// 4D data
 	if (curMovieIndex != [vC curMovieIndex] &&
@@ -17827,10 +17890,9 @@ long				x, y;
 				}
 				else
 				{
-                    float angleBetweenPlanes = [DCMView angleBetweenVector: vectorsA andVector: vectorsB]; // We have the same plane orientation, but they are maybe rotated one compared to the other
-                    
-                    
-                    fValue = [imageView rotation] - angleBetweenPlanes / deg2rad;
+                    float angleBetweenPlanesRad = [DCMView angleBetweenVector: vectorsA andVector: vectorsB]; // We have the same plane orientation, but they are maybe rotated one compared to the other
+
+                    fValue = [imageView rotation] - glm::degrees(angleBetweenPlanesRad);
                     [[vC imageView] setRotation: fValue];
                     
 					if ([imageView.studyObj.studyInstanceUID isEqualToString: vC.studyInstanceUID] || registeredViewers == YES)
@@ -17840,11 +17902,11 @@ long				x, y;
                             {
                                 NSPoint pan = [imageView origin];
                                 
-                                if (angleBetweenPlanes)
+                                if (angleBetweenPlanesRad)
                                 {
                                     NSPoint cDelta = pan;
-                                    pan.x = cosf( angleBetweenPlanes)*cDelta.x + sinf( angleBetweenPlanes)*cDelta.y;
-                                    pan.y = -sinf( angleBetweenPlanes)*cDelta.x + cosf( angleBetweenPlanes)*cDelta.y;
+                                    pan.x = cosf( angleBetweenPlanesRad)*cDelta.x + sinf( angleBetweenPlanesRad)*cDelta.y;
+                                    pan.y = -sinf( angleBetweenPlanesRad)*cDelta.x + cosf( angleBetweenPlanesRad)*cDelta.y;
                                 }
                                 
                                 NSPoint rDelta = NSMakePoint( pan.x, pan.y);
@@ -19298,8 +19360,8 @@ static BOOL viewerControllerPlaying = NO;
 		break;
 	}
 	
-	int i, count = 0;
-	for (i = from; i < to; i += interval)
+	int count = 0;
+	for (int i = from; i < to; i += interval)
 	{
 		BOOL saveImage = YES;
 		
@@ -19630,7 +19692,7 @@ static BOOL viewerControllerPlaying = NO;
 				if (fontSizeCopy * inc * scaleFactor * 1.2 != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
 				{
 					[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor * 1.2 forKey: @"FONTSIZE"];
-					[NSFont resetFont: 0];
+					[NSFont resetFont: FONT_TYPE_0];
 					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 				}
 				
@@ -19639,7 +19701,7 @@ static BOOL viewerControllerPlaying = NO;
 				if (windowSizeChanged)
 				{
 					[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
-					[NSFont resetFont: 0];
+					[NSFont resetFont: FONT_TYPE_0];
 					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 					[[self window] setFrame: NSMakeRect( o.x, o.y, rf.size.width, rf.size.height) display: YES];
 				}
@@ -19671,7 +19733,7 @@ static BOOL viewerControllerPlaying = NO;
 		if (fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
 		{
 			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
-			[NSFont resetFont: 0];
+			[NSFont resetFont: FONT_TYPE_0];
 			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 		}
 		
@@ -19822,7 +19884,7 @@ static BOOL viewerControllerPlaying = NO;
 		[printInterval setEnabled: YES];
 	}
     
-    windowFrameToRestore = NSMakeRect(0, 0, 0, 0);
+    windowFrameToRestore = NSZeroRect;
     scaleFitToRestore = imageView.isScaledFit;
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
@@ -19831,7 +19893,7 @@ static BOOL viewerControllerPlaying = NO;
         [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
         
         windowFrameToRestore = [[self window] frame];
-        NSRect newFrame = [AppController usefullRectForScreen: self.window.screen];
+        NSRect newFrame = [AppController usefulRectForScreen: self.window.screen];
         
         if (newFrame.size.width < newFrame.size.height)
             newFrame.size.height = newFrame.size.width;
@@ -20519,7 +20581,7 @@ static BOOL viewerControllerPlaying = NO;
 
 -(IBAction) endExportDICOMFileSettings:(id) sender
 {
-	int i, curImage;
+	int curImage;
 	
 	[dcmExportWindow makeFirstResponder: nil];	// To force nstextfield validation
     [NSApp endSheet:dcmExportWindow returnCode:[sender tag]];
@@ -20538,7 +20600,7 @@ static BOOL viewerControllerPlaying = NO;
 		}
 		else if ([[dcmSelection selectedCell] tag] == 3) // 4th Dimension
 		{
-			for (i = 0 ; i < maxMovieIndex; i++)
+			for (int i = 0 ; i < maxMovieIndex; i++)
 			{
 				[self setMovieIndex: i];
 			
@@ -20586,11 +20648,11 @@ static BOOL viewerControllerPlaying = NO;
 			
 			NSLog( @"export start");
 			
-			for (i = from ; i < to; i += interval)
+			for (int i = from ; i < to; i += interval)
 			{
 				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 				
-				BOOL	_export = YES;
+				BOOL _export = YES;
 				
 				if ([[dcmSelection selectedCell] tag] == 2)	// Only ROIs & key images
 				{
@@ -20648,7 +20710,7 @@ static BOOL viewerControllerPlaying = NO;
 		
 		NSArray *viewers = [ViewerController getDisplayed2DViewers];
 		
-		for (i = 0; i < [viewers count]; i++)
+		for (int i = 0; i < [viewers count]; i++)
 			[[[viewers objectAtIndex: i] imageView] setNeedsDisplay: YES];
 		
 		if ([producedFiles count])
@@ -22938,7 +23000,9 @@ static BOOL viewerControllerPlaying = NO;
 
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer
 {
-	[self checkEverythingLoaded];
+    NSLog(@"%s %d, class:%@, self:%p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
+
+    [self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
     OrthogonalMPRViewer *viewer;
@@ -22947,9 +23011,8 @@ static BOOL viewerControllerPlaying = NO;
 	else
 		viewer = [[AppController sharedAppController] FindViewer :@"OrthogonalMPR" :pixList[0]];
 
-    if (viewer) {
+    if (viewer)
 		return viewer;
-    }
 		
 	viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self :nil];
 	
@@ -22989,15 +23052,15 @@ static BOOL viewerControllerPlaying = NO;
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
-    OrthogonalMPRPETCTViewer  *viewer;
-    viewer = [[AppController sharedAppController] FindViewer :@"PETCT" :pixList[0]];
-    if (viewer) {
+    OrthogonalMPRPETCTViewer *viewer = [[AppController sharedAppController] FindViewer :@"PETCT" :pixList[0]];
+
+    if (viewer)
 		return viewer;
-    }
 		
 	if (blendingController)
 	{
-        float orientA[9], orientB[9];
+        float orientA[9];
+        float orientB[9];
         
         [[[self imageView] curDCM] orientation:orientA];
 		[[[blendingController imageView] curDCM] orientation:orientB];
@@ -23057,6 +23120,8 @@ static BOOL viewerControllerPlaying = NO;
 
 -(IBAction) orthogonalMPRViewer:(id) sender
 {
+    NSLog(@"%s %d, class:%@, self:%p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
+
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 			
@@ -23112,7 +23177,7 @@ static BOOL viewerControllerPlaying = NO;
     if (viewer)
     {
         [[viewer window] makeKeyAndOrderFront:self];
-        return;
+        return;  // Already allocated: use it
     }
     
 #ifndef MIELE_LIGHT
@@ -23338,13 +23403,13 @@ static BOOL viewerControllerPlaying = NO;
 
 - (CPRController *)openCPRViewer
 {
+    //NSLog(@"%s %d, class:%@" , __FUNCTION__, __LINE__, NSStringFromClass([self class]));
     [self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
-	CPRController *viewer;
-	viewer = [[AppController sharedAppController] FindViewer:@"CPR" :pixList[0]];
+	CPRController *viewer = [[AppController sharedAppController] FindViewer:@"CPR" :pixList[0]];
     if (viewer)
-		return viewer;
+		return viewer;  // already allocated
 	
 	viewer = [[CPRController alloc] initWithDCMPixList: pixList[0]
                                              filesList: fileList[0]
@@ -23352,7 +23417,7 @@ static BOOL viewerControllerPlaying = NO;
                                       viewerController: self
                                  fusedViewerController: blendingController];
     
-	for (int i = 1; i < maxMovieIndex; i++)
+	for (int i = 1; i < maxMovieIndex; i++) // @@@
 		[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
 	
 	return viewer;
@@ -23361,6 +23426,7 @@ static BOOL viewerControllerPlaying = NO;
 // Action to open the CPRViewer
 - (IBAction) cprViewer:(id) sender
 {
+    NSLog(@"%s %d, class:%@" , __FUNCTION__, __LINE__, NSStringFromClass([self class]));
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
@@ -23410,8 +23476,9 @@ static BOOL viewerControllerPlaying = NO;
     id waitWindow = [self startWaitWindow:NSLocalizedString(@"Loading...",nil)];
 #endif
     viewer = [self openCPRViewer];
+    assert(viewer);
     [self place3DViewerWindow:viewer];
-    [viewer showWindow:self];
+    [viewer showWindow:self];       // #i18 stack 13
     [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@",
                                 [[viewer window] title],
                                 [[self window] title]]];
@@ -23702,7 +23769,7 @@ static BOOL viewerControllerPlaying = NO;
 	if ([imageView flippedData])
         tag = !tag;
 	
-	if (tag == 0)
+	if (tag == 0)  // Find next key image
 	{
 		// First find in this series
 		for (int i = [imageView curImage]+1; i < [fileList[ curMovieIndex] count]; i++)
@@ -23719,9 +23786,9 @@ static BOOL viewerControllerPlaying = NO;
 			}
 		}
 	}
-	else
+	else // Find previous key image
 	{
-		for (int i = [imageView curImage]-1; i >= 0 ; i--)
+		for (int i = [imageView curImage]-1; i >= 0; i--)
 		{
 			NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
 			
@@ -23736,16 +23803,18 @@ static BOOL viewerControllerPlaying = NO;
 		}
 	}
 	
-	if ([imageView flippedData]) tag = !tag; // We RE-inverse the tag !
+	if ([imageView flippedData])
+        tag = !tag; // We RE-inverse the tag !
 	
-	if (tag == 0)
+	if (tag == 0)   // Find next key image
 	{
-		//Nothing found -> search in next series
+        // Not found in this series -> search in next series
 		NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[imageView seriesObj] valueForKey:@"study"]];
 		
 		NSUInteger indexOfObject = [seriesArray indexOfObject: [imageView seriesObj]];
 		if (indexOfObject != NSNotFound)
 		{
+            // Loop from next series, until the end of series Array
 			for (int i = indexOfObject+1; i < seriesArray.count; i++)
 			{
 				if ([[[seriesArray objectAtIndex: i] keyImages] count])
@@ -23794,15 +23863,16 @@ static BOOL viewerControllerPlaying = NO;
 		
 		NSBeep();
 	}
-	else
+	else // Find previous key image
 	{
-		//Nothing found -> search in next series
+		// Not found in this series -> search in previous series
 		NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[imageView seriesObj] valueForKey:@"study"]];
 		
-		NSUInteger indexOfObject = [seriesArray indexOfObject: [imageView seriesObj]];
-		if (indexOfObject != NSNotFound)
+		NSUInteger seriesIndex = [seriesArray indexOfObject: [imageView seriesObj]];
+		if (seriesIndex != NSNotFound)
 		{
-			for (int i = indexOfObject-1; i >= 0; i++)
+            // Loop backwards from previous series, until the beginning of series Array
+			for (int i = seriesIndex-1; i >= 0; i--)
 			{
 				if ([[[seriesArray objectAtIndex: i] keyImages] count])
 				{
@@ -24433,12 +24503,20 @@ static BOOL viewerControllerPlaying = NO;
                         nil);
 		return;
 	}
+    
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	
 	if ([NavigatorWindowController navigatorWindowController] == nil)
 	{
-        if ([self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: YES] == NO)
+        if ([self isDataVolumicIn4D: YES
+              checkEverythingLoaded: YES
+                       tryToCorrect: YES
+              checkForSliceInterval: YES] == NO)
         {
-            if ([self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: NO])
+            if ([self isDataVolumicIn4D: YES
+                  checkEverythingLoaded: YES
+                           tryToCorrect: YES
+                  checkForSliceInterval: NO])
             {
                 if (NSRunAlertPanel(NSLocalizedString(@"Data Error", nil),
                                     NSLocalizedString(@"Warning! Slice interval/thickness is varying, it can create distortion in 3D.", nil),
@@ -24457,6 +24535,8 @@ static BOOL viewerControllerPlaying = NO;
                 return;
             }
         }
+        
+        NSLog(@"%s %d, allocate NavigatorWindowController", __FUNCTION__, __LINE__);
         
 		NavigatorWindowController *navigatorWindowController = [[NavigatorWindowController alloc] initWithViewer:self];
 		[navigatorWindowController showWindow:self];

@@ -28,6 +28,8 @@
 
 @class N3BezierPath;
 
+#pragma mark -
+
 @interface CPRGeneratorRequest : NSObject  <NSCopying> {
     NSUInteger _pixelsWide;
     NSUInteger _pixelsHigh;
@@ -57,6 +59,7 @@
 
 @end
 
+#pragma mark -
 
 @interface CPRStraightenedGeneratorRequest : CPRGeneratorRequest
 {
@@ -78,6 +81,8 @@
 
 @end
 
+#pragma mark -
+
 @interface CPRStretchedGeneratorRequest : CPRGeneratorRequest
 {
     N3BezierPath *_bezierPath;
@@ -97,6 +102,7 @@
 
 @end
 
+#pragma mark -
 
 @interface CPRObliqueSliceGeneratorRequest : CPRGeneratorRequest
 {
@@ -127,6 +133,8 @@
 @property (nonatomic, readwrite, assign) N3AffineTransform sliceToDicomTransform;
 
 @end
+
+#pragma mark -
 
 @interface CPRObliqueSliceGeneratorRequest (DCMPixAndVolume) // KVO code is not yet implemented for this category
 
