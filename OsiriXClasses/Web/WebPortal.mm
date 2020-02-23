@@ -40,6 +40,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation WebPortalServer
 
@@ -59,12 +60,11 @@
 		mLoop = [[portal runLoops] objectAtIndex:0];
 		mLoad = [[[portal runLoopsLoad] objectAtIndex:0] unsignedIntValue];
 		
-		uint i;
-		for(i = 1; i < THREAD_POOL_SIZE; i++)
+		for (uint i = 1; i < THREAD_POOL_SIZE; i++)
 		{
 			uint iLoad = [[[portal runLoopsLoad] objectAtIndex:i] unsignedIntValue];
 			
-			if(iLoad < mLoad)
+			if (iLoad < mLoad)
 			{
 				m = i;
 				mLoop = [[portal runLoops] objectAtIndex:i];
@@ -92,7 +92,7 @@
 	{
 		unsigned int runLoopIndex = [[portal runLoops] indexOfObject:[NSRunLoop currentRunLoop]];
 		
-		if(runLoopIndex < [[portal runLoops] count])
+		if (runLoopIndex < [[portal runLoops] count])
 		{
 			unsigned int runLoopLoad = [[[portal runLoopsLoad] objectAtIndex:runLoopIndex] unsignedIntValue];
 			
@@ -110,6 +110,7 @@
 
 @end
 
+#pragma mark -
 
 @interface WebPortal ()
 
@@ -121,6 +122,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation WebPortal
 
@@ -157,7 +159,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
     if (NSUserDefaults.webPortalEnabled)
         [CSMailMailClient mailClient]; //If authentication is required to read email password: ask it now !
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoOnlyServer"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"wadoOnlyServer"])
     {
         WebPortal *w = self.wadoOnlyWebPortal;
         
@@ -188,12 +190,14 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	}
 
     WebPortal* webPortal = (id)context;
-    
+
     if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalEnabledDefaultsKey)])
+    {
         if (NSUserDefaults.webPortalEnabled)
             [webPortal startAcceptingConnections];
         else
             [webPortal stopAcceptingConnections];
+    }
     else if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalUsesSSLDefaultsKey)])
         
         webPortal.usesSSL = NSUserDefaults.webPortalUsesSSL;
@@ -209,16 +213,16 @@ static NSString* DefaultWebPortalDatabasePath = nil;
     else if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalPrefersCustomWebPagesKey)])
     {
         NSMutableArray* dirsToScanForFiles = [NSMutableArray arrayWithCapacity:2];
+        NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+
 #if 0 //def MACAPPSTORE
         if (NSUserDefaults.webPortalPrefersCustomWebPages) {
-            NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
             NSString *s = [NSString stringWithFormat:@"~/Library/Application Support/%@ App/WebServicesHTML", bundleName];
             [dirsToScanForFiles addObject: [s stringByExpandingTildeInPath]];
             //NSLog(@"%s line %i, dirsToScanForFiles:%@", __FUNCTION__ , __LINE__, dirsToScanForFiles);
         }
 #else
         if (NSUserDefaults.webPortalPrefersCustomWebPages) {
-            NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
             NSString *s = [NSString stringWithFormat:@"~/Library/Application Support/%@/WebServicesHTML", bundleName];
             [dirsToScanForFiles addObject: [s stringByExpandingTildeInPath]];
             //NSLog(@"%s line %i, dirsToScanForFiles:%@", __FUNCTION__ , __LINE__, dirsToScanForFiles);
@@ -265,11 +269,12 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 +(WebPortal*)defaultWebPortal {
 	static WebPortal* defaultWebPortal = NULL;
     
-    if( DefaultWebPortalDatabasePath == nil)
+    if (DefaultWebPortalDatabasePath == nil)
         return nil;
     
 	if (!defaultWebPortal)
-		defaultWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath dicomDatabase:[DicomDatabase defaultDatabase]];
+		defaultWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath
+                                                  dicomDatabase:[DicomDatabase defaultDatabase]];
 	
 	return defaultWebPortal;
 }
@@ -277,11 +282,12 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 +(WebPortal*)wadoOnlyWebPortal {
 	static WebPortal* wadoOnlyWebPortal = NULL;
     
-    if( DefaultWebPortalDatabasePath == nil)
+    if (DefaultWebPortalDatabasePath == nil)
         return nil;
     
 	if (!wadoOnlyWebPortal)
-		wadoOnlyWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath dicomDatabase:[DicomDatabase defaultDatabase]];
+		wadoOnlyWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath
+                                                   dicomDatabase:[DicomDatabase defaultDatabase]];
 	
 	return wadoOnlyWebPortal;
 }
@@ -314,14 +320,20 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	self.cache = [NSMutableDictionary dictionary];
 	self.locks = [NSMutableDictionary dictionary];
 	
-    temporaryUsersTimer = [[NSTimer scheduledTimerWithTimeInterval: 60 target:self selector:@selector(deleteTemporaryUsers:) userInfo:NULL repeats:YES] retain];
+    temporaryUsersTimer = [[NSTimer scheduledTimerWithTimeInterval: 60
+                                                            target: self
+                                                          selector: @selector(deleteTemporaryUsers:)
+                                                          userInfo: NULL
+                                                           repeats: YES] retain];
 	
 	preferredLocalizations = [[[NSBundle mainBundle] preferredLocalizations] copy];
     
 	return self;
 }
 
--(id)initWithDatabaseAtPath:(NSString*)sqlFilePath dicomDatabase:(DicomDatabase*)dd; {
+-(id)initWithDatabaseAtPath:(NSString*)sqlFilePath
+              dicomDatabase:(DicomDatabase*)dd;
+{
 	return [self initWithDatabase:[[[WebPortalDatabase alloc] initWithPath:DefaultWebPortalDatabasePath] autorelease] dicomDatabase:dd];
 }
 
@@ -329,16 +341,16 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 {
 	NSUInteger index = NSNotFound;
 	
-	for( NSRunLoop *rl in runLoops)
+	for (NSRunLoop *rl in runLoops)
 	{
-		if( [rl getCFRunLoop] == runloopref)
+		if ([rl getCFRunLoop] == runloopref)
 		{
 			index = [runLoops indexOfObject: rl];
 			break;
 		}
 	}
 	
-	if( index != NSNotFound)
+	if (index != NSNotFound)
 	{
 		return [httpThreads objectAtIndex: index];
 	}
@@ -409,7 +421,8 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	}
 }
 
-// This is the main thread for the socket connections, then, the connections are distributed in our thread pool
+// This is the main thread for the socket connections,
+// then, the connections are distributed in our thread pool
 - (void) startServerThread
 {	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -417,10 +430,11 @@ static NSString* DefaultWebPortalDatabasePath = nil;
     [NSThread currentThread].name = @"WebPortal server thread";
     
 	// Start threads
-	uint i;
-	for(i = 0; i < THREAD_POOL_SIZE; i++)
+	for (uint i = 0; i < THREAD_POOL_SIZE; i++)
 	{
-		[NSThread detachNewThreadSelector:@selector(connectionsThread:) toTarget: self withObject: [NSNumber numberWithUnsignedInt:i]];
+		[NSThread detachNewThreadSelector: @selector(connectionsThread:)
+                                 toTarget: self
+                               withObject: [NSNumber numberWithUnsignedInt:i]];
 	}
 	
 	NSError* err = NULL;
@@ -452,7 +466,8 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	[pool release];
 }
 
--(void)startAcceptingConnections {
+-(void)startAcceptingConnections
+{
 	if (!isAcceptingConnections) {
 		@try {
 			// Initialize an array to reference all the threads
@@ -477,14 +492,15 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 			server.port = self.portNumber;
 			server.documentRoot = [NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]];
 			
-			if( serverThread)
+			if (serverThread)
 				[serverThread release];
 				
 			serverThread = [[NSThread alloc] initWithTarget: self selector: @selector(startServerThread) object: nil];
 			
 			[serverThread start];
 			
-		} @catch (NSException * e) {
+		}
+        @catch (NSException * e) {
 			NSLog(@"Exception: [WebPortal startAcceptingConnections] %@", e);
 		}
 	}
@@ -507,21 +523,25 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		
 		isAcceptingConnections = YES;
 		[NSRunLoop.currentRunLoop addTimer:[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector(ignore:) userInfo:NULL repeats:NO] forMode: NSDefaultRunLoopMode];
-		while (!NSThread.currentThread.isCancelled)
+
+        while (!NSThread.currentThread.isCancelled)
 		{
 			@autoreleasepool {
                 [NSRunLoop.currentRunLoop runMode: NSDefaultRunLoopMode beforeDate:NSDate.distantFuture];
 			}
 		}
 		NSLog(@"[WebPortal connectionsThread:] finishing");
-	} @catch (NSException* e) {
+	}
+    @catch (NSException* e) {
 		NSLog(@"Warning: [WebPortal connetionsThread] %@", e);
-	} @finally {
+	}
+    @finally {
 		[pool release];
 	}
 }
 
--(void)stopAcceptingConnections {
+-(void)stopAcceptingConnections
+{
 	if (isAcceptingConnections) {
 		isAcceptingConnections = NO;
 //		@try 
@@ -529,7 +549,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 //			[serverThread cancel];
 //			[NSThread sleepForTimeInterval: 5];
 //			
-//			for( NSThread *thread in httpThreads)
+//			for (NSThread *thread in httpThreads)
 //				[thread cancel];
 //			
 //		} @catch (NSException* e) {
@@ -546,7 +566,6 @@ static NSString* DefaultWebPortalDatabasePath = nil;
         
 		NSLog( @"----- cannot stop web server -> you have to restart OsiriX");
 	}
-	
 }
 
 -(NSData*)dataForPath:(NSString*)file {
@@ -559,18 +578,24 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		NSString* path = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[dirsToScanForFile objectAtIndex:i]];
 		
 		// path not on disk, ignore
-		if (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory:&isDirectory] || !isDirectory) {
+		if (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory:&isDirectory] ||
+            !isDirectory)
+        {
 			[dirsToScanForFile removeObjectAtIndex:i];
-			--i; continue;
+			--i;
+            continue;
 		}
 		
 		// path exists, look for a localized subdir first, otherwise in the dir itself
 		
 		for (NSString* lang in [preferredLocalizations arrayByAddingObject:DefaultLanguage]) {
 			NSString* langPath = [path stringByAppendingPathComponent:lang];
-			if ([[NSFileManager defaultManager] fileExistsAtPath: langPath isDirectory:&isDirectory] && isDirectory) {
+			if ([[NSFileManager defaultManager] fileExistsAtPath: langPath isDirectory:&isDirectory] &&
+                isDirectory)
+            {
 				[dirsToScanForFile insertObject:langPath atIndex:i];
-				++i; break;
+				++i;
+                break;
 			}
 		}
 	}
@@ -592,7 +617,8 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	return NULL;
 }
 
--(NSString*)stringForPath:(NSString*)file {
+-(NSString*)stringForPath:(NSString*)file
+{
 	NSData* data = [self dataForPath:file];
 	if (!data) {
 		NSLog(@"Warning: [WebPortal stringForPath] is returning NULL for %@", file);
@@ -602,11 +628,20 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	NSMutableString* html = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
 	NSRange range;
-	while ((range = [html rangeOfString:@"%INCLUDE:"]).length) {
-		NSRange rangeEnd = [html rangeOfString:@"%" options:NSLiteralSearch range:NSMakeRange(range.location+range.length, html.length-(range.location+range.length))];
-		NSString* replaceFilename = [html substringWithRange:NSMakeRange(range.location+range.length, rangeEnd.location-(range.location+range.length))];
-		NSString* replaceFilepath = [file stringByComposingPathWithString:replaceFilename];
-		[html replaceCharactersInRange:NSMakeRange(range.location, rangeEnd.location+rangeEnd.length-range.location) withString:N2NonNullString([self stringForPath:replaceFilepath])];
+	while ((range = [html rangeOfString:@"%INCLUDE:"]).length)
+    {
+		NSRange rangeEnd = [html rangeOfString:@"%"
+                                       options:NSLiteralSearch
+                                         range:NSMakeRange(range.location+range.length,
+                                                           html.length-(range.location+range.length))];
+
+        NSString* replaceFilename = [html substringWithRange:NSMakeRange(range.location+range.length,
+                                                                         rangeEnd.location-(range.location+range.length))];
+
+        NSString* replaceFilepath = [file stringByComposingPathWithString:replaceFilename];
+
+        [html replaceCharactersInRange:NSMakeRange(range.location, rangeEnd.location+rangeEnd.length-range.location)
+                            withString:N2NonNullString([self stringForPath:replaceFilepath])];
 	}
 	
 	return [html autorelease];
@@ -620,27 +655,27 @@ static NSString* DefaultWebPortalDatabasePath = nil;
     //The user can "force" to have a different public address, compared to the 'real' address (useful for port forwarding)
     //Search if the protocol and port are specified
     
-    if( [add hasPrefix: @"http://"])
+    if ([add hasPrefix: @"http://"])
     {
         protocol = @"http://";
         add = [add substringFromIndex: protocol.length];
     }
     
-    if( [add hasPrefix: @"https://"])
+    if ([add hasPrefix: @"https://"])
     {
         protocol = @"https://";
         add = [add substringFromIndex: protocol.length];
     }
     
-    if( protocol == nil)
+    if (protocol == nil)
     {
-        if( self.usesSSL)
+        if (self.usesSSL)
             protocol = @"https://";
         else
             protocol = @"http://";
     }
     
-    if( ![add contains:@":"])
+    if (![add contains:@":"])
     {
         BOOL isDefaultPort = NO;
         if ([protocol isEqualToString: @"http://"] && self.portNumber == 80) isDefaultPort = YES;
@@ -695,7 +730,6 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	return session;
 }
 
-
 -(id)sessionForUsername:(NSString*)username token:(NSString*)token
 {
 	return [self sessionForUsername: username token: token doConsume: YES];
@@ -708,7 +742,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	
 	for (WebPortalSession* isession in sessions)
     {
-        if( doConsume)
+        if (doConsume)
         {
             if ([[isession objectForKey:SessionUsernameKey] isEqualToString:username] && [isession consumeToken:token]) {
                 session = isession;
@@ -768,7 +802,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
             [notificationsTimer release];
 			notificationsTimer = nil;
 		}
-        else if( self.notificationsInterval > 0)
+        else if (self.notificationsInterval > 0)
 			notificationsTimer = [[NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval*60 target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES] retain];
 	}
 }
@@ -784,7 +818,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
             [notificationsTimer release];
             notificationsTimer = nil;
             
-            if( self.notificationsInterval > 0)
+            if (self.notificationsInterval > 0)
                 notificationsTimer = [[NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval*60 target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES] retain];
 		}
 	}

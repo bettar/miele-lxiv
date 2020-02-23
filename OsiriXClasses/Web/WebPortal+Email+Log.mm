@@ -108,7 +108,9 @@
         
         for (WebPortalUser* user in users)
         {
-            if (user.autoDelete.boolValue == YES && user.deletionDate && [user.deletionDate timeIntervalSinceNow] < 0)
+            if (user.autoDelete.boolValue == YES &&
+                user.deletionDate &&
+                [user.deletionDate timeIntervalSinceNow] < 0)
             {
                 NSLog( @"----- Temporary User reached the EOL (end-of-life) : %@", user.name);
                 
