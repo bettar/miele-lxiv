@@ -5846,7 +5846,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                               nil];
 
 	if (pluginOverridesMouse)
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRightMouseUpNotification object: self userInfo: userInfo];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRightMouseUpNotification
+                                                            object: self
+                                                          userInfo: userInfo];
 	else 
 	{
 		int clickCount = 0;

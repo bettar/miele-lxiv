@@ -41,18 +41,20 @@
 	[super dealloc];
 }
 
--(void)observedBoundsSizeDidChange:(NSNotification*)notification {
+-(void)observedBoundsSizeDidChange:(NSNotification*)notification
+{
 	if (_resizing)
         return;
     
 	_resizing = YES;
 	
 	NSValue* value = [[notification userInfo] objectForKey:N2ViewBoundsSizeDidChangeNotificationOldBoundsSize];
-	NSSize oldBoundsSize = [value sizeValue], currBoundsSize = [_observed bounds].size;
+    NSSize oldBoundsSize = [value sizeValue];
+    NSSize currBoundsSize = [_observed bounds].size;
 	if (currBoundsSize != oldBoundsSize)
 		[_affected setFrameSize:[_affected frame].size+(currBoundsSize-oldBoundsSize)];
-	[_observed setFrameSize:currBoundsSize];
-	
+
+    [_observed setFrameSize:currBoundsSize];
 	_resizing = NO;
 }
 

@@ -14,6 +14,7 @@
 
 - (void) createShaderProgram: (NSString *)shaderName
 {
+#ifdef WITH_OPENGL_32
     //NSLog(@"%s:%d ====== <%@> %@", __FUNCTION__, __LINE__, shaderName, [NSOpenGLContext currentContext]);
 
     if (self.programHandle != GL_ZERO)
@@ -26,6 +27,7 @@
     NSString *fragment = [[NSBundle mainBundle] pathForResource:shaderName ofType:@"fsh"];
     self.programHandle = loadShaders(vertex, geometry, fragment);
     assert(self.programHandle != 0);
+#endif
 }
 
 - (instancetype)init

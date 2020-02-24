@@ -773,57 +773,63 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	[self autorelease];
 }
 
-#pragma mark - NSSplitview's delegate methods
+#pragma mark - NSSplitViewDelegate
 
 - (BOOL)splitView:(NSSplitView *)sender canCollapseSubview:(NSView *)subview
 {
 	return NO;
 }
 
+// Keep the top and bottom vertical splits aligned
+// GitHub issue #51: now this functionality is achieved with a constraint
+// in IB to keep the two left subviews with the same width
 - (void)splitViewDidResizeSubviews:(NSNotification *)aNotification
 {
-	NSSplitView	*currentSplitView = [aNotification object];
-	NSArray	*subviews = [currentSplitView subviews];
-	
-	if ([subviews count] > 1)
-	{
-		NSRect	rect1, rect2, old_rect1, old_rect2;
-		
-		rect1 = [[subviews objectAtIndex:0] frame];
-		rect2 = [[subviews objectAtIndex:1] frame];
-		
-		if ([currentSplitView isEqual:bottomSplitView])
-		{
-			subviews = [topSplitView subviews];
-			old_rect1 = [[subviews objectAtIndex:0] frame];
-			old_rect2 = [[subviews objectAtIndex:1] frame];
-			
-			old_rect1.origin.x = rect1.origin.x;
-			old_rect1.size.width = rect1.size.width;
-			old_rect2.origin.x = rect2.origin.x;
-			old_rect2.size.width = rect2.size.width;
-		
-			[[subviews objectAtIndex:0] setFrame:old_rect1];
-			[[subviews objectAtIndex:1] setFrame:old_rect2];
-			
-			[topSplitView setNeedsDisplay:YES];
-		}
-		else if ([currentSplitView isEqual:topSplitView])
-		{
-			subviews = [bottomSplitView subviews];
-			old_rect1 = [[subviews objectAtIndex:0] frame];
-			old_rect2 = [[subviews objectAtIndex:1] frame];
-			old_rect1.origin.x = rect1.origin.x;
-			old_rect1.size.width = rect1.size.width;
-			old_rect2.origin.x = rect2.origin.x;
-			old_rect2.size.width = rect2.size.width;
-		
-			[[subviews objectAtIndex:0] setFrame:old_rect1];
-			[[subviews objectAtIndex:1] setFrame:old_rect2];
-			
-			[bottomSplitView setNeedsDisplay:YES];
-		}
-	}
+#if 0
+	NSSplitView *currentSplitView = [aNotification object];
+	NSArray *subviews = [currentSplitView subviews];
+    	
+	if ([subviews count] <= 1)
+        return;
+    
+    NSRect rect1 = [[subviews objectAtIndex:0] frame];
+    NSRect rect2 = [[subviews objectAtIndex:1] frame];
+    
+    if ([currentSplitView isEqual:bottomSplitView])
+    {
+        subviews = [topSplitView subviews];
+
+        NSRect old_rect1 = [[subviews objectAtIndex:0] frame];
+        NSRect old_rect2 = [[subviews objectAtIndex:1] frame];
+        
+        old_rect1.origin.x = rect1.origin.x;
+        old_rect1.size.width = rect1.size.width;
+        old_rect2.origin.x = rect2.origin.x;
+        old_rect2.size.width = rect2.size.width;
+    
+        [[subviews objectAtIndex:0] setFrame:old_rect1];
+        [[subviews objectAtIndex:1] setFrame:old_rect2];
+        
+        [topSplitView setNeedsDisplay:YES];
+    }
+    else if ([currentSplitView isEqual:topSplitView])
+    {
+        subviews = [bottomSplitView subviews];
+
+        NSRect old_rect1 = [[subviews objectAtIndex:0] frame];
+        NSRect old_rect2 = [[subviews objectAtIndex:1] frame];
+
+        old_rect1.origin.x = rect1.origin.x;
+        old_rect1.size.width = rect1.size.width;
+        old_rect2.origin.x = rect2.origin.x;
+        old_rect2.size.width = rect2.size.width;
+    
+        [[subviews objectAtIndex:0] setFrame:old_rect1];
+        [[subviews objectAtIndex:1] setFrame:old_rect2];
+        
+        [bottomSplitView setNeedsDisplay:YES];
+    }
+#endif
 }
 
 #pragma mark - NSToolbar Related Methods

@@ -38,7 +38,8 @@
 	IBOutlet EndoscopyVRController		*vrController;
 	NSMutableArray						*pixList;
 	
-	IBOutlet NSSplitView				*topSplitView, *bottomSplitView;
+    IBOutlet NSSplitView				*topSplitView;
+    IBOutlet NSSplitView                *bottomSplitView;
 	
 	NSToolbar							*toolbar;
     IBOutlet NSView						*tools3DView, *tools2DView, *engineView, *shadingView, *LODView;

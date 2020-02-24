@@ -156,7 +156,7 @@ extern NSString * const SeriesViewer_DragType;
 	
 	IBOutlet NSSlider				*animationSlider;
 	IBOutlet NSButton				*animationCheck;
-    IBOutlet NSSplitView*           _bottomSplit;
+    IBOutlet NSSplitView            * _bottomSplit;
     
     IBOutlet PreviewView			*imageView;
     IBOutlet NSView                 *matrixView;

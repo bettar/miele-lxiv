@@ -10807,7 +10807,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
     {
         //NSLog(@"%s line %d, _bottomSplit", __FUNCTION__, __LINE__);
 
-		[self splitViewDidResizeSubviews:[NSNotification notificationWithName:NSSplitViewDidResizeSubviewsNotification object:splitViewVert]];
+		[self splitViewDidResizeSubviews: [NSNotification notificationWithName: NSSplitViewDidResizeSubviewsNotification object:splitViewVert]];
     }
     else {
         //NSLog(@"%s line %d, none-of-the-above", __FUNCTION__, __LINE__);

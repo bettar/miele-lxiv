@@ -233,14 +233,14 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     [super dealloc];
 }
 
-#pragma mark - Main processing:
+#pragma mark - Main processing
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
     // All coordinates are major axis coordinates unless otherwise specified.  See the top of the file
     // for an explanation of major and minor axes.
     float   minorDim;                                           // common dimension of all subviews
-    NSInteger     divider;                                            // index of a divider being dragged
+    NSInteger divider;                                          // index of a divider being dragged
     float   mouseCoord, mouseToDividerOffset;                   // the mouse holds on to whatever part of the divider it grabs onto
     float   dividerThickness;                                   
     float   dividerCoord, prevDividerCoord;                     
@@ -329,6 +329,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
                      constrainMinCoordinate:delMinCoord
                                 ofSubviewAt:divider];
     }
+
     if ([kfDelegate respondsToSelector:@selector(splitView:constrainMaxCoordinate:ofSubviewAt:)])
     {
         delMaxCoord = [kfDelegate splitView:self
@@ -341,7 +342,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 
     if (delMinCoord > delMaxCoord)
     {
-        // this follows apple's implementation.  It says that if the delegate does
+        // this follows Apple's implementation.  It says that if the delegate does
         // not supply any zone where the divider can sit without collapsing a subview then 
         // ignore the delegate.  The other option would be to always collapse to one subview
         // or the other, if one or both of the subviews are collasible.  That could be a bit of a UI
@@ -846,7 +847,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     return kfDelegate;
 }
 
-// automatically registers the delegate for relevant notifications, and unregisters
+// Automatically registers the delegate for relevant notifications, and unregisters
 // the old delegate for those same notifications.
 - (void)setDelegate:(id)delegate
 {
@@ -855,15 +856,19 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     SEL methodSelector;
 
     delegateAutoRegNotifications = [NSArray arrayWithObjects:
-        NSSplitViewWillResizeSubviewsNotification,
-        NSSplitViewDidResizeSubviewsNotification,
-        KFSplitViewDidCollapseSubviewNotification,
-        KFSplitViewDidExpandSubviewNotification, nil];
+                                    NSSplitViewWillResizeSubviewsNotification,
+                                    NSSplitViewDidResizeSubviewsNotification,
+                                    KFSplitViewDidCollapseSubviewNotification,
+                                    KFSplitViewDidExpandSubviewNotification,
+                                    nil];
+
     delegateMethodNames = [NSArray arrayWithObjects:
                            @"splitViewWillResizeSubviews:",
                            @"splitViewDidResizeSubviews:",
                            @"splitViewDidCollapseSubview:",
-                           @"splitViewDidExpandSubview:", nil];
+                           @"splitViewDidExpandSubview:",
+                           nil];
+
     numAutoRegNotifications = [delegateAutoRegNotifications count];
 
     if (kfDelegate)

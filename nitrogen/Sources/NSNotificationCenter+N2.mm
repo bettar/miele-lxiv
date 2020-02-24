@@ -33,7 +33,9 @@
 	[self postNotificationOnMainThread:notification];
 }
 
-- (void)postNotificationOnMainThreadName:(NSString *)aName object:(id)anObject userInfo:(NSDictionary *)aUserInfo
+- (void)postNotificationOnMainThreadName:(NSString *)aName
+                                  object:(id)anObject
+                                userInfo:(NSDictionary *)aUserInfo
 {
 	NSNotification *notification = [NSNotification notificationWithName:aName object:anObject userInfo:aUserInfo];
 	[self postNotificationOnMainThread:notification];
