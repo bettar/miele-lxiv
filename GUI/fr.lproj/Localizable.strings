@@ -1511,9 +1511,6 @@
 /* keep it short ! double-click + command key */
 "dbl-click + cmd" = "dbl-click + cmd";
 
-/* No comment provided by engineer. */
-"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower." = "DCM Framework est sélectionné comme lecteur/analyseur DICOM. Les performances de cette boîte à outils sont plus lentes.";
-
 /* Month */
 "December" = "Décembre";
 
@@ -4891,9 +4888,6 @@
 
 /* No comment provided by engineer. */
 "This function is not available in OsiriX Light. Download the complete version of OsiriX to solve this issue." = "Cette fonction n'est pas disponible dans Miele-LXIV Light. Téléchargez la version complète de Miele-LXIV pour résoudre ce problème.";
-
-/* No comment provided by engineer. */
-"This function is not available in the App Store version of Miele-LXIV. If you want to install plug-ins, download the complete Miele-LXIV version on our web site." = "Cette fonction n'est pas disponible dans la version App Store de Miele-LXIV. Si vous voulez installer des plug-ins, téléchargez la version complète de Miele-LXIV sur notre site Web.";
 
 /* No comment provided by engineer. */
 "This function is only useful if you use Thick Slab!" = "Cette fonction n'est utile que si vous utilisez Thick Slab !";

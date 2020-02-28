@@ -28,7 +28,8 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
 
 - (id) initWithBundle:(NSBundle *)bundle
 {
-	if( self = [super init])
+    self = [super init];
+	if (self)
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIViewerPreferencePanePref" bundle: nil] autorelease];
 		[nib instantiateNibWithOwner:self topLevelObjects: nil];
@@ -53,24 +54,27 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
     [super dealloc];
 }
 
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+- (void) observeValueForKeyPath:(NSString *)keyPath
+                       ofObject:(id)object
+                         change:(NSDictionary *)change
+                        context:(void *)context
 {
     if (context != UserDefaultsObservingContext)
         return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     
-    if( [keyPath isEqualToString: @"values.ReserveScreenForDB"])
+    if ([keyPath isEqualToString: @"values.ReserveScreenForDB"])
     {
         [self willChangeValueForKey:@"screensThumbnail"];
         [self didChangeValueForKey:@"screensThumbnail"];
     }
     
-    if( [keyPath isEqualToString: @"values.AUTOTILING"])
+    if ([keyPath isEqualToString: @"values.AUTOTILING"])
     {
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
             [[NSUserDefaults standardUserDefaults] setInteger:WINDOW_SIZE_FULL_SCREEN forKey: WINDOWSIZEVIEWER_KEY];
     }
     
-    if( [keyPath isEqualToString: @"values.UseFloatingThumbnailsList"])
+    if ([keyPath isEqualToString: @"values.UseFloatingThumbnailsList"])
     {
         [ViewerController closeAllWindows];
         [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"SeriesListVisible"];
@@ -88,7 +92,7 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
 
 - (void) mainViewDidLoad
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"] == NO)
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"] == NO)
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"automatic12BitTotoku"];
 }
 

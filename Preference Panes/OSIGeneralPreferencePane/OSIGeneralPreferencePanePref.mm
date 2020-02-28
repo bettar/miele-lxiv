@@ -28,6 +28,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 
 @interface IsQualityEnabled: NSValueTransformer {}
 @end
+
 @implementation IsQualityEnabled
 + (Class)transformedValueClass { return [NSNumber class]; }
 + (BOOL)allowsReverseTransformation { return NO; }
@@ -38,6 +39,8 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 		return @NO;
 }
 @end
+
+#pragma mark -
 
 @implementation OSIGeneralPreferencePanePref
 

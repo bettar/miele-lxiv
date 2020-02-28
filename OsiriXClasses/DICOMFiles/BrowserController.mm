@@ -8168,8 +8168,6 @@ static NSConditionLock *threadLock = nil;
 
 - (IBAction)databaseDoublePressed:(id)sender
 {
-    NSLog(@"%s %d" , __FUNCTION__, __LINE__);
-
 	if ([sender clickedRow] != -1)
 	{			
 		id item;
@@ -14917,7 +14915,9 @@ static NSArray*	openSubSeriesArray = nil;
         if ([[NSUserDefaults standardUserDefaults] boolForKey: @"restartAutoQueryAndRetrieve"] == YES &&
             [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettingsArray"] != nil)
         {
-            [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Auto-Query", nil) description: NSLocalizedString( @"DICOM Auto-Query is restarting...", nil)  name:@"autoquery"];
+            [[AppController sharedAppController] growlTitle: NSLocalizedString(@"Auto-Query", nil)
+                                                description: NSLocalizedString(@"DICOM Auto-Query is restarting...", nil)
+                                                       name: @"autoquery"];
             NSLog( @"-------- automatically restart DICOM AUTO-QUERY --------");
             
             WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Restarting Auto Query/Retrieve...", nil)];

@@ -195,6 +195,6 @@
 /* Class = "NSButton"; ibShadowedToolTip = "Connect to OsiriX and check for latest version."; ObjectID = "BXs-xj-ZZ5"; */
 "BXs-xj-ZZ5.ibShadowedToolTip" = "连接到 Miele-LXIV 并检查最新版本。";
 
-/* Class = "NSButtonCell"; title = "Display Notifications (Growl required)"; ObjectID = "eOV-F7-aFg"; */
-"eOV-F7-aFg.title" = "显示通知 (Growl 必填)";
+/* Class = "NSButtonCell"; title = "Display Notifications"; ObjectID = "eOV-F7-aFg"; */
+"eOV-F7-aFg.title" = "显示通知";
 

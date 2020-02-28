@@ -11735,7 +11735,6 @@ srand48(long seed)
 void vtkPowerCrustSurfaceReconstruction::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os,indent);
-
 }
 
 void vtkPowerCrustSurfaceReconstruction::Execute()

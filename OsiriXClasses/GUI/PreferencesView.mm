@@ -22,8 +22,10 @@
 #import "N2Debug.h"
 #import "NSImage+N2.h"
 #import "N2Operators.h"
-#include <algorithm>
+#include <algorithm>  // for std::max
 #import "PreferencesWindowController.h"
+
+#pragma mark -
 
 @interface PreferencesViewGroup : NSObject {
 	NSTextField* label;
@@ -36,9 +38,13 @@
 -(id)initWithName:(NSString*)name;
 
 @end
+
+#pragma mark -
+
 @implementation PreferencesViewGroup
 
-@synthesize label, buttons;
+@synthesize label;
+@synthesize buttons;
 
 -(id)initWithName:(NSString*)name {
 	self = [super init];
@@ -69,6 +75,8 @@
 @interface PreferencesViewButtonCell : NSButtonCell
 @end
 
+#pragma mark -
+
 @implementation PreferencesViewButtonCell
 
 static const NSInteger labelHeight = 38, labelSeparator = 3;
@@ -87,14 +95,14 @@ static const NSInteger labelHeight = 38, labelSeparator = 3;
                                   frame.size.width,
                                   frame.size.height-labelHeight-labelSeparator);
 	
-	NSImage* image = [self isHighlighted]? self.alternateImage : self.image;
+	NSImage* image = [self isHighlighted] ? self.alternateImage : self.image;
 	NSSize imageSize = [image size];
 	if (imageSize.width > 32 || imageSize.height > 32)
         [image setSize:imageSize = NSMakeSize(32,32)];
     
-	[image drawAtPoint:imageRect.origin+NSMakePoint((imageRect.size.width-imageSize.width)/2, 0)
-              fromRect:NSMakeRect(NSZeroPoint, imageSize)
-             operation:NSCompositeSourceOver fraction:1];
+	[image drawAtPoint: imageRect.origin+NSMakePoint((imageRect.size.width-imageSize.width)/2, 0)
+              fromRect: NSMakeRect(NSZeroPoint, imageSize) // N2Operators.mm
+             operation: NSCompositeSourceOver fraction:1];
 
 	[NSGraphicsContext restoreGraphicsState];
 	
@@ -124,12 +132,15 @@ static const NSInteger labelHeight = 38, labelSeparator = 3;
 
 @end
 
+#pragma mark -
 
 @implementation PreferencesView
 
-@synthesize buttonActionTarget, buttonActionSelector;
+@synthesize buttonActionTarget;
+@synthesize buttonActionSelector;
 
--(id)initWithFrame:(NSRect)frame {
+-(id)initWithFrame:(NSRect)frame
+{
 	self = [super initWithFrame:frame];
 	
 	groups = [[NSMutableArray alloc] init];
@@ -142,13 +153,17 @@ static const NSInteger labelHeight = 38, labelSeparator = 3;
 	[super dealloc];
 }
 
--(PreferencesViewGroup*)groupWithName:(NSString*)name {
+-(PreferencesViewGroup*)groupWithName:(NSString*)name
+{
 	PreferencesViewGroup* group = NULL;
 	for (PreferencesViewGroup* g in groups)
-		if ([g.label.stringValue isEqualToString:name])
+        if ([g.label.stringValue isEqualToString:name]) {
 			group = g;
+            break;
+        }
 
 	if (!group) {
+        // Create new group
 		group = [[[PreferencesViewGroup alloc] initWithName:name] autorelease];
 		[self addSubview:group.label];
 		[groups addObject:group];
@@ -203,6 +218,7 @@ static const NSInteger labelHeight = 38, labelSeparator = 3;
 
 -(void)buttonAction:(NSButton*)sender
 {
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	[[self buttonActionTarget] performSelector:[self buttonActionSelector]
                                     withObject:[[sender cell] representedObject]];
 }
@@ -276,6 +292,8 @@ static const NSUInteger padLeft = 6;
 }
 
 @end
+
+#pragma mark -
 
 @implementation PreferencesView (Private)
 

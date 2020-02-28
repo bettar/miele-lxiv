@@ -48,6 +48,6 @@ enum HotKeyActions {DefaultWWWLHotKeyAction = 0, FullDynamicWWWLHotKeyAction,
 + (NSHost*) currentHost;
 
 + (mach_vm_size_t) GPUModelVRAMInfo;
-+ (long) vramSize;
++ (unsigned long) vramSizeMB;
 
 @end

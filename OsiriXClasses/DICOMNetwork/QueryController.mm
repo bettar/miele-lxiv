@@ -3480,21 +3480,27 @@ extern "C"
 			t.supportsCancel = YES;
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
 			
-			NSLog( @"______________________________________________");
-			NSLog( @"Will auto-retrieve these items:");
+            NSLog(@"______________________________________________");
+			NSLog(@"Will auto-retrieve these items:");
 			for (id item in selectedItems)
 			{
-				NSLog( @"%@ %@ %@ %@", [item valueForKey:@"theDescription"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"], [item valueForKey:@"date"]);
+				NSLog(@"%@ %@ %@ %@",
+                      [item valueForKey:@"theDescription"],
+                      [item valueForKey:@"patientID"],
+                      [item valueForKey:@"accessionNumber"],
+                      [item valueForKey:@"date"]);
 			}
-			NSLog( @"______________________________________________");
+			NSLog(@"______________________________________________");
 			
 			NSString *desc = nil;			
 			if ([selectedItems count] == 1)
-                desc = [NSString stringWithFormat: NSLocalizedString( @"Will auto-retrieve %d study", nil), [selectedItems count]];
+                desc = [NSString stringWithFormat: NSLocalizedString(@"Will auto-retrieve %d study", nil), [selectedItems count]];
 			else
-                desc = [NSString stringWithFormat: NSLocalizedString( @"Will auto-retrieve %d studies", nil), [selectedItems count]];
+                desc = [NSString stringWithFormat: NSLocalizedString(@"Will auto-retrieve %d studies", nil), [selectedItems count]];
 			
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: desc name: @"autoquery"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil)
+                                                description: desc
+                                                       name: @"autoquery"];
 		}
 	}
 	@catch (NSException * e) 
@@ -3532,7 +3538,9 @@ extern "C"
             [self displayAndRetrieveQueryResults: instance];
         else
         {
-            [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: @"Failed..." name: @"autoquery"];
+            [[AppController sharedAppController] growlTitle: NSLocalizedString(@"Q&R Auto-Retrieve", nil)
+                                                description: @"Failed..."
+                                                       name: @"autoquery"];
             NSLog( @"****** Q&R autoQueryThread failed...");
         }
     }
@@ -3542,7 +3550,9 @@ extern "C"
             [self displayAndRetrieveQueryResults: nil];
         else
         {
-            [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: @"Failed..." name: @"autoquery"];
+            [[AppController sharedAppController] growlTitle: NSLocalizedString(@"Q&R Auto-Retrieve", nil)
+                                                description: @"Failed..."
+                                                       name: @"autoquery"];
             NSLog( @"****** Q&R autoQueryThread failed...");
         }
 	}
@@ -3577,7 +3587,7 @@ extern "C"
                                 if (i == currentAutoQR)
                                     [self saveSettings];
                                 
-                                [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil)
+                                [[AppController sharedAppController] growlTitle: NSLocalizedString(@"Q&R Auto-Query", nil)
                                                                     description: NSLocalizedString( @"Refreshing...", nil)
                                                                            name: @"autoquery"];
                                 
@@ -3619,7 +3629,9 @@ extern "C"
                 {
                     if ([autoQueryLock tryLock])
                     {
-                        [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"autoquery"];
+                        [[AppController sharedAppController] growlTitle: NSLocalizedString(@"Q&R Auto-Query", nil)
+                                                            description: NSLocalizedString(@"Refreshing...", nil)
+                                                                   name: @"autoquery"];
                         
                         [self saveSettings];
                         

@@ -79,7 +79,7 @@ void OsiriXFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *v
     this->DebugOn();
     vtkIndent *indent = vtkIndent::New();
     std::cerr << this->GetClassName() << std::endl;
-    this->PrintSelf(std::cout, *indent);
+    this->PrintSelf(std::cerr, *indent);
 #endif
 
 #ifndef NDEBUG

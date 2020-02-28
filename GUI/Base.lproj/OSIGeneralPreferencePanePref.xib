@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15400" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15400"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -129,13 +129,12 @@
                                     </connections>
                                 </button>
                                 <button toolTip="Connect to OsiriX and check for latest version." translatesAutoresizingMaskIntoConstraints="NO" id="BXs-xj-ZZ5">
-                                    <rect key="frame" x="15" y="11" width="249" height="18"/>
-                                    <buttonCell key="cell" type="check" title="Display Notifications (Growl required)" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="eOV-F7-aFg">
+                                    <rect key="frame" x="15" y="11" width="147" height="18"/>
+                                    <buttonCell key="cell" type="check" title="Display Notifications" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="eOV-F7-aFg">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <connections>
-                                        <binding destination="167" name="hidden" keyPath="values.MACAPPSTORE" id="eL0-yS-EcF"/>
                                         <binding destination="167" name="value" keyPath="values.displayGrowlNotification" id="02o-xj-aMf"/>
                                     </connections>
                                 </button>
@@ -229,6 +228,7 @@
                                 <constraint firstItem="BXs-xj-ZZ5" firstAttribute="top" secondItem="545" secondAttribute="bottom" constant="8" symbolic="YES" id="Knc-Pm-tLJ"/>
                                 <constraint firstItem="546" firstAttribute="leading" secondItem="545" secondAttribute="trailing" constant="11" id="Rvt-2e-nHK"/>
                                 <constraint firstItem="341" firstAttribute="baseline" secondItem="539" secondAttribute="baseline" id="T19-Ga-QiY"/>
+                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="BXs-xj-ZZ5" secondAttribute="trailing" constant="20" symbolic="YES" id="VgI-VX-5ar"/>
                                 <constraint firstItem="159" firstAttribute="leading" secondItem="535" secondAttribute="leading" id="ahJ-AP-oho"/>
                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="535" secondAttribute="trailing" constant="20" symbolic="YES" id="iPw-Hb-uvC"/>
                                 <constraint firstAttribute="trailing" secondItem="542" secondAttribute="trailing" constant="17" id="lyc-hy-nBK"/>

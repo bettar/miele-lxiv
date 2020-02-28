@@ -165,8 +165,6 @@
 	return NO;
 }
 
-//#include "vtkGPUInfoList.h"
-//#include "vtkGPUInfo.h"
 // Return result in MB
 + (unsigned long) VRAMSizeForDisplayID: (CGDirectDisplayID) displayID
 {

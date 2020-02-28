@@ -31,15 +31,8 @@
 *  The Miele-LXIV team.
 */
 
-#ifdef OSIRIX_VIEWER
-#ifndef MIELE_LIGHT
-#ifndef MACAPPSTORE
-//#import <Growl/Growl.h>
-#endif
-#endif
-#endif
-
 #import <AppKit/AppKit.h>
+#import "UserNotifications/UserNotifications.h"
 #import "XMLRPCMethods.h"
 
 #include "options.h"
@@ -95,19 +88,13 @@ extern "C"
 *
 */
 
-//#if defined(OSIRIX_VIEWER) && !defined(MIELE_LIGHT) && !defined(MACAPPSTORE)
-//#else
-//@protocol GrowlApplicationBridgeDelegate
-//@end
-//#endif
-
 @class AppController, ToolbarPanelController, ThumbnailsListPanel, BonjourPublisher;
 
 extern AppController* OsiriX;
 
 #pragma mark -
 
-@interface AppController : NSObject	<NSApplicationDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate, NSSoundDelegate, NSMenuDelegate> // GrowlApplicationBridgeDelegate
+@interface AppController : NSObject	<NSApplicationDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate, NSSoundDelegate, NSMenuDelegate, UNUserNotificationCenterDelegate>
 {
 	IBOutlet BrowserController		*browserController;
 
@@ -263,7 +250,6 @@ extern AppController* OsiriX;
 
 #pragma mark - growl
 - (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name;
-//- (NSDictionary *) registrationDictionaryForGrowl;
 
 //#pragma mark - display setters and getters
 //- (IBAction) saveLayout: (id)sender;

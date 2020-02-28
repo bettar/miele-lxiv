@@ -198,12 +198,18 @@ static NSHost *currentHost = nil;
     if (err != KERN_SUCCESS)
     {
         NSLog(@"IOServiceGetMatchingServices failed: %u\n", err);
-        return -1;
+        return 0;
     }
     
-    for (io_service_t Device; IOIteratorIsValid(Iterator) && (Device = IOIteratorNext(Iterator)); IOObjectRelease(Device))
+    for (io_service_t Device;
+         IOIteratorIsValid(Iterator) && (Device = IOIteratorNext(Iterator));
+         IOObjectRelease(Device))
     {
-        CFStringRef Name = (CFStringRef)IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("IOName"), kCFAllocatorDefault, kNilOptions);
+        CFStringRef Name = (CFStringRef)IORegistryEntrySearchCFProperty(Device,
+                                                                        kIOServicePlane,
+                                                                        CFSTR("IOName"),
+                                                                        kCFAllocatorDefault,
+                                                                        kNilOptions);
         if (Name)
         {
             if (CFStringCompare(Name, CFSTR("display"), 0) == kCFCompareEqualTo)
@@ -213,6 +219,7 @@ static NSHost *currentHost = nil;
                 {
                     _Bool ValueInBytes = TRUE;
                     CFTypeRef VRAMSize = IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("VRAM,totalsize"), kCFAllocatorDefault, kIORegistryIterateRecursively); //As it could be in a child
+
                     if (!VRAMSize)
                     {
                         ValueInBytes = FALSE;
@@ -233,15 +240,13 @@ static NSHost *currentHost = nil;
                         if (ValueInBytes)
                             Size >>= 20;
                         
-                        NSLog(@"Graphics: %s, %lluMB", CFDataGetBytePtr(Model), Size);
+                        NSLog(@"Graphics: %s, %llu MB", CFDataGetBytePtr(Model), Size);
                         
                         CFRelease(Model);
                         return Size;
                     }
-                    else
-                        NSLog(@"%s : Unknown VRAM Size\n", CFDataGetBytePtr(Model));
-                    
-                    
+
+                    NSLog(@"%s : Unknown VRAM Size\n", CFDataGetBytePtr(Model));
                     CFRelease(Model);
                 } // if Model
             }
@@ -253,51 +258,55 @@ static NSHost *currentHost = nil;
     return 0;
 }
 
-+ (long) vramSize
+// 'CGDisplayIOServicePort' is deprecated: first deprecated in macOS 10.9 - No longer supported
++ (unsigned long) vramSizeMB
 {
-	int					i = 0;
-	short				MAXDISPLAYS = 8;
-	io_service_t		dspPorts[MAXDISPLAYS];
-	CGDirectDisplayID   displays[MAXDISPLAYS];
-	CFTypeRef			typeCode;
-	CGDisplayCount		displayCount = 0;
-	
-	// First we're going to grab the online displays
-	CGGetOnlineDisplayList(MAXDISPLAYS, displays, &displayCount);
-	
-    if (displayCount <= 0)
-        return 0;
-    
-	// Now we iterate through them
-	for (i = 0; i < displayCount; i++)
-		dspPorts[i] = CGDisplayIOServicePort(displays[i]);
+//    const short MAXDISPLAYS = 8;
+//    io_service_t		dspPorts[MAXDISPLAYS];
+//    CGDirectDisplayID displays[MAXDISPLAYS];
+//    CGDisplayCount    displayCount = 0;
+//
+//    // First we're going to grab the online displays
+//    CGGetOnlineDisplayList(MAXDISPLAYS, displays, &displayCount);
+//
+//    if (displayCount <= 0)
+//        return 0L;
+//
+//    // Now we iterate through them
+//    for (int i = 0; i < displayCount; i++)
+//        dspPorts[i] = CGDisplayIOServicePort(displays[i]);
+//
+//    // Ask for the physical size of VRAM of the primary display
+//    CFTypeRef typeCode;
+//    typeCode = IORegistryEntryCreateCFProperty(dspPorts[0], CFSTR("IOFBMemorySize"), kCFAllocatorDefault, kNilOptions);
+//
+//    // Validate our data and make sure we're getting the right type
+//    if (typeCode)
+//    {
+//        SInt32 vramStorage = 0;
+//        // Convert this to a useable number
+//
+//        if (CFGetTypeID(typeCode) == CFNumberGetTypeID())
+//            CFNumberGetValue((CFNumberRef)typeCode, kCFNumberSInt32Type, &vramStorage);
+//
+//        CFRelease(typeCode);
+//
+//      vramStorage /= (1024L * 1024L);
+//        return vramStorage;
+//    }
 
-	// Ask for the physical size of VRAM of the primary display
-	typeCode = IORegistryEntryCreateCFProperty(dspPorts[0], CFSTR("IOFBMemorySize"), kCFAllocatorDefault, kNilOptions);
-	
-	// Validate our data and make sure we're getting the right type
-	if (typeCode)
-	{
-		SInt32 vramStorage = 0;
-		// Convert this to a useable number
-		
-		if (CFGetTypeID(typeCode) == CFNumberGetTypeID())
-			CFNumberGetValue((CFNumberRef)typeCode, kCFNumberSInt32Type, &vramStorage);
-		
-		CFRelease( typeCode);
-		
-		return vramStorage;
-	}
-	
-	return 0;
+	return 0L;
 }
+
+#pragma mark -
 
 + (NSMutableDictionary*) getDefaults
 {
 	NSMutableDictionary *defaultValues = [NSMutableDictionary dictionary];
 	
-	// ** WLWW PRESETS
-	float iww, iwl;
+#pragma mark WLWW PRESETS
+
+    float iww, iwl;
 	
 	NSMutableDictionary *wlwwValues = [NSMutableDictionary dictionary];
 	
@@ -329,7 +338,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:wlwwValues
                       forKey:@"WLWW3"];
 	
-	// ** CONVOLUTION PRESETS
+#pragma mark CONVOLUTION PRESETS
 	
 	NSMutableDictionary *convValues = [NSMutableDictionary dictionary];
 	
@@ -453,8 +462,9 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:convValues
                       forKey:@"Convolution"];
 	
-	// ** OPACITY TABLES
-	NSMutableDictionary *opacityValues = [NSMutableDictionary dictionary];
+#pragma mark OPACITY TABLES
+
+    NSMutableDictionary *opacityValues = [NSMutableDictionary dictionary];
 	
 	NSMutableDictionary *aOpacityFilter = [NSMutableDictionary dictionary];
 	NSMutableArray *points = [NSMutableArray array];
@@ -508,8 +518,9 @@ static NSHost *currentHost = nil;
 	
 	[defaultValues setObject:opacityValues forKey:@"OPACITY"];
 	
-	// ** CLUT PRESETS
-	NSMutableDictionary *clutValues = [NSMutableDictionary dictionary];
+#pragma mark CLUT PRESETS
+
+    NSMutableDictionary *clutValues = [NSMutableDictionary dictionary];
 	
 	// --
 	{
@@ -591,8 +602,7 @@ static NSHost *currentHost = nil;
 		
 		[clutValues setObject:aCLUTFilter forKey:@"PET"];
 	}
-	
-	// --
+
 	{
 		NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
 		NSMutableArray *rArray = [NSMutableArray array];
@@ -663,9 +673,9 @@ static NSHost *currentHost = nil;
         
         int b[ 256] = {0,6,10,16,20,24,30,34,38,44,48,54,58,62,68,72,76,82,86,92,96,100,106,110,114,120,124,130,134,138,144,148,152,152,152,150,148,146,144,142,140,138,136,134,132,130,128,128,126,126,124,122,122,120,118,118,116,114,114,112,110,110,108,106,106,106,104,102,98,96,94,90,88,86,84,82,80,78,76,74,72,70,68,66,64,62,58,56,54,48,40,38,38,36,36,36,36,36,26,24,18,16,12,10,8,6,6,4,4,2,2,2,4,4,4,6,6,6,8,8,8,10,10,10,12,12,12,14,14,14,14,48,60,60,60,60,60,60,60,60,60,60,60,60,56,52,44,36,28,20,12,8,4,4,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,4,4,6,6,6,8,8,24,32,122,124,126,128,130,132,134,136,138,140,142,144,146,148,150,152,154,156,158,158,160,160,162,162,164,164,164,164,164,164,164,164,164,164,164,164,164,246,248,248,250,250,252,252,244,248,252,254,254,254,254,254,254,254,254};
         
-		NSMutableArray		*rArray = [NSMutableArray array];
-		NSMutableArray		*gArray = [NSMutableArray array];
-		NSMutableArray		*bArray = [NSMutableArray array];
+		NSMutableArray *rArray = [NSMutableArray array];
+		NSMutableArray *gArray = [NSMutableArray array];
+		NSMutableArray *bArray = [NSMutableArray array];
 		for (int i = 0; i < 256; i++)
         {
 			[bArray addObject: [NSNumber numberWithLong: r[ i]]];
@@ -754,7 +764,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: clutValues forKey: @"CLUT"];
 #endif
 	
-	// ** PREFERENCES - SERVERS
+#pragma mark PREFERENCES - SERVERS
 	
 	NSMutableArray *serversValues = [NSMutableArray array];
 	
@@ -777,8 +787,9 @@ static NSHost *currentHost = nil;
 	//routing calendars
 	[defaultValues setObject:[NSMutableArray arrayWithObject:@"Osirix"] forKey:@"ROUTING CALENDARS"];
 	
-	// ** AETITLE
-	if ([defaultValues objectForKey:@"AETITLE"] == nil)
+#pragma mark  AETITLE
+
+    if ([defaultValues objectForKey:@"AETITLE"] == nil)
 	{
 #ifdef OSIRIX_VIEWER
 		char s[_POSIX_HOST_NAME_MAX+1];
@@ -932,30 +943,33 @@ static NSHost *currentHost = nil;
 	
     [defaultValues setObject:@"200" forKey: @"FetchLimitForWebPortal"];
     
-	// ** DELETEFILELISTENER
-	[defaultValues setObject:@"1" forKey:@"DELETEFILELISTENER"];
+#pragma mark DELETEFILELISTENER
+
+    [defaultValues setObject:@"1" forKey:@"DELETEFILELISTENER"];
     
     [defaultValues setObject:@"1" forKey:@"UseFloatingThumbnailsList"];
     [defaultValues setObject:@"0.2" forKey: @"MinimumTitledGantryTolerance"]; // in degrees
 //		
-	long	pVRAM;
-//		
-	pVRAM = [self vramSize]  / (1024L * 1024L);
-//	NSLog(@"VRAM: %d MB", pVRAM);
+	long pVRAM_MB = [self vramSizeMB];
+    if (pVRAM_MB == 0)
+        pVRAM_MB = [DefaultsOsiriX GPUModelVRAMInfo];
+#ifndef NDEBUG
+	NSLog(@"VRAM: %li MB", pVRAM_MB);
+#endif
 	
-	// ** MAX3DTEXTURE
-	// ** MAX3DTEXTURESHADING
-	if (pVRAM >= 512)
+#pragma mark MAX3DTEXTURE, MAX3DTEXTURESHADING
+
+    if (pVRAM_MB >= 512)
 	{	
 		[defaultValues setObject:@"256" forKey:@"MAX3DTEXTURE"];
 		[defaultValues setObject:@"128" forKey:@"MAX3DTEXTURESHADING"];
 	}
-	else if (pVRAM >= 256)
+	else if (pVRAM_MB >= 256)
 	{
 		[defaultValues setObject:@"128" forKey:@"MAX3DTEXTURE"];
 		[defaultValues setObject:@"64" forKey:@"MAX3DTEXTURESHADING"];
 	}
-	else if (pVRAM >= 128)
+	else if (pVRAM_MB >= 128)
 	{
 		[defaultValues setObject:@"128" forKey:@"MAX3DTEXTURE"];
 		[defaultValues setObject:@"32" forKey:@"MAX3DTEXTURESHADING"];
@@ -966,8 +980,9 @@ static NSHost *currentHost = nil;
 		[defaultValues setObject:@"32" forKey:@"MAX3DTEXTURESHADING"];
 	}
 			
-	// ** BESTRENDERING
-	#if __ppc__
+#pragma mark BESTRENDERING
+
+#if __ppc__
 	[defaultValues setObject:@"1.6" forKey:@"BESTRENDERING"];
 	#else
 	[defaultValues setObject:@"1.2" forKey:@"BESTRENDERING"];
@@ -1196,13 +1211,13 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"PACSOnDemandForSearchField"];
     [defaultValues setObject:@"1" forKey:@"CloseAllWindowsBeforeXMLRPCOpen"];
     
-    [defaultValues setObject:@"1" forKey:@"scrollThroughSeries"];
-    [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForCR"];
-    [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForMG"];
-    [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForRF"];
-    [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForDR"];
-    [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForDX"];
-    [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForOT"];
+    [defaultValues setObject:@YES forKey:@"scrollThroughSeries"];
+    [defaultValues setObject:@YES forKey:@"scrollThroughSeriesForCR"];
+    [defaultValues setObject:@YES forKey:@"scrollThroughSeriesForMG"];
+    [defaultValues setObject:@YES forKey:@"scrollThroughSeriesForRF"];
+    [defaultValues setObject:@YES forKey:@"scrollThroughSeriesForDR"];
+    [defaultValues setObject:@YES forKey:@"scrollThroughSeriesForDX"];
+    [defaultValues setObject:@YES forKey:@"scrollThroughSeriesForOT"];
     
     [defaultValues setObject:@"0.01" forKey:@"PARALLELPLANETOLERANCE"]; // In radians: 0.01 = about 0.5 degrees
     [defaultValues setObject:@"0.1" forKey:@"PARALLELPLANETOLERANCE-Sync"];
@@ -1217,9 +1232,9 @@ static NSHost *currentHost = nil;
 	
 	[defaultValues setObject: [NSArray arrayWithObjects: [DCMAbstractSyntaxUID MRSpectroscopyStorage], nil] forKey:@"additionalDisplayedStorageSOPClassUIDArray"];
 	
-	
-	// ** ROI Default
-	[defaultValues setObject:@2.0F forKey:@"ROIThickness"];
+#pragma mark  ROI Default
+
+    [defaultValues setObject:@2.0F forKey:@"ROIThickness"];
 	[defaultValues setObject:@3.0F forKey:@"ROITextThickness"];
 	[defaultValues setObject:@1.0F forKey:@"ROIOpacity"];
 	[defaultValues setObject:[NSNumber numberWithFloat: 0.3 * 65535.] forKey:@"ROIColorR"];
@@ -1254,8 +1269,9 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@0.5F forKey:@"isoContourColorG"];
     [defaultValues setObject:@1.0F forKey:@"isoContourColorB"];
 
-	// **HANGING PROTOCOLS
-	NSMutableDictionary *defaultHangingProtocols = [NSMutableDictionary dictionary];
+#pragma mark HANGING PROTOCOLS
+
+    NSMutableDictionary *defaultHangingProtocols = [NSMutableDictionary dictionary];
 	NSArray *modalities = [NSArray arrayWithObjects:
                            NSLocalizedString(@"CR", nil),
                            NSLocalizedString(@"CT", nil),
@@ -1286,11 +1302,11 @@ static NSHost *currentHost = nil;
 	}
 	[defaultValues setObject: defaultHangingProtocols forKey: @"HANGINGPROTOCOLS"];
 	
-	// ** COLUMNSDATABASE
-	NSMutableDictionary *defaultDATABASECOLUMNS = [NSMutableDictionary dictionary];
+#pragma mark COLUMNSDATABASE
+
+    NSMutableDictionary *defaultDATABASECOLUMNS = [NSMutableDictionary dictionary];
 	[defaultValues setObject: defaultDATABASECOLUMNS forKey: @"COLUMNSDATABASE"];
-	
-	// **
+
 	[defaultValues setObject: @"20" forKey: @"MaxNumberOfRecentStudies"];
     
     [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForCR"];

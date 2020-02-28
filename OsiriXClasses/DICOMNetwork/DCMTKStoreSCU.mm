@@ -1128,9 +1128,17 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil)
-                                        description:[NSString stringWithFormat: NSLocalizedString(@"Sending %@...\rTo: %@ - %@", nil), N2LocalizedSingularPluralCount( _filesToSend.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil)), _calledAET, _hostname]
-                                               name:@"send"];
+    NSString *description =
+        [NSString stringWithFormat: NSLocalizedString(@"Sending %@...\rTo: %@ - %@", nil),
+             N2LocalizedSingularPluralCount(_filesToSend.count,
+                                            NSLocalizedString(@"file", nil),
+                                            NSLocalizedString(@"files", nil)),
+             _calledAET,
+             _hostname];
+
+    [[AppController sharedAppController] growlTitle: NSLocalizedString(@"DICOM Send", nil)
+                                        description: description
+                                               name: @"send"];
 	
 //	NSString *tempFolder = [NSString stringWithFormat:@"/tmp/DICOMSend_%@-%@", _callingAET, [[NSDate date] description]];
 	NSMutableArray *paths = [[NSMutableArray alloc] init];
@@ -1930,7 +1938,15 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 			
 			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
 			
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Errors ! %@ of %@ generated errors.", nil), N2LocalizedDecimal( _numberErrors) , N2LocalizedSingularPluralCount( _numberOfFiles, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))]  name:@"send"];
+            NSString *description = [NSString stringWithFormat: NSLocalizedString(@"Errors ! %@ of %@ generated errors.", nil),
+                                     N2LocalizedDecimal(_numberErrors),
+                                     N2LocalizedSingularPluralCount(_numberOfFiles,
+                                                                    NSLocalizedString(@"file", nil),
+                                                                    NSLocalizedString(@"files", nil))];
+
+            [[AppController sharedAppController] growlTitle: NSLocalizedString(@"DICOM Send", nil)
+                                                description: description
+                                                       name:@"send"];
             
             NSLog( @"DCMTKStoreSCU: _numberSent: %d / _numberOfFiles : %d", _numberSent, _numberOfFiles);
             

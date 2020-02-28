@@ -2975,11 +2975,15 @@ static BOOL protectionAgainstReentry = NO;
 }
 
 -(void)_growlImagesAdded:(NSString*)message {
-	[AppController.sharedAppController growlTitle:NSLocalizedString(@"Incoming Files", nil) description:message name:@"newfiles"];
+	[AppController.sharedAppController growlTitle:NSLocalizedString(@"Incoming Files", nil)
+                                      description:message
+                                             name:@"newfiles"];
 }
 
 -(void)_growlNewStudy:(NSString*)message {
-	[AppController.sharedAppController growlTitle:NSLocalizedString(@"New Study", nil) description:message name:@"newstudy"];
+	[AppController.sharedAppController growlTitle:NSLocalizedString(@"New Study", nil)
+                                      description:message
+                                             name:@"newstudy"];
 }
 
 -(BOOL) hasFilesToImport
@@ -3582,7 +3586,9 @@ static BOOL protectionAgainstReentry = NO;
     {
 		if ([self isFileSystemFreeSizeLimitReached]) {
 			[NSFileManager.defaultManager removeItemAtPath:[self incomingDirPath] error:nil]; // Kill the incoming directory
-			[[AppController sharedAppController] growlTitle:NSLocalizedString(@"Warning", nil) description: NSLocalizedString(@"The database volume is full! Incoming files are ignored.", nil) name:@"newfiles"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Warning", nil)
+                                                description: NSLocalizedString(@"The database volume is full! Incoming files are ignored.", nil)
+                                                       name: @"newfiles"];
 		}
 		
 		@try {

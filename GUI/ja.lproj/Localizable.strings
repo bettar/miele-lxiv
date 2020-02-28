@@ -1510,9 +1510,6 @@
 /* keep it short ! double-click + command key */
 "dbl-click + cmd" = "ダブルクリック+ cmd";
 
-/* No comment provided by engineer. */
-"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower." = "DCMフレームワークがDICOMリーダー/パーサーとして選択されています。このツールキットのパフォーマンスは遅くなります。";
-
 /* Month */
 "December" = "12月";
 
@@ -4891,9 +4888,6 @@
 
 /* No comment provided by engineer. */
 "This function is not available in OsiriX Light. Download the complete version of OsiriX to solve this issue." = "この機能は、Miele-LXIV Lightでは使用できません。この問題を解決するには、Miele-LXIVの完全版をダウンロードしてください。";
-
-/* No comment provided by engineer. */
-"This function is not available in the App Store version of Miele-LXIV. If you want to install plug-ins, download the complete Miele-LXIV version on our web site." = "この機能はMiele-LXIVのApp Storeバージョンでは利用できません。プラグインをインストールする場合は、当社のWebサイトでMiele-LXIVの完全版をダウンロードしてください。";
 
 /* No comment provided by engineer. */
 "This function is only useful if you use Thick Slab!" = "この機能は、厚いスラブを使用する場合にのみ便利です!";

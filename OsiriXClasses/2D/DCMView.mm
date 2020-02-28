@@ -3132,15 +3132,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 - (BOOL) containsScrollThroughModality
 {
-/*
+#if 0
     for (NSString *m in [self.studyObj.modalities componentsSeparatedByString:@"\\"])
-    {
         if ([[NSUserDefaults standardUserDefaults] boolForKey: [NSString stringWithFormat: @"scrollThroughSeriesFor%@", m]])
         {
             return YES;
         }
-    }
-*/    
+#endif
     return NO;
 }
 
@@ -3393,32 +3391,39 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			if (a > ANNOTATIONS_FULL)
                 a = ANNOTATIONS_NONE;
 			
-//			switch (a)
-//			{
-//				case ANNOTATIONS_NONE:
-//					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Turn Off Annotations", nil) name:@"result"];
-//				break;
-//				
-//				case ANNOTATIONS_GRAPHICS:
-//					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Graphic Only", nil) name:@"result"];
-//				break;
-//				
-//				case ANNOTATIONS_BASE:
-//					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Full without names", nil) name:@"result"];
-//				break;
-//				
-//				case ANNOTATIONS_FULL:
-//					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Full", nil) name:@"result"];
-//				break;
-//			}
+			switch (a)
+			{
+				case ANNOTATIONS_NONE:
+					[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Annotations", nil)
+                                                        description: NSLocalizedString(@"Turn Off Annotations", nil)
+                                                               name: @"result"];
+                    break;
+				
+				case ANNOTATIONS_GRAPHICS:
+					[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Annotations", nil)
+                                                        description: NSLocalizedString(@"Switch to Graphic Only", nil)
+                                                               name: @"result"];
+                    break;
+				
+				case ANNOTATIONS_BASE:
+					[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Annotations", nil)
+                                                        description: NSLocalizedString(@"Switch to Full without names", nil)
+                                                               name: @"result"];
+                    break;
+				
+				case ANNOTATIONS_FULL:
+					[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Annotations", nil)
+                                                        description: NSLocalizedString(@"Switch to Full", nil)
+                                                               name: @"result"];
+				break;
+			}
 			
 			[[NSUserDefaults standardUserDefaults] setInteger: a forKey: ANNOTATIONS_KEY];
 			[DCMView setDefaults];
             annotationType = a;
 //            ANNOTATIONS = a;
 	
-			NSNotificationCenter *nc;
-			nc = [NSNotificationCenter defaultCenter];
+			NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 			[nc postNotificationName: OsirixUpdateViewNotification object: self userInfo: nil];
 			
 			for (ViewerController *v in [ViewerController getDisplayed2DViewers])
@@ -3426,7 +3431,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		}
         else
         {
-			NSLog( @"Keydown: %d", c);
+#ifndef NDEBUG
+			NSLog(@"%s %d: %d", __FUNCTION__, __LINE__, c);
+#endif
 			
 			if ([self actionForHotKey:[event characters]] == NO)
                 [super keyDown:event];

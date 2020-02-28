@@ -38,7 +38,7 @@ extern int gPutSrcAETitleInSourceApplicationEntityTitle, gPutDstAETitleInPrivate
 - (void)initDCMTK
 {
 #ifndef MIELE_LIGHT
-    // register global JPEG codecs
+    // Register global JPEG codecs
     DJDecoderRegistration::registerCodecs();
     DJEncoderRegistration::registerCodecs(
 	 	ECC_lossyRGB,

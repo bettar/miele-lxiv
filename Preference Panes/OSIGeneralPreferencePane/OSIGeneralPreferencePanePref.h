@@ -23,7 +23,8 @@
 @interface OSIGeneralPreferencePanePref : NSPreferencePane 
 {
 	IBOutlet NSWindow *compressionSettingsWindow;
-	NSArray *compressionSettingsCopy, *compressionSettingsLowResCopy;
+    NSArray *compressionSettingsCopy;
+    NSArray *compressionSettingsLowResCopy;
 	IBOutlet NSWindow *mainWindow;
     NSMutableArray *languages;
 }

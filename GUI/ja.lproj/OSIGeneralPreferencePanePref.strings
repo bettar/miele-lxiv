@@ -193,6 +193,6 @@
 /* Class = "NSButton"; ibShadowedToolTip = "Connect to OsiriX and check for latest version."; ObjectID = "BXs-xj-ZZ5"; */
 "BXs-xj-ZZ5.ibShadowedToolTip" = "Miele-LXIVに接続し、最新バージョンを確認してください。";
 
-/* Class = "NSButtonCell"; title = "Display Notifications (Growl required)"; ObjectID = "eOV-F7-aFg"; */
-"eOV-F7-aFg.title" = "通知を表示する(Growlが必要)";
+/* Class = "NSButtonCell"; title = "Display Notifications"; ObjectID = "eOV-F7-aFg"; */
+"eOV-F7-aFg.title" = "通知を表示する";
 

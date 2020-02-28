@@ -28,13 +28,16 @@
 
 @implementation EndoscopyVRController
 
--(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC
+-(id) initWithPix:(NSMutableArray*) pix
+                 :(NSArray*) f
+                 :(NSData*) vData
+                 :(ViewerController*) bC
+                 :(ViewerController*) vC
 {
-    unsigned long   i;
-    short           err = 0;
-	BOOL			testInterval = YES;
+    short err = 0;
+	BOOL testInterval = YES;
 	
-	for( i = 0; i < UNDO_DATA_SIZE; i++)
+	for (unsigned long i = 0; i < UNDO_DATA_SIZE; i++)
         undodata[ i] = nil;
 	
 //	[[NSUserDefaults standardUserDefaults] setInteger: ENGINE_GPU_OPEN_GL forKey: @"MAPPERMODEVR"];	// texture mapping
@@ -48,7 +51,7 @@
 	pixList[0] = pix;
 	volumeData[0] = vData;
 	
-    DCMPix  *firstObject = [pixList[0] objectAtIndex:0];
+    DCMPix *firstObject = [pixList[0] objectAtIndex:0];
     float sliceThickness = fabs( [firstObject sliceInterval]);
 	
 	// Find Minimum Value
@@ -63,7 +66,7 @@
 		
 		testInterval = NO;
 		
-		if( sliceThickness > 0)
+		if (sliceThickness > 0)
             NSRunCriticalAlertPanel(NSLocalizedString(@"Slice interval",nil),
                                     NSLocalizedString( @"I'm not able to find the slice interval. Slice interval will be equal to slice thickness.",nil),
                                     NSLocalizedString(@"OK",nil),
@@ -83,12 +86,15 @@
     
 	err = 0;
     // CHECK IMAGE SIZE
-    for( i =0 ; i < [pixList[0] count]; i++)
+    for (unsigned long i =0 ; i < [pixList[0] count]; i++)
     {
-        if( [firstObject pwidth] != [[pixList[0] objectAtIndex:i] pwidth]) err = -1;
-        if( [firstObject pheight] != [[pixList[0] objectAtIndex:i] pheight]) err = -1;
+        if ([firstObject pwidth] != [[pixList[0] objectAtIndex:i] pwidth])
+            err = -1;
+
+        if ([firstObject pheight] != [[pixList[0] objectAtIndex:i] pheight])
+            err = -1;
     }
-    if( err)
+    if (err)
     {
         NSRunCriticalAlertPanel(NSLocalizedString( @"Images size",nil),
                                 NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil),
@@ -110,14 +116,14 @@
 	[view setViewportResizable: NO];
 	
     err = [view setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
-    if( err != 0)
+    if (err != 0)
     {
         [self autorelease];
         return nil;
     }
 	
 	blendingController = bC;
-//	if( blendingController) // Blending! Activate image fusion
+//	if (blendingController) // Blending! Activate image fusion
 //	{
 //		[view setBlendingPixSource: blendingController];
 //		
@@ -137,16 +143,15 @@
 
 	viewer2D = [vC retain];
 	if (viewer2D)
-	{		
-		long i;
+	{
 		float x, y, z;
 		NSMutableArray	*curRoiList;
 		ROI	*curROI;
 		
-		for(i=0; i<[[[viewer2D imageView] dcmPixList] count]; i++)
+		for (long i=0; i<[[[viewer2D imageView] dcmPixList] count]; i++)
 		{
 			curRoiList = [[viewer2D roiList] objectAtIndex: i];
-			for(curROI in curRoiList)
+			for (curROI in curRoiList)
 			{
 				if ([curROI type] == t2DPoint)
 				{
@@ -257,7 +262,7 @@
 	[dict setObject:curOpacityMenu forKey:@"OpacityName"];
 //	[dict setObject:[[shadingsPresetsController selection] valueForKey:@"name"]  forKey:@"shading"]; // crash if 1) flythru panel open & 2) shading panel not opened... 
 	
-	if( [viewer2D postprocessed] == NO)
+	if ([viewer2D postprocessed] == NO)
 		[dict writeToFile:str atomically:YES];
 }
 
@@ -280,21 +285,20 @@
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
 	
-	if( [viewer2D postprocessed]) dict = nil;
+	if ([viewer2D postprocessed])
+        dict = nil;
 	
 	[view set3DStateDictionary:dict];
 	NSLog(@"3d Dict: %@", dict);
-	if(dict==nil)
-	{
+	if (dict==nil)
 		[self applyWLWWForString:@"VR - Endoscopy"];
-	}
 	
-	if( [dict objectForKey:@"CLUTName"])
+	if ([dict objectForKey:@"CLUTName"])
         [self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
 	else
         [self ApplyCLUTString:@"Endoscopy"];
 	
-	if( [dict objectForKey:@"OpacityName"])
+	if ([dict objectForKey:@"OpacityName"])
         [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
 	else
         [self ApplyOpacityString: @"Logarithmic Table"];
@@ -312,7 +316,7 @@
 		}
 	}
 	
-	if( [view shading])
+	if ([view shading])
         [shadingCheck setState: NSOnState];
 	else
         [shadingCheck setState: NSOffState];
@@ -323,14 +327,16 @@
 	float specularpower = 1.0;
 	//[view setShadingValues:0.12 :0.62 :0.73 :50.0];
 	[view getShadingValues: &ambient :&diffuse :&specular :&specularpower];
-	NSLog( @"%@", [NSString stringWithFormat: NSLocalizedString( @"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", nil), ambient, diffuse, specular, specularpower]);
-	[shadingValues setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", nil), ambient, diffuse, specular, specularpower]];
+
+    NSLog(@"%@", [NSString stringWithFormat: NSLocalizedString( @"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", nil), ambient, diffuse, specular, specularpower]);
+
+    [shadingValues setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", nil), ambient, diffuse, specular, specularpower]];
 }
 
 - (IBAction) flyThruControllerInit:(id) sender
 {
-	//Only open 1 fly through controller
-	if( [self flyThruController])
+	// Only open 1 fly through controller
+	if ([self flyThruController])
         return;
 	
 	FTAdapter = [[VRFlyThruAdapter alloc] initWithVRController: self];

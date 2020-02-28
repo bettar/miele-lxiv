@@ -214,22 +214,7 @@ static NSDate *CachedPluginsListDate = nil;
 }
 
 - (IBAction)showWindow:(id)sender;
-{
-#if 0 //def MACAPPSTORE
-    if (NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Manager", nil),
-                                     NSLocalizedString(@"This function is not available in the App Store version of Miele-LXIV. If you want to install plug-ins, download the complete Miele-LXIV version on our web site.", nil),
-                                     NSLocalizedString(@"Continue",nil),
-                                     NSLocalizedString(@"Miele-LXIV Web Site",nil),
-                                     nil
-                                     ) == NSAlertDefaultReturn)
-    {
-        return;
-    }
-
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_WEB_PAGE]];
-    return;
-#endif
-    
+{    
 	if ([[self availableRemotePlugins] count] < 1)
 	{
 		[pluginsListPopUp removeAllItems];

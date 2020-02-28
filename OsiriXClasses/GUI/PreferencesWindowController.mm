@@ -32,7 +32,7 @@
 #import "DCMView.h"
 #import "PluginManagerController.h"
 #import <Foundation/NSObjCRuntime.h>
-#include <algorithm>
+#include <algorithm>  // for std::min
 
 #include "url.h"
 
@@ -42,24 +42,26 @@
 
 @implementation PreferencesWindowContext
 
-@synthesize title = _title, parentBundle = _parentBundle, resourceName = _resourceName, pane = _pane;
-
--(id)initWithTitle:(NSString*)title withResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle {
+-(id)initWithTitle:(NSString*)title
+ withResourceNamed:(NSString*)resourceName
+          inBundle:(NSBundle*)parentBundle
+{
 	self = [super init];
 	
-	self.title = title;
-	self.parentBundle = parentBundle;
-	self.resourceName = resourceName;
+	_title = title;
+	_parentBundle = parentBundle;
+	_resourceName = resourceName;
 	
 	return self;
 }
 
--(void)dealloc {
+-(void)dealloc
+{
 	//NSLog(@"[PreferencesWindowContext dealloc], title %@", self.title);
-	self.title = NULL;
-	self.parentBundle = NULL;
-	self.resourceName = NULL;
-	self.pane = NULL;
+	_title = NULL;
+	_parentBundle = NULL;
+	_resourceName = NULL;
+	_pane = NULL;
 	[super dealloc];
 }
 
@@ -170,7 +172,9 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 			builtinPrefPaneClass = nil;
 	}
 	
-	if (![parentBundle pathForResource:resourceName ofType:@"prefPane"] && !builtinPrefPaneClass) {
+	if (![parentBundle pathForResource:resourceName ofType:@"prefPane"] &&
+        !builtinPrefPaneClass)
+    {
 #ifndef MIELE_LIGHT
 		NSLog(@"Warning: preferences pane %@ not added because resource %@ not found in %@", title, resourceName, [parentBundle resourcePath]);
 #endif
@@ -245,7 +249,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[self view:subview recursiveBindEnableToObject:obj withKeyPath:keyPath];
 }
 
--(void)view:(NSView*)view recursiveUnBindEnableFromObject:(id)obj withKeyPath:(NSString*)keyPath {
+-(void)view:(NSView*)view recursiveUnBindEnableFromObject:(id)obj withKeyPath:(NSString*)keyPath
+{
 	if ([view isKindOfClass:[NSControl class]]) {
 		NSUInteger bki = 0;
 		NSString* bk = NULL;

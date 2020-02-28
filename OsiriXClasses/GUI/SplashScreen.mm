@@ -27,82 +27,30 @@
 #include <mach/machine.h>
 #include <sys/sysctl.h>
 
-BOOL IsPPC()
+//BOOL IsPPC()
+//{
+//   host_basic_info_data_t hostInfo;
+//   mach_msg_type_number_t infoCount;
+//
+//   infoCount = HOST_BASIC_INFO_COUNT;
+//   host_info(mach_host_self(), HOST_BASIC_INFO, (host_info_t)&hostInfo, &infoCount);
+//
+//	return (hostInfo.cpu_type == CPU_TYPE_POWERPC);
+//} 
 
-{
-   host_basic_info_data_t hostInfo;
-   mach_msg_type_number_t infoCount;
+//int GetAltiVecTypeAvailable( void )
+//{
+//    int sels[2] = { CTL_HW, HW_VECTORUNIT };
+//    int vType = 0; //0 == scalar only
+//    size_t length = sizeof(vType);
+//    int error = sysctl(sels, 2, &vType, &length, NULL, 0);
+//    if( 0 == error )
+//        return vType;
+//
+//    return 0;
+//}
 
-   infoCount = HOST_BASIC_INFO_COUNT;
-   host_info(mach_host_self(), HOST_BASIC_INFO, 
-(host_info_t)&hostInfo, &infoCount);
-
-	return (hostInfo.cpu_type == CPU_TYPE_POWERPC);
-} 
-
-int GetAltiVecTypeAvailable( void )
-{
-    int sels[2] = { CTL_HW, HW_VECTORUNIT };
-    int vType = 0; //0 == scalar only
-    size_t length = sizeof(vType);
-    int error = sysctl(sels, 2, &vType, &length, NULL, 0);
-    if( 0 == error )
-        return vType;
-
-    return 0;
-}
-
-long vramSize()
-{
-	int					i = 0;
-	short				MAXDISPLAYS = 8;
-	io_service_t		dspPorts[MAXDISPLAYS];
-	CGDirectDisplayID   displays[MAXDISPLAYS];
-	CFTypeRef			typeCode;
-	CGDisplayCount		displayCount = 0;
-	
-	// First we're going to grab the online displays
-	CGGetOnlineDisplayList(MAXDISPLAYS, displays, &displayCount);
-	
-	// Now we iterate through them
-	for(i = 0; i < displayCount; i++)
-		dspPorts[i] = CGDisplayIOServicePort(displays[i]);
-
-	// Ask for the physical size of VRAM of the primary display
-	typeCode = IORegistryEntryCreateCFProperty(dspPorts[0], CFSTR("IOFBMemorySize"), kCFAllocatorDefault, kNilOptions);
-	
-    SInt32 vramStorage = 0;
-	// Validate our data and make sure we're getting the right type
-	if(typeCode)
-	{
-		if( CFGetTypeID(typeCode) == CFNumberGetTypeID())
-		{
-			// Convert this to a useable number
-			CFNumberGetValue((CFNumberRef)typeCode, kCFNumberSInt32Type, &vramStorage);
-		}
-		
-		CFRelease( typeCode);
-	}
-	
-    return vramStorage;
-}
-
-
-BOOL useQuartz() {
-#if 1
-	return NO;				// Disable quartz about screen:  DDP (060224)
-#else
-	if (vramSize() >= 32L)
-		return YES;
-	else 
-		return NO;
-		
-	if (!IsPPC())
-		return YES;
-		
-	return GetAltiVecTypeAvailable();
-#endif
-}
+#pragma mark -
 
 @implementation SplashScreen
 
@@ -114,8 +62,6 @@ BOOL useQuartz() {
 		
 	[[self window] setDelegate:self];
 	[[self window] setAlphaValue:0.0];
-//	if (useQuartz())	
-//		[view setAutostartsRendering:YES];
 }
 
 - (IBAction) switchVersion:(id) sender
@@ -176,13 +122,8 @@ BOOL useQuartz() {
 
 -(id) init
 {
-	if (useQuartz())
-		self = [super initWithWindowNibName:@"SplashQtz"];
-	else
-		self = [super initWithWindowNibName:@"Splash"];
- 
- 
- return self;
+    self = [super initWithWindowNibName:@"Splash"];
+    return self;
 }
 
 - (BOOL)windowShouldClose:(id)sender

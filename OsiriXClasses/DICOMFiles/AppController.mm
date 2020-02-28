@@ -697,15 +697,20 @@ void exceptionHandler(NSException *exception)
     N2LogExceptionWithStackTrace(exception);
 }
 
-////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
 
 #ifdef WITH_IMPORTANT_NOTICE
 static NSDate *lastWarningDate = nil;
 #endif
 
+static bool isGrantedNotificationAccess = false;
+
 @implementation AppController
 
-@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, recentStudiesMenu, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
+@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows;
+@synthesize recentStudiesMenu, windowsTilingMenuColumns, isSessionInactive;
+@synthesize dicomBonjourPublisher = BonjourDICOMService;
+@synthesize XMLRPCServer;
 @synthesize bonjourPublisher = _bonjourPublisher;
 
 +(BOOL) hasMacOSX_AfterCatalina
@@ -737,14 +742,6 @@ static NSDate *lastWarningDate = nil;
 + (void) pause
 {
 	[[AppController sharedAppController] performSelectorOnMainThread: @selector(pause) withObject: nil waitUntilDone: NO];
-}
-
--(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
-{
-    //NSLog( @"--- applicationDidChangeScreenParameters");
-    [[AppController sharedAppController] closeAllViewers: self];
-    
-    [AppController resetThumbnailsList];
 }
 
 + (void) resetThumbnailsList
@@ -2671,55 +2668,6 @@ static NSDate *lastWarningDate = nil;
 	[[BrowserController currentBrowser] subSelectFilesAndFoldersToAdd: passedFilenames];
 }
 
-static BOOL firstCall = YES;
-
-- (void)applicationWillBecomeActive:(NSNotification *)aNotification
-{
-    if (firstCall)
-        return;
-    
-    [[NSRunningApplication currentApplication] activateWithOptions: NSApplicationActivateAllWindows];
-}
-
-- (void)applicationDidBecomeActive:(NSNotification *)aNotification
-{
-    if (firstCall)
-    {
-        firstCall = NO;
-        return;
-    }
-    
-    [[BrowserController currentBrowser] syncReportsIfNecessary];
-	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) // Server mode
-	{
-		if ([[[BrowserController currentBrowser] window] isMiniaturized] == YES ||
-            [[[BrowserController currentBrowser] window] isVisible] == NO)
-		{
-			NSArray *winList = [NSApp windows];
-            
-			for (id loopItem in winList)
-			{
-				if ([[loopItem windowController] isKindOfClass:[ViewerController class]])
-                    return;
-			}
-			
-			[[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
-		}
-	}
-}
-
-- (BOOL) applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
-{
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
-		return YES;
-	
-	if (flag == NO)
-		[[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
-	
-	return YES;
-}
-
 - (IBAction) killAllStoreSCU:(id) sender
 {
 	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Abort Incoming DICOM processes...", nil)];
@@ -2745,125 +2693,6 @@ static BOOL firstCall = YES;
 	[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"hideListenerError"];
 	[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"copyHideListenerError"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-- (void) applicationWillTerminate: (NSNotification*) aNotification
-{
-	unlink( [[NSTemporaryDirectory() stringByAppendingPathComponent:@"kill_all_storescu"] UTF8String]);
-	
-#ifndef MIELE_LIGHT
-    [DICOMTLS eraseKeys];
-#endif
-    
-//	[webServer release];
-//	webServer = nil;
-	
-	[XMLRPCServer release];
-	XMLRPCServer = nil;
-	
-	[self closeAllViewers: self];
-	
-	for (NSThread* t in [[ThreadsManager defaultManager] threads])
-		[t cancel];
-	
-	[[BrowserController currentBrowser] browserPrepareForClose];
-    
-#ifndef MIELE_LIGHT
-	[WebPortal finalizeWebPortalClass];
-#endif
-
-	[ROI saveDefaultSettings];
-	
-	[BonjourDICOMService stop];
-	[BonjourDICOMService release];
-	BonjourDICOMService = nil;
-
-    quitting = YES;
-	
-//	if (BUILTIN_DCMTK_SERVER)
-//	{
-//		[dcmtkQRSCP release];
-//		dcmtkQRSCP = nil;
-//
-//		[dcmtkQRSCPTLS release];
-//		dcmtkQRSCPTLS = nil;
-//	}
-	
-	[self destroyDCMTK];
-	
-	[AppController cleanOsiriXSubProcesses];
-	
-	// DELETE THE DUMP DIRECTORY...
-	NSString *dumpDirectory = [[DicomDatabase activeLocalDatabase] dumpDirPath];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory])
-		[[NSFileManager defaultManager] removeItemAtPath:dumpDirectory error:NULL];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory])
-        [[NSFileManager defaultManager] moveItemAtPathToTrash: dumpDirectory];
-    if ([[NSFileManager defaultManager] fileExistsAtPath: dumpDirectory])
-        NSLog( @"******** FAILED to clean the dumpDirectory directory: %@", dumpDirectory);
-    
-    NSString *tempDirectory = [[DicomDatabase activeLocalDatabase] tempDirPath];
-    NSString *decompressionDirectory = [[DicomDatabase activeLocalDatabase] decompressionDirPath];
-
-    if (![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // not DoNot -> delete files
-    {
-        // DELETE the content of TEMP.noindex directory...
-        if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
-            [[NSFileManager defaultManager] removeItemAtPath:tempDirectory error:NULL];
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
-            [[NSFileManager defaultManager] moveItemAtPathToTrash: tempDirectory];
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath: tempDirectory])
-            NSLog( @"******** FAILED to clean the tempDirectory directory: %@", tempDirectory);
-        
-        // DELETE THE DECOMPRESSION.noindex DIRECTORY...
-        if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
-            [[NSFileManager defaultManager] removeItemAtPath:decompressionDirectory error:NULL];
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
-            [[NSFileManager defaultManager] moveItemAtPathToTrash: decompressionDirectory];
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath: decompressionDirectory])
-            NSLog( @"******** FAILED to clean the decompressionDirectory directory: %@", decompressionDirectory);
-    }
-
-	// Delete all process_state files
-	for (NSString* s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: NSTemporaryDirectory() error:nil])
-		if ([s hasPrefix:@"process_state-"])
-			[[NSFileManager defaultManager] removeItemAtPath:[NSTemporaryDirectory() stringByAppendingPathComponent:s] error:nil];
-	
-    [[NSFileManager defaultManager] removeItemAtPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"zippedCD/"] error:nil];
-
-    NSString *tmpDirPath = [[NSFileManager defaultManager] tmpDirPath];
-    if ([[NSFileManager defaultManager] fileExistsAtPath: tmpDirPath])
-        [[NSFileManager defaultManager] removeItemAtPath: tmpDirPath error:NULL];
-    
-    if ([[NSFileManager defaultManager] fileExistsAtPath: tmpDirPath])
-        [[NSFileManager defaultManager] moveItemAtPathToTrash: tmpDirPath];
-    
-    if ([[NSFileManager defaultManager] fileExistsAtPath: tmpDirPath])
-        NSLog( @"******** FAILED to clean the tmpDirPath directory: %@", tmpDirPath);
-    
-    // EMPTY THE INCOMING.noindex DIRECTORY...
-    NSString* incomingDirectoryPath = [[DicomDatabase activeLocalDatabase] incomingDirPath];
-    if ([[NSFileManager defaultManager] fileExistsAtPath: incomingDirectoryPath] && ![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"])
-    {
-		for (NSString* file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil])
-			[[NSFileManager defaultManager] removeItemAtPath: [tempDirectory stringByAppendingPathComponent:file] error: nil];
-        
-        for (NSString* file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil])
-			[[NSFileManager defaultManager] moveItemAtPathToTrash: [tempDirectory stringByAppendingPathComponent:file]];
-        
-        if ([[[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil] count])
-            [[NSFileManager defaultManager] moveItemAtPathToTrash: incomingDirectoryPath];
-        
-        if ([[[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil] count])
-            NSLog( @"******** FAILED to clean the INCOMING.noindex directory: %@", incomingDirectoryPath);
-    }
-
-    [[NSFileManager defaultManager] confirmDirectoryAtPath: incomingDirectoryPath];
-    [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
 }
 
 - (void) terminate :(id) sender
@@ -3465,26 +3294,68 @@ static BOOL initialized = NO;
 	}	
 }
 
-#pragma mark - growl
+#pragma mark - System Notifications
 
 - (void) growlTitle:(NSString*) title
         description:(NSString*) description
                name:(NSString*) name
 {
 #ifndef MIELE_LIGHT
-#ifndef MACAPPSTORE
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"displayGrowlNotification"])
-	{
-//        [GrowlApplicationBridge notifyWithTitle: title
-//                            description: description 
-//                            notificationName: name
-//                            iconData: nil
-//                            priority: 0
-//                            isSticky: NO
-//                            clickContext: nil];
+	if (![[NSUserDefaults standardUserDefaults] boolForKey: @"displayGrowlNotification"])
+        return;
+    
+    if (!isGrantedNotificationAccess)
+        return;
+
+//    [GrowlApplicationBridge notifyWithTitle: title
+//                                description: description
+//                           notificationName: name
+//                                   iconData: nil
+//                                   priority: 0
+//                                   isSticky: NO
+//                               clickContext: nil];
+
+    if (@available(macOS 10.14, *)) {
+
+        NSLog(@"%s %d", __FUNCTION__, __LINE__);
+        
+        UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
+        content.title = title;
+        content.body = description;
+        content.subtitle = name;
+        content.sound = [UNNotificationSound defaultSound];
+        
+        // Use a nil trigger to deliver immediately.
+        UNCalendarNotificationTrigger* trigger = nil;
+        
+        // Calling addNotificationRequest with the same identifier string will replace the existing notification.
+        // If you want to schedule multiple requests use a different identifier each time.
+        UNNotificationRequest* request = [UNNotificationRequest
+               requestWithIdentifier:name content:content trigger:trigger];
+        
+        UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+        [center addNotificationRequest:request withCompletionHandler:nil];
     }
 #endif
-#endif
+}
+
+#pragma mark UNUserNotificationCenterDelegate
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+       willPresentNotification:(UNNotification *)notification
+         withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler
+API_AVAILABLE(macos(10.14))
+{
+    UNNotificationPresentationOptions po = UNNotificationPresentationOptionAlert+UNNotificationPresentationOptionSound;
+    completionHandler(po);
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+didReceiveNotificationResponse:(UNNotificationResponse *)response
+         withCompletionHandler:(void (^)(void))completionHandler
+API_AVAILABLE(macos(10.14))
+{
+    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
 }
 
 #pragma mark -
@@ -3573,6 +3444,272 @@ static BOOL initialized = NO;
 	return NO;
 }
 
+#pragma mark - NSApplicationDelegate
+
+- (void) applicationWillFinishLaunching: (NSNotification *) aNotification
+{
+    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+    [AppController cleanOsiriXSubProcesses];
+    
+    if ([NSDate timeIntervalSinceReferenceDate] -
+        [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastDate32bitPipelineCheck"] > 60L*60L*24L) // 1 day
+    {
+        [[NSUserDefaults standardUserDefaults] setDouble: [NSDate timeIntervalSinceReferenceDate]
+                                                  forKey: @"lastDate32bitPipelineCheck"];
+        [self verifyHardwareInterpolation];
+    }
+    
+    BOOL dialog = NO;
+    NSString *path = NSTemporaryDirectory();
+    if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
+        [[NSFileManager defaultManager] createDirectoryAtPath:path
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:nil];
+    
+    NSMutableArray *dbArray = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"] deepMutableCopy] autorelease];
+    NSMutableArray *toBeRemoved = [NSMutableArray array];
+    for (NSMutableDictionary *d in dbArray)
+    {
+        if ([[d valueForKey:@"Path"] hasPrefix: path] ||
+            [[d valueForKey:@"Path"] hasPrefix: PRIVATE_TMP] ||
+            [[d valueForKey:@"Path"] hasPrefix: PRIVATE_VAR_TMP])
+        {
+            [toBeRemoved addObject: d];
+        }
+    }
+
+    if (toBeRemoved.count)
+    {
+        [dbArray removeObjectsInArray: toBeRemoved];
+        [[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: @"localDatabasePaths"];
+    }
+    
+    if ([[NSUserDefaults standardUserDefaults] valueForKey: @"timeZone"])
+    {
+        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"timeZone"] != [[NSTimeZone localTimeZone] secondsFromGMT])
+        {
+        //    NSLog( @"***** Time zone has changed: this modification can affect study dates, study times and birth dates!");
+        //    [NSTimeZone setDefaultTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: [[NSUserDefaults standardUserDefaults] integerForKey: @"timeZone"]]];
+        }
+    }
+    else
+        [[NSUserDefaults standardUserDefaults] setInteger: [[NSTimeZone localTimeZone] secondsFromGMT] forKey: @"timeZone"];
+    
+    if ([[[NSUserDefaults standardUserDefaults] valueForKey:COPYDATABASEMODE_KEY] intValue] == COPY_DB_CD_ONLY) // Fix up obsolete value
+        [[NSUserDefaults standardUserDefaults] setInteger:COPY_DB_NOT_MAIN_DRIVE forKey:COPYDATABASEMODE_KEY];
+        
+//    NSLog(@"%s", __PRETTY_FUNCTION__, nil);
+    
+    if (dialog == NO)
+    {
+        
+    }
+    
+    [PluginManager setMenus: filtersMenu
+                           : roisMenu
+                           : othersMenu
+                           : dbMenu];
+    
+    appController = self;
+    [self initDCMTK];
+    [self restartSTORESCP];
+    
+    [NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector(checkForRestartStoreSCPOrder:) userInfo: nil repeats: YES];
+    
+    [DicomDatabase initializeDicomDatabaseClass];
+    [BrowserController initializeBrowserControllerClass];
+#ifndef MIELE_LIGHT
+    [WebPortal initializeWebPortalClass];
+    _bonjourPublisher = [[BonjourPublisher alloc] init];
+#endif
+    
+#ifndef MIELE_LIGHT
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
+        if (XMLRPCServer == nil)
+            XMLRPCServer = [[XMLRPCInterface alloc] init];
+#endif
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver: self
+           selector: @selector(UpdateWLWWMenu:)
+               name: OsirixUpdateWLWWMenuNotification
+             object: nil];
+
+    [nc addObserver: self
+           selector: @selector(UpdateConvolutionMenu:)
+               name: OsirixUpdateConvolutionMenuNotification
+             object: nil];
+
+    [nc addObserver: self
+           selector: @selector(UpdateCLUTMenu:)
+               name: OsirixUpdateCLUTMenuNotification
+             object: nil];
+    
+    [nc addObserver: self
+           selector: @selector(UpdateOpacityMenu:)
+               name: OsirixUpdateOpacityMenuNotification
+             object: nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification
+                                                        object: NSLocalizedString(@"Linear Table", nil)
+                                                      userInfo: nil];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification
+                                                        object: NSLocalizedString(@"No CLUT", nil)
+                                                      userInfo: nil];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification
+                                                        object: NSLocalizedString(@"Other", nil)
+                                                      userInfo: nil];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification
+                                                        object:NSLocalizedString( @"No Filter", nil)
+                                                      userInfo: nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationDidChangeScreenParameters:)
+                                                 name:NSApplicationDidChangeScreenParametersNotification
+                                               object:NSApp];
+    
+    [AppController resetThumbnailsList];
+    
+//    if (USETOOLBARPANEL) [[toolbarPanel window] makeKeyAndOrderFront:self];
+    
+// Increment the startup counter.
+    
+    long startCount = [[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT"];
+    [[NSUserDefaults standardUserDefaults] setInteger: startCount+1 forKey: @"STARTCOUNT"];
+    
+    if (startCount == 0) // Replaces FIRSTTIME.
+    {
+        switch (NSRunInformationalAlertPanel(NSLocalizedString( @"OsiriX Updates", nil),
+                                             NSLocalizedString( @"Would you like to activate automatic checking for updates?", nil),
+                                             NSLocalizedString( @"Yes", nil),
+                                             NSLocalizedString( @"No", nil),
+                                             nil))
+        {
+            case 0:
+                [[NSUserDefaults standardUserDefaults] setObject: @"NO" forKey: @"Check4Updates"];
+            break;
+        }
+    }
+    else
+    {
+        if (![[NSUserDefaults standardUserDefaults] boolForKey: @"SURVEYDONE5"])
+        {
+//            if ([[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT2"] > 20)
+//            {
+//                switch( NSRunInformationalAlertPanel(@"OsiriX", @"Thank you for using OsiriX!\rDo you agree to answer a small survey to improve OsiriX?", @"Yes, sure!", @"Maybe next time", nil))
+//                {
+//                    case 1:
+//                    {
+//                        Survey        *survey = [[Survey alloc] initWithWindowNibName:@"Survey"];
+//                        [[survey window] center];
+//                        [survey showWindow:self];
+//                    }
+//                        break;
+//                }
+//            }
+            
+//            if ([[NSCalendarDate dateWithYear:2009 month:10 day:14 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] > 0 &&
+//                [[NSCalendarDate dateWithYear:2009 month:9 day:1 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
+//            {
+//                Survey *survey = [[Survey alloc] initWithWindowNibName:@"Survey"];
+//                [[survey window] center];
+//                [survey showWindow: self];
+//            }
+        }
+        else
+        {
+//            [self about:self];
+//            //fade out Splash window automatically
+//            [NSTimer scheduledTimerWithTimeInterval:2.0 target:splashController selector:@selector(windowShouldClose:) userInfo:nil repeats:0];
+        }
+    }
+    
+        
+    //Checks for Bonjour enabled dicom servers. Most likely other copies of OsiriX
+    [DCMNetServiceDelegate sharedNetServiceDelegate];
+    
+    previousDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
+    showRestartNeeded = YES;
+        
+    [[NSNotificationCenter defaultCenter]    addObserver: self
+                                               selector: @selector(preferencesUpdated:)
+                                                   name: NSUserDefaultsDidChangeNotification
+                                                 object: nil];
+    
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"SAMESTUDY"];
+        
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"hasMacOSXSnowLeopard"];  // At least
+    
+    [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseKDUForJPEG2000"]; // deprecated
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseOpenJpegForJPEG2000"];
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useDCMTKForJP2K"]; // deprecated
+    
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] count] < SetKeyImageAction) {
+        NSMutableDictionary *d = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] mutableCopy] autorelease];
+        
+        BOOL f = NO;
+        for (NSString *key in d) {
+            if ([[d objectForKey: key] integerValue] == FullScreenAction)
+                f = YES;
+            
+            if ([[d objectForKey: key] integerValue] == Sync3DAction)
+                f = YES;
+            
+            if ([[d objectForKey: key] integerValue] == SetKeyImageAction)
+                f = YES;
+        }
+        
+        if (f == NO) {
+            [d setObject: @(FullScreenAction) forKey: @"dbl-click"];
+            [d setObject: @(Sync3DAction) forKey: @"dbl-click + alt"];
+            [d setObject: @(SetKeyImageAction) forKey: @"dbl-click + cmd"];
+            
+            [[NSUserDefaults standardUserDefaults] setObject: d forKey: @"HOTKEYS"];
+        }
+    }
+    
+    if ([AppController hasMacOSX_AfterCatalina])
+    {
+#ifdef WITH_OS_VALIDATION
+        NSAlert *alert = [[NSAlert new] autorelease];
+        [alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
+        
+        [alert setInformativeText: NSLocalizedString( @"This version of Miele-LXIV has not been validated or certified for this version of MacOS. Bugs, errors and instabilities can occur. Upgrade to latest version of Miele-LXIV to solve this problem.", nil)];
+        
+        [alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
+        [alert addButtonWithTitle: NSLocalizedString( @"Upgrade", nil)];
+        
+        NSInteger button = [alert runModal];
+        
+        if (button == NSAlertSecondButtonReturn)
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_WEB_PAGE]];
+#endif
+    }
+    
+    [self initTilingWindows];
+    
+    //if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // move temp & decompress to incoming
+    {
+        NSString* inc = [[DicomDatabase activeLocalDatabase] incomingDirPath];
+        for (NSString* path in [NSArray arrayWithObjects: [[DicomDatabase activeLocalDatabase] tempDirPath], [[DicomDatabase activeLocalDatabase] decompressionDirPath], nil])
+            for (NSString* f in [[NSFileManager defaultManager] enumeratorAtPath:path filesOnly:NO recursive:NO])
+                [[NSFileManager defaultManager] moveItemAtPath:[path stringByAppendingPathComponent:f]
+                                                        toPath:[inc stringByAppendingPathComponent:f]
+                                                         error:NULL];
+    }
+    
+//    [self checkForOsirixMimeType];
+    
+//    [html2pdf pdfFromURL: @"http://zimbra.latour.ch"];
+
+    if ([AppController isKDUEngineAvailable])
+        NSLog( @"/*\\ /*\\ KDU Engine AVAILABLE /*\\ /*\\");
+}
+
 - (void) applicationDidFinishLaunching:(NSNotification*) aNotification
 {
 	unlink( [[NSTemporaryDirectory() stringByAppendingPathComponent:@"kill_all_storescu"] UTF8String]);
@@ -3603,19 +3740,6 @@ static BOOL initialized = NO;
 //#ifdef WITH_IMPORTANT_NOTICE
 //	[AppController displayImportantNotice: self];
 //#endif
-    
-//	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER4"] == 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX4"] == NO)
-//	{
-//		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil)  name:@"result"];
-//        
-//        NSLog( @"********");
-//        NSLog( @"********");
-//        NSLog( @"********");
-//		NSLog( @"******** %@", NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil));
-//        NSLog( @"********");
-//        NSLog( @"********");
-//        NSLog( @"********");
-//	}
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SingleProcessMultiThreadedListener"] == NO)
 		NSLog( @"----- %@", NSLocalizedString( @"DICOM Listener is multi-processes mode.", nil));
@@ -3854,17 +3978,209 @@ static BOOL initialized = NO;
         [[QueryController currentQueryController] showWindow: self];
     }
 #endif
-    
-//    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-//    if (cgl_ctx) {
-//        const GLubyte *strVersion = glGetString (GL_VERSION); // get version string
-//        NSLog(@"OpenGL version: %s", strVersion);
-//#if 0 //ndef NDEBUG
-//        const GLubyte *strExtension = glGetString (GL_EXTENSIONS);    // get extension string
-//        NSLog(@"OpenGL extension: %s", strExtension);
-//#endif
-//    }
+
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"displayGrowlNotification"])
+    {
+        if (@available(macOS 10.14, *)) {
+            #ifndef NDEBUG
+            NSLog(@"%s %d", __FUNCTION__, __LINE__);
+            #endif
+            UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+            UNAuthorizationOptions options = UNAuthorizationOptionAlert |
+                                             //UNAuthorizationOptionProvidesAppNotificationSettings |
+                                             //UNAuthorizationOptionBadge |
+                                             UNAuthorizationOptionSound;
+            [center requestAuthorizationWithOptions: options
+                                  completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                // Enable or disable features based on authorization.
+                
+                isGrantedNotificationAccess = granted;
+                #ifndef NDEBUG
+                NSLog(@"%s %d, granted:%d", __FUNCTION__, __LINE__, isGrantedNotificationAccess);
+                #endif
+                center.delegate = self;
+            }];
+        }
+    }
 }
+
+-(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
+{
+    //NSLog( @"--- applicationDidChangeScreenParameters");
+    [[AppController sharedAppController] closeAllViewers: self];
+    
+    [AppController resetThumbnailsList];
+}
+
+- (void) applicationWillTerminate: (NSNotification*) aNotification
+{
+    unlink( [[NSTemporaryDirectory() stringByAppendingPathComponent:@"kill_all_storescu"] UTF8String]);
+    
+#ifndef MIELE_LIGHT
+    [DICOMTLS eraseKeys];
+#endif
+    
+//    [webServer release];
+//    webServer = nil;
+    
+    [XMLRPCServer release];
+    XMLRPCServer = nil;
+    
+    [self closeAllViewers: self];
+    
+    for (NSThread* t in [[ThreadsManager defaultManager] threads])
+        [t cancel];
+    
+    [[BrowserController currentBrowser] browserPrepareForClose];
+    
+#ifndef MIELE_LIGHT
+    [WebPortal finalizeWebPortalClass];
+#endif
+
+    [ROI saveDefaultSettings];
+    
+    [BonjourDICOMService stop];
+    [BonjourDICOMService release];
+    BonjourDICOMService = nil;
+
+    quitting = YES;
+    
+//    if (BUILTIN_DCMTK_SERVER)
+//    {
+//        [dcmtkQRSCP release];
+//        dcmtkQRSCP = nil;
+//
+//        [dcmtkQRSCPTLS release];
+//        dcmtkQRSCPTLS = nil;
+//    }
+    
+    [self destroyDCMTK];
+    
+    [AppController cleanOsiriXSubProcesses];
+    
+    // DELETE THE DUMP DIRECTORY...
+    NSString *dumpDirectory = [[DicomDatabase activeLocalDatabase] dumpDirPath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory])
+        [[NSFileManager defaultManager] removeItemAtPath:dumpDirectory error:NULL];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory])
+        [[NSFileManager defaultManager] moveItemAtPathToTrash: dumpDirectory];
+    if ([[NSFileManager defaultManager] fileExistsAtPath: dumpDirectory])
+        NSLog( @"******** FAILED to clean the dumpDirectory directory: %@", dumpDirectory);
+    
+    NSString *tempDirectory = [[DicomDatabase activeLocalDatabase] tempDirPath];
+    NSString *decompressionDirectory = [[DicomDatabase activeLocalDatabase] decompressionDirPath];
+
+    if (![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // not DoNot -> delete files
+    {
+        // DELETE the content of TEMP.noindex directory...
+        if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
+            [[NSFileManager defaultManager] removeItemAtPath:tempDirectory error:NULL];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
+            [[NSFileManager defaultManager] moveItemAtPathToTrash: tempDirectory];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath: tempDirectory])
+            NSLog( @"******** FAILED to clean the tempDirectory directory: %@", tempDirectory);
+        
+        // DELETE THE DECOMPRESSION.noindex DIRECTORY...
+        if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
+            [[NSFileManager defaultManager] removeItemAtPath:decompressionDirectory error:NULL];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
+            [[NSFileManager defaultManager] moveItemAtPathToTrash: decompressionDirectory];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath: decompressionDirectory])
+            NSLog( @"******** FAILED to clean the decompressionDirectory directory: %@", decompressionDirectory);
+    }
+
+    // Delete all process_state files
+    for (NSString* s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: NSTemporaryDirectory() error:nil])
+        if ([s hasPrefix:@"process_state-"])
+            [[NSFileManager defaultManager] removeItemAtPath:[NSTemporaryDirectory() stringByAppendingPathComponent:s] error:nil];
+    
+    [[NSFileManager defaultManager] removeItemAtPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"zippedCD/"] error:nil];
+
+    NSString *tmpDirPath = [[NSFileManager defaultManager] tmpDirPath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath: tmpDirPath])
+        [[NSFileManager defaultManager] removeItemAtPath: tmpDirPath error:NULL];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath: tmpDirPath])
+        [[NSFileManager defaultManager] moveItemAtPathToTrash: tmpDirPath];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath: tmpDirPath])
+        NSLog( @"******** FAILED to clean the tmpDirPath directory: %@", tmpDirPath);
+    
+    // EMPTY THE INCOMING.noindex DIRECTORY...
+    NSString* incomingDirectoryPath = [[DicomDatabase activeLocalDatabase] incomingDirPath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath: incomingDirectoryPath] && ![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"])
+    {
+        for (NSString* file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil])
+            [[NSFileManager defaultManager] removeItemAtPath: [tempDirectory stringByAppendingPathComponent:file] error: nil];
+        
+        for (NSString* file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil])
+            [[NSFileManager defaultManager] moveItemAtPathToTrash: [tempDirectory stringByAppendingPathComponent:file]];
+        
+        if ([[[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil] count])
+            [[NSFileManager defaultManager] moveItemAtPathToTrash: incomingDirectoryPath];
+        
+        if ([[[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil] count])
+            NSLog( @"******** FAILED to clean the INCOMING.noindex directory: %@", incomingDirectoryPath);
+    }
+
+    [[NSFileManager defaultManager] confirmDirectoryAtPath: incomingDirectoryPath];
+    [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
+}
+
+static BOOL firstCall = YES;
+
+- (void)applicationWillBecomeActive:(NSNotification *)aNotification
+{
+    if (firstCall)
+        return;
+    
+    [[NSRunningApplication currentApplication] activateWithOptions: NSApplicationActivateAllWindows];
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)aNotification
+{
+    if (firstCall)
+    {
+        firstCall = NO;
+        return;
+    }
+    
+    [[BrowserController currentBrowser] syncReportsIfNecessary];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) // Server mode
+    {
+        if ([[[BrowserController currentBrowser] window] isMiniaturized] == YES ||
+            [[[BrowserController currentBrowser] window] isVisible] == NO)
+        {
+            NSArray *winList = [NSApp windows];
+            
+            for (id loopItem in winList)
+            {
+                if ([[loopItem windowController] isKindOfClass:[ViewerController class]])
+                    return;
+            }
+            
+            [[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
+        }
+    }
+}
+
+- (BOOL) applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
+        return YES;
+    
+    if (flag == NO)
+        [[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
+    
+    return YES;
+}
+
+#pragma mark -
 
 - (void) checkForOsirixMimeType
 {
@@ -4101,293 +4417,6 @@ static BOOL initialized = NO;
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"hasFULL32BITPIPELINE"];
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FULL32BITPIPELINE"];
 	}
-}
-
-- (void) applicationWillFinishLaunching: (NSNotification *) aNotification
-{
-    [AppController cleanOsiriXSubProcesses];
-    
-    if ([NSDate timeIntervalSinceReferenceDate] -
-        [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastDate32bitPipelineCheck"] > 60L*60L*24L) // 1 day
-	{
-		[[NSUserDefaults standardUserDefaults] setDouble: [NSDate timeIntervalSinceReferenceDate]
-                                                  forKey: @"lastDate32bitPipelineCheck"];
-		[self verifyHardwareInterpolation];
-	}
-    
-	BOOL dialog = NO;
-    NSString *path = NSTemporaryDirectory();
-    if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
-        [[NSFileManager defaultManager] createDirectoryAtPath:path
-                                  withIntermediateDirectories:YES
-                                                   attributes:nil
-                                                        error:nil];
-    
-    NSMutableArray *dbArray = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"] deepMutableCopy] autorelease];
-    NSMutableArray *toBeRemoved = [NSMutableArray array];
-    for (NSMutableDictionary *d in dbArray)
-	{
-		if ([[d valueForKey:@"Path"] hasPrefix: path] ||
-            [[d valueForKey:@"Path"] hasPrefix: PRIVATE_TMP] ||
-            [[d valueForKey:@"Path"] hasPrefix: PRIVATE_VAR_TMP])
-        {
-			[toBeRemoved addObject: d];
-        }
-	}
-
-    if (toBeRemoved.count)
-    {
-        [dbArray removeObjectsInArray: toBeRemoved];
-        [[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: @"localDatabasePaths"];
-    }
-    
-	if ([[NSUserDefaults standardUserDefaults] valueForKey: @"timeZone"])
-	{
-		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"timeZone"] != [[NSTimeZone localTimeZone] secondsFromGMT])
-		{
-		//	NSLog( @"***** Time zone has changed: this modification can affect study dates, study times and birth dates!");
-		//	[NSTimeZone setDefaultTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: [[NSUserDefaults standardUserDefaults] integerForKey: @"timeZone"]]];
-		}
-	}
-	else
-        [[NSUserDefaults standardUserDefaults] setInteger: [[NSTimeZone localTimeZone] secondsFromGMT] forKey: @"timeZone"];
-	
-    if ([[[NSUserDefaults standardUserDefaults] valueForKey:COPYDATABASEMODE_KEY] intValue] == COPY_DB_CD_ONLY) // Fix up obsolete value
-        [[NSUserDefaults standardUserDefaults] setInteger:COPY_DB_NOT_MAIN_DRIVE forKey:COPYDATABASEMODE_KEY];
-        
-//	NSLog(@"%s", __PRETTY_FUNCTION__, nil);
-	
-	if (dialog == NO)
-	{
-		
-	}
-	
-	[PluginManager setMenus: filtersMenu
-                           : roisMenu
-                           : othersMenu
-                           : dbMenu];
-    
-	appController = self;
-	[self initDCMTK];
-	[self restartSTORESCP];
-	
-	[NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector(checkForRestartStoreSCPOrder:) userInfo: nil repeats: YES];
-	
-	[DicomDatabase initializeDicomDatabaseClass];
-	[BrowserController initializeBrowserControllerClass];
-#ifndef MIELE_LIGHT
-	[WebPortal initializeWebPortalClass];
-    _bonjourPublisher = [[BonjourPublisher alloc] init];
-#endif
-	
-#ifndef MIELE_LIGHT
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
-		if (XMLRPCServer == nil)
-            XMLRPCServer = [[XMLRPCInterface alloc] init];
-#endif
-	
-//	#ifndef MIELE_LIGHT
-//	#ifndef MACAPPSTORE
-//	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"displayGrowlNotification"])
-//	{
-//        // If Growl crashed before...
-//        NSString *GrowlCrashed = @"/tmp/OsiriXGrowlCrashed";
-//        
-//        if ([[NSFileManager defaultManager] fileExistsAtPath: GrowlCrashed])
-//        {
-//            [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"displayGrowlNotification"];
-//            [[NSFileManager defaultManager] removeItemAtPath: GrowlCrashed error: nil];
-//        }
-//        else 
-//        {
-//            [GrowlCrashed writeToFile: GrowlCrashed atomically: YES encoding: NSUTF8StringEncoding error: nil];
-//            
-//            [GrowlApplicationBridge setGrowlDelegate: self];
-//            
-//            [[NSFileManager defaultManager] removeItemAtPath: GrowlCrashed error: nil];
-//        }
-//	}
-//	#endif
-//	#endif
-	
-	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver: self
-           selector: @selector(UpdateWLWWMenu:)
-               name: OsirixUpdateWLWWMenuNotification
-             object: nil];
-
-    [nc addObserver: self
-           selector: @selector(UpdateConvolutionMenu:)
-               name: OsirixUpdateConvolutionMenuNotification
-             object: nil];
-
-    [nc addObserver: self
-           selector: @selector(UpdateCLUTMenu:)
-               name: OsirixUpdateCLUTMenuNotification
-             object: nil];
-	
-    [nc addObserver: self
-           selector: @selector(UpdateOpacityMenu:)
-               name: OsirixUpdateOpacityMenuNotification
-             object: nil];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification
-                                                        object: NSLocalizedString(@"Linear Table", nil)
-                                                      userInfo: nil];
-
-    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification
-                                                        object: NSLocalizedString(@"No CLUT", nil)
-                                                      userInfo: nil];
-
-    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification
-                                                        object: NSLocalizedString(@"Other", nil)
-                                                      userInfo: nil];
-
-    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification
-                                                        object:NSLocalizedString( @"No Filter", nil)
-                                                      userInfo: nil];
-	
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(applicationDidChangeScreenParameters:)
-                                                 name:NSApplicationDidChangeScreenParametersNotification
-                                               object:NSApp];
-    
-    [AppController resetThumbnailsList];
-	
-//	if (USETOOLBARPANEL) [[toolbarPanel window] makeKeyAndOrderFront:self];
-	
-// Increment the startup counter.
-	
-	long startCount = [[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT"];
-	[[NSUserDefaults standardUserDefaults] setInteger: startCount+1 forKey: @"STARTCOUNT"];
-	
-	if (startCount == 0) // Replaces FIRSTTIME.
-	{
-		switch (NSRunInformationalAlertPanel(NSLocalizedString( @"OsiriX Updates", nil),
-                                             NSLocalizedString( @"Would you like to activate automatic checking for updates?", nil),
-                                             NSLocalizedString( @"Yes", nil),
-                                             NSLocalizedString( @"No", nil),
-                                             nil))
-		{
-			case 0:
-				[[NSUserDefaults standardUserDefaults] setObject: @"NO" forKey: @"Check4Updates"];
-			break;
-		}
-	}
-	else
-	{
-		if (![[NSUserDefaults standardUserDefaults] boolForKey: @"SURVEYDONE5"])
-		{
-//			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT2"] > 20)
-//			{
-//				switch( NSRunInformationalAlertPanel(@"OsiriX", @"Thank you for using OsiriX!\rDo you agree to answer a small survey to improve OsiriX?", @"Yes, sure!", @"Maybe next time", nil))
-//				{
-//					case 1:
-//					{
-//						Survey		*survey = [[Survey alloc] initWithWindowNibName:@"Survey"];
-//						[[survey window] center];
-//						[survey showWindow:self];
-//					}
-//						break;
-//				}
-//			}
-			
-//			if ([[NSCalendarDate dateWithYear:2009 month:10 day:14 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] > 0 &&
-//				[[NSCalendarDate dateWithYear:2009 month:9 day:1 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
-//			{
-//				Survey *survey = [[Survey alloc] initWithWindowNibName:@"Survey"];
-//				[[survey window] center];
-//				[survey showWindow: self];
-//			}
-		}
-		else
-		{
-//			[self about:self];
-//			//fade out Splash window automatically 
-//			[NSTimer scheduledTimerWithTimeInterval:2.0 target:splashController selector:@selector(windowShouldClose:) userInfo:nil repeats:0]; 
-		}
-	}
-	
-		
-	//Checks for Bonjour enabled dicom servers. Most likely other copies of OsiriX
-	[DCMNetServiceDelegate sharedNetServiceDelegate];
-	
-	previousDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
-	showRestartNeeded = YES;
-		
-	[[NSNotificationCenter defaultCenter]	addObserver: self
-											   selector: @selector(preferencesUpdated:)
-												   name: NSUserDefaultsDidChangeNotification
-												 object: nil];
-	
-	[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"SAMESTUDY"];
-		
-	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"hasMacOSXSnowLeopard"];  // At least
-	
-    [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseKDUForJPEG2000"]; // deprecated
-    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseOpenJpegForJPEG2000"];
-    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useDCMTKForJP2K"]; // deprecated
-    
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] count] < SetKeyImageAction) {
-        NSMutableDictionary *d = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] mutableCopy] autorelease];
-        
-        BOOL f = NO;
-        for (NSString *key in d) {
-            if ([[d objectForKey: key] integerValue] == FullScreenAction)
-                f = YES;
-            
-            if ([[d objectForKey: key] integerValue] == Sync3DAction)
-                f = YES;
-            
-            if ([[d objectForKey: key] integerValue] == SetKeyImageAction)
-                f = YES;
-        }
-        
-        if (f == NO) {
-            [d setObject: @(FullScreenAction) forKey: @"dbl-click"];
-            [d setObject: @(Sync3DAction) forKey: @"dbl-click + alt"];
-            [d setObject: @(SetKeyImageAction) forKey: @"dbl-click + cmd"];
-            
-            [[NSUserDefaults standardUserDefaults] setObject: d forKey: @"HOTKEYS"];
-        }
-    }
-    
-    if ([AppController hasMacOSX_AfterCatalina])
-    {
-#ifdef WITH_OS_VALIDATION
-        NSAlert *alert = [[NSAlert new] autorelease];
-        [alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
-        
-        [alert setInformativeText: NSLocalizedString( @"This version of Miele-LXIV has not been validated or certified for this version of MacOS. Bugs, errors and instabilities can occur. Upgrade to latest version of Miele-LXIV to solve this problem.", nil)];
-        
-        [alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
-        [alert addButtonWithTitle: NSLocalizedString( @"Upgrade", nil)];
-        
-        NSInteger button = [alert runModal];
-        
-        if (button == NSAlertSecondButtonReturn)
-            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_WEB_PAGE]];
-#endif
-    }
-	
-	[self initTilingWindows];
-    
-    //if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // move temp & decompress to incoming
-    {
-        NSString* inc = [[DicomDatabase activeLocalDatabase] incomingDirPath];
-        for (NSString* path in [NSArray arrayWithObjects: [[DicomDatabase activeLocalDatabase] tempDirPath], [[DicomDatabase activeLocalDatabase] decompressionDirPath], nil])
-            for (NSString* f in [[NSFileManager defaultManager] enumeratorAtPath:path filesOnly:NO recursive:NO])
-                [[NSFileManager defaultManager] moveItemAtPath:[path stringByAppendingPathComponent:f]
-                                                        toPath:[inc stringByAppendingPathComponent:f]
-                                                         error:NULL];
-    }
-	
-//	[self checkForOsirixMimeType];
-	
-//	[html2pdf pdfFromURL: @"http://zimbra.latour.ch"];
-
-	if ([AppController isKDUEngineAvailable])
-		NSLog( @"/*\\ /*\\ KDU Engine AVAILABLE /*\\ /*\\");
 }
 
 - (IBAction) updateViews:(id) sender
@@ -4654,7 +4683,7 @@ static BOOL initialized = NO;
 	[[PreferencesWindowController sharedPreferencesWindowController] showWindow: sender];
 }
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 
 -(void) dealloc
 {

@@ -21,7 +21,22 @@
 #import <PreferencePanes/NSPreferencePane.h>
 #import "SFAuthorizationView+OsiriX.h"
 
-@class PreferencesView, PreferencesWindowContext;
+@class PreferencesView;
+
+#pragma mark -
+
+@interface PreferencesWindowContext : NSObject
+
+@property(retain) NSString* title;
+@property(retain) NSBundle* parentBundle;
+@property(retain) NSString* resourceName;
+@property(nonatomic, retain) NSPreferencePane* pane;
+
+-(id)initWithTitle:(NSString*)title
+ withResourceNamed:(NSString*)resourceName
+          inBundle:(NSBundle*)parentBundle;
+
+@end
 
 #pragma mark -
 
@@ -56,22 +71,4 @@
 -(void)reopenDatabase;
 -(void)setCurrentContextWithResourceName: (NSString*) name;
 -(void)setCurrentContext:(PreferencesWindowContext*)context;
-@end
-
-#pragma mark -
-
-@interface PreferencesWindowContext : NSObject {
-	NSString* _title;
-	NSBundle* _parentBundle;
-	NSString* _resourceName;
-	NSPreferencePane* _pane;
-}
-
-@property(retain) NSString* title;
-@property(retain) NSBundle* parentBundle;
-@property(retain) NSString* resourceName;
-@property(nonatomic, retain) NSPreferencePane* pane;
-
--(id)initWithTitle:(NSString*)title withResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle;
-
 @end
