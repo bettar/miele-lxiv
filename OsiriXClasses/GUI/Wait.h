@@ -30,8 +30,8 @@
 	IBOutlet NSButton			 *abort;
 	
 	SendController * _target;
-	NSDate  *startTime;
-	BOOL	cancel, aborted, openSession;
+	NSDate *startTime;
+	BOOL cancel, aborted, openSession;
 	NSModalSession session;
 	NSTimeInterval lastTimeFrame, lastTimeFrameUpdate, firstTime, displayedTime;
 }

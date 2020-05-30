@@ -174,6 +174,8 @@ NSString* soundex4( NSString *inString)
 	  return [NSString stringWithUTF8String: workbuf];
 }
 
+#pragma mark -
+
 @implementation DicomStudy
 
 @dynamic accessionNumber;

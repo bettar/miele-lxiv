@@ -26,7 +26,7 @@
     NSString *geometry = [[NSBundle mainBundle] pathForResource:shaderName ofType:@"gsh"];
     NSString *fragment = [[NSBundle mainBundle] pathForResource:shaderName ofType:@"fsh"];
     self.programHandle = loadShaders(vertex, geometry, fragment);
-    assert(self.programHandle != 0);
+    assert(self.programHandle != GL_ZERO);
 #endif
 }
 

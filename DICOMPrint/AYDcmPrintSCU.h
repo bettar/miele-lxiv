@@ -104,7 +104,7 @@ class AYDcmPrintSCU
 
     AYDcmPrintSCU(const char *hostname, int port, const char *aetitle, const char *aetitleSCU);
 
-    ~AYDcmPrintSCU();
+    ~AYDcmPrintSCU() {}
 
     /**
      * This is the main method which has to be called from a program to trigger the

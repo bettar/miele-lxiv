@@ -10242,7 +10242,7 @@ static int avoidReentryRefreshDatabase = 0;
                                                           userInfo: nil];
         
 		result = [filter filterImage: name];  // run the plugin
-		if (result)
+		if (result != 0L)
 		{
 			NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil),
                             NSLocalizedString(@"OsiriX cannot apply the selected plugin.", nil),
@@ -21031,7 +21031,6 @@ static BOOL viewerControllerPlaying = NO;
 -(void) sendMail:(id) sender
 {
 	[imageFormat selectCellWithTag: TAG_EXPORT_FORMAT_MAIL];
-	
 	[self exportImage: sender];
 	
 //	Mailer		*email;
@@ -21056,14 +21055,13 @@ static BOOL viewerControllerPlaying = NO;
 - (void) exportJPEG:(id) sender
 {
 	[imageFormat selectCellWithTag: TAG_EXPORT_FORMAT_JPEG];
-	
 	[self exportImage: sender];
 }
 
 -(IBAction) export2iPhoto:(id) sender
-{   NSLog(@"%s:%i", __FILE__, __LINE__);
+{
+    NSLog(@"%s:%i", __FILE__, __LINE__);
 	[imageFormat selectCellWithTag: TAG_EXPORT_FORMAT_IPHOTO];
-	
 	[self exportImage: sender];
 }
 
@@ -21293,7 +21291,6 @@ static BOOL viewerControllerPlaying = NO;
 - (void) exportTIFF:(id) sender
 {
 	[imageFormat selectCellWithTag: TAG_EXPORT_FORMAT_TIFF];
-	
 	[self exportImage: sender];
 }
 

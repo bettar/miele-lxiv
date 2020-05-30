@@ -35,6 +35,7 @@
         v++;
     else if (v == histogram.size() - 1 - inputMinValue)
         v--;
+
     [self determineThresholdIntervalFrom:(int)v-inputMinValue On:histogram WithStep:10];
 }
 

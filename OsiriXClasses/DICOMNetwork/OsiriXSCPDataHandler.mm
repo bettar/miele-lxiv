@@ -40,9 +40,10 @@
 #import <DCM/DCMAbstractSyntaxUID.h>
 
 #include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/ofstd/ofconsol.h"
 #import "tmp_locations.h"
 
-char currentDestinationMoveAET[ 60] = "";
+char currentDestinationMoveAET[ 60] = "";  // Unused ?
 
 extern NSManagedObjectContext *staticContext;
 extern BOOL forkedProcess;

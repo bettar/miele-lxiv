@@ -101,8 +101,6 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 	return [DicomFile NSreplaceBadCharacter: [[study valueForKey:@"patientUID"] stringByAppendingFormat:@"-%@", [study valueForKey:@"id"]]];
 }
 
-
-
 - (NSString *) HFSStyle: (NSString*) string
 {
 	return [[(NSURL *)CFURLCreateWithFileSystemPath( kCFAllocatorDefault, (CFStringRef)string, kCFURLHFSPathStyle, NO) autorelease] path];
@@ -115,7 +113,7 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
     CFURLRef    url;
     CFStringRef hfsPath = NULL;
 
-    BOOL        isDirectoryPath = [p hasSuffix:@"/"];
+    BOOL isDirectoryPath = [p hasSuffix:@"/"];
     // Note that for the usual case of absolute paths,  isDirectoryPath is
     // completely ignored by CFURLCreateWithFileSystemPath.
     // isDirectoryPath is only considered for relative paths.
@@ -393,7 +391,8 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 
 #pragma mark -
 
-- (void)searchAndReplaceFieldsFromStudy:(NSManagedObject*)aStudy inString:(NSMutableString*)aString;
+- (void)searchAndReplaceFieldsFromStudy:(NSManagedObject*)aStudy
+                               inString:(NSMutableString*)aString;
 {
 	if (aString == nil)
 		return;
@@ -401,10 +400,10 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 	NSManagedObjectModel *model = [[[aStudy managedObjectContext] persistentStoreCoordinator] managedObjectModel];
 	NSArray *properties = [[[[model entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
 	
-	NSDateFormatter		*date = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *date = [[[NSDateFormatter alloc] init] autorelease];
 	[date setDateStyle: NSDateFormatterShortStyle];
     
-    NSDateFormatter		*longDate = [[[NSDateFormatter alloc] init] autorelease];
+    NSDateFormatter *longDate = [[[NSDateFormatter alloc] init] autorelease];
 	[longDate setDateStyle: NSDateFormatterLongStyle];
 	
 	for( NSString *propertyName in properties)

@@ -41,6 +41,7 @@
 
 #import "vtkConfigure.h"
 #import "vtkMath.h"
+#import "vtkPolyData.h"
 
 @implementation ROIVolumeView
 
@@ -864,7 +865,9 @@
 }
 
 
-- (NSSet *)connectedPointsForPoint:(vtkIdType)pt fromPolyData:(vtkPolyData *)data{
+- (NSSet *)connectedPointsForPoint:(vtkIdType)pt
+                      fromPolyData:(vtkPolyData *)data
+{
 	NSMutableSet *ptSet = [NSMutableSet set];
 	vtkIdType ncells;
 	vtkIdList *cellIds = vtkIdList::New();
@@ -875,7 +878,7 @@
 	// loop through the cells
 	for (int j = 0;  j < ncells; j++) {
 		vtkIdType numPoints;
-		vtkIdType *cellPoints ;
+		const vtkIdType *cellPoints;
 		vtkIdType cellId = cellIds->GetId(j);
 		//get all points for the cell
 		data->GetCellPoints(cellId, numPoints, cellPoints);				

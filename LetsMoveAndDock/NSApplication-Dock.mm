@@ -106,7 +106,8 @@
     {
 		app = [[[d objectForKey:@"tile-data"] objectForKey:@"file-data"] objectForKey:@"_CFURLString"];
         
-		if( app.length > 0 && [app rangeOfString: path].location != NSNotFound)
+		if (app.length > 0 &&
+            [app rangeOfString: path].location != NSNotFound)
         {
             NSLog( @"Already in Dock: %@", app);
 			return YES;

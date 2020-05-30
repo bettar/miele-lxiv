@@ -118,6 +118,7 @@ void vmin8(vector unsigned char *a, vector unsigned char *b, vector unsigned cha
 	}
 }
 #else
+
 void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size)
 {
 	long i = size/4;

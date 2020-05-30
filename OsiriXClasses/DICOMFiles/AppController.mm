@@ -180,7 +180,8 @@ enum	{kSuccess = 0,
 #ifdef MIELE_LIGHT
 void exitOsiriX(void)
 {
-	[NSException raise: @"JPEG error exception raised" format: @"JPEG error exception raised - See Console.app for error message"];
+	[NSException raise: @"JPEG error exception raised"
+                format: @"JPEG error exception raised - See Console.app for error message"];
 }
 #endif
 
@@ -1143,10 +1144,10 @@ static bool isGrantedNotificationAccess = false;
 
 -(IBAction)openMieleLXIVWebPage:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_WEB_PAGE]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_HOME_PAGE]];
 }
 
-- (IBAction) openMieleLXIVSourceCode: (id) sender
+- (IBAction)openMieleLXIVSourceCode:(id)sender
 {
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_SOURCES]];
 }
@@ -2822,8 +2823,6 @@ static BOOL initialized = NO;
 							
 				initialized = YES;
 				
-				long	i;
-				
 				srandom(time(NULL));
 				
 				Altivec = HasAltiVec();
@@ -2864,7 +2863,6 @@ static BOOL initialized = NO;
                 NSLog(@"JPEG-LS %s", DJLSDecoderRegistration::getLibraryVersionString().c_str());
                 NSLog(@"OpenJPEG %d.%d.%d", OPJ_VERSION_MAJOR, OPJ_VERSION_MINOR, OPJ_VERSION_BUILD);
                 // To read the OpenGL version we need a context. Too early here.
-
                 
 #ifdef WITH_GLEW
                 NSLog(@"GLEW %s", glewGetString(GLEW_VERSION));
@@ -2915,6 +2913,7 @@ static BOOL initialized = NO;
                 
 				[[NSUserDefaults standardUserDefaults] registerDefaults: [DefaultsOsiriX getDefaults]];
                 
+                // BrowserController class method
                 if ([BrowserController _currentModifierFlags] & NSEventModifierFlagCommand &&
                     [BrowserController _currentModifierFlags] & NSEventModifierFlagOption)
                 {
@@ -3175,7 +3174,7 @@ static BOOL initialized = NO;
                     NSMutableArray *rArray = [NSMutableArray array];
                     NSMutableArray *gArray = [NSMutableArray array];
                     NSMutableArray *bArray = [NSMutableArray array];
-                    for (i = 0; i < 256; i++)  {
+                    for (long i = 0; i < 256; i++)  {
                         [bArray addObject: [NSNumber numberWithLong:(195 - (i * 0.26))]];
                         [gArray addObject: [NSNumber numberWithLong:(187 - (i *0.26))]];
                         [rArray addObject: [NSNumber numberWithLong:(240 + (i * 0.02))]];

@@ -254,13 +254,13 @@
 				
 				if (server) {
 					@try {
-						NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientID" ascending:YES] autorelease];
-						NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
+						NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientID" ascending:YES] autorelease];
+						NSArray *sortDescriptors = [NSArray arrayWithObject: sort];
 						
 						objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
 						
-						NSString			*previousPatientUID = nil;
-						NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
+						NSString *previousPatientUID = nil;
+						NSMutableArray *samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
 						
 						for( NSManagedObject *objectToSend in objectsToSend)
 						{

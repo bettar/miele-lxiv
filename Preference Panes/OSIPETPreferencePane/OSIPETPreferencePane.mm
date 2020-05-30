@@ -83,18 +83,14 @@
 
 - (void) buildOpacityTableMenu :(NSPopUpButton*) oPopup
 {
-    short							i;
-    NSArray							*keys;
-    NSArray							*sortedKeys;
-
-	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
-    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	NSArray *keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
+    NSArray *sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
     [[oPopup menu] removeAllItems];
 	
 	[[oPopup menu] addItemWithTitle: NSLocalizedString( @"Linear Table", 0L) action:0L keyEquivalent:@""];
 	
-    for( i = 0; i < [sortedKeys count]; i++)
+    for (short i = 0; i < [sortedKeys count]; i++)
     {
         [[oPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:0L keyEquivalent:@""];
     }
@@ -105,7 +101,7 @@
 	[minimumValueText setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"PETMinimumValue"]];
 	[WindowingModeMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey:@"PETWindowingMode"]];
 	
-	if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString:@"B/W Inverse"])
+	if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString:@"B/W Inverse"])
 		[CLUTMode selectCellWithTag: 0];
 	else
 		[CLUTMode selectCellWithTag: 1];

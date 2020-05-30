@@ -32,6 +32,37 @@
 
 #pragma mark -
 
+@implementation N2BlockThread
+
+-(id)initWithBlock:(void(^)())block {
+    if ((self = [super init])) {
+        _block = [block copy];
+    }
+    
+    return self;
+}
+
+-(void)main {
+    @autoreleasepool {
+        @try {
+            _block();
+            [_block release]; _block = nil;
+        } @catch (NSException* e) {
+            N2LogExceptionWithStackTrace(e);
+        }
+    }
+}
+
+-(void)dealloc {
+    [_block release];
+    _block = nil;
+    [super dealloc];
+}
+
+@end
+
+#pragma mark -
+
 @implementation NSThread (N2)
 
 +(NSThread*)performBlockInBackground:(void(^)())block {
@@ -409,31 +440,3 @@ NSString* const NSThreadProgressDetailsKey = @"progressDetails";
 
 @end
 
-@implementation N2BlockThread
-
--(id)initWithBlock:(void(^)())block {
-    if ((self = [super init])) {
-        _block = [block copy];
-    }
-    
-    return self;
-}
-
--(void)main {
-    @autoreleasepool {
-        @try {
-            _block();
-            [_block release]; _block = nil;
-        } @catch (NSException* e) {
-            N2LogExceptionWithStackTrace(e);
-        }
-    }
-}
-
--(void)dealloc {
-    [_block release];
-    _block = nil;
-    [super dealloc];
-}
-
-@end

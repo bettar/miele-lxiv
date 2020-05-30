@@ -92,7 +92,7 @@
 -(NSString*)confirmDirectoryAtPath: (NSString*) dirPath
                       subDirectory: (BOOL) subDirectory
 {
-	if( dirPath == nil)
+	if (dirPath == nil)
         return nil;
     
 	NSString* parentDirPath = [dirPath stringByDeletingLastPathComponent];

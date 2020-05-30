@@ -67,7 +67,7 @@ NSString* const CurrentDatabaseVersion = @"2.6";
 @interface DicomDatabase ()
 
 @property(readwrite,retain) NSString* baseDirPath;
-@property(readwrite,retain) NSString* dataBaseDirPath;
+@property(readwrite,retain) NSString* dataBaseDirPath;  // Already defined in .h
 @property(readonly,retain) N2MutableUInteger* dataFileIndex;
 @property(readonly,retain) NSRecursiveLock* processFilesLock;
 @property(readonly,retain) NSRecursiveLock* importFilesFromIncomingDirLock;
@@ -101,22 +101,22 @@ NSString* const CurrentDatabaseVersion = @"2.6";
 }
 
 static NSString* const SqlFileName = @"Database.sql";
-NSString* const OsirixDataDirName = OUR_DATA_LOCATION;
+NSString* const AppDataDirName = OUR_DATA_LOCATION;
 NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen Captures", nil);
 
 +(NSString*)baseDirPathForPath:(NSString*)path
 {
-	// were we given a path inside a OsirixDataDirName dir?
+	// were we given a path inside a AppDataDirName dir?
 	NSArray* pathParts = path.pathComponents;
 	for (int i = (long)pathParts.count-1; i >= 0; --i)
-		if ([[pathParts objectAtIndex:i] isEqualToString:OsirixDataDirName]) {
+		if ([[pathParts objectAtIndex:i] isEqualToString:AppDataDirName]) {
 			path = [NSString pathWithComponents:[pathParts subarrayWithRange:NSMakeRange(0,i+1)]];
 			break;
 		}
 	
-	// otherwise, consider the path was incomplete and just append the OsirixDataDirName element to the path
-	if (![[path lastPathComponent] isEqualToString:OsirixDataDirName]) 
-		path = [path stringByAppendingPathComponent:OsirixDataDirName];
+	// otherwise, consider the path was incomplete and just append the AppDataDirName element to the path
+	if (![[path lastPathComponent] isEqualToString:AppDataDirName])
+		path = [path stringByAppendingPathComponent:AppDataDirName];
 	
 	return path;
 }
@@ -272,12 +272,12 @@ static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init]
     {
 		[databasesDictionaryLock lock];
         
-        if (![[databasesDictionary allValues] containsObject: [NSValue valueWithPointer: db]] && ![databasesDictionary objectForKey:db.baseDirPath])
+        if (![[databasesDictionary allValues] containsObject: [NSValue valueWithPointer: db]] &&
+            ![databasesDictionary objectForKey:db.baseDirPath])
         {
             [databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:db.baseDirPath];
         }
-        else
-        {
+        else {
             NSValue* k = [NSValue valueWithPointer: db];
             
             if (![databasesDictionary objectForKey:k])
@@ -343,7 +343,7 @@ static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init]
 static DicomDatabase* activeLocalDatabase = nil;
 
 +(DicomDatabase*)activeLocalDatabase {
-	return activeLocalDatabase? activeLocalDatabase : self.defaultDatabase;
+	return activeLocalDatabase ? activeLocalDatabase : self.defaultDatabase;
 }
 
 +(void)setActiveLocalDatabase:(DicomDatabase*)ldb {
@@ -1578,9 +1578,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     paths = randomArray;
 #endif
     
-    #ifndef NDEBUG
+#ifndef NDEBUG
     [self checkForCorrectContextThread];
-    #endif
+#endif
     
 	NSMutableArray* retArray = nil; // This array can be HUGE when rebuild a DB with millions of images
     
@@ -2737,7 +2737,8 @@ static BOOL protectionAgainstReentry = NO;
         NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
         [queue setMaxConcurrentOperationCount:1];
         
-        BOOL onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue], copyFiles = [[dict objectForKey: @"copyFiles"] boolValue];
+        BOOL onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
+        BOOL copyFiles = [[dict objectForKey: @"copyFiles"] boolValue];
 
         __block BOOL studySelected = NO;
         NSArray *filesInput = [[dict objectForKey: @"filesInput"] sortedArrayUsingSelector:@selector(compare:)]; // sorting the array should make the data access faster on optical media
@@ -2871,7 +2872,8 @@ static BOOL protectionAgainstReentry = NO;
                         
 #ifndef MIELE_LIGHT
                         thread.status = NSLocalizedString(@"Validating the files...", nil);
-                        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
+                        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] &&
+                            [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
                             succeed = [DicomDatabase testFiles: copiedFiles];
 #endif
                         

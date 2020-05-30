@@ -238,7 +238,8 @@ void signal_EXC(int sig_num)
 	return self;
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
 	[transferSyntaxForDataset release];
 	[transferSyntaxForMetaheader release];
 	[transferSyntaxInUse release];
@@ -246,7 +247,8 @@ void signal_EXC(int sig_num)
 	[super dealloc];
 }
 
-- (void)initValues{
+- (void)initValues
+{
 	isLittleEndian = YES;
 	isExplicitTS = NO;
 	offset = 0;
@@ -263,10 +265,9 @@ void signal_EXC(int sig_num)
 		}
 	}
 }
-	
 
-
-- (BOOL)isLittleEndian{
+- (BOOL)isLittleEndian
+{
 	if (transferSyntaxInUse)
 		return [transferSyntaxInUse isLittleEndian];
 	return YES;
@@ -332,7 +333,6 @@ void signal_EXC(int sig_num)
 	else 
 		[exception raise];
 	return 0;
-
 }
 
 

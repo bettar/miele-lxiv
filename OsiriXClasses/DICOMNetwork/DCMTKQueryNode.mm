@@ -1010,7 +1010,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		DicomStudy *localStudy = [[context executeFetchRequest: request error: &error] lastObject];
 		
-		for( DicomSeries *s in [localStudy valueForKey: @"series"])
+		for (DicomSeries *s in [localStudy valueForKey: @"series"])
 			[localObjectUIDs addObjectsFromArray: [[[s images] valueForKey: @"sopInstanceUID"] allObjects]];
 	}
 	@catch (NSException * e) {

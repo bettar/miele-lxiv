@@ -127,6 +127,9 @@
 /* No comment provided by engineer. */
 "%@ is not an email address." = "%@はメールアドレスではありません。";
 
+/* AppleScript permission */
+"%@ is not running" = "%@ が実行されていません";
+
 /* No comment provided by engineer. */
 "%@ Preferences" = "%@ 環境設定";
 
@@ -3511,6 +3514,9 @@
 
 /* No comment provided by engineer. */
 "Please select a DICOM node (check box)." = "DICOMノード(チェックボックス)を選択してください。";
+
+/* AppleScript permission */
+"Please start %@ and retry" = "%@ を起動してください再試行する";
 
 /* No comment provided by engineer. */
 "Please update your application. Available on the web site." = "あなたのアプリケーションを更新してください。ウェブサイトで利用可能です。";

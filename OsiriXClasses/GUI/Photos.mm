@@ -18,8 +18,10 @@
      PURPOSE.
 =========================================================================*/
 
+#import <Cocoa/Cocoa.h>
 #import "Photos.h"
 #import "NSAppleScript+N2.h"
+//#import "CoreServices/AE/AppleEvents.h"
 
 // if you want check point log info, define CHECK to the next line, uncommented:
 #define CHECK NSLog(@"Applescript result code = %d", ok);
@@ -100,8 +102,58 @@
 	if (self)
 	{
 	}
-	
-return self;
+
+    return self;
+}
+
+// Issue #56
+- (bool) automationConsent: (NSString *)bundleID
+{
+    bool consentResult = true;
+
+    NSAppleEventDescriptor *targetAppEventDescriptor = [NSAppleEventDescriptor descriptorWithBundleIdentifier:bundleID];
+
+    if (@available(macOS 10.14, *))
+    {
+        OSStatus appleScriptPermission
+            = AEDeterminePermissionToAutomateTarget( targetAppEventDescriptor.aeDesc, typeWildCard, typeWildCard, true);
+
+        switch (appleScriptPermission) {
+            case procNotFound:
+            {
+                NSArray *listItems = [bundleID componentsSeparatedByString:@"."];
+                NSString *targetApp = [listItems lastObject];
+                NSAlert *alert = [NSAlert new];
+                [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"%@ is not running", "AppleScript permission"), targetApp]];
+                [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Please start %@ and retry", "AppleScript permission"), targetApp]];
+                [alert addButtonWithTitle:@"OK"];
+                [alert setAlertStyle:NSAlertStyleInformational];
+                [alert runModal];
+            }
+                consentResult = false;
+                break;
+
+            case errAEEventNotPermitted:
+                NSLog(@"The current application is not permitted to send events to %@", bundleID);
+                // the user does not consent
+                consentResult = false;
+                break;
+                
+            // If askUserIfNeeded is false, and this application is not yet permitted to send AppleEvents to the target, then errAEEventWouldRequireUserConsent will be returned
+            //case errAEEventWouldRequireUserConsent:
+                //break;
+
+            default:
+            case noErr:
+                // the current application is permitted to send the given AppleEvent to the target
+                break;
+        }
+    }
+    else {
+        // Fallback on earlier versions
+    }
+
+    return consentResult;
 }
 
 // do the grunge work -
@@ -110,6 +162,11 @@ return self;
 - (void)runScript:(NSString *)txt
 {
     NSLog(@"%s:%i %@", __FILE__, __LINE__, txt);
+
+    // Issue #56
+    if (![self automationConsent:@"com.apple.Photos"])
+        return;
+
     NSAppleScript* as = [[[NSAppleScript alloc] initWithSource:txt] autorelease];
     NSDictionary* errs = nil;
     [as runWithArguments:nil error:&errs];

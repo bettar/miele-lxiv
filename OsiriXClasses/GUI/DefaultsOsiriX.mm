@@ -302,40 +302,40 @@ static NSHost *currentHost = nil;
 
 + (NSMutableDictionary*) getDefaults
 {
-	NSMutableDictionary *defaultValues = [NSMutableDictionary dictionary];
+	NSMutableDictionary *defaultValuesDic = [NSMutableDictionary dictionary];
 	
 #pragma mark WLWW PRESETS
 
     float iww, iwl;
 	
-	NSMutableDictionary *wlwwValues = [NSMutableDictionary dictionary];
+	NSMutableDictionary *wlwwValuesDic = [NSMutableDictionary dictionary];
 	
 	iww = 1400;
     iwl = -500;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
+	[wlwwValuesDic setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
                    forKey:@"CT - Pulmonary"];
 	
 	iww = 1500;
     iwl = 300;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
+	[wlwwValuesDic setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
                    forKey:@"CT - Bone"];
 	
 	iww = 100;
     iwl = 50;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
+	[wlwwValuesDic setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
                    forKey:@"CT - Brain"];
 	
 	iww = 350;
     iwl = 40;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
+	[wlwwValuesDic setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
                    forKey:@"CT - Abdomen"];
 	
 	iww = 700;
     iwl = -300;
-	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
+	[wlwwValuesDic setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil]
                    forKey:@"VR - Endoscopy"];
 	
-	[defaultValues setObject:wlwwValues
+	[defaultValuesDic setObject:wlwwValuesDic
                       forKey:@"WLWW3"];
 	
 #pragma mark CONVOLUTION PRESETS
@@ -459,7 +459,7 @@ static NSHost *currentHost = nil;
 	
 	// --
 	
-	[defaultValues setObject:convValues
+	[defaultValuesDic setObject:convValues
                       forKey:@"Convolution"];
 	
 #pragma mark OPACITY TABLES
@@ -516,7 +516,7 @@ static NSHost *currentHost = nil;
 	[aOpacityFilter setObject:points forKey:@"Points"];
 	[opacityValues setObject:aOpacityFilter forKey:@"Smooth Table"];
 	
-	[defaultValues setObject:opacityValues forKey:@"OPACITY"];
+	[defaultValuesDic setObject:opacityValues forKey:@"OPACITY"];
 	
 #pragma mark CLUT PRESETS
 
@@ -761,7 +761,7 @@ static NSHost *currentHost = nil;
 	[DefaultsOsiriX addCLUT: @"HotGreen" dictionary: clutValues];	
 	[DefaultsOsiriX addCLUT: @"Jet" dictionary: clutValues];
 	
-	[defaultValues setObject: clutValues forKey: @"CLUT"];
+	[defaultValuesDic setObject: clutValues forKey: @"CLUT"];
 #endif
 	
 #pragma mark PREFERENCES - SERVERS
@@ -779,17 +779,17 @@ static NSHost *currentHost = nil;
 	[serversValues addObject:aServer];
 	[aServer release];
 	
-	[defaultValues setObject:serversValues forKey:@"SERVERS"];
+	[defaultValuesDic setObject:serversValues forKey:@"SERVERS"];
 	
 	serversValues = [NSMutableArray array];
-	[defaultValues setObject:serversValues forKey:@"OSIRIXSERVERS"];
+	[defaultValuesDic setObject:serversValues forKey:@"OSIRIXSERVERS"];
 	
 	//routing calendars
-	[defaultValues setObject:[NSMutableArray arrayWithObject:@"Osirix"] forKey:@"ROUTING CALENDARS"];
+	[defaultValuesDic setObject:[NSMutableArray arrayWithObject:@"Osirix"] forKey:@"ROUTING CALENDARS"];
 	
 #pragma mark  AETITLE
 
-    if ([defaultValues objectForKey:@"AETITLE"] == nil)
+    if ([defaultValuesDic objectForKey:@"AETITLE"] == nil)
 	{
 #ifdef OSIRIX_VIEWER
 		char s[_POSIX_HOST_NAME_MAX+1];
@@ -801,26 +801,26 @@ static NSHost *currentHost = nil;
 		if ([c length] > 16)
 			c = [c substringToIndex: 16];
 			
-		[defaultValues setObject: c forKey:@"AETITLE"];
+		[defaultValuesDic setObject: c forKey:@"AETITLE"];
 #endif
 	}
     
-    if ([defaultValues objectForKey:@"AETITLE"] == nil)
-        [defaultValues setObject:OUR_IMPLEMENTATION_NAME forKey:@"AETITLE"];
+    if ([defaultValuesDic objectForKey:@"AETITLE"] == nil)
+        [defaultValuesDic setObject:OUR_IMPLEMENTATION_NAME forKey:@"AETITLE"];
     
-	[defaultValues setObject:@"11112" forKey:@"AEPORT"];
+	[defaultValuesDic setObject:@"11112" forKey:@"AEPORT"];
 
-	[defaultValues setObject:@"1" forKey:@"points3DcolorRed"];
-	[defaultValues setObject:@"0" forKey:@"points3DcolorGreen"];
-	[defaultValues setObject:@"0" forKey:@"points3DcolorBlue"];
-	[defaultValues setObject:@"1" forKey:@"points3DcolorAlpha"];
-	[defaultValues setObject:@"1" forKey:@"MagneticWindows"];
-	[defaultValues setObject:@(MPR_LAYOUT_2_1) forKey:MPR2DViewsPosition_KEY];
+	[defaultValuesDic setObject:@"1" forKey:@"points3DcolorRed"];
+	[defaultValuesDic setObject:@"0" forKey:@"points3DcolorGreen"];
+	[defaultValuesDic setObject:@"0" forKey:@"points3DcolorBlue"];
+	[defaultValuesDic setObject:@"1" forKey:@"points3DcolorAlpha"];
+	[defaultValuesDic setObject:@"1" forKey:@"MagneticWindows"];
+	[defaultValuesDic setObject:@(MPR_LAYOUT_2_1) forKey:MPR2DViewsPosition_KEY];
 	
-	[defaultValues setObject:@"1" forKey:@"StoreThumbnailsInDB"];
-	[defaultValues setObject:@"1" forKey:@"DisplayDICOMOverlays"];
-	[defaultValues setObject:@"0" forKey:@"ALLOWDICOMEDITING"];
-	[defaultValues setObject:@"/~Documents/FolderToBurn" forKey:@"SupplementaryBurnPath"];
+	[defaultValuesDic setObject:@"1" forKey:@"StoreThumbnailsInDB"];
+	[defaultValuesDic setObject:@"1" forKey:@"DisplayDICOMOverlays"];
+	[defaultValuesDic setObject:@"0" forKey:@"ALLOWDICOMEDITING"];
+	[defaultValuesDic setObject:@"/~Documents/FolderToBurn" forKey:@"SupplementaryBurnPath"];
     
 	NSMutableArray *presets = [NSMutableArray array];
 	NSDictionary *shading;
@@ -857,98 +857,98 @@ static NSHost *currentHost = nil;
 	[shading setValue: @"50" forKey: @"specularPower"];
 	[presets addObject: shading];
 	
-	[defaultValues setObject:presets forKey:@"shadingsPresets"];
-	[defaultValues setObject:@(ROI_VOLUME_ISO_CONTOUR) forKey:UseDelaunayFor3DRoi_KEY];
-	[defaultValues setObject:@"1" forKey:@"EJECTCDDVD"];
-	[defaultValues setObject:@"1" forKey:@"automaticWorkspaceLoad"];
-	[defaultValues setObject:@"1" forKey:@"automaticWorkspaceSave"];
-	[defaultValues setObject:@"1" forKey:@"includeAllTiledViews"];
-	[defaultValues setObject:@"0" forKey:@"AUTOCLEANINGDATE"];
-	[defaultValues setObject:@"0" forKey:@"AUTOCLEANINGDATEPRODUCED"];
-	[defaultValues setObject:@"0" forKey:@"AUTOCLEANINGDATEOPENED"];
-	[defaultValues setObject:@"0" forKey:@"IndependentCRWLWW"];
-	[defaultValues setObject:@"90" forKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"];
-	[defaultValues setObject:@"90" forKey:@"AUTOCLEANINGDATEOPENEDDAYS"];
-	[defaultValues setObject:@"1" forKey:@"SEPARATECARDIAC4D"];
-	[defaultValues setObject:@"0" forKey:@"DEFAULTPETFUSION"];
-	[defaultValues setObject:@"0" forKey:@"DEFAULTPETWLWW"];
-	[defaultValues setObject:@"0" forKey:@"PETWLWWFROM"];
-	[defaultValues setObject:@"100" forKey:@"PETWLWWTO"];
-	[defaultValues setObject:@"0" forKey:@"PETWLWWFROMSUV"];
-	[defaultValues setObject:@"6" forKey:@"PETWLWWTOSUV"];
-	[defaultValues setObject:@(EXPORT_SIZE_CURRENT) forKey:EXPORTMATRIXFOR3D_KEY];
-	[defaultValues setObject:@"0" forKey:@"ROITEXTNAMEONLY"];
-	[defaultValues setObject:@"0" forKey:@"DEFAULTLEFTTOOL"];	// WL TOOL
-	[defaultValues setObject:@"2" forKey:@"DEFAULTRIGHTTOOL"];	// ZOOM TOOL
-	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACE"];
-//	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEPRODUCED"];
-//	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEOPENED"];
-    [defaultValues setObject:@"2" forKey:@"AutocleanSpaceMode"];
-	[defaultValues setObject:@"1024" forKey:@"AUTOCLEANINGSPACESIZE"];
-	[defaultValues setObject:@"0" forKey:@"PETMinimumValue"];
-	[defaultValues setObject:@"1" forKey:@"PETWindowingMode"];  // Fixed Minimum
-	[defaultValues setObject:@"1" forKey:@"PETOpacityTable"];
-	[defaultValues setObject:@"Logarithmic Table" forKey: @"PET Default Opacity Table"];
-	[defaultValues setObject:@"0" forKey: @"OpacityTableNM"];
-	[defaultValues setObject:@"B/W Inverse" forKey:@"PET Clut Mode"];
-	[defaultValues setObject:@"PET" forKey: @"PET Default CLUT"];
-	[defaultValues setObject:@"PET" forKey: @"PET Blending CLUT"];
-	[defaultValues setObject:@"0" forKey:@"NETWORKLOGS"];
-	[defaultValues setObject:@"+xi" forKey:@"AETransferSyntax"];
-	[defaultValues setObject:@"" forKey:@"STORESCPEXTRA"];
-	[defaultValues setObject:@"0" forKey:@"ROITEXTIFSELECTED"];
-	[defaultValues setObject:@"1" forKey: @"STORESCP"];
-	[defaultValues setObject:@"1" forKey: @"DCMPRINT_Interval"];
-	[defaultValues setObject:@"3" forKey: @"LISTENERCHECKINTERVAL"];
-	[defaultValues setObject:@"1" forKey: @"AUTOTILING"];
-	[defaultValues setObject:@"1" forKey: @"USEALWAYSTOOLBARPANEL2"];
-	[defaultValues setObject:@"1" forKey: @"SquareWindowForPrinting"];
-	[defaultValues setObject:@"Softw Tissue CT" forKey: @"LAST_3D_PRESET"];
-	[defaultValues setObject:@"0" forKey:@"HIDEPATIENTNAME"];
-	[defaultValues setObject:@"1" forKey:@"onlyDICOM"];
-	[defaultValues setObject:@"0" forKey:@"CheckForMultipleVolumesInSeries"];
-	[defaultValues setObject:@"3000" forKey:@"MAXWindowSize"];
-	[defaultValues setObject:@"1" forKey:@"ScreenCaptureSmartCropping"];
-	[defaultValues setObject:@YES forKey:@"checkForUpdatesPlugins"];
-    [defaultValues setObject:@"0" forKey:@"DoNotDeleteCrashingPlugins"];
-	[defaultValues setObject:@"1" forKey:@"magnifyingLens"];
-	[defaultValues setObject:@"12" forKey:@"LabelFONTSIZE"];
-	[defaultValues setObject:@"Geneva" forKey:@"LabelFONTNAME"];
-	[defaultValues setObject:@"1" forKey:@"EmptyNameForNewROIs"];
-	[defaultValues setObject:@"1" forKey:@"nextSeriesToAllViewers"];
-	[defaultValues setObject:@"1" forKey:@"dontDeleteStudiesWithComments"];
-	[defaultValues setObject:@"1" forKey:@"displaySamePatientWithColorBackground"];
-	[defaultValues setObject:@"Exported Series" forKey:@"default2DViewerSeriesName"];
-	[defaultValues setObject:@"10000" forKey:@"DefaultFolderSizeForDB"];
-	[defaultValues setObject:@"10000" forKey:@"maxNumberOfFilesForCheckIncoming"];
-	[defaultValues setObject:@"0" forKey:@"useSoundexForName"];
-	[defaultValues setObject:@"1" forKey:@"printAt100%Minimum"];
-	[defaultValues setObject:@"1" forKey:@"allowSmartCropping"];
-	[defaultValues setObject:@"1" forKey:@"useDCMTKForAnonymization"];
-	[defaultValues setObject:@"1" forKey:@"useDCMTKForDicomExport"];
-    [defaultValues setObject:@"1" forKey:@"SupportQRModalitiesinStudy"];
-    [defaultValues setObject:@"1" forKey:@"CapitalizedString"];
-    [defaultValues setObject:@"1" forKey:@"hasFULL32BITPIPELINE"];
-    [defaultValues setObject:@"1" forKey:@"FULL32BITPIPELINE"];
-    [defaultValues setObject:@"4" forKey:@"MAXNUMBEROF32BITVIEWERS"];
-    [defaultValues setObject:@"1" forKey:@"CFINDCommentsAndStatusSupport"];
-    [defaultValues setObject:@"1" forKey:@"restorePasswordWebServer"];
-    [defaultValues setObject:@"comment" forKey:@"commentFieldForAutoFill"];
-    [defaultValues setObject:@(SYNCHRO_ID_ABS_RATIO) forKey:DEFAULT_MODE_FOR_NON_VOLUMIC_SERIES_KEY];
-	[defaultValues setObject:@"2" forKey:@"drawerState"]; // NSDrawerOpenState
+	[defaultValuesDic setObject:presets forKey:@"shadingsPresets"];
+	[defaultValuesDic setObject:@(ROI_VOLUME_ISO_CONTOUR) forKey:UseDelaunayFor3DRoi_KEY];
+	[defaultValuesDic setObject:@"1" forKey:@"EJECTCDDVD"];
+	[defaultValuesDic setObject:@"1" forKey:@"automaticWorkspaceLoad"];
+	[defaultValuesDic setObject:@"1" forKey:@"automaticWorkspaceSave"];
+	[defaultValuesDic setObject:@"1" forKey:@"includeAllTiledViews"];
+	[defaultValuesDic setObject:@"0" forKey:@"AUTOCLEANINGDATE"];
+	[defaultValuesDic setObject:@"0" forKey:@"AUTOCLEANINGDATEPRODUCED"];
+	[defaultValuesDic setObject:@"0" forKey:@"AUTOCLEANINGDATEOPENED"];
+	[defaultValuesDic setObject:@"0" forKey:@"IndependentCRWLWW"];
+	[defaultValuesDic setObject:@"90" forKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"];
+	[defaultValuesDic setObject:@"90" forKey:@"AUTOCLEANINGDATEOPENEDDAYS"];
+	[defaultValuesDic setObject:@"1" forKey:@"SEPARATECARDIAC4D"];
+	[defaultValuesDic setObject:@"0" forKey:@"DEFAULTPETFUSION"];
+	[defaultValuesDic setObject:@"0" forKey:@"DEFAULTPETWLWW"];
+	[defaultValuesDic setObject:@"0" forKey:@"PETWLWWFROM"];
+	[defaultValuesDic setObject:@"100" forKey:@"PETWLWWTO"];
+	[defaultValuesDic setObject:@"0" forKey:@"PETWLWWFROMSUV"];
+	[defaultValuesDic setObject:@"6" forKey:@"PETWLWWTOSUV"];
+	[defaultValuesDic setObject:@(EXPORT_SIZE_CURRENT) forKey:EXPORTMATRIXFOR3D_KEY];
+	[defaultValuesDic setObject:@"0" forKey:@"ROITEXTNAMEONLY"];
+	[defaultValuesDic setObject:@"0" forKey:@"DEFAULTLEFTTOOL"];	// WL TOOL
+	[defaultValuesDic setObject:@"2" forKey:@"DEFAULTRIGHTTOOL"];	// ZOOM TOOL
+	[defaultValuesDic setObject:@"1" forKey:@"AUTOCLEANINGSPACE"];
+//	[defaultValuesDic setObject:@"1" forKey:@"AUTOCLEANINGSPACEPRODUCED"];
+//	[defaultValuesDic setObject:@"1" forKey:@"AUTOCLEANINGSPACEOPENED"];
+    [defaultValuesDic setObject:@"2" forKey:@"AutocleanSpaceMode"];
+	[defaultValuesDic setObject:@"1024" forKey:@"AUTOCLEANINGSPACESIZE"];
+	[defaultValuesDic setObject:@"0" forKey:@"PETMinimumValue"];
+	[defaultValuesDic setObject:@"1" forKey:@"PETWindowingMode"];  // Fixed Minimum
+	[defaultValuesDic setObject:@"1" forKey:@"PETOpacityTable"];
+	[defaultValuesDic setObject:@"Logarithmic Table" forKey: @"PET Default Opacity Table"];
+	[defaultValuesDic setObject:@"0" forKey: @"OpacityTableNM"];
+	[defaultValuesDic setObject:@"B/W Inverse" forKey:@"PET Clut Mode"];
+	[defaultValuesDic setObject:@"PET" forKey: @"PET Default CLUT"];
+	[defaultValuesDic setObject:@"PET" forKey: @"PET Blending CLUT"];
+	[defaultValuesDic setObject:@"0" forKey:@"NETWORKLOGS"];
+	[defaultValuesDic setObject:@"+xi" forKey:@"AETransferSyntax"];
+	[defaultValuesDic setObject:@"" forKey:@"STORESCPEXTRA"];
+	[defaultValuesDic setObject:@"0" forKey:@"ROITEXTIFSELECTED"];
+	[defaultValuesDic setObject:@"1" forKey: @"STORESCP"];
+	[defaultValuesDic setObject:@"1" forKey: @"DCMPRINT_Interval"];
+	[defaultValuesDic setObject:@"3" forKey: @"LISTENERCHECKINTERVAL"];
+	[defaultValuesDic setObject:@"1" forKey: @"AUTOTILING"];
+	[defaultValuesDic setObject:@"1" forKey: @"USEALWAYSTOOLBARPANEL2"];
+	[defaultValuesDic setObject:@"1" forKey: @"SquareWindowForPrinting"];
+	[defaultValuesDic setObject:@"Softw Tissue CT" forKey: @"LAST_3D_PRESET"];
+	[defaultValuesDic setObject:@"0" forKey:@"HIDEPATIENTNAME"];
+	[defaultValuesDic setObject:@"1" forKey:@"onlyDICOM"];
+	[defaultValuesDic setObject:@"0" forKey:@"CheckForMultipleVolumesInSeries"];
+	[defaultValuesDic setObject:@"3000" forKey:@"MAXWindowSize"];
+	[defaultValuesDic setObject:@"1" forKey:@"ScreenCaptureSmartCropping"];
+	[defaultValuesDic setObject:@YES forKey:@"checkForUpdatesPlugins"];
+    [defaultValuesDic setObject:@"0" forKey:@"DoNotDeleteCrashingPlugins"];
+	[defaultValuesDic setObject:@"1" forKey:@"magnifyingLens"];
+	[defaultValuesDic setObject:@"12" forKey:@"LabelFONTSIZE"];
+	[defaultValuesDic setObject:@"Geneva" forKey:@"LabelFONTNAME"];
+	[defaultValuesDic setObject:@"1" forKey:@"EmptyNameForNewROIs"];
+	[defaultValuesDic setObject:@"1" forKey:@"nextSeriesToAllViewers"];
+	[defaultValuesDic setObject:@"1" forKey:@"dontDeleteStudiesWithComments"];
+	[defaultValuesDic setObject:@"1" forKey:@"displaySamePatientWithColorBackground"];
+	[defaultValuesDic setObject:@"Exported Series" forKey:@"default2DViewerSeriesName"];
+	[defaultValuesDic setObject:@"10000" forKey:@"DefaultFolderSizeForDB"];
+	[defaultValuesDic setObject:@"10000" forKey:@"maxNumberOfFilesForCheckIncoming"];
+	[defaultValuesDic setObject:@"0" forKey:@"useSoundexForName"];
+	[defaultValuesDic setObject:@"1" forKey:@"printAt100%Minimum"];
+	[defaultValuesDic setObject:@"1" forKey:@"allowSmartCropping"];
+	[defaultValuesDic setObject:@"1" forKey:@"useDCMTKForAnonymization"];
+	[defaultValuesDic setObject:@"1" forKey:@"useDCMTKForDicomExport"];
+    [defaultValuesDic setObject:@"1" forKey:@"SupportQRModalitiesinStudy"];
+    [defaultValuesDic setObject:@"1" forKey:@"CapitalizedString"];
+    [defaultValuesDic setObject:@"1" forKey:@"hasFULL32BITPIPELINE"];
+    [defaultValuesDic setObject:@"1" forKey:@"FULL32BITPIPELINE"];
+    [defaultValuesDic setObject:@"4" forKey:@"MAXNUMBEROF32BITVIEWERS"];
+    [defaultValuesDic setObject:@"1" forKey:@"CFINDCommentsAndStatusSupport"];
+    [defaultValuesDic setObject:@"1" forKey:@"restorePasswordWebServer"];
+    [defaultValuesDic setObject:@"comment" forKey:@"commentFieldForAutoFill"];
+    [defaultValuesDic setObject:@(SYNCHRO_ID_ABS_RATIO) forKey:DEFAULT_MODE_FOR_NON_VOLUMIC_SERIES_KEY];
+	[defaultValuesDic setObject:@"2" forKey:@"drawerState"]; // NSDrawerOpenState
 	if ([[NSProcessInfo processInfo] processorCount] >= 4)
-		[defaultValues setObject:@"2.0" forKey:@"superSampling"];
+		[defaultValuesDic setObject:@"2.0" forKey:@"superSampling"];
 	else
-		[defaultValues setObject:@"1.4" forKey:@"superSampling"];
+		[defaultValuesDic setObject:@"1.4" forKey:@"superSampling"];
 	
-    [defaultValues setObject:@"200" forKey: @"FetchLimitForWebPortal"];
+    [defaultValuesDic setObject:@"200" forKey: @"FetchLimitForWebPortal"];
     
 #pragma mark DELETEFILELISTENER
 
-    [defaultValues setObject:@"1" forKey:@"DELETEFILELISTENER"];
+    [defaultValuesDic setObject:@"1" forKey:@"DELETEFILELISTENER"];
     
-    [defaultValues setObject:@"1" forKey:@"UseFloatingThumbnailsList"];
-    [defaultValues setObject:@"0.2" forKey: @"MinimumTitledGantryTolerance"]; // in degrees
+    [defaultValuesDic setObject:@"1" forKey:@"UseFloatingThumbnailsList"];
+    [defaultValuesDic setObject:@"0.2" forKey: @"MinimumTitledGantryTolerance"]; // in degrees
 //		
 	long pVRAM_MB = [self vramSizeMB];
     if (pVRAM_MB == 0)
@@ -961,313 +961,313 @@ static NSHost *currentHost = nil;
 
     if (pVRAM_MB >= 512)
 	{	
-		[defaultValues setObject:@"256" forKey:@"MAX3DTEXTURE"];
-		[defaultValues setObject:@"128" forKey:@"MAX3DTEXTURESHADING"];
+		[defaultValuesDic setObject:@"256" forKey:@"MAX3DTEXTURE"];
+		[defaultValuesDic setObject:@"128" forKey:@"MAX3DTEXTURESHADING"];
 	}
 	else if (pVRAM_MB >= 256)
 	{
-		[defaultValues setObject:@"128" forKey:@"MAX3DTEXTURE"];
-		[defaultValues setObject:@"64" forKey:@"MAX3DTEXTURESHADING"];
+		[defaultValuesDic setObject:@"128" forKey:@"MAX3DTEXTURE"];
+		[defaultValuesDic setObject:@"64" forKey:@"MAX3DTEXTURESHADING"];
 	}
 	else if (pVRAM_MB >= 128)
 	{
-		[defaultValues setObject:@"128" forKey:@"MAX3DTEXTURE"];
-		[defaultValues setObject:@"32" forKey:@"MAX3DTEXTURESHADING"];
+		[defaultValuesDic setObject:@"128" forKey:@"MAX3DTEXTURE"];
+		[defaultValuesDic setObject:@"32" forKey:@"MAX3DTEXTURESHADING"];
 	}
 	else
 	{
-		[defaultValues setObject:@"32" forKey:@"MAX3DTEXTURE"];
-		[defaultValues setObject:@"32" forKey:@"MAX3DTEXTURESHADING"];
+		[defaultValuesDic setObject:@"32" forKey:@"MAX3DTEXTURE"];
+		[defaultValuesDic setObject:@"32" forKey:@"MAX3DTEXTURESHADING"];
 	}
 			
 #pragma mark BESTRENDERING
 
 #if __ppc__
-	[defaultValues setObject:@"1.6" forKey:@"BESTRENDERING"];
-	#else
-	[defaultValues setObject:@"1.2" forKey:@"BESTRENDERING"];
-	#endif
+	[defaultValuesDic setObject:@"1.6" forKey:@"BESTRENDERING"];
+#else
+	[defaultValuesDic setObject:@"1.2" forKey:@"BESTRENDERING"];
+#endif
 
-    [defaultValues setObject: @"120" forKey:@"DatabaseRefreshInterval"];
+    [defaultValuesDic setObject: @"120" forKey:@"DatabaseRefreshInterval"];
     
-    [defaultValues setObject: @"1" forKey:@"ShowAlbumOnlyIfNotEmpty"];
-	[defaultValues setObject: @"0" forKey:@"UseFrameofReferenceUID"];
-	[defaultValues setObject: @"1" forKey:@"savedCommentsAndStatusInDICOMFiles"];
-	[defaultValues setObject: @"1" forKey:@"CommentsFromDICOMFiles"];
-	[defaultValues setObject: @"1" forKey:@"OPENVIEWER"];
-	[defaultValues setObject: @"0" forKey: @"ConvertPETtoSUVautomatically"];
-	[defaultValues setObject: @"0" forKey: @"SURVEYDONE3"];
-	[defaultValues setObject: @"20" forKey: @"stackThickness"];
-	[defaultValues setObject: @"20" forKey: @"stackThicknessOrthoMPR"];
-	[defaultValues setObject: @"0" forKey:@"AUTOROUTINGACTIVATED"];
-	[defaultValues setObject: @"0" forKey:@"httpXMLRPCServer"];
-	[defaultValues setObject: @"8080" forKey:@"httpXMLRPCServerPort"];
-	[defaultValues setObject: @"0" forKey:OsirixWebPortalEnabledDefaultsKey];
-	[defaultValues setObject: @"3333" forKey:OsirixWebPortalPortNumberDefaultsKey];
-	[defaultValues setObject: @"1" forKey:@"StrechWindows"];
-	[defaultValues setObject: @"0" forKey:@"ROUTINGACTIVATED"];
-	[defaultValues setObject: @"0" forKey: @"AUTOHIDEMATRIX"];
-	[defaultValues setObject: @"0" forKey: @"AutoPlayAnimation"];
-	[defaultValues setObject: @"1" forKey: @"KeepStudiesOfSamePatientTogether"];
-	[defaultValues setObject: @"1" forKey: @"KeepStudiesOfSamePatientTogetherAndGrouped"];
-	[defaultValues setObject: @"1" forKey: @"USEPAPYRUSDCMPIX4"];
-	[defaultValues setObject: @"2" forKey: @"TOOLKITPARSER4"];	// 0:DCM Framework 1:Papyrus 2:DCMTK
-	[defaultValues setObject: @"1" forKey: @"PREFERPAPYRUSFORCD"];
-    [defaultValues setObject: @"20" forKey: @"maximumNumberOfConcurrentDICOMAssociations"];
-    [defaultValues setObject: @"10000" forKey: @"maximumNumberOfCFindObjects"];
-    [defaultValues setObject: @"0" forKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"];
-	[defaultValues setObject: @"1" forKey: @"SingleProcessMultiThreadedListener"];
-	[defaultValues setObject: @"0" forKey: @"AUTHENTICATION"];
-	[defaultValues setObject: @YES forKey: @"Check4Updates"];
-	[defaultValues setObject: @(CD_MODE_ASK_USER) forKey:CD_MOUNT_KEY];
-	[defaultValues setObject: @"1" forKey:@"CDDVDEjectAfterAutoCopy"];
-//	[defaultValues setObject: @"1" forKey:@"UNMOUNT"];
-	[defaultValues setObject: @"1" forKey: @"UseDICOMDIRFileCD"];
-	[defaultValues setObject: @"1" forKey: @"SAVEROIS"];
-	[defaultValues setObject: @"1" forKey: @"NOLOCALIZER"];
-	[defaultValues setObject: @"0" forKey: @"TRANSITIONEFFECT"];  // unused ?
-	[defaultValues setObject: @NO  forKey: @"NOINTERPOLATION"];
-    [defaultValues setObject: @"0" forKey: @"MultipleAssociationsRetrieve"];
-    [defaultValues setObject: @"3" forKey: @"NoOfMultipleAssociationsRetrieve"];
-	[defaultValues setObject: @(WINDOW_SIZE_FULL_SCREEN) forKey: WINDOWSIZEVIEWER_KEY];
-	[defaultValues setObject: @YES forKey: @"UseOpenJpegForJPEG2000"];
-	//[defaultValues setObject: @"0" forKey: @"UseKDUForJPEG2000"];
-	[defaultValues setObject: @"0" forKey: @"KeepStudiesTogetherOnSameScreen"];
-	[defaultValues setObject: @"1" forKey: @"ShowErrorMessagesForAutorouting"];
-	[defaultValues setObject: @"1" forKey: @"SAMESTUDY"];
-	[defaultValues setObject: @"0" forKey: @"recomputePatientUID"];
-	[defaultValues setObject: @"1" forKey: @"ReserveScreenForDB"];
-	[defaultValues setObject: @"1" forKey: @"notificationsEmailsInterval"];
-    [defaultValues setObject: @"1" forKey: @"automaticallyRetrievePartialStudies"];
+    [defaultValuesDic setObject: @"1" forKey:@"ShowAlbumOnlyIfNotEmpty"];
+	[defaultValuesDic setObject: @"0" forKey:@"UseFrameofReferenceUID"];
+	[defaultValuesDic setObject: @"1" forKey:@"savedCommentsAndStatusInDICOMFiles"];
+	[defaultValuesDic setObject: @"1" forKey:@"CommentsFromDICOMFiles"];
+	[defaultValuesDic setObject: @"1" forKey:@"OPENVIEWER"];
+	[defaultValuesDic setObject: @"0" forKey: @"ConvertPETtoSUVautomatically"];
+	[defaultValuesDic setObject: @"0" forKey: @"SURVEYDONE3"];
+	[defaultValuesDic setObject: @"20" forKey: @"stackThickness"];
+	[defaultValuesDic setObject: @"20" forKey: @"stackThicknessOrthoMPR"];
+	[defaultValuesDic setObject: @"0" forKey:@"AUTOROUTINGACTIVATED"];
+	[defaultValuesDic setObject: @"0" forKey:@"httpXMLRPCServer"];
+	[defaultValuesDic setObject: @"8080" forKey:@"httpXMLRPCServerPort"];
+	[defaultValuesDic setObject: @"0" forKey:OsirixWebPortalEnabledDefaultsKey];
+	[defaultValuesDic setObject: @"3333" forKey:OsirixWebPortalPortNumberDefaultsKey];
+	[defaultValuesDic setObject: @"1" forKey:@"StrechWindows"];
+	[defaultValuesDic setObject: @"0" forKey:@"ROUTINGACTIVATED"];
+	[defaultValuesDic setObject: @"0" forKey: @"AUTOHIDEMATRIX"];
+	[defaultValuesDic setObject: @"0" forKey: @"AutoPlayAnimation"];
+	[defaultValuesDic setObject: @"1" forKey: @"KeepStudiesOfSamePatientTogether"];
+	[defaultValuesDic setObject: @"1" forKey: @"KeepStudiesOfSamePatientTogetherAndGrouped"];
+	[defaultValuesDic setObject: @"1" forKey: @"USEPAPYRUSDCMPIX4"];
+	[defaultValuesDic setObject: @"2" forKey: @"TOOLKITPARSER4"];	// 0:DCM Framework 1:Papyrus 2:DCMTK
+	[defaultValuesDic setObject: @"1" forKey: @"PREFERPAPYRUSFORCD"];
+    [defaultValuesDic setObject: @"20" forKey: @"maximumNumberOfConcurrentDICOMAssociations"];
+    [defaultValuesDic setObject: @"10000" forKey: @"maximumNumberOfCFindObjects"];
+    [defaultValuesDic setObject: @"0" forKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"];
+	[defaultValuesDic setObject: @"1" forKey: @"SingleProcessMultiThreadedListener"];
+	[defaultValuesDic setObject: @"0" forKey: @"AUTHENTICATION"];
+	[defaultValuesDic setObject: @YES forKey: @"Check4Updates"];
+	[defaultValuesDic setObject: @(CD_MODE_ASK_USER) forKey:CD_MOUNT_KEY];
+	[defaultValuesDic setObject: @"1" forKey:@"CDDVDEjectAfterAutoCopy"];
+//	[defaultValuesDic setObject: @"1" forKey:@"UNMOUNT"];
+	[defaultValuesDic setObject: @"1" forKey: @"UseDICOMDIRFileCD"];
+	[defaultValuesDic setObject: @"1" forKey: @"SAVEROIS"];
+	[defaultValuesDic setObject: @"1" forKey: @"NOLOCALIZER"];
+	[defaultValuesDic setObject: @"0" forKey: @"TRANSITIONEFFECT"];  // unused ?
+	[defaultValuesDic setObject: @NO  forKey: @"NOINTERPOLATION"];
+    [defaultValuesDic setObject: @"0" forKey: @"MultipleAssociationsRetrieve"];
+    [defaultValuesDic setObject: @"3" forKey: @"NoOfMultipleAssociationsRetrieve"];
+	[defaultValuesDic setObject: @(WINDOW_SIZE_FULL_SCREEN) forKey: WINDOWSIZEVIEWER_KEY];
+	[defaultValuesDic setObject: @YES forKey: @"UseOpenJpegForJPEG2000"];
+	//[defaultValuesDic setObject: @"0" forKey: @"UseKDUForJPEG2000"];
+	[defaultValuesDic setObject: @"0" forKey: @"KeepStudiesTogetherOnSameScreen"];
+	[defaultValuesDic setObject: @"1" forKey: @"ShowErrorMessagesForAutorouting"];
+	[defaultValuesDic setObject: @"1" forKey: @"SAMESTUDY"];
+	[defaultValuesDic setObject: @"0" forKey: @"recomputePatientUID"];
+	[defaultValuesDic setObject: @"1" forKey: @"ReserveScreenForDB"];
+	[defaultValuesDic setObject: @"1" forKey: @"notificationsEmailsInterval"];
+    [defaultValuesDic setObject: @"1" forKey: @"automaticallyRetrievePartialStudies"];
 	NSDateFormatter	*dateFormat = [[[NSDateFormatter alloc] init] autorelease];
 	[dateFormat setDateStyle: NSDateFormatterShortStyle];
-	[defaultValues setObject: [dateFormat dateFormat] forKey:@"DBDateOfBirthFormat2"];
+	[defaultValuesDic setObject: [dateFormat dateFormat] forKey:@"DBDateOfBirthFormat2"];
 	[dateFormat setDateStyle: NSDateFormatterShortStyle];
 	[dateFormat setTimeStyle: NSDateFormatterShortStyle];
-	[defaultValues setObject: [dateFormat dateFormat] forKey:@"DBDateFormat2"];
+	[defaultValuesDic setObject: [dateFormat dateFormat] forKey:@"DBDateFormat2"];
 	
 	NSDictionary *defaultAnnotations = [NSDictionary dictionaryWithContentsOfFile: [[NSBundle mainBundle] pathForResource:@"AnnotationsDefault" ofType:@"plist"]];
 	if (defaultAnnotations)
-		[defaultValues setObject: defaultAnnotations forKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
-	[defaultValues setObject:@"0" forKey:@"SERIESORDER"];
-	[defaultValues setObject:@"40" forKey:@"DICOMTimeout"];
-    [defaultValues setObject:@"10" forKey:@"DICOMConnectionTimeout"];
-	[defaultValues setObject:@"1" forKey:@"NSWindowsSetFrameAnimate"];
-	[defaultValues setObject: @"0" forKey: @"TRANSITIONTYPE"];
-#ifndef MIELE_LIGHT
-	[defaultValues setObject: @YES forKey: @"COPYDATABASE"];
+		[defaultValuesDic setObject: defaultAnnotations forKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
+	[defaultValuesDic setObject:@"0" forKey:@"SERIESORDER"];
+	[defaultValuesDic setObject:@"40" forKey:@"DICOMTimeout"];
+    [defaultValuesDic setObject:@"10" forKey:@"DICOMConnectionTimeout"];
+	[defaultValuesDic setObject:@"1" forKey:@"NSWindowsSetFrameAnimate"];
+	[defaultValuesDic setObject: @"0" forKey: @"TRANSITIONTYPE"];
+#ifdef MIELE_LIGHT
+	[defaultValuesDic setObject: @NO forKey: @"COPYDATABASE"];
 #else
-	[defaultValues setObject: @NO forKey: @"COPYDATABASE"];
+	[defaultValuesDic setObject: @YES forKey: @"COPYDATABASE"];
 #endif
-	[defaultValues setObject: @"0" forKey: @"SUVCONVERSION"];
-	[defaultValues setObject: @"1" forKey: @"NoImageTilingInFullscreen"];
-	[defaultValues setObject: @"0" forKey: @"AUTOCLEANINGCOMMENTS"];
-	[defaultValues setObject: @"" forKey: @"AUTOCLEANINGCOMMENTSTEXT"];
-	[defaultValues setObject: @"0" forKey: @"AUTOCLEANINGDONTCONTAIN"];
-	[defaultValues setObject: @"0" forKey: @"AUTOCLEANINGDELETEORIGINAL"];
-	[defaultValues setObject: @"0" forKey: @"COMMENTSAUTOFILL"];
-	[defaultValues setObject: SYNC_DICOM_NODES_URL forKey: @"syncDICOMNodesURL"];
-	[defaultValues setObject: SYNC_DB_URL forKey: @"syncOsiriXDBURL"];
-	[defaultValues setObject: @"1" forKey: @"BurnOsirixApplication"];
-	[defaultValues setObject: @"1" forKey: @"BurnHtml"];
-	[defaultValues setObject: @"0" forKey: @"BurnSupplementaryFolder"];
-	[defaultValues setObject: @"1" forKey: @"splineForROI"];
-	[defaultValues setObject:@"0" forKey:@"ThreeDViewerOnAnotherScreen"];
-	[defaultValues setObject:@"512" forKey:@"SOFTWAREINTERPOLATION_MAX"];
-	[defaultValues setObject:@"1" forKey:@"SOFTWAREINTERPOLATION"];
-	[defaultValues setObject:@"0" forKey:@"DATABASEINDEX"];
-	[defaultValues setObject:@(ANNOTATIONS_BASE) forKey: ANNOTATIONS_KEY];
-	[defaultValues setObject:@(CLUT_BAR_HIDE) forKey :CLUTBARS_KEY];
-	[defaultValues setObject:@"60" forKey: @"temporaryUserDuration"];
-	[defaultValues setObject:@(COPY_DB_ASK_USER) forKey:COPYDATABASEMODE_KEY];
-	[defaultValues setObject:@"7" forKey:@"LOGCLEANINGDAYS"];
-	[defaultValues setObject:@"1" forKey:@"AUTOMATIC FUSE"];
+	[defaultValuesDic setObject: @"0" forKey: @"SUVCONVERSION"];
+	[defaultValuesDic setObject: @"1" forKey: @"NoImageTilingInFullscreen"];
+	[defaultValuesDic setObject: @"0" forKey: @"AUTOCLEANINGCOMMENTS"];
+	[defaultValuesDic setObject: @"" forKey: @"AUTOCLEANINGCOMMENTSTEXT"];
+	[defaultValuesDic setObject: @"0" forKey: @"AUTOCLEANINGDONTCONTAIN"];
+	[defaultValuesDic setObject: @"0" forKey: @"AUTOCLEANINGDELETEORIGINAL"];
+	[defaultValuesDic setObject: @"0" forKey: @"COMMENTSAUTOFILL"];
+	[defaultValuesDic setObject: SYNC_DICOM_NODES_URL forKey: @"syncDICOMNodesURL"];
+	[defaultValuesDic setObject: SYNC_DB_URL forKey: @"syncOsiriXDBURL"];
+	[defaultValuesDic setObject: @"1" forKey: @"BurnOsirixApplication"];
+	[defaultValuesDic setObject: @"1" forKey: @"BurnHtml"];
+	[defaultValuesDic setObject: @"0" forKey: @"BurnSupplementaryFolder"];
+	[defaultValuesDic setObject: @"1" forKey: @"splineForROI"];
+	[defaultValuesDic setObject:@"0" forKey:@"ThreeDViewerOnAnotherScreen"];
+	[defaultValuesDic setObject:@"512" forKey:@"SOFTWAREINTERPOLATION_MAX"];
+	[defaultValuesDic setObject:@"1" forKey:@"SOFTWAREINTERPOLATION"];
+	[defaultValuesDic setObject:@"0" forKey:@"DATABASEINDEX"];
+	[defaultValuesDic setObject:@(ANNOTATIONS_BASE) forKey: ANNOTATIONS_KEY];
+	[defaultValuesDic setObject:@(CLUT_BAR_HIDE) forKey :CLUTBARS_KEY];
+	[defaultValuesDic setObject:@"60" forKey: @"temporaryUserDuration"];
+	[defaultValuesDic setObject:@(COPY_DB_ASK_USER) forKey:COPYDATABASEMODE_KEY];
+	[defaultValuesDic setObject:@"7" forKey:@"LOGCLEANINGDAYS"];
+	[defaultValuesDic setObject:@"1" forKey:@"AUTOMATIC FUSE"];
 
-    [defaultValues setObject:@"0" forKey:@"DEFAULT_DATABASELOCATION"]; // Documents directory
-	[defaultValues setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
-	[defaultValues setObject:@"0" forKey: @"DATABASELOCATION"];
-	[defaultValues setObject:@"" forKey: @"DATABASELOCATIONURL"];
+    [defaultValuesDic setObject:@"0" forKey:@"DEFAULT_DATABASELOCATION"]; // Documents directory
+	[defaultValuesDic setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
+	[defaultValuesDic setObject:@"0" forKey: @"DATABASELOCATION"];
+	[defaultValuesDic setObject:@"" forKey: @"DATABASELOCATIONURL"];
 
-    [defaultValues setObject: @"Geneva" forKey: @"FONTNAME"];
-	[defaultValues setObject: @"1" forKey: @"DICOMSENDALLOWED"];
-	[defaultValues setObject: @"14.0" forKey: @"FONTSIZE"];
-	[defaultValues setObject: @(REPORT_TYPE_PAGES) forKey: @"REPORTSMODE"];
-	[defaultValues setObject: URL_MIELE_WEB_PAGE@"/internet.dcm" forKey: @"LASTURL"];
-	[defaultValues setObject: @(ENGINE_CPU) forKey: @"MAPPERMODEVR"];
-	[defaultValues setObject: @"1" forKey: @"STARTCOUNT"];
-	[defaultValues setObject: @"1" forKey: @"editingLevel"];
-	[defaultValues setObject: @"1" forKey: @"publishDICOMBonjour"];
-	[defaultValues setObject: @"1" forKey: @"searchDICOMBonjour"];
-	[defaultValues setObject: @"1" forKey: @"autorotate3D"];
-	[defaultValues setObject: @"1" forKey: @"preferencesModificationsEnabled"];
-	[defaultValues setObject: @"0" forKey: @"Compression Mode for Export"];
-	[defaultValues setObject: @"0" forKey: @"ORIGINALSIZE"];
-	[defaultValues setObject: @"1" forKey: @"Scroll Wheel Reversed"];
-	[defaultValues setObject: @"Miele-LXIV" forKey: @"ALBUMNAME"];
-	[defaultValues setObject: @"1" forKey: @"DisplayCrossReferenceLines"];
-	[defaultValues setObject: @"0" forKey: @"AlwaysScaleToFit"];
-	[defaultValues setObject:@(VR_VIEW_SIZE_SQUARE_FULL_SCREEN) forKey: VRDefaultViewSize_KEY];
-	[defaultValues setObject:@"0" forKey: @"RunListenerOnlyIfActive"];
-	[defaultValues setObject:@"0" forKey: @"UseShutter"];
-	[defaultValues setObject:@"1" forKey: @"UseVOILUT"];
-	[defaultValues setObject:@"0" forKey: @"replaceAnonymize"];
-	[defaultValues setObject:@"0" forKey: @"anonymizedBeforeBurning"];
-	[defaultValues setObject:@"0" forKey: @"ZoomWithHorizonScroll"];
-	[defaultValues setObject:@"1" forKey: @"dcmExportFormat"];
-    [defaultValues setObject:@"0" forKey: @"CFINDBodyPartExaminedSupport"];
-	[defaultValues setObject:@"2" forKey: @"preferredSyntaxForIncoming"]; // 2 = EXS_LittleEndianExplicit See dcmqrsrv.mm
-	[defaultValues setObject:@"ISO_IR 100" forKey: @"STRINGENCODING"];
-	[defaultValues setObject:@"1" forKey:@"syncPreviewList"];
-	[defaultValues setObject:@"1" forKey:@"openPDFwithPreview"];
-	[defaultValues setObject:@"1" forKey:@"ROIArrowThickness"];
-	[defaultValues setObject:@"1" forKey:@"loopScrollWheel"];
-	[defaultValues setObject:@"1" forKey:@"UseJPEGColorSpace"];
-	[defaultValues setObject:@"0" forKey:@"displayCobbAngle"];
-	[defaultValues setObject:@"0" forKey:@"onlyDisplayImagesOfSamePatient"];
-	[defaultValues setObject:@"1" forKey:@"activateCGETSCP"];
-    [defaultValues setObject:@"1" forKey:@"activateCFINDSCP"];
-    [defaultValues setObject:@"1" forKey:@"activateCMOVESCP"];
+    [defaultValuesDic setObject: @"Geneva" forKey: @"FONTNAME"];
+	[defaultValuesDic setObject: @"1" forKey: @"DICOMSENDALLOWED"];
+	[defaultValuesDic setObject: @"14.0" forKey: @"FONTSIZE"];
+	[defaultValuesDic setObject: @(REPORT_TYPE_PAGES) forKey: @"REPORTSMODE"];
+	[defaultValuesDic setObject: URL_MIELE_WEB_PAGE@"/internet.dcm" forKey: @"LASTURL"];
+	[defaultValuesDic setObject: @(ENGINE_CPU) forKey: @"MAPPERMODEVR"];
+	[defaultValuesDic setObject: @"1" forKey: @"STARTCOUNT"];
+	[defaultValuesDic setObject: @"1" forKey: @"editingLevel"];
+	[defaultValuesDic setObject: @"1" forKey: @"publishDICOMBonjour"];
+	[defaultValuesDic setObject: @"1" forKey: @"searchDICOMBonjour"];
+	[defaultValuesDic setObject: @"1" forKey: @"autorotate3D"];
+	[defaultValuesDic setObject: @"1" forKey: @"preferencesModificationsEnabled"];
+	[defaultValuesDic setObject: @"0" forKey: @"Compression Mode for Export"];
+	[defaultValuesDic setObject: @"0" forKey: @"ORIGINALSIZE"];
+	[defaultValuesDic setObject: @"1" forKey: @"Scroll Wheel Reversed"];
+	[defaultValuesDic setObject: @"Miele-LXIV" forKey: @"ALBUMNAME"];
+	[defaultValuesDic setObject: @"1" forKey: @"DisplayCrossReferenceLines"];
+	[defaultValuesDic setObject: @"0" forKey: @"AlwaysScaleToFit"];
+	[defaultValuesDic setObject:@(VR_VIEW_SIZE_SQUARE_FULL_SCREEN) forKey: VRDefaultViewSize_KEY];
+	[defaultValuesDic setObject:@"0" forKey: @"RunListenerOnlyIfActive"];
+	[defaultValuesDic setObject:@"0" forKey: @"UseShutter"];
+	[defaultValuesDic setObject:@"1" forKey: @"UseVOILUT"];
+	[defaultValuesDic setObject:@"0" forKey: @"replaceAnonymize"];
+	[defaultValuesDic setObject:@"0" forKey: @"anonymizedBeforeBurning"];
+	[defaultValuesDic setObject:@"0" forKey: @"ZoomWithHorizonScroll"];
+	[defaultValuesDic setObject:@"1" forKey: @"dcmExportFormat"];
+    [defaultValuesDic setObject:@"0" forKey: @"CFINDBodyPartExaminedSupport"];
+	[defaultValuesDic setObject:@"2" forKey: @"preferredSyntaxForIncoming"]; // 2 = EXS_LittleEndianExplicit See dcmqrsrv.mm
+	[defaultValuesDic setObject:@"ISO_IR 100" forKey: @"STRINGENCODING"];
+	[defaultValuesDic setObject:@"1" forKey:@"syncPreviewList"];
+	[defaultValuesDic setObject:@"1" forKey:@"openPDFwithPreview"];
+	[defaultValuesDic setObject:@"1" forKey:@"ROIArrowThickness"];
+	[defaultValuesDic setObject:@"1" forKey:@"loopScrollWheel"];
+	[defaultValuesDic setObject:@"1" forKey:@"UseJPEGColorSpace"];
+	[defaultValuesDic setObject:@"0" forKey:@"displayCobbAngle"];
+	[defaultValuesDic setObject:@"0" forKey:@"onlyDisplayImagesOfSamePatient"];
+	[defaultValuesDic setObject:@"1" forKey:@"activateCGETSCP"];
+    [defaultValuesDic setObject:@"1" forKey:@"activateCFINDSCP"];
+    [defaultValuesDic setObject:@"1" forKey:@"activateCMOVESCP"];
     
 #if 1
     NSColor *colorPeak = [NSColor colorWithCalibratedRed:0.5 green:0.5 blue:1.0 alpha:1.0];
     NSColor *colorIso  = [NSColor colorWithCalibratedRed:0.5 green:1.0 blue:0.5 alpha:1.0];
     NSData *dataPeak = [NSArchiver archivedDataWithRootObject:colorPeak];
     NSData *dataIso = [NSArchiver archivedDataWithRootObject:colorIso];
-    [defaultValues setObject: dataPeak forKey: @"peakValueColor"];
-    [defaultValues setObject: dataIso  forKey: @"isoContourColor"];
+    [defaultValuesDic setObject: dataPeak forKey: @"peakValueColor"];
+    [defaultValuesDic setObject: dataIso  forKey: @"isoContourColor"];
 #else
     // Miele-LXIV Lite does it this way ?
-    [defaultValues setObject:[NSNumber numberWithFloat: 0.5 * 65535.] forKey:@"peakValueColorR"];
-    [defaultValues setObject:[NSNumber numberWithFloat: 0.5 * 65535.] forKey:@"peakValueColorG"];
-    [defaultValues setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"peakValueColorB"];
+    [defaultValuesDic setObject:[NSNumber numberWithFloat: 0.5 * 65535.] forKey:@"peakValueColorR"];
+    [defaultValuesDic setObject:[NSNumber numberWithFloat: 0.5 * 65535.] forKey:@"peakValueColorG"];
+    [defaultValuesDic setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"peakValueColorB"];
     
-    [defaultValues setObject:[NSNumber numberWithFloat: 0.5 * 65535.] forKey:@"isoContourColorR"];
-    [defaultValues setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"isoContourColorG"];
-    [defaultValues setObject:[NSNumber numberWithFloat: 0.5 * 65535.] forKey:@"isoContourColorB"];
+    [defaultValuesDic setObject:[NSNumber numberWithFloat: 0.5 * 65535.] forKey:@"isoContourColorR"];
+    [defaultValuesDic setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"isoContourColorG"];
+    [defaultValuesDic setObject:[NSNumber numberWithFloat: 0.5 * 65535.] forKey:@"isoContourColorB"];
 #endif
 
-    [defaultValues setObject:@"0" forKey:@"DICOMSCPOnAllDatabases"]; // TODO: make use of it
-    [defaultValues setObject:@"0" forKey:@"notificationsEmails"];
-	[defaultValues setObject:@"0" forKey:@"validateFilesBeforeImporting"];
-	[defaultValues setObject:@"10" forKey:@"defaultFrameRate"];
-	[defaultValues setObject:@"10" forKey:@"quicktimeExportRateValue"];
-    [defaultValues setObject:AVVideoCodecJPEG forKey:@"selectedMenuAVFoundationExport"];
-	[defaultValues setObject:@"0" forKey:@"32bitDICOMAreAlwaysIntegers"];
-	[defaultValues setObject:@"1" forKey:@"archiveReportsAndAnnotationsAsDICOMSR"];
-	[defaultValues setObject:@"1" forKey:@"SelectWindowScrollWheel"];
-	[defaultValues setObject:@"1" forKey:@"useDCMTKForJP2K"]; // deprecated
-	[defaultValues setObject:@"1" forKey:@"MouseClickZoomCentered"];
-	[defaultValues setObject:@"1" forKey:@"exportOrientationIn3DExport"];
-	[defaultValues setObject:@"600" forKey:@"WADOTimeout"];
-	[defaultValues setObject:@"10" forKey:@"WADOMaximumConcurrentDownloads"];
-	[defaultValues setObject:@"1" forKey:@"autoSelectSourceCDDVD"];
-	[defaultValues setObject:@"1" forKey:@"ScanDiskIfDICOMDIRZero"];
-	[defaultValues setObject:@"1" forKey:@"WebServerTagUploadedStudiesWithUsername"];
-    [defaultValues setObject:@"20" forKey:@"MaxNumberOfRetrieveForAutoQR"];
-    [defaultValues setObject:@"1800" forKey:@"WebServerTimeOut"]; // = 30*60 = 30 min 120*60 = 2 hours
-    [defaultValues setObject:@"400" forKey:@"MaxNumberOfFramesForWebPortalMovies"];
-    [defaultValues setObject:@"880" forKey:@"WebServerMaxWidthForMovie"];
-    [defaultValues setObject:@"880" forKey:@"WebServerMaxWidthForStillImage"];
-    [defaultValues setObject:@"512" forKey:@"WebServerMinWidthForMovie"];
-    [defaultValues setObject:@"1" forKey:@"WebServerUseMailAppForEmails"];
-    [defaultValues setObject:@"1" forKey:@"DICOMQueryAllowFutureQuery"];
-    [defaultValues setObject:@"1" forKey:@"SeriesListVisible"];
-    [defaultValues setObject:@"1" forKey:@"RescaleDuring3DResampling"];
-    [defaultValues setObject:@"1" forKey:@"listPODComparativesIn2DViewer"];
-    [defaultValues setObject:@"1" forKey:@"OVERFLOWLINES"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_name"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_id"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_accession_number"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_birthdate"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_description"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_referring_physician"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_comments"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_institution"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_status"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_study_date"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_modality"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_blank_query"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
-    [defaultValues setObject:@"2" forKey:@"MaxConcurrentPODRetrieves"];
-	[defaultValues setObject:@"1" forKey:@"QRRemoveDuplicateEntries"];
-    [defaultValues setObject:@"1" forKey:@"tileWindowsOrderByStudyDate"];
-    [defaultValues setObject:@"1" forKey:@"AllowPluginAuthenticationForWebPortal"];
-	[defaultValues setObject:@"1" forKey:@"UsePatientBirthDateForUID"];
-    [defaultValues setObject:@"1" forKey:@"UsePatientIDForUID"];
-	[defaultValues setObject:@"1" forKey:@"UsePatientNameForUID"];
-    [defaultValues setObject:@"1" forKey:@"putSrcAETitleInSourceApplicationEntityTitle"];
-    [defaultValues setObject:@"0" forKey:@"putDstAETitleInPrivateInformationCreatorUID"];
-    [defaultValues setObject:@"1" forKey:@"wadoRequestRequireValidToken"];
-    [defaultValues setObject:@"1024" forKey: @"DicomImageScreenCaptureWidth"];
-    [defaultValues setObject:@"1024" forKey: @"DicomImageScreenCaptureHeight"];
-    [defaultValues setObject:@"30" forKey: @"WebPortalMaximumNumberOfRecentStudies"];
-    [defaultValues setObject:@"10" forKey: @"WebPortalMaximumNumberOfDaysForRecentStudies"];
-    [defaultValues setObject:@"2" forKey:@"yearOldDatabaseDisplay"];
-    [defaultValues setObject:@"1" forKey:@"SendControllerConcurrentThreads"];
-    [defaultValues setObject:@"4" forKey:@"MaximumSendControllerConcurrentThreads"];
-    [defaultValues setObject:@"4" forKey:@"MaximumSendGlobalControllerConcurrentThreads"];
-    [defaultValues setObject:@"1" forKey:@"COMMENTSAUTOFILLStudyLevel"];
-    [defaultValues setObject:@YES forKey:@"ROIDrawPlainEdge"];
-    [defaultValues setObject:@"1" forKey:@"PACSOnDemandForSearchField"];
-    [defaultValues setObject:@"1" forKey:@"CloseAllWindowsBeforeXMLRPCOpen"];
+    [defaultValuesDic setObject:@"0" forKey:@"DICOMSCPOnAllDatabases"]; // TODO: make use of it
+    [defaultValuesDic setObject:@"0" forKey:@"notificationsEmails"];
+	[defaultValuesDic setObject:@"0" forKey:@"validateFilesBeforeImporting"];
+	[defaultValuesDic setObject:@"10" forKey:@"defaultFrameRate"];
+	[defaultValuesDic setObject:@"10" forKey:@"quicktimeExportRateValue"];
+    [defaultValuesDic setObject:AVVideoCodecJPEG forKey:@"selectedMenuAVFoundationExport"];
+	[defaultValuesDic setObject:@"0" forKey:@"32bitDICOMAreAlwaysIntegers"];
+	[defaultValuesDic setObject:@"1" forKey:@"archiveReportsAndAnnotationsAsDICOMSR"];
+	[defaultValuesDic setObject:@"1" forKey:@"SelectWindowScrollWheel"];
+	[defaultValuesDic setObject:@"1" forKey:@"useDCMTKForJP2K"]; // deprecated
+	[defaultValuesDic setObject:@"1" forKey:@"MouseClickZoomCentered"];
+	[defaultValuesDic setObject:@"1" forKey:@"exportOrientationIn3DExport"];
+	[defaultValuesDic setObject:@"600" forKey:@"WADOTimeout"];
+	[defaultValuesDic setObject:@"10" forKey:@"WADOMaximumConcurrentDownloads"];
+	[defaultValuesDic setObject:@"1" forKey:@"autoSelectSourceCDDVD"];
+	[defaultValuesDic setObject:@"1" forKey:@"ScanDiskIfDICOMDIRZero"];
+	[defaultValuesDic setObject:@"1" forKey:@"WebServerTagUploadedStudiesWithUsername"];
+    [defaultValuesDic setObject:@"20" forKey:@"MaxNumberOfRetrieveForAutoQR"];
+    [defaultValuesDic setObject:@"1800" forKey:@"WebServerTimeOut"]; // = 30*60 = 30 min 120*60 = 2 hours
+    [defaultValuesDic setObject:@"400" forKey:@"MaxNumberOfFramesForWebPortalMovies"];
+    [defaultValuesDic setObject:@"880" forKey:@"WebServerMaxWidthForMovie"];
+    [defaultValuesDic setObject:@"880" forKey:@"WebServerMaxWidthForStillImage"];
+    [defaultValuesDic setObject:@"512" forKey:@"WebServerMinWidthForMovie"];
+    [defaultValuesDic setObject:@"1" forKey:@"WebServerUseMailAppForEmails"];
+    [defaultValuesDic setObject:@"1" forKey:@"DICOMQueryAllowFutureQuery"];
+    [defaultValuesDic setObject:@"1" forKey:@"SeriesListVisible"];
+    [defaultValuesDic setObject:@"1" forKey:@"RescaleDuring3DResampling"];
+    [defaultValuesDic setObject:@"1" forKey:@"listPODComparativesIn2DViewer"];
+    [defaultValuesDic setObject:@"1" forKey:@"OVERFLOWLINES"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_name"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_id"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_accession_number"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_birthdate"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_description"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_referring_physician"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_comments"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_institution"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_status"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_study_date"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_modality"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_blank_query"];
+    [defaultValuesDic setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
+    [defaultValuesDic setObject:@"2" forKey:@"MaxConcurrentPODRetrieves"];
+	[defaultValuesDic setObject:@"1" forKey:@"QRRemoveDuplicateEntries"];
+    [defaultValuesDic setObject:@"1" forKey:@"tileWindowsOrderByStudyDate"];
+    [defaultValuesDic setObject:@"1" forKey:@"AllowPluginAuthenticationForWebPortal"];
+	[defaultValuesDic setObject:@"1" forKey:@"UsePatientBirthDateForUID"];
+    [defaultValuesDic setObject:@"1" forKey:@"UsePatientIDForUID"];
+	[defaultValuesDic setObject:@"1" forKey:@"UsePatientNameForUID"];
+    [defaultValuesDic setObject:@"1" forKey:@"putSrcAETitleInSourceApplicationEntityTitle"];
+    [defaultValuesDic setObject:@"0" forKey:@"putDstAETitleInPrivateInformationCreatorUID"];
+    [defaultValuesDic setObject:@"1" forKey:@"wadoRequestRequireValidToken"];
+    [defaultValuesDic setObject:@"1024" forKey: @"DicomImageScreenCaptureWidth"];
+    [defaultValuesDic setObject:@"1024" forKey: @"DicomImageScreenCaptureHeight"];
+    [defaultValuesDic setObject:@"30" forKey: @"WebPortalMaximumNumberOfRecentStudies"];
+    [defaultValuesDic setObject:@"10" forKey: @"WebPortalMaximumNumberOfDaysForRecentStudies"];
+    [defaultValuesDic setObject:@"2" forKey:@"yearOldDatabaseDisplay"];
+    [defaultValuesDic setObject:@"1" forKey:@"SendControllerConcurrentThreads"];
+    [defaultValuesDic setObject:@"4" forKey:@"MaximumSendControllerConcurrentThreads"];
+    [defaultValuesDic setObject:@"4" forKey:@"MaximumSendGlobalControllerConcurrentThreads"];
+    [defaultValuesDic setObject:@"1" forKey:@"COMMENTSAUTOFILLStudyLevel"];
+    [defaultValuesDic setObject:@YES forKey:@"ROIDrawPlainEdge"];
+    [defaultValuesDic setObject:@"1" forKey:@"PACSOnDemandForSearchField"];
+    [defaultValuesDic setObject:@"1" forKey:@"CloseAllWindowsBeforeXMLRPCOpen"];
     
-    [defaultValues setObject:@YES forKey:@"scrollThroughSeries"];
-    [defaultValues setObject:@YES forKey:@"scrollThroughSeriesForCR"];
-    [defaultValues setObject:@YES forKey:@"scrollThroughSeriesForMG"];
-    [defaultValues setObject:@YES forKey:@"scrollThroughSeriesForRF"];
-    [defaultValues setObject:@YES forKey:@"scrollThroughSeriesForDR"];
-    [defaultValues setObject:@YES forKey:@"scrollThroughSeriesForDX"];
-    [defaultValues setObject:@YES forKey:@"scrollThroughSeriesForOT"];
+    [defaultValuesDic setObject:@YES forKey:@"scrollThroughSeries"];
+    [defaultValuesDic setObject:@YES forKey:@"scrollThroughSeriesForCR"];
+    [defaultValuesDic setObject:@YES forKey:@"scrollThroughSeriesForMG"];
+    [defaultValuesDic setObject:@YES forKey:@"scrollThroughSeriesForRF"];
+    [defaultValuesDic setObject:@YES forKey:@"scrollThroughSeriesForDR"];
+    [defaultValuesDic setObject:@YES forKey:@"scrollThroughSeriesForDX"];
+    [defaultValuesDic setObject:@YES forKey:@"scrollThroughSeriesForOT"];
     
-    [defaultValues setObject:@"0.01" forKey:@"PARALLELPLANETOLERANCE"]; // In radians: 0.01 = about 0.5 degrees
-    [defaultValues setObject:@"0.1" forKey:@"PARALLELPLANETOLERANCE-Sync"];
+    [defaultValuesDic setObject:@"0.01" forKey:@"PARALLELPLANETOLERANCE"]; // In radians: 0.01 = about 0.5 degrees
+    [defaultValuesDic setObject:@"0.1" forKey:@"PARALLELPLANETOLERANCE-Sync"];
     
-    [defaultValues setObject:@"1" forKey:@"bringOsiriXToFrontAfterReceivingMessage"];
+    [defaultValuesDic setObject:@"1" forKey:@"bringOsiriXToFrontAfterReceivingMessage"];
     
 #ifdef MACAPPSTORE
-	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
+	[defaultValuesDic setObject:@"1" forKey:@"MACAPPSTORE"];
 #else
-	[defaultValues setObject:@"0" forKey:@"MACAPPSTORE"];
+	[defaultValuesDic setObject:@"0" forKey:@"MACAPPSTORE"];
 #endif
 	
-	[defaultValues setObject: [NSArray arrayWithObjects: [DCMAbstractSyntaxUID MRSpectroscopyStorage], nil] forKey:@"additionalDisplayedStorageSOPClassUIDArray"];
+	[defaultValuesDic setObject: [NSArray arrayWithObjects: [DCMAbstractSyntaxUID MRSpectroscopyStorage], nil] forKey:@"additionalDisplayedStorageSOPClassUIDArray"];
 	
 #pragma mark  ROI Default
 
-    [defaultValues setObject:@2.0F forKey:@"ROIThickness"];
-	[defaultValues setObject:@3.0F forKey:@"ROITextThickness"];
-	[defaultValues setObject:@1.0F forKey:@"ROIOpacity"];
-	[defaultValues setObject:[NSNumber numberWithFloat: 0.3 * 65535.] forKey:@"ROIColorR"];
-	[defaultValues setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"ROIColorG"];
-	[defaultValues setObject:[NSNumber numberWithFloat: 0.3 * 65535.] forKey:@"ROIColorB"];
-	[defaultValues setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"ROITextColorR"];
-	[defaultValues setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"ROITextColorG"];
-	[defaultValues setObject:[NSNumber numberWithFloat: 0.0 * 65535.] forKey:@"ROITextColorB"];
-	[defaultValues setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"ROIRegionColorR"];
-	[defaultValues setObject:[NSNumber numberWithFloat: 0.0 * 65535.] forKey:@"ROIRegionColorG"];
-	[defaultValues setObject:[NSNumber numberWithFloat: 0.0 * 65535.] forKey:@"ROIRegionColorB"];
-	[defaultValues setObject:@0.5F forKey:@"ROIRegionOpacity"];
-	[defaultValues setObject:@5.0F forKey:@"ROIRegionThickness"];
+    [defaultValuesDic setObject:@2.0F forKey:@"ROIThickness"];
+	[defaultValuesDic setObject:@3.0F forKey:@"ROITextThickness"];
+	[defaultValuesDic setObject:@1.0F forKey:@"ROIOpacity"];
+	[defaultValuesDic setObject:[NSNumber numberWithFloat: 0.3 * 65535.] forKey:@"ROIColorR"];
+	[defaultValuesDic setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"ROIColorG"];
+	[defaultValuesDic setObject:[NSNumber numberWithFloat: 0.3 * 65535.] forKey:@"ROIColorB"];
+	[defaultValuesDic setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"ROITextColorR"];
+	[defaultValuesDic setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"ROITextColorG"];
+	[defaultValuesDic setObject:[NSNumber numberWithFloat: 0.0 * 65535.] forKey:@"ROITextColorB"];
+	[defaultValuesDic setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"ROIRegionColorR"];
+	[defaultValuesDic setObject:[NSNumber numberWithFloat: 0.0 * 65535.] forKey:@"ROIRegionColorG"];
+	[defaultValuesDic setObject:[NSNumber numberWithFloat: 0.0 * 65535.] forKey:@"ROIRegionColorB"];
+	[defaultValuesDic setObject:@0.5F forKey:@"ROIRegionOpacity"];
+	[defaultValuesDic setObject:@5.0F forKey:@"ROIRegionThickness"];
     //--- tBall
-    [defaultValues setObject:@YES forKey:@"computePeakValue"];
-    [defaultValues setObject:@10 forKey:@"peakDiameterInMm"]; // slider
-    [defaultValues setObject:@NO forKey:@"computeIsoContour"];
-    [defaultValues setObject:@2.5F forKey:@"minimumBallROIIsoContour"];
-    [defaultValues setObject:@YES forKey:@"definedMaximumForBallROIIsoContour"]; // tickbox
-    [defaultValues setObject:@999999.0F forKey:@"maximumBallROIIsoContour"]; // slider
+    [defaultValuesDic setObject:@YES forKey:@"computePeakValue"];
+    [defaultValuesDic setObject:@10 forKey:@"peakDiameterInMm"]; // slider
+    [defaultValuesDic setObject:@NO forKey:@"computeIsoContour"];
+    [defaultValuesDic setObject:@2.5F forKey:@"minimumBallROIIsoContour"];
+    [defaultValuesDic setObject:@YES forKey:@"definedMaximumForBallROIIsoContour"]; // tickbox
+    [defaultValuesDic setObject:@999999.0F forKey:@"maximumBallROIIsoContour"]; // slider
     // Percentages
-    [defaultValues setObject:@NO forKey:@"percentageIsoContour"];
-    [defaultValues setObject:@0.42F forKey:@"minimumBallROIIsoContourPercentage"];
-    [defaultValues setObject:@NO forKey:@"definedMaximumForBallROIIsoContourPercentage"]; // tickbox
-    [defaultValues setObject:@1.0F forKey:@"maximumBallROIIsoContourPercentage"]; // slider
+    [defaultValuesDic setObject:@NO forKey:@"percentageIsoContour"];
+    [defaultValuesDic setObject:@0.42F forKey:@"minimumBallROIIsoContourPercentage"];
+    [defaultValuesDic setObject:@NO forKey:@"definedMaximumForBallROIIsoContourPercentage"]; // tickbox
+    [defaultValuesDic setObject:@1.0F forKey:@"maximumBallROIIsoContourPercentage"]; // slider
     // Top color
-    [defaultValues setObject:@1.0F forKey:@"peakValueColorR"];
-    [defaultValues setObject:@0.5F forKey:@"peakValueColorG"];
-    [defaultValues setObject:@0.5F forKey:@"peakValueColorB"];
+    [defaultValuesDic setObject:@1.0F forKey:@"peakValueColorR"];
+    [defaultValuesDic setObject:@0.5F forKey:@"peakValueColorG"];
+    [defaultValuesDic setObject:@0.5F forKey:@"peakValueColorB"];
     // Bottom color
-    [defaultValues setObject:@0.5F forKey:@"isoContourColorR"];
-    [defaultValues setObject:@0.5F forKey:@"isoContourColorG"];
-    [defaultValues setObject:@1.0F forKey:@"isoContourColorB"];
+    [defaultValuesDic setObject:@0.5F forKey:@"isoContourColorR"];
+    [defaultValuesDic setObject:@0.5F forKey:@"isoContourColorG"];
+    [defaultValuesDic setObject:@1.0F forKey:@"isoContourColorB"];
 
 #pragma mark HANGING PROTOCOLS
 
@@ -1300,29 +1300,29 @@ static NSHost *currentHost = nil;
         }
 		[defaultHangingProtocols setObject: [NSMutableArray arrayWithObject:protocol] forKey:modality];
 	}
-	[defaultValues setObject: defaultHangingProtocols forKey: @"HANGINGPROTOCOLS"];
+	[defaultValuesDic setObject: defaultHangingProtocols forKey: @"HANGINGPROTOCOLS"];
 	
 #pragma mark COLUMNSDATABASE
 
     NSMutableDictionary *defaultDATABASECOLUMNS = [NSMutableDictionary dictionary];
-	[defaultValues setObject: defaultDATABASECOLUMNS forKey: @"COLUMNSDATABASE"];
+	[defaultValuesDic setObject: defaultDATABASECOLUMNS forKey: @"COLUMNSDATABASE"];
 
-	[defaultValues setObject: @"20" forKey: @"MaxNumberOfRecentStudies"];
+	[defaultValuesDic setObject: @"20" forKey: @"MaxNumberOfRecentStudies"];
     
-    [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForCR"];
-    [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForDR"];
-    [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForDX"];
-    [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForRF"];
-    [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForXA"];
+    [defaultValuesDic setObject: @"1" forKey: @"noPropagateInSeriesForCR"];
+    [defaultValuesDic setObject: @"1" forKey: @"noPropagateInSeriesForDR"];
+    [defaultValuesDic setObject: @"1" forKey: @"noPropagateInSeriesForDX"];
+    [defaultValuesDic setObject: @"1" forKey: @"noPropagateInSeriesForRF"];
+    [defaultValuesDic setObject: @"1" forKey: @"noPropagateInSeriesForXA"];
     
-	[defaultValues setObject: @"1" forKey: @"COPYSETTINGS"];
-	[defaultValues setObject: @"1" forKey: @"USESTORESCP"];
-	[defaultValues setObject: @"1" forKey: @"splitMultiEchoMR"];
-	[defaultValues setObject: @"0" forKey: @"useSeriesDescription"];
-	[defaultValues setObject: @"1" forKey: @"combineProjectionSeries"];
-	[defaultValues setObject: @"1" forKey: @"combineProjectionSeriesMode"];
-	[defaultValues setObject: @(LISTENER_COMPRESSION_DONT_MODIFY) forKey:ListenerCompressionSettings_KEY];
-	[defaultValues setObject: @"localizer,scout,survey,locator,tracker" forKey: @"NOLOCALIZER_Strings"];
+	[defaultValuesDic setObject: @"1" forKey: @"COPYSETTINGS"];
+	[defaultValuesDic setObject: @"1" forKey: @"USESTORESCP"];
+	[defaultValuesDic setObject: @"1" forKey: @"splitMultiEchoMR"];
+	[defaultValuesDic setObject: @"0" forKey: @"useSeriesDescription"];
+	[defaultValuesDic setObject: @"1" forKey: @"combineProjectionSeries"];
+	[defaultValuesDic setObject: @"1" forKey: @"combineProjectionSeriesMode"];
+	[defaultValuesDic setObject: @(LISTENER_COMPRESSION_DONT_MODIFY) forKey:ListenerCompressionSettings_KEY];
+	[defaultValuesDic setObject: @"localizer,scout,survey,locator,tracker" forKey: @"NOLOCALIZER_Strings"];
 	
 	//hot key prefs
 	NSMutableDictionary *hotkeys = [NSMutableDictionary dictionary];
@@ -1390,7 +1390,7 @@ static NSHost *currentHost = nil;
 		[hotkeys setObject:[NSNumber numberWithInt:x] forKey:stringValue];
 //		[hotkeysModifiers setObject:@0 forKey:stringValue];
 	}
-	[defaultValues setObject:hotkeys forKey:@"HOTKEYS"];
+	[defaultValuesDic setObject:hotkeys forKey:@"HOTKEYS"];
 	
 	NSArray *compressionSettings = [NSArray arrayWithObjects: 
 							[NSDictionary dictionaryWithObjectsAndKeys: NSLocalizedString( @"default", nil), @"modality", @"3", @"compression", @"1", @"quality", nil],
@@ -1409,9 +1409,9 @@ static NSHost *currentHost = nil;
 							[NSDictionary dictionaryWithObjectsAndKeys: @"XA", @"modality", @"0", @"compression", @"1", @"quality", nil],
 							nil]; 
 	
-	[defaultValues setObject: @"512" forKey: @"CompressionResolutionLimit"];
+	[defaultValuesDic setObject: @"512" forKey: @"CompressionResolutionLimit"];
 	
-	[defaultValues setObject: compressionSettings forKey:@"CompressionSettings"];
+	[defaultValuesDic setObject: compressionSettings forKey:@"CompressionSettings"];
 	
 	NSArray *compressionSettingsLowRes = [NSArray arrayWithObjects: 
 							[NSDictionary dictionaryWithObjectsAndKeys: NSLocalizedString( @"default", nil), @"modality", @"3", @"compression", @"0", @"quality", nil], 
@@ -1430,7 +1430,7 @@ static NSHost *currentHost = nil;
 							[NSDictionary dictionaryWithObjectsAndKeys: @"XA", @"modality", @"0", @"compression", @"0", @"quality", nil],
 							nil]; 
 	
-	[defaultValues setObject: compressionSettingsLowRes forKey:@"CompressionSettingsLowRes"];
+	[defaultValuesDic setObject: compressionSettingsLowRes forKey:@"CompressionSettingsLowRes"];
 	
 	
 	// Comparison Body Regions
@@ -1790,32 +1790,32 @@ static NSHost *currentHost = nil;
 //				footRegion,
 //				nil];
 //	
-//	[defaultValues setObject:bodyRegions forKey:@"bodyRegions"];
+//	[defaultValuesDic setObject:bodyRegions forKey:@"bodyRegions"];
 	
 	// ITK Segmentation Defaults
-	[defaultValues setObject: @0 forKey:@"growingRegionType"];
-	[defaultValues setObject: @0 forKey:@"growingRegionAlgorithm"];
-	[defaultValues setObject: @YES forKey:@"previewGrowingRegion"];
-	[defaultValues setObject: @100 forKey:@"growingRegionInterval"];
-	[defaultValues setObject: @0 forKey:@"growingRegionLowerThreshold"];
-	[defaultValues setObject: @100 forKey:@"growingRegionUpperThreshold"];
-	[defaultValues setObject: @2 forKey:@"growingRegionRadius"];
-	[defaultValues setObject: @2.5F forKey:@"growingRegionMultiplier"];
-	[defaultValues setObject: @5 forKey:@"growingRegionIterations"];
-	[defaultValues setObject: @0 forKey:@"growingRegionROIType"];
-	[defaultValues setObject: @20 forKey:@"growingRegionPointCount"];
-	[defaultValues setObject: NSLocalizedString(@"Growing Region", nil) forKey:@"growingRegionROIName"];
-	[defaultValues setObject: @0 forKey:@"displayCalciumScore"];
-	[defaultValues setObject: @0 forKey:@"CalciumScoreCTType"];
-    [defaultValues setObject: @YES forKey: @"defaultShading"];
-    [defaultValues setObject: @YES forKey: @"dontDeleteStudiesIfInAlbum"];
+	[defaultValuesDic setObject: @0 forKey:@"growingRegionType"];
+	[defaultValuesDic setObject: @0 forKey:@"growingRegionAlgorithm"];
+	[defaultValuesDic setObject: @YES forKey:@"previewGrowingRegion"];
+	[defaultValuesDic setObject: @100 forKey:@"growingRegionInterval"];
+	[defaultValuesDic setObject: @0 forKey:@"growingRegionLowerThreshold"];
+	[defaultValuesDic setObject: @100 forKey:@"growingRegionUpperThreshold"];
+	[defaultValuesDic setObject: @2 forKey:@"growingRegionRadius"];
+	[defaultValuesDic setObject: @2.5F forKey:@"growingRegionMultiplier"];
+	[defaultValuesDic setObject: @5 forKey:@"growingRegionIterations"];
+	[defaultValuesDic setObject: @0 forKey:@"growingRegionROIType"];
+	[defaultValuesDic setObject: @20 forKey:@"growingRegionPointCount"];
+	[defaultValuesDic setObject: NSLocalizedString(@"Growing Region", nil) forKey:@"growingRegionROIName"];
+	[defaultValuesDic setObject: @0 forKey:@"displayCalciumScore"];
+	[defaultValuesDic setObject: @0 forKey:@"CalciumScoreCTType"];
+    [defaultValuesDic setObject: @YES forKey: @"defaultShading"];
+    [defaultValuesDic setObject: @YES forKey: @"dontDeleteStudiesIfInAlbum"];
 		
-	[defaultValues setObject: @YES forKey:OsirixWadoServiceEnabledDefaultsKey];
-	[defaultValues setObject: @YES forKey:OsirixWebPortalUsesWeasisDefaultsKey];
-	[defaultValues setObject: @YES forKey:OsirixWebPortalPrefersFlashDefaultsKey];
+	[defaultValuesDic setObject: @YES forKey:OsirixWadoServiceEnabledDefaultsKey];
+	[defaultValuesDic setObject: @YES forKey:OsirixWebPortalUsesWeasisDefaultsKey];
+	[defaultValuesDic setObject: @YES forKey:OsirixWebPortalPrefersFlashDefaultsKey];
     
-    [defaultValues setObject: @NO forKey:@"verbose_dcmtkStoreScu"];
+    [defaultValuesDic setObject: @NO forKey:@"verbose_dcmtkStoreScu"];
 	
-	return defaultValues;
+	return defaultValuesDic;
 }
 @end

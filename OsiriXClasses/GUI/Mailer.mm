@@ -98,17 +98,17 @@ return s;
 
 // initialize it in your init method:
 
-- (id)init {
-self = [super init];
-if (self) {
-//myComponent = OpenDefaultComponent(kOSAComponentType, kOSAGenericScriptingComponentSubtype);
-// other initialization code here
-}
-return self;
+- (id)init
+{
+    self = [super init];
+    if (self) {
+    //myComponent = OpenDefaultComponent(kOSAComponentType, kOSAGenericScriptingComponentSubtype);
+    // other initialization code here
+    }
+    return self;
 }
 
 // do the grunge work -
-
 // the sweetly wrapped method is all we need to know:
 
 - (void)runScript:(NSString *)txt

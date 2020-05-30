@@ -347,7 +347,9 @@
             runBuffer += maskRuns[i].widthRange.length;
         }
         
-        _floatData = [[NSData alloc] initWithBytesNoCopy:floatBuffer length:floatCount * sizeof(float) freeWhenDone:YES];
+        _floatData = [[NSData alloc] initWithBytesNoCopy:floatBuffer
+                                                  length:floatCount * sizeof(float)
+                                            freeWhenDone:YES];
     }
 
     return _floatData;

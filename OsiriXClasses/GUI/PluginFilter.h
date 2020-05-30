@@ -2,7 +2,7 @@
 //  ©Alex Bettarini -- all rights reserved
 //  License GPLv3.0 -- see License File
 //
-//  At the end of 2014 the project was forked from OsiriX to become Miele-LXIV
+//  At the end of 2014 the project was forked from Miele-LXIV to become Miele-LXIV
 //  The original header follows:
 /*=========================================================================
   Program:   OsiriX
@@ -50,13 +50,13 @@
 */
 - (id) report: (NSManagedObject*) study action:(NSString*) action;
 
-/** This function is called at the OsiriX startup, if you need to do some memory allocation, etc. */
+/** This function is called at the Miele-LXIV startup, if you need to do some memory allocation, etc. */
 - (void) initPlugin;
 
-/** This function is called if OsiriX needs to kill the current running plugin, to install an update, for example. */
+/** This function is called if Miele-LXIV needs to kill the current running plugin, to install an update, for example. */
 - (void) willUnload;
 
-/** This function is called if OsiriX needs to display a warning to the user about a non-certified plugin. */
+/** This function is called if Miele-LXIV needs to display a warning to the user about a non-certified plugin. */
 - (BOOL) isCertifiedForMedicalImaging;
 
 /** Opportunity for plugins to make Menu changes if necessary */
@@ -65,7 +65,7 @@
 
 // UTILITY FUNCTIONS - Defined in the PluginFilter.m file
 
-/** Return the complete lists of opened studies in OsiriX */
+/** Return the complete lists of opened studies in Miele-LXIV */
 /** NSArray contains an array of ViewerController objects */
 - (NSArray*) viewerControllersList;
 

@@ -49,7 +49,8 @@
 	return [self initWithData:aData lastGroup:(unsigned short)lastGroup] ;
 }
 
-- (id)initWithContentsOfURL:(NSURL *)aURL lastGroup:(unsigned short)lastGroup{
+- (id)initWithContentsOfURL:(NSURL *)aURL lastGroup:(unsigned short)lastGroup
+{
 	NSData *aData = [NSData dataWithContentsOfURL:aURL];
 	return [self initWithData:aData lastGroup:(unsigned short)lastGroup] ;
 }

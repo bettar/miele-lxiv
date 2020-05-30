@@ -36,6 +36,8 @@
 		430CB70E218C66CD000C2547 /* SRController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 430CB70D218C66CD000C2547 /* SRController.mm */; };
 		430D9F102199FB37006EA1B1 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */; };
 		43110BEB21679E5B00B0405B /* DCM.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4314A2A6247FE6FC0008EC19 /* libpng16.16.37.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4314A2A5247FE6FC0008EC19 /* libpng16.16.37.0.dylib */; };
+		4314A2A7247FE71F0008EC19 /* libpng16.16.37.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4314A2A5247FE6FC0008EC19 /* libpng16.16.37.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		4323CE1A23E036A400E96458 /* GLProgramLoupe.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4323CE1923E036A400E96458 /* GLProgramLoupe.mm */; };
 		4323CE1D23E036B800E96458 /* GLProgramText.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4323CE1C23E036B800E96458 /* GLProgramText.mm */; };
 		4323CE2023E036D700E96458 /* GLScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4323CE1F23E036D700E96458 /* GLScene.mm */; };
@@ -52,8 +54,6 @@
 		433F9A801A1B18A500E52C6C /* vtkMieleView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A7E1A1B18A500E52C6C /* vtkMieleView.mm */; };
 		433F9A891A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */; };
 		434499B21A1D70840047F0F2 /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
-		434930B622549CA600C30B21 /* libpng16.16.35.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4357DF12224BE09000D4A467 /* libpng16.16.35.0.dylib */; };
-		434930B722549D2B00C30B21 /* libtiff.5.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4357DF0E224BDFD000D4A467 /* libtiff.5.4.0.dylib */; };
 		434B46191A19F322008CF8CF /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
 		434B461D1A19F631008CF8CF /* OPJSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 434B461B1A19F631008CF8CF /* OPJSupport.cpp */; };
 		434B46201A19F642008CF8CF /* OPJSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 434B461B1A19F631008CF8CF /* OPJSupport.cpp */; };
@@ -65,16 +65,10 @@
 		4356C82D1AC23F7A00653B32 /* OsiriXDB_Previous_DataModel2.5.mom in Resources */ = {isa = PBXBuildFile; fileRef = 4356C82C1AC23F7A00653B32 /* OsiriXDB_Previous_DataModel2.5.mom */; };
 		4356C82F1AC2A0D600653B32 /* CircleAngle.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 4356C82E1AC2A0D600653B32 /* CircleAngle.pdf */; };
 		4356C8311AC2A13300653B32 /* Ball.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 4356C8301AC2A13300653B32 /* Ball.pdf */; };
-		4357DF0F224BDFD000D4A467 /* libtiff.5.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4357DF0E224BDFD000D4A467 /* libtiff.5.4.0.dylib */; };
-		4357DF11224BE01800D4A467 /* libtiff.5.4.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4357DF0E224BDFD000D4A467 /* libtiff.5.4.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		4357DF13224BE09100D4A467 /* libpng16.16.35.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4357DF12224BE09000D4A467 /* libpng16.16.35.0.dylib */; };
-		4357DF14224BE0AA00D4A467 /* libpng16.16.35.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4357DF12224BE09000D4A467 /* libpng16.16.35.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		4365FC361B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4365FC341B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm */; };
-		436B5889217261DF009F42D3 /* libjpeg.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 436B5888217261DF009F42D3 /* libjpeg.9.dylib */; };
 		437002F921CD3CD700C91D62 /* DICOMPrint in Copy Executables */ = {isa = PBXBuildFile; fileRef = CEDF6DD00B46FE99008B45B8 /* DICOMPrint */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		437002FA21CD47CA00C91D62 /* Decompress in Copy Executables */ = {isa = PBXBuildFile; fileRef = AB724FF60ADE6ECB00A212A0 /* Decompress */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		4373D61E2174A369000F4BE1 /* OPJSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 434B461B1A19F631008CF8CF /* OPJSupport.cpp */; };
-		4373D6222174A8FF000F4BE1 /* libjpeg.9.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4373D6212174A8FF000F4BE1 /* libjpeg.9.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		43748A9F21B0213000A1446C /* Photos.icns in Resources */ = {isa = PBXBuildFile; fileRef = 43748A9E21B0212E00A1446C /* Photos.icns */; };
 		4378EBB8219F281300135BF5 /* OSIAutoroutingPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43A02C08219D865C00E788B6 /* OSIAutoroutingPreferencePanePref.xib */; };
 		437B656521ED042D00A9A548 /* dciodvfy in Copy Executables */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -1136,9 +1130,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				4357DF11224BE01800D4A467 /* libtiff.5.4.0.dylib in Embed Frameworks */,
-				4357DF14224BE0AA00D4A467 /* libpng16.16.35.0.dylib in Embed Frameworks */,
-				4373D6222174A8FF000F4BE1 /* libjpeg.9.dylib in Embed Frameworks */,
+				4314A2A7247FE71F0008EC19 /* libpng16.16.37.0.dylib in Embed Frameworks */,
 				43110BEB21679E5B00B0405B /* DCM.framework in Embed Frameworks */,
 				59F1A515104BA8AE009E3215 /* MieleAPI.framework in Embed Frameworks */,
 			);
@@ -1506,6 +1498,7 @@
 		4307C62B1A2091900083877C /* url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = url.h; sourceTree = "<group>"; };
 		430CB70C218C66CD000C2547 /* SRController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRController.h; sourceTree = "<group>"; };
 		430CB70D218C66CD000C2547 /* SRController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SRController.mm; sourceTree = "<group>"; };
+		4314A2A5247FE6FC0008EC19 /* libpng16.16.37.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.37.0.dylib; path = "../../../install/miele-20200527/libpng-1.6.37/lib/libpng16.16.37.0.dylib"; sourceTree = "<group>"; };
 		4323CE1823E036A400E96458 /* GLProgramLoupe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramLoupe.h; sourceTree = "<group>"; };
 		4323CE1923E036A400E96458 /* GLProgramLoupe.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GLProgramLoupe.mm; sourceTree = "<group>"; };
 		4323CE1B23E036B800E96458 /* GLProgramText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramText.h; sourceTree = "<group>"; };
@@ -1540,15 +1533,10 @@
 		4356C82C1AC23F7A00653B32 /* OsiriXDB_Previous_DataModel2.5.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.5.mom; sourceTree = "<group>"; };
 		4356C82E1AC2A0D600653B32 /* CircleAngle.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = CircleAngle.pdf; sourceTree = "<group>"; };
 		4356C8301AC2A13300653B32 /* Ball.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Ball.pdf; sourceTree = "<group>"; };
-		4357DF0E224BDFD000D4A467 /* libtiff.5.4.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtiff.5.4.0.dylib; path = "../../../../install/miele-201612/tiff-4.0.10/lib/libtiff.5.4.0.dylib"; sourceTree = "<group>"; };
-		4357DF12224BE09000D4A467 /* libpng16.16.35.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.35.0.dylib; path = "../../../../install/miele-201612/libpng-1.6.35/lib/libpng16.16.35.0.dylib"; sourceTree = "<group>"; };
 		4365FC331B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DcmQueryRetrieveGetOurContext.h; sourceTree = "<group>"; };
 		4365FC341B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DcmQueryRetrieveGetOurContext.mm; sourceTree = "<group>"; };
 		4365FC371B01C4F100380C25 /* DcmQueryRetrieveOsiriSCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DcmQueryRetrieveOsiriSCP.h; sourceTree = "<group>"; };
-		436B5888217261DF009F42D3 /* libjpeg.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.9.dylib; path = "../../../../install/miele-201612/jpeg-9b/lib/libjpeg.9.dylib"; sourceTree = "<group>"; };
-		4373D6212174A8FF000F4BE1 /* libjpeg.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.9.dylib; path = "../../../../install/miele-201612/jpeg-9b/lib/libjpeg.9.dylib"; sourceTree = "<group>"; };
 		43748A9E21B0212E00A1446C /* Photos.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Photos.icns; sourceTree = "<group>"; };
-		437B656421ED030600A9A548 /* libjpeg.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libjpeg.9.dylib; sourceTree = "<group>"; };
 		438718A22067BDA9009575DB /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = ../../../../../../System/Library/Frameworks/AddressBook.framework; sourceTree = "<group>"; };
 		438718A42067BDE1009575DB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = ../../../../../../System/Library/Frameworks/AVFoundation.framework; sourceTree = "<group>"; };
 		438718A72067BDF4009575DB /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = ../../../../../../System/Library/Frameworks/Carbon.framework; sourceTree = "<group>"; };
@@ -3094,9 +3082,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				434930B722549D2B00C30B21 /* libtiff.5.4.0.dylib in Frameworks */,
 				43B516412372FB7000106783 /* OpenGL.framework in Frameworks */,
-				434930B622549CA600C30B21 /* libpng16.16.35.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3119,11 +3105,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				43A5D42A2407D68E0063416A /* UserNotifications.framework in Frameworks */,
-				4357DF13224BE09100D4A467 /* libpng16.16.35.0.dylib in Frameworks */,
 				430D9F102199FB37006EA1B1 /* OpenGL.framework in Frameworks */,
-				4357DF0F224BDFD000D4A467 /* libtiff.5.4.0.dylib in Frameworks */,
 				439FC5EF237713AC009718CD /* libopenjp2.a in Frameworks */,
-				436B5889217261DF009F42D3 /* libjpeg.9.dylib in Frameworks */,
+				4314A2A6247FE6FC0008EC19 /* libpng16.16.37.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3219,7 +3203,6 @@
 				438AE1AA21B51E1400C5E98F /* miele-lxiv-Development.entitlements */,
 				438AE1A921B5177700C5E98F /* miele-lxiv-Deployment.entitlements */,
 				43A36C26219B1E4A00C506D3 /* GUI */,
-				4373D6212174A8FF000F4BE1 /* libjpeg.9.dylib */,
 				434B69402168BEBC00C35AB6 /* miele-lxiv-Distribution.entitlements */,
 				43E9D2B82167865800CFBD0B /* API framework */,
 				434B461A1A19F4E4008CF8CF /* OpenJPEG */,
@@ -3304,10 +3287,7 @@
 			children = (
 				43A5D4292407D68E0063416A /* UserNotifications.framework */,
 				43B51643237323C000106783 /* GLEW.framework */,
-				4357DF12224BE09000D4A467 /* libpng16.16.35.0.dylib */,
-				4357DF0E224BDFD000D4A467 /* libtiff.5.4.0.dylib */,
-				437B656421ED030600A9A548 /* libjpeg.9.dylib */,
-				436B5888217261DF009F42D3 /* libjpeg.9.dylib */,
+				4314A2A5247FE6FC0008EC19 /* libpng16.16.37.0.dylib */,
 				59FB64331230EE2F00EBA136 /* Ming */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 			);
@@ -5559,7 +5539,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = NO;
 				LastTestingUpgradeCheck = 0630;
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = bettar;
@@ -8106,7 +8085,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20200220;
+				CURRENT_PROJECT_VERSION = 20200527;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8150,7 +8129,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries",
 					"$(BUILD_DIR)/$(CONFIGURATION)",
-					"$(SRCROOT)/Binaries/libjpeg/lib",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_FAST_MATH = YES;
@@ -8174,7 +8152,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-8.2",
+					"$(SRCROOT)/Binaries/libjpeg/include",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.0",
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
@@ -8202,7 +8181,7 @@
 					"$(SRCROOT)/Binaries/openssl/lib",
 					"$(SRCROOT)/Binaries/libiconv/lib",
 				);
-				MARKETING_VERSION = 8.0.55;
+				MARKETING_VERSION = 8.1.56;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8273,6 +8252,9 @@
 					"$(SRCROOT)/Binaries/VTK/lib/libVTK.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
+					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
+					/usr/local/lib/libwebp.a,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "miele-lxiv";
@@ -8280,7 +8262,7 @@
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.0",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-8.2",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.0",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -8305,7 +8287,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 8.0.55;
+				MARKETING_VERSION = 8.1.56;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8361,7 +8343,7 @@
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/Binaries/libjpeg/lib";
-				MARKETING_VERSION = 8.0.55;
+				MARKETING_VERSION = 8.1.56;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8504,6 +8486,7 @@
 					DCM,
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
 					"-lpng",
 					/usr/lib/libxml2.dylib,
 					"-lpthread",
@@ -8599,7 +8582,7 @@
 					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"$(SRCROOT)/Binaries/libtiff/lib",
 				);
-				MARKETING_VERSION = 8.0.55;
+				MARKETING_VERSION = 8.1.56;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
 					"-std=gnu++14",
@@ -8609,6 +8592,7 @@
 				OTHER_LDFLAGS = (
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
 					/usr/lib/libxml2.dylib,
 					"-lpthread",
 					/usr/lib/libz.dylib,
@@ -8646,7 +8630,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20200220;
+				CURRENT_PROJECT_VERSION = 20200527;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8689,7 +8673,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries",
 					"$(BUILD_DIR)/$(CONFIGURATION)",
-					"$(SRCROOT)/Binaries/libjpeg/lib",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_FAST_MATH = YES;
@@ -8714,7 +8697,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-8.2",
+					"$(SRCROOT)/Binaries/libjpeg/include",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.0",
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
@@ -8742,7 +8726,7 @@
 					"$(SRCROOT)/Binaries/openssl/lib",
 					"$(SRCROOT)/Binaries/libiconv/lib",
 				);
-				MARKETING_VERSION = 8.0.55;
+				MARKETING_VERSION = 8.1.56;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8805,7 +8789,6 @@
 					/usr/lib/libm.dylib,
 					/usr/lib/libxml2.dylib,
 					/usr/lib/libz.dylib,
-					"-ljpeg",
 					"$(SRCROOT)/Binaries/openssl/lib/libssl.a",
 					"$(SRCROOT)/Binaries/openssl/lib/libcrypto.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
@@ -8814,6 +8797,9 @@
 					"$(SRCROOT)/Binaries/VTK/lib/libVTK.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
+					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
+					/usr/local/lib/libwebp.a,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "miele-lxiv";
@@ -8821,7 +8807,7 @@
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.0",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-8.2",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.0",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -8846,7 +8832,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 8.0.55;
+				MARKETING_VERSION = 8.1.56;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8902,7 +8888,7 @@
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/Binaries/libjpeg/lib";
-				MARKETING_VERSION = 8.0.55;
+				MARKETING_VERSION = 8.1.56;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8919,13 +8905,13 @@
 					AppKit,
 					"-framework",
 					IOKit,
-					"-ljpeg",
 					/usr/lib/libxml2.dylib,
 					"-lpthread",
 					/usr/lib/libz.dylib,
 					"-lm",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
+					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github-bettar.dcmframework";
 				PRODUCT_NAME = DCM;
@@ -9046,7 +9032,7 @@
 					DCM,
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
-					"-ljpeg",
+					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 					"-lpng",
 					/usr/lib/libxml2.dylib,
 					"-lpthread",
@@ -9142,7 +9128,7 @@
 					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"$(SRCROOT)/Binaries/libtiff/lib",
 				);
-				MARKETING_VERSION = 8.0.55;
+				MARKETING_VERSION = 8.1.56;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
 					"-std=gnu++14",
@@ -9152,8 +9138,8 @@
 				OTHER_LDFLAGS = (
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
-					"-ltiff",
-					"-ljpeg",
+					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
 					/usr/lib/libxml2.dylib,
 					"-lpthread",
 					/usr/lib/libz.dylib,
@@ -9185,7 +9171,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 8.0.55;
+				MARKETING_VERSION = 8.1.56;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9238,7 +9224,7 @@
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/Binaries/libjpeg/lib";
-				MARKETING_VERSION = 8.0.55;
+				MARKETING_VERSION = 8.1.56;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9254,13 +9240,13 @@
 					AppKit,
 					"-framework",
 					IOKit,
-					"-ljpeg",
 					/usr/lib/libxml2.dylib,
 					"-lpthread",
 					/usr/lib/libz.dylib,
 					"-lm",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
+					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bettarini.dcmframework;
 				PRODUCT_NAME = DCM;
@@ -9319,7 +9305,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries",
 					"$(BUILD_DIR)/$(CONFIGURATION)",
-					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"\"$(SRCROOT)/Binaries/GLEW\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -9344,7 +9329,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-8.2",
+					"$(SRCROOT)/Binaries/libjpeg/include",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.0",
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
@@ -9371,7 +9357,7 @@
 					"$(SRCROOT)/Binaries/openssl/lib",
 					"$(SRCROOT)/Binaries/libiconv/lib",
 				);
-				MARKETING_VERSION = 8.0.55;
+				MARKETING_VERSION = 8.1.56;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -9412,9 +9398,9 @@
 					"-framework",
 					IOKit,
 					"-framework",
-					DCM,
-					"-framework",
 					OpenGL,
+					"-framework",
+					DCM,
 					"-framework",
 					PreferencePanes,
 					"-framework",
@@ -9433,7 +9419,6 @@
 					/usr/lib/libm.dylib,
 					/usr/lib/libxml2.dylib,
 					/usr/lib/libz.dylib,
-					"-ljpeg",
 					"$(SRCROOT)/Binaries/openssl/lib/libssl.a",
 					"$(SRCROOT)/Binaries/openssl/lib/libcrypto.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
@@ -9442,13 +9427,16 @@
 					"$(SRCROOT)/Binaries/VTK/lib/libVTK.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
+					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
+					/usr/local/lib/libwebp.a,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "miele-lxiv";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.0",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-8.2",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.0",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -9478,7 +9466,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
-				CURRENT_PROJECT_VERSION = 20200220;
+				CURRENT_PROJECT_VERSION = 20200527;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -9541,7 +9529,7 @@
 					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"$(SRCROOT)/Binaries/libtiff/lib",
 				);
-				MARKETING_VERSION = 8.0.55;
+				MARKETING_VERSION = 8.1.56;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
 					"-std=gnu++14",
@@ -9550,8 +9538,8 @@
 				OTHER_LDFLAGS = (
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
-					"-ltiff",
-					"-ljpeg",
+					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
 					/usr/lib/libxml2.dylib,
 					"-lpthread",
 					/usr/lib/libz.dylib,
@@ -9643,8 +9631,8 @@
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
-					"-ltiff",
-					"-ljpeg",
+					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
 					"-lpng",
 					/usr/lib/libxml2.dylib,
 					"-lpthread",

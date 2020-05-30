@@ -3723,6 +3723,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //	return [self initWithData :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize];
 //}
 
+#pragma mark -
+
 - (instancetype) initWithData :(float*) im
                     :(short) pixelSize
                     :(long) xDim
@@ -4069,14 +4071,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 -(void) LoadBioradPic
 {
-    FILE		*fp = fopen( [srcFile UTF8String], "r");
-	long		i;
+    FILE *fp = fopen( [srcFile UTF8String], "r");
+	long i;
 	
 	//NSLog(@"Handling Biorad PIC File in CheckLoad");
 	if (fp)
 	{
-		long					totSize, maxImage;
-		struct BioradHeader 	header;
+		long totSize, maxImage;
+		struct BioradHeader header;
 		
 		fread(&header, BIORAD_HEADER_LENGTH, 1, fp);
 		

@@ -203,7 +203,7 @@ static void action_Compress(int argc, const char *argv[], NSString *path)
         if ([[curFile pathExtension] isEqualToString: @"zip"] ||
             [[curFile pathExtension] isEqualToString: @"osirixzip"])
         {
-            NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
+            NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];  // TODO: could be simplified
             
             myunlink([tempCurFileDest fileSystemRepresentation]);
             myunlink([curFileDest fileSystemRepresentation]);

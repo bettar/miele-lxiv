@@ -28,7 +28,7 @@
 
 @interface DicomSeries : NSManagedObject
 {
-	NSNumber	*dicomTime;
+	NSNumber *dicomTime;
 }
 
 @property(nonatomic, retain, readonly) NSNumber* dicomTime;

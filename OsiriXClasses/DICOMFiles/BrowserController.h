@@ -99,13 +99,14 @@ extern NSString * const SeriesViewer_DragType;
 	
 	NSRect					visibleScreenRect[ 40];
 	NSString				*transferSyntax;
-    NSArray                 *dirArray;
+    NSArray<DCMPix *>       *dirArray;
     NSToolbar               *toolbar;
 	
 	NSMutableArray			*sendQueue;
 	NSMutableDictionary		*reportFilesToCheck;
 	
-    NSMutableArray          *previewPix, *previewPixThumbnails;
+    NSMutableArray          *previewPix;
+    NSMutableArray          *previewPixThumbnails;
 		
 	NSMutableDictionary		*activeSends;
 	NSMutableArray			*sendLog;

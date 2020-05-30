@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 #include "mdfconen.h"
 #include "mdfdsman.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
@@ -464,7 +465,7 @@ int MdfConsoleEngine::executeJob(const MdfJob &job,
     else if (job.option == "mf")
         result = ds_man->modifyOrInsertFromFile(job.path, job.value /*filename*/, OFTrue, update_metaheader_uids_option, ignore_missing_tags_option, no_reservation_checks);
     else if (job.option == "ma")
-        result = ds_man->modifyAllTags(job.path, job.value, update_metaheader_uids_option, count);
+        result = ds_man->modifyAllTags(job.path, job.value, update_metaheader_uids_option, count, ignore_missing_tags_option);
     else if (job.option == "e")
         result = ds_man->deleteTag(job.path, OFFalse, ignore_missing_tags_option);
     else if (job.option == "ea")
@@ -483,7 +484,6 @@ int MdfConsoleEngine::executeJob(const MdfJob &job,
         error_count++;
         OFLOG_ERROR(dcmodifyLogger, "no valid option: " << job.option);
     }
-
     // if modify operation failed
     if (result.bad() && error_count == 0)
     {
@@ -491,10 +491,8 @@ int MdfConsoleEngine::executeJob(const MdfJob &job,
             OFLOG_ERROR(dcmodifyLogger, "modifying tag in file " << OFString(filename) << ": " << result.text());
         else
             OFLOG_ERROR(dcmodifyLogger, "modifying tag: " << result.text());
-
         error_count++;
     }
-
     return error_count;
 }
 

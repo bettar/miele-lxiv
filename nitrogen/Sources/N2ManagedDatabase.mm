@@ -155,32 +155,29 @@ static int gTotalN2ManagedObjectContext = 0;
 - (NSArray *)executeFetchRequest:(NSFetchRequest *)request error:(NSError **)error
 {
     [_database checkForCorrectContextThread: self];
-    
 	return [super executeFetchRequest: request error: error];
 }
 
 - (void)deleteObject:(NSManagedObject *)object
 {
     [_database checkForCorrectContextThread: self];
-    
 	return [super deleteObject: object];
 }
+
 - (NSUInteger)countForFetchRequest:(NSFetchRequest *)request error:(NSError **)error
 {
     [_database checkForCorrectContextThread: self];
-    
     return [super countForFetchRequest: request error: error];
 }
+
 - (NSManagedObject *)objectWithID:(NSManagedObjectID *)objectID
 {
     [_database checkForCorrectContextThread: self];
-    
     return [super objectWithID: objectID];
 }
 - (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification
 {
     [_database checkForCorrectContextThread: self];
-    
     return [super mergeChangesFromContextDidSaveNotification: notification];
 }
 #endif
@@ -274,10 +271,11 @@ static int gTotalN2ManagedObjectContext = 0;
     self.managedObjectContext = self.isMainDatabase? [self contextAtPath: self.sqlFilePath] : [self.mainDatabase contextAtPath: self.sqlFilePath];
 }
 
--(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
+-(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath
+{
 	sqlFilePath = sqlFilePath.stringByExpandingTildeInPath;
 	
-    if( sqlFilePath.length == 0)
+    if (sqlFilePath.length == 0)
         return nil;
     
     N2ManagedObjectContext* moc = [[[N2ManagedObjectContext alloc] initWithDatabase: self] autorelease];
@@ -291,8 +289,11 @@ static int gTotalN2ManagedObjectContext = 0;
     //        if (self.managedObjectContext.hasChanges)
     //            [self save];
             
-            if ([sqlFilePath isEqualToString:self.sqlFilePath] && [NSFileManager.defaultManager fileExistsAtPath:sqlFilePath])
+            if ([sqlFilePath isEqualToString:self.sqlFilePath] &&
+                [NSFileManager.defaultManager fileExistsAtPath:sqlFilePath])
+            {
                 moc.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
+            }
             
             if (!moc.persistentStoreCoordinator) {
                 //			moc.persistentStoreCoordinator = [persistentStoreCoordinatorsDictionary objectForKey:sqlFilePath];
@@ -475,7 +476,7 @@ static int gTotalN2ManagedObjectContext = 0;
 //        NSLog( @"****** WARNING - Creating a MAIN database, NOT on the MAIN thread... Be aware that this managedObjectContext could be later used on the MAIN thread, unless you renewManagedObjectContext on the main thread.");
 //#endif
     
-	self.managedObjectContext = c? c : [self contextAtPath:p];
+	self.managedObjectContext = c ? c : [self contextAtPath:p];
     
 	return self;
 }
@@ -525,18 +526,20 @@ static int gTotalN2ManagedObjectContext = 0;
 	return [self independentContext:YES];
 }
 
--(id)independentDatabase {
-    
+-(id)independentDatabase
+{
 #ifndef NDEBUG
     if( [NSThread isMainThread])
         N2LogStackTrace( @"independentDatabase not required on main thread.");
 #endif
     
-	return [[[[self class] alloc] initWithPath:self.sqlFilePath context:[self independentContext] mainDatabase:self] autorelease];
+	return [[[[self class] alloc] initWithPath:self.sqlFilePath
+                                       context:[self independentContext]
+                                  mainDatabase:self] autorelease];
 }
 
--(id)objectWithID:(id)oid {
-    
+-(id)objectWithID:(id)oid
+{
 #ifndef NDEBUG
     [self checkForCorrectContextThread];
 #endif
@@ -685,16 +688,19 @@ static int gTotalN2ManagedObjectContext = 0;
 
 -(id)newObjectForEntity:(id)entity {
     [self _entity:&entity];
-    return [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:self.managedObjectContext];
+    return [NSEntityDescription insertNewObjectForEntityForName:[entity name]
+                                         inManagedObjectContext:self.managedObjectContext];
 }
 
 -(BOOL)save {
     return [self save:NULL];
 }
 
--(BOOL)save:(NSError**)error {
+-(BOOL)save:(NSError**)error
+{
 	NSError* perr = NULL;
-	if (!error) error = &perr;
+	if (!error)
+        error = &perr;
 	
 	BOOL b = NO;
 	

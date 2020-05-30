@@ -102,7 +102,8 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 - (NSImage*) thumbnailIfAlreadyAvailable;
 - (void) setThumbnail:(NSImage*)image;
 - (NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase;
-+ (NSString*) completePathForLocalPath:(NSString*) path directory:(NSString*) directory;
++ (NSString*) completePathForLocalPath:(NSString*) path
+                             directory:(NSString*) directory;
 - (NSString*) SRFilenameForFrame: (int) frameNo;
 - (NSString*) SRPathForFrame: (int) frameNo;
 - (NSString*) SRPath;

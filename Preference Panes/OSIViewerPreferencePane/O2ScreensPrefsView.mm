@@ -237,8 +237,9 @@
     for (NSScreen* screen in screens)
         [[NSUserDefaults standardUserDefaults] screen:screen setIsUsedForViewers:(screen == [screens objectAtIndex:0])];
 }
-
 @end
+
+#pragma mark -
 
 @implementation _O2ScreensPrefsViewScreenRecord
 

@@ -7,9 +7,9 @@
 
 #import "mgl.h" // include first
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+//#include "glm/glm.hpp"
+//#include "glm/gtc/matrix_transform.hpp"
+//#include "glm/gtc/type_ptr.hpp"
 
 #import <Cocoa/Cocoa.h>
 #import <assert.h>
@@ -306,7 +306,6 @@ bool checkExtension(const char* ext)
 
 void checkShader(GLuint shader)
 {
-    //CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     GLint success;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if ( !success )
@@ -323,7 +322,6 @@ void checkShader(GLuint shader)
 
 void checkProgram(GLuint program)
 {
-    //CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     GLint success;
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if ( !success )
@@ -347,7 +345,7 @@ GLuint compileShader(GLenum type, NSString *file)
     sourceString = [sourceString stringByReplacingOccurrencesOfString:@"//Miele::System"
                                                            withString:@"#version 330 core"];
 
-    const GLchar *source = (GLchar *)[sourceString cStringUsingEncoding:NSASCIIStringEncoding];
+    const GLchar *source = (const GLchar *)[sourceString cStringUsingEncoding:NSASCIIStringEncoding];
 
     if (nil == source)
     {

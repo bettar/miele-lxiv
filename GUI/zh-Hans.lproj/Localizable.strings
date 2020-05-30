@@ -127,6 +127,9 @@
 /* No comment provided by engineer. */
 "%@ is not an email address." = "%@ 不是电子邮件地址。";
 
+/* AppleScript permission */
+"%@ is not running" = "%@ 应用未运行";
+
 /* No comment provided by engineer. */
 "%@ Preferences" = "%@ 首选项";
 
@@ -3510,6 +3513,9 @@
 
 /* No comment provided by engineer. */
 "Please select a DICOM node (check box)." = "请选择DICOM节点（复选框）。";
+
+/* AppleScript permission */
+"Please start %@ and retry" = "请启动 %@ 和重试";
 
 /* No comment provided by engineer. */
 "Please update your application. Available on the web site." = "请更新您的应用程序。可在网站上使用。";

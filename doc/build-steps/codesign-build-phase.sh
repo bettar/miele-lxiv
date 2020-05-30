@@ -23,8 +23,8 @@ function cse {
 
 #if [[ ${CONFIGURATION} != "Development" ]] ; then
 #cs  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/MieleAPI.framework"
-#cs  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/libpng16.16.30.0"
-cs  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/libjpeg.9.dylib"
+#cs  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/libpng16.16.37.0.dylib"
+#cs  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/libjpeg.9.dylib"
 #cse  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/libiconv.2.dylib"
 
 # We link with static libraries instead of the following two:

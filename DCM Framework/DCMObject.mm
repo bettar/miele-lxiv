@@ -671,7 +671,7 @@ PixelRepresentation
         NSLog(@"start byteOffset: %d", offset);
 
     if (DCMDEBUG)
-		NSLog(@"Container length:%d  offet:%d", [container length],[container offset]);
+		NSLog(@"Container length:%d  offet:%d", [container length], [container offset]);
 
     return [self  initWithDataContainer:container
                            lengthToRead:[container length] - [container offset]
@@ -696,13 +696,14 @@ PixelRepresentation
 	if ([[NSFileManager defaultManager] fileExistsAtPath:file] == NO)
         return nil;
     
-	NSData *aData = [NSData dataWithContentsOfMappedFile:file];
-	return [self initWithData:aData decodingPixelData:decodePixelData] ;
+	NSData *aData = [NSData dataWithContentsOfMappedFile:file]; // TODO: use dataWithContentsOfURL
+	return [self initWithData:aData decodingPixelData:decodePixelData];
 }
 
-- (id)initWithContentsOfURL:(NSURL *)aURL decodingPixelData:(BOOL)decodePixelData{
+- (id)initWithContentsOfURL:(NSURL *)aURL decodingPixelData:(BOOL)decodePixelData
+{
 	NSData *aData = [NSData dataWithContentsOfURL:aURL];
-	return [self initWithData:aData decodingPixelData:decodePixelData] ;
+	return [self initWithData:aData decodingPixelData:decodePixelData];
 }
 
 - (id)initWithDataContainer:(DCMDataContainer *)data
@@ -724,8 +725,7 @@ PixelRepresentation
 			specificCharacterSet = [[DCMCharacterSet alloc] initWithCode:@"ISO_IR 100"];
 
         transferSyntax = [[data transferSyntaxForDataset] retain];
-		DCMDataContainer *dicomData;
-		dicomData = [data retain];
+		DCMDataContainer *dicomData = [data retain];
 			
         *byteOffset = [self readDataSet:dicomData
                            lengthToRead:lengthToRead
@@ -783,6 +783,8 @@ PixelRepresentation
 	[super dealloc];
 }
 
+#pragma mark -
+
 - (int)readDataSet:(DCMDataContainer *)dicomData
       lengthToRead:(int)lengthToRead
         byteOffset:(int *)byteOffset
@@ -829,8 +831,7 @@ PixelRepresentation
                     [dicomData startReadingDataSet];
                 }
                 else if (transferSyntax != nil &&
-                         group == 0x0002 &&
-                         element == 0x0010)
+                         group == 0x0002 && element == 0x0010) // DCM_TransferSyntaxUID
                 {
                     //workaround for extra Transfer Syntax element in some Conquest files
                     [dicomData startReadingDataSet];
@@ -846,6 +847,8 @@ PixelRepresentation
                 if (DCMDEBUG)
                     NSLog(@"Tag: %@  gr: 0x%04x, el: 0x%04x", tag.description, group, element);
                     
+#pragma mark DCM_ItemDelimitationItem
+
                 // "FFFE,E00D" == Item Delimitation Item
                 if (strcmp(tagUTF8, "FFFE,E00D") == 0)
                 {
@@ -859,7 +862,9 @@ PixelRepresentation
                     //return *byteOffset;	// stop now, since we must have been called to read an item's dataset
                 }
                 
-                // "FFFE,E000" == Item 
+#pragma mark DCM_Item
+
+                // "FFFE,E000" == Item
                 else if (strcmp(tagUTF8, "FFFE,E000") == 0)
                 {
                     // this is bad ... there shouldn't be Items here since they should
@@ -962,18 +967,19 @@ PixelRepresentation
                                                           byteOffset:byteOffset
                                                         lengthToRead:(int)vl
                                                 specificCharacterSet:specificCharacterSet];
-                    } 
+                    }
+#pragma mark DCM_PixelData
                     // "7FE0,0010" == PixelData
                     else if (strcmp(tagUTF8, "7FE0,0010") == 0 && tag.isPrivate == NO)
                     {
-                        attr = (DCMPixelDataAttribute *) [[[DCMPixelDataAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag 
-                        vr:(NSString *)vr 
-                        length:(long) vl 
-                        data:(DCMDataContainer *)dicomData 
-                        specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
-                        transferSyntax:[dicomData transferSyntaxForDataset]
-                        dcmObject:self
-                        decodeData:_decodePixelData] autorelease];
+                        attr = (DCMAttribute *) [[[DCMPixelDataAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag 
+                                                      vr:(NSString *)vr
+                                                  length:(long) vl
+                                                    data:(DCMDataContainer *)dicomData
+                                    specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
+                                          transferSyntax:[dicomData transferSyntaxForDataset]
+                                               dcmObject:self
+                                              decodeData:_decodePixelData] autorelease];
                         
                         *byteOffset += vl;
                     }
@@ -1005,6 +1011,8 @@ PixelRepresentation
                     if (attr)
                         CFDictionarySetValue((CFMutableDictionaryRef)attributes, [tag stringValue], attr);
                         
+#pragma mark DCM_FileMetaInformationGroupLength
+
                     // 0002,0000 = MetaElementGroupLength
                     if (strcmp(tagUTF8, "0002,0000") == 0)
                     {
@@ -1015,6 +1023,8 @@ PixelRepresentation
                         endMetaHeaderPosition = [[attr value] intValue] + *byteOffset;
                         [dicomData startReadingMetaHeader];
                     }
+#pragma mark DCM_TransferSyntaxUID
+
                     //0002,0010 == TransferSyntaxUID
                     else if (strcmp(tagUTF8, "0002,0010") == 0  
                         && transferSyntax == nil)  //some conquest files have the transfer Syntax twice. Need to ignore to second one
@@ -1025,6 +1035,8 @@ PixelRepresentation
                         [dicomData setTransferSyntaxForDataset:ts];
                     }
                     
+#pragma mark DCM_SpecificCharacterSet
+
                     //0008,0005 == SpecificCharacterSet
                     else if (strcmp(tagUTF8, "0008,0005") == 0)
                     {
@@ -1070,6 +1082,8 @@ PixelRepresentation
 	
 	return *byteOffset;
 }
+
+#pragma mark -
 
 - (int) readNewSequenceAttribute:(DCMAttribute *)attr
                        dicomData:(DCMDataContainer *)dicomData
@@ -1405,15 +1419,16 @@ PixelRepresentation
 		NSLog( @"*** tagname not found in dictionary: %@", name);
 }
 
-//write Data
+#pragma mark - write Data
 
-- (void)removeGroupLengths{
+- (void)removeGroupLengths
+{
 	NSMutableArray *keysToRemove = [NSMutableArray array];
 	for ( NSString *key in attributes ) {
 		DCMAttribute *attr = [attributes objectForKey:key];
 		//remove all group lengths except for Metaheader group
 		if ([(DCMAttributeTag *)[attr attrTag] element] == 0x0000 &&
-            [(DCMAttributeTag *)[attr attrTag] group] != 0x0002)
+            [(DCMAttributeTag *)[attr attrTag] group] != 0x0002) // DCM_AffectedSOPClassUID
         {
 			if (DCMDEBUG)
 				NSLog(@"Remove %@", attr.description);
@@ -1471,7 +1486,10 @@ PixelRepresentation
 //	if ([(DCMAttributeTag *)[attr attrTag] isEquaToTag:[DCMAttributeTag tagWithName:@"PatientsBirthDate"]])
 //		[attr setValues:[NSMutableArray array]];
 //	else
-	if ( attr && tag.group != 0x0002 && ![tag.vr isEqualToString:@"UI"]) {
+	if (attr &&
+        tag.group != 0x0002 &&
+        ![tag.vr isEqualToString:@"UI"])
+    {
 		const char *chars = [tag.vr UTF8String];
 		int vr = chars[0]<<8 | chars[1];
 		NSMutableArray *values = attr.values;
@@ -1998,7 +2016,7 @@ PixelRepresentation
                 {
                     [container setUseMetaheaderTS:NO];
                     
-                    if (attr.attrTag.group == 0x0008 && attr.attrTag.element == 0x0005)
+                    if (attr.attrTag.group == 0x0008 && attr.attrTag.element == 0x0005) // DCM_SpecificCharacterSet
                     {
                         [specificCharacterSet release];
                         

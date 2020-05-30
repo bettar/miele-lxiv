@@ -42,7 +42,7 @@ typedef unsigned char BYTE;
 
 static int Use_kdu_IfAvailable = 0;
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 #if __ppc__
 
 union vectorShort {
@@ -55,17 +55,15 @@ union vectorChar {
     unsigned scalar[16];
 };
 
-
 union vectorLong {
     vector int longVec;
     short scalar[4];
 };
 
- union  vectorFloat {
+union vectorFloat {
     vector float floatVec;
     float scalar[4];
 };
-
 
 void SwapShorts( register vector unsigned short *unaligned_input, register long size)
 {
@@ -87,10 +85,11 @@ void SwapLongs( register vector unsigned int *unaligned_input, register long siz
 }
 
 #endif
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 
-////altivec
-//#define dcmHasAltiVecMask    ( 1 << gestaltPowerPCHasVectorInstructions )  // used in  looking for a g4 
+#pragma mark - altivec
+
+//#define dcmHasAltiVecMask    ( 1 << gestaltPowerPCHasVectorInstructions )  // used in  looking for a g4
 //
 //short DCMHasAltiVec()
 //{
@@ -485,7 +484,6 @@ void info_callback(const char *msg, void *a) {
 //  return raw;
 //}
 
-/////////
 #if 0//@@@
 //#include "../../Binaries/openjpeg/openjpeg.h"
 //extern "C" NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel);

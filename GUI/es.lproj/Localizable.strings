@@ -127,6 +127,9 @@
 /* No comment provided by engineer. */
 "%@ is not an email address." = "%@ no es una dirección de correo electrónico.";
 
+/* AppleScript permission */
+"%@ is not running" = "%@ no se está ejecutando";
+
 /* No comment provided by engineer. */
 "%@ Preferences" = "%@ Preferencias";
 
@@ -3510,6 +3513,9 @@
 
 /* No comment provided by engineer. */
 "Please select a DICOM node (check box)." = "Seleccione un nodo DICOM (casilla de verificación).";
+
+/* AppleScript permission */
+"Please start %@ and retry" = "Por favor, inicie %@ y volver a intentar";
 
 /* No comment provided by engineer. */
 "Please update your application. Available on the web site." = "Por favor, actualice su aplicación. Disponible en el sitio web.";

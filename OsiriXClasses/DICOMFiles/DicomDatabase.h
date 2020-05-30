@@ -26,7 +26,7 @@
 enum {Compress, Decompress};
 
 extern NSString* const CurrentDatabaseVersion;
-extern NSString* const OsirixDataDirName;
+extern NSString* const AppDataDirName;
 extern NSString* const O2ScreenCapturesSeriesName;
 
 @class N2MutableUInteger, DicomAlbum, DataNodeIdentifier;

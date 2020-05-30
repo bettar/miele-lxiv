@@ -257,7 +257,8 @@ static NSString* BrowserControllerClassHelperContext = @"BrowserControllerClassH
 +(void)initializeBrowserControllerClass
 {
 	static BrowserControllerClassHelper* helper = nil;
-    if (!helper) helper = [[BrowserControllerClassHelper alloc] init];
+    if (!helper)
+        helper = [[BrowserControllerClassHelper alloc] init];
 }
 
 static NSString* 	DatabaseToolbarIdentifier			= @"DicomDatabase Toolbar Identifier";
@@ -865,11 +866,16 @@ static NSConditionLock *threadLock = nil;
 	[pool release];
 }
 
+// Read
+// .pages .app
+// .xml (WADO) .dcmURLs
+// .xip .osirixzip
+// DICOMDIR DICOMDIR.
 - (void) addFilesAndFolderToDatabase:(NSArray*) filenames
 {
-    NSFileManager       *defaultManager = [NSFileManager defaultManager];
-	NSMutableArray		*filesArray;
-	BOOL				isDirectory = NO;
+    NSFileManager *defaultManager = [NSFileManager defaultManager];
+	NSMutableArray *filesArray;
+	BOOL isDirectory = NO;
 	
 	filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	
@@ -883,10 +889,12 @@ static NSConditionLock *threadLock = nil;
 			{
 				if ([defaultManager fileExistsAtPath: filename isDirectory:&isDirectory])     // A directory
 				{
-					if (isDirectory && [[filename pathExtension] isEqualToString: @"pages"] == NO && [[filename pathExtension] isEqualToString: @"app"] == NO)
+					if (isDirectory &&
+                        [[filename pathExtension] isEqualToString: @"pages"] == NO &&
+                        [[filename pathExtension] isEqualToString: @"app"] == NO)
 					{
-						NSString    *pathname;
-						NSString	*folderSkip = nil;
+						NSString *pathname;
+						NSString *folderSkip = nil;
 						NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath: filename];
 						
 						while (pathname = [enumer nextObject])
@@ -971,7 +979,8 @@ static NSConditionLock *threadLock = nil;
 							t.status = [filename lastPathComponent];
 							[[ThreadsManager defaultManager] addThreadAndStart: t];
 						}
-						else if ([[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
+						else if ([[filename pathExtension] isEqualToString: @"zip"] ||
+                                 [[filename pathExtension] isEqualToString: @"osirixzip"])
 						{
 							NSString *unzipPath = [NSTemporaryDirectory() stringByAppendingPathComponent: @"unzip_folder"];
 							
@@ -987,7 +996,8 @@ static NSConditionLock *threadLock = nil;
 							NSString *uniqueFolder = [NSString stringWithFormat: @"unzip_folder_B%d", uniqueZipFolder++];
 							[[NSFileManager defaultManager] moveItemAtPath: unzipPath toPath: [[self INCOMINGPATH] stringByAppendingPathComponent: uniqueFolder] error: nil];
 						}
-						else if ([[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] || [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."])
+						else if ([[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] ||
+                                 [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."])
 							[self addDICOMDIR: filename :filesArray];
 						else if ([[filename pathExtension] isEqualToString: @"app"])
 						{
@@ -1535,7 +1545,8 @@ static NSConditionLock *threadLock = nil;
 
 - (void) subSelectFilesAndFoldersToAdd: (NSArray*) filenames
 {
-	if ([filenames count] == 1 && [[[filenames objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file!
+	if ([filenames count] == 1 &&
+        [[[filenames objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file!
 	{
 		[self openDatabaseIn: [filenames objectAtIndex: 0] Bonjour:NO];
 	}
@@ -2280,9 +2291,9 @@ static NSConditionLock *threadLock = nil;
 				switch (NSRunInformationalAlertPanel(
 													 NSLocalizedString(@"OsiriX Database", nil),
 													 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?", nil),
-													 NSLocalizedString(@"Copy Files", nil),
-													 NSLocalizedString(@"Cancel", nil),
-													 NSLocalizedString(@"Copy Links", nil)))
+													 NSLocalizedString(@"Copy Files", nil), // def
+													 NSLocalizedString(@"Cancel", nil),     // alt
+													 NSLocalizedString(@"Copy Links", nil))) // other
                 {
                     case NSAlertDefaultReturn:
                         break;
@@ -3362,7 +3373,6 @@ static NSConditionLock *threadLock = nil;
 	{
         N2LogExceptionWithStackTrace(ne);
 	}
-	
 	
 	if ([previousObjects count] > 0)
 	{
@@ -5145,7 +5155,8 @@ static NSConditionLock *threadLock = nil;
 			if (refreshMatrix)
 			{
                 NSArray *files = nil;
-                NSMutableArray *selectedRowColumns = [NSMutableArray array], *selectedCellsIDs = [NSMutableArray array];
+                NSMutableArray *selectedRowColumns = [NSMutableArray array];
+                NSMutableArray *selectedCellsIDs = [NSMutableArray array];
                 BOOL imageLevel = NO;
                 
 				[[self managedObjectContext] lock];
@@ -5851,8 +5862,8 @@ static NSConditionLock *threadLock = nil;
 	
 	@try
 	{
-		NSManagedObject	*study = nil, *series = nil;
-		
+        NSManagedObject	*study = nil;
+        NSManagedObject *series = nil;
 		NSLog(@"objects to delete : %d", (int) [objectsToDelete count]);
 		
 		for (NSManagedObject *obj in objectsToDelete)
@@ -7834,7 +7845,7 @@ static NSConditionLock *threadLock = nil;
                         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
                         [request setPredicate: [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID]];
                         
-                        NSManagedObjectContext	*context = self.database.managedObjectContext;
+                        NSManagedObjectContext *context = self.database.managedObjectContext;
                         NSArray	*studiesArray = [context executeFetchRequest:request error: nil];
                         
                         if ([studiesArray count] == 0)
@@ -9160,7 +9171,7 @@ static BOOL withReset = NO;
 	BOOL animate = NO;
 	long noOfImages = 0;
 	
-	NSButtonCell    *cell = [oMatrix selectedCell];
+	NSButtonCell *cell = [oMatrix selectedCell];
 	
 	if (cell)
 	{
@@ -10314,7 +10325,7 @@ static BOOL withReset = NO;
         id context = [dict valueForKey:@"Context"];
         
         if ([NSThread isMainThread] == NO)
-            idatabase = [idatabase independentDatabase]; // INDEPENDANT CONTEXT !
+            idatabase = [idatabase independentDatabase]; // INDEPENDENT CONTEXT !
         
         NSMutableArray *tempPreviewPixThumbnails = nil;
         NSMutableArray *tempPreviewPix = nil;
@@ -10438,8 +10449,7 @@ static BOOL withReset = NO;
             [tempPreviewPixThumbnails replaceObjectAtIndex: i withObject: notFoundImage];
             [tempPreviewPix addObject: [[[DCMPix alloc] myinitEmpty] autorelease]];
         }
-        
-        
+
         @synchronized( previewPixThumbnails)
         {
             if ([[NSThread currentThread] isCancelled] == NO)
@@ -11167,11 +11177,10 @@ constrainSplitPosition:(CGFloat)proposedPosition
 
 - (void) initContextualMenus // MATRIX contextual menu
 {
-	NSMenuItem		*item;
+	NSMenuItem *item;
 	
-	// ****************
-	
-	if ( contextual == nil) contextual	= [[NSMenu alloc] initWithTitle: NSLocalizedString(@"Tools", nil)];
+	if ( contextual == nil)
+        contextual	= [[NSMenu alloc] initWithTitle: NSLocalizedString(@"Tools", nil)];
 	
 	[contextual addItemWithTitle: NSLocalizedString(@"Open Images", nil) action:@selector(viewerDICOM:) keyEquivalent:@""];
 	[contextual addItemWithTitle: NSLocalizedString(@"Open Images in 4D", nil) action:@selector(MovieViewerDICOM:) keyEquivalent:@""];
@@ -11618,7 +11627,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
     return nil;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 #pragma mark - Albums TableView functions
 
 //NSTableView delegate and datasource
@@ -14629,7 +14638,7 @@ static NSArray*	openSubSeriesArray = nil;
 -(void) awakeFromNib
 {
 #ifndef NDEBUG
-    //NSLog(@"%s", __FUNCTION__);
+    NSLog(@"%s", __FUNCTION__);
 #endif
     @try
     {
@@ -14780,13 +14789,12 @@ static NSArray*	openSubSeriesArray = nil;
             
             [databaseOutline setInitialState];
             
-            
             if ([[NSUserDefaults standardUserDefaults] objectForKey: @"databaseColumns2"])
                 [databaseOutline restoreColumnState: [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseColumns2"]];
             
             if ([[NSUserDefaults standardUserDefaults] objectForKey: @"databaseSortDescriptor"])
             {
-                NSDictionary	*sort = [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseSortDescriptor"];
+                NSDictionary *sort = [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseSortDescriptor"];
                 {
                     if ([databaseOutline isColumnWithIdentifierVisible: [sort objectForKey:@"key"]])
                     {
@@ -19769,7 +19777,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Import",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Import",nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Import a DICOM file or folder",@"Import a DICOM file or folder")];
+		[toolbarItem setToolTip: NSLocalizedString(@"Import a DICOM file or folder", @"Import a DICOM file or folder")];
 		[toolbarItem setImage: [NSImage imageNamed: ImportToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(selectFilesAndFoldersToAdd:)];

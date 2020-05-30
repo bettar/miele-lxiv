@@ -1976,20 +1976,18 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
     //*** Build the menu
-    NSUInteger  i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
 	
     // Presets VIEWER Menu
 	
-	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
-    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	NSArray *keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
+    NSArray *sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
     [[OpacityPopup menu] removeAllItems];
 	
     [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
 	[[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
-    for( i = 0; i < [sortedKeys count]; i++)
+
+    for (NSUInteger i = 0; i < [sortedKeys count]; i++)
     {
         [[OpacityPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
     }

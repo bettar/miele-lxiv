@@ -136,13 +136,16 @@ static LogManager *currentLogManager = nil;
 {
     @autoreleasepool
     {
-        if( [[BrowserController currentBrowser] isNetworkLogsActive] && [[[BrowserController currentBrowser] database] isLocal])
+        if ([[BrowserController currentBrowser] isNetworkLogsActive] &&
+           [[[BrowserController currentBrowser] database] isLocal])
         {
             @synchronized (self)
             {
                 @try
                 {
-                    if( [[dict valueForKey: @"logMessage"] isEqualToString:@"In Progress"] || [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"] || [[dict valueForKey: @"logMessage"] isEqualToString:@"Incomplete"])
+                    if ([[dict valueForKey: @"logMessage"] isEqualToString:@"In Progress"] ||
+                        [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"] ||
+                        [[dict valueForKey: @"logMessage"] isEqualToString:@"Incomplete"])
                     {
                         NSString *uid = [dict valueForKey: @"logUID"];
                         
@@ -183,7 +186,8 @@ static LogManager *currentLogManager = nil;
                             NSTimeInterval lastSave = [[previousDict objectForKey: @"lastSave"] doubleValue];
                             if( [NSDate timeIntervalSinceReferenceDate] - lastSave > 5 || [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"])
                             {
-                                if( [self updateLogDatabase: [[_currentLogs objectForKey:uid] objectForKey: @"dict"] objectID: [[_currentLogs objectForKey:uid] objectForKey: @"objectID"]])
+                                if( [self updateLogDatabase: [[_currentLogs objectForKey:uid] objectForKey: @"dict"]
+                                                   objectID: [[_currentLogs objectForKey:uid] objectForKey: @"objectID"]])
                                 {
                                     [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( removeFromCurrentLog:) object: uid];
                                     [self performSelector: @selector( removeFromCurrentLog:) withObject: uid afterDelay: 5];

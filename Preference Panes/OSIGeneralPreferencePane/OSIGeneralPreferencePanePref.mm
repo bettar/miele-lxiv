@@ -190,7 +190,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
         NSDictionary *defaultsPreferences = [DefaultsOsiriX getDefaults];
         NSMutableDictionary *customizedPreferences = [NSMutableDictionary dictionary];
         
-        for( NSString *k in [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys])
+        for (NSString *k in [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys])
         {
             if ([defaultsPreferences objectForKey: k] == nil || [[[NSUserDefaults standardUserDefaults] objectForKey: k] isEqual: [defaultsPreferences objectForKey: k]] == NO)
                 [customizedPreferences setObject: [[NSUserDefaults standardUserDefaults] objectForKey: k] forKey: k];

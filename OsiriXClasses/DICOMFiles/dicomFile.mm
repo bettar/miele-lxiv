@@ -1282,7 +1282,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			study = [[NSString alloc] initWithString:name];
 			serie = [[NSString alloc] initWithString:name];
 			Modality = [[NSString alloc] initWithString:@"LSM"];
-			//////////////////////////////////////////////////////////////////////////////////////
+			// /////////////////////////////////////////////////////////////////
 			
 			FILE *fp = fopen([ filePath UTF8String], "r");
 			int it = 0;
@@ -1291,10 +1291,23 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			int pos=8;
 			short shortval;
 			
-			int	LENGTH1 = 0, TIF_BITSPERSAMPLE_CHANNEL1 = 0, TIF_BITSPERSAMPLE_CHANNEL2 = 0, TIF_BITSPERSAMPLE_CHANNEL3 = 0;
-			int	TIF_COMPRESSION = 0, TIF_PHOTOMETRICINTERPRETATION = 0, LENGTH2 = 0, TIF_STRIPOFFSETS = 0, TIF_SAMPLESPERPIXEL = 0, TIF_STRIPBYTECOUNTS = 0;
-			int	TIF_CZ_LSMINFO = 0, TIF_STRIPOFFSETS1 = 0, TIF_STRIPOFFSETS2 = 0, TIF_STRIPOFFSETS3 = 0;
-			int	TIF_STRIPBYTECOUNTS1 = 0, TIF_STRIPBYTECOUNTS2 = 0, TIF_STRIPBYTECOUNTS3 = 0;
+            int	LENGTH1 = 0;
+            int TIF_BITSPERSAMPLE_CHANNEL1 = 0;
+            int TIF_BITSPERSAMPLE_CHANNEL2 = 0;
+            int TIF_BITSPERSAMPLE_CHANNEL3 = 0;
+            int	TIF_COMPRESSION = 0;
+            int TIF_PHOTOMETRICINTERPRETATION = 0;
+            int LENGTH2 = 0;
+            int TIF_STRIPOFFSETS = 0;
+            int TIF_SAMPLESPERPIXEL = 0;
+            int TIF_STRIPBYTECOUNTS = 0;
+            int	TIF_CZ_LSMINFO = 0;
+            int TIF_STRIPOFFSETS1 = 0;
+            int TIF_STRIPOFFSETS2 = 0;
+            int TIF_STRIPOFFSETS3 = 0;
+            int	TIF_STRIPBYTECOUNTS1 = 0;
+            int TIF_STRIPBYTECOUNTS2 = 0;
+            int TIF_STRIPBYTECOUNTS3 = 0;
 			
 			do
 			{
@@ -1678,7 +1691,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 
 	struct nifti_1_header  *NIfTI;
 	
-	NSString	*extension = [[filePath pathExtension] lowercaseString];
+	NSString *extension = [[filePath pathExtension] lowercaseString];
 
 	if ((( [extension isEqualToString:@"hdr"]) &&
 		([[NSFileManager defaultManager] fileExistsAtPath:[[filePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)) ||

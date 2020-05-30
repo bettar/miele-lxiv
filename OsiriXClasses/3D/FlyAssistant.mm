@@ -809,7 +809,7 @@ typedef GreaterPathNodeOnF NodeCompare;
 - (int) createCenterline:(NSMutableArray*)centerline FromPointA:(Point3D*)pta ToPointB:(Point3D*)ptb withSmoothing:(BOOL)smoothFlag;
 {
 	float* costmap=(float*)malloc(distmapVolumeSize*sizeof(float));
-	if(!costmap)
+	if (!costmap)
 	{
 		NSLog( @"no enough memory");
 		return ERROR_NOENOUGHMEM;

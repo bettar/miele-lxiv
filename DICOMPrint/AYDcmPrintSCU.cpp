@@ -20,6 +20,7 @@
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmsr/dsrtypes.h"
+#include "dcmtk/ofstd/ofcmdln.h"
 
 #define OFFIS_CONSOLE_APPLICATION "printscu"
 
@@ -45,7 +46,7 @@ makeUID(OFString basePrefix, int counter)
     return uid;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 AYDcmPrintSCU::AYDcmPrintSCU(const char *hostnameSCP, int portSCP, const char *aetitleSCP, const char *aetitleSCU)
 : imageDisplayFormat(DCM_ImageDisplayFormat)
 , filmOrientation(DCM_FilmOrientation)
@@ -65,10 +66,6 @@ AYDcmPrintSCU::AYDcmPrintSCU(const char *hostnameSCP, int portSCP, const char *a
 #ifndef NDEBUG
     OFLog::configure(OFLogger::DEBUG_LOG_LEVEL);
 #endif
-}
-
-AYDcmPrintSCU::~AYDcmPrintSCU()
-{
 }
 
 // See GingkoCAD dicomprintassociation.cpp line 192 PrintAssociation::Print()

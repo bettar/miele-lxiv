@@ -27,16 +27,15 @@
 * the VR is obtained from the dicom dictionary.  For explicit transfer syntaxes, the VR will be defined in the
 * file/data.  The string valeu is the human readable definition of the tag.
 */
-@interface DCMAttributeTag : NSObject {
-
+@interface DCMAttributeTag : NSObject
+{
 	int  _group;
 	int _element;
 	NSString *_name;
 	NSString *_vr;
 	NSString *_stringValue;
-	
-
 }
+
 @property(readonly) int group;
 @property(readonly) int element;
 @property(readonly) NSString *stringValue;

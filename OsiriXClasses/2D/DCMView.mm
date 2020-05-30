@@ -29,9 +29,9 @@
 #import "GLProgramText.h"
 #import "GLScene.h"
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+//#include "glm/glm.hpp"
+//#include "glm/gtc/matrix_transform.hpp"
+//#include "glm/gtc/type_ptr.hpp"
 
 #import <DCM/DCMAbstractSyntaxUID.h>
 #import "DCMView.h"
@@ -505,7 +505,7 @@ static long GetTextureNumFromTextureDim(long textureDimension,
 		while ((bitValue >>= 1) > texOverlapx2); // step down to next texture while we are greater than two (less than 4 can't be used due to 2 pixel overlap)
 
         if (textureDimension > 0x0) // if any textureDimension is left there is an error, because we can't texture these small segments and in anycase should not have image pixels left
-            NSLog(@"GetTextureNumFromTextureDim error: Texture to small to draw, should not ever get here, texture size remaining");
+            NSLog(@"GetTextureNumFromTextureDim error: Texture too small to draw, should not ever get here, texture size remaining");
 	}
     
 	return textureCount; // return textures counted
@@ -15388,7 +15388,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         *tW = curDCM.pwidth;
 		rowBytes = curDCM.pwidth * 4;
 		computedfImage = [curDCM computefImage];
-		baseAddr = (char *) computedfImage;
+		baseAddr = (char *)computedfImage;
 	}
 	else
 	{
@@ -15561,7 +15561,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     GLenum _type = GL_UNSIGNED_INT_8_8_8_8;
 #endif
 #ifdef WITH_OPENGL_32
-                    GLenum _format = GL_BGRA;  // TODO: just a guess for now
+                    GLenum _format = GL_BGRA;
 #else
                     GLenum _format = GL_BGRA_EXT;
 #endif
@@ -15702,6 +15702,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     }
                     
                     checkOpenGLErrors(__LINE__);
+#if 0
+                    // (20200306) Create mipmaps for this texture for better image quality
+                    //glGenerateMipmap(target);
+#endif
 
                 } // if (currWidth > 0 && currHeight > 0)
 
@@ -15709,9 +15713,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                 checkOpenGLErrors(__LINE__);  // (error 0x0500)
 #endif
 				offsetY += currHeight;
-			}
+			} // for y
 			offsetX += currWidth;
-		}
+		} // for x
 	}
 
     checkOpenGLErrors(__LINE__);
@@ -16107,7 +16111,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 //        NSOpenGLPFAAccelerated,
 
         NSOpenGLPFADoubleBuffer ,
-        NSOpenGLPFADepthSize    , 32,
+        NSOpenGLPFADepthSize    , 32, // bits for Z-buffer (0,16,32)
         
         // Specifying "NoRecovery" gives us a context that cannot fall back to the software renderer.  This makes the View-based context a compatible with the layer-backed context, enabling us to use the "shareContext" feature to share textures, display lists, and other OpenGL objects between the two.
         NSOpenGLPFANoRecovery, // Enable automatic use of OpenGL "share" contexts.
@@ -16809,7 +16813,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage
 {
-    return [self updatePresentationStateFromSeriesOnlyImageLevel: onlyImage scale: firstTimeDisplay offset: [self is2DViewer]];
+    //return
+    [self updatePresentationStateFromSeriesOnlyImageLevel: onlyImage scale: firstTimeDisplay offset: [self is2DViewer]];
 }
 
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage
