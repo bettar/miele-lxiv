@@ -48,6 +48,8 @@
 
 #include <string>
 
+#import "DICOMFiles/dicomFile.h"
+
 extern NSRecursiveLock *Papyrus_Lock;
 
 @implementation DicomFile (DicomFileDCMTKCategory)
@@ -514,15 +516,19 @@ extern NSRecursiveLock *Papyrus_Lock;
         [dicomElements setObject:SOPUID forKey:@"SOPUID"];
     
     //Study Description
-    if (dataset->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != NULL)
-        study = [[DicomFile stringWithBytes: (char*) string encodings:myEncodings] retain];
+    if (dataset->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != NULL) {
+        study = [[DicomFile stringWithBytes: (char*) string
+                                  encodings: myEncodings] retain];
+    }
     else
     {
         DcmItem *item = NULL;
         if (dataset->findAndGetSequenceItem(DCM_ProcedureCodeSequence, item).good())
         {
-            if (item->findAndGetString(DCM_CodeMeaning, string, OFFalse).good() && string != NULL)
-                study = [[DicomFile stringWithBytes: (char*) string encodings:myEncodings] retain];
+            if (item->findAndGetString(DCM_CodeMeaning, string, OFFalse).good() && string != NULL) {
+                study = [[DicomFile stringWithBytes: (char*) string
+                                          encodings: myEncodings] retain];
+            }
         }
     }
 

@@ -77,8 +77,15 @@
  */
 + (NSString*) NSreplaceBadCharacter: (NSString*) str; 
 
-+ (char *) replaceBadCharacter:(char *) str encoding: (NSStringEncoding) encoding; /**< Same as NSreplaceBadCharacter, but using char* and encodings */
-+ (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding replaceBadCharacters: (BOOL) replace; /**< Convert char* str with NSStringEncoding* encoding to NSString */ 
++ (char *) replaceBadCharacter: (char *) str
+                      encoding: (NSStringEncoding) encoding; /**< Same as NSreplaceBadCharacter, but using char* and encodings */
+
++ (NSString *) stringWithBytes: (char *) str
+                     encodings: (NSStringEncoding*) encoding;
+
++ (NSString *) stringWithBytes: (char *) str
+                     encodings: (NSStringEncoding*) encoding
+          replaceBadCharacters: (BOOL) replace; /**< Convert char* str with NSStringEncoding* encoding to NSString */
 
 - (NSPDFImageRep*) PDFImageRep; /**< Get a PDFImageRep from DICOM SR file */
 - (long) NoOfFrames; /**< Number of frames in the file */

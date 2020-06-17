@@ -233,7 +233,7 @@ OFCondition AYPrintManager::createRQ(
     if (assoc == NULL)
         return DIMSE_ILLEGALASSOCIATION;
 
-    if (sopclassUID==NULL)
+    if (sopclassUID == NULL)
         return DIMSE_NULLKEY;
     
     T_ASC_PresentationContextID presCtx = findAcceptedPC(sopclassUID);
