@@ -37,8 +37,8 @@
 
 static	BOOL dontEnterMagneticFunctions = NO;
 static	BOOL dontWindowDidChangeScreen = NO;
-extern  BOOL USETOOLBARPANEL;
-extern  ToolbarPanelController  *toolbarPanel[10];
+//extern  BOOL USETOOLBARPANEL;
+//extern  ToolbarPanelController  *toolbarPanel[ MAXSCREENS ];
 extern int delayedTileWindows;
 
 static BOOL protectedReentryWindowDidResize = NO;

@@ -32,7 +32,8 @@
 #import "BrowserController.h"
 #import "Notifications.h"
 
-static NSString* 	MIPToolbarIdentifier				= @"SR Toolbar Identifier";
+//static NSString* 	MIP_ToolbarIdentifier				= @"SR Toolbar Identifier";
+
 static NSString*	QTExportToolbarItemIdentifier		= @"QTExport.pdf";
 static NSString*	PhotosToolbarItemIdentifier			= @"Photos.icns";
 static NSString*	StereoIdentifier					= @"Stereo.icns";
@@ -146,8 +147,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 }
 
-
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
+- (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
+      itemForItemIdentifier: (NSString *) itemIdent
+  willBeInsertedIntoToolbar: (BOOL) willBeInserted
+{
 	// Required delegate method:  Given an item identifier, this method returns an item 
 	// The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
 	NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
@@ -261,7 +264,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Perspective",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Perspective Properties",nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: perspectiveView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([perspectiveView frame]), NSHeight([perspectiveView frame]))];
 	}
@@ -299,7 +301,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientations", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Orientations", nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: OrientationsView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([OrientationsView frame]), NSHeight([OrientationsView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([OrientationsView frame]), NSHeight([OrientationsView frame]))];

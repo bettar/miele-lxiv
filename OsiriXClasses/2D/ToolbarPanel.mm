@@ -26,40 +26,30 @@
 #import "N2Debug.h"
 #import "Notifications.h"
 
-extern BOOL USETOOLBARPANEL;
-
-//static int MacOSVersion109orHigher = -1;
-
-static int fixedHeight = 92;
+// Height of the toolbar window
+#define FIXED_HEIGTH    92  // 97
 
 @implementation ToolbarPanelController
 
-- (long) fixedHeight
-{
-    return fixedHeight;
+// Move up the toolbar so that its title is hidden under the system menu bar
+// and there is more room to display other windows
++ (int) hiddenHeight {
+    return 20;
 }
 
-+ (long) hiddenHeight {
-	return 15;
-}
-
-- (long) exposedHeight {
-	return fixedHeight - [ToolbarPanelController hiddenHeight];
-}
-
-+ (long) exposedHeight {
-	return fixedHeight - [ToolbarPanelController hiddenHeight];
++ (int) exposedHeight {
+	return FIXED_HEIGTH - [ToolbarPanelController hiddenHeight];
 }
 
 + (void) checkForValidToolbar
 {
     // Check that a toolbar is visible for all screens
-    for( NSScreen *s in [NSScreen screens])
+    for (NSScreen *s in [NSScreen screens])
     {
         ViewerController *v = [ViewerController frontMostDisplayed2DViewerForScreen: s];
         
-        if( v) {
-            if( [v.toolbarPanel.window.toolbar customizationPaletteIsRunning] == NO)
+        if (v) {
+            if ([v.toolbarPanel.window.toolbar customizationPaletteIsRunning] == NO)
                 [v.toolbarPanel.window orderBack: self];
         }
     }
@@ -70,12 +60,12 @@ static int fixedHeight = 92;
 	NSRect screenRect = [self.viewer.window.screen visibleFrame];
 	
 	NSRect dstframe;
-	dstframe.size.height = [self fixedHeight];
+	dstframe.size.height = FIXED_HEIGTH;
 	dstframe.size.width = screenRect.size.width;
 	dstframe.origin.x = NSMinX(screenRect);
 	dstframe.origin.y = NSMaxY(screenRect) - dstframe.size.height + [ToolbarPanelController hiddenHeight];
-	
-    if( NSEqualRects( dstframe, self.window.frame) == NO)
+
+    if (NSEqualRects( dstframe, self.window.frame) == NO)
         [[self window] setFrame:dstframe display:YES];
 }
 
@@ -84,14 +74,15 @@ static int fixedHeight = 92;
     self = [super initWithWindowNibName:@"ToolbarPanel"];
 	if (self)
 	{
-		toolbar = [t retain];
+		toolbar = [t retain]; // class OsiriXToolbar
         _viewer = [v retain];
-		
+
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
         [[self window] setToolbar: toolbar];
         [[self window] setLevel: NSNormalWindowLevel];
         [[self window] makeMainWindow];
         
+        [toolbar setDisplayMode:NSToolbarDisplayModeIconAndLabel];
         [toolbar setShowsBaselineSeparator: NO];
         [toolbar setVisible: YES];
         
@@ -101,13 +92,13 @@ static int fixedHeight = 92;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewerWillClose:) name: OsirixCloseViewerNotification object: nil];
 		
-        [[self window] setCollectionBehavior: 1 << 6]; //NSWindowCollectionBehaviorIgnoresCycle
+        [[self window] setCollectionBehavior: NSWindowCollectionBehaviorIgnoresCycle];
 		
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMain:) name:NSWindowDidBecomeMainNotification object:0];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:0];
         
         [self.window safelySetMovable:NO];
-        [self.window setShowsToolbarButton:NO];
+        //[self.window setShowsToolbarButton:NO];
 	}
 	
 	return self;

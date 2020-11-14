@@ -39,7 +39,7 @@
 #define	NAVIGATORMODE_BASIC 1
 #define NAVIGATORMODE_2POINT 2
 
-static NSString* 	EndoscopyToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
+static NSString* 	Endoscopy_ToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
 static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
 static NSString*	endoMPRToolsToolbarItemIdentifier		= @"MPRTools";
 static NSString*	FlyThruToolbarItemIdentifier			= @"FlyThru.pdf";
@@ -836,7 +836,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 
 - (void) setupToolbar {
     // Create a new toolbar instance, and attach it to our document window 
-    toolbar = [[NSToolbar alloc] initWithIdentifier: EndoscopyToolbarIdentifier];
+    toolbar = [[NSToolbar alloc] initWithIdentifier: Endoscopy_ToolbarIdentifier];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
     [toolbar setAllowsUserCustomization: YES];
@@ -847,7 +847,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
     
     // Attach the toolbar to the document window 
     [[self window] setToolbar: toolbar];
-	[[self window] setShowsToolbarButton:NO];
+	//[[self window] setShowsToolbarButton:NO];
 	[[[self window] toolbar] setVisible: YES];
 	
 #ifdef EXPORTTOOLBARITEM
@@ -906,7 +906,9 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
     [toolbar runCustomizationPalette:sender];
 }
 
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
+- (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
+      itemForItemIdentifier: (NSString *) itemIdent
+  willBeInsertedIntoToolbar: (BOOL) willBeInserted
 {
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
@@ -918,7 +920,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setLabel: NSLocalizedString(@"3D Mouse button function",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Mouse button function",nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: tools3DView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([tools3DView frame]), NSHeight([tools3DView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([tools3DView frame]),NSHeight([tools3DView frame]))];
@@ -929,7 +930,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setLabel: NSLocalizedString(@"MPR Mouse button function",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"MPR Mouse button function",nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: tools2DView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([tools2DView frame]), NSHeight([tools2DView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([tools2DView frame]),NSHeight([tools2DView frame]))];
@@ -952,7 +952,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Engine",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Engine",nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: engineView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([engineView frame]), NSHeight([engineView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([engineView frame]), NSHeight([engineView frame]))];
@@ -973,7 +972,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"3D WL/WW & CLUT & Opacity",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Change the WL/WW & CLUT & Opacity in the 3D view",nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: WLWW3DView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([WLWW3DView frame]), NSHeight([WLWW3DView frame]))];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([WLWW3DView frame]), NSHeight([WLWW3DView frame]))];
@@ -987,7 +985,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"MPR WL/WW & CLUT & Opacity",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Change the WL/WW & CLUT & Opacity in the MPR views",nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: WLWW2DView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([WLWW2DView frame]), NSHeight([WLWW2DView frame]))];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([WLWW2DView frame]), NSHeight([WLWW2DView frame]))];
@@ -1011,7 +1008,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Shading",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Shading Properties",nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: shadingView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([shadingView frame]), NSHeight([shadingView frame]))];
     }
@@ -1033,7 +1029,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Level of Detail",nil)];
 		[toolbarItem setToolTip:NSLocalizedString( @"Change Level of Detail",nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: LODView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([LODView frame]), NSHeight([LODView frame]))];
 			
@@ -1046,17 +1041,15 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Path Assistant", nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"Path Assistant", nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setImage:[NSImage imageNamed:PathAssistantToolbarItemIdentifier]];
-		// target is not set, it will be the first responder
+		// Target is not set, it will be the first responder
 		[toolbarItem setTarget:self];
 		[toolbarItem setAction:@selector(showPathAssistantPanel:)];
     }
-	
     else
-		{
-			toolbarItem = nil;
-		}
+    {
+        toolbarItem = nil;
+    }
     
     for (id key in [PluginManager installedPlugins])
     {

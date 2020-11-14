@@ -261,7 +261,8 @@ static NSString* BrowserControllerClassHelperContext = @"BrowserControllerClassH
         helper = [[BrowserControllerClassHelper alloc] init];
 }
 
-static NSString* 	DatabaseToolbarIdentifier			= @"DicomDatabase Toolbar Identifier";
+static NSString* 	Database_ToolbarIdentifier			= @"DicomDatabase Toolbar Identifier";
+
 static NSString*	ImportToolbarItemIdentifier			= @"Import.pdf";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.pdf";
 static NSString*	ExportToolbarItemIdentifier			= @"Export.pdf";
@@ -19545,9 +19546,8 @@ static volatile int numberOfThreadsForJPEG = 0;
             }
             
             [item setView: reportTemplatesView];
-            
-			[item setMinSize: NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
-			[item setMaxSize: NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
+			[item setMinSize: reportTemplatesView.frame.size];
+			[item setMaxSize: reportTemplatesView.frame.size];
 			
 			reportToolbarItemType = -1;
 		}
@@ -19700,7 +19700,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void) setupToolbar
 {
     // Create a new toolbar instance, and attach it to our document window 
-    toolbar = [[NSToolbar alloc] initWithIdentifier: DatabaseToolbarIdentifier];
+    toolbar = [[NSToolbar alloc] initWithIdentifier: Database_ToolbarIdentifier];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
     [toolbar setAllowsUserCustomization: YES];
@@ -19712,7 +19712,7 @@ static volatile int numberOfThreadsForJPEG = 0;
     
     // Attach the toolbar to the document window 
     [self.window setToolbar: toolbar];
-	[self.window setShowsToolbarButton:NO];
+	//[self.window setShowsToolbarButton:NO];
 	[[self.window toolbar] setVisible: YES];
     
 	//    [self.window makeKeyAndOrderFront:nil];
@@ -19724,7 +19724,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		@try
 		{
 			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
-			
 			
 			NSImage *im = [item image];
 			
@@ -19769,7 +19768,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 #endif
 }
 
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
+- (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
+      itemForItemIdentifier: (NSString *) itemIdent
+  willBeInsertedIntoToolbar: (BOOL) willBeInserted
 {
     NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
 	
@@ -19962,10 +19963,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Search", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Search", nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: searchView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([searchView frame]), NSHeight([searchView frame]))];
-		[toolbarItem setMaxSize:NSMakeSize(NSWidth([searchView frame])+100, NSHeight([searchView frame]))];
+        {
+            NSSize size = searchView.frame.size;
+            [toolbarItem setMinSize: size];
+            size.width += 100;
+            [toolbarItem setMaxSize: size];
+        }
     }
 	else if ([itemIdent isEqualToString: TimeIntervalToolbarItemIdentifier])
 	{
@@ -19973,10 +19977,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Time Interval", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Time Interval", nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: timeIntervalView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([timeIntervalView frame]), NSHeight([timeIntervalView frame]))];
-		[toolbarItem setMaxSize:NSMakeSize(NSWidth([timeIntervalView frame]), NSHeight([timeIntervalView frame]))];
+		[toolbarItem setMinSize: timeIntervalView.frame.size];
+		[toolbarItem setMaxSize: timeIntervalView.frame.size];
     }
     else if ([itemIdent isEqualToString: ModalityFilterToolbarItemIdentifier])
 	{
@@ -19984,10 +19987,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Modality", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Modality", nil)];
 		
-		// Use a custom view, a text field, for the search item
 		[toolbarItem setView: modalityFilterView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([modalityFilterView frame]), NSHeight([modalityFilterView frame]))];
-		[toolbarItem setMaxSize:NSMakeSize(NSWidth([modalityFilterView frame]), NSHeight([modalityFilterView frame]))];
+		[toolbarItem setMinSize: modalityFilterView.frame.size];
+		[toolbarItem setMaxSize: modalityFilterView.frame.size];
     }
 	else
 	{
@@ -20164,6 +20166,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		toolbarSearchItem = nil;
 	}
 }
+
+#pragma mark -
 
 - (NSArray*) ROIsAndKeyImages: (id) sender sameSeries: (BOOL*) sameSeries
 {

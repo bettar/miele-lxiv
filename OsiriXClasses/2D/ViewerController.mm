@@ -106,12 +106,11 @@
 #import "DCMTKStudyQueryNode.h"
 #import "DCMTKSeriesQueryNode.h"
 #import "O2ViewerThumbnailsMatrix.h"
-#import "ToolBarNSWindow.h"
 #import "MutableArrayCategory.h"
 
 int delayedTileWindows = NO;
 
-#define MAXSCREENS 10
+#define MAXSCREENS      10
 
 #define TAG_EXPORT_FORMAT_JPEG                  0
 #define TAG_EXPORT_FORMAT_TIFF                  1
@@ -135,7 +134,8 @@ extern BOOL FULL32BITPIPELINE;
 
 static BOOL SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO, recursiveCloseWindowsProtected = NO;
 
-static NSString* ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
+static NSString*    Viewer_ToolbarIdentifier			= @"Viewer Toolbar Identifier";
+
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.pdf";
 static NSString*	PhotosToolbarItemIdentifier			= @"Photos";
 static NSString*	PlayToolbarItemIdentifier			= @"Play.pdf";
@@ -3538,7 +3538,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     if (numberOf2DViewer == 0)
 	{
-		[AppController setUSETOOLBARPANEL: NO];
+		[AppController setUseToolBarPanel: NO];
         
         for (int i = 0; i < [[NSScreen screens] count]; i++)
 			[[thumbnailsListPanel[ i] window] orderOut:self];
@@ -3586,7 +3586,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 		[NSApp sendAction: @selector(tileWindows:) to:nil from: self];
 	
-	if ([AppController USETOOLBARPANEL])
+	if ([AppController useToolBarPanel])
 		[[toolbarPanel window] orderOut: self];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
@@ -3604,7 +3604,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 		[NSApp sendAction: @selector(tileWindows:) to:nil from: self];
 	
-	if ([AppController USETOOLBARPANEL])
+	if ([AppController useToolBarPanel])
         [[toolbarPanel window] orderFront: self];
 
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
@@ -3627,7 +3627,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[self autoHideMatrix];
     
-    if ([AppController USETOOLBARPANEL])
+    if ([AppController useToolBarPanel])
         [toolbarPanel.window orderOut: self];
     
     [imageView setNeedsDisplay: YES];
@@ -3672,7 +3672,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
     NSDisableScreenUpdates();
     
-    if ([AppController USETOOLBARPANEL])
+    if ([AppController useToolBarPanel])
     {
         if ([ViewerController isFrontMost2DViewer: self.window])
         {
@@ -3709,7 +3709,7 @@ static volatile int numberOfThreadsForRelisce = 0;
             N2LogStackTrace( @"Toolbar NOT found");
 	}
 	
-    if ([AppController USETOOLBARPANEL] == NO)
+    if ([AppController useToolBarPanel] == NO)
         [[toolbarPanel window] orderOut:self];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO || globalSeriesListVisible == NO)
@@ -6736,6 +6736,80 @@ static ViewerController *draggedController = nil;
     }
 }
 
+#pragma mark - NSToolbar Related Methods
+
+- (void) setupToolbar
+{
+    // Create a new toolbar instance, and attach it to our document window
+    //toolbar = [[OsiriXToolbar alloc] initWithIdentifier: Viewer_ToolbarIdentifier];
+    if (toolbar == nil)
+        toolbar = [[NSToolbar alloc] initWithIdentifier: Viewer_ToolbarIdentifier];
+
+    // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults
+    [toolbar setAllowsUserCustomization: YES];
+    [toolbar setAutosavesConfiguration: YES];
+    [toolbar setShowsBaselineSeparator: NO];
+    
+    // We are the delegate
+    [toolbar setDelegate: self];
+    
+    if ([AppController useToolBarPanel] == NO &&
+        [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == NO)
+    {
+        // Attach the toolbar to the document window
+        [[self window] setToolbar: toolbar];
+        //[[self window] setShowsToolbarButton:NO]; // it does nothing
+        [[[self window] toolbar] setVisible: YES];
+    }
+    
+#ifdef EXPORTTOOLBARITEM
+    NSLog(@"************** WARNING EXPORTTOOLBARITEM ACTIVATED");
+    for (id s in [self toolbarAllowedItemIdentifiers: toolbar])
+    {
+        @try
+        {
+            id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
+            NSImage *im = [item image];
+            if (im == nil)
+            {
+                @try
+                {
+                    if ([item respondsToSelector:@selector(setRecursiveEnabled:)])
+                        [item setRecursiveEnabled: YES];
+                    else if ([[item view] respondsToSelector:@selector(setRecursiveEnabled:)])
+                        [[item view] setRecursiveEnabled: YES];
+                    else if (item)
+                        NSLog( @"%@", item);
+                        
+                    im = [[item view] screenshotByCreatingPDF];
+                }
+                @catch (NSException * e)
+                {
+                    NSLog( @"a");
+                }
+            }
+            
+            if (im)
+            {
+                NSBitmapImageRep *bits = [[[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]] autorelease];
+                
+                NSString *path = [NSString stringWithFormat: @"%@sc/%@.png",
+                                  NSTemporaryDirectory(),
+                                  [[[[item label]
+                                     stringByReplacingOccurrencesOfString: @"&" withString:@"And"]
+                                    stringByReplacingOccurrencesOfString: @" " withString:@""]
+                                   stringByReplacingOccurrencesOfString: @"/" withString:@"-"]];
+                
+                [[bits representationUsingType: NSPNGFileType properties: nil] writeToFile:path  atomically: NO];
+            }
+        }
+        @catch (NSException * e)
+        {
+            NSLog( @"b");
+        }
+    }
+#endif
+}
 - (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
       itemForItemIdentifier: (NSString *) itemIdent
   willBeInsertedIntoToolbar: (BOOL) willBeInserted
@@ -6914,37 +6988,38 @@ static ViewerController *draggedController = nil;
         [toolbarItem setImage: [NSImage imageNamed: TileWindowsToolbarItemIdentifier]];
         [toolbarItem setTarget: [AppController sharedAppController]];
         [toolbarItem setAction: @selector(tileWindows:)];
-    } 
-//	else if ([itemIdent isEqualToString: iChatBroadCastToolbarItemIdentifier]) {
-//	
-//	[toolbarItem setLabel: NSLocalizedString(@"iChat", nil)];
-//	[toolbarItem setPaletteLabel: NSLocalizedString(@"iChat", nil)];
-//	[toolbarItem setToolTip: NSLocalizedString(@"iChat", nil)];
-////	[toolbarItem setImage: [NSImage imageNamed: iChatBroadCastToolbarItemIdentifier]]; //	/Applications/iChat/Contents/Resources/Prefs_Camera.icns is maybe a better image...
-//	NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iChat"];
-//	[toolbarItem setImage: [[NSWorkspace sharedWorkspace] iconForFile:path]];
-////	[toolbarItem setImage: [NSImage imageNamed:NSImageNameIChatTheaterTemplate]];
-//	[toolbarItem setTarget: self];
-//	[toolbarItem setAction: @selector(iChatBroadcast:)];
-//    } 
+    }
+#if 0 // ICHAT
+	else if ([itemIdent isEqualToString: iChatBroadCastToolbarItemIdentifier]) {
+	
+	[toolbarItem setLabel: NSLocalizedString(@"iChat", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"iChat", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"iChat", nil)];
+//	[toolbarItem setImage: [NSImage imageNamed: iChatBroadCastToolbarItemIdentifier]]; //	/Applications/iChat/Contents/Resources/Prefs_Camera.icns is maybe a better image...
+	NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iChat"];
+	[toolbarItem setImage: [[NSWorkspace sharedWorkspace] iconForFile:path]];
+//	[toolbarItem setImage: [NSImage imageNamed:NSImageNameIChatTheaterTemplate]];
+	[toolbarItem setTarget: self];
+	[toolbarItem setAction: @selector(iChatBroadcast:)];
+    }
+#endif
     else if ([itemIdent isEqualToString: SpeedToolbarItemIdentifier])
     {
     //	NSMenu *submenu = nil;
     //	NSMenuItem *submenuItem = nil, *menuFormRep = nil;
         
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Rate", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Rate", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Change the frame rate", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: speedView];
-        [toolbarItem setMinSize:NSMakeSize(100, NSHeight([speedView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(200,NSHeight([speedView frame]))];
+        [toolbarItem setMinSize: NSMakeSize(100, NSHeight([speedView frame]))];
+        [toolbarItem setMaxSize: NSMakeSize(200, NSHeight([speedView frame]))];
 
         // By default, in text only mode, a custom items label will be shown as disabled text, but you can provide a
         // custom menu of your own by using <item> setMenuFormRepresentation]
-        /*submenu = [[[NSMenu alloc] init] autorelease];
+        /*
+        submenu = [[[NSMenu alloc] init] autorelease];
         submenuItem = [[[NSMenuItem alloc] initWithTitle: @"Search Panel" action: @selector(searchUsingSearchPanel:) keyEquivalent: @""] autorelease];
         menuFormRep = [[[NSMenuItem alloc] init] autorelease];
 
@@ -6952,72 +7027,53 @@ static ViewerController *draggedController = nil;
         [submenuItem setTarget: self];
         [menuFormRep setSubmenu: submenu];
         [menuFormRep setTitle: [toolbarItem label]];
-        [toolbarItem setMenuFormRepresentation: menuFormRep];*/
+        [toolbarItem setMenuFormRepresentation: menuFormRep];
+         */
     }
 	else if ([itemIdent isEqualToString: MovieToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"4D Player", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"4D Player", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"4D Series Controller", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: movieView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([movieView frame]), NSHeight([movieView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([movieView frame]),NSHeight([movieView frame]))];
     }
 	else if ([itemIdent isEqualToString: SerieToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Series", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Series", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Next/Previous Series", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: serieView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([serieView frame]), NSHeight([serieView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([serieView frame]),NSHeight([serieView frame]))];
     }
 	else if ([itemIdent isEqualToString: PatientToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Patient", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Patient", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Next/Previous Patient", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: patientView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([patientView frame]), NSHeight([patientView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([patientView frame]), NSHeight([patientView frame]))];
     }
 	else if ([itemIdent isEqualToString: SubtractionToolbarItemIdentifier])
 	{
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Subtraction", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Subtraction", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Subtraction module", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: subCtrlView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([subCtrlView frame]), NSHeight([subCtrlView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([subCtrlView frame]),NSHeight([subCtrlView frame]))];
     }
 	else if ([itemIdent isEqualToString: WLWWToolbarItemIdentifier])
     {
     //	NSMenu *submenu = nil;
     //	NSMenuItem *submenuItem = nil, *menuFormRep = nil;
         
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Modify WL/WW & CLUT", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: WLWWView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([WLWWView frame]), NSHeight([WLWWView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([WLWWView frame]), NSHeight([WLWWView frame]))];
         
-            // Pulldown that doesnt change item
+            // Pulldown that doesn't change item
     //        [[wlwwPopup cell] setBezelStyle:NSSmallIconButtonBezelStyle];
     //        [[wlwwPopup cell] setArrowPosition:NSPopUpArrowAtBottom];
         
@@ -7028,15 +7084,11 @@ static ViewerController *draggedController = nil;
     }
     else if ([itemIdent isEqualToString: FilterToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Convolution Filters", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Convolution Filters", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Apply a convolution filter", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: ConvView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([ConvView frame]), NSHeight([ConvView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([ConvView frame]), NSHeight([ConvView frame]))];
         
         [[convPopup cell] setUsesItemFromMenu:YES];
     //	[convPopup setMenu: convViewMenu];
@@ -7045,60 +7097,46 @@ static ViewerController *draggedController = nil;
     }
     else if ([itemIdent isEqualToString: FusionToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Thick Slab", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Thick Slab", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Change Thick Slab mode and number", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: FusionView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([FusionView frame]), NSHeight([FusionView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([FusionView frame]) + 200, NSHeight([FusionView frame]))];
+        {
+            NSSize size = FusionView.frame.size;
+            [toolbarItem setMinSize: size];
+            size.width += 200;
+            [toolbarItem setMaxSize: size];
+        }
 	}
 	else if ([itemIdent isEqualToString: StatusToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Status & Comments", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Status & Comments", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: StatusView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([StatusView frame]), NSHeight([FusionView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([StatusView frame]), NSHeight([FusionView frame]))];
 	}
     else if ([itemIdent isEqualToString: BlendingToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Fusion", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Fusion", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Fusion Mode and Percentage", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: BlendingView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([BlendingView frame]), NSHeight([BlendingView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([BlendingView frame]), NSHeight([BlendingView frame]))];
 	}
 	else if ([itemIdent isEqualToString: RGBFactorToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"RGB Factors", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"RGB Factors", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: RGBFactorsView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([RGBFactorsView frame]), NSHeight([RGBFactorsView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([RGBFactorsView frame]), NSHeight([RGBFactorsView frame]))];
 	}
 	else if ([itemIdent isEqualToString: OrientationToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Orientation", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Orientation", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: orientationView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([orientationView frame]), NSHeight([orientationView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([orientationView frame]), NSHeight([orientationView frame]))];
 	}
     else if ([itemIdent isEqualToString: SeriesPopupToolbarItemIdentifier])
     {
@@ -7107,87 +7145,59 @@ static ViewerController *draggedController = nil;
         [toolbarItem setToolTip: NSLocalizedString(@"Series Selection", nil)];
         
         [toolbarItem setView: seriesPopupView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([seriesPopupView frame]), NSHeight([seriesPopupView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([seriesPopupView frame]), NSHeight([seriesPopupView frame]))];
 	}
     else if ([itemIdent isEqualToString: WindowsTilingToolbarItemIdentifier])
     {
-        // Set up the standard properties 
         [toolbarItem setLabel: NSLocalizedString(@"Windows", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Windows Tiling", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Windows Tiling", nil)];
         
         [toolbarItem setView: windowsTiling];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([windowsTiling frame]), NSHeight([windowsTiling frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([windowsTiling frame]), NSHeight([windowsTiling frame]))];
 	}
     else if ([itemIdent isEqualToString: AnnotationsToolbarItemIdentifier])
     {
-        // Set up the standard properties 
         [toolbarItem setLabel: NSLocalizedString(@"Annotations", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Annotations", nil)];
         
-        // Use a custom view, a text field, for the search item 
         [toolbarItem setView: annotations];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([annotations frame]), NSHeight([annotations frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([annotations frame]), NSHeight([annotations frame]))];
 	}
 	else if ([itemIdent isEqualToString: ShutterToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Shutter", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Shutter", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: shutterView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([shutterView frame]), NSHeight([shutterView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([shutterView frame]), NSHeight([shutterView frame]))];
 	}
 	else if ([itemIdent isEqualToString: PropagateSettingsToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Propagate", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Propagate", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Propagate settings (WL/WW, zoom, ...)", nil)];
         
         [toolbarItem setView: propagateSettingsView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([propagateSettingsView frame]), NSHeight([propagateSettingsView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([propagateSettingsView frame]), NSHeight([propagateSettingsView frame]))];
 	}
 	else if ([itemIdent isEqualToString: ReconstructionToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"2D/3D", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"2D/3D", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"2D/3D Reconstruction Tools", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: ReconstructionView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([ReconstructionView frame]), NSHeight([ReconstructionView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([ReconstructionView frame]), NSHeight([ReconstructionView frame]))];
 	}
 	else if ([itemIdent isEqualToString: KeyImagesToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Key Images", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Key Images", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: keyImages];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([keyImages frame]), NSHeight([keyImages frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([keyImages frame]), NSHeight([keyImages frame]))];
 	}
     else if ([itemIdent isEqualToString: ToolsToolbarItemIdentifier])
     {
-        // Set up the standard properties
         [toolbarItem setLabel: NSLocalizedString(@"Mouse button function", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Change the mouse button function", nil)];
         
-        // Use a custom view, a text field, for the search item
         [toolbarItem setView: toolsView];
-        [toolbarItem setMinSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
-        [toolbarItem setMaxSize:NSMakeSize(NSWidth([toolsView frame]),NSHeight([toolsView frame]))];
     }
 	else if ([itemIdent isEqualToString: FlipVerticalToolbarItemIdentifier])
     {
@@ -7240,8 +7250,6 @@ static ViewerController *draggedController = nil;
 		[toolbarItem setToolTip: NSLocalizedString(@"Display type", nil)];
 		
 		[toolbarItem setView: display12bitToolbarItemView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([display12bitToolbarItemView frame]), NSHeight([display12bitToolbarItemView frame]))];
-		[toolbarItem setMaxSize:NSMakeSize(NSWidth([display12bitToolbarItemView frame]),NSHeight([display12bitToolbarItemView frame]))];
     }
 	else if ([itemIdent isEqualToString: CobbAngleToolbarItemIdentifier])
 	{
@@ -7306,12 +7314,7 @@ static ViewerController *draggedController = nil;
                 toolbarItem = item;
         }
     }
-    
-//    [toolbarItem setMinSize: NSMakeSize( toolbarItem.minSize.width, 53)];
-//    [toolbarItem setMaxSize: NSMakeSize( toolbarItem.maxSize.width, 53)];
-//    
-//    [toolbarItem.view setFrameSize: NSMakeSize( toolbarItem.view.frame.size.width, 53)];
-    
+
     return toolbarItem;
 }
 
@@ -7878,79 +7881,6 @@ return YES;
 	[clutPopup setTitle: curCLUTMenu];
 }
 
-// ============================================================
-// NSToolbar Related Methods
-// ============================================================
-
-- (void) setupToolbar
-{
-	// Create a new toolbar instance, and attach it to our document window 
-	toolbar = [[OsiriXToolbar alloc] initWithIdentifier: ViewerToolbarIdentifier];
-    
-	// Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
-	[toolbar setAllowsUserCustomization: YES];
-	[toolbar setAutosavesConfiguration: YES];
-	[toolbar setShowsBaselineSeparator: NO];
-	
-	// We are the delegate
-	[toolbar setDelegate: self];
-	
-	if ([AppController USETOOLBARPANEL] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == NO)
-    {
-		[[self window] setToolbar: toolbar];
-        [[self window] setShowsToolbarButton:NO];
-        [[[self window] toolbar] setVisible: YES];
-	}
-    
-	#ifdef EXPORTTOOLBARITEM
-	NSLog(@"************** WARNING EXPORTTOOLBARITEM ACTIVATED");
-	for (id s in [self toolbarAllowedItemIdentifiers: toolbar])
-	{
-		@try
-		{
-			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
-			NSImage *im = [item image];
-			if (im == nil)
-			{
-				@try
-				{
-					if ([item respondsToSelector:@selector(setRecursiveEnabled:)])
-						[item setRecursiveEnabled: YES];
-					else if ([[item view] respondsToSelector:@selector(setRecursiveEnabled:)])
-						[[item view] setRecursiveEnabled: YES];
-					else if (item)
-						NSLog( @"%@", item);
-						
-					im = [[item view] screenshotByCreatingPDF];
-				}
-				@catch (NSException * e)
-				{
-					NSLog( @"a");
-				}
-			}
-			
-			if (im)
-			{
-				NSBitmapImageRep *bits = [[[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]] autorelease];
-				
-				NSString *path = [NSString stringWithFormat: @"%@sc/%@.png",
-                                  NSTemporaryDirectory(),
-                                  [[[[item label]
-                                     stringByReplacingOccurrencesOfString: @"&" withString:@"And"]
-                                    stringByReplacingOccurrencesOfString: @" " withString:@""]
-                                   stringByReplacingOccurrencesOfString: @"/" withString:@"-"]];
-                
-				[[bits representationUsingType: NSPNGFileType properties: nil] writeToFile:path  atomically: NO];
-			}
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"b");
-		}
-	}
-	#endif
-}
-
 #pragma mark - 4.1. single viewport
 
 - (BOOL) isDataVolumic
@@ -8470,7 +8400,8 @@ static NSMutableArray *poolOf2DViewers = nil;
 #endif
 	
     if (toolbarPanel == nil)
-        toolbarPanel = [[ToolbarPanelController alloc] initForViewer: self withToolbar: toolbar];
+        toolbarPanel = [[ToolbarPanelController alloc] initForViewer: self
+                                                         withToolbar: toolbar];
     
 	return self;
 }
@@ -9730,7 +9661,7 @@ static int avoidReentryRefreshDatabase = 0;
 		[subCtrlOnOff setEnabled: YES];
 		
 		subCtrlMaskID = 1;
-		[subCtrlMaskText setStringValue: [NSString stringWithFormat:@"2"]];//changes tool text
+		[subCtrlMaskText setStringValue: [NSString stringWithFormat:@"2"]]; //changes tool text
 		
 		subCtrlMinMaxComputed = NO;
 	}
@@ -17548,7 +17479,6 @@ long				x, y;
 
 -(id) findSyncSeriesButton
 {
-	
 	NSArray *items = [toolbar items];
 	
 	for (id loopItem in items)
@@ -22366,9 +22296,9 @@ static BOOL viewerControllerPlaying = NO;
     
     if (numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
-		if ([AppController USETOOLBARPANEL] == NO)
+		if ([AppController useToolBarPanel] == NO)
 		{
-			[AppController setUSETOOLBARPANEL: YES];
+			[AppController setUseToolBarPanel: YES];
 			
 			for (NSWindow *win in [NSApp windows])
 			{
@@ -24331,8 +24261,6 @@ static BOOL viewerControllerPlaying = NO;
 	{
         [reportTemplatesImageView setImage:[self reportIcon]];
 		[item setView:reportTemplatesView];
-		[item setMinSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
-		[item setMaxSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
 	}
 	else
 	{

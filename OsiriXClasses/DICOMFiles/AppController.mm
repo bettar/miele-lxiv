@@ -917,12 +917,12 @@ static bool isGrantedNotificationAccess = false;
     return [NSString stringWithFormat:@"%@|%@", [N2Shell serialNumber], NSUserName()];
 }
 
-+ (void) setUSETOOLBARPANEL: (BOOL) b
++ (void) setUseToolBarPanel: (BOOL) b
 {
 	USETOOLBARPANEL = b;
 }
 
-+ (BOOL) USETOOLBARPANEL
++ (BOOL) useToolBarPanel
 {
 	return USETOOLBARPANEL;
 }
@@ -5144,8 +5144,11 @@ static BOOL firstCall = YES;
     
     if (showFloatingWindows)
     {
-        if ([AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+        if ([AppController useToolBarPanel] ||
+            [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+        {
             screenFrame.size.height -= 78;  //[[AppController toolbarForScreen: screen] exposedHeight];
+        }
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"])
         {
@@ -5163,7 +5166,7 @@ static BOOL firstCall = YES;
 {
     NSMutableArray *viewersList = [NSMutableArray array];
     
-    //get 2D viewer windows
+    // Get 2D viewer windows
 	for (NSWindow *win in [NSApp orderedWindows])
 	{
 		if ([[win windowController] isKindOfClass:[OSIWindowController class]] == YES)
@@ -5185,7 +5188,10 @@ static BOOL firstCall = YES;
         [win setAnimationBehavior: NSWindowAnimationBehaviorNone];
 	}
     
-    [self tileWindows: sender windows: viewersList display2DViewerToolbar: USETOOLBARPANEL displayThumbnailsList: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"]];
+    [self tileWindows: sender
+              windows: viewersList
+display2DViewerToolbar: USETOOLBARPANEL
+displayThumbnailsList: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"]];
     
     [[BrowserController currentBrowser] closeWaitWindowIfNecessary];
 }

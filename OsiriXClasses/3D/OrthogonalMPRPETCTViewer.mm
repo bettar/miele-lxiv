@@ -33,7 +33,8 @@
 #import "PluginManager.h"
 #import "url.h"
 
-static NSString* 	PETCTToolbarIdentifier						= @"PETCT Viewer Toolbar Identifier";
+static NSString* 	PETCT_ToolbarIdentifier						= @"PETCT Viewer Toolbar Identifier";
+
 static NSString*	SameHeightSplitViewToolbarItemIdentifier	= @"sameHeightSplitView";
 static NSString*	SameWidthSplitViewToolbarItemIdentifier		= @"sameWidthSplitView";
 //static NSString*	TurnSplitViewToolbarItemIdentifier			= @"turnSplitView";
@@ -946,7 +947,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 
 - (void) setupToolbar {
     // Create a new toolbar instance, and attach it to our document window 
-    toolbar = [[NSToolbar alloc] initWithIdentifier: PETCTToolbarIdentifier];
+    toolbar = [[NSToolbar alloc] initWithIdentifier: PETCT_ToolbarIdentifier];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
     [toolbar setAllowsUserCustomization: YES];
@@ -957,7 +958,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
     
     // Attach the toolbar to the document window 
     [[self window] setToolbar: toolbar];
-	[[self window] setShowsToolbarButton:NO];
+	//[[self window] setShowsToolbarButton:NO];
 	[[[self window] toolbar] setVisible: YES];
 	
 	#ifdef EXPORTTOOLBARITEM
@@ -1023,7 +1024,9 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[viewer threeDPanel: sender];
 }
 
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
+- (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
+      itemForItemIdentifier: (NSString *) itemIdent
+  willBeInsertedIntoToolbar: (BOOL) willBeInserted
 {
     // Required delegate method:  Given an item identifier, this method returns an item
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself
@@ -1063,7 +1066,6 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
 	
-	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: toolsView];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([toolsView frame]),NSHeight([toolsView frame]))];
@@ -1075,7 +1077,6 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[toolbarItem setLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
 	
-	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: ThickSlabView];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]), NSHeight([ThickSlabView frame]))];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]) + 100, NSHeight([ThickSlabView frame]))];
@@ -1087,7 +1088,6 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Fusion Mode and Percentage",nil)];
 	
-	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: blendingToolView];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([blendingToolView frame]), NSHeight([blendingToolView frame]))];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([blendingToolView frame]), NSHeight([blendingToolView frame]))];
@@ -1175,7 +1175,6 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Modify WL/WW & CLUT", nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: WLWWView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([WLWWView frame]), NSHeight([WLWWView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([WLWWView frame]), NSHeight([WLWWView frame]))];
@@ -1189,7 +1188,6 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"4D Player", nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"4D Series Controller", nil)];
 	
-	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: movieView];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([movieView frame]), NSHeight([movieView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([movieView frame]),NSHeight([movieView frame]))];

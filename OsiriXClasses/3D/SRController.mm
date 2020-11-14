@@ -35,7 +35,8 @@
 #import "N2Debug.h"
 #import "url.h"
 
-static NSString* 	MIPToolbarIdentifier				= @"SR Toolbar Identifier";
+static NSString* 	MIP_ToolbarIdentifier				= @"SR Toolbar Identifier";
+
 static NSString*	QTExportToolbarItemIdentifier		= @"QTExport.pdf";
 static NSString*	PhotosToolbarItemIdentifier			= @"Photos.icns";
 static NSString*	StereoIdentifier					= @"Stereo.icns";
@@ -617,7 +618,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 
 - (void) setupToolbar {
     // Create a new toolbar instance, and attach it to our document window 
-    toolbar = [[NSToolbar alloc] initWithIdentifier: MIPToolbarIdentifier];
+    toolbar = [[NSToolbar alloc] initWithIdentifier: MIP_ToolbarIdentifier];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
     [toolbar setAllowsUserCustomization: YES];
@@ -629,7 +630,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 
     // Attach the toolbar to the document window
     [[self window] setToolbar: toolbar];
-	[[self window] setShowsToolbarButton:NO];
+	//[[self window] setShowsToolbarButton:NO];
 	[[[self window] toolbar] setVisible: YES];
     
 //    [window makeKeyAndOrderFront:nil];
@@ -692,7 +693,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 
 #pragma mark - NSToolbarDelegate
 
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar
+- (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
       itemForItemIdentifier: (NSString *) itemIdent
   willBeInsertedIntoToolbar: (BOOL) willBeInserted
 {
@@ -813,7 +814,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Perspective",nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Perspective Properties",nil)];
 	
-	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: perspectiveView];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([perspectiveView frame]), NSHeight([perspectiveView frame]))];
     }
@@ -853,7 +853,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientations", nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Orientations", nil)];
 	
-	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: OrientationsView];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([OrientationsView frame]), NSHeight([OrientationsView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([OrientationsView frame]), NSHeight([OrientationsView frame]))];

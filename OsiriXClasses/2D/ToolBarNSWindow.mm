@@ -26,6 +26,30 @@
 
 @implementation ToolBarNSWindow
 
+//- (id) initWithContentRect:(NSRect)contentRect
+//                 styleMask:(NSWindowStyleMask)style
+//                   backing:(NSBackingStoreType)backingStoreType
+//                     defer:(BOOL)flag
+//{
+//    NSLog(@"%s styleMask: 0x%lx\n\t 0x%lx, 0x%lx, 0x%lx, 0x%lx",
+//          __PRETTY_FUNCTION__,
+//          (unsigned long)style,                 // 0x191
+//          NSWindowStyleMaskTitled,              // 1 << 0 0x001
+//          NSWindowStyleMaskUtilityWindow,       // 1 << 4 0x010
+//          NSWindowStyleMaskNonactivatingPanel,  // 1 << 7 0x080
+//          NSWindowStyleMaskTexturedBackground); // 1 << 8 0x100
+//
+//    if ((self = [super initWithContentRect:contentRect
+//                                 styleMask:style
+//                                   backing:backingStoreType
+//                                     defer:flag])) {
+//
+//        [self setShowsToolbarButton: YES];
+//    }
+//
+//    return self;
+//}
+
 - (void) resignMainWindow
 {
 }
@@ -56,20 +80,19 @@
 
 - (void) orderOut:(id)sender
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideToolbarIfNotActive"] == NO && [AppController USETOOLBARPANEL] == YES)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideToolbarIfNotActive"] == NO && [AppController useToolBarPanel] == YES)
     {
         NSDisableScreenUpdates();
         
         ViewerController *v = [ViewerController frontMostDisplayed2DViewerForScreen: self.screen];
         
-        if( v.toolbarPanel.window != self)
+        if (v.toolbarPanel.window != self)
         {
-            if( [self.toolbar customizationPaletteIsRunning] == NO)
+            if ([self.toolbar customizationPaletteIsRunning] == NO)
                 [super orderOut:sender];
         }
         
-        if( v)
-        {
+        if (v) {
             if( [v.toolbarPanel.window.toolbar customizationPaletteIsRunning] == NO)
                 [v.toolbarPanel.window orderBack: self];
         }

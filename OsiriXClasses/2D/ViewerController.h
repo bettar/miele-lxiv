@@ -93,7 +93,7 @@ enum
 	NSTimer					*highLightedTimer;
     
     IBOutlet NSSplitView    *splitView;
-    BOOL                    splitViewAllocated;
+            BOOL            splitViewAllocated;
 	
     IBOutlet NSWindow       *quicktimeWindow;
 	IBOutlet NSMatrix		*quicktimeMode;
@@ -102,46 +102,60 @@ enum
 	IBOutlet NSBox			*quicktimeBox;
 	IBOutlet NSButton		*quicktimeAllViewers;
 	
-	DCMView					*imageView;
+            DCMView			*imageView;
 	
     IBOutlet NSView         *windowsTiling, *annotations, *seriesPopupView;
 	IBOutlet NSView         *orientationView;
 	IBOutlet NSMatrix		*orientationMatrix;
 	
-    OrientationToolType		currentOrientationTool;
-    OrientationToolType     originalOrientation;
+            OrientationToolType		currentOrientationTool;
+            OrientationToolType     originalOrientation;
 	
     IBOutlet NSSlider       *slider, *speedSlider;
 	IBOutlet NSButton		*loopButton;
+
+    // Toolbar subviews
     IBOutlet NSView         *speedView;
     IBOutlet NSView         *toolsView;
     IBOutlet NSView         *WLWWView;
     IBOutlet NSView         *ReconstructionView;
-	IBOutlet NSView         *ConvView;
-	IBOutlet NSView         *FusionView;
+    IBOutlet NSView         *ConvView;
+    IBOutlet NSView         *FusionView;
+    IBOutlet NSView         *StatusView;
 	IBOutlet NSView			*BlendingView;
-	IBOutlet NSView			*movieView, *serieView, *patientView, *keyImages, *PagePad;
-	IBOutlet NSView         *RGBFactorsView;
-	IBOutlet NSTextField    *speedText;
+    IBOutlet NSView			*movieView;
+    IBOutlet NSView         *serieView;
+    IBOutlet NSView         *patientView;
+    IBOutlet NSView         *keyImages;
+    IBOutlet NSView         *PagePad; // unused ?
+    IBOutlet NSView         *RGBFactorsView;
+    IBOutlet NSView         *propagateSettingsView;
+    IBOutlet NSView         *subCtrlView;
+    IBOutlet NSView         *shutterView;
+
+    IBOutlet NSTextField    *speedText;
     IBOutlet NSPopUpButton  *wlwwPopup;
     IBOutlet NSPopUpButton  *convPopup;
     IBOutlet NSPopUpButton  *clutPopup;
 	IBOutlet NSPopUpButton  *OpacityPopup;
-    BOOL OpacityPopupSet, clutPopupSet, convPopupSet, wlwwPopupSet, clutDICOMFileMenuAdded;
+
+            BOOL OpacityPopupSet, clutPopupSet, convPopupSet, wlwwPopupSet, clutDICOMFileMenuAdded;
+
     IBOutlet NSPopUpButton  *seriesPopupMenu;
     IBOutlet NSPopUpButton  *windowsTilingMenu;
-    NSMenuItem              *seriesPopupContextualMenu;
-    BOOL                    needsToBuildSeriesPopupMenu, needsToBuildSeriesMatrix;
-	
-	IBOutlet NSView			*propagateSettingsView;
-	
-	IBOutlet NSView         *subCtrlView;
-			 BOOL			enableSubtraction;
-	IBOutlet NSButton		*subCtrlOnOff;
-			 long			subCtrlMaskID;
-			 NSPoint		subCtrlMinMax;
-			 BOOL			subCtrlMinMaxComputed;
-	IBOutlet NSTextField	*subCtrlMaskText;
+
+            NSMenuItem *seriesPopupContextualMenu;
+            BOOL needsToBuildSeriesPopupMenu, needsToBuildSeriesMatrix;
+            
+            BOOL enableSubtraction;
+
+    IBOutlet NSButton *subCtrlOnOff;
+
+            long		subCtrlMaskID;
+            NSPoint		subCtrlMinMax;
+            BOOL		subCtrlMinMaxComputed;
+
+    IBOutlet NSTextField	*subCtrlMaskText;
 
 			 NSPoint		subCtrlOffset;
 	IBOutlet NSButton		*sc1;
@@ -158,14 +172,12 @@ enum
     IBOutlet NSSlider       *subCtrlPercent;
 	IBOutlet NSButton		*subCtrlSharpenButton;
 	IBOutlet NSButton		*shutterOnOff;
-	IBOutlet NSView			*shutterView;
-			 NSString		*contextualDictionaryPath; //JF20070102
-			 
-			 long			speedometer;
-		 
-    int statusValueToApply;
-	IBOutlet NSView			*StatusView;
-	IBOutlet NSButton		*CommentsField;
+
+            NSString		*contextualDictionaryPath; //JF20070102
+            long			speedometer;
+            int statusValueToApply;
+
+    IBOutlet NSButton		*CommentsField;
 	IBOutlet NSPopUpButton	*StatusPopup;
 	IBOutlet NSWindow		*CommentsWindow, *saveWindowsStateWindow;
 	IBOutlet NSTextField    *CommentsEditField;
@@ -251,7 +263,7 @@ enum
 	IBOutlet NSMatrix		*roiRenameMatrix;
 	IBOutlet NSWindow		*roiRenameWindow;
 	
-	NSString				*curConvMenu, *curWLWWMenu, *curCLUTMenu, *backCurCLUTMenu, *curOpacityMenu;
+	NSString *curConvMenu, *curWLWWMenu, *curCLUTMenu, *backCurCLUTMenu, *curOpacityMenu;
 	
 	IBOutlet NSTextField    *stacksFusion;
 	IBOutlet NSSlider       *sliderFusion;
@@ -260,7 +272,7 @@ enum
 	
 	IBOutlet NSMatrix		*buttonToolMatrix;
     
-    // Compatatives GUI
+    // Comparatives GUI
     IBOutlet NSButton*      comparativesButton;
     NSNumber* flagListPODComparatives;
 	

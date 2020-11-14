@@ -162,12 +162,8 @@ typedef enum {SyncSeriesBehaviorAbsolutePosWithSameStudy, SyncSeriesBehaviorRela
 // NSToolbar Related Methods
 - (void) setupToolbar;
 - (IBAction) customizeViewerToolBar:(id)sender;
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted;
-- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar;
-- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar;
-- (void) toolbarWillAddItem: (NSNotification *) notif;
-- (void) toolbarDidRemoveItem: (NSNotification *) notif;
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem;
+
 - (void) fullWindowView:(int)index;
 
 - (void) blendingPropagateOriginal:(OrthogonalMPRView*) sender;

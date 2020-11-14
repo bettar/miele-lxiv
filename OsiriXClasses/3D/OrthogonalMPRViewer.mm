@@ -37,7 +37,8 @@
 #import "PluginManager.h"
 #import "url.h"
 
-static NSString* 	MPROrthoToolbarIdentifier				= @"MPROrtho Viewer Toolbar Identifier";
+static NSString* 	MPROrtho_ToolbarIdentifier				= @"MPROrtho Viewer Toolbar Identifier";
+
 static NSString*	AdjustSplitViewToolbarItemIdentifier	= @"sameSizeSplitView";
 //static NSString*	TurnSplitViewToolbarItemIdentifier		= @"turnSplitView";
 static NSString*	PhotosToolbarItemIdentifier				= @"Photos";
@@ -942,7 +943,7 @@ return YES;
 - (void) setupToolbar
 {
     // Create a new toolbar instance, and attach it to our document window 
-    toolbar = [[NSToolbar alloc] initWithIdentifier: MPROrthoToolbarIdentifier];
+    toolbar = [[NSToolbar alloc] initWithIdentifier: MPROrtho_ToolbarIdentifier];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
     [toolbar setAllowsUserCustomization: YES];
@@ -953,7 +954,7 @@ return YES;
     
     // Attach the toolbar to the document window 
     [[self window] setToolbar: toolbar];
-	[[self window] setShowsToolbarButton:NO];
+	//[[self window] setShowsToolbarButton:NO];
 	[[[self window] toolbar] setVisible: YES];
 	
 #ifdef EXPORTTOOLBARITEM
@@ -1013,7 +1014,9 @@ return YES;
     [toolbar runCustomizationPalette:sender];
 }
 
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
+- (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
+      itemForItemIdentifier: (NSString *) itemIdent
+  willBeInsertedIntoToolbar: (BOOL) willBeInserted
 {
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
@@ -1070,18 +1073,15 @@ return YES;
 	[toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
 	
-	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: toolsView];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
-	[toolbarItem setMaxSize:NSMakeSize(NSWidth([toolsView frame]),NSHeight([toolsView frame]))];
-
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
     }
-	 else if ([itemIdent isEqualToString: ThickSlabToolbarItemIdentifier]) {
+    else if ([itemIdent isEqualToString: ThickSlabToolbarItemIdentifier]) {
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
 	
-	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: ThickSlabView];
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]), NSHeight([ThickSlabView frame]))];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]) + 200, NSHeight([ThickSlabView frame]))];
@@ -1092,7 +1092,6 @@ return YES;
 //	[toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
 //	[toolbarItem setToolTip: NSLocalizedString(@"Fusion Mode and Percentage",nil)];
 //	
-//	// Use a custom view, a text field, for the search item 
 //	[toolbarItem setView: BlendingView];
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([BlendingView frame]), NSHeight([BlendingView frame]))];
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([BlendingView frame]), NSHeight([BlendingView frame]))];
@@ -1103,7 +1102,6 @@ return YES;
 //	[toolbarItem setPaletteLabel: @"MPR Axes"];
 //	[toolbarItem setToolTip: @"Change MPR Axes"];
 //	
-//	// Use a custom view, a text field, for the search item 
 //	[toolbarItem setView: axesView];
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([axesView frame]), NSHeight([axesView frame]))];
 //	[toolbarItem setMaxSize:NSMakeSize(NSWidth([axesView frame]),NSHeight([axesView frame]))];
@@ -1178,7 +1176,6 @@ return YES;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Modify WL/WW & CLUT", nil)];
 		
-		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: WLWWView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([WLWWView frame]), NSHeight([WLWWView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([WLWWView frame]), NSHeight([WLWWView frame]))];
@@ -1191,7 +1188,6 @@ return YES;
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"4D Player", nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"4D Series Controller", nil)];
 	
-	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: movieView];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([movieView frame]), NSHeight([movieView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([movieView frame]),NSHeight([movieView frame]))];

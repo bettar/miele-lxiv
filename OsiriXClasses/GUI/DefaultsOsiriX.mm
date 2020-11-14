@@ -901,7 +901,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject:@"1" forKey: @"DCMPRINT_Interval"];
 	[defaultValuesDic setObject:@"3" forKey: @"LISTENERCHECKINTERVAL"];
 	[defaultValuesDic setObject:@"1" forKey: @"AUTOTILING"];
-	[defaultValuesDic setObject:@"1" forKey: @"USEALWAYSTOOLBARPANEL2"];
+	[defaultValuesDic setObject:@YES forKey: @"USEALWAYSTOOLBARPANEL2"];
 	[defaultValuesDic setObject:@"1" forKey: @"SquareWindowForPrinting"];
 	[defaultValuesDic setObject:@"Softw Tissue CT" forKey: @"LAST_3D_PRESET"];
 	[defaultValuesDic setObject:@"0" forKey:@"HIDEPATIENTNAME"];

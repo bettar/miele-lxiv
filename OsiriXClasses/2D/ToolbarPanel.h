@@ -30,10 +30,9 @@
 
 @property (readonly) ViewerController *viewer;
 
-- (long) fixedHeight;
-+ (long) hiddenHeight;
-- (long) exposedHeight;
-+ (long) exposedHeight;
++ (int) hiddenHeight;
++ (int) exposedHeight;
+
 - (id)initForViewer: (ViewerController*) v withToolbar: (NSToolbar*) t;
 - (NSToolbar*) toolbar;
 + (void) checkForValidToolbar;

@@ -108,7 +108,6 @@ static 	NSMutableDictionary *associatedScreen = nil;
         if (self.window == nil)
             [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseFloatingThumbnailsList"];
 	}
-    
 	
 	return self;
 }

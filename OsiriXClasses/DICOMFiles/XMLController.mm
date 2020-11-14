@@ -44,7 +44,8 @@
 #import "DicomDatabase.h"
 #import "PluginManager.h"
 
-static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
+static NSString* 	XML_ToolbarIdentifier					= @"XML Toolbar Identifier";
+
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
 static NSString*	ExportTextToolbarItemIdentifier			= @"ExportText";
 static NSString*	ExpandAllItemsToolbarItemIdentifier		= @"add-large";
@@ -58,6 +59,7 @@ static BOOL showWarning = YES;
 
 extern int delayedTileWindows;
 
+#pragma mark -
 
 @implementation XMLController
 
@@ -137,11 +139,9 @@ extern int delayedTileWindows;
 	switch (editingLevel)
 	{
 		case 0:
-        {
 			NSLog( @"image level");
 			return [NSArray arrayWithObject: imObj];
             break;
-        }
 		
 		case 1:
         {
@@ -1547,13 +1547,11 @@ extern int delayedTileWindows;
 	[pb setString: copyString forType:NSPasteboardTypeString];
 }
 
-// ============================================================
-// NSToolbar Related Methods
-// ============================================================
+#pragma mark - NSToolbar Related Methods
 
 - (void) setupToolbar {
     // Create a new toolbar instance, and attach it to our document window 
-    toolbar = [[NSToolbar alloc] initWithIdentifier: XMLToolbarIdentifier];
+    toolbar = [[NSToolbar alloc] initWithIdentifier: XML_ToolbarIdentifier];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
     [toolbar setAllowsUserCustomization: YES];
@@ -1565,13 +1563,16 @@ extern int delayedTileWindows;
     
     // Attach the toolbar to the document window 
     [[self window] setToolbar: toolbar];
-	[[self window] setShowsToolbarButton:NO];
+	//[[self window] setShowsToolbarButton:NO]; // it does nothing
 	[[[self window] toolbar] setVisible: YES];
     
 //    [window makeKeyAndOrderFront:nil];
 }
 
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
+- (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
+      itemForItemIdentifier: (NSString *) itemIdent
+  willBeInsertedIntoToolbar: (BOOL) willBeInserted
+{
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
     NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
@@ -1591,8 +1592,8 @@ extern int delayedTileWindows;
 		[toolbarItem setToolTip: NSLocalizedString(@"DICOM Editing", nil)];
 		
 		[toolbarItem setView: dicomEditingView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([dicomEditingView frame]), NSHeight([dicomEditingView frame]))];
-		[toolbarItem setMaxSize:NSMakeSize(NSWidth([dicomEditingView frame]), NSHeight([dicomEditingView frame]))];
+        [toolbarItem setMinSize: dicomEditingView.frame.size];
+		[toolbarItem setMaxSize: dicomEditingView.frame.size];
     }
 	else if ([itemIdent isEqualToString: SearchToolbarItemIdentifier])
 	{
@@ -1601,8 +1602,8 @@ extern int delayedTileWindows;
 		[toolbarItem setToolTip: NSLocalizedString(@"Search", nil)];
 		
 		[toolbarItem setView: searchView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([searchView frame]), NSHeight([searchView frame]))];
-		[toolbarItem setMaxSize:NSMakeSize(NSWidth([searchView frame]), NSHeight([searchView frame]))];
+		[toolbarItem setMinSize: searchView.frame.size];
+		[toolbarItem setMaxSize: searchView.frame.size];
     }
 	else if ([itemIdent isEqualToString: ExportTextToolbarItemIdentifier]) {
 		[toolbarItem setLabel: NSLocalizedString(@"Export Text", nil)];
@@ -1722,6 +1723,8 @@ extern int delayedTileWindows;
     
 	return enable;
 }
+
+#pragma mark -
 
 - (void) expandAllItems: (id) sender
 {

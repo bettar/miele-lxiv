@@ -187,7 +187,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[hiddenVRController retain];
 		
 		// To avoid the "invalid drawable" message
-		[[hiddenVRController window] setLevel: 0];
+		[[hiddenVRController window] setLevel: NSNormalWindowLevel];
 		[[hiddenVRController window] orderBack: self];
 		[[hiddenVRController window] orderOut: self];
 		
@@ -2862,7 +2862,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     [toolbar setDelegate: self];
     
     [[self window] setToolbar: toolbar];
-	[[self window] setShowsToolbarButton: NO];
+	//[[self window] setShowsToolbarButton: NO];
 	[[[self window] toolbar] setVisible: YES];
 	
 	#ifdef EXPORTTOOLBARITEM
@@ -2922,7 +2922,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     [toolbar runCustomizationPalette:sender];
 }
 
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
+- (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
+      itemForItemIdentifier: (NSString *) itemIdent
+  willBeInsertedIntoToolbar: (BOOL) willBeInserted
 {
     NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
     

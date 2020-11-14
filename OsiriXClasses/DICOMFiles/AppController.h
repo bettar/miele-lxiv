@@ -229,8 +229,8 @@ extern AppController* OsiriX;
 - (void) killDICOMListenerWait:(BOOL) w;
 - (void) runPreferencesUpdateCheck:(NSTimer*) timer;
 + (void) checkForPreferencesUpdate: (BOOL) b;
-+ (BOOL) USETOOLBARPANEL;
-+ (void) setUSETOOLBARPANEL: (BOOL) b;
++ (BOOL) useToolBarPanel;
++ (void) setUseToolBarPanel: (BOOL) b;
 + (NSRect) usefulRectForScreen: (NSScreen*) screen;
 
 - (void) addStudyToRecentStudiesMenu: (NSManagedObjectID*) studyID;
