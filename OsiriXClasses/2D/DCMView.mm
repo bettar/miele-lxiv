@@ -1652,7 +1652,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		[panel setCanSelectHiddenExtension:NO];
         [panel setAllowedFileTypes: @[@"roi"]];
         [panel setNameFieldStringValue: [[selectedROIs objectAtIndex:0] name]];
-		if ([panel runModal] == NSFileHandlingPanelOKButton)
+		if ([panel runModal] == NSModalResponseOK)
 		{
 			[NSArchiver archiveRootObject: selectedROIs toFile: [panel filename]];
 		}

@@ -185,7 +185,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
     [save setAllowedFileTypes: [NSArray arrayWithObject: @"plist"]];
     [save setNameFieldStringValue: @"OsiriX-Preferences.plist"];
     
-    if ([save runModal] == NSFileHandlingPanelOKButton)
+    if ([save runModal] == NSModalResponseOK)
 	{
         NSDictionary *defaultsPreferences = [DefaultsOsiriX getDefaults];
         NSMutableDictionary *customizedPreferences = [NSMutableDictionary dictionary];
@@ -287,7 +287,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 	open.allowsMultipleSelection = NO;
 	open.message = NSLocalizedString(@"Select the preferences file (plist) to load:", nil);
 	
-    if ([open runModal] == NSFileHandlingPanelOKButton)
+    if ([open runModal] == NSModalResponseOK)
     {
         NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Load Preferences", nil),
                                                         NSLocalizedString(@"Are you sure you want to replace  current preferences with the preferences stored in this file? You cannot undo this operation.", nil),

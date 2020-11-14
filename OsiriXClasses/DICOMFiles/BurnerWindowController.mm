@@ -343,7 +343,7 @@
                     [savePanel setAllowedFileTypes: @[@"dmg"]];
                     [savePanel setTitle:@"Save as DMG"];
                     [savePanel setNameFieldStringValue: cdName];
-                    if ([savePanel runModal] == NSFileHandlingPanelOKButton)
+                    if ([savePanel runModal] == NSModalResponseOK)
                     {
                         [writeDMGPath release];
                         writeDMGPath = [[[savePanel URL] path] retain];

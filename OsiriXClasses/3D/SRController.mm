@@ -1006,7 +1006,7 @@ return YES;
 	[panel setCanSelectHiddenExtension:YES];
     [panel setAllowedFileTypes: @[@"jpg"]];
     [panel setNameFieldStringValue: @"3D SR Image"];
-	if ([panel runModal] == NSFileHandlingPanelOKButton)
+	if ([panel runModal] == NSModalResponseOK)
 	{
 		NSImage *im = [view nsimage:NO];
 		
@@ -1028,7 +1028,7 @@ return YES;
 	[panel setCanSelectHiddenExtension:YES];
     [panel setAllowedFileTypes: @[@"tif"]];
     [panel setNameFieldStringValue: @"3D SR Image"];
-	if ([panel runModal] == NSFileHandlingPanelOKButton)
+	if ([panel runModal] == NSModalResponseOK)
 	{
 		NSImage *im = [view nsimage:NO];
 		

@@ -2375,7 +2375,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[panel setCanSelectHiddenExtension:YES];
     [panel setAllowedFileTypes: @[@"jpg"]];
     [panel setNameFieldStringValue: NSLocalizedString( @"3D VR Image", nil)];
-	if ([panel runModal] == NSFileHandlingPanelOKButton)
+	if ([panel runModal] == NSModalResponseOK)
 	{
 		NSArray *representations = [im representations];
 		
@@ -2412,7 +2412,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[panel setCanSelectHiddenExtension:YES];
     [panel setAllowedFileTypes: @[@"tif"]];
     [panel setNameFieldStringValue: NSLocalizedString( @"3D VR Image", nil)];
-	if ([panel runModal] == NSFileHandlingPanelOKButton)
+	if ([panel runModal] == NSModalResponseOK)
 	{
 		[[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
 		

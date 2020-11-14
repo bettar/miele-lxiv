@@ -613,7 +613,8 @@ extern NSRecursiveLock *Papyrus_Lock;
     if (dataset->findAndGetString(DCM_InstitutionName, string, OFFalse).good() && string != NULL)
     {
         NSString *institution = [DicomFile stringWithBytes: (char*) string encodings:myEncodings];
-        [dicomElements setObject:institution forKey:@"institutionName"];
+        if ([institution length] > 0)
+            [dicomElements setObject:institution forKey:@"institutionName"];
     }
     
     if (dataset->findAndGetString(DCM_ReferringPhysicianName, string, OFFalse).good() && string != NULL)

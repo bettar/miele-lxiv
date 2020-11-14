@@ -1393,7 +1393,7 @@ return YES;
     [panel setAllowedFileTypes: @[@"jpg"]];
     NSString *filename = [[[controller originalDCMFilesList] objectAtIndex:0] valueForKeyPath:@"series.name"];
     [panel setNameFieldStringValue: filename];
-	if ([panel runModal] == NSFileHandlingPanelOKButton)
+	if ([panel runModal] == NSModalResponseOK)
 	{		
 		if (all)
 		{

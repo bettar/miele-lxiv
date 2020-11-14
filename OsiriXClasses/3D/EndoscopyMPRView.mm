@@ -603,7 +603,7 @@
 	[panel setCanSelectHiddenExtension:YES];
     [panel setAllowedFileTypes: @[@"jpg"]];
     [panel setNameFieldStringValue: [[[controller originalDCMFilesList] objectAtIndex:0] valueForKeyPath:@"series.name"]];
-	if ([panel runModal] == NSFileHandlingPanelOKButton)
+	if ([panel runModal] == NSModalResponseOK)
 	{		
 			NSImage *im = [self nsimage:NO];
 						

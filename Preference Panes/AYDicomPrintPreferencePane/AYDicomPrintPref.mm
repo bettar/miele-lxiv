@@ -69,7 +69,7 @@
     [sPanel setAllowedFileTypes: @[@"plist"]];
     [sPanel setNameFieldStringValue: NSLocalizedString(@"DICOMPrinters.plist", nil)];
 
-    if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+    if ([sPanel runModal] == NSModalResponseOK)
 	{
 		[[m_PrinterController arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
 	}
@@ -79,7 +79,7 @@
 {
 	NSOpenPanel *sPanel = [NSOpenPanel openPanel];
     [sPanel setAllowedFileTypes: @[@"plist"]];
-	if ([sPanel runModal] != NSFileHandlingPanelOKButton)
+	if ([sPanel runModal] != NSModalResponseOK)
         return;
 
     NSArray	*r = [NSArray arrayWithContentsOfFile: [sPanel filename]];

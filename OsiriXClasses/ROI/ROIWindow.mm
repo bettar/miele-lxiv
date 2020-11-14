@@ -69,7 +69,6 @@
     return nil;
 }
 
-
 - (IBAction) roiSaveCurrent: (id) sender
 {
 	NSSavePanel *panel = [NSSavePanel savePanel];
@@ -79,7 +78,7 @@
     NSMutableArray *selectedROIs = [NSMutableArray arrayWithObject:curROI];
     [panel setNameFieldStringValue: [[selectedROIs objectAtIndex:0] name]];
 
-	if ([panel runModal] == NSFileHandlingPanelOKButton)
+	if ([panel runModal] == NSModalResponseOK)
 	{
 		[NSArchiver archiveRootObject: selectedROIs toFile :[panel filename]];
 	}
@@ -395,7 +394,7 @@
 	[panel setCanSelectHiddenExtension:NO];
     [panel setAllowedFileTypes: @[@"xml"]];
     [panel setNameFieldStringValue: [curROI name]];
-	if ([panel runModal] == NSFileHandlingPanelOKButton)
+	if ([panel runModal] == NSModalResponseOK)
 	{
 		NSMutableDictionary *xml = [NSMutableDictionary dictionary];
 		

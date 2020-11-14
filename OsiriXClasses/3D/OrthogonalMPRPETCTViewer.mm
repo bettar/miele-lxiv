@@ -2162,7 +2162,7 @@ return YES;
 	[panel setCanSelectHiddenExtension:YES];
     [panel setAllowedFileTypes: @[@"jpg"]];
     [panel setNameFieldStringValue: [[filesList objectAtIndex:0] valueForKeyPath:@"series.name"]];
-	if ([panel runModal] == NSFileHandlingPanelOKButton)
+	if ([panel runModal] == NSModalResponseOK)
 	{		
 		if (all)
 		{

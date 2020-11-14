@@ -14987,7 +14987,7 @@ long				x, y;
 		[panel setCanSelectHiddenExtension:NO];
         [panel setAllowedFileTypes: @[@"rois_series"]];
         [panel setNameFieldStringValue: imageView.seriesObj.name];
-		if ([panel runModal] == NSFileHandlingPanelOKButton)
+		if ([panel runModal] == NSModalResponseOK)
 		{
 			[NSArchiver archiveRootObject: roisPerMovies toFile :[panel filename]];
 		}
@@ -20744,7 +20744,7 @@ static BOOL viewerControllerPlaying = NO;
     NSSavePanel *panel = [NSSavePanel savePanel];
     [panel setCanSelectHiddenExtension:NO];
     [panel setNameFieldStringValue: imageView.seriesObj.name];
-	if ([panel runModal] == NSFileHandlingPanelOKButton)
+	if ([panel runModal] == NSModalResponseOK)
     {
         [panel filename];
         
@@ -21366,7 +21366,7 @@ static BOOL viewerControllerPlaying = NO;
 				defaultExportName = [defaultExportName stringByAppendingPathExtension: [NSString stringWithFormat:@"%4.4d", 1]];
 			
             [panel setNameFieldStringValue: defaultExportName];
-			if ([panel runModal] != NSFileHandlingPanelOKButton)
+			if ([panel runModal] != NSModalResponseOK)
 				pathOK = NO;
 		}
 		

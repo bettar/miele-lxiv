@@ -79,7 +79,7 @@
 	NSSavePanel *savePanel = [NSSavePanel savePanel];
     [savePanel setAllowedFileTypes: @[@"csv"]];
     [savePanel setNameFieldStringValue: filename];
-    if ([savePanel runModal] == NSFileHandlingPanelOKButton)
+    if ([savePanel runModal] == NSModalResponseOK)
 	{
 		[csv writeToURL: [savePanel URL] atomically: YES];
 	}

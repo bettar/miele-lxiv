@@ -385,7 +385,7 @@ typedef struct _xyzArray
 	
     [panel setNameFieldStringValue: @"3DFile"];
 
-    if ([panel runModal] == NSFileHandlingPanelOKButton)
+    if ([panel runModal] == NSModalResponseOK)
 	{
 		BOOL orientationSwitch = NO;
 		

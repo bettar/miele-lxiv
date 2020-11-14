@@ -99,14 +99,14 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
         [sPanel setAllowedFileTypes: @[@"plist"]];
         NSString *fileName = [NSString stringWithFormat:@"%@.plist", [[modalitiesPopUpButton selectedItem] title] ];
         [sPanel setNameFieldStringValue: fileName];
-		if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+		if ([sPanel runModal] == NSModalResponseOK)
 			[cur writeToFile: [sPanel filename] atomically: YES];
 	}
 	else    // Load
 	{
 		NSOpenPanel *sPanel = [NSOpenPanel openPanel];
         [sPanel setAllowedFileTypes: @[@"plist"]];
-		if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+		if ([sPanel runModal] == NSModalResponseOK)
 		{
 			NSDictionary *cur = [NSDictionary dictionaryWithContentsOfFile: [sPanel filename]];
 			

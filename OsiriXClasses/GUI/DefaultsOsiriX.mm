@@ -897,7 +897,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject:@"+xi" forKey:@"AETransferSyntax"];
 	[defaultValuesDic setObject:@"" forKey:@"STORESCPEXTRA"];
 	[defaultValuesDic setObject:@"0" forKey:@"ROITEXTIFSELECTED"];
-	[defaultValuesDic setObject:@"1" forKey: @"STORESCP"];
+	[defaultValuesDic setObject:@YES forKey: @"STORESCP"];
 	[defaultValuesDic setObject:@"1" forKey: @"DCMPRINT_Interval"];
 	[defaultValuesDic setObject:@"3" forKey: @"LISTENERCHECKINTERVAL"];
 	[defaultValuesDic setObject:@"1" forKey: @"AUTOTILING"];

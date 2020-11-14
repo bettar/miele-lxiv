@@ -201,7 +201,7 @@
 	[panel setCanSelectHiddenExtension:YES];
     [panel setAllowedFileTypes: @[@"jpg"]];
     [panel setNameFieldStringValue: @"Volume Image"];
-	if ([panel runModal] == NSFileHandlingPanelOKButton)
+	if ([panel runModal] == NSModalResponseOK)
 	{
 		NSImage *im = [self nsimage:NO];
 

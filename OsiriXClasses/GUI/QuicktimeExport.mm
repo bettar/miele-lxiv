@@ -164,7 +164,7 @@
 
     if (produceFiles)
     {
-        result = NSFileHandlingPanelOKButton;
+        result = NSModalResponseOK;
         
         NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"PHOTOS"];
 
@@ -212,7 +212,7 @@
     
     @try
     {
-        if (result == NSFileHandlingPanelOKButton)
+        if (result == NSModalResponseOK)
         {
             CMTimeValue timeValue = 600 / [[NSUserDefaults standardUserDefaults] integerForKey:@"quicktimeExportRateValue"];
             CMTime frameDuration = CMTimeMake( timeValue, 600);

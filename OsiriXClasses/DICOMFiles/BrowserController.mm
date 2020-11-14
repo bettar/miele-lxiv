@@ -1890,7 +1890,7 @@ static NSConditionLock *threadLock = nil;
 	NSOpenPanel *oPanel	= [NSOpenPanel openPanel];
     [oPanel setDirectoryURL: [NSURL URLWithString:_database.sqlFilePath]];
     [oPanel setAllowedFileTypes: @[@"sql"]];
-	if ([oPanel runModal] == NSFileHandlingPanelOKButton)
+	if ([oPanel runModal] == NSModalResponseOK)
     {
 		if ([oPanel filename] && ![_database.sqlFilePath isEqualToString:[oPanel filename]])
         {
@@ -1918,7 +1918,7 @@ static NSConditionLock *threadLock = nil;
 	
     [oPanel setDirectoryURL: [NSURL URLWithString:[self documentsDirectory]]];
     
-	if ([oPanel runModal] == NSFileHandlingPanelOKButton)
+	if ([oPanel runModal] == NSModalResponseOK)
 	{
 		NSString *location = [oPanel filename];
 		
@@ -9146,7 +9146,7 @@ static NSConditionLock *threadLock = nil;
 	NSSavePanel *sPanel	= [NSSavePanel savePanel];
     [sPanel setAllowedFileTypes: @[@"txt"]];
     [sPanel setNameFieldStringValue: NSLocalizedString(@"OsiriX Database List", nil)];
-	if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModal] == NSModalResponseOK)
 	{
 		[list writeToFile: [sPanel filename] atomically: YES];
 	}
@@ -11150,7 +11150,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
     NSSavePanel *sPanel	= [NSSavePanel savePanel];
     [sPanel setAllowedFileTypes: @[@"albums"]];
     [sPanel setNameFieldStringValue: NSLocalizedString(@"DatabaseAlbums.albums", nil)];
-    if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+    if ([sPanel runModal] == NSModalResponseOK)
     {
         [self.database saveAlbumsToPath: [sPanel filename]];
     }
@@ -11169,7 +11169,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 {
 	NSOpenPanel *oPanel = [NSOpenPanel openPanel];
     [oPanel setAllowedFileTypes: @[@"albums"]];
-	if ([oPanel runModal] == NSFileHandlingPanelOKButton)
+	if ([oPanel runModal] == NSModalResponseOK)
 	{
 		[self addAlbumsFile: [oPanel filename]];
 	}
@@ -15964,7 +15964,7 @@ static NSArray*	openSubSeriesArray = nil;
 			NSLog( @"*** DICOM Network Error (not displayed - hideListenerError): %@", str);
 	}
 	
-	//////////////////////////////////////////////////
+	// ////////////////////////////////////////////////
 	
     if (deleteQueueArray == nil) deleteQueueArray = [[NSMutableArray array] retain];
 	if (deleteQueue == nil) deleteQueue = [[NSRecursiveLock alloc] init];
@@ -17163,7 +17163,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[sPanel setAccessoryView:exportQuicktimeView];
 	
-	if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModal] == NSModalResponseOK)
 	{
 		[self exportQuicktimeInt: dicomFiles2Export :[[sPanel filenames] objectAtIndex:0] :[exportHTMLButton state]];
 	}
@@ -17194,7 +17194,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[sPanel setTitle: NSLocalizedString(@"Export",nil)];
 	[sPanel setCanCreateDirectories:YES];
 	
-	if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModal] == NSModalResponseOK)
 	{
 		NSString *dest, *path = [[sPanel filenames] objectAtIndex:0];
 		Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", nil) :YES];
@@ -18460,7 +18460,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[compressionMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"Compression Mode for Export"]];
 	
-	if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModal] == NSModalResponseOK)
 	{
 		[sPanel makeFirstResponder: nil];
 		
@@ -19148,7 +19148,7 @@ static volatile int numberOfThreadsForJPEG = 0;
         [panel setAllowedFileTypes: @[@"pdf"]];
         NSString *filename = [NSString stringWithFormat: NSLocalizedString( @"%@-Report.pdf", nil), studySelected.name];
         [panel setNameFieldStringValue: filename];
-        if ([panel runModal] == NSFileHandlingPanelOKButton)
+        if ([panel runModal] == NSModalResponseOK)
         {
             [studySelected saveReportAsPdfAtPath: [panel filename]];
         }

@@ -141,7 +141,7 @@
 			[panel setCanSelectHiddenExtension:NO];
             [panel setAllowedFileTypes: @[@"xml"]];
             [panel setNameFieldStringValue: @"OsiriX Fly Through"];
-            if ([panel runModal] == NSFileHandlingPanelOKButton)
+            if ([panel runModal] == NSModalResponseOK)
 			{
 				NSMutableDictionary *xml;
 				xml = [flyThruController.flyThru exportToXML];

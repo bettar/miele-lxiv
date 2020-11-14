@@ -2679,7 +2679,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[panel setCanSelectHiddenExtension:YES];
     [panel setAllowedFileTypes: @[@"jpg"]];
     [panel setNameFieldStringValue: NSLocalizedString( @"MPR Image", nil)];
-	if ([panel runModal] == NSFileHandlingPanelOKButton)
+	if ([panel runModal] == NSModalResponseOK)
 	{
 		NSImage *im = [[self selectedView] nsimage:NO];
 		
@@ -2718,7 +2718,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[panel setCanSelectHiddenExtension:YES];
     [panel setAllowedFileTypes: @[@"tif"]];
     [panel setNameFieldStringValue: @"3D MPR Image"];
-    if ([panel runModal] == NSFileHandlingPanelOKButton)
+    if ([panel runModal] == NSModalResponseOK)
 	{
 		NSImage *im = [[self selectedView] nsimage:NO];
 		

@@ -3168,7 +3168,7 @@ extern "C"
 	NSSavePanel *sPanel	= [NSSavePanel savePanel];
     [sPanel setAllowedFileTypes: @[@"txt"]];
     [sPanel setNameFieldStringValue: NSLocalizedString(@"OsiriX Database List", nil)];
-    if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+    if ([sPanel runModal] == NSModalResponseOK)
 	{
 		[list writeToFile: [sPanel filename] atomically: YES];
 	}

@@ -466,7 +466,7 @@ extern int delayedTileWindows;
     [panel setAllowedFileTypes: @[@"xml"]];
     NSString *filename = [NSString stringWithFormat: @"%@ - %@", imObj.series.study.name, imObj.series.study.studyName];
     [panel setNameFieldStringValue: filename];
-    if ([panel runModal] == NSFileHandlingPanelOKButton)
+    if ([panel runModal] == NSModalResponseOK)
     {
 		[[xmlDocument XMLString] writeToFile:[panel filename] atomically:NO encoding : NSUTF8StringEncoding error: nil];
     }
@@ -479,7 +479,7 @@ extern int delayedTileWindows;
     [panel setAllowedFileTypes: @[@"txt"]];
     NSString *filename = [NSString stringWithFormat: @"%@ - %@", imObj.series.study.name, imObj.series.study.studyName];
     [panel setNameFieldStringValue: filename];
-    if ([panel runModal] == NSFileHandlingPanelOKButton)
+    if ([panel runModal] == NSModalResponseOK)
     {
 		[[dcmDocument description] writeToFile: [panel filename] atomically:NO encoding : NSUTF8StringEncoding error: nil];
     }

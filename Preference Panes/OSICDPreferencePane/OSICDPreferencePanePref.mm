@@ -60,8 +60,8 @@
 	NSOpenPanel *openPanel = [NSOpenPanel openPanel];
 	[openPanel setCanChooseDirectories: YES];
 	[openPanel setCanChooseFiles: NO];
-	BOOL result = [openPanel runModal];
-	if (result)
+    NSModalResponse result = [openPanel runModal];
+	if (result == NSModalResponseOK)
 	{
 		NSString *filename = [[[openPanel filenames] objectAtIndex: 0] stringByAbbreviatingWithTildeInPath];
 		[[NSUserDefaults standardUserDefaults] setObject: filename forKey:@"SupplementaryBurnPath"];

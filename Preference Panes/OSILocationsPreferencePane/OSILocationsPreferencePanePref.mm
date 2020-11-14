@@ -544,7 +544,7 @@
     NSSavePanel *sPanel = [NSSavePanel savePanel];
     [sPanel setNameFieldStringValue: @"DB.plist"];
     [sPanel setAllowedFileTypes: @[@"plist"]];
-    if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+    if ([sPanel runModal] == NSModalResponseOK)
         [[osiriXServers arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
 }
 
@@ -587,7 +587,7 @@
 	
     [sPanel setAllowedFileTypes: @[@"plist"]];
     
-	if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModal] == NSModalResponseOK)
 	{
 		NSArray	*r = [NSArray arrayWithContentsOfFile: [sPanel filename]];
 		if (r)
@@ -639,7 +639,7 @@
     [sPanel setAllowsOtherFileTypes: NO ];
     [sPanel setNameFieldStringValue: @"DICOMNodes.plist"];
     [sPanel setAllowedFileTypes: @[@"plist"]];
-    if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+    if ([sPanel runModal] == NSModalResponseOK)
         [[dicomNodes arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
 }
 
@@ -686,7 +686,7 @@
 	[self resetTest];
 	
     [sPanel setAllowedFileTypes: @[@"plist"]];
-	if ([sPanel runModal] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModal] == NSModalResponseOK)
 	{
 		NSArray	*r = [NSArray arrayWithContentsOfFile: [sPanel filename]];
 		if (r)
@@ -836,7 +836,7 @@
     [oPanel setCanChooseDirectories:YES];
     [oPanel setAllowedFileTypes: @[@"sql"]];
 
-	if ([oPanel runModal] == NSFileHandlingPanelOKButton)
+	if ([oPanel runModal] == NSModalResponseOK)
 	{
 		NSString *location = [oPanel filename];
 		
