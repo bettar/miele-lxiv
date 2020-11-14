@@ -714,11 +714,11 @@ static bool isGrantedNotificationAccess = false;
 @synthesize XMLRPCServer;
 @synthesize bonjourPublisher = _bonjourPublisher;
 
-+(BOOL) hasMacOSX_AfterCatalina
++(BOOL) hasMacOSX_AfterBigSur
 {
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
-    if ((version.majorVersion > 10) ||
-        (version.majorVersion == 10 && version.minorVersion > 15))  // MAC_OS_X_VERSION_10_15
+    if ((version.majorVersion > 11) ||
+        (version.majorVersion == 11 && version.minorVersion > 0))  // MAC_OS_X_VERSION_10_15
     {
         return YES;
     }
@@ -729,6 +729,9 @@ static bool isGrantedNotificationAccess = false;
 +(BOOL) hasAtLeastMacOS_Mavericks
 {
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
+    if (version.majorVersion > 10)
+        return YES;
+
     if (version.majorVersion == 10 &&
         version.minorVersion >= 9)
         return YES;
@@ -3671,7 +3674,7 @@ API_AVAILABLE(macos(10.14))
         }
     }
     
-    if ([AppController hasMacOSX_AfterCatalina])
+    if ([AppController hasMacOSX_AfterBigSur])
     {
 #ifdef WITH_OS_VALIDATION
         NSAlert *alert = [[NSAlert new] autorelease];
@@ -3948,7 +3951,7 @@ API_AVAILABLE(macos(10.14))
     {
 //        int verMajor = MAC_OS_X_VERSION_MIN_REQUIRED / 100;
 //        int verMinor = MAC_OS_X_VERSION_MIN_REQUIRED % 100;
-        NSString *msgFormat = [NSString stringWithFormat:NSLocalizedString(@"This app requires macOS %@.%@ or higher. Please update your OS: Apple Menu - Software Update...", nil), 10, 9];
+        NSString *msgFormat = [NSString stringWithFormat:NSLocalizedString(@"This app requires macOS %d.%d or higher. Please update your OS: Apple Menu - Software Update...", nil), 10, 9];
         NSRunCriticalAlertPanel(NSLocalizedString(@"macOS version", nil),
                                 msgFormat,
                                 NSLocalizedString(@"Quit", nil),
