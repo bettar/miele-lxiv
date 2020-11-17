@@ -1041,56 +1041,47 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
     //    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
     
 	if ([itemIdent isEqualToString: MailToolbarItemIdentifier])
-	{
-        
-	[toolbarItem setLabel: NSLocalizedString(@"Email",nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Email",nil)];
+	{        
+        [toolbarItem setLabel: NSLocalizedString(@"Email",nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Email",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Email this image",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
-	[toolbarItem setTarget: self];
-	[toolbarItem setAction: @selector(sendMail:)];
+        [toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
+        [toolbarItem setTarget: self];
+        [toolbarItem setAction: @selector(sendMail:)];
     }
 	else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier])
 	{
-        
-	[toolbarItem setLabel: NSLocalizedString(@"DICOM File",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"Save as DICOM",nil)];
+        [toolbarItem setLabel: NSLocalizedString(@"DICOM File",nil)];
+        [toolbarItem setPaletteLabel:NSLocalizedString( @"Save as DICOM",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Export this image in a DICOM file",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
-	[toolbarItem setTarget: self];
-	[toolbarItem setAction: @selector(exportDICOMFile:)];
+        [toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+        [toolbarItem setTarget: self];
+        [toolbarItem setAction: @selector(exportDICOMFile:)];
     }
 	else if ([itemIdent isEqualToString: ToolsToolbarItemIdentifier])
 	{
-	// Set up the standard properties 
-	[toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
-	
-	[toolbarItem setView: toolsView];
-	[toolbarItem setMinSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
-	[toolbarItem setMaxSize:NSMakeSize(NSWidth([toolsView frame]),NSHeight([toolsView frame]))];
-
+        [toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
+        [toolbarItem setView: toolsView];
     }
 /*	 else if ([itemIdent isEqualToString: ThickSlabToolbarItemIdentifier])
 	{
-	// Set up the standard properties 
-	[toolbarItem setLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
-	
-	[toolbarItem setView: ThickSlabView];
-	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]), NSHeight([ThickSlabView frame]))];
-	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]) + 100, NSHeight([ThickSlabView frame]))];
-    }*/
-	 else if ([itemIdent isEqualToString: BlendingToolbarItemIdentifier])
+        [toolbarItem setLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
+        [toolbarItem setView: ThickSlabView];
+        {
+            NSSize size = ThickSlabView.frame.size;
+            size.width += 100;
+            [toolbarItem setMaxSize:size];
+        }
+    }
+ */
+    else if ([itemIdent isEqualToString: BlendingToolbarItemIdentifier])
 	{
-	// Set up the standard properties 
-	[toolbarItem setLabel: NSLocalizedString(@"Fusion",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Fusion Mode and Percentage",nil)];
-	
-	[toolbarItem setView: blendingToolView];
-	[toolbarItem setMinSize:NSMakeSize(NSWidth([blendingToolView frame]), NSHeight([blendingToolView frame]))];
-	[toolbarItem setMinSize:NSMakeSize(NSWidth([blendingToolView frame]), NSHeight([blendingToolView frame]))];
+        [toolbarItem setLabel: NSLocalizedString(@"Fusion",nil)];
+        [toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Fusion Mode and Percentage",nil)];
+        [toolbarItem setView: blendingToolView];
     }
 	else if ([itemIdent isEqualToString: VRPanelToolbarItemIdentifier])
 	{
@@ -1170,27 +1161,19 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
     }
 	else if ([itemIdent isEqualToString: WLWWToolbarItemIdentifier])
 	{
-		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Modify WL/WW & CLUT", nil)];
-		
+		[toolbarItem setToolTip: NSLocalizedString(@"Modify WL/WW & CLUT", nil)];		
 		[toolbarItem setView: WLWWView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([WLWWView frame]), NSHeight([WLWWView frame]))];
-		[toolbarItem setMaxSize:NSMakeSize(NSWidth([WLWWView frame]), NSHeight([WLWWView frame]))];
 
 		[[wlwwPopup cell] setUsesItemFromMenu:YES];
 	}
 	else if ([itemIdent isEqualToString: MovieToolbarItemIdentifier])
 	{
-	// Set up the standard properties 
-	[toolbarItem setLabel: NSLocalizedString(@"4D Player", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"4D Player", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"4D Series Controller", nil)];
-	
-	[toolbarItem setView: movieView];
-	[toolbarItem setMinSize:NSMakeSize(NSWidth([movieView frame]), NSHeight([movieView frame]))];
-	[toolbarItem setMaxSize:NSMakeSize(NSWidth([movieView frame]),NSHeight([movieView frame]))];
+        [toolbarItem setLabel: NSLocalizedString(@"4D Player", nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"4D Player", nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"4D Series Controller", nil)];
+        [toolbarItem setView: movieView];
     }
     else if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier])
     {

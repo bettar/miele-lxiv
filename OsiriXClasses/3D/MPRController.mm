@@ -2931,10 +2931,8 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	if ([itemIdent isEqualToString: @"tbLOD"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"LOD",nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString( @"LOD",nil)];
-		
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"LOD",nil)];		
 		[toolbarItem setView: tbLOD];
-		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbLOD frame]), NSHeight([tbLOD frame]))];
     }
 	else if ([itemIdent isEqualToString: @"Reset.pdf"])
 	{
@@ -2973,63 +2971,49 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Fusion",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
-		
 		[toolbarItem setView: tbBlending];
-		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbBlending frame]), NSHeight([tbBlending frame]))];
     }
 	else if ([itemIdent isEqualToString: @"tbThickSlab"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Thick Slab",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Thick Slab",nil)];
-		
 		[toolbarItem setView: tbThickSlab];
-		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbThickSlab frame]), NSHeight([tbThickSlab frame]))];
     }
 	else if ([itemIdent isEqualToString: @"tbWLWW"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"WL & WW",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"WL & WW",nil)];
-		
 		[toolbarItem setView: tbWLWW];
-		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbWLWW frame]), NSHeight([tbWLWW frame]))];
     }
 	else if ([itemIdent isEqualToString: @"tbTools"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Tools",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Tools",nil)];
-		
 		[toolbarItem setView: tbTools];
-		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbTools frame]), NSHeight([tbTools frame]))];
     }
 	else if ([itemIdent isEqualToString: @"tbMovie"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"4D Player",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"4D Player",nil)];
-		
 		[toolbarItem setView: tbMovie];
-		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbMovie frame]), NSHeight([tbMovie frame]))];
     }
 	else if ([itemIdent isEqualToString: @"tbShading"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Shadings",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Shadings",nil)];
-		
 		[toolbarItem setView: tbShading];
-		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbShading frame]), NSHeight([tbShading frame]))];
     }
 	else if ([itemIdent isEqualToString:@"AxisColors"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Axis Colors",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Axis Colors",nil)];
 		[toolbarItem setView: tbAxisColors];
-		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbAxisColors frame]), NSHeight([tbAxisColors frame]))];
     }
     else if ([itemIdent isEqualToString:@"ViewsPosition"] && tbViewsPosition)
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Views",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Views",nil)];
 		[toolbarItem setView: tbViewsPosition];
-		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbViewsPosition frame]), NSHeight([tbViewsPosition frame]))];
     }
 	else if ([itemIdent isEqualToString:@"AxisShowHide"])
 	{
@@ -3061,9 +3045,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Sync Zoom",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Sync Zoom",nil)];
-		
 		[toolbarItem setView: tbSyncZoomLevel];
-		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbSyncZoomLevel frame]), NSHeight([tbSyncZoomLevel frame]))];
     }
 	else
 	{

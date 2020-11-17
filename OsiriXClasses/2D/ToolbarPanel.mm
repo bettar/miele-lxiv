@@ -74,7 +74,7 @@
     self = [super initWithWindowNibName:@"ToolbarPanel"];
 	if (self)
 	{
-		toolbar = [t retain]; // class OsiriXToolbar
+		toolbar = [t retain];
         _viewer = [v retain];
 
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];

@@ -916,27 +916,18 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
  
 	if ([itemIdent isEqualToString: endo3DToolsToolbarItemIdentifier])
 	{
-		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"3D Mouse button function",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Mouse button function",nil)];
-		
 		[toolbarItem setView: tools3DView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([tools3DView frame]), NSHeight([tools3DView frame]))];
-		[toolbarItem setMaxSize:NSMakeSize(NSWidth([tools3DView frame]),NSHeight([tools3DView frame]))];
     }
 	else if ([itemIdent isEqualToString: endoMPRToolsToolbarItemIdentifier])
 	{
-		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"MPR Mouse button function",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"MPR Mouse button function",nil)];
-		
 		[toolbarItem setView: tools2DView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([tools2DView frame]), NSHeight([tools2DView frame]))];
-		[toolbarItem setMaxSize:NSMakeSize(NSWidth([tools2DView frame]),NSHeight([tools2DView frame]))];
     }
 	else if ([itemIdent isEqualToString: FlyThruToolbarItemIdentifier])
 	{
-		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"Fly Thru",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Fly Thru",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Fly Thru Set up",nil)];
@@ -947,14 +938,10 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
     }
 	else if ([itemIdent isEqualToString: EngineToolbarItemIdentifier])
 	{
-		 // Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"Engine",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Engine",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Engine",nil)];
-		
 		[toolbarItem setView: engineView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([engineView frame]), NSHeight([engineView frame]))];
-		[toolbarItem setMaxSize:NSMakeSize(NSWidth([engineView frame]), NSHeight([engineView frame]))];
     }
 	else if ([itemIdent isEqualToString: CroppingToolbarItemIdentifier])
 	{
@@ -967,27 +954,19 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
     }
 	else if ([itemIdent isEqualToString: WLWW3DToolbarItemIdentifier])
 	{
-		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"3D WL/WW & CLUT & Opacity",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"3D WL/WW & CLUT & Opacity",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Change the WL/WW & CLUT & Opacity in the 3D view",nil)];
-		
 		[toolbarItem setView: WLWW3DView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([WLWW3DView frame]), NSHeight([WLWW3DView frame]))];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([WLWW3DView frame]), NSHeight([WLWW3DView frame]))];
 		
         [[[vrController wlwwPopup] cell] setUsesItemFromMenu:YES];
     }
 	else if ([itemIdent isEqualToString: WLWW2DToolbarItemIdentifier])
 	{
-		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"MPR WL/WW & CLUT & Opacity",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"MPR WL/WW & CLUT & Opacity",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Change the WL/WW & CLUT & Opacity in the MPR views",nil)];
-		
 		[toolbarItem setView: WLWW2DView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([WLWW2DView frame]), NSHeight([WLWW2DView frame]))];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([WLWW2DView frame]), NSHeight([WLWW2DView frame]))];
 		
         [[[vrController wlwwPopup] cell] setUsesItemFromMenu:YES];
     }
@@ -1003,17 +982,13 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
     }
 	else if ([itemIdent isEqualToString: ShadingToolbarItemIdentifier])
 	{
-		 // Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"Shading",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Shading",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Shading Properties",nil)];
-		
 		[toolbarItem setView: shadingView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([shadingView frame]), NSHeight([shadingView frame]))];
     }
 //	else if ([itemIdent isEqualToString: CenterlineToolbarItemIdentifier])
 //	{
-//		// Set up the standard properties 
 //		[toolbarItem setLabel: NSLocalizedString(@"Centerline",nil)];
 //		[toolbarItem setPaletteLabel:NSLocalizedString( @"Centerline",nil)];
 //		[toolbarItem setToolTip:NSLocalizedString( @"Compute Centerline",nil)];
@@ -1024,19 +999,15 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 //    }
 	else if ([itemIdent isEqualToString: LODToolbarItemIdentifier])
 	{
-		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"Level of Detail",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Level of Detail",nil)];
-		[toolbarItem setToolTip:NSLocalizedString( @"Change Level of Detail",nil)];
-		
+		[toolbarItem setToolTip:NSLocalizedString( @"Change Level of Detail",nil)];		
 		[toolbarItem setView: LODView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([LODView frame]), NSHeight([LODView frame]))];
 			
 		//[[wlwwPopup cell] setUsesItemFromMenu:YES];
     }
 	else if ([itemIdent isEqualToString:PathAssistantToolbarItemIdentifier])
 	{
-		// Set up the standard properties 
 		[toolbarItem setLabel:NSLocalizedString(@"Path Assistant", nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Path Assistant", nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"Path Assistant", nil)];

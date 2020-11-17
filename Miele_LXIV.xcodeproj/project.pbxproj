@@ -909,7 +909,6 @@
 		CE6692DB0AF545F90073D923 /* printView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE6692D90AF545F90073D923 /* printView.mm */; };
 		CE6C77ED09739B3100F951C2 /* Rotate3DCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */; };
 		CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
-		CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE6CD06C0CFB0462001DF429 /* OsiriXToolbar.mm */; };
 		CE6E2CB806CAE45A00BC7907 /* PlotWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE6E2CB006CAE45A00BC7907 /* PlotWindow.mm */; };
 		CE6E2CB906CAE45A00BC7907 /* PlotView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE6E2CB106CAE45A00BC7907 /* PlotView.mm */; };
 		CE72D7C31263702500874EF6 /* Pause.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CE72D7C21263702500874EF6 /* Pause.pdf */; };
@@ -6516,7 +6515,6 @@
 				A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.mm in Sources */,
 				BF84E5420CB16A2900431BC2 /* FlyThruTableView.mm in Sources */,
 				CE4701000CC51A6600ECF78A /* WindowLayoutManager.mm in Sources */,
-				CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.mm in Sources */,
 				CEE8CED00D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.mm in Sources */,
 				A910FB320D5767610095A956 /* NavigatorWindowController.mm in Sources */,
 				A910FB380D57728A0095A956 /* NavigatorView.mm in Sources */,

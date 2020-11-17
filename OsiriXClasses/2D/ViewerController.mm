@@ -32,7 +32,7 @@
 #import "VRController.h"
 #import "NSSplitViewSave.h"
 #import "SRController.h"
-#import "OsiriXToolbar.h"
+//#import "OsiriXToolbar.h"
 #import "NSFullScreenWindow.h"
 #import "ViewerController.h"
 #import "BrowserController.h"
@@ -6741,9 +6741,8 @@ static ViewerController *draggedController = nil;
 - (void) setupToolbar
 {
     // Create a new toolbar instance, and attach it to our document window
-    //toolbar = [[OsiriXToolbar alloc] initWithIdentifier: Viewer_ToolbarIdentifier];
     if (toolbar == nil)
-        toolbar = [[NSToolbar alloc] initWithIdentifier: Viewer_ToolbarIdentifier];
+        toolbar = [[NSToolbar alloc] initWithIdentifier: Viewer_ToolbarIdentifier]; // was OsiriXToolbar
 
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults
     [toolbar setAllowsUserCustomization: YES];
@@ -7011,7 +7010,6 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Rate", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Rate", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Change the frame rate", nil)];
-        
         [toolbarItem setView: speedView];
         [toolbarItem setMinSize: NSMakeSize(100, NSHeight([speedView frame]))];
         [toolbarItem setMaxSize: NSMakeSize(200, NSHeight([speedView frame]))];
@@ -7035,7 +7033,6 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"4D Player", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"4D Player", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"4D Series Controller", nil)];
-        
         [toolbarItem setView: movieView];
     }
 	else if ([itemIdent isEqualToString: SerieToolbarItemIdentifier])
@@ -7043,7 +7040,6 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Series", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Series", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Next/Previous Series", nil)];
-        
         [toolbarItem setView: serieView];
     }
 	else if ([itemIdent isEqualToString: PatientToolbarItemIdentifier])
@@ -7051,7 +7047,6 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Patient", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Patient", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Next/Previous Patient", nil)];
-        
         [toolbarItem setView: patientView];
     }
 	else if ([itemIdent isEqualToString: SubtractionToolbarItemIdentifier])
@@ -7059,7 +7054,6 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Subtraction", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Subtraction", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Subtraction module", nil)];
-        
         [toolbarItem setView: subCtrlView];
     }
 	else if ([itemIdent isEqualToString: WLWWToolbarItemIdentifier])
@@ -7070,7 +7064,6 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Modify WL/WW & CLUT", nil)];
-        
         [toolbarItem setView: WLWWView];
         
             // Pulldown that doesn't change item
@@ -7087,7 +7080,6 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Convolution Filters", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Convolution Filters", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Apply a convolution filter", nil)];
-        
         [toolbarItem setView: ConvView];
         
         [[convPopup cell] setUsesItemFromMenu:YES];
@@ -7099,12 +7091,10 @@ static ViewerController *draggedController = nil;
     {
         [toolbarItem setLabel: NSLocalizedString(@"Thick Slab", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Thick Slab", nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Change Thick Slab mode and number", nil)];
-        
+        [toolbarItem setToolTip: NSLocalizedString(@"Change Thick Slab mode and number", nil)];        
         [toolbarItem setView: FusionView];
         {
             NSSize size = FusionView.frame.size;
-            [toolbarItem setMinSize: size];
             size.width += 200;
             [toolbarItem setMaxSize: size];
         }
@@ -7113,7 +7103,6 @@ static ViewerController *draggedController = nil;
     {
         [toolbarItem setLabel: NSLocalizedString(@"Status & Comments", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Status & Comments", nil)];
-        
         [toolbarItem setView: StatusView];
 	}
     else if ([itemIdent isEqualToString: BlendingToolbarItemIdentifier])
@@ -7121,21 +7110,18 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Fusion", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Fusion", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Fusion Mode and Percentage", nil)];
-        
         [toolbarItem setView: BlendingView];
 	}
 	else if ([itemIdent isEqualToString: RGBFactorToolbarItemIdentifier])
     {
         [toolbarItem setLabel: NSLocalizedString(@"RGB Factors", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"RGB Factors", nil)];
-        
         [toolbarItem setView: RGBFactorsView];
 	}
 	else if ([itemIdent isEqualToString: OrientationToolbarItemIdentifier])
     {
         [toolbarItem setLabel: NSLocalizedString(@"Orientation", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Orientation", nil)];
-        
         [toolbarItem setView: orientationView];
 	}
     else if ([itemIdent isEqualToString: SeriesPopupToolbarItemIdentifier])
@@ -7143,7 +7129,6 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Series", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Series Selection", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Series Selection", nil)];
-        
         [toolbarItem setView: seriesPopupView];
 	}
     else if ([itemIdent isEqualToString: WindowsTilingToolbarItemIdentifier])
@@ -7151,21 +7136,18 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Windows", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Windows Tiling", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Windows Tiling", nil)];
-        
         [toolbarItem setView: windowsTiling];
 	}
     else if ([itemIdent isEqualToString: AnnotationsToolbarItemIdentifier])
     {
         [toolbarItem setLabel: NSLocalizedString(@"Annotations", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Annotations", nil)];
-        
         [toolbarItem setView: annotations];
 	}
 	else if ([itemIdent isEqualToString: ShutterToolbarItemIdentifier])
     {
         [toolbarItem setLabel: NSLocalizedString(@"Shutter", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Shutter", nil)];
-        
         [toolbarItem setView: shutterView];
 	}
 	else if ([itemIdent isEqualToString: PropagateSettingsToolbarItemIdentifier])
@@ -7173,7 +7155,6 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Propagate", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Propagate", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Propagate settings (WL/WW, zoom, ...)", nil)];
-        
         [toolbarItem setView: propagateSettingsView];
 	}
 	else if ([itemIdent isEqualToString: ReconstructionToolbarItemIdentifier])
@@ -7181,14 +7162,12 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"2D/3D", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"2D/3D", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"2D/3D Reconstruction Tools", nil)];
-        
         [toolbarItem setView: ReconstructionView];
 	}
 	else if ([itemIdent isEqualToString: KeyImagesToolbarItemIdentifier])
     {
         [toolbarItem setLabel: NSLocalizedString(@"Key Images", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Key Images", nil)];
-        
         [toolbarItem setView: keyImages];
 	}
     else if ([itemIdent isEqualToString: ToolsToolbarItemIdentifier])
@@ -7196,7 +7175,6 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Mouse button function", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Change the mouse button function", nil)];
-        
         [toolbarItem setView: toolsView];
     }
 	else if ([itemIdent isEqualToString: FlipVerticalToolbarItemIdentifier])
@@ -7247,8 +7225,7 @@ static ViewerController *draggedController = nil;
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Display", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Display type", nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Display type", nil)];
-		
+		[toolbarItem setToolTip: NSLocalizedString(@"Display type", nil)];		
 		[toolbarItem setView: display12bitToolbarItemView];
     }
 	else if ([itemIdent isEqualToString: CobbAngleToolbarItemIdentifier])

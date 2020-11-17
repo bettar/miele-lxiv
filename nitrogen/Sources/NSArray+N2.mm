@@ -59,7 +59,9 @@ static id copy(id obj)
     return (copy(self));
 }
 
--(NSArray*)splitArrayIntoArraysOfMinSize:(NSUInteger)minSize maxArrays:(NSUInteger)maxArrays {
+-(NSArray*)splitArrayIntoArraysOfMinSize:(NSUInteger)minSize
+                               maxArrays:(NSUInteger)maxArrays
+{
 	NSMutableArray* chunks = [NSMutableArray array];
 	
 	for (NSValue* rangeValue in [self splitArrayIntoChunksOfMinSize:minSize maxChunks:maxArrays]) 
@@ -68,7 +70,9 @@ static id copy(id obj)
 	return chunks;
 }
 
--(NSArray*)splitArrayIntoChunksOfMinSize:(NSUInteger)minSize maxChunks:(NSUInteger)maxChunks {
+-(NSArray*)splitArrayIntoChunksOfMinSize:(NSUInteger)minSize
+                               maxChunks:(NSUInteger)maxChunks
+{
 	NSUInteger count = self.count, size = maxChunks? MAX(minSize, round(float(count)/maxChunks)) : minSize;
 	
 	NSMutableArray* chunks = [NSMutableArray array];

@@ -19545,10 +19545,7 @@ static volatile int numberOfThreadsForJPEG = 0;
                     break;
             }
             
-            [item setView: reportTemplatesView];
-			[item setMinSize: reportTemplatesView.frame.size];
-			[item setMaxSize: reportTemplatesView.frame.size];
-			
+            [item setView: reportTemplatesView];			
 			reportToolbarItemType = -1;
 		}
 		else
@@ -19962,11 +19959,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setLabel: NSLocalizedString(@"Search by All Fields", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Search", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Search", nil)];
-		
 		[toolbarItem setView: searchView];
         {
             NSSize size = searchView.frame.size;
-            [toolbarItem setMinSize: size];
             size.width += 100;
             [toolbarItem setMaxSize: size];
         }
@@ -19976,20 +19971,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setLabel: NSLocalizedString(@"Time Interval", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Time Interval", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Time Interval", nil)];
-		
 		[toolbarItem setView: timeIntervalView];
-		[toolbarItem setMinSize: timeIntervalView.frame.size];
-		[toolbarItem setMaxSize: timeIntervalView.frame.size];
     }
     else if ([itemIdent isEqualToString: ModalityFilterToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Modality", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Modality", nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Modality", nil)];
-		
+		[toolbarItem setToolTip: NSLocalizedString(@"Modality", nil)];		
 		[toolbarItem setView: modalityFilterView];
-		[toolbarItem setMinSize: modalityFilterView.frame.size];
-		[toolbarItem setMaxSize: modalityFilterView.frame.size];
     }
 	else
 	{

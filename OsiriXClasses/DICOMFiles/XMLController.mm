@@ -1590,20 +1590,14 @@ extern int delayedTileWindows;
 		[toolbarItem setLabel: NSLocalizedString(@"DICOM Editing", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"DICOM Editing", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"DICOM Editing", nil)];
-		
 		[toolbarItem setView: dicomEditingView];
-        [toolbarItem setMinSize: dicomEditingView.frame.size];
-		[toolbarItem setMaxSize: dicomEditingView.frame.size];
     }
 	else if ([itemIdent isEqualToString: SearchToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Search", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Search", nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Search", nil)];
-		
+		[toolbarItem setToolTip: NSLocalizedString(@"Search", nil)];		
 		[toolbarItem setView: searchView];
-		[toolbarItem setMinSize: searchView.frame.size];
-		[toolbarItem setMaxSize: searchView.frame.size];
     }
 	else if ([itemIdent isEqualToString: ExportTextToolbarItemIdentifier]) {
 		[toolbarItem setLabel: NSLocalizedString(@"Export Text", nil)];
