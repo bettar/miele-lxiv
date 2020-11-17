@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "Miele-LXIV"
-PROJECT_NUMBER         = 8.1
+PROJECT_NUMBER         = 8.3
 PROJECT_BRIEF          =
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       = "./Doxygen/Miele-LXIV"
