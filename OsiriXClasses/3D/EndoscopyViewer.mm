@@ -857,10 +857,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		@try
 		{
 			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
-			
-			
-			NSImage *im = [item image];
-			
+
+			NSImage *im = [item image];			
 			if (im == nil)
 			{
 				@try
@@ -910,8 +908,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
       itemForItemIdentifier: (NSString *) itemIdent
   willBeInsertedIntoToolbar: (BOOL) willBeInserted
 {
-    // Required delegate method:  Given an item identifier, this method returns an item 
-    // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
+    // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself
     NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
  
 	if ([itemIdent isEqualToString: endo3DToolsToolbarItemIdentifier])
@@ -1036,8 +1033,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
     return toolbarItem;
 }
 
-- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method:  Returns the ordered list of items to be shown in the toolbar by default    
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
+{
     // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
     // user chooses to revert to the default items this set will be used 
     return [NSArray arrayWithObjects:       endoMPRToolsToolbarItemIdentifier,
@@ -1051,9 +1048,10 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 											nil];
 }
 
-- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
-    // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
+{
+    // By default, the toolbar does not assume any items are allowed, even the separator.
+    // So, every allowed item must be explicitly listed   
     // The set of allowed items is used to construct the customization palette 
     NSMutableArray *array = [NSMutableArray arrayWithObjects:       NSToolbarCustomizeToolbarItemIdentifier,
 											NSToolbarFlexibleSpaceItemIdentifier,

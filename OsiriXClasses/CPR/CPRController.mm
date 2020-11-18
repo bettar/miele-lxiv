@@ -48,9 +48,9 @@
 #import <N2Debug.h>
 #import "PluginManager.h"
 
-#define PRESETS_DIRECTORY @"/3DPRESETS/"
-#define CLUTDATABASE @"/CLUTs/"
-#define DATABASEPATH @"/DATABASE.noindex/"
+#import "AppDefaults.h"
+#define PRESETS_DIRECTORY   @"/3DPRESETS/"
+#define CLUTDATABASE        @"/CLUTs/"
 
 static NSString *MPRPlaneObservationContext = @"MPRPlaneObservationContext";
 
@@ -646,7 +646,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     
     // Restore previous path, if it exists
     
-    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: STATE_3D_DB_PATH];
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath: path])
 		[[NSFileManager defaultManager] createDirectoryAtPath: path
@@ -3453,7 +3453,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 			[bitmapData writeToFile:[panel filename] atomically:YES];
 		
 			NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: OpenViewer_b_KEY])
                 [ws openFile:[panel filename]];
 		}
 	}
@@ -3468,7 +3468,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	
-    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/%@", OUR_IMAGE_JPG];
+    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/%@/%@", TEMP_PATH, OUR_IMAGE_JPG];
 	[bitmapData writeToFile: path  atomically:YES];
 	
 	Photos *photos = [[Photos alloc] init];
@@ -3489,7 +3489,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
 		
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: OpenViewer_b_KEY])
             [ws openFile:[panel filename]];
 	}
 }
@@ -3650,7 +3650,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	if ([notification object] == [self window])
 	{
         // Save current path for next time
-        NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+        NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: STATE_3D_DB_PATH];
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:path])
             [[NSFileManager defaultManager] createDirectoryAtPath: path
@@ -3800,9 +3800,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		{
 			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
 			
-			
-			NSImage *im = [item image];
-			
+			NSImage *im = [item image];			
 			if (im == nil)
 			{
 				@try

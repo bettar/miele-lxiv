@@ -22,7 +22,7 @@
 #import <SecurityInterface/SFCertificateView.h>
 #import "WebPortalUser.h"
 #import "OSIWebSharingPreferencePanePref.h"
-#import <DefaultsOsiriX.h>
+#import "AppDefaults.h"
 #import <NSUserDefaults+OsiriX.h>
 #import <BrowserController.h>
 #import <AppController.h>
@@ -35,11 +35,6 @@
 #import "DDKeychain.h"
 #import "url.h"
 #import "tmp_locations.h"
-
-//#include <netdb.h>
-//#include <unistd.h>
-//#include <netinet/in.h>
-//#include <arpa/inet.h>
 
 @interface SecondsToMinutesTransformer: NSValueTransformer {}
 @end

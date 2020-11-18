@@ -64,6 +64,7 @@
 
 #include "url.h"
 #import "tmp_locations.h"
+#import "AppDefaults.h"
 
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
@@ -840,7 +841,8 @@ extern "C"
 		[previousAutoRetrieve removeAllObjects];
 	}
 	
-	if (autoQuery == YES && [[[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"autoRetrieving"] boolValue])
+	if (autoQuery &&
+        [[[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"autoRetrieving"] boolValue])
 	{
 		[self refreshAutoQR: self];
 	}
@@ -1033,7 +1035,7 @@ extern "C"
         NSMutableArray *srcAETitleArray = [NSMutableArray array];
 		for (id src in sourcesArray)
 		{
-			if ([[src valueForKey: @"activated"] boolValue] == YES)
+			if ([[src valueForKey: @"activated"] boolValue])
             {
 				[srcArray addObject: [NSString stringWithString: [src valueForKey: @"AddressAndPort"]]];
                 [srcAETitleArray addObject: [NSString stringWithString: [src valueForKey: @"AETitle"]]];
@@ -1668,13 +1670,14 @@ extern "C"
         {
             if (item == nil)
                 return [resultArray count];
-            else
+
+            if ([item isMemberOfClass:[DCMTKStudyQueryNode class]] ||
+                [item isMemberOfClass:[DCMTKRootQueryNode class]])
             {
-                if ( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES || [item isMemberOfClass:[DCMTKRootQueryNode class]] == YES)
-                    return YES;
-                else 
-                    return NO;
+                return YES;
             }
+
+            return NO;
         }
         @catch (NSException * e)
         {
@@ -1738,7 +1741,7 @@ extern "C"
 	if (study == nil)
         return seriesArray;
 	
-	if ([item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
+	if ([item isMemberOfClass:[DCMTKSeriesQueryNode class]])
 	{
         if (context == nil)
         {
@@ -1870,7 +1873,7 @@ extern "C"
 
 - (NSArray*) localStudy:(id) item context: (NSManagedObjectContext*) context
 {
-	if ([item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+	if ([item isMemberOfClass:[DCMTKStudyQueryNode class]])
 	{
 		@try
 		{
@@ -1920,7 +1923,7 @@ extern "C"
 	{
 		if ([[tableColumn identifier] isEqualToString: @"name"])
 		{
-			if ([item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+			if ([item isMemberOfClass:[DCMTKStudyQueryNode class]])
 			{
 				NSArray *studyArray;
 				
@@ -1940,7 +1943,7 @@ extern "C"
 				}
 			}
 			
-			if ([item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
+			if ([item isMemberOfClass:[DCMTKSeriesQueryNode class]])
 			{
 				NSArray *seriesArray;
 				
@@ -1991,7 +1994,7 @@ extern "C"
             {
                 id study = nil;
                 
-                if ([item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+                if ([item isMemberOfClass:[DCMTKStudyQueryNode class]])
                     study = [outlineView parentForItem: item];
                 else
                     study = item;
@@ -2010,7 +2013,7 @@ extern "C"
                     [cell setDrawsBackground: NO];
             }
             
-			if ([item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+			if ([item isMemberOfClass:[DCMTKStudyQueryNode class]])
 			{
 				NSArray	*studyArray = [self localStudy: item context: nil];
 				
@@ -2029,7 +2032,7 @@ extern "C"
 				else
                     [(ImageAndTextCell *)cell setImage: nil];
 			}
-			else if ([item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
+			else if ([item isMemberOfClass:[DCMTKSeriesQueryNode class]])
 			{
 				NSArray	*seriesArray;
 				
@@ -2078,7 +2081,7 @@ extern "C"
         {
             if ([[tableColumn identifier] isEqualToString: @"stateText"])
             {
-                if ([item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+                if ([item isMemberOfClass:[DCMTKStudyQueryNode class]])
                 {
                     NSArray *studyArray = [self localStudy: item context: nil];
                     
@@ -2106,7 +2109,7 @@ extern "C"
             }
             else if ([[tableColumn identifier] isEqualToString: @"serverStateText"])
             {
-                if ([item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+                if ([item isMemberOfClass:[DCMTKStudyQueryNode class]])
                 {
                     if ([[item stateText] intValue] == 0)
                         return nil;
@@ -2121,7 +2124,7 @@ extern "C"
             }
             else if ([[tableColumn identifier] isEqualToString: @"comment"])
             {
-                if ([item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+                if ([item isMemberOfClass:[DCMTKStudyQueryNode class]])
                 {
                     NSArray *studyArray = [self localStudy: item context: nil];
                     
@@ -2139,7 +2142,7 @@ extern "C"
             }
             else if ([[tableColumn identifier] isEqualToString: @"serverComment"])
             {
-                if ([item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+                if ([item isMemberOfClass:[DCMTKStudyQueryNode class]])
                     return [item valueForKey: @"comments"];
                 
                 else if ([item isMemberOfClass:[DCMTKSeriesQueryNode class]])
@@ -2180,7 +2183,7 @@ extern "C"
 //	{
 ////		if ([[tableColumn identifier] isEqualToString: @"comment"] || [[tableColumn identifier] isEqualToString: @"stateText"])
 ////		{
-////			if ([item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+////			if ([item isMemberOfClass:[DCMTKStudyQueryNode class]])
 ////				array = [self localStudy: item context: nil];
 ////			else
 ////				array = [self localSeries: item context: nil];
@@ -2331,7 +2334,7 @@ extern "C"
 	BOOL noChecked = YES;
 	for (NSUInteger i = 0; i < [copiedSources count]; i++)
 	{
-		if ([[[copiedSources objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
+		if ([[[copiedSources objectAtIndex: i] valueForKey:@"activated"] boolValue])
 			noChecked = NO;
 	}
 	
@@ -2348,7 +2351,7 @@ extern "C"
 	{
 		for (NSUInteger i = 0; i < [copiedSources count]; i++)
 		{
-			if ([[[copiedSources objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES || selectedServer == i)
+			if ([[[copiedSources objectAtIndex: i] valueForKey:@"activated"] boolValue] || selectedServer == i)
 			{
 				aServer = [[copiedSources objectAtIndex:i] valueForKey:@"server"];
 				
@@ -3517,7 +3520,7 @@ extern "C"
 
 - (void) displayAndRetrieveQueryResults: (NSMutableDictionary*) instance
 {
-	if ([[instance objectForKey: @"autoRetrieving"] boolValue] && autoQuery == YES)
+	if ([[instance objectForKey: @"autoRetrieving"] boolValue] && autoQuery)
 	{
 		NSThread *t = [[[NSThread alloc] initWithTarget: self selector:@selector(autoRetrieveThread:) object: instance] autorelease];
 		t.name = NSLocalizedString( @"Retrieving images...", nil);
@@ -4269,7 +4272,7 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 	
 	@try
 	{
-		if ([item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+		if ([item isMemberOfClass:[DCMTKStudyQueryNode class]])
 		{
 			NSPredicate	*predicate = [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [item valueForKey:@"uid"]];
 			
@@ -4300,7 +4303,7 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 			}
 		}
 		
-		if ([item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
+		if ([item isMemberOfClass:[DCMTKSeriesQueryNode class]])
 		{
 			NSPredicate	*predicate = [NSPredicate predicateWithFormat: @"(seriesDICOMUID == %@)", [item valueForKey:@"uid"]];
 			
@@ -4744,7 +4747,7 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 	
 	for (NSUInteger i = 0; i < [sourcesArray count]; i++)
 	{
-		if ([[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
+		if ([[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue])
 		{
 			[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
 			[sourcesTable scrollRowToVisible: i];
@@ -4980,7 +4983,9 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 	{
 		NSDictionary *server = [self findCorrespondingServer: [savedArray objectAtIndex:i] inServers: serversArray];
 		
-		if (server && ([[server valueForKey:@"QR"] boolValue] == YES || [server valueForKey:@"QR"] == nil ))
+		if (server &&
+            ([[server valueForKey:@"QR"] boolValue] ||
+             [server valueForKey:@"QR"] == nil ))
 		{
 			[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                       [[savedArray objectAtIndex: i] valueForKey:@"activated"], @"activated",
@@ -5173,7 +5178,10 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
             
             [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"KeepQRWindowOnTop" options:NSKeyValueObservingOptionInitial context:NULL];
             
-            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"SERVERS" options:NSKeyValueObservingOptionInitial context:NULL];
+            [[NSUserDefaultsController sharedUserDefaultsController] addObserver: self
+                                                                    forValuesKey: Servers_a_KEY
+                                                                         options: NSKeyValueObservingOptionInitial
+                                                                         context: NULL];
 		}
 		else
 		{
@@ -5247,7 +5255,7 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 	
 	avoidQueryControllerDeallocReentry = YES;
 
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SERVERS"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:Servers_a_KEY];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"KeepQRWindowOnTop"];
     
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixAddToDBNotification object:nil];

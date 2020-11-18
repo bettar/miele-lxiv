@@ -246,7 +246,9 @@
                 [[NSThread currentThread] setProgress: 1.0 - (float) WADOThreads / (float) WADOTotal];
             
             // To remove the '.'
-            [[NSFileManager defaultManager] moveItemAtPath: [path stringByAppendingPathComponent: filename] toPath: [path stringByAppendingPathComponent: [filename substringFromIndex: 1]] error: nil];
+            [[NSFileManager defaultManager] moveItemAtPath: [path stringByAppendingPathComponent: filename]
+                                                    toPath: [path stringByAppendingPathComponent: [filename substringFromIndex: 1]]
+                                                     error: nil];
         }
         
 		[d setLength: 0]; // Free the memory immediately

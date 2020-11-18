@@ -59,7 +59,7 @@
 #import "DicomImage.h"
 
 #import <CoreVideo/CoreVideo.h>
-#import "DefaultsOsiriX.h"
+#import "AppDefaults.h"
 #import "Notifications.h"
 #import "PluginManager.h"
 #import "N2Debug.h"
@@ -16034,7 +16034,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 #pragma mark - NSView
 
-- (id)initWithFrame:(NSRect)frame
+- (instancetype)initWithFrame:(NSRect)frame
 {
 #ifndef NDEBUG
     NSLog(@"%s %d, class:%@", __FUNCTION__, __LINE__, NSStringFromClass([self class]));

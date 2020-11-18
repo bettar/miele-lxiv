@@ -30,6 +30,7 @@
 #import "DICOMExport.h"
 #import "ROIVolumeController.h"
 #import "BrowserController.h"
+#import "AppDefaults.h"
 
 #include "math.h"
 #import "QuicktimeExport.h"
@@ -212,7 +213,7 @@
 		[bitmapData writeToFile:[panel filename] atomically:YES];
 		
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: OpenViewer_b_KEY])
             [ws openFile:[panel filename]];
 	}
 }
@@ -220,11 +221,8 @@
 -(IBAction) copy:(id) sender
 {
     NSPasteboard *pb = [NSPasteboard generalPasteboard];
-    
     [pb declareTypes:[NSArray arrayWithObject:NSPasteboardTypeTIFF] owner:self];
-    
     NSImage *im = [self nsimage:NO];
-    
     [pb setData: [im TIFFRepresentation] forType:NSPasteboardTypeTIFF];
 }
 

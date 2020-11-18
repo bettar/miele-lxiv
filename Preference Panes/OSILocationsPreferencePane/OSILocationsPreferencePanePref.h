@@ -29,11 +29,18 @@
 @interface OSILocationsPreferencePanePref : NSPreferencePane 
 {
 	IBOutlet NSPopUpButton			*characterSetPopup;
-	IBOutlet NSButton				*addServerDICOM, *addServerSharing, *searchDICOMBonjourNodes, *verifyPing, *addLocalPath, *loadNodes;
+    IBOutlet NSButton				*addServerDICOM;
+    IBOutlet NSButton               *addServerSharing;
+    IBOutlet NSButton               *searchDICOMBonjourNodes;
+    IBOutlet NSButton               *verifyPing;
+    IBOutlet NSButton               *addLocalPath;
+    IBOutlet NSButton               *loadNodes;
 	NSString						*stringEncoding;
 	
-	IBOutlet DNDArrayController		*localPaths, *osiriXServers, *dicomNodes;
-	
+	IBOutlet DNDArrayController		*localPaths;
+    IBOutlet DNDArrayController     *osiriXServers;
+    IBOutlet DNDArrayController     *dicomNodes;
+
 	// WADO
 	IBOutlet NSWindow				*WADOSettings;
 	int								WADOPort, WADOTransferSyntax, WADOhttps;

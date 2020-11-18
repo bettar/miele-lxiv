@@ -38,7 +38,7 @@
 #import <DCM/DCMAbstractSyntaxUID.h>
 #import <DCM/DCMSequenceAttribute.h>
 #import "DICOMToNSString.h"
-#import "DefaultsOsiriX.h"
+#import "AppDefaults.h"
 
 #ifndef MIELE_LIGHT
 #ifdef VTK_USE_SYSTEM_TIFF
@@ -414,7 +414,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 		}
 		else	// FOR THE SAFEDBREBUILD ! Shell tool
 		{
-			NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
+			NSMutableDictionary	*dict = [AppDefaults getDefaults];
 			[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@(BUNDLE_IDENTIFIER)]];
 			
 			DEFAULTSSET = YES;

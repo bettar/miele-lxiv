@@ -36,6 +36,7 @@
 #import "DCMCursor.h"
 #import "Notifications.h"
 #import "DicomDatabase.h"
+#import "AppDefaults.h"
 #import "url.h"
 
 @implementation EndoscopyMPRView
@@ -580,7 +581,7 @@
 
 	NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/%@", OUR_IMAGE_JPG];
+    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/%@/%@", TEMP_PATH, OUR_IMAGE_JPG];
 	[bitmapData writeToFile:path
                  atomically:YES];
 				
@@ -613,7 +614,7 @@
 			
 			[bitmapData writeToFile:[panel filename] atomically:YES];
 			
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: OpenViewer_b_KEY])
             {
                 NSWorkspace *ws = [NSWorkspace sharedWorkspace];
                 [ws openFile:[panel filename]];

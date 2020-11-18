@@ -1872,7 +1872,7 @@ extern BOOL forkedProcess;
                 usleep( 1000);
                 inc++;
             }
-            while( fileExist == YES && inc < 100000);
+            while (fileExist && inc < 100000);
 		}
 	}
 	@catch (NSException * e) 

@@ -257,8 +257,8 @@
                                         <action selector="resetDateOfBirth:" target="-2" id="625"/>
                                     </connections>
                                 </button>
-                                <button horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="630">
-                                    <rect key="frame" x="10" y="71" width="236" height="18"/>
+                                <button verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="630">
+                                    <rect key="frame" x="10" y="73" width="236" height="18"/>
                                     <buttonCell key="cell" type="check" title="Always display all studies of each patient" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="767">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="message" size="11"/>
@@ -267,8 +267,8 @@
                                         <binding destination="548" name="value" keyPath="values.KeepStudiesOfSamePatientTogether" id="632"/>
                                     </connections>
                                 </button>
-                                <button horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="945">
-                                    <rect key="frame" x="10" y="51" width="360" height="18"/>
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="945">
+                                    <rect key="frame" x="10" y="51" width="360" height="16"/>
                                     <buttonCell key="cell" type="check" title="Display patient's names and descriptions with Capitalized Words" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="946">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="message" size="11"/>
@@ -277,8 +277,8 @@
                                         <binding destination="548" name="value" keyPath="values.CapitalizedString" id="950"/>
                                     </connections>
                                 </button>
-                                <button horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="951">
-                                    <rect key="frame" x="10" y="31" width="358" height="18"/>
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="951">
+                                    <rect key="frame" x="10" y="29" width="358" height="16"/>
                                     <buttonCell key="cell" type="check" title="Clear Search field (in the toolbar), when changing current album" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="952">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="message" size="11"/>
@@ -287,8 +287,8 @@
                                         <binding destination="548" name="value" keyPath="values.clearSearchAndTimeIntervalWhenSelectingAlbum" id="954"/>
                                     </connections>
                                 </button>
-                                <button horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YPv-3N-HIs">
-                                    <rect key="frame" x="10" y="11" width="225" height="18"/>
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="YPv-3N-HIs">
+                                    <rect key="frame" x="10" y="7" width="225" height="16"/>
                                     <buttonCell key="cell" type="check" title="Display the History Drawer horizontally" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="pPT-1s-tm1">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="message" size="11"/>
@@ -845,8 +845,8 @@ If a study is in an album, it will NOT be deleted.</string>
                             <rect key="frame" x="3" y="3" width="269" height="168"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="355">
-                                    <rect key="frame" x="10" y="103" width="134" height="18"/>
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="355">
+                                    <rect key="frame" x="10" y="101" width="134" height="16"/>
                                     <buttonCell key="cell" type="check" title="DICOM Field(s) to fill:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="777">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="message" size="11"/>
@@ -876,8 +876,8 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="value" keyPath="values.COMMENTSAUTOFILLSeriesLevel" id="1031"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="356">
-                                    <rect key="frame" x="24" y="54" width="40" height="14"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="356">
+                                    <rect key="frame" x="24" y="53" width="40" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Group:" id="778">
                                         <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -892,16 +892,16 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="357">
-                                    <rect key="frame" x="146" y="54" width="50" height="14"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="357">
+                                    <rect key="frame" x="146" y="53" width="50" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Element:" id="779">
                                         <font key="font" metaFont="message" size="11"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" ambiguous="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="358">
-                                    <rect key="frame" x="69" y="52" width="54" height="19"/>
+                                <textField verticalHuggingPriority="750" verticalCompressionResistancePriority="751" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="358">
+                                    <rect key="frame" x="69" y="51" width="54" height="19"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="54" id="kcQ-qO-jmH"/>
                                     </constraints>
@@ -914,7 +914,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <action selector="setAutoComments:" target="-2" id="375"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" ambiguous="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="359">
+                                <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="359">
                                     <rect key="frame" x="200" y="51" width="59" height="19"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="781">
                                         <font key="font" metaFont="message" size="11"/>
@@ -942,8 +942,8 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <action selector="setDICOMFieldMenu:" target="-2" id="807"/>
                                     </connections>
                                 </popUpButton>
-                                <button verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="816">
-                                    <rect key="frame" x="133" y="21" width="132" height="27"/>
+                                <button verticalHuggingPriority="750" verticalCompressionResistancePriority="752" translatesAutoresizingMaskIntoConstraints="NO" id="816">
+                                    <rect key="frame" x="133" y="22" width="132" height="27"/>
                                     <buttonCell key="cell" type="push" title="Regenerate" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="817">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="message" size="11"/>
@@ -953,8 +953,8 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="enabled" keyPath="values.COMMENTSAUTOFILL" id="818"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="855">
-                                    <rect key="frame" x="10" y="144" width="189" height="18"/>
+                                <button verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="855">
+                                    <rect key="frame" x="10" y="143" width="189" height="16"/>
                                     <buttonCell key="cell" type="check" title="Store them in DICOM files fields" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="856">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="message" size="11"/>
@@ -963,8 +963,8 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="value" keyPath="values.savedCommentsAndStatusInDICOMFiles" id="857"/>
                                     </connections>
                                 </button>
-                                <button horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="875">
-                                    <rect key="frame" x="10" y="123" width="202" height="19"/>
+                                <button horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="875">
+                                    <rect key="frame" x="10" y="121" width="202" height="16"/>
                                     <buttonCell key="cell" type="check" title="Load them from DICOM files fields" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="876">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="message" size="11"/>
@@ -973,8 +973,8 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="value" keyPath="values.CommentsFromDICOMFiles" id="879"/>
                                     </connections>
                                 </button>
-                                <popUpButton verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="933">
-                                    <rect key="frame" x="18" y="76" width="115" height="22"/>
+                                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="933">
+                                    <rect key="frame" x="18" y="74" width="115" height="21"/>
                                     <popUpButtonCell key="cell" type="push" title="DICOM Field 1 :" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="936" id="934">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="message" size="11"/>
@@ -993,8 +993,8 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="-2" name="selectedIndex" keyPath="currentCommentsAutoFill" id="942"/>
                                     </connections>
                                 </popUpButton>
-                                <popUpButton verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1002">
-                                    <rect key="frame" x="149" y="99" width="114" height="22"/>
+                                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1002">
+                                    <rect key="frame" x="149" y="97" width="114" height="22"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="106" id="Hvw-xm-Fwp"/>
                                     </constraints>

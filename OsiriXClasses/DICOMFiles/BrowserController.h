@@ -317,11 +317,18 @@ extern NSString * const SeriesViewer_DragType;
 @property(readonly) BOOL is2DViewer, isCurrentDatabaseBonjour;
 @property(readonly) MyOutlineView *databaseOutline;
 @property(readonly) NSTableView *albumTable;
-@property(readonly) NSString *currentDatabasePath __deprecated, *localDatabasePath __deprecated, *documentsDirectory __deprecated, *fixedDocumentsDirectory __deprecated;
+
+//@property(readonly) NSString *currentDatabasePath __deprecated;
+//@property(readonly) NSString *localDatabasePath __deprecated;
+@property(readonly) NSString *documentsDirectory __deprecated;
+@property(readonly) NSString *fixedDocumentsDirectory __deprecated;
 
 @property(readonly) NSBox *bonjourSourcesBox;
 @property(readonly) BonjourBrowser *bonjourBrowser;
-@property(readonly) const char *cfixedDocumentsDirectory __deprecated, *cfixedIncomingDirectory __deprecated, *cfixedTempNoIndexDirectory __deprecated, *cfixedIncomingNoIndexDirectory __deprecated;
+//@property(readonly) const char *cfixedDocumentsDirectory __deprecated;
+//@property(readonly) const char *cfixedIncomingDirectory __deprecated;
+@property(readonly) const char *cfixedTempNoIndexDirectory __deprecated;
+@property(readonly) const char *cfixedIncomingNoIndexDirectory __deprecated;
 
 @property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail, *comparativePatientUID, *smartAlbumDistantName, *distantStudyMessage, *distantSearchString, *selectedAlbumName;
 @property(retain) NSPredicate *fetchPredicate, *testPredicate;
@@ -402,7 +409,7 @@ extern NSString * const SeriesViewer_DragType;
 - (NSManagedObjectContext *) defaultManagerObjectContextIndependentContext: (BOOL) independentContext __deprecated;
 
 - (BOOL) isBonjour: (NSManagedObjectContext*) c __deprecated;
-- (NSString *) localDocumentsDirectory __deprecated;
+//- (NSString *) localDocumentsDirectory __deprecated;
 - (void) alternateButtonPressed: (NSNotification*)n;
 - (NSArray*) childrenArray: (id) item;
 - (NSArray*) childrenArray: (id) item onlyImages:(BOOL) onlyImages;
@@ -415,7 +422,7 @@ extern NSString * const SeriesViewer_DragType;
 - (void) computeTimeInterval;
 - (void) ReadDicomCDRom:(id) sender __deprecated;
 - (NSString*) INCOMINGPATH __deprecated;
-- (NSString*) TEMPPATH __deprecated;
+//- (NSString*) TEMPPATH __deprecated;
 - (IBAction) matrixDoublePressed:(id)sender;
 - (void) addURLToDatabaseEnd:(id) sender;
 - (void) addURLToDatabase:(id) sender;
@@ -566,7 +573,7 @@ extern NSString * const SeriesViewer_DragType;
 //DB plugins
 - (void)executeFilterDB:(id)sender;
 
-+ (NSString*) defaultDocumentsDirectory  __deprecated;
+//+ (NSString*) defaultDocumentsDirectory  __deprecated;
 - (NSString *)documentsDirectoryFor:(int) mode url:(NSString*) url  __deprecated;
 - (IBAction)showLogWindow: (id)sender;
 - (void) resetLogWindowController;

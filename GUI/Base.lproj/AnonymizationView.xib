@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1080" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17506"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="AnonymizationViewController">
@@ -16,46 +17,15 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView id="23" userLabel="Anonymization View">
-            <rect key="frame" x="0.0" y="0.0" width="500" height="260"/>
+            <rect key="frame" x="0.0" y="0.0" width="500" height="288"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <box autoresizesSubviews="NO" title="Templates" borderType="line" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="103" customClass="N2AdaptiveBox">
-                    <rect key="frame" x="17" y="23" width="466" height="211"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    <view key="contentView">
-                        <rect key="frame" x="1" y="1" width="464" height="209"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="114" customClass="AnonymizationTagsView">
-                                <rect key="frame" x="18" y="21" width="428" height="170"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="428" id="Lxx-0z-erV"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="170" id="vhp-4O-UDj"/>
-                                </constraints>
-                                <connections>
-                                    <outlet property="anonymizationViewController" destination="-2" id="130"/>
-                                </connections>
-                            </customView>
-                        </subviews>
-                    </view>
-                    <constraints>
-                        <constraint firstItem="114" firstAttribute="top" secondItem="103" secondAttribute="top" constant="17" id="52h-PW-IQV"/>
-                        <constraint firstAttribute="bottom" secondItem="114" secondAttribute="bottom" constant="18" id="Hgw-ib-MUB"/>
-                        <constraint firstAttribute="trailing" secondItem="114" secondAttribute="trailing" constant="16" id="epc-ti-uag"/>
-                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="h08-Vl-675"/>
-                        <constraint firstItem="114" firstAttribute="leading" secondItem="103" secondAttribute="leading" constant="16" id="w8a-sw-GfV"/>
-                    </constraints>
-                    <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                    <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                </box>
                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="104">
-                    <rect key="frame" x="27" y="219" width="156" height="22"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <rect key="frame" x="16" y="248" width="158" height="22"/>
                     <constraints>
-                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="Uvj-LD-y6Q"/>
+                        <constraint firstAttribute="width" constant="150" id="NES-az-Kls"/>
                     </constraints>
                     <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="113" id="109">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -70,10 +40,9 @@
                     </popUpButtonCell>
                 </popUpButton>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="105">
-                    <rect key="frame" x="123" y="13" width="100" height="28"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="280" y="245" width="102" height="27"/>
                     <constraints>
-                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="90" id="auD-kt-Lfj"/>
+                        <constraint firstAttribute="width" constant="90" id="7gh-2b-B9p"/>
                     </constraints>
                     <buttonCell key="cell" type="push" title="Delete" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="108">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -84,10 +53,9 @@
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="106">
-                    <rect key="frame" x="25" y="13" width="100" height="28"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <rect key="frame" x="182" y="245" width="102" height="27"/>
                     <constraints>
-                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="90" id="7Lq-fe-z7D"/>
+                        <constraint firstAttribute="width" constant="90" id="HeQ-d2-9mE"/>
                     </constraints>
                     <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="107">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -98,19 +66,41 @@
                         <binding destination="-2" name="enabled" keyPath="formatsAreOk" id="140"/>
                     </connections>
                 </button>
+                <box autoresizesSubviews="NO" borderType="line" title="Templates" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="103" customClass="N2AdaptiveBox">
+                    <rect key="frame" x="17" y="40" width="466" height="206"/>
+                    <view key="contentView" id="zU0-RW-njp">
+                        <rect key="frame" x="3" y="3" width="460" height="200"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="114" customClass="AnonymizationTagsView">
+                                <rect key="frame" x="16" y="20" width="428" height="160"/>
+                                <connections>
+                                    <outlet property="anonymizationViewController" destination="-2" id="130"/>
+                                </connections>
+                            </customView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="114" firstAttribute="centerX" secondItem="zU0-RW-njp" secondAttribute="centerX" id="DTT-fi-Fb2"/>
+                            <constraint firstItem="114" firstAttribute="top" secondItem="zU0-RW-njp" secondAttribute="top" constant="20" symbolic="YES" id="Dcl-pr-Lub"/>
+                            <constraint firstItem="114" firstAttribute="leading" secondItem="zU0-RW-njp" secondAttribute="leading" constant="16" id="dpO-QL-6pP"/>
+                            <constraint firstAttribute="bottom" secondItem="114" secondAttribute="bottom" constant="20" symbolic="YES" id="x4A-Rn-Sf4"/>
+                        </constraints>
+                    </view>
+                </box>
             </subviews>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="103" secondAttribute="bottom" constant="27" id="KvX-x3-A6w"/>
-                <constraint firstAttribute="trailing" secondItem="103" secondAttribute="trailing" constant="20" symbolic="YES" id="LWg-bz-Qwi"/>
-                <constraint firstItem="103" firstAttribute="top" secondItem="23" secondAttribute="top" constant="28" id="Mag-wr-avN"/>
-                <constraint firstAttribute="bottom" secondItem="106" secondAttribute="bottom" constant="19" id="QOo-3t-Dvk"/>
-                <constraint firstItem="105" firstAttribute="leading" secondItem="106" secondAttribute="trailing" constant="8" symbolic="YES" id="VHK-19-JTb"/>
-                <constraint firstItem="103" firstAttribute="leading" secondItem="23" secondAttribute="leading" constant="20" symbolic="YES" id="XBX-KZ-afr"/>
-                <constraint firstItem="104" firstAttribute="top" secondItem="23" secondAttribute="top" constant="20" symbolic="YES" id="ZRu-X1-KJ4"/>
-                <constraint firstItem="106" firstAttribute="leading" secondItem="104" secondAttribute="leading" id="o2w-Jg-Iiu"/>
-                <constraint firstItem="105" firstAttribute="baseline" secondItem="106" secondAttribute="baseline" id="pXv-i2-qwg"/>
-                <constraint firstItem="104" firstAttribute="leading" secondItem="23" secondAttribute="leading" constant="30" id="ttu-Yk-gfO"/>
+                <constraint firstItem="106" firstAttribute="baseline" secondItem="105" secondAttribute="baseline" id="1eG-kV-epl"/>
+                <constraint firstItem="103" firstAttribute="top" secondItem="104" secondAttribute="bottom" constant="8" symbolic="YES" id="7ES-XN-g9Y"/>
+                <constraint firstItem="103" firstAttribute="centerY" secondItem="23" secondAttribute="centerY" id="7JL-Ny-M3y"/>
+                <constraint firstItem="106" firstAttribute="leading" secondItem="104" secondAttribute="trailing" constant="18" id="APa-X9-sps"/>
+                <constraint firstItem="104" firstAttribute="leading" secondItem="23" secondAttribute="leading" constant="20" symbolic="YES" id="FL3-I7-yFn"/>
+                <constraint firstItem="104" firstAttribute="leading" secondItem="103" secondAttribute="leading" id="KiV-HX-A7Q"/>
+                <constraint firstAttribute="trailing" secondItem="103" secondAttribute="trailing" constant="20" symbolic="YES" id="Lld-gl-QR0"/>
+                <constraint firstItem="104" firstAttribute="baseline" secondItem="106" secondAttribute="baseline" id="QN6-aE-ZJD"/>
+                <constraint firstItem="104" firstAttribute="top" secondItem="23" secondAttribute="top" constant="20" symbolic="YES" id="Ttm-Fw-8V6"/>
+                <constraint firstItem="105" firstAttribute="leading" secondItem="106" secondAttribute="trailing" constant="8" symbolic="YES" id="Un8-4K-YRz"/>
             </constraints>
+            <point key="canvasLocation" x="-100" y="100"/>
         </customView>
         <userDefaultsController representsSharedInstance="YES" id="137"/>
     </objects>

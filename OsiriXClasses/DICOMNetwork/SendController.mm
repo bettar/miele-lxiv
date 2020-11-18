@@ -36,6 +36,7 @@
 #import "NSThread+N2.h"
 #import "NSUserDefaults+OsiriX.h"
 #import "N2Stuff.h"
+#import "AppDefaults.h"
 
 static volatile int sendControllerObjects = 0;
 
@@ -232,8 +233,15 @@ static volatile int sendControllerObjects = 0;
 		_readyForRelease = NO;
 		_lock = [[NSRecursiveLock alloc] init];
 		
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"SERVERS" options:NSKeyValueObservingOptionInitial context:nil];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"SendControllerConcurrentThreads" options:NSKeyValueObservingOptionInitial context:nil];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
+                                                                forValuesKey:Servers_a_KEY
+                                                                     options:NSKeyValueObservingOptionInitial
+                                                                     context:nil];
+
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
+                                                                forValuesKey:@"SendControllerConcurrentThreads"
+                                                                     options:NSKeyValueObservingOptionInitial
+                                                                     context:nil];
         
 		[[NSNotificationCenter defaultCenter] addObserver: self
 												selector: @selector(updateDestinationPopup:)
@@ -259,7 +267,7 @@ static volatile int sendControllerObjects = 0;
         {
             // Find current server (if it exists)
             
-            NSMutableArray *servers = [[[[NSUserDefaults standardUserDefaults] objectForKey: @"SERVERS"] mutableCopy] autorelease];
+            NSMutableArray *servers = [[[[NSUserDefaults standardUserDefaults] objectForKey: Servers_a_KEY] mutableCopy] autorelease];
             NSDictionary *currentServer = [self server];
             
             for (NSDictionary *server in servers)
@@ -272,7 +280,7 @@ static volatile int sendControllerObjects = 0;
                     
                     [servers replaceObjectAtIndex: [servers indexOfObject: server] withObject: d];
                     
-                    [[NSUserDefaults standardUserDefaults] setObject: servers forKey: @"SERVERS"];
+                    [[NSUserDefaults standardUserDefaults] setObject: servers forKey: Servers_a_KEY];
                     
                     break;
                 }
@@ -300,7 +308,7 @@ static volatile int sendControllerObjects = 0;
 
 - (void)dealloc
 {
-	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SERVERS"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey: Servers_a_KEY];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SendControllerConcurrentThreads"];
     
     [[NSNotificationCenter defaultCenter] removeObserver: self];

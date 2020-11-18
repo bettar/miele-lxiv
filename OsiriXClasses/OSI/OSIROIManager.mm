@@ -385,15 +385,16 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
     NSArray *oldOSIROIs = [NSArray arrayWithArray:_OSIROIs];
 	
 	[self willChangeValueForKey:@"ROIs"];
-	[_OSIROIs removeAllObjects];
-    [_watchedROIs removeAllObjects];
-	if (_coalesceROIs) {
-		[_OSIROIs addObjectsFromArray:[self _coalescedROIListForWatchedOsiriXROIs:&watchedROIs]];
-	}
-    else {
-		[_OSIROIs addObjectsFromArray:[self _ROIListForWatchedOsiriXROIs:&watchedROIs]];
-	}
-
+    {
+        [_OSIROIs removeAllObjects];
+        [_watchedROIs removeAllObjects];
+        if (_coalesceROIs) {
+            [_OSIROIs addObjectsFromArray:[self _coalescedROIListForWatchedOsiriXROIs:&watchedROIs]];
+        }
+        else {
+            [_OSIROIs addObjectsFromArray:[self _ROIListForWatchedOsiriXROIs:&watchedROIs]];
+        }
+    }
     [self didChangeValueForKey:@"ROIs"];
     
     [_watchedROIs addObjectsFromArray:watchedROIs];

@@ -55,7 +55,7 @@
 		}
 		else
 		{
-			if( clickedInLastImage == YES)
+			if (clickedInLastImage)
 			{
 				NSImage	*im = lastImage;
 				lastImage = lastImageAlternate;

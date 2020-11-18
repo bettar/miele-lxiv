@@ -51,6 +51,7 @@
 #import "DICOMExport.h"
 #endif
 
+#import "AppDefaults.h"
 #import "tmp_locations.h"
 
 #define WBUFSIZE 512
@@ -1198,7 +1199,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) setReportURL: (NSString*) url
 {
-	#ifdef OSIRIX_VIEWER
+#ifdef OSIRIX_VIEWER
 	BrowserController *cB = [BrowserController currentBrowser];
 	
 	if (url)
@@ -1206,21 +1207,22 @@ static NSRecursiveLock *dbModifyLock = nil;
 		if ([url hasPrefix: @"http://"] == NO &&
             [url hasPrefix: @"https://"] == NO)
 		{
-		   NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
+            NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
 		
 			if ([commonPath isEqualToString: [cB fixedDocumentsDirectory]])
 			{
 				url = [url substringFromIndex: [[cB fixedDocumentsDirectory] length]];
 				
-				if ([url hasPrefix: @"TEMP.noindex/"])
-					url = [url stringByReplacingOccurrencesOfString: @"TEMP.noindex/" withString: @"REPORTS/"];
+				if ([url hasPrefix: TEMP_PATH])
+					url = [url stringByReplacingOccurrencesOfString: TEMP_PATH
+                                                         withString: REPORTS_PATH];
 				
 				if ([url characterAtIndex: 0] == '/')
                     url = [url substringFromIndex: 1];
 			}
 		}
 	}
-	#endif
+#endif
 	
 	[self willChangeValueForKey: @"reportURL"];
 	[self setPrimitiveValue: url forKey: @"reportURL"];
@@ -1246,9 +1248,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 				// We will give a path with TEMP.noindex, instead of REPORTS
 				if ([url characterAtIndex: 0] != '/')
 				{
-					if ([url hasPrefix: @"REPORTS/"])
-						url = [url stringByReplacingOccurrencesOfString: @"REPORTS/" withString: @"TEMP.noindex/"];
-					url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
+					if ([url hasPrefix: REPORTS_PATH])
+						url = [url stringByReplacingOccurrencesOfString: REPORTS_PATH
+                                                             withString: TEMP_PATH];
+
+                    url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
 				}
 			}
 			else

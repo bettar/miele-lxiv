@@ -35,7 +35,7 @@
 
 #import "vtkMieleView.h"
 
-#import "DefaultsOsiriX.h"
+#import "AppDefaults.h"
 
 @implementation vtkMieleView
 
@@ -168,7 +168,7 @@
 // Return result in MB
 + (unsigned long) VRAMSizeForDisplayID: (CGDirectDisplayID) displayID
 {
-    return [DefaultsOsiriX GPUModelVRAMInfo];
+    return [AppDefaults GPUModelVRAMInfo];
 }
 
 - (void) keyDown:(NSEvent *)event

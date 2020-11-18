@@ -35,6 +35,7 @@
 #import "DicomSeries.h"
 #import "DicomImage.h"
 #import "PluginManager.h"
+#import "AppDefaults.h"
 #import "url.h"
 
 static NSString* 	MPROrtho_ToolbarIdentifier				= @"MPROrtho Viewer Toolbar Identifier";
@@ -1018,8 +1019,7 @@ return YES;
       itemForItemIdentifier: (NSString *) itemIdent
   willBeInsertedIntoToolbar: (BOOL) willBeInserted
 {
-    // Required delegate method:  Given an item identifier, this method returns an item 
-    // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
+    // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself
      
     NSToolbarItem *toolbarItem =nil;
     
@@ -1029,7 +1029,6 @@ return YES;
         toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
     
 //    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
-    
     
 //    if ([itemIdent isEqualToString: QTExportToolbarItemIdentifier]) {
 //        
@@ -1189,8 +1188,8 @@ return YES;
     return toolbarItem;
 }
 
-- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method:  Returns the ordered list of items to be shown in the toolbar by default    
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
+{
     // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
     // user chooses to revert to the default items this set will be used 
     return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
@@ -1208,9 +1207,10 @@ return YES;
 											nil];
 }
 
-- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
-    // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
+{
+    // By default, the toolbar does not assume any items are allowed, even the separator.
+    // So, every allowed item must be explicitly listed   
     // The set of allowed items is used to construct the customization palette 
     NSMutableArray *array = [NSMutableArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
 										NSToolbarFlexibleSpaceItemIdentifier,
@@ -1334,7 +1334,7 @@ return YES;
 
 	NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/%@", OUR_IMAGE_JPG];
+    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/%@/%@", TEMP_PATH, OUR_IMAGE_JPG];
 	[bitmapData writeToFile:path
                  atomically:YES];
 				
@@ -1423,7 +1423,7 @@ return YES;
 			[view setCrossPosition:oldX+0.5 :oldY+0.5];
 			[view setNeedsDisplay:YES];
 
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) 
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: OpenViewer_b_KEY])
 			{
 				//[ws openFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%d.jpg", 1]]];
 				[ws openFile:[panel directory]];
@@ -1441,7 +1441,7 @@ return YES;
 			
 			[bitmapData writeToFile:[panel filename] atomically:YES];
 			
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: OpenViewer_b_KEY])
                 [ws openFile:[panel filename]];
 		}
 	}

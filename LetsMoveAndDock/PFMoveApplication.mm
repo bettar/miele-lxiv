@@ -291,7 +291,8 @@ static BOOL IsInDownloadsFolder(NSString *path) {
 	return [[[path stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"Downloads"];
 }
 
-static BOOL IsLaunchedFromDMG() {
+static BOOL IsLaunchedFromDMG()
+{
 	// Guess if we have launched from a disk image
 	NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
 	NSFileManager *fm = [NSFileManager defaultManager];

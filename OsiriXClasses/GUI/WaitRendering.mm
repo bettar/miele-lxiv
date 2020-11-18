@@ -99,12 +99,12 @@
 
 -(void) end
 {
-	if( startTime == nil)
+	if (startTime == nil)
         return;	// NOT STARTED
 	
 	[self close];
 	
-	if( aborted == NO && supportCancel == YES)
+	if (aborted == NO && supportCancel)
 	{
 		lastDuration = -[startTime timeIntervalSinceNow];
 	}

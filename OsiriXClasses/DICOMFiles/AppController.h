@@ -78,7 +78,6 @@ extern "C"
 }
 #endif
 
-
 /** \brief  NSApplication delegate
 *
 *  NSApplication delegate 

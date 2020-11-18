@@ -36,7 +36,9 @@
     while( [[NSFileManager defaultManager] fileExistsAtPath: trashPath])
         trashPath = [originalTrashPath stringByAppendingFormat: @" %d", i++];
         
-    [[NSFileManager defaultManager] moveItemAtPath:path toPath:trashPath error:&error];
+    [[NSFileManager defaultManager] moveItemAtPath: path
+                                            toPath: trashPath
+                                             error: &error];
 }
 
 -(NSString*)findSystemFolderOfType:(int)folderType forDomain:(int)domain {
@@ -157,7 +159,9 @@
 	
 	if (!pathWithExtExists && pathWithoutExtExists && pathWithoutExtIsDir)
     {
-		[self moveItemAtPath:pathWithoutExt toPath:pathWithExt error:NULL];
+		[self moveItemAtPath: pathWithoutExt
+                      toPath: pathWithExt
+                       error: NULL];
         
         // Value stored to 'pathWithoutExtExists' is never read
 		pathWithoutExtExists = [self fileExistsAtPath:pathWithoutExt isDirectory:&pathWithoutExtIsDir];
@@ -232,7 +236,11 @@
 	return totalSize;
 }
 
--(BOOL)copyItemAtPath:(NSString*)srcPath toPath:(NSString*)dstPath byReplacingExisting:(BOOL)replace error:(NSError**)err {
+-(BOOL)copyItemAtPath:(NSString*)srcPath
+               toPath:(NSString*)dstPath
+  byReplacingExisting:(BOOL)replace
+                error:(NSError**)err
+{
 	BOOL success = YES;
 	NSMutableArray* pairs = [NSMutableArray arrayWithObject:[NSArray arrayWithObjects: srcPath, dstPath, NULL]];
 	

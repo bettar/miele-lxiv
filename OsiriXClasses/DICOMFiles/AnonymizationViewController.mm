@@ -30,6 +30,8 @@
 #include <cmath>
 #include <algorithm>
 
+#define ANONYMIZE_TEMPLATE_KEY      @"anonymizeTemplate"
+
 @interface AnonymizationViewController ()
 
 @property(retain,readwrite) NSMutableArray* tags;
@@ -37,6 +39,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation AnonymizationViewController
 
@@ -80,15 +83,21 @@
 			NULL];
 }
 
--(void)refreshTemplatesList {
+-(void)refreshTemplatesList
+{
 	[templatesPopup removeAllItems];
-	NSDictionary* templates = [[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:@"anonymizeTemplate"];
-	for (NSString* name in [[templates allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)])
+	NSDictionary* templates = [[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:ANONYMIZE_TEMPLATE_KEY];
+
+    for (NSString* name in [[templates allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)])
+    {
 		[templatesPopup addItemWithTitle:name];
-	[templatesPopup setEnabled:templates.count>0];
+    }
+
+    [templatesPopup setEnabled: templates.count>0];
 }
 
--(id)initWithTags:(NSArray*)shownDcmTags values:(NSArray*)values
+-(id)initWithTags:(NSArray*)shownDcmTags
+           values:(NSArray*)values
 {
 	self = [super initWithNibName:@"AnonymizationView" bundle:NULL];
 	[self view]; // load
@@ -125,16 +134,18 @@
 	return self;
 }
 
--(void)adaptBoxToAnnotations {
+-(void)adaptBoxToAnnotations
+{
 	NSSize annotationsBoxPadding = ((NSView*)annotationsBox.contentView).frame.size - tagsView.frame.size;
 	NSSize idealAnnotationsBoxSize = [self.tagsView idealSize];
 	
-	[annotationsBox adaptContainersToIdealSize:NSMakeSize(((NSView*)annotationsBox.contentView).frame.size.width, idealAnnotationsBoxSize.height+annotationsBoxPadding.height)];	
+	[annotationsBox adaptContainersToIdealSize: NSMakeSize(((NSView*)annotationsBox.contentView).frame.size.width,
+                                                           idealAnnotationsBoxSize.height + annotationsBoxPadding.height)];
 }
 
 -(void)addTag:(DCMAttributeTag*)tag {
 	
-	if( tag == nil)
+	if (tag == nil)
         return;
 	
 	if ([self.tags containsObject:tag])
@@ -151,7 +162,8 @@
 	[self adaptBoxToAnnotations];
 }
 
--(void)removeTag:(DCMAttributeTag*)tag {
+-(void)removeTag:(DCMAttributeTag*)tag
+{
 	if (![self.tags containsObject:tag])
 		return;
 
@@ -166,11 +178,12 @@
 	[self adaptBoxToAnnotations];
 }
 
--(NSString*)nameOfCurrentMatchingTemplate {
+-(NSString*)nameOfCurrentMatchingTemplate
+{
 	NSArray* currentTagsValues = [self tagsValues];
 	
 	NSString* matchName = NULL;
-	NSDictionary* templates = [[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:@"anonymizeTemplate"];
+	NSDictionary* templates = [[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:ANONYMIZE_TEMPLATE_KEY];
 	for (NSString* name in templates) {
 		NSArray* named = [Anonymization tagsValuesArrayFromDictionary:[templates objectForKey:name]];
 		if ([Anonymization tagsValues:currentTagsValues isEqualTo:named])
@@ -180,24 +193,32 @@
 	return matchName;
 }
 
--(void)updateFormatsAreOk {
+-(void)updateFormatsAreOk
+{
 	BOOL ok = YES;
 	for (DCMAttributeTag* tag in tags) {
 		N2TextField* textField = [tagsView textFieldForObject:tag];
 		if (!textField.formatIsOk)
 			ok = NO;
 	}
-	[self setFormatsAreOk:ok];
+
+    [self setFormatsAreOk:ok];
 }
 
--(void)setFormatsAreOk:(BOOL)flag {
+-(void)setFormatsAreOk:(BOOL)flag
+{
 	if (flag == formatsAreOk)
 		return;
-	formatsAreOk = flag;
+
+    formatsAreOk = flag;
 	[self didChangeValueForKey:@"formatsAreOk"];
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
+-(void)observeValueForKeyPath:(NSString*)keyPath
+                     ofObject:(id)object
+                       change:(NSDictionary*)change
+                      context:(void*)context
+{
 //	NSLog(@"observeValueForKeyPath:%@ ofObject....", keyPath);
 	if (context == self.tagsView) {
 		NSString* matchName = [self nameOfCurrentMatchingTemplate];
@@ -217,7 +238,8 @@
 	}
 }
 
--(void)observeTextDidChangeNotification:(NSNotification*)notif {
+-(void)observeTextDidChangeNotification:(NSNotification*)notif
+{
 	[self observeValueForKeyPath:NULL ofObject:NULL change:NULL context:self.tagsView];
 }
 
@@ -225,7 +247,8 @@
 //	[self.tagsView adaptCellSizeToViewSize];
 //}
 
--(void)dealloc {
+-(void)dealloc
+{
 //	NSLog(@"AnonymizationViewController dealloc");
 //	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewFrameDidChangeNotification object:self.view];
 	
@@ -236,7 +259,8 @@
 	[super dealloc];
 }
 
--(NSArray*)tagsValues {
+-(NSArray*)tagsValues
+{
 	NSMutableArray* out = [NSMutableArray array];
 	
 	for (DCMAttributeTag* tag in tags)
@@ -253,7 +277,8 @@
 	return [[out copy] autorelease];
 }
 
-NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void* context) {
+NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void* context)
+{
 	return [[[arg1 objectAtIndex:0] name] caseInsensitiveCompare:[[arg2 objectAtIndex:0] name]];
 }
 
@@ -301,21 +326,24 @@ NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void
 	[zeroTags release];
 }
 
--(void)saveTemplate:(NSArray*)templ withName:(NSString*)name {
-	NSMutableDictionary* dic = [[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:@"anonymizeTemplate"] mutableCopy];
-	if (!dic) dic = [[NSMutableDictionary alloc] init];
+-(void)saveTemplate:(NSArray*)templ withName:(NSString*)name
+{
+	NSMutableDictionary* dic = [[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:ANONYMIZE_TEMPLATE_KEY] mutableCopy];
+	if (!dic)
+        dic = [[NSMutableDictionary alloc] init];
 	
 	[dic setObject:[Anonymization tagsValuesDictionaryFromArray:templ] forKey:name];
-	[[NSUserDefaults standardUserDefaults] setObject:dic forKey:@"anonymizeTemplate"];
+	[[NSUserDefaults standardUserDefaults] setObject:dic forKey:ANONYMIZE_TEMPLATE_KEY];
 	[dic release];
 	
 	[self refreshTemplatesList];
 	[self observeValueForKeyPath:NULL ofObject:NULL change:NULL context:self.tagsView];
 }
 
--(void)templatesPopupAction:(NSPopUpButton*)sender {
+-(void)templatesPopupAction:(NSPopUpButton*)sender
+{
 	NSString* name = sender.selectedItem.title;
-	NSDictionary* dic = [[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:@"anonymizeTemplate"] objectForKey:name];
+	NSDictionary* dic = [[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:ANONYMIZE_TEMPLATE_KEY] objectForKey:name];
 	NSArray* arr = [Anonymization tagsValuesArrayFromDictionary:dic];
 	[self setTagsValues:arr];
 	// backwards compatibility: prefs might contain NSStrings, which might not match with the corresponding objects, so if no match is found we autosave
@@ -323,13 +351,17 @@ NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void
 		[self saveTemplate:[self tagsValues] withName:name];
 }
 
--(IBAction)saveTemplateAction:(id)sender {
-	AnonymizationTemplateNamePanelController* panelController = [[AnonymizationTemplateNamePanelController alloc] initWithReplaceValues:[[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:@"anonymizeTemplate"] allKeys]];
+-(IBAction)saveTemplateAction:(id)sender
+{
+	AnonymizationTemplateNamePanelController* panelController = [[AnonymizationTemplateNamePanelController alloc] initWithReplaceValues:[[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:ANONYMIZE_TEMPLATE_KEY] allKeys]];
 	[NSApp beginSheet:panelController.window modalForWindow:self.view.window modalDelegate:self didEndSelector:@selector(saveTemplateNamePanelDidEnd:returnCode:contextInfo:) contextInfo:panelController];
 	[panelController.window orderFront:self];
 }
 
--(void)saveTemplateNamePanelDidEnd:(NSPanel*)panel returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {
+-(void)saveTemplateNamePanelDidEnd:(NSPanel*)panel
+                        returnCode:(NSInteger)returnCode
+                       contextInfo:(void*)contextInfo
+{
 	AnonymizationTemplateNamePanelController* panelController = (id)contextInfo;
 	
 	if (returnCode == NSRunStoppedResponse) {
@@ -340,12 +372,13 @@ NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void
 	[panelController release];
 }
 
--(IBAction)deleteTemplateAction:(id)sender {
+-(IBAction)deleteTemplateAction:(id)sender
+{
 	NSString* name = [templatesPopup.cell displayedTitle];
-	NSMutableDictionary* dic = [[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:@"anonymizeTemplate"] mutableCopy];
+	NSMutableDictionary* dic = [[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:ANONYMIZE_TEMPLATE_KEY] mutableCopy];
 	
 	[dic removeObjectForKey:name];
-	[[NSUserDefaults standardUserDefaults] setObject:dic forKey:@"anonymizeTemplate"];
+	[[NSUserDefaults standardUserDefaults] setObject:dic forKey:ANONYMIZE_TEMPLATE_KEY];
 	[dic release];
 	
 	[self refreshTemplatesList];

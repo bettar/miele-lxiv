@@ -8,7 +8,7 @@
 #import <Cocoa/Cocoa.h>
 #import <SecurityInterface/SFAuthorizationView.h>
 
-/** \brief Network destination Array Controller for  Q/R*/
+/** \brief Network destination Array Controller for  Q/R */
 @interface DNDArrayController : NSArrayController
 {
     IBOutlet NSTableView			*tableView;

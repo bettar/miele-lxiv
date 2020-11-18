@@ -2058,7 +2058,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 		
 		WaitRendering *wait = nil;
 		
-		if ([NSThread isMainThread] == YES)// && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
+		if ([NSThread isMainThread])// && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 		{
 			wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Connecting to %@...", nil), _hostname]];
 			[wait setCancel: YES];
@@ -2347,7 +2347,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			if (_verbose)
 				printf("Requesting Association\n");
 			
-//			if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
+//			if( [NSThread isMainThread] && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 			{
 				NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
 				NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -2462,7 +2462,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			{
 				if (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
 				{
-//					if( [NSThread isMainThread] == YES &&
+//					if( [NSThread isMainThread] &&
 //                      [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 					{
 						NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
@@ -2614,7 +2614,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			
             if (_abortAssociation == NO)
             {
-                if (showErrorMessage == YES)
+                if (showErrorMessage)
                 {
                     [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:)
                                                      withObject:[NSArray arrayWithObjects:

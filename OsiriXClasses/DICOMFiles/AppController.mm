@@ -43,7 +43,7 @@
 #import "DCMTKQueryRetrieveSCP.h"
 #import "BLAuthentication.h"
 #import "AppControllerDCMTKCategory.h"
-#import "DefaultsOsiriX.h"
+#import "AppDefaults.h"
 #import "OrthogonalMPRViewer.h"
 #import "OrthogonalMPRPETCTViewer.h"
 #import "NavigatorView.h"
@@ -444,14 +444,12 @@ static volatile BOOL converting = NO;
 
 NSString* filenameWithDate( NSString *inputfile)
 {
-	NSDictionary	*fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:inputfile traverseLink:YES];
-	NSDate			*createDate;
-	NSNumber		*fileSize;
+	NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:inputfile traverseLink:YES];
+	NSDate *createDate = [fattrs objectForKey:NSFileModificationDate];
+	NSNumber *fileSize = [fattrs objectForKey:NSFileSize];
 	
-	createDate = [fattrs objectForKey:NSFileModificationDate];
-	fileSize = [fattrs objectForKey:NSFileSize];
-	
-	if (createDate == nil) createDate = [NSDate date];
+	if (createDate == nil)
+        createDate = [NSDate date];
 	
 	return [[[[inputfile lastPathComponent] stringByDeletingPathExtension] stringByAppendingFormat:@"%@-%d-%@", [createDate descriptionWithCalendarFormat:@"%Y-%m-%d-%H-%M-%S" timeZone:nil locale:nil], [fileSize intValue], [[inputfile stringByDeletingLastPathComponent]lastPathComponent]] stringByAppendingString:@".dcm"];
 }
@@ -936,7 +934,7 @@ static bool isGrantedNotificationAccess = false;
 {
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSLog( @"start DNSResolve");
-	for (NSString *s in [[DefaultsOsiriX currentHost] names])
+	for (NSString *s in [[AppDefaults currentHost] names])
 		NSLog( @"%@", s);
 	
 	NSLog( @"end DNSResolve");
@@ -1108,7 +1106,7 @@ static bool isGrantedNotificationAccess = false;
     [NSApp abortModal];
 }
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 
 - (IBAction)okModal:(id)sender
 {
@@ -1451,7 +1449,7 @@ static bool isGrantedNotificationAccess = false;
                 [[NSUserDefaults standardUserDefaults] setObject: c forKey:@"AETITLE"];
             }
             
-            if (showRestartNeeded == YES)
+            if (showRestartNeeded)
             {
                 showRestartNeeded = NO;
                 NSRunAlertPanel(NSLocalizedString( @"DICOM Listener", nil),
@@ -2900,7 +2898,7 @@ static BOOL initialized = NO;
                       NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES).firstObject,
                       bundleIdentifier);
 
-                NSLog(@"DATABASELOCATION_______: %@", documentsDirectory());  // (deprecated method) defined in Preferences Panel, initially from OUR_DATA_LOCATION
+                NSLog(@"DATABASELOCATION_______: %@", [DicomDatabase defaultBaseDirPath]);
                 NSLog(@"resourcePath___________: %@", [[NSBundle mainBundle] resourcePath]);       // Contents/Resources
                 NSLog(@"sharedSupportPath______: %@", [[NSBundle mainBundle] sharedSupportPath]);  // Contents/SharedSupport
                 NSLog(@"builtInPlugInsPath_____: %@", [[NSBundle mainBundle] builtInPlugInsPath]); // Contents/PlugIns
@@ -2914,7 +2912,7 @@ static BOOL initialized = NO;
 #endif
                 NSLog(@"Configuration: %@", [d objectForKey:@"Config"]);
                 
-				[[NSUserDefaults standardUserDefaults] registerDefaults: [DefaultsOsiriX getDefaults]];
+				[[NSUserDefaults standardUserDefaults] registerDefaults: [AppDefaults getDefaults]];
                 
                 // BrowserController class method
                 if ([BrowserController _currentModifierFlags] & NSEventModifierFlagCommand &&
@@ -2958,8 +2956,11 @@ static BOOL initialized = NO;
                         [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"AutocleanSpaceMode"];
                 }
                 
-				[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
-				[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+				[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: DefaultDbLocation_i_KEY]
+                                                           forKey: DbLocation_i_KEY];
+
+                [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: DefaultDbLocationUrl_s_KEY]
+                                                          forKey: DbLocationUrl_s_KEY];
 				
                 [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"OSIEnvironmentActivated"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"is12bitPluginAvailable"];
@@ -2970,11 +2971,11 @@ static BOOL initialized = NO;
 					[[NSUserDefaults standardUserDefaults] setBool: [[NSUserDefaults standardUserDefaults] boolForKey: @"copyHideListenerError"] forKey: @"hideListenerError"];
 				
 #ifdef MACAPPSTORE
-				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"]; // Also modify in AppDefaults.m
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AUTHENTICATION"];
                 NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 #else
-				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"MACAPPSTORE"]; // Also modify in AppDefaults.m
                 NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 #endif
                 NSLog(@"DefaultDatabasePath: %@", paths);
@@ -3000,12 +3001,12 @@ static BOOL initialized = NO;
 //                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_blank_query"];
 //                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
 				
-                // if we are loading a database that isn't on the root volume, then we must wait for it to load - if it doesn't become available after a few minutes, then we'll just let osirix switch to the db at ~/Documents as it would do anyway
+                // if we are loading a database that isn't on the root volume, then we must wait for it to load - if it doesn't become available after a few minutes, then we'll just let the app switch to the DB at ~/Documents as it would do anyway
                 
                 NSString* dataBasePath = nil;
                 @try {
-                    dataBasePath = [DicomDatabase baseDirPathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"]
-                                                                path:[[NSUserDefaults standardUserDefaults] stringForKey:@"DATABASELOCATIONURL"]];
+                    dataBasePath = [DicomDatabase baseDirPathForMode: [[NSUserDefaults standardUserDefaults] integerForKey: DbLocation_i_KEY]
+                                                                path: [[NSUserDefaults standardUserDefaults] stringForKey: DbLocationUrl_s_KEY]];
                 }
                 @catch (NSException *e) {
                     N2LogException( e);
@@ -3020,7 +3021,7 @@ static BOOL initialized = NO;
                         NSPanel* dialog = [NSPanel alertWithTitle:OUR_DATA_LOCATION
                                                           message:[NSString stringWithFormat:NSLocalizedString(@"%@ is configured to use the database located at %@. This volume is currently not available, most likely because it hasn't yet been mounted by the system, or because it is not plugged in or is turned off, or because you don't have write permissions for this location. %@ will wait for a few minutes, then give up and switch to a database in the current user's home directory.", nil),
                                                                    bundleName,
-                                                                   [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"],
+                                                                   [[NSUserDefaults standardUserDefaults] stringForKey: DbLocationUrl_s_KEY],
                                                                    bundleName]
                                                     defaultButton:@"Quit"
                                                   alternateButton:@"Continue"
@@ -3049,21 +3050,27 @@ static BOOL initialized = NO;
                         [dialog orderOut:self];
                         
                         @try {
-                            dataBasePath = [DicomDatabase baseDirPathForMode: [[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
+                            dataBasePath = [DicomDatabase baseDirPathForMode: [[NSUserDefaults standardUserDefaults] integerForKey: DbLocation_i_KEY]
+                                                                        path: [[NSUserDefaults standardUserDefaults] stringForKey: DbLocationUrl_s_KEY]];
                         }
                         @catch (NSException *e) {
-                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];  // Documents directory
-                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"]; // Documents directory
+                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: DbLocation_i_KEY];  // Documents directory
+                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: DefaultDbLocation_i_KEY]; // Documents directory
                         }
                     }
                 }
                 
+                NSLog(@"%s line %d, dataBasePath: %@", __FUNCTION__, __LINE__, dataBasePath);
                 // now, sometimes databases point to other volumes for data storage through the DBFOLDER_LOCATION file, so if it's the case verify that that volume is mounted, too
                 dataBasePath = [DicomDatabase baseDirPathForPath:dataBasePath]; // we know this is the OUR_DATA_LOCATION path
+                NSLog(@"%s line %d, dataBasePath: %@", __FUNCTION__, __LINE__, dataBasePath);
+
                 // TODO: sometimes people use an alias... and if it's an alias, we should check that it points to an available volume..... should.
-                NSString* dataBaseDataPath = [NSString stringWithContentsOfFile:[dataBasePath stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]
-                                                                       encoding:NSUTF8StringEncoding
-                                                                          error:NULL];
+
+                NSString* dataBaseDataPath = [NSString stringWithContentsOfFile: [dataBasePath stringByAppendingPathComponent: DB_FOLDER_FILE]
+                                                                       encoding: NSUTF8StringEncoding
+                                                                          error: NULL];
+                NSLog(@"%s line %d, dataBaseDataPath: %@", __FUNCTION__, __LINE__, dataBaseDataPath);
                 if ([dataBaseDataPath hasPrefix:@"/Volumes/"])
                 {
                     NSString* volumePath = [[[dataBaseDataPath componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(0,3)] componentsJoinedByString:@"/"];
@@ -3105,7 +3112,7 @@ static BOOL initialized = NO;
                 
                 pluginManager = [[PluginManager alloc] init];
                 
-				//Add Endoscopy LUT, WL/WW, shading to existing prefs
+				// Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset
 				NSMutableArray *shadingArray = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"shadingsPresets"] mutableCopy] autorelease];
 				NSDictionary *shading;
@@ -3204,7 +3211,7 @@ static BOOL initialized = NO;
 					[[NSUserDefaults standardUserDefaults] setObject:cluts forKey:@"CLUT"];
 				}
 				
-				//ww/wl
+				// ww/wl
 				NSMutableDictionary *wlwwValues = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"WLWW3"] mutableCopy] autorelease];
 				NSDictionary *wwwl = [wlwwValues objectForKey:@"VR - Endoscopy"];
 				if (!wwwl)
@@ -3215,7 +3222,7 @@ static BOOL initialized = NO;
                 
 				// CREATE A TEMPORARY FILE DURING STARTUP
 				
-				NSString* path = [[DicomDatabase defaultBaseDirPath] stringByAppendingPathComponent:@"Loading"];
+				NSString* path = [[DicomDatabase defaultBaseDirPath] stringByAppendingPathComponent: LOADING_PATH];
                 
                 if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
                 {
@@ -3257,36 +3264,35 @@ static BOOL initialized = NO;
 				[DCMPixelDataAttribute setUse_kdu_IfAvailable: Use_kdu_IfAvailable];
 #endif
 				
+#if 0
 				// CHECK FOR THE HTML TEMPLATES DIRECTORY
-//				
-//				NSString *htmlTemplatesDirectory = [[DicomDatabase defaultBaseDirPath] stringByAppendingPathComponent:@"HTML_TEMPLATES/"];
-//				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
-//					[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory withIntermediateDirectories:YES attributes:nil error:nil];
-//				
-//				// CHECK FOR THE HTML TEMPLATES
-//				
-//				NSString *templateFile;
-//				
-//				templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
-//				NSLog(templateFile);
-//				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-//					[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"] toPath:templateFile error:nil];
-//
-//				templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
-//				NSLog(templateFile);
-//				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-//					[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"] toPath:templateFile error:nil];
-//					
-//				// CHECK FOR THE HTML EXTRA DIRECTORY
-//				
-//				NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingPathComponent:@"html-extra/"];
-//				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
-//					[[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory withIntermediateDirectories:YES attributes:nil error:nil];
-//					
-//				// CSS file
-//				NSString *cssFile = [htmlExtraDirectory stringByAppendingPathComponent:@"style.css"];
-//				if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
-//					[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStyle.css"] toPath:cssFile error:nil];				
+				NSString *htmlTemplatesDirectory = [[DicomDatabase defaultBaseDirPath] stringByAppendingPathComponent: HTML_TEMPLATES_PATH];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
+					[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+				
+				// CHECK FOR THE HTML TEMPLATES
+				
+				NSString *templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
+				NSLog(@"templateFile: %@", templateFile);
+				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
+					[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"] toPath:templateFile error:nil];
+
+				templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
+				NSLog(@"templateFile: %@", templateFile);
+				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
+					[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"] toPath:templateFile error:nil];
+					
+				// CHECK FOR THE HTML EXTRA DIRECTORY
+				
+				NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingPathComponent: HTML_EXTRA_PATH];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
+					[[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+					
+				// CSS file
+				NSString *cssFile = [htmlExtraDirectory stringByAppendingPathComponent:@"style.css"];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
+					[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStyle.css"] toPath:cssFile error:nil];
+#endif
 			}
 		}
 	}
@@ -3469,7 +3475,7 @@ API_AVAILABLE(macos(10.14))
                                                    attributes:nil
                                                         error:nil];
     
-    NSMutableArray *dbArray = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"] deepMutableCopy] autorelease];
+    NSMutableArray *dbArray = [[[[NSUserDefaults standardUserDefaults] arrayForKey: localDatabasePaths_a_KEY] deepMutableCopy] autorelease];
     NSMutableArray *toBeRemoved = [NSMutableArray array];
     for (NSMutableDictionary *d in dbArray)
     {
@@ -3484,7 +3490,7 @@ API_AVAILABLE(macos(10.14))
     if (toBeRemoved.count)
     {
         [dbArray removeObjectsInArray: toBeRemoved];
-        [[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: @"localDatabasePaths"];
+        [[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: localDatabasePaths_a_KEY];
     }
     
     if ([[NSUserDefaults standardUserDefaults] valueForKey: @"timeZone"])
@@ -3699,9 +3705,9 @@ API_AVAILABLE(macos(10.14))
         NSString* inc = [[DicomDatabase activeLocalDatabase] incomingDirPath];
         for (NSString* path in [NSArray arrayWithObjects: [[DicomDatabase activeLocalDatabase] tempDirPath], [[DicomDatabase activeLocalDatabase] decompressionDirPath], nil])
             for (NSString* f in [[NSFileManager defaultManager] enumeratorAtPath:path filesOnly:NO recursive:NO])
-                [[NSFileManager defaultManager] moveItemAtPath:[path stringByAppendingPathComponent:f]
-                                                        toPath:[inc stringByAppendingPathComponent:f]
-                                                         error:NULL];
+                [[NSFileManager defaultManager] moveItemAtPath: [path stringByAppendingPathComponent:f]
+                                                        toPath: [inc stringByAppendingPathComponent:f]
+                                                         error: NULL];
     }
     
 //    [self checkForOsirixMimeType];
@@ -4064,8 +4070,10 @@ API_AVAILABLE(macos(10.14))
     NSString *dumpDirectory = [[DicomDatabase activeLocalDatabase] dumpDirPath];
     if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory])
         [[NSFileManager defaultManager] removeItemAtPath:dumpDirectory error:NULL];
+
     if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory])
         [[NSFileManager defaultManager] moveItemAtPathToTrash: dumpDirectory];
+
     if ([[NSFileManager defaultManager] fileExistsAtPath: dumpDirectory])
         NSLog( @"******** FAILED to clean the dumpDirectory directory: %@", dumpDirectory);
     
@@ -4074,7 +4082,7 @@ API_AVAILABLE(macos(10.14))
 
     if (![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // not DoNot -> delete files
     {
-        // DELETE the content of TEMP.noindex directory...
+        // Delete the content of TEMP.noindex directory...
         if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
             [[NSFileManager defaultManager] removeItemAtPath:tempDirectory error:NULL];
         
@@ -4084,7 +4092,7 @@ API_AVAILABLE(macos(10.14))
         if ([[NSFileManager defaultManager] fileExistsAtPath: tempDirectory])
             NSLog( @"******** FAILED to clean the tempDirectory directory: %@", tempDirectory);
         
-        // DELETE THE DECOMPRESSION.noindex DIRECTORY...
+        // Delete the DECOMPRESSION.noindex directory...
         if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
             [[NSFileManager defaultManager] removeItemAtPath:decompressionDirectory error:NULL];
         
@@ -4114,7 +4122,8 @@ API_AVAILABLE(macos(10.14))
     
     // EMPTY THE INCOMING.noindex DIRECTORY...
     NSString* incomingDirectoryPath = [[DicomDatabase activeLocalDatabase] incomingDirPath];
-    if ([[NSFileManager defaultManager] fileExistsAtPath: incomingDirectoryPath] && ![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"])
+    if ([[NSFileManager defaultManager] fileExistsAtPath: incomingDirectoryPath] &&
+        ![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // not DoNot -> delete files
     {
         for (NSString* file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil])
             [[NSFileManager defaultManager] removeItemAtPath: [tempDirectory stringByAppendingPathComponent:file] error: nil];
@@ -4126,7 +4135,7 @@ API_AVAILABLE(macos(10.14))
             [[NSFileManager defaultManager] moveItemAtPathToTrash: incomingDirectoryPath];
         
         if ([[[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil] count])
-            NSLog( @"******** FAILED to clean the INCOMING.noindex directory: %@", incomingDirectoryPath);
+            NSLog( @"******** FAILED to clean the %@ directory: %@", INCOMING_PATH, incomingDirectoryPath);
     }
 
     [[NSFileManager defaultManager] confirmDirectoryAtPath: incomingDirectoryPath];
@@ -4155,7 +4164,7 @@ static BOOL firstCall = YES;
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) // Server mode
     {
-        if ([[[BrowserController currentBrowser] window] isMiniaturized] == YES ||
+        if ([[[BrowserController currentBrowser] window] isMiniaturized] ||
             [[[BrowserController currentBrowser] window] isVisible] == NO)
         {
             NSArray *winList = [NSApp windows];
@@ -4634,7 +4643,7 @@ static BOOL firstCall = YES;
         }
         else
         {
-            if (([[NSUserDefaults standardUserDefaults] boolForKey: @"Check4Updates"] == YES &&
+            if (([[NSUserDefaults standardUserDefaults] boolForKey: @"Check4Updates"] &&
                  [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) || verboseUpdateCheck == YES)
             {
                 if (verboseAfterCrash)
@@ -4829,7 +4838,9 @@ static BOOL firstCall = YES;
 	
 	for (int i = 0; i < [viewers count]; i++)
 	{
-		if (monitorIndex == numberOfMonitors-1 && strechWindows == YES && lastScreen == NO)
+		if (monitorIndex == numberOfMonitors-1 &&
+            strechWindows &&
+            lastScreen == NO)
 		{
 			int remaining = [viewers count] - i;
             
@@ -4877,7 +4888,8 @@ static BOOL firstCall = YES;
 
 		if (lastScreen)
 		{
-			if (i + columnsPerScreen >= [viewers count] && strechWindows == YES)
+			if (i + columnsPerScreen >= [viewers count] &&
+                strechWindows)
 			{
 				frame.size.height += frame.origin.y - visibleFrame.origin.y;
 				frame.origin.y = visibleFrame.origin.y;
@@ -5145,12 +5157,13 @@ static BOOL firstCall = YES;
     if (showFloatingWindows)
     {
         if ([AppController useToolBarPanel] ||
-            [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+            [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"])
         {
             screenFrame.size.height -= 78;  //[[AppController toolbarForScreen: screen] exposedHeight];
         }
         
-        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"])
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] &&
+            [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"])
         {
             screenFrame.origin.x += [ThumbnailsListPanel fixedWidth];
             screenFrame.size.width -= [ThumbnailsListPanel fixedWidth];
@@ -5169,7 +5182,7 @@ static BOOL firstCall = YES;
     // Get 2D viewer windows
 	for (NSWindow *win in [NSApp orderedWindows])
 	{
-		if ([[win windowController] isKindOfClass:[OSIWindowController class]] == YES)
+		if ([[win windowController] isKindOfClass:[OSIWindowController class]])
 		{
 			if ([[win windowController] magnetic])
 			{
@@ -5203,10 +5216,14 @@ displayThumbnailsList: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseF
     //get 2D viewer windows
 	for (NSWindow *win in [NSApp orderedWindows])
 	{
-		if ([[win windowController] isKindOfClass:[Window3DController class]] == YES)
+		if ([[win windowController] isKindOfClass:[Window3DController class]])
 		{
-            if ([[win windowController] windowWillClose] == NO && [win isMiniaturized] == NO && [win isVisible] == YES)
+            if ([[win windowController] windowWillClose] == NO &&
+                [win isMiniaturized] == NO &&
+                [win isVisible])
+            {
                 [viewersList addObject: [win windowController]];
+            }
             
             else if ([[win windowController] windowWillClose])
             {
@@ -5361,7 +5378,7 @@ displayThumbnailsList: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseF
 	
 	@try
 	{
-		if (keepSameStudyOnSameScreen == YES && identical == NO)
+		if (keepSameStudyOnSameScreen && identical == NO)
 		{
 			//get 2D viewer study arrays
 			for (int i = 0; i < [viewersList count]; i++)

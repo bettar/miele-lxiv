@@ -38,7 +38,7 @@
 #import "VRController.h"
 #import "BrowserController.h"
 #import "DICOMExport.h"
-#import "DefaultsOsiriX.h" // for HotKeys
+#import "AppDefaults.h" // for HotKeys
 //#import "IChatTheatreDelegate.h"
 #import "DicomImage.h"
 #import "Notifications.h"

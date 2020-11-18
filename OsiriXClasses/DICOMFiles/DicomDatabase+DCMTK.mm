@@ -182,7 +182,9 @@
                     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"])
                     {
                         for( NSString *path in paths)
-                            [[NSFileManager defaultManager] moveItemAtPath: path toPath: [[[DicomDatabase defaultDatabase] errorsDirPath] stringByAppendingPathComponent: [path lastPathComponent]] error: nil];
+                            [[NSFileManager defaultManager] moveItemAtPath: path
+                                                                    toPath: [[[DicomDatabase defaultDatabase] errorsDirPath] stringByAppendingPathComponent: [path lastPathComponent]]
+                                                                     error: nil];
                     }
                 }
                 
@@ -480,8 +482,12 @@
 						destPath = [pathSlash stringByAppendingPathComponent: f];
 						if (destPath)
 						{
-							[[NSFileManager defaultManager] removeItemAtPath: destPath error: nil];
-							[[NSFileManager defaultManager] moveItemAtPath: [pathZippedSlash stringByAppendingPathComponent: f] toPath: destPath error: nil];
+							[[NSFileManager defaultManager] removeItemAtPath: destPath
+                                                                       error: nil];
+
+                            [[NSFileManager defaultManager] moveItemAtPath: [pathZippedSlash stringByAppendingPathComponent: f]
+                                                                    toPath: destPath
+                                                                     error: nil];
 						}
 					}
 				}

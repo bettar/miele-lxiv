@@ -19,6 +19,7 @@
  =========================================================================*/
 
 #import "N2ManagedDatabase.h"
+#import "mieleTypes.h"
 
 //#import "DicomDatabase+Routing.h"
 //#import "DicomDatabase+Clean.h"
@@ -145,7 +146,7 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(BOOL) hasFilesToImport;
 -(NSInteger)importFilesFromIncomingDir;
 -(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI;
--(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI listenerCompressionSettings: (BOOL) listenerCompressionSettings;
+-(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI listenerCompressionSettings: (ListenerCompressionSettingsType) listenerCompressionSettings;
 -(BOOL)waitForCompressThread;
 -(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting;
 -(void)importFilesFromIncomingDirThread;

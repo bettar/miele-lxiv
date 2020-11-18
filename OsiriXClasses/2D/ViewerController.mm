@@ -22,7 +22,7 @@
 #import "mieleTypes.h"
 
 #import "NSImage+N2.h"
-#import "DefaultsOsiriX.h"
+#import "AppDefaults.h"
 #import "NSAppleScript+HandlerCalls.h"
 #import "AYDicomPrintWindowController.h"
 #import "MyOutlineView.h"
@@ -6813,8 +6813,7 @@ static ViewerController *draggedController = nil;
       itemForItemIdentifier: (NSString *) itemIdent
   willBeInsertedIntoToolbar: (BOOL) willBeInserted
 {
-    // Required delegate method:  Given an item identifier, this method returns an item 
-    // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
+    // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself
     NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
     
     if ([itemIdent isEqualToString: QTSaveToolbarItemIdentifier])
@@ -7295,8 +7294,8 @@ static ViewerController *draggedController = nil;
     return toolbarItem;
 }
 
-- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method:  Returns the ordered list of items to be shown in the toolbar by default    
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
+{
     // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
     // user chooses to revert to the default items this set will be used 
     return [NSArray arrayWithObjects:	DatabaseWindowToolbarItemIdentifier,
@@ -7758,7 +7757,7 @@ return YES;
                                      ) == NSAlertDefaultReturn)
 	{
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"CLUT"];
-		[[NSUserDefaults standardUserDefaults] setObject: [[DefaultsOsiriX getDefaults] objectForKey: @"CLUT"] forKey: @"CLUT"];
+		[[NSUserDefaults standardUserDefaults] setObject: [[AppDefaults getDefaults] objectForKey: @"CLUT"] forKey: @"CLUT"];
 		
         [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: [NSDictionary dictionary]];
 	}
@@ -18887,8 +18886,6 @@ static BOOL viewerControllerPlaying = NO;
 #pragma mark 4.5.1 Exportation of image
 #pragma mark 4.5.1.1 Exportation of image produced
 
-#define DATABASEPATH @"/DATABASE.noindex/"
-
 #ifndef MIELE_LIGHT
 - (IBAction) sortSeriesByValue: (id) sender
 {
@@ -19599,7 +19596,8 @@ static BOOL viewerControllerPlaying = NO;
 				
 				if (fontSizeCopy * inc * scaleFactor * 1.2 != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
 				{
-					[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor * 1.2 forKey: @"FONTSIZE"];
+					[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor * 1.2
+                                                             forKey: @"FONTSIZE"];
 					[NSFont resetFont: FONT_TYPE_0];
 					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 				}
@@ -19608,7 +19606,8 @@ static BOOL viewerControllerPlaying = NO;
 				
 				if (windowSizeChanged)
 				{
-					[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
+					[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy
+                                                             forKey: @"FONTSIZE"];
 					[NSFont resetFont: FONT_TYPE_0];
 					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 					[[self window] setFrame: NSMakeRect( o.x, o.y, rf.size.width, rf.size.height) display: YES];
@@ -19640,7 +19639,8 @@ static BOOL viewerControllerPlaying = NO;
 		
 		if (fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
 		{
-			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
+			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy
+                                                     forKey: @"FONTSIZE"];
 			[NSFont resetFont: FONT_TYPE_0];
 			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 		}
@@ -20023,7 +20023,7 @@ static BOOL viewerControllerPlaying = NO;
                         nil,
                         nil);
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: OpenViewer_b_KEY])
 	{
 		[[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES];
 		[NSThread sleepForTimeInterval: 1];
@@ -20950,11 +20950,11 @@ static BOOL viewerControllerPlaying = NO;
 //
 //	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 //
-//	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/%@", OUR_IMAGE_JPG] atomically:YES];
+//	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/%@/%@", TEMP_PATH, OUR_IMAGE_JPG] atomically:YES];
 //				
 //	email = [[Mailer alloc] init];
 //	
-//	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/%@", OUR_IMAGE_JPG]];
+//	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/%@/%@", TEMP_PATH, OUR_IMAGE_JPG]];
 //	
 //	[email release];
 }
@@ -20991,7 +20991,7 @@ static BOOL viewerControllerPlaying = NO;
 	if (!([[sender title] isEqualToString: @"SCAN"]))
 	{
 		//create pathToTemplate
-		NSString *pathToTemplate = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"PAGES"];
+		NSString *pathToTemplate = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: PAGES_PATH];
 		pathToTemplate = [pathToTemplate stringByAppendingPathComponent:[sender title]];
 		pathToTemplate = [pathToTemplate stringByAppendingPathExtension:@"template"];	
 		
@@ -21521,7 +21521,7 @@ static BOOL viewerControllerPlaying = NO;
                                         nil,
                                         nil);
                     
-                    else if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+                    else if ([[NSUserDefaults standardUserDefaults] boolForKey: OpenViewer_b_KEY])
                         [ws openFile: filePath];
                 }
 			}
@@ -21538,7 +21538,7 @@ static BOOL viewerControllerPlaying = NO;
 //				{
 //					bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 //					
-//					NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/%@", OUR_IMAGE_JPG];
+//					NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/%@/%@", TEMP_PATH, OUR_IMAGE_JPG];
 //					
 //					[bitmapData writeToFile: jpegFile atomically:YES];
 //					
@@ -21591,7 +21591,7 @@ static BOOL viewerControllerPlaying = NO;
 //					if ([[NSFileManager defaultManager] fileExistsAtPath: [panel filename]] == NO)
 //						NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 //					
-//					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+//					if ([[NSUserDefaults standardUserDefaults] boolForKey: OpenViewer_b_KEY])
 //					{
 //						[ws openFile:[panel filename]];
 //					}

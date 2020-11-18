@@ -28,6 +28,7 @@
 #import "DCMTKStudyQueryNode.h"
 #import "ThreadsManager.h"
 #import "N2Stuff.h"
+#import "AppDefaults.h"
 
 @interface DicomDatabase (RoutingPrivate)
 
@@ -211,7 +212,7 @@
 	@try {
 		NSThread* thread = [NSThread currentThread];
 		
-		NSArray* serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey:@"SERVERS"];
+		NSArray* serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: Servers_a_KEY];
 		
 		NSArray* routingSendQueues = nil;
 		@synchronized (_routingSendQueues) {
@@ -501,7 +502,7 @@
 						
 						for( NSString *studyUID in [studies allKeys])
 						{
-							NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+							NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: Servers_a_KEY];
 							
 							NSString		*serverName = [routingRule objectForKey:@"server"];
 							NSDictionary	*server = nil;

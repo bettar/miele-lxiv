@@ -28,7 +28,7 @@
 
 #import "OrthogonalMPRViewer.h"
 #import "ROI.h"
-#import "DefaultsOsiriX.h"
+#import "AppDefaults.h"
 #import "ThickSlabController.h"
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"

@@ -815,7 +815,8 @@ static NSMutableDictionary *studiesForUserCache = nil;
                     
                     for ( NSManagedObject *specificStudy in specificArray)
                     {
-                        if ([originalAlbum containsObject: specificStudy] == YES && [studiesArray containsObject: specificStudy] == NO)
+                        if ([originalAlbum containsObject: specificStudy] &&
+                            [studiesArray containsObject: specificStudy] == NO)
                         {
                             studiesArray = [studiesArray arrayByAddingObject: specificStudy];						
                         }

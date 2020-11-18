@@ -162,7 +162,7 @@
          withBoxColor:(NSColor *)box
       withBorderColor:(NSColor *)border
 {
-	if( aString == nil)
+	if (aString == nil)
         aString = @"";
     
 	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease] withBoxColor:box withBorderColor:border];
@@ -344,7 +344,8 @@
 
 #pragma mark - Text Color
 
-- (void) setTextColor:(NSColor *)color // set default text color
+// Set default text color
+- (void) setTextColor:(NSColor *)color
 {
 	[color retain];
 	[textColor release];
@@ -359,7 +360,8 @@
 
 #pragma mark - Box Color
 
-- (void) setBoxColor:(NSColor *)color // set default text color
+// Set default box color
+- (void) setBoxColor:(NSColor *)color
 {
 	[color retain];
 	[boxColor release];
@@ -374,7 +376,8 @@
 
 #pragma mark - Border Color
 
-- (void) setBorderColor:(NSColor *)color // set default text color
+// Set default border color
+- (void) setBorderColor:(NSColor *)color
 {
 	[color retain];
 	[borderColor release];

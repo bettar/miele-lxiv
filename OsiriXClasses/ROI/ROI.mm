@@ -2990,9 +2990,9 @@ static const float ARROWSIZEConstant = 25.0f;
                 pc.c = {1.0f, 0.2f, 0.2f}; // light red
             }
             else if (mode == ROI_drawing &&
-                    [[points objectAtIndex: i] isNearToPoint:tempPt
-                                                            :scaleValue/(thick*backingScaleFactor)
-                                                            :[[curView curDCM] pixelRatio]] == YES)
+                    [[points objectAtIndex: i] isNearToPoint: tempPt
+                                                            : scaleValue/(thick*backingScaleFactor)
+                                                            : [[curView curDCM] pixelRatio]])
             {
                 pc.c = {1.0f, 0.0f, 1.0f}; // magenta
             }
@@ -8917,7 +8917,7 @@ void gl_round_box(int mode,
 	if (roiLock == nil)
         roiLock = [[NSRecursiveLock alloc] init];
 	
-	if (curView == nil && prepareTextualData == YES)
+	if (curView == nil && prepareTextualData)
     {
         NSLog(@"curView == nil! We will not draw this ROI...");
         return;

@@ -33,12 +33,10 @@
 #import "PluginManagerController.h"
 #import <Foundation/NSObjCRuntime.h>
 #include <algorithm>  // for std::min
-
+#import "AppDefaults.h"
 #include "url.h"
 
 //static NSMutableDictionary *paneBundles = nil;
-
-//#define DATAFILEPATH @"/Database.dat"
 
 @implementation PreferencesWindowContext
 
@@ -563,7 +561,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(NSAnimation*)synchronizeSizeWithContent
 {
-	NSRect paneFrame = [[scrollView documentView] frame];
+    NSRect paneFrame = [[scrollView documentView] frame];
 	for (NSDictionary* animation in animations)
 		if ([animation objectForKey:NSViewAnimationTargetKey] == [scrollView documentView] &&
             [animation objectForKey:NSViewAnimationEndFrameKey])
@@ -671,9 +669,11 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(void)reopenDatabase
 {
-	[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+	[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: DefaultDbLocation_i_KEY]
+                                               forKey: DbLocation_i_KEY];
     
-	[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+	[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: DefaultDbLocationUrl_s_KEY]
+                                              forKey: DbLocationUrl_s_KEY];
     
 	[[BrowserController currentBrowser] resetToLocalDatabase];
 }

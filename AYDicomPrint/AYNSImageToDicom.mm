@@ -384,7 +384,8 @@ extern BOOL FULL32BITPIPELINE;
 	{
 		tempFilePath = [filePath stringByAppendingFormat: @"-%d.dcm", index];
 		index++;
-	}while( [[NSFileManager defaultManager] fileExistsAtPath: tempFilePath] == YES);
+	}
+    while ([[NSFileManager defaultManager] fileExistsAtPath: tempFilePath]);
 	
 	return tempFilePath;
 }

@@ -21,13 +21,15 @@
 #import "OSIGeneralPreferencePanePref.h"
 #import <NSPreferencePane+OsiriX.h>
 #import <AppController.h>
-#import <DefaultsOsiriX.h>
+#import "AppDefaults.h"
 #import <N2Debug.h>
 
 static NSArray *languagesToMoveWhenQuitting = nil;
 
 @interface IsQualityEnabled: NSValueTransformer {}
 @end
+
+#pragma mark -
 
 @implementation IsQualityEnabled
 + (Class)transformedValueClass { return [NSNumber class]; }
@@ -140,7 +142,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 
 - (NSUInteger) JP2KEngine
 {
-	if ([AppController isKDUEngineAvailable] == YES &&
+	if ([AppController isKDUEngineAvailable] &&
         [[NSUserDefaults standardUserDefaults] boolForKey: @"UseKDUForJPEG2000"])
 	{
 		return 1; // Kakadu
@@ -187,7 +189,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
     
     if ([save runModal] == NSModalResponseOK)
 	{
-        NSDictionary *defaultsPreferences = [DefaultsOsiriX getDefaults];
+        NSDictionary *defaultsPreferences = [AppDefaults getDefaults];
         NSMutableDictionary *customizedPreferences = [NSMutableDictionary dictionary];
         
         for (NSString *k in [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys])

@@ -21,6 +21,7 @@
 #import <DCM/DCMNetServiceDelegate.h>
 #import "SendController.h"
 #import "N2Debug.h"
+#import "AppDefaults.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -179,7 +180,7 @@ static DCMNetServiceDelegate *_netServiceDelegate = nil;
                 {
                     NSArray* r = [NSArray arrayWithContentsOfURL: url];
                     if (r)
-                        [[NSUserDefaults standardUserDefaults] setObject: r forKey:@"SERVERS"];
+                        [[NSUserDefaults standardUserDefaults] setObject: r forKey: Servers_a_KEY];
                 }
             } @catch (NSException* e) {
                 NSLog(@"syncDICOMNodes exception: %@", e);
@@ -256,7 +257,7 @@ static DCMNetServiceDelegate *_netServiceDelegate = nil;
                 [NSThread detachNewThreadSelector:@selector(syncDICOMNodes) toTarget:self withObject:nil];
             }
             
-            serversArray = [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"]];
+            serversArray = [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: Servers_a_KEY]];
             
             // Check if we have the new/old format
             
@@ -281,7 +282,7 @@ static DCMNetServiceDelegate *_netServiceDelegate = nil;
                 {
                     NSMutableDictionary *mdict = [NSMutableDictionary dictionaryWithDictionary: d];
                     
-                    if ([[d objectForKey: @"CGET"] boolValue] == YES)
+                    if ([[d objectForKey: @"CGET"] boolValue])
                         [mdict setObject: [NSNumber numberWithInt: CGETRetrieveMode] forKey: @"retrieveMode"];
                     else
                         [mdict setObject: [NSNumber numberWithInt: CMOVERetrieveMode] forKey: @"retrieveMode"];
@@ -298,9 +299,7 @@ static DCMNetServiceDelegate *_netServiceDelegate = nil;
             }
             
             if (toBeSaved)
-            {
-                [[NSUserDefaults standardUserDefaults] setObject: serversArray forKey: @"SERVERS"];
-            }
+                [[NSUserDefaults standardUserDefaults] setObject: serversArray forKey: Servers_a_KEY];
             
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
             {

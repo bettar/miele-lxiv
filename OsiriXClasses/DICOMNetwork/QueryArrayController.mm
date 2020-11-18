@@ -18,7 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import "DefaultsOsiriX.h"
+#import "AppDefaults.h"
 #import "QueryArrayController.h"
 
 #import <DCM/DCM.h>
@@ -130,13 +130,13 @@
         {
             if( [port intValue] == [[NSUserDefaults standardUserDefaults] integerForKey: @"AEPORT"])
             {
-                for( NSString *s in [[DefaultsOsiriX currentHost] names])
+                for (NSString *s in [[AppDefaults currentHost] names])
                 {
                     if( [hostname isEqualToString: s])
                         sameAddress = YES;
                 }
                 
-                for( NSString *s in [[DefaultsOsiriX currentHost] addresses])
+                for (NSString *s in [[AppDefaults currentHost] addresses])
                 {
                     if( [hostname isEqualToString: s])
                         sameAddress = YES;

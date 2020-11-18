@@ -271,7 +271,7 @@
                                     if ([is.seriesDICOMUID isEqualToString:seriesUID])
                                         iseries = is;
                             
-                            NSManagedObject* obj = iseries? (id)iseries : (id)istudy;
+                            NSManagedObject* obj = iseries ? (id)iseries : (id)istudy;
                             [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[NSArray arrayWithObject:obj.objectID] waitUntilDone:NO];
                             
                             break;
@@ -279,13 +279,16 @@
                         
                         [NSThread sleepForTimeInterval: 1];
                     }
-                    while ([NSDate timeIntervalSinceReferenceDate] - startTime < 30 && [[NSThread currentThread] isCancelled] == NO); // try for 30 seconds
+                    while ([NSDate timeIntervalSinceReferenceDate] - startTime < 30 &&  // try for 30 seconds
+                           [[NSThread currentThread] isCancelled] == NO);
                 }
             }
         }
-	} @catch (NSException* e) {
+	}
+    @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
-    } @finally {
+    }
+    @finally {
         [pool release];
     }
 }
@@ -583,10 +586,12 @@
                             iobjects = [db objectsForEntity:@"Study" predicate:predicate error:error];
                             
                             DicomStudy *s = [iobjects lastObject];
-                            if( s.imageSeries.count == 0)
+                            if (s.imageSeries.count == 0)
                                 iobjects = nil;
                         }
-                        while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
+                        while ([iobjects count] == 0 &&
+                               [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
+
                         downloading = YES;
                     }
                 }
@@ -600,10 +605,10 @@
         
         if ([command isEqualToString:@"Open"])
         {
-            if( downloading)
+            if (downloading)
                 [NSThread detachNewThreadSelector: @selector(_onMainThreadOpenWithDelayObjectsWithIDs:) toTarget:self withObject: [iobjects valueForKey:@"objectID"]];
             else
-                [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
+                [self performSelectorOnMainThread: @selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
         }
 
         if ([command isEqualToString:@"Select"])
@@ -644,7 +649,7 @@
 }
 
 -(void)_onMainThreadOpenObjectsWithIDs:(NSArray*)objectIDs { // actually, only the first element is opened...
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CloseAllWindowsBeforeXMLRPCOpen"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CloseAllWindowsBeforeXMLRPCOpen"])
         [ViewerController closeAllWindows];
     
     for (NSManagedObject* obj in [self.database objectsWithIDs: objectIDs]) {
@@ -655,7 +660,7 @@
         }
     }
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"bringOsiriXToFrontAfterReceivingMessage"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"bringOsiriXToFrontAfterReceivingMessage"])
         [NSApp activateIgnoringOtherApps:YES];
 }
 

@@ -23,6 +23,7 @@
 #import "DicomDatabase.h"
 #import "DicomStudy.h"
 #import "N2Debug.h"
+#import "AppDefaults.h"
 
 #import "url.h"
 
@@ -263,7 +264,7 @@
 	{
 		if( [[[fileArray objectAtIndex: 0] lastPathComponent] isEqualToString: OUR_DATA_LOCATION])	// It's a database folder !
 		{
-			if( [[NSFileManager defaultManager] fileExistsAtPath: [[fileArray objectAtIndex: 0] stringByAppendingPathComponent: @"Database.sql"]])
+			if( [[NSFileManager defaultManager] fileExistsAtPath: [[fileArray objectAtIndex: 0] stringByAppendingPathComponent: DB_SQL_FILE]])
 			{
 				[[BrowserController currentBrowser] openDatabasePath: [[fileArray objectAtIndex: 0] stringByDeletingLastPathComponent]];
 				done = YES;

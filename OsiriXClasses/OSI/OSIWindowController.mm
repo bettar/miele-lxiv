@@ -521,11 +521,18 @@ static BOOL protectedReentryWindowDidResize = NO;
 
 - (void) windowWillCloseNotification: (NSNotification*) notification
 {
-	if ([notification object] == [self window] && [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] == YES && magneticWindowActivated == YES)
+	if ([notification object] == [self window] &&
+        [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] &&
+        magneticWindowActivated)
 	{
 		if (delayedTileWindows)
-			[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
-		delayedTileWindows = YES;
+        {
+			[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController]
+                                                     selector: @selector(tileWindows:)
+                                                       object: nil];
+        }
+
+        delayedTileWindows = YES;
 		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.3];
 	}
 }

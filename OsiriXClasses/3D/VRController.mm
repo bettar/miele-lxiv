@@ -49,8 +49,9 @@
 #import "N2Debug.h"
 #import "PluginManager.h"
 
-#define PRESETS_DIRECTORY @"/3DPRESETS/"
-#define CLUTDATABASE @"/CLUTs/"
+#import "AppDefaults.h"
+#define PRESETS_DIRECTORY   @"/3DPRESETS/"
+#define CLUTDATABASE        @"/CLUTs/"
 
 static NSString* 	VRStandard_ToolbarIdentifier = @"VR Toolbar Identifier";
 static NSString* 	VRPanel_ToolbarIdentifier = @"VRPanel Toolbar Identifier";
@@ -934,7 +935,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 + (NSString*) getUniqueFilenameScissorStateFor:(NSManagedObject*) obj
 {
-	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: STATE_3D_DB_PATH];
 	BOOL isDir = YES;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir])
@@ -959,7 +960,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) save3DState
 {
-	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: STATE_3D_DB_PATH];
 	BOOL isDir = YES;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir])
@@ -998,7 +999,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 -(void) load3DState
 {
     @try {
-        NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+        NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: STATE_3D_DB_PATH];
         BOOL isDir = YES;
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
@@ -1899,7 +1900,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
       itemForItemIdentifier: (NSString *) itemIdent
   willBeInsertedIntoToolbar: (BOOL) willBeInserted
 {
-    // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
     NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
     
@@ -1913,15 +1913,14 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 //		[toolbarItem setAction: @selector(exportQuicktime3DVR:)];
 //    }
 //	else
-        if ([itemIdent isEqualToString: StereoIdentifier])
+    if ([itemIdent isEqualToString: StereoIdentifier])
 	{
-        
-	[toolbarItem setLabel: NSLocalizedString(@"Stereo",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString(@"Stereo",nil)];
-        [toolbarItem setToolTip:NSLocalizedString(@"Switch Stereo Mode ON/OFF",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: StereoIdentifier]];
-	[toolbarItem setTarget: view];
-	[toolbarItem setAction: @selector(SwitchStereoMode:)];
+        [toolbarItem setLabel: NSLocalizedString(@"Stereo",nil)];
+        [toolbarItem setPaletteLabel:NSLocalizedString(@"Stereo",nil)];
+            [toolbarItem setToolTip:NSLocalizedString(@"Switch Stereo Mode ON/OFF",nil)];
+        [toolbarItem setImage: [NSImage imageNamed: StereoIdentifier]];
+        [toolbarItem setTarget: view];
+        [toolbarItem setAction: @selector(SwitchStereoMode:)];
     }
 	else if ([itemIdent isEqualToString: MailToolbarItemIdentifier]) {
         
@@ -1991,7 +1990,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     }
 	else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier]) {
         
-	[toolbarItem setLabel:NSLocalizedString( @"DICOM File",nil)];
+	[toolbarItem setLabel:NSLocalizedString(@"DICOM File",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString(@"DICOM",nil)];
         [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
@@ -2037,7 +2036,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     else if ([itemIdent isEqualToString: WLWWToolbarItemIdentifier])
     {
 	[toolbarItem setLabel: NSLocalizedString(@"WL/WW & CLUT & Opacity",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"WL/WW & CLUT & Opacity",nil)];
+	[toolbarItem setPaletteLabel:NSLocalizedString(@"WL/WW & CLUT & Opacity",nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Change the WL/WW & CLUT & Opacity",nil)];
 	[toolbarItem setView: WLWWView];
         
@@ -2046,8 +2045,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	else if ([itemIdent isEqualToString: MovieToolbarItemIdentifier])
     {
 	[toolbarItem setLabel: NSLocalizedString(@"4D Player",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"4D Player",nil)];
-	[toolbarItem setToolTip:NSLocalizedString( @"4D Player",nil)];
+	[toolbarItem setPaletteLabel:NSLocalizedString(@"4D Player",nil)];
+	[toolbarItem setToolTip:NSLocalizedString(@"4D Player",nil)];
 	[toolbarItem setView: movieView];
     }
 	else if ([itemIdent isEqualToString: OrientationsViewToolbarItemIdentifier])
@@ -2079,23 +2078,23 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     }
 	else if ([itemIdent isEqualToString: BlendingToolbarItemIdentifier])
     {
-        [toolbarItem setLabel:NSLocalizedString( @"Fusion",nil)];
-        [toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
+        [toolbarItem setLabel:NSLocalizedString(@"Fusion",nil)];
+        [toolbarItem setPaletteLabel:NSLocalizedString(@"Fusion",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Fusion Mode and Percentage",nil)];
         [toolbarItem setView: BlendingView];
     }
     else if ([itemIdent isEqualToString: ModeToolbarItemIdentifier])
     {
-		 [toolbarItem setLabel:NSLocalizedString( @"Mode",nil)];
-		 [toolbarItem setPaletteLabel:NSLocalizedString( @"Mode",nil)];
+		 [toolbarItem setLabel:NSLocalizedString(@"Mode",nil)];
+		 [toolbarItem setPaletteLabel:NSLocalizedString(@"Mode",nil)];
 		 [toolbarItem setToolTip: NSLocalizedString(@"Mode",nil)];
 		 [toolbarItem setView: modeView];
     }
 	else if ([itemIdent isEqualToString: LODToolbarItemIdentifier])
     {
         [toolbarItem setLabel: NSLocalizedString(@"Level of Detail",nil)];
-        [toolbarItem setPaletteLabel:NSLocalizedString( @"Level of Detail",nil)];
-        [toolbarItem setToolTip:NSLocalizedString( @"Change Level of Detail",nil)];
+        [toolbarItem setPaletteLabel:NSLocalizedString(@"Level of Detail",nil)];
+        [toolbarItem setToolTip:NSLocalizedString(@"Change Level of Detail",nil)];
         [toolbarItem setView: LODView];
         
         [[wlwwPopup cell] setUsesItemFromMenu:YES];
@@ -2119,7 +2118,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	else if ([itemIdent isEqualToString: ROIManagerToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"ROI Manager",nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString( @"ROI Manager",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"ROI Manager",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"ROI Manager",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: ROIManagerToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
@@ -2128,7 +2127,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	else if ([itemIdent isEqualToString: PresetsPanelToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"3D Presets",nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString( @"3D Presets",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"3D Presets",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Show 3D Presets Panel",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: PresetsPanelToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
@@ -2137,14 +2136,14 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	else if ([itemIdent isEqualToString: ClippingRangeViewToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Clipping",nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString( @"Clipping",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Clipping",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Clipping",nil)];
 		[toolbarItem setView: ClippingRangeView];
 	}
 	else if ([itemIdent isEqualToString: CLUTEditorsViewToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"CLUT Editor",nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString( @"CLUT Editor",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"CLUT Editor",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"CLUT Editor",nil)];		
 		[toolbarItem setView: CLUTEditorsView];
 	}
@@ -2328,7 +2327,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[bitmapData writeToFile:[panel filename] atomically:YES];
 		
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: OpenViewer_b_KEY])
             [ws openFile:[panel filename]];
 	}
 }
@@ -2341,7 +2340,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
 	NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	
-    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/%@", OUR_IMAGE_JPG];
+    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/%@/%@", TEMP_PATH, OUR_IMAGE_JPG];
 	[bitmapData writeToFile:path atomically:YES];
 	
 	Photos *photos = [[Photos alloc] init];
@@ -2361,7 +2360,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
 		
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: OpenViewer_b_KEY])
             [ws openFile:[panel filename]];
 	}
 }

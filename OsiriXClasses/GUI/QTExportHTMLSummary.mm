@@ -27,6 +27,7 @@
 #import "BrowserController.h"
 #import "NSString+N2.h"
 #import "DicomDatabase.h"
+#import "AppDefaults.h"
 
 @implementation QTExportHTMLSummary
 
@@ -450,10 +451,11 @@
 - (void)createHTMLExtraDirectory;
 {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSString *htmlExtraDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"HTML_TEMPLATES/html-extra/"];
+	NSString *htmlExtraDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:HTML_TEMPLATES_PATH];
+    htmlExtraDirectory = [htmlExtraDirectory stringByAppendingPathComponent: HTML_EXTRA_PATH];
 	//if([directoryContent count])
 	[fileManager copyItemAtPath:htmlExtraDirectory
-                         toPath:[rootPath stringByAppendingPathComponent:@"html-extra/"]
+                         toPath:[rootPath stringByAppendingPathComponent: HTML_EXTRA_PATH]
                         error:nil];
 }
 

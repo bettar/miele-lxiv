@@ -34,7 +34,7 @@
 #import <unistd.h>
 #import "NSUserDefaultsController+OsiriX.h"
 #import "N2Debug.h"
-
+#import "AppDefaults.h"
 #import "url.h"
 
 @implementation BonjourBrowser
@@ -68,7 +68,10 @@ static BonjourBrowser *currentBrowser = nil;
 		
 //		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"SERVERS" options:NSKeyValueObservingOptionInitial context:nil];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver: self
+                                                                forValuesKey: Servers_a_KEY
+                                                                     options: NSKeyValueObservingOptionInitial
+                                                                     context: nil];
         
 		[[NSNotificationCenter defaultCenter] addObserver: self
 												 selector: @selector(updateFixedList:)
@@ -92,7 +95,8 @@ static BonjourBrowser *currentBrowser = nil;
 
 - (void) dealloc
 {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SERVERS"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
+                                                               forValuesKey:Servers_a_KEY];
     
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
@@ -125,12 +129,11 @@ static BonjourBrowser *currentBrowser = nil;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncOsiriXDBURL"]];
-	
-	if( url)
+	if (url)
 	{
 		NSArray	*r = [NSArray arrayWithContentsOfURL: url];
-		if( r)
-			[[NSUserDefaults standardUserDefaults] setObject: r forKey: @"OSIRIXSERVERS"];
+		if (r)
+			[[NSUserDefaults standardUserDefaults] setObject: r forKey: MieleServers_a_KEY];
 	}
 	
 	[pool release];
@@ -145,20 +148,20 @@ static BonjourBrowser *currentBrowser = nil;
                                withObject:nil];
 	}
 
-	NSArray *osirixServersArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"OSIRIXSERVERS"];
+	NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: MieleServers_a_KEY];
 	
 	for (int i = 0; i < [services count]; i++)
 	{
-		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"fixedIP"])
+		if ([[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"fixedIP"])
 		{
 			[services removeObjectAtIndex: i];
 			i--;
 		}
 	}
 	
-	for (int i = 0; i < [osirixServersArray count]; i++)
+	for (int i = 0; i < [serversArray count]; i++)
 	{
-		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [osirixServersArray objectAtIndex: i]];
+		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [serversArray objectAtIndex: i]];
 		[dict setValue:@"fixedIP" forKey:@"type"];
 	
 		[services addObject: dict];
@@ -167,24 +170,22 @@ static BonjourBrowser *currentBrowser = nil;
 
 - (void) buildDICOMDestinationsList
 {
-	int			i;
-	NSArray		*dbArray = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
+	NSArray *dbArray = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 	
 	if( dbArray == nil) dbArray = [NSArray array];
 	
-	for( i = 0; i < [services count]; i++)
+	for (int i = 0; i < [services count]; i++)
 	{
-		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"dicomDestination"])
+		if ([[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"dicomDestination"])
 		{
 			[services removeObjectAtIndex: i];
 			i--;
 		}
 	}
 	
-	for( i = 0; i < [dbArray count]; i++)
+	for (int i = 0; i < [dbArray count]; i++)
 	{
 		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [dbArray objectAtIndex: i]];
-		
 		[dict setValue:@"dicomDestination" forKey:@"type"];
 		[services addObject: dict];
 	}
@@ -192,10 +193,11 @@ static BonjourBrowser *currentBrowser = nil;
 
 - (void) buildLocalPathsList
 {
-	NSArray *dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
-	NSString *defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
+	NSArray *dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: localDatabasePaths_a_KEY];
+	NSString *defaultPath = documentsDirectoryFor([[NSUserDefaults standardUserDefaults] integerForKey: DefaultDbLocation_i_KEY],
+                                                  [[NSUserDefaults standardUserDefaults] stringForKey: DefaultDbLocationUrl_s_KEY]);
 	
-	if ( dbArray == nil)
+	if (dbArray == nil)
         dbArray = [NSArray array];
 	
 	for (int i = 0; i < [services count]; i++)
@@ -229,26 +231,25 @@ static BonjourBrowser *currentBrowser = nil;
 	[self arrangeServices];
 }
 
+// Order them: first the localPath, fixedIP, bonjour, dicomDestination
 - (void) arrangeServices
 {
-	// Order them, first the localPath, fixedIP, and then bonjour
-	
 	NSMutableArray *result = [NSMutableArray array];
 	
 	for (int i = 0 ; i < [services count]; i++)
-		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"localPath"])
+		if ([[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"localPath"])
 			[result addObject: [services objectAtIndex: i]];
 	
 	for (int i = 0 ; i < [services count]; i++)
-		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"fixedIP"])
+		if ([[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"fixedIP"])
 			[result addObject: [services objectAtIndex: i]];
 	
 	for (int i = 0 ; i < [services count]; i++)
-		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"bonjour"])
+		if ([[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"bonjour"])
 			[result addObject: [services objectAtIndex: i]];
 	
 	for (int i = 0 ; i < [services count]; i++)
-		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"dicomDestination"])
+		if ([[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"dicomDestination"])
 			[result addObject: [services objectAtIndex: i]];
 
 	[services removeAllObjects];
@@ -312,7 +313,7 @@ static BonjourBrowser *currentBrowser = nil;
             
             if( ipAddressString && portString)
             {
-                for( NSDictionary *serviceDict in services)
+                for (NSDictionary *serviceDict in services)
                 {
                     if( [serviceDict objectForKey:@"service"] == sender)
                     {

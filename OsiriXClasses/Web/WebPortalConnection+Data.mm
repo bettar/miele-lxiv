@@ -67,6 +67,7 @@
 
 #import "tmp_locations.h"
 #import "mieleTypes.h"
+#import "AppDefaults.h"
 
 // TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
 
@@ -170,7 +171,8 @@ ss
                 returnedStudy = s = [studyArray lastObject];
                 currentNumberOfImages = s.images.count;
             }
-            while( ([studyArray count] == 0 || lastNumberOfImages != currentNumberOfImages) && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
+            while (([studyArray count] == 0 || lastNumberOfImages != currentNumberOfImages) &&
+                   [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
             
             if (studyArray.count == 0)
                 N2LogStackTrace( @"---- failed to retrieve distant study");
@@ -199,7 +201,7 @@ ss
             
             //Find the server, and retrieve the object(s)
             
-            NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+            NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: Servers_a_KEY];
             NSDictionary *s = nil;
             
             for( NSDictionary *aServer in serversArray)
@@ -305,7 +307,8 @@ ss
                     
                     currentNumberOfImages = s.images.count;
                 }
-                while( [NSDate timeIntervalSinceReferenceDate] - dateStart < 10 && lastNumberOfImages != currentNumberOfImages);
+                while ([NSDate timeIntervalSinceReferenceDate] - dateStart < 10 &&
+                       lastNumberOfImages != currentNumberOfImages);
             }
         }
     }

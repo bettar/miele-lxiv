@@ -564,7 +564,6 @@ typedef struct _xyzArray
         [self checkView: dcmBox :NO];
 }
 
-#define DATABASEPATH @"/DATABASE.noindex/"
 -(IBAction) endDCMExportSettings:(id) sender
 {
 	[exportDCMWindow makeFirstResponder: nil];	// To force nstextfield validation.

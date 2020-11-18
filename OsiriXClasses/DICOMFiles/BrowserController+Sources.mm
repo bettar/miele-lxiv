@@ -47,17 +47,10 @@
 #import "DicomDatabase+Scan.h"
 #import "DCMPix.h"
 #import "NSHost+N2.h"
-#import "DefaultsOsiriX.h"
+#import "AppDefaults.h"
 #import "NSString+N2.h"
 #import "WaitRendering.h"
 #import "mieleTypes.h"
-
-/*
-#include <IOKit/IOKitLib.h>
-#include <IOKit/IOMessage.h>
-#include <IOKit/IOCFPlugIn.h>
-#include <IOKit/usb/IOUSBLib.h>
-*/
 
 @interface BrowserSourcesHelper : NSObject<NSNetServiceBrowserDelegate, NSNetServiceDelegate>/*<NSTableViewDelegate,NSTableViewDataSource>*/
 {
@@ -196,7 +189,8 @@ enum {
 	for (NSInteger i = 0; i < [[_sourcesArrayController arrangedObjects] count]; ++i)
 		if ([[_sourcesArrayController.arrangedObjects objectAtIndex:i] isEqualToDataNodeIdentifier:source])
 			return i;
-	return -1;
+
+    return -1;
 }
 
 -(DataNodeIdentifier*)sourceIdentifierForDatabase:(DicomDatabase*)database // TODO: move this to -[DicomDatabase dataNodeIdentifier]
@@ -233,16 +227,19 @@ enum {
 	}
 	
 	NSInteger i = [self rowForDatabase:_database];
-	if (i == -1 && _database != [DicomDatabase defaultDatabase])
+
+    if (i == -1 && _database != [DicomDatabase defaultDatabase])
     {
 		NSDictionary* source = [NSDictionary dictionaryWithObjectsAndKeys:
                                 [_database.baseDirPath stringByDeletingLastPathComponent], @"Path",
                                 [_database.baseDirPath.stringByDeletingLastPathComponent.lastPathComponent stringByAppendingString: NSLocalizedString( @" DB", @"DB = DataBase")], @"Description",
                                 nil];
-		[[NSUserDefaults standardUserDefaults] setObject:[[[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"] arrayByAddingObject:source] forKey:@"localDatabasePaths"];
+		[[NSUserDefaults standardUserDefaults] setObject: [[[NSUserDefaults standardUserDefaults] objectForKey:localDatabasePaths_a_KEY] arrayByAddingObject:source]
+                                                  forKey: localDatabasePaths_a_KEY];
         
 		i = [self rowForDatabase:_database];
 	}
+
     if (i != [_sourcesTableView selectedRow])
 		[_sourcesTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:i] byExtendingSelection:NO];
 }
@@ -368,18 +365,30 @@ enum {
         }
 
         if (db)
-            [self performSelector: @selector( setDatabaseWithModalWindow:) withObject: db afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
-        
+        {
+            [self performSelector: @selector( setDatabaseWithModalWindow:)
+                       withObject: db
+                       afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
+        }
         else if ([dni isKindOfClass:[LocalDatabaseNodeIdentifier class]])
-            [self initiateSetDatabaseAtPath:dni.location name:dni.description];
-        
+        {
+            [self initiateSetDatabaseAtPath: dni.location
+                                       name: dni.description];
+        }
         else if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
         {
-            NSString* host = nil; NSInteger port = -1;
-            [RemoteDatabaseNodeIdentifier location:dni.location port:dni.port toAddress:&host port:&port];
+            NSString* host = nil;
+            NSInteger port = -1;
+            [RemoteDatabaseNodeIdentifier location: dni.location
+                                              port: dni.port
+                                         toAddress: &host
+                                              port: &port];
             
-            if( host && port != -1)
+            if (host &&
+                port != -1)
+            {
                 [self initiateSetRemoteDatabaseWithAddress:host port:port name:dni.description];
+            }
         }
         else
         {
@@ -429,13 +438,29 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	if ((self = [super init]))
     {
 		_browser = browser;
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"localDatabasePaths" options:NSKeyValueObservingOptionInitial context:LocalBrowserSourcesContext];
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"OSIRIXSERVERS" options:NSKeyValueObservingOptionInitial context:RemoteBrowserSourcesContext];
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"SERVERS" options:NSKeyValueObservingOptionInitial context:DicomBrowserSourcesContext];
-		_bonjourSources = [[NSMutableArray alloc] init];
+
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver: self
+                                                                forValuesKey: localDatabasePaths_a_KEY
+                                                                     options: NSKeyValueObservingOptionInitial
+                                                                     context: LocalBrowserSourcesContext];
+
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver: self
+                                                                forValuesKey: MieleServers_a_KEY
+                                                                     options: NSKeyValueObservingOptionInitial
+                                                                     context: RemoteBrowserSourcesContext];
+
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver: self
+                                                                forValuesKey: Servers_a_KEY
+                                                                     options: NSKeyValueObservingOptionInitial
+                                                                     context: DicomBrowserSourcesContext];
+
+        _bonjourSources = [[NSMutableArray alloc] init];
         _bonjourServices = [[NSMutableArray alloc] init];
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"searchDICOMBonjour" options:NSKeyValueObservingOptionInitial context:SearchDicomNodesContext];
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"DoNotSearchForBonjourServices" options:NSKeyValueObservingOptionInitial context:SearchBonjourNodesContext];
+
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"searchDICOMBonjour" options:NSKeyValueObservingOptionInitial context:SearchDicomNodesContext];
+
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"DoNotSearchForBonjourServices" options:NSKeyValueObservingOptionInitial context:SearchBonjourNodesContext];
+
         _nsbOsirix = [[NSNetServiceBrowser alloc] init];
 		[_nsbOsirix setDelegate:self];
 		[_nsbOsirix searchForServicesOfType:@"_osirixdb._tcp." inDomain:@""];
@@ -516,16 +541,16 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"DoNotSearchForBonjourServices"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"searchDICOMBonjour"];
-	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SERVERS"];
-	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"OSIRIXSERVERS"];
-	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"localDatabasePaths"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey: Servers_a_KEY];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey: MieleServers_a_KEY];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey: localDatabasePaths_a_KEY];
     
     [_nsbDicom release]; _nsbDicom = nil;
 	[_nsbOsirix release]; _nsbOsirix = nil;
     [_bonjourSources release];
     [_bonjourServices release];
     
-//	[[[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"] removeObserver:self forValuesKey:@"values"];
+//	[[[NSUserDefaults standardUserDefaults] objectForKey:localDatabasePaths_a_KEY] removeObserver:self forValuesKey:@"values"];
 	_browser = nil;
 	[super dealloc];
 }
@@ -574,8 +599,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     {
         if (context == LocalBrowserSourcesContext)
         {
-            NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"];
-            // remove old items
+            NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey: localDatabasePaths_a_KEY];
+
+            // Remove old items
             for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
             {
                 if ([dni isKindOfClass:[LocalDatabaseNodeIdentifier class]] && dni.entered) // is a local database and is flagged as "entered"
@@ -613,8 +639,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         
         if (context == RemoteBrowserSourcesContext)
         {
-            NSHost* currentHost = [DefaultsOsiriX currentHost];
-            NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"OSIRIXSERVERS"];
+            NSHost* currentHost = [AppDefaults currentHost];
+            NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey: MieleServers_a_KEY];
             // remove old items
             for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
             {
@@ -661,7 +687,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         
         if (context == DicomBrowserSourcesContext)
         {
-            NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"SERVERS"];
+            NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey: Servers_a_KEY];
             NSMutableDictionary* aa = [NSMutableDictionary dictionary];
             for (NSDictionary* ai in a)
             {
@@ -1010,7 +1036,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(void)_analyzeVolumeAtPath:(NSString*)path
 {
 	for (DataNodeIdentifier* ibs in _browser.sources.arrangedObjects)
-		if ([ibs isKindOfClass:[LocalDatabaseNodeIdentifier class]] && [ibs.location hasPrefix:path])
+		if ([ibs isKindOfClass:[LocalDatabaseNodeIdentifier class]] &&
+            [ibs.location hasPrefix:path])
         {
 			return; // device is somehow already listed as a source
         }
@@ -1287,9 +1314,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(NSString*)description
 {
-    for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"])
+    for (NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: localDatabasePaths_a_KEY])
     {
-        if( [[d valueForKey:@"Path"] isEqualToString: self.location.stringByDeletingLastPathComponent])
+        if ([[d valueForKey:@"Path"] isEqualToString: self.location.stringByDeletingLastPathComponent])
             return [d valueForKey: @"Description"];
     }
     

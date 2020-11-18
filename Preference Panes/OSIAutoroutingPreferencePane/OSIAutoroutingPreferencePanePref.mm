@@ -22,6 +22,7 @@
 #import "OSIAutoroutingPreferencePanePref.h"
 #import <NSPreferencePane+OsiriX.h>
 #import <AppController.h>
+#import "AppDefaults.h"
 
 #import "tmp_locations.h"
 
@@ -83,7 +84,7 @@
 -(void) willSelect
 {
     [serversArray release];
-	serversArray = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] retain];
+	serversArray = [[[NSUserDefaults standardUserDefaults] arrayForKey: Servers_a_KEY] retain];
     
     for( int i = 0; i < [routesArray count]; i++)
 	{

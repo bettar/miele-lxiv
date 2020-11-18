@@ -19,7 +19,7 @@
 =========================================================================*/
 
 #import "OSIListenerPreferencePanePref.h"
-#import <DefaultsOsiriX.h>
+#import "AppDefaults.h"
 #import <BrowserController.h>
 #import <NSUserDefaultsController+OsiriX.h>
 //#import "DDKeychain.h"
@@ -81,7 +81,7 @@
 
 -(NSArray*)IPv4Address;
 {
-	NSEnumerator* e = [[[DefaultsOsiriX currentHost] addresses] objectEnumerator];
+	NSEnumerator* e = [[[AppDefaults currentHost] addresses] objectEnumerator];
 	NSString* addr;
 	NSMutableArray* r = [NSMutableArray array];
 

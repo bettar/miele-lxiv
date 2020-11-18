@@ -66,4 +66,5 @@
 - (void)setUseSeriesDescription:(BOOL)value;
 - (BOOL)splitMultiEchoMR;
 - (void)setSplitMultiEchoMR:(BOOL)value;
+
 @end

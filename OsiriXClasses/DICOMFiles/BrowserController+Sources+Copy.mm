@@ -92,7 +92,9 @@
                         if ([[NSFileManager defaultManager] fileExistsAtPath: dstPath])
                         {
                             if ([DicomFile isDICOMFile: dstPath] == NO)
-                                [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: [srcPath pathExtension]] error: nil];
+                                [[NSFileManager defaultManager] moveItemAtPath: dstPath
+                                                                        toPath: [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: [srcPath pathExtension]]
+                                                                         error: nil];
                             
                             [dstPaths addObject:dstPath];
                         }
@@ -103,7 +105,13 @@
                 {
                     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %@ %@...", nil), N2LocalizedDecimal( dstPaths.count), (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
                     
-                    [dstDatabase addFilesAtPaths: dstPaths postNotifications: YES dicomOnly: [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"] rereadExistingItems:NO  generatedByOsiriX: NO importedFiles: YES returnArray: NO];
+                    [dstDatabase addFilesAtPaths: dstPaths
+                               postNotifications: YES
+                                       dicomOnly: [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]
+                             rereadExistingItems: NO
+                               generatedByOsiriX: NO
+                                   importedFiles: YES
+                                     returnArray: NO];
                     
                     [dstPaths removeAllObjects];
                     
@@ -278,8 +286,10 @@
 	[pool release];
 }
 
--(BOOL)initiateCopyImages:(NSArray*)dicomImages toSource:(DataNodeIdentifier*)destination
+-(BOOL)initiateCopyImages:(NSArray*)dicomImages
+                 toSource:(DataNodeIdentifier*)destination
 {
+    NSLog(@"%s", __FUNCTION__);
 	if (_database.isLocal)
     {
 		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]]) { // local OsiriX to local OsiriX

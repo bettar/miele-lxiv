@@ -338,7 +338,7 @@ int main(int argc, char** argv)
 		// Write the path to DICOMDIR, if available
 		[[NSFileManager defaultManager] removeItemAtPath: [tempLocation stringByAppendingPathComponent: @"DICOMDIRPATH"] error: nil];
 		NSString *DICOMDIR = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"DICOMDIR"];
-		if( [[NSFileManager defaultManager] fileExistsAtPath: DICOMDIR])
+		if ([[NSFileManager defaultManager] fileExistsAtPath: DICOMDIR])
 			[DICOMDIR writeToFile: [tempLocation stringByAppendingPathComponent: @"DICOMDIRPATH"] atomically: YES encoding: NSUTF8StringEncoding error: nil];
 		
 		[NSThread sleepForTimeInterval: 2];

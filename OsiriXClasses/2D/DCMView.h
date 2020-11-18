@@ -364,7 +364,7 @@ typedef NS_ENUM(NSInteger, BlendingMode2DType) {
 @property BOOL COPYSETTINGSINSERIES;
 @property BOOL flippedData;
 @property BOOL showDescriptionInLarge;
-@property (nonatomic) BOOL whiteBackground;
+@property (nonatomic) BOOL whiteBackground; // annotation text shadow color
 @property (retain) NSMutableArray *dcmPixList, *dcmRoiList;
 @property (readonly) NSArray *dcmFilesList;
 @property long syncSeriesIndex;

@@ -137,7 +137,7 @@ static NSMatrix *gDateMatrix = nil;
 	{
 		NSDictionary *server = [self findCorrespondingServer: [savedArray objectAtIndex:i] inServers: serversArray];
 		
-		//if (server && ([[server valueForKey:@"QR"] boolValue] == YES || [server valueForKey:@"QR"] == nil ))
+		//if (server && ([[server valueForKey:@"QR"] boolValue] || [server valueForKey:@"QR"] == nil ))
 		{
 			[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                       [[savedArray objectAtIndex: i] valueForKey:@"activated"], @"activated",
@@ -155,7 +155,7 @@ static NSMatrix *gDateMatrix = nil;
 	{
 		NSDictionary *server = [serversArray objectAtIndex: i];
 		
-		//if (([[server valueForKey:@"QR"] boolValue] == YES || [server valueForKey:@"QR"] == nil ))
+		//if (([[server valueForKey:@"QR"] boolValue] || [server valueForKey:@"QR"] == nil ))
             
 			[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                       @NO, @"activated",
@@ -222,7 +222,7 @@ static NSMatrix *gDateMatrix = nil;
     NSMutableArray *srcArray = [NSMutableArray array];
     for (id src in sourcesArray)
     {
-        if ([[src valueForKey: @"activated"] boolValue] == YES)
+        if ([[src valueForKey: @"activated"] boolValue])
             [srcArray addObject: src];
     }
     if (srcArray.count == 0)
@@ -357,7 +357,7 @@ static NSMatrix *gDateMatrix = nil;
     
 	for (NSUInteger i = 0; i < [sourcesArray count]; i++)
 	{
-		if ([[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
+		if ([[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue])
 		{
 			[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
 			[sourcesTable scrollRowToVisible: i];

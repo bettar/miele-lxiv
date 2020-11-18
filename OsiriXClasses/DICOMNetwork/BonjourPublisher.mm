@@ -34,6 +34,7 @@
 #import "N2Connection.h"
 #import "NSFileManager+N2.h"
 #import "N2Locker.h"
+#import "AppDefaults.h"
 
 // imports required for socket initialization
 #import <sys/socket.h>
@@ -614,7 +615,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 }
 
 - (void)DBVER {
-    NSString	*versString = [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"];
+    NSString	*versString = [[NSUserDefaults standardUserDefaults] stringForKey: DbVersion_s_KEY];
     
     [self writeData:[NSMutableData dataWithData: [versString dataUsingEncoding: NSASCIIStringEncoding]]];
     
@@ -857,7 +858,8 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     _mode = DONE;
 }
 
-- (void)DCMSE {
+- (void)DCMSE
+{
     NSString* AETitle = [self _stackReadString];
     NSString* Address = [self _stackReadString];
     NSString* Port = [self _stackReadString];
@@ -883,7 +885,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
             val++;
             val *= [BrowserController DefaultFolderSizeForDB];
             
-            path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE.noindex/%d/%@", val, path];
+            path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@/%d/%@", DATABASE_PATH, val, path];
         }
         
         [localPaths addObject: path];
@@ -924,27 +926,26 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
         {
             NSString* path = [self _stackReadString];
             
-            if( [path UTF8String] [ 0] != '/')
+            if ([path UTF8String] [ 0] != '/')
             {
-                if( [[[path pathComponents] objectAtIndex: 0] isEqualToString:@"ROIs"])
+                if ([[[path pathComponents] objectAtIndex: 0] isEqualToString: ROIS_PATH])
                 {
                     //It's a ROI !
-                    NSString	*local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
+                    NSString *local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
                     
-                    path = [[local stringByAppendingPathComponent:@"ROIs/"] stringByAppendingPathComponent: [path lastPathComponent]];
+                    path = [[local stringByAppendingPathComponent: ROIS_PATH] stringByAppendingPathComponent: [path lastPathComponent]];
                 }
                 else
                 {
-                    
                     int val = [[path stringByDeletingPathExtension] intValue];
                     
                     val /= [BrowserController DefaultFolderSizeForDB];
                     val++;
                     val *= [BrowserController DefaultFolderSizeForDB];
                     
-                    NSString	*local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
+                    NSString *local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
                     
-                    path = [[[local stringByAppendingPathComponent:@"DATABASE.noindex/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
+                    path = [[[local stringByAppendingPathComponent:DATABASE_PATH] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
                 }
             }
             

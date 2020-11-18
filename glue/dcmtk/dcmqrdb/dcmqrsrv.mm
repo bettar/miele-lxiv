@@ -140,7 +140,9 @@ static int numberOfActiveAssociations = 0;
             dbLock = nil;
         }
 	}
-    while( fileExist == YES && inc < TIMEOUT && rc >= 0);
+    while (fileExist &&
+           inc < TIMEOUT &&
+           rc >= 0);
 	
 	if( inc >= TIMEOUT)
 	{

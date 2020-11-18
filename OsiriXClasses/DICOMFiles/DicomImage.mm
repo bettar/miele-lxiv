@@ -47,7 +47,8 @@
 #import "AppController.h"
 #endif
 
-#define ROIDATABASE @"/ROIs/"
+#import "AppDefaults.h"
+#define ROIDATABASE     @"/ROIs/"
 
 static inline int charToInt( unsigned char c)
 {
@@ -923,7 +924,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	if ([path characterAtIndex: 0] != '/')
 	{
 		long val = [[path stringByDeletingPathExtension] intValue];
-		NSString *dbLocation = [directory stringByAppendingPathComponent: @"DATABASE.noindex"];
+		NSString *dbLocation = [directory stringByAppendingPathComponent: DATABASE_PATH];
 		
 		val /= [BrowserController DefaultFolderSizeForDB];
 		val++;

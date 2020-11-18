@@ -419,8 +419,13 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         
 		if ([self frame].size.width > 0 && [self frame].size.height > 0)
 		{
-			if (windowController.maxMovieIndex > 1 && (windowController.clippingRangeMode == 1 || windowController.clippingRangeMode == 3 || windowController.clippingRangeMode == 2))	//To avoid the wrong pixel value bug...
+			if (windowController.maxMovieIndex > 1 &&
+                (windowController.clippingRangeMode == 1 ||
+                 windowController.clippingRangeMode == 3 ||
+                 windowController.clippingRangeMode == 2))	//To avoid the wrong pixel value bug...
+            {
 				[vrView prepareFullDepthCapture];
+            }
 			
 			if (moveCenter)
 			{

@@ -106,7 +106,7 @@
     
 	NSString* subpath;
 	DIR* dir;
-	while((dir = [self DIRAndSubpath:&subpath]))
+	while ((dir = [self DIRAndSubpath:&subpath]))
     {
 		//NSLog(@"dir %X subpath %@", dir, subpath);
 		struct dirent* dirp = readdir(dir);

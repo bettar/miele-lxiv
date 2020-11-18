@@ -88,7 +88,7 @@
 	antialiasing = NO;
 	texSize = NSZeroSize;
 	attrString = [attributedString copy];
-	textColor = [text retain];
+    textColor = [text retain]; // Issue #61 ?
 	boxColor = [box retain];
 	borderColor = [border retain];
 	staticFrame = NO;
@@ -133,7 +133,7 @@
         str = @"";
     
 	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:str attributes:attribs] autorelease]
-                            withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f]
+                            withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] // Issue #61 ?
                              withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
                           withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
 }
@@ -318,11 +318,11 @@
 			NSFrameRect (NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height));
 		}
 
-        [textColor set];
+        [textColor set];    // Issue #61 ?
 		[attrString drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)];
 		
         if (frameSize.width > 0 && frameSize.height > 0)
-            bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
+            bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect(0.0f, 0.0f, frameSize.width, frameSize.height)];
 		else
             NSLog( @"StringTexture: frameSize.width > 0 && frameSize.height > 0");
         

@@ -25,6 +25,7 @@
 #import "DicomDatabase.h"
 #import "N2Debug.h"
 #import "NSFileManager+N2.h"
+#import "AppDefaults.h"
 
 #import <CoreMedia/CoreMedia.h>
 #import <AVFoundation/AVFoundation.h>
@@ -157,7 +158,7 @@
 	
 	panel = [NSSavePanel savePanel];
 	
-    [[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/"]
+    [[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/%@/", TEMP_PATH]
                               withIntermediateDirectories: YES
                                                attributes: nil
                                                     error: nil];
@@ -166,7 +167,7 @@
     {
         result = NSModalResponseOK;
         
-        NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"PHOTOS"];
+        NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent: PHOTOS_PATH];
 
         [[NSFileManager defaultManager] removeItemAtPath: path
                                                  error: nil];
@@ -176,7 +177,7 @@
                                                    attributes: nil
                                                         error: nil];
         
-        fileName = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Miele-LXIV.mov"];
+        fileName = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent: @"Miele-LXIV.mov"];
     }
     else
     {

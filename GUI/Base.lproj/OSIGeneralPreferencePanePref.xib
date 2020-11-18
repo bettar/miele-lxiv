@@ -295,7 +295,7 @@
                                                             <binding destination="433" name="value" keyPath="arrangedObjects.active" id="529"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn width="281" minWidth="40" maxWidth="1000" id="523">
+                                                    <tableColumn width="252" minWidth="40" maxWidth="1000" id="523">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Language">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -475,7 +475,7 @@ Gw
                         <rect key="frame" x="483" y="50" width="457" height="341"/>
                         <clipView key="contentView" id="EK6-dZ-HuA">
                             <rect key="frame" x="1" y="1" width="455" height="339"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="219" id="218">
                                     <rect key="frame" x="0.0" y="0.0" width="455" height="316"/>
@@ -485,7 +485,7 @@ Gw
                                     <tableViewGridLines key="gridStyleMask" vertical="YES"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn identifier="modality" editable="NO" width="94" minWidth="60" maxWidth="100" id="220">
+                                        <tableColumn identifier="modality" editable="NO" width="79" minWidth="60" maxWidth="100" id="220">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Modality">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
@@ -531,7 +531,7 @@ Gw
                                                 <binding destination="233" name="selectedTag" keyPath="arrangedObjects.compression" id="253"/>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="quality" width="173" minWidth="150" maxWidth="180" id="224">
+                                        <tableColumn identifier="quality" width="159" minWidth="150" maxWidth="180" id="224">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Quality (Lossless to Poor)">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -567,7 +567,7 @@ Gw
                             <rect key="frame" x="-100" y="-100" width="15" height="319"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <tableHeaderView key="headerView" id="219">
+                        <tableHeaderView key="headerView" wantsLayer="YES" id="219">
                             <rect key="frame" x="0.0" y="0.0" width="455" height="23"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
@@ -576,7 +576,7 @@ Gw
                         <rect key="frame" x="20" y="50" width="457" height="341"/>
                         <clipView key="contentView" id="FNE-Eu-X4N">
                             <rect key="frame" x="1" y="1" width="455" height="339"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="289" id="290">
                                     <rect key="frame" x="0.0" y="0.0" width="455" height="316"/>
@@ -586,7 +586,7 @@ Gw
                                     <tableViewGridLines key="gridStyleMask" vertical="YES"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn identifier="modality" editable="NO" width="94" minWidth="60" maxWidth="100" id="295">
+                                        <tableColumn identifier="modality" editable="NO" width="79" minWidth="60" maxWidth="100" id="295">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Modality">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
@@ -629,7 +629,7 @@ Gw
                                                 <binding destination="320" name="selectedTag" keyPath="arrangedObjects.compression" id="329"/>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="quality" width="173" minWidth="150" maxWidth="180" id="293">
+                                        <tableColumn identifier="quality" width="159" minWidth="150" maxWidth="180" id="293">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Quality (Lossless to Poor)">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -665,7 +665,7 @@ Gw
                             <rect key="frame" x="-100" y="-100" width="15" height="319"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <tableHeaderView key="headerView" id="289">
+                        <tableHeaderView key="headerView" wantsLayer="YES" id="289">
                             <rect key="frame" x="0.0" y="0.0" width="455" height="23"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
@@ -728,6 +728,7 @@ Gw
                     <constraint firstItem="307" firstAttribute="leading" secondItem="305" secondAttribute="trailing" constant="6" identifier="idg7" id="wqG-aY-4sp"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="11" y="-525"/>
         </window>
         <arrayController id="233" userLabel="compressionSettings">
             <declaredKeys>

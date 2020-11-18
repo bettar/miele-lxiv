@@ -35,7 +35,7 @@ static DCMTagForNameDictionary *sharedTagForNameDictionary;
 			bundle = [NSBundle mainBundle];
 			
 		NSString *path = [bundle pathForResource:@"nameDictionary" ofType:@"plist"];
-		if( path == nil)
+		if (path == nil)
 		{
 			
 		}

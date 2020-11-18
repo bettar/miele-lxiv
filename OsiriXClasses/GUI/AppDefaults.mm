@@ -20,7 +20,7 @@
 
 #import "mgl.h" // include first
 
-#import "DefaultsOsiriX.h"
+#import "AppDefaults.h"
 #import "PluginManager.h"
 #import "NSUserDefaults+OsiriX.h"
 #import <DCM/DCMAbstractSyntaxUID.h>
@@ -43,7 +43,7 @@
 //static NSString *hostName = @"";
 static NSHost *currentHost = nil;
 
-@implementation DefaultsOsiriX
+@implementation AppDefaults
 
 +(NSHost*) currentHost
 {
@@ -65,7 +65,7 @@ static NSHost *currentHost = nil;
 //{
 //	if (testIsHugDone == NO)
 //	{
-////		NSArray	*names = [[DefaultsOsiriX currentHost] names];
+////		NSArray	*names = [[AppDefaults currentHost] names];
 ////		for (int i = 0; i < [names count] && !isHcugeCh; i++)
 ////		{
 ////			int len = [[names objectAtIndex: i] length];
@@ -103,7 +103,7 @@ static NSHost *currentHost = nil;
 //{
 //	if (testIsUniDone == NO)
 //	{
-////		NSArray	*names = [[DefaultsOsiriX currentHost] names];
+////		NSArray	*names = [[AppDefaults currentHost] names];
 ////		for (int i = 0; i < [names count] && !isUnigeCh; i++)
 ////		{
 ////			int len = [[names objectAtIndex: i] length];
@@ -738,28 +738,28 @@ static NSHost *currentHost = nil;
 	}
 	
 #ifdef OSIRIX_VIEWER
-	[DefaultsOsiriX addCLUT: @"VR Muscles-Bones" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"VR Bones" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"VR Red Vessels" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"BlackBody" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"Flow" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"GEcolor" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"Spectrum" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"NIH" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"HotIron" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"GrayRainbow" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"UCLA" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"Stern" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"Ratio" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"Rainbow3" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"Rainbow2" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"Rainbow" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"ired" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"Hue1" dictionary: clutValues];
-	[DefaultsOsiriX addCLUT: @"Hue2" dictionary: clutValues];		
-	[DefaultsOsiriX addCLUT: @"HotMetal" dictionary: clutValues];	
-	[DefaultsOsiriX addCLUT: @"HotGreen" dictionary: clutValues];	
-	[DefaultsOsiriX addCLUT: @"Jet" dictionary: clutValues];
+	[AppDefaults addCLUT: @"VR Muscles-Bones" dictionary: clutValues];
+	[AppDefaults addCLUT: @"VR Bones" dictionary: clutValues];
+	[AppDefaults addCLUT: @"VR Red Vessels" dictionary: clutValues];
+	[AppDefaults addCLUT: @"BlackBody" dictionary: clutValues];
+	[AppDefaults addCLUT: @"Flow" dictionary: clutValues];
+	[AppDefaults addCLUT: @"GEcolor" dictionary: clutValues];
+	[AppDefaults addCLUT: @"Spectrum" dictionary: clutValues];
+	[AppDefaults addCLUT: @"NIH" dictionary: clutValues];
+	[AppDefaults addCLUT: @"HotIron" dictionary: clutValues];
+	[AppDefaults addCLUT: @"GrayRainbow" dictionary: clutValues];
+	[AppDefaults addCLUT: @"UCLA" dictionary: clutValues];
+	[AppDefaults addCLUT: @"Stern" dictionary: clutValues];
+	[AppDefaults addCLUT: @"Ratio" dictionary: clutValues];
+	[AppDefaults addCLUT: @"Rainbow3" dictionary: clutValues];
+	[AppDefaults addCLUT: @"Rainbow2" dictionary: clutValues];
+	[AppDefaults addCLUT: @"Rainbow" dictionary: clutValues];
+	[AppDefaults addCLUT: @"ired" dictionary: clutValues];
+	[AppDefaults addCLUT: @"Hue1" dictionary: clutValues];
+	[AppDefaults addCLUT: @"Hue2" dictionary: clutValues];
+	[AppDefaults addCLUT: @"HotMetal" dictionary: clutValues];
+	[AppDefaults addCLUT: @"HotGreen" dictionary: clutValues];
+	[AppDefaults addCLUT: @"Jet" dictionary: clutValues];
 	
 	[defaultValuesDic setObject: clutValues forKey: @"CLUT"];
 #endif
@@ -779,12 +779,12 @@ static NSHost *currentHost = nil;
 	[serversValues addObject:aServer];
 	[aServer release];
 	
-	[defaultValuesDic setObject:serversValues forKey:@"SERVERS"];
+	[defaultValuesDic setObject:serversValues forKey: Servers_a_KEY];
 	
 	serversValues = [NSMutableArray array];
-	[defaultValuesDic setObject:serversValues forKey:@"OSIRIXSERVERS"];
+	[defaultValuesDic setObject:serversValues forKey: MieleServers_a_KEY];
 	
-	//routing calendars
+	// Routing calendars
 	[defaultValuesDic setObject:[NSMutableArray arrayWithObject:@"Osirix"] forKey:@"ROUTING CALENDARS"];
 	
 #pragma mark  AETITLE
@@ -796,7 +796,8 @@ static NSHost *currentHost = nil;
 		gethostname(s,_POSIX_HOST_NAME_MAX);
 		NSString *c = [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
 		NSRange range = [c rangeOfString: @"."];
-		if (range.location != NSNotFound) c = [c substringToIndex: range.location];
+		if (range.location != NSNotFound)
+            c = [c substringToIndex: range.location];
 	
 		if ([c length] > 16)
 			c = [c substringToIndex: 16];
@@ -952,7 +953,7 @@ static NSHost *currentHost = nil;
 //		
 	long pVRAM_MB = [self vramSizeMB];
     if (pVRAM_MB == 0)
-        pVRAM_MB = [DefaultsOsiriX GPUModelVRAMInfo];
+        pVRAM_MB = [AppDefaults GPUModelVRAMInfo];
 #ifndef NDEBUG
 	NSLog(@"VRAM: %li MB", pVRAM_MB);
 #endif
@@ -994,7 +995,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject: @"0" forKey:@"UseFrameofReferenceUID"];
 	[defaultValuesDic setObject: @"1" forKey:@"savedCommentsAndStatusInDICOMFiles"];
 	[defaultValuesDic setObject: @"1" forKey:@"CommentsFromDICOMFiles"];
-	[defaultValuesDic setObject: @"1" forKey:@"OPENVIEWER"];
+	[defaultValuesDic setObject: @YES forKey: OpenViewer_b_KEY];
 	[defaultValuesDic setObject: @"0" forKey: @"ConvertPETtoSUVautomatically"];
 	[defaultValuesDic setObject: @"0" forKey: @"SURVEYDONE3"];
 	[defaultValuesDic setObject: @"20" forKey: @"stackThickness"];
@@ -1083,10 +1084,10 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject:@"7" forKey:@"LOGCLEANINGDAYS"];
 	[defaultValuesDic setObject:@"1" forKey:@"AUTOMATIC FUSE"];
 
-    [defaultValuesDic setObject:@"0" forKey:@"DEFAULT_DATABASELOCATION"]; // Documents directory
-	[defaultValuesDic setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
-	[defaultValuesDic setObject:@"0" forKey: @"DATABASELOCATION"];
-	[defaultValuesDic setObject:@"" forKey: @"DATABASELOCATIONURL"];
+    [defaultValuesDic setObject:@"0" forKey: DefaultDbLocation_i_KEY]; // Documents directory
+	[defaultValuesDic setObject:@""  forKey: DefaultDbLocationUrl_s_KEY];
+	[defaultValuesDic setObject:@"0" forKey: DbLocation_i_KEY];
+	[defaultValuesDic setObject:@""  forKey: DbLocationUrl_s_KEY];
 
     [defaultValuesDic setObject: @"Geneva" forKey: @"FONTNAME"];
 	[defaultValuesDic setObject: @"1" forKey: @"DICOMSENDALLOWED"];
@@ -1818,4 +1819,82 @@ static NSHost *currentHost = nil;
 	
 	return defaultValuesDic;
 }
+
+#pragma mark - Security scoped bookmark
+
++ (void) createAndStoreBookmark:(NSURL *) url
+                       underKey:(NSString *) key
+{
+    //NSLog(@"%s key:<%@>", __FUNCTION__, key);
+
+    NSError *error = nil;
+    NSData *bookmarkData = [url bookmarkDataWithOptions: NSURLBookmarkCreationWithSecurityScope
+                         includingResourceValuesForKeys: nil
+                                          relativeToURL: nil // app scoped
+                                                  error: &error];
+    if (error) {
+        NSLog(@"Error creating bookmark for URL (%@)", url);
+        [NSApp presentError:error];
+        return;
+    }
+
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:bookmarkData forKey:key];
+    [userDefaults synchronize];
+}
+
++ (NSURL *) resolveStoredBookmark:(NSString *) key
+{
+    NSURL *url = nil;
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSData *bookmark = [userDefaults objectForKey:key];
+    if (bookmark == nil) {
+        NSLog(@"No bookmark stored for key %@", key);
+        return nil;
+    }
+
+    BOOL isStale;
+    NSError *error;
+    url = [NSURL URLByResolvingBookmarkData: bookmark
+                                      options: NSURLBookmarkResolutionWithSecurityScope
+                                relativeToURL: nil
+                          bookmarkDataIsStale: &isStale
+                                        error: &error];
+    if (error != nil) {
+        NSLog(@"Error resolving URL from bookmark %@", key);
+        [NSApp presentError:error];
+        return nil;
+    }
+    else if (isStale) {
+        if ([url startAccessingSecurityScopedResource])
+        {
+#if DEBUG
+            NSLog(@"Attempting to renew bookmark for %@", url);
+#endif
+            bookmark = [url bookmarkDataWithOptions: NSURLBookmarkCreationWithSecurityScope
+                       includingResourceValuesForKeys: nil
+                                        relativeToURL: nil
+                                                error: &error];
+            [url stopAccessingSecurityScopedResource];
+            if (error) {
+                NSLog(@"Failed to renew bookmark %@", key);
+                [NSApp presentError:error];
+                return FALSE;
+            }
+
+#if DEBUG
+            NSLog(@"Bookmark renewed");
+#endif
+            [userDefaults setObject:bookmark forKey:key];
+            //[self.wlFolder setStringValue:[url path]]; // Update text field now done by the calling code even if redundant if not stale
+        }
+        else {
+            NSLog(@"Could not start using the bookmarked url");
+            return nil;
+        }
+    }
+
+    return url;
+}
+
 @end

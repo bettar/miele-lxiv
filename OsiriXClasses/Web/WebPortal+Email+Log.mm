@@ -108,7 +108,7 @@
         
         for (WebPortalUser* user in users)
         {
-            if (user.autoDelete.boolValue == YES &&
+            if (user.autoDelete.boolValue &&
                 user.deletionDate &&
                 [user.deletionDate timeIntervalSinceNow] < 0)
             {
@@ -171,7 +171,8 @@
                 
                 for (WebPortalUser* user in users)
                 {
-                    if ([[user valueForKey: @"emailNotification"] boolValue] == YES && [(NSString*) [user valueForKey: @"email"] length] > 2)
+                    if ([[user valueForKey: @"emailNotification"] boolValue] &&
+                        [(NSString*) [user valueForKey: @"email"] length] > 2)
                     {
                         NSArray *filteredStudies = studies;
                         

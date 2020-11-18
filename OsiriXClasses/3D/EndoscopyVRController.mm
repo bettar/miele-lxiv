@@ -25,6 +25,7 @@
 #import "VRView.h"
 #import "BrowserController.h"
 #import "Notifications.h"
+#import "AppDefaults.h"
 
 @implementation EndoscopyVRController
 
@@ -244,9 +245,8 @@
 
 -(void) save3DState
 {
-	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
-	BOOL			isDir = YES;
-	
+	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: STATE_3D_DB_PATH];
+	BOOL isDir = YES;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 	{
@@ -266,13 +266,11 @@
 		[dict writeToFile:str atomically:YES];
 }
 
-
 -(void) load3DState
 {
 	NSLog (@"Load Endoscopy 3d State");
-	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
-	BOOL			isDir = YES;
-	
+	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: STATE_3D_DB_PATH];
+	BOOL isDir = YES;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 	{

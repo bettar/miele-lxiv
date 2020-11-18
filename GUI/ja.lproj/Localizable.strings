@@ -4767,7 +4767,7 @@
 "The study is not available in the local Database, you cannot modify or set the comments/status fields." = "調査はローカルのデータベースでは利用できません。コメント/ステータスフィールドを変更または設定することはできません。";
 
 /* No comment provided by engineer. */
-"The upgrade encountered %d errors. These corrupted studies have been removed: %@" = "アップグレードで %1$d 個のエラーが発生しました。これらの破損した研究は削除されました: %2$@";
+"The upgrade encountered %lu errors. These corrupted studies have been removed: %@" = "アップグレードで %1$lu 個のエラーが発生しました。これらの破損した研究は削除されました: %2$@";
 
 /* No comment provided by engineer. */
 "The ZIP file was successfully decompressed and the images successfully incorporated in OsiriX database. Should I delete the ZIP file?" = "ZIPファイルは正常に解凍され、画像はMiele-LXIVデータベースに正常に組み込まれました。 ZIPファイルを削除する必要がありますか？";

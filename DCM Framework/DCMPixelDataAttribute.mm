@@ -3631,7 +3631,7 @@ void info_callback(const char *msg, void *a) {
 		// data to decoders
 		NSData *data = subData;
 		
-		if (transferSyntax.isEncapsulated == YES)
+		if (transferSyntax.isEncapsulated)
 		{
 			short depth = 0;
 			

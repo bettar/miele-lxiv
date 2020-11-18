@@ -4767,7 +4767,7 @@
 "The study is not available in the local Database, you cannot modify or set the comments/status fields." = "L'étude n'est pas disponible dans la base de données locale, vous ne pouvez pas modifier ou définir les champs commentaires/statuts.";
 
 /* No comment provided by engineer. */
-"The upgrade encountered %d errors. These corrupted studies have been removed: %@" = "La mise à niveau a rencontré des erreurs %1$d. Ces études corrompues ont été supprimées: %2$@";
+"The upgrade encountered %lu errors. These corrupted studies have been removed: %@" = "La mise à niveau a rencontré des erreurs %1$lu. Ces études corrompues ont été supprimées: %2$@";
 
 /* No comment provided by engineer. */
 "The ZIP file was successfully decompressed and the images successfully incorporated in OsiriX database. Should I delete the ZIP file?" = "Le fichier ZIP a été décompressé avec succès et les images ont été incorporées avec succès dans la base de données Miele-LXIV. Dois-je supprimer le fichier ZIP ?";

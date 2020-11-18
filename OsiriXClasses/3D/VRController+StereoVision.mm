@@ -179,8 +179,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
       itemForItemIdentifier: (NSString *) itemIdent
   willBeInsertedIntoToolbar: (BOOL) willBeInserted
 {
-    // Required delegate method:  Given an item identifier, this method returns an item 
-    // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
+    // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
 //    
 //	if ([itemIdent isEqualToString: QTExportVRToolbarItemIdentifier])
@@ -193,7 +192,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 //		[toolbarItem setAction: @selector(exportQuicktime3DVR:)];
 //    }
 //	else
-        if ([itemIdent isEqualToString: StereoIdentifier])
+    if ([itemIdent isEqualToString: StereoIdentifier])
 	{
         [toolbarItem setLabel: NSLocalizedString(@"Stereo",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Stereo",nil)];
@@ -437,8 +436,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 }
 
 // { Begin addition by P. Thevenaz on June 11, 2010
-- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method:  Returns the ordered list of items to be shown in the toolbar by default    
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
+{
     // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
     // user chooses to revert to the default items this set will be used 
     
@@ -482,9 +481,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 												nil];
 }
 
-- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
-    // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
+{
+    // By default, the toolbar does not assume any items are allowed, even the separator.
+    // So, every allowed item must be explicitly listed
     // The set of allowed items is used to construct the customization palette
 	
 	if( [style isEqualToString:@"standard"])

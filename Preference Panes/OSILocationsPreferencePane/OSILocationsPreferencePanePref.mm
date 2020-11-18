@@ -21,6 +21,7 @@
 #import "OSILocationsPreferencePanePref.h"
 #import "N2Debug.h"
 #import "url.h"
+#import "AppDefaults.h"
 
 //#import "DDKeychain.h"
 
@@ -526,7 +527,8 @@
 		// disable TLS
 		[aServer setObject:@NO forKey:@"TLSEnabled"];
 		
-		[[NSUserDefaults standardUserDefaults] setObject: [dicomNodes arrangedObjects] forKey: @"SERVERS"];
+		[[NSUserDefaults standardUserDefaults] setObject: [dicomNodes arrangedObjects]
+                                                  forKey: Servers_a_KEY];
 	}
 }
 
@@ -550,33 +552,32 @@
 
 - (IBAction) refreshNodesOsiriXDB: (id) sender
 {
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"syncOsiriXDB"])
-	{
-		NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncOsiriXDBURL"]];
-		
-		if (url)
-		{
-			NSArray	*r = [NSArray arrayWithContentsOfURL: url];
-			
-			if (r)
-			{
-				[osiriXServers removeObjects: [osiriXServers arrangedObjects]];
-				[osiriXServers addObjects: r];
-			}
-			else
-                NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L),
-                                             NSLocalizedString( @"Cannot download data from this URL.", 0L),
-                                             NSLocalizedString( @"OK", nil),
-                                             nil,
-                                             nil);
-		}
-		else
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"syncOsiriXDB"] == NO)
+        return;
+
+    NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncOsiriXDBURL"]];
+    if (url)
+    {
+        NSArray	*r = [NSArray arrayWithContentsOfURL: url];
+        
+        if (r)
+        {
+            [osiriXServers removeObjects: [osiriXServers arrangedObjects]];
+            [osiriXServers addObjects: r];
+        }
+        else
             NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L),
-                                         NSLocalizedString( @"This URL is invalid. Check syntax.", 0L),
-                                         NSLocalizedString( @"OK", nil),
+                                         NSLocalizedString(@"Cannot download data from this URL.", 0L),
+                                         NSLocalizedString(@"OK", nil),
                                          nil,
                                          nil);
-	}
+    }
+    else
+        NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L),
+                                     NSLocalizedString(@"This URL is invalid. Check syntax.", 0L),
+                                     NSLocalizedString(@"OK", nil),
+                                     nil,
+                                     nil);
 }
 
 - (IBAction) OsiriXDBloadFrom:(id) sender;
@@ -781,7 +782,8 @@
         [aServer setObject: [NSNumber numberWithBool: [sender tag]] forKey: @"Activated"];
     }
 
-    [[NSUserDefaults standardUserDefaults] setObject:[dicomNodes arrangedObjects] forKey:@"SERVERS"];
+    [[NSUserDefaults standardUserDefaults] setObject:[dicomNodes arrangedObjects]
+                                              forKey:Servers_a_KEY];
 }
 
 
@@ -838,13 +840,24 @@
 
 	if ([oPanel runModal] == NSModalResponseOK)
 	{
+        {
+            NSURL *locationUrl = [oPanel URL];
+            [AppDefaults createAndStoreBookmark:locationUrl underKey:LocalDbPath_bk_KEY];
+            NSLog(@"%s line %d\n\t path: %@\n\t %@", __FUNCTION__, __LINE__,
+                  [[oPanel URL] path],
+                  [oPanel filename]);
+        }
 		NSString *location = [oPanel filename];
-		
+        /*
+         /Users/lxiv/Documents/projects/p68_lxiv/temp/20201119/Miele-LXIV Data
+         /Users/lxiv/Documents/projects/p68_lxiv/temp/20201119/Miele-LXIV Data/DATABASE.noindex*/
 		if ([[location lastPathComponent] isEqualToString:OUR_DATA_LOCATION])
 		{
 			location = [location stringByDeletingLastPathComponent];
+            // /Users/lxiv/Documents/projects/p68_lxiv/temp/20201119
 		}
 
+        // If the selected path ends with 'OUR_DATA_LOCATION/DATABASE' strip off both
 		if ([[location lastPathComponent] isEqualToString:@"DATABASE"] &&
            [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:OUR_DATA_LOCATION])
 		{
@@ -855,14 +868,17 @@
 		
 		if ([[NSFileManager defaultManager] fileExistsAtPath: location isDirectory: &isDirectory])
 		{
-			NSDictionary *dict = nil;
-			
 			if (isDirectory)
 			{
-				dict = [NSDictionary dictionaryWithObjectsAndKeys:
+                NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
                         location, @"Path",
                         [[location lastPathComponent] stringByAppendingString: NSLocalizedString( @" DB", @"DB = DataBase")], @"Description",
                         nil];
+                
+                /*
+                 Description = "20190916 DB";
+                 Path = "/Users/lxiv/Documents/projects/p68_lxiv/temp/20190916";
+                 */
 				
 				[localPaths addObject: dict];
 				[[localPaths tableView] scrollRowToVisible: [[localPaths tableView] selectedRow]];
@@ -931,7 +947,8 @@
 			[aServer setObject:[NSNumber numberWithInt:self.TLSCertificateVerification] forKey:@"TLSCertificateVerification"];
 		}
 
-		[[NSUserDefaults standardUserDefaults] setObject:[dicomNodes arrangedObjects] forKey:@"SERVERS"];
+		[[NSUserDefaults standardUserDefaults] setObject:[dicomNodes arrangedObjects]
+                                                  forKey:Servers_a_KEY];
 	}
 }
 

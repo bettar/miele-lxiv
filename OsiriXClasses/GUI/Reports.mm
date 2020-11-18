@@ -27,6 +27,7 @@
 #import "NSAppleScript+N2.h"
 #import "DicomDatabase.h"
 #import "N2Debug.h"
+#import "AppDefaults.h"
 
 static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 
@@ -500,11 +501,11 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
     @try {
         NSString *path = BrowserController.currentBrowser.database.baseDirPath;
         
-        if( path == nil)
+        if (path == nil)
             path = DicomDatabase.defaultBaseDirPath;
         
         // previously, we had a single word template in the Data folder
-        NSString* oldReportFilePath = [path stringByAppendingPathComponent:@"/TEMPLATES/ReportTemplate.doc"];
+        NSString* oldReportFilePath = [path stringByAppendingPathComponent:TEMPLATES_PATH @"/ReportTemplate.doc"];
         
         // today, we use a dir in the database folder, which contains the templates
         NSString* templatesDirPath = [Reports databaseWordTemplatesDirPath];
@@ -526,7 +527,9 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
         {
             if ([[NSFileManager defaultManager] fileExistsAtPath: oldReportFilePath])
             {
-                [[NSFileManager defaultManager] moveItemAtPath: oldReportFilePath toPath:[templatesDirPath stringByAppendingPathComponent: [oldReportFilePath lastPathComponent]] error: nil];
+                [[NSFileManager defaultManager] moveItemAtPath: oldReportFilePath
+                                                        toPath: [templatesDirPath stringByAppendingPathComponent: [oldReportFilePath lastPathComponent]]
+                                                         error: nil];
             }
             else
             {
@@ -638,7 +641,7 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 		[file appendFormat: @"%c", NSTabCharacter];
 	}
 	
-	NSString *path = [BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/TEMP.noindex/Report.rtf"];
+	NSString *path = [BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/%@/Report.rtf", TEMP_PATH];
 	
 	[[NSFileManager defaultManager] removeItemAtPath:path error:nil];
 	
@@ -898,7 +901,10 @@ static BOOL Pages5orHigher = FALSE;
 #endif
 
         [[NSFileManager defaultManager] removeItemAtPath: aPath error: nil];
-        [[NSFileManager defaultManager] moveItemAtPath: [aPath.stringByDeletingLastPathComponent stringByAppendingPathComponent: UNZIPPEDNAME] toPath: aPath error: nil];
+
+        [[NSFileManager defaultManager] moveItemAtPath: [aPath.stringByDeletingLastPathComponent stringByAppendingPathComponent: UNZIPPEDNAME]
+                                                toPath: aPath
+                                                 error: nil];
     }
 }
 
@@ -990,8 +996,13 @@ static BOOL Pages5orHigher = FALSE;
         if( [[NSFileManager defaultManager] fileExistsAtPath: [templatePath stringByAppendingString: @"09.pages"]])
         {
             [[NSFileManager defaultManager] removeItemAtPath: templatePath error: nil];
-            [[NSFileManager defaultManager] moveItemAtPath: [templatePath stringByAppendingString: @"09.pages"] toPath:templatePath error: nil];
+
+            [[NSFileManager defaultManager] moveItemAtPath: [templatePath stringByAppendingString: @"09.pages"]
+                                                    toPath:templatePath
+                                                     error: nil];
+
             [[NSFileManager defaultManager] removeItemAtPath: aPath error: nil];
+
             [[NSFileManager defaultManager] copyItemAtPath: templatePath
                                                     toPath: aPath
                                        byReplacingExisting: YES

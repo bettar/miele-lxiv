@@ -151,8 +151,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
       itemForItemIdentifier: (NSString *) itemIdent
   willBeInsertedIntoToolbar: (BOOL) willBeInserted
 {
-	// Required delegate method:  Given an item identifier, this method returns an item 
-	// The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
+	// The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself
 	NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
 
 //	if ([itemIdent isEqualToString: QTExportVRToolbarItemIdentifier]) {
@@ -165,15 +164,15 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 //		[toolbarItem setAction: @selector(exportQuicktime3DVR:)];
 //	}	
 //	else
-        if ([itemIdent isEqualToString: StereoIdentifier]) {
-		
+    if ([itemIdent isEqualToString: StereoIdentifier])
+    {
 		[toolbarItem setLabel: NSLocalizedString(@"Stereo",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Stereo",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Switch Stereo Modes",nil)];
 		[toolbarItem setView: stereoIconView];
 	}
-	else if ([itemIdent isEqualToString: QTExportToolbarItemIdentifier]) {
-		
+	else if ([itemIdent isEqualToString: QTExportToolbarItemIdentifier])
+    {
 		[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Movie Export",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Export this series in a Quicktime file",nil)];

@@ -207,7 +207,8 @@
     
     if (filesToSend.count)
     {
-        [RemoteDicomDatabase performSelectorInBackground:@selector(_uploadFilesAtPathsGeneratedByOsiriX:) withObject:[NSArray arrayWithObjects:filesToSend, filesToSendObjectIDs, [NSNumber numberWithBool:generatedByOsiriX], self, nil]];
+        [RemoteDicomDatabase performSelectorInBackground: @selector(_uploadFilesAtPathsGeneratedByOsiriX:)
+                                              withObject: [NSArray arrayWithObjects:filesToSend, filesToSendObjectIDs, [NSNumber numberWithBool:generatedByOsiriX], self, nil]];
     }
     return objectIDs;
 }
@@ -883,7 +884,9 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 						[NSFileManager.defaultManager removeItemAtPath:path error:NULL];
 					}
 					
-					[NSFileManager.defaultManager moveItemAtPath:[context objectAtIndex:4] toPath:path error:NULL];
+					[NSFileManager.defaultManager moveItemAtPath: [context objectAtIndex:4]
+                                                          toPath: path
+                                                           error: NULL];
 					
 					[context removeLastObject]; // rm [4]
 					[context removeLastObject]; // rm [3]

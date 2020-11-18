@@ -19,15 +19,18 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
+
 #import "PathForImage.h"
 #import "BrowserController.h"
+#import "AppDefaults.h"
 
-const char *pathToJPEG(const char *sopInstanceUID){
-	NSString *path = [[[BrowserController currentBrowser]  fixedDocumentsDirectory] stringByAppendingPathComponent:@"REPORTS"];
+const char *pathToJPEG(const char *sopInstanceUID)
+{
+	NSString *path = [[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:REPORTS_PATH];
 	NSFileManager *defaultManager = [NSFileManager defaultManager];
 	BOOL isDir;
 	//CHECK FOR REPORTS FOLDER
-	if (!([defaultManager	fileExistsAtPath:path isDirectory:&isDir] && isDir))
+	if (!([defaultManager fileExistsAtPath:path isDirectory:&isDir] && isDir))
 		[defaultManager createDirectoryAtPath: path
                   withIntermediateDirectories: YES
                                    attributes: nil

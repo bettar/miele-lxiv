@@ -24,12 +24,11 @@
 #import "BrowserControllerDCMTKCategory.h"
 #import <PreferencesWindowController+DCMTK.h>
 #import <DCM/DCMAbstractSyntaxUID.h>
-//#import <BrowserControllerDCMTKCategory.h>
 #import "DicomDatabase.h"
 #import "DICOMFiles/dicomFile.h"
 #import "WaitRendering.h"
 #import "Reports.h" // for ReportType
-
+#import "AppDefaults.h"
 #import "url.h"
 
 @implementation OSIDatabasePreferencePanePref
@@ -216,10 +215,10 @@
 	
 //	[displayAllStudies setState:[defaults boolForKey:@"KeepStudiesOfSamePatientTogether"]];
 	
-	long locationValue = [defaults integerForKey:@"DEFAULT_DATABASELOCATION"];
+	long locationValue = [defaults integerForKey: DefaultDbLocation_i_KEY];
 	[locationMatrix selectCellWithTag:locationValue];
 
-    [locationPathField setURL: [NSURL fileURLWithPath: [defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]]];
+    [locationPathField setURL: [NSURL fileURLWithPath: [defaults stringForKey: DefaultDbLocationUrl_s_KEY]]];
 	
 //	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
 //  //[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:COPYDATABASEMODE_KEY]];
@@ -457,23 +456,24 @@
 //	[[NSUserDefaults standardUserDefaults] setInteger:[(NSMatrix *)[sender selectedCell] tag] forKey:@"MULTIPLESCREENSDATABASE"];
 //}
 
-- (IBAction)setSeriesOrder:(id)sender{
+- (IBAction)setSeriesOrder:(id)sender
+{
 	[[NSUserDefaults standardUserDefaults] setInteger:[(NSMatrix *)[sender selectedCell] tag] forKey:@"SERIESORDER"];
 }
 
-
-- (IBAction)setLocation:(id)sender{
-	
+- (IBAction)setLocation:(id)sender
+{
 	if ([[sender selectedCell] tag] == 1)
 	{
-		if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isEqualToString:@""])
+		if ([[[NSUserDefaults standardUserDefaults] stringForKey:DefaultDbLocationUrl_s_KEY] isEqualToString:@""])
             [self setLocationURL: self];
 		
-		if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isEqualToString:@""] == NO)
+		if ([[[NSUserDefaults standardUserDefaults] stringForKey:DefaultDbLocationUrl_s_KEY] isEqualToString:@""] == NO)
 		{
 			BOOL isDir;
 			
-			if (![[NSFileManager defaultManager] fileExistsAtPath:[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isDirectory:&isDir])
+			if (![[NSFileManager defaultManager] fileExistsAtPath: [[NSUserDefaults standardUserDefaults] stringForKey:DefaultDbLocationUrl_s_KEY]
+                                                      isDirectory: &isDir])
 			{
 				NSRunAlertPanel(@"Miele-LXIV Database Location",
                                 @"This location is not valid. Select another location.",
@@ -486,10 +486,8 @@
 		}
 	}
 	
-	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:@"DEFAULT_DATABASELOCATION"];
-	
+	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: DefaultDbLocation_i_KEY];
 	[[[[self mainView] window] windowController] reopenDatabase];
-	
 	[[[self mainView] window] makeKeyAndOrderFront: self];
 }
 
@@ -511,14 +509,16 @@
 - (IBAction)setLocationURL:(id)sender
 {
 	NSOpenPanel *oPanel = [NSOpenPanel openPanel];
-	long result;
-	
     [oPanel setCanChooseFiles:NO];
     [oPanel setCanChooseDirectories:YES];
-	result = [oPanel runModal];
+	long result = [oPanel runModal];
     if (result == NSOKButton)
 	{
-		NSString *location = [oPanel directory];
+        {
+            NSURL *locationUrl = [oPanel URL];
+            [AppDefaults createAndStoreBookmark:locationUrl underKey:DbLocationUrl_bk_KEY];
+        }
+		NSString *location = [oPanel directory]; // API_DEPRECATED("Use -directoryURL instead"
 		
 		if ([[location lastPathComponent] isEqualToString:OUR_DATA_LOCATION])
 		{
@@ -534,15 +534,15 @@
 		}
 		
 		[locationPathField setURL: [NSURL fileURLWithPath: location]];
-		[[NSUserDefaults standardUserDefaults] setObject:location forKey:@"DEFAULT_DATABASELOCATIONURL"];
-		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"]; // User selected
+		[[NSUserDefaults standardUserDefaults] setObject:location forKey: DefaultDbLocationUrl_s_KEY];
+		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey: DefaultDbLocation_i_KEY]; // User selected
 		[locationMatrix selectCellWithTag:1];
 	}	
 	else 
 	{
 		[locationPathField setURL: 0L];
-		[[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
-		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DEFAULT_DATABASELOCATION"]; // Documents directory
+		[[NSUserDefaults standardUserDefaults] setObject:@"" forKey: DefaultDbLocationUrl_s_KEY];
+		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey: DefaultDbLocation_i_KEY]; // Documents directory
 		[locationMatrix selectCellWithTag:0];
 	}
 	

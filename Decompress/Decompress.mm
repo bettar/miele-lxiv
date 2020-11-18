@@ -17,7 +17,7 @@
 #undef verify
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 
-#import "DefaultsOsiriX.h"
+#import "AppDefaults.h"
 #import "AppController.h"
 #import "DCMPix.h"
 #import <WebKit/WebKit.h>
@@ -530,7 +530,9 @@ static void action_Decompress(int argc, const char *argv[], NSString *path)
                 NSLog( @"***** unzipFile exception: %@", e);
             }
             
-            [[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
+            [[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest
+                                                    toPath: curFileDest
+                                                     error: nil];
             
             myunlink([curFile fileSystemRepresentation]);
         }
@@ -664,7 +666,7 @@ int main(int argc, const char *argv[])
     
     NSBundle *bundle = [NSBundle bundleForClass:NSClassFromString(@"DCMPix")];
     NSString *bundleId = [[bundle infoDictionary] objectForKey:@"CFBundleIdentifier"];
-    dict = [DefaultsOsiriX getDefaults];
+    dict = [AppDefaults getDefaults];
     [dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:bundleId]];
     
 #if 0 // TODO
@@ -805,8 +807,8 @@ int main(int argc, const char *argv[])
                 NSTimeInterval timeout = [NSDate timeIntervalSinceReferenceDate] + 10;
                 
                 while ([[webView mainFrame] dataSource] == nil ||
-                       [[[webView mainFrame] dataSource] isLoading] == YES ||
-                       [[[webView mainFrame] provisionalDataSource] isLoading] == YES)
+                       [[[webView mainFrame] dataSource] isLoading] ||
+                       [[[webView mainFrame] provisionalDataSource] isLoading])
                 {
                     [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
                     

@@ -670,7 +670,7 @@
 		AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB64A2D60C4E0F61000E0981 /* HornRegistration.mm */; };
 		AB6AC6470624AC5200AFC7AF /* VRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6AC6430624AC5200AFC7AF /* VRView.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		AB6AC6490624AC5200AFC7AF /* VRController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6AC6450624AC5200AFC7AF /* VRController.mm */; };
-		AB6FF59C0A47D08000C501F0 /* DefaultsOsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.mm */; };
+		AB6FF59C0A47D08000C501F0 /* AppDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* AppDefaults.mm */; };
 		AB7250620ADE705C00A212A0 /* Decompress.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB724F1E0ADE6D9C00A212A0 /* Decompress.mm */; };
 		AB726C87063F3AD500787EF6 /* QTExportVR.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB726C85063F3AD500787EF6 /* QTExportVR.icns */; };
 		AB73E13B06497EDA00545980 /* PreviewView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB73E13706497EDA00545980 /* PreviewView.mm */; };
@@ -773,7 +773,7 @@
 		ABE0D6A80CDB1B9E00F0494B /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = ABE0D6A10CDB1B9E00F0494B /* style.css */; };
 		ABE1E8B00649F4150028E2E0 /* iPod.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABE1E8AE0649F4150028E2E0 /* iPod.icns */; };
 		ABE3336C063D624400C8E087 /* QueryFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABE3336A063D624400C8E087 /* QueryFilter.mm */; };
-		ABE59B850F494CA1004EBF28 /* DefaultsOsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.mm */; };
+		ABE59B850F494CA1004EBF28 /* AppDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* AppDefaults.mm */; };
 		ABEF7E7909A21070006CEC3E /* Reports.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABEF7E7709A21070006CEC3E /* Reports.mm */; };
 		ABEF846A09A23EF5006CEC3E /* ReportTemplate.doc in Resources */ = {isa = PBXBuildFile; fileRef = ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */; };
 		ABF09BBA0642FD220044FE6C /* Stereo.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABF09BB80642FD220044FE6C /* Stereo.icns */; };
@@ -2548,8 +2548,8 @@
 		AB6D320C05B3159D0002F793 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		AB6F34FB0574081F00CDCA47 /* Wait.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Wait.h; sourceTree = "<group>"; };
 		AB6F34FC0574081F00CDCA47 /* Wait.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = Wait.mm; sourceTree = "<group>"; };
-		AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsOsiriX.h; sourceTree = "<group>"; };
-		AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DefaultsOsiriX.mm; sourceTree = "<group>"; };
+		AB6FF5950A47D08000C501F0 /* AppDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDefaults.h; sourceTree = "<group>"; };
+		AB6FF5960A47D08000C501F0 /* AppDefaults.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDefaults.mm; sourceTree = "<group>"; };
 		AB724F1E0ADE6D9C00A212A0 /* Decompress.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = Decompress.mm; sourceTree = "<group>"; };
 		AB724FF60ADE6ECB00A212A0 /* Decompress */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Decompress; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB726C85063F3AD500787EF6 /* QTExportVR.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = QTExportVR.icns; sourceTree = "<group>"; };
@@ -3832,8 +3832,8 @@
 				A9F2E5E609224ED600055899 /* DarkPanel.mm */,
 				A9F2E557092227A400055899 /* DarkWindow.h */,
 				A9F2E558092227A400055899 /* DarkWindow.mm */,
-				AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */,
-				AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.mm */,
+				AB6FF5950A47D08000C501F0 /* AppDefaults.h */,
+				AB6FF5960A47D08000C501F0 /* AppDefaults.mm */,
 				71512E9B15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h */,
 				71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.mm */,
 				ABC3E5500B330A58006704E3 /* DNDArrayController.mm */,
@@ -6465,7 +6465,7 @@
 				BFF5D24109F93B3F0077E16B /* LogManager.mm in Sources */,
 				430CB70E218C66CD000C2547 /* SRController.mm in Sources */,
 				BF9999010A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */,
-				AB6FF59C0A47D08000C501F0 /* DefaultsOsiriX.mm in Sources */,
+				AB6FF59C0A47D08000C501F0 /* AppDefaults.mm in Sources */,
 				BFA7D2190A51D1460013F76E /* BrowserControllerDCMTKCategory.mm in Sources */,
 				BF2425520A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */,
 				BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
@@ -6817,7 +6817,7 @@
 				AB7250620ADE705C00A212A0 /* Decompress.mm in Sources */,
 				434B47A51A1A1951008CF8CF /* kdu_OsiriX_NO_Support.cpp in Sources */,
 				A98FFBEA0CA92B58000291C8 /* altivecFunctions.cpp in Sources */,
-				ABE59B850F494CA1004EBF28 /* DefaultsOsiriX.mm in Sources */,
+				ABE59B850F494CA1004EBF28 /* AppDefaults.mm in Sources */,
 				CE142E7F1119DA53000F4A8C /* DCMPix.mm in Sources */,
 				43A89425232F805700CED2CB /* dicomFile.mm in Sources */,
 				CE142ED81119DE4F000F4A8C /* DicomFileDCMTKCategory.mm in Sources */,
@@ -8273,7 +8273,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-5.0",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.1",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-9.0",
 				);
 				USE_HEADERMAP = NO;
@@ -8815,7 +8815,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-5.0",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.1",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-9.0",
 				);
 				USE_HEADERMAP = NO;
@@ -9438,7 +9438,7 @@
 				PRODUCT_NAME = "miele-lxiv";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-5.0",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.1",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-9.0",
 				);
 				USE_HEADERMAP = NO;

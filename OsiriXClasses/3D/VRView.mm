@@ -37,7 +37,7 @@
 #import "VRController.h"
 #import "BrowserController.h"
 #import "DICOMExport.h"
-#import "DefaultsOsiriX.h" // for HotKeys
+#import "AppDefaults.h" // for HotKeys
 #import "DicomDatabase.h"
 #import "DicomImage.h"
 #import "Notifications.h"
@@ -1403,7 +1403,6 @@ public:
 	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil];
 }
 
-#define DATABASEPATH @"/DATABASE.noindex/"
 -(IBAction) endDCMExportSettings:(id) sender
 {
 	[exportDCMWindow makeFirstResponder: nil];	// To force nstextfield validation.

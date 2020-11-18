@@ -119,13 +119,18 @@
 		_filmorientation = DVPSF_landscape;
 	else if ([[_extraParameters objectForKey:@"Film Orientation"] isEqualToString:@"portrait"])
 		_filmorientation = DVPSF_portrait;
-	 
-	// trim
+	
+    // trim
 	 _trim = DVPSH_default;
-	 if ([[_extraParameters objectForKey:@"Trim"] boolValue] == YES )
+	 if ([[_extraParameters objectForKey:@"Trim"] boolValue])
+     {
 		_trim = DVPSH_trim_on;
-	else if ([_extraParameters objectForKey:@"Trim"] && [[_extraParameters objectForKey:@"Trim"] boolValue] == NO)
+     }
+     else if ([_extraParameters objectForKey:@"Trim"] &&
+             [[_extraParameters objectForKey:@"Trim"] boolValue] == NO)
+     {
 		_trim = DVPSH_trim_off;
+     }
 		
 	//decimate
 	_decimate = DVPSI_default;
