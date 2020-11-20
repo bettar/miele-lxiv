@@ -135,7 +135,6 @@
                             </subviews>
                         </view>
                         <constraints>
-                            <constraint firstItem="616" firstAttribute="centerX" secondItem="584" secondAttribute="centerX" id="EAq-AI-DvL"/>
                             <constraint firstItem="616" firstAttribute="top" relation="greaterThanOrEqual" secondItem="584" secondAttribute="top" constant="9" id="MYd-Gd-GlY"/>
                             <constraint firstAttribute="width" constant="125" id="R60-9m-GGd"/>
                             <constraint firstAttribute="trailing" secondItem="616" secondAttribute="trailing" constant="7" id="SYc-dq-6O7"/>
@@ -292,22 +291,6 @@ DQ
                             <action selector="endEditSmartAlbumFilter:" target="-2" id="655"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="638">
-                        <rect key="frame" x="395" y="78" width="101" height="56"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="87" id="9Ph-jY-6qi"/>
-                        </constraints>
-                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="639">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                            <string key="keyEquivalent" base64-UTF8="YES">
-Gw
-</string>
-                        </buttonCell>
-                        <connections>
-                            <action selector="endEditSmartAlbumFilter:" target="-2" id="654"/>
-                        </connections>
-                    </button>
                     <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="640">
                         <rect key="frame" x="17" y="72" width="68" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="SQL Filter:" id="641">
@@ -330,16 +313,32 @@ Gw
                             <binding destination="-2" name="value" keyPath="self.smartAlbumFilter" id="652"/>
                         </connections>
                     </textField>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="638">
+                        <rect key="frame" x="395" y="66" width="101" height="56"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="87" id="9Ph-jY-6qi"/>
+                        </constraints>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="639">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="endEditSmartAlbumFilter:" target="-2" id="654"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="640" firstAttribute="top" secondItem="585" secondAttribute="bottom" constant="61" id="4iD-UL-WMF"/>
-                    <constraint firstItem="638" firstAttribute="top" secondItem="585" secondAttribute="bottom" constant="20" symbolic="YES" id="5Ib-8u-SU8"/>
+                    <constraint firstItem="638" firstAttribute="top" secondItem="585" secondAttribute="bottom" constant="32" id="5Ib-8u-SU8"/>
                     <constraint firstItem="640" firstAttribute="leading" secondItem="583" secondAttribute="leading" constant="19" id="83E-0m-lb5"/>
                     <constraint firstItem="585" firstAttribute="top" secondItem="583" secondAttribute="top" constant="20" id="BNK-b7-vZP"/>
                     <constraint firstItem="584" firstAttribute="top" secondItem="583" secondAttribute="top" constant="20" id="GiW-Vh-9m9"/>
-                    <constraint firstItem="636" firstAttribute="baseline" secondItem="638" secondAttribute="baseline" id="JHv-MI-Gay"/>
+                    <constraint firstItem="636" firstAttribute="baseline" secondItem="638" secondAttribute="baseline" constant="-12" id="JHv-MI-Gay"/>
                     <constraint firstItem="584" firstAttribute="leading" secondItem="585" secondAttribute="trailing" constant="9" id="KzO-Wd-OFh"/>
-                    <constraint firstItem="642" firstAttribute="top" secondItem="638" secondAttribute="bottom" constant="20" id="SHt-uy-9aQ"/>
+                    <constraint firstItem="642" firstAttribute="top" secondItem="638" secondAttribute="bottom" constant="8" id="SHt-uy-9aQ"/>
                     <constraint firstItem="642" firstAttribute="leading" secondItem="640" secondAttribute="trailing" constant="9" id="SQb-Te-L37"/>
                     <constraint firstItem="636" firstAttribute="top" secondItem="584" secondAttribute="bottom" constant="20" id="Xwc-BM-fuC"/>
                     <constraint firstItem="636" firstAttribute="leading" secondItem="638" secondAttribute="trailing" constant="12" id="ZmP-LH-OYm"/>

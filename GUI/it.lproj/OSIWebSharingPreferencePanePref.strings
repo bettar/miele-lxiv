@@ -80,9 +80,7 @@
 "622.title" = "⟳";
 
 /* Class = "NSTextFieldCell"; title = "The syntax is similar to smart albums. For example:\n(referringPhysician CONTAINS[cd] 'Prof. ROSSET')\n(YES == NO) for an empty list."; ObjectID = "644"; */
-"644.title" = "La sintassi è simile a quella degli smart album. Per esempio:
-(referringPhysician CONTIENE[cd] 'Prof. BIANCHI’)
-(YES == NO) per una lista vuota.";
+"644.title" = "La sintassi è simile a quella degli smart album. Per esempio:\n(referringPhysician CONTIENE[cd] 'Prof. BIANCHI’)\n(YES == NO) per una lista vuota.";
 
 /* Class = "NSButtonCell"; title = "SQL Syntax"; ObjectID = "647"; */
 "647.title" = "Sintassi SQL";

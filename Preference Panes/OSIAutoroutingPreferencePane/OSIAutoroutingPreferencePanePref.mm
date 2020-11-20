@@ -25,6 +25,7 @@
 #import "AppDefaults.h"
 
 #import "tmp_locations.h"
+#import "url.h"
 
 #define CURRENTVERSION      1
 
@@ -141,7 +142,7 @@
 	
 	if ([sender tag] == 1)
 	{
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: HELP_SQL_SYNTAX_URL]];
 	}
 }
 

@@ -151,7 +151,8 @@
 
 - (IBAction)smartAlbumHelpButton: (id)sender
 {
-	if( [sender tag] == 0)
+    // Osirix tables
+	if ([sender tag] == 0)
     {
         NSString *tablesFile = [NSTemporaryDirectory() stringByAppendingPathComponent:@"OsiriXTables.pdf"];
         [[NSFileManager defaultManager] removeItemAtPath: tablesFile error:nil];
@@ -160,8 +161,9 @@
 		[[NSWorkspace sharedWorkspace] openFile: tablesFile];
 	}
     
-	if( [sender tag] == 1)
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
+    // SQL syntax
+	if ([sender tag] == 1)
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:HELP_SQL_SYNTAX_URL]];
 }
 
 - (IBAction) openKeyChainAccess:(id) sender

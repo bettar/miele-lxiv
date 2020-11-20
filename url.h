@@ -73,8 +73,9 @@
 #define PLUGIN_SUBMISSION_NO_MAIL_APP_URL   URL_MIELE_WEB_PAGE@"/submit_plugin/index_no_mail_app.html"
 
 // /////////////////////////////////////////////////////////////////////////////
-#define SYNC_DB_URL                         @"http://list.dicom.dcm/DB.plist"  // was OsiriXDB.plist"
-#define SYNC_DICOM_NODES_URL                @"http://list.dicom.dcm/DICOMNodes.plist"
+#define SYNC_DB_URL             @"http://list.dicom.dcm/DB.plist"  // was OsiriXDB.plist"
+#define SYNC_DICOM_NODES_URL    @"http://list.dicom.dcm/DICOMNodes.plist"
+#define HELP_SQL_SYNTAX_URL     @"https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html"
 
 // /////////////////////////////////////////////////////////////////////////////
 // Our identity

@@ -26,6 +26,7 @@
 #import "N2Debug.h"
 
 #import "tmp_locations.h"
+#import "url.h"
 
 @implementation SmartWindowController
 
@@ -123,7 +124,8 @@
     [[BrowserController currentBrowser] outlineViewRefresh];
 }
 
-- (IBAction)helpAction:(NSSegmentedControl*)sender {
+- (IBAction)helpAction:(NSSegmentedControl*)sender
+{
     if ([sender selectedSegment] == 0)
     {
         NSString *tablesFile = [NSTemporaryDirectory() stringByAppendingPathComponent:@"OsiriXTables.pdf"];
@@ -138,7 +140,7 @@
     }
     
     if ([sender selectedSegment] == 1)
-        [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
+        [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString: HELP_SQL_SYNTAX_URL]];
 }
 
 - (IBAction)testAction:(id)sender {

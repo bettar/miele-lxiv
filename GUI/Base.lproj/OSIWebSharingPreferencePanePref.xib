@@ -764,7 +764,7 @@ DQ
                         <rect key="frame" x="24" y="57" width="142" height="578"/>
                         <clipView key="contentView" id="Nyl-F2-tIk">
                             <rect key="frame" x="1" y="1" width="140" height="576"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" autosaveColumns="NO" rowHeight="14" headerView="543" id="542">
                                     <rect key="frame" x="0.0" y="0.0" width="140" height="553"/>
@@ -807,7 +807,7 @@ DQ
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="540">
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <tableHeaderView key="headerView" id="543">
+                        <tableHeaderView key="headerView" wantsLayer="YES" id="543">
                             <rect key="frame" x="0.0" y="0.0" width="140" height="23"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
@@ -1365,7 +1365,7 @@ DQ
                         <rect key="frame" x="424" y="333" width="299" height="72"/>
                         <clipView key="contentView" id="kRi-qa-Haj">
                             <rect key="frame" x="1" y="1" width="297" height="70"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" autosaveColumns="NO" rowHeight="11" id="772">
                                     <rect key="frame" x="0.0" y="0.0" width="297" height="70"/>
@@ -1563,6 +1563,7 @@ DQ
                     <constraint firstItem="539" firstAttribute="top" secondItem="569" secondAttribute="bottom" constant="8" symbolic="YES" id="zBW-WX-8Z2"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="-123" y="68"/>
         </window>
     </objects>
     <resources>

@@ -80,7 +80,7 @@
 "622.title" = "⟳";
 
 /* Class = "NSTextFieldCell"; title = "The syntax is similar to smart albums. For example:\n(referringPhysician CONTAINS[cd] 'Prof. ROSSET')\n(YES == NO) for an empty list."; ObjectID = "644"; */
-"644.title" = "シンタックスはスマートアルバムに似ています。たとえば、空のリストの場合((referPhysician CONTAINS [cd] 'Prof. SAKAMOTO’)(YES == NO)";
+"644.title" = "シンタックスはスマートアルバムに似ています。たとえば\n空のリストの場合((referPhysician CONTAINS [cd] 'Prof. SAKAMOTO’)\n(YES == NO)";
 
 /* Class = "NSButtonCell"; title = "SQL Syntax"; ObjectID = "647"; */
 "647.title" = "SQL構文";
