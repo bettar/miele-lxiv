@@ -72,13 +72,17 @@
     return [self.dictionary isEqual:d];
 }
 
-+(CGFloat)sortValueForDataNodeIdentifier:(DataNodeIdentifier*)dni {
++(CGFloat)sortValueForDataNodeIdentifier:(DataNodeIdentifier*)dni
+{
     if ([dni isKindOfClass:[LocalDatabaseNodeIdentifier class]])
         return 10;
+
     if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
         return 20;
+
     if ([dni isKindOfClass:[DicomNodeIdentifier class]])
         return 30;
+
     return 100;
 }
 
@@ -141,8 +145,9 @@
     if( [_dictionary valueForKey: @"icon"] && [NSImage imageNamed:[_dictionary valueForKey:@"icon"]])
         cell.image = [NSImage imageNamed:[_dictionary valueForKey:@"icon"]];
 }
-
 @end
+
+#pragma mark -
 
 @implementation LocalDatabaseNodeIdentifier
 
@@ -154,11 +159,14 @@
     return [[[[self class] alloc] initWithLocation:path port:0 aetitle:@"" description:description dictionary:dictionary] autorelease];
 }
 
--(BOOL)isEqualToDataNodeIdentifier:(DataNodeIdentifier*)dni {
+-(BOOL)isEqualToDataNodeIdentifier:(DataNodeIdentifier*)dni
+{
     if (![dni isKindOfClass:[LocalDatabaseNodeIdentifier class]])
         return NO;
+
     if ([[DicomDatabase baseDirPathForPath:self.location] isEqualToString:[DicomDatabase baseDirPathForPath:dni.location]])
         return YES;
+
     return [super isEqualToDataNodeIdentifier:dni];
 }
 
@@ -197,6 +205,8 @@
 }
 
 @end
+
+#pragma mark -
 
 @implementation RemoteDataNodeIdentifier
 
@@ -238,6 +248,8 @@
 }
 
 @end
+
+#pragma mark -
 
 @implementation RemoteDatabaseNodeIdentifier
 
@@ -285,6 +297,8 @@
 //}
 
 @end
+
+#pragma mark -
 
 @implementation DicomNodeIdentifier
 

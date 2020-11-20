@@ -22,6 +22,8 @@
 
 #import "DicomDatabase.h"
 #import "DicomDatabase+Clean.h"
+#import "DicomDatabase+Routing.h"
+
 #import "NSString+N2.h"
 #import "Notifications.h"
 #import "DicomAlbum.h"
@@ -105,10 +107,10 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 
 +(NSString*)baseDirPathForPath:(NSString*)path
 {
-    NSLog(@"%s path:\n%@", __FUNCTION__, path);
-	// were we given a path inside a AppDataDirName dir?
+    NSLog(@"%s path:\n\t%@", __FUNCTION__, path);
+	// were we given a path inside a OUR_DATA_LOCATION dir?
 	NSArray* pathParts = path.pathComponents;
-	for (int i = (long)pathParts.count-1; i >= 0; --i)
+	for (int i = (int)(pathParts.count-1); i >= 0; --i)
 		if ([[pathParts objectAtIndex:i] isEqualToString:AppDataDirName]) {
 			path = [NSString pathWithComponents:[pathParts subarrayWithRange:NSMakeRange(0,i+1)]];
 			break;
@@ -351,10 +353,12 @@ static DicomDatabase* activeLocalDatabase = nil;
 	return activeLocalDatabase ? activeLocalDatabase : self.defaultDatabase;
 }
 
-+(void)setActiveLocalDatabase:(DicomDatabase*)ldb {
++(void)setActiveLocalDatabase:(DicomDatabase*)ldb
+{
 	if (!ldb.isLocal)
 		return;
-	if (ldb != self.activeLocalDatabase) {
+
+    if (ldb != self.activeLocalDatabase) {
 		[activeLocalDatabase release];
 		activeLocalDatabase = [ldb retain];
 		[NSNotificationCenter.defaultCenter postNotificationName:OsirixActiveLocalDatabaseDidChangeNotification object:nil];
@@ -412,7 +416,7 @@ static DicomDatabase* activeLocalDatabase = nil;
           context:(NSManagedObjectContext*)c
      mainDatabase:(N2ManagedDatabase*)mainDbReference
 {
-    NSLog(@"%s path:\n%@", __FUNCTION__, p); // *.sql
+    NSLog(@"%s path:\n\t%@", __FUNCTION__, p); // *.sql
 
     @try {
         p = [DicomDatabase baseDirPathForPath:p];
@@ -540,13 +544,37 @@ static DicomDatabase* activeLocalDatabase = nil;
             _decompressQueue = [[self.mainDatabase decompressQueue] retain];
 
             
-            [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayNotification object:self];
-            [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayCompleteNotification object:self];
-            // the followindo notifications look like the previous ones but they're not the same. do not remove them! viewercontroller needs them ot it won't update the preview matrix with the added images
-            [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddToDBNotification object:self];
-            [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddToDBCompleteNotification object:self];
-            [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddNewStudiesDBNotification object:self];
-            [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:O2DatabaseInvalidateAlbumsCacheNotification object:self];
+            [NSNotificationCenter.defaultCenter addObserver:mainDbReference
+                                                   selector:@selector(observeIndependentDatabaseNotification:)
+                                                       name:_O2AddToDBAnywayNotification
+                                                     object:self];
+
+            [NSNotificationCenter.defaultCenter addObserver:mainDbReference
+                                                   selector:@selector(observeIndependentDatabaseNotification:)
+                                                       name:_O2AddToDBAnywayCompleteNotification
+                                                     object:self];
+
+            // the following notifications look like the previous ones but they're not the same. Do not remove them! viewercontroller needs them or it won't update the preview matrix with the added images
+
+            [NSNotificationCenter.defaultCenter addObserver:mainDbReference
+                                                   selector:@selector(observeIndependentDatabaseNotification:)
+                                                       name:OsirixAddToDBNotification
+                                                     object:self];
+
+            [NSNotificationCenter.defaultCenter addObserver:mainDbReference
+                                                   selector:@selector(observeIndependentDatabaseNotification:)
+                                                       name:OsirixAddToDBCompleteNotification
+                                                     object:self];
+            
+            [NSNotificationCenter.defaultCenter addObserver:mainDbReference
+                                                   selector:@selector(observeIndependentDatabaseNotification:)
+                                                       name:OsirixAddNewStudiesDBNotification
+                                                     object:self];
+
+            [NSNotificationCenter.defaultCenter addObserver:mainDbReference
+                                                   selector:@selector(observeIndependentDatabaseNotification:)
+                                                       name:O2DatabaseInvalidateAlbumsCacheNotification
+                                                     object:self];
         }
 
         [self initRouting];

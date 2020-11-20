@@ -54,7 +54,11 @@ typedef NSInteger DataNodeIdentifierType;*/
 @property BOOL detected;
 @property BOOL entered;
 
--(id)initWithLocation:(NSString*)location port:(NSUInteger) port aetitle:(NSString*) aetitle description:(NSString*)description dictionary:(NSDictionary*)dictionary;
+-(id)initWithLocation:(NSString*) location
+                 port:(NSUInteger) port
+              aetitle:(NSString*) aetitle
+          description:(NSString*) description
+           dictionary:(NSDictionary*) dictionary;
 
 -(BOOL)isEqualToDataNodeIdentifier:(DataNodeIdentifier*)dni;
 -(BOOL)isEqualToDictionary:(NSDictionary*)d;
@@ -69,25 +73,38 @@ typedef NSInteger DataNodeIdentifierType;*/
 
 @end
 
+#pragma mark -
+
 @interface LocalDatabaseNodeIdentifier : DataNodeIdentifier
 
 +(id)localDatabaseNodeIdentifierWithPath:(NSString*)path;
-+(id)localDatabaseNodeIdentifierWithPath:(NSString*)path description:(NSString*)description dictionary:(NSDictionary*)dictionary;
-    
+
++(id)localDatabaseNodeIdentifierWithPath:(NSString*)path
+                             description:(NSString*)description
+                              dictionary:(NSDictionary*)dictionary;
 @end
+
+#pragma mark -
 
 @interface RemoteDataNodeIdentifier : DataNodeIdentifier
 
 @end
 
+#pragma mark -
+
 @interface RemoteDatabaseNodeIdentifier : RemoteDataNodeIdentifier
 
-+(id)remoteDatabaseNodeIdentifierWithLocation:(NSString*)location port:(NSUInteger)port description:(NSString*)description dictionary:(NSDictionary*)dictionary;
++(id)remoteDatabaseNodeIdentifierWithLocation:(NSString*)location
+                                         port:(NSUInteger)port
+                                  description:(NSString*)description
+                                   dictionary:(NSDictionary*)dictionary;
 
 +(NSHost*)location:(NSString*)location port:(NSUInteger)port toHost:(NSHost**)host port:(NSInteger*)port;
 +(NSString*)location:(NSString*)location port:(NSUInteger) port toAddress:(NSString**)address port:(NSInteger*)outputPort;
 
 @end
+
+#pragma mark -
 
 @interface DicomNodeIdentifier : RemoteDataNodeIdentifier
 

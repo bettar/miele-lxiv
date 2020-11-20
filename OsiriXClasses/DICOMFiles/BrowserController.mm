@@ -1755,116 +1755,132 @@ static NSConditionLock *threadLock = nil;
 
 -(void)setDatabase:(DicomDatabase*)db
 {
-	[[db retain] autorelease]; // avoid multithreaded release
+    NSLog(@"%s db:<%@>", __FUNCTION__, db);
+
+    [[db retain] autorelease]; // avoid multithreaded release
 	
     if ([NSThread isMainThread] == NO)
         N2LogStackTrace( @"setDatabase MUST be performed on MAIN thread");
     
-	if (_database != db)
-    {
-		@try
-        {
-            [[LogManager currentLogManager] resetLogs];
-            
-			[self willChangeValueForKey:@"database"];
-			
-            [self saveLoadAlbumsSortDescriptors];
-            
-            [self waitForRunningProcesses];
-            
-            [_database save:nil];
-			[_database autorelease]; _database = nil;
-            
-            [self willChangeContext];
-            
-			[reportFilesToCheck removeAllObjects];
+	if (_database == db)
+        return;
 
-			if (_database)
-				[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:_database];
+    @try
+    {
+        [[LogManager currentLogManager] resetLogs];
+        
+        [self willChangeValueForKey:@"database"];
+        
+        [self saveLoadAlbumsSortDescriptors];
+        
+        [self waitForRunningProcesses];
+        
+        [_database save:nil];
+        [_database autorelease]; _database = nil;
+        
+        [self willChangeContext];
+        
+        [reportFilesToCheck removeAllObjects];
+
+        if (_database)
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:_database];
+        
+        [self.window display];
+        
+        [DCMPix purgeCachedDictionaries];
+        [DCMView purgeStringTextureCache];
+        
+        [self resetLogWindowController];
+        
+        [[AppController sharedAppController] closeAllViewers: self];
+        
+        @try
+        {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"clearSearchAndTimeIntervalWhenSelectingAlbum"])
+                [self showEntireDatabase];
+        }
+        @catch (...) {
+        }
+        
+        _database = [db retain];
+        [_database renewManagedObjectContext]; // We want to be sure to use our 'clean' managedobjectcontext (not used in any other threads)
+        
+        if ([NSUserDefaults canActivateAnyLocalDatabase] && [db isLocal] && ![db isReadOnly])
+            [DicomDatabase setActiveLocalDatabase:db];
+        if (db)
+            [self selectCurrentDatabaseSource];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(_observeDatabaseAddNotification:)
+                                                     name:_O2AddToDBAnywayNotification
+                                                   object:_database];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(_observeDatabaseDidChangeContextNotification:)
+                                                     name:OsirixDicomDatabaseDidChangeContextNotification
+                                                   object:_database];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(_observeDatabaseInvalidateAlbumsCacheNotification:)
+                                                     name:O2DatabaseInvalidateAlbumsCacheNotification
+                                                   object:_database];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(_newStudiesRefreshComparativeStudies:)
+                                                     name:OsirixAddNewStudiesDBNotification
+                                                   object:_database];
+        
+        [albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
+        [self saveLoadAlbumsSortDescriptors];
+        
+        @synchronized(_albumNoOfStudiesCache)
+        {
+            [_albumNoOfStudiesCache removeAllObjects];
+            [_distantAlbumNoOfStudiesCache removeAllObjects];
+        }
+        
+        [[_database managedObjectContext] lock];
+        @try
+        {
+            [databaseOutline reloadData];
+            [albumTable reloadData];
+            [comparativeTable reloadData];
             
             [self.window display];
+            [self setDBWindowTitle];
+            [self refreshPACSOnDemandResults: self];
             
-			[DCMPix purgeCachedDictionaries];
-			[DCMView purgeStringTextureCache];
+            [self setNetworkLogs];
+            [self outlineViewRefresh];
+            [self refreshMatrix: self];
+            [self refreshAlbums];
             
-			[self resetLogWindowController];
-			
-			[[AppController sharedAppController] closeAllViewers: self];
-			
-            @try
-            {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey: @"clearSearchAndTimeIntervalWhenSelectingAlbum"])
-                    [self showEntireDatabase];
-            }
-            @catch (...) {
-            }
-			
-			_database = [db retain];
-            [_database renewManagedObjectContext]; // We want to be sure to use our 'clean' managedobjectcontext (not used in any other threads)
-            
-			if ([NSUserDefaults canActivateAnyLocalDatabase] && [db isLocal] && ![db isReadOnly])
-				[DicomDatabase setActiveLocalDatabase:db];
-			if (db)
-                [self selectCurrentDatabaseSource];
-
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseAddNotification:) name:_O2AddToDBAnywayNotification object:_database];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseDidChangeContextNotification:) name:OsirixDicomDatabaseDidChangeContextNotification object:_database];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseInvalidateAlbumsCacheNotification:) name:O2DatabaseInvalidateAlbumsCacheNotification object:_database];
-            
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_newStudiesRefreshComparativeStudies:) name:OsirixAddNewStudiesDBNotification object:_database];
-            
-			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
-            [self saveLoadAlbumsSortDescriptors];
-            
-			@synchronized(_albumNoOfStudiesCache)
-            {
-				[_albumNoOfStudiesCache removeAllObjects];
-                [_distantAlbumNoOfStudiesCache removeAllObjects];
-			}
-            
-			[[_database managedObjectContext] lock];
-			@try
-            {
-                [databaseOutline reloadData];
-				[albumTable reloadData];
-                [comparativeTable reloadData];
-                
-                [self.window display];
-				[self setDBWindowTitle];
-				[self refreshPACSOnDemandResults: self];
-                
-				[self setNetworkLogs];
-				[self outlineViewRefresh];
-				[self refreshMatrix: self];
-				[self refreshAlbums];
-				
 #ifndef MIELE_LIGHT
-				if ([QueryController currentQueryController])
-					[[QueryController currentQueryController] refresh: self];
-				else if ([QueryController currentAutoQueryController])
-					[[QueryController currentAutoQueryController] refresh: self];
+            if ([QueryController currentQueryController])
+                [[QueryController currentQueryController] refresh: self];
+            else if ([QueryController currentAutoQueryController])
+                [[QueryController currentAutoQueryController] refresh: self];
 #endif
-			}
-            @catch (NSException* e)
-            {
-				N2LogExceptionWithStackTrace(e);
-			}
-            @finally
-            {
-				[[_database managedObjectContext] unlock];
-			}
-			
-			[[LogManager currentLogManager] resetLogs];
         }
-        @catch (...)
+        @catch (NSException* e)
         {
-			@throw;
-		}
+            N2LogExceptionWithStackTrace(e);
+        }
         @finally
         {
-			[self didChangeValueForKey:@"database"];
-		}
-	}
+            [[_database managedObjectContext] unlock];
+        }
+        
+        [[LogManager currentLogManager] resetLogs];
+    }
+    @catch (...)
+    {
+        @throw;
+    }
+    @finally
+    {
+        [self didChangeValueForKey:@"database"];
+    }
 }
 
 -(void)openDatabaseIn:(NSString*)a Bonjour:(BOOL)isBonjour __deprecated
@@ -1945,11 +1961,13 @@ static NSConditionLock *threadLock = nil;
 
 - (void)setDBWindowTitle
 {
-	[self.window setTitle: _database? [_database name] : @""];
+	[self.window setTitle: _database ? [_database name] : @""];
+    NSLog(@"%s title:<%@>", __FUNCTION__, self.window.title);
     
     NSString *prefix = NSTemporaryDirectory();
 
-    if ([_database.baseDirPath hasPrefix: prefix] || _database.isLocal == NO)
+    if ([_database.baseDirPath hasPrefix: prefix] ||
+        _database.isLocal == NO)
     {
         if (_database.sourcePath.length > 0)
             [self.window setRepresentedFilename: _database.sourcePath];
@@ -1957,7 +1975,7 @@ static NSConditionLock *threadLock = nil;
             [self.window setRepresentedFilename: @""];
     }
     else
-        [self.window setRepresentedFilename: _database? _database.baseDirPath : @""];
+        [self.window setRepresentedFilename: _database ? _database.baseDirPath : @""];
 }
 
 #if 0
@@ -14267,7 +14285,7 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		// Remove identical local sources
 		
-		NSArray *dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: localDatabasePaths_a_KEY];
+		NSArray<NSDictionary *> *dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: localDatabasePaths_a_KEY];
 		NSMutableArray *filteredArray = [NSMutableArray arrayWithCapacity: [dbArray count]];
 		
 		for (NSDictionary *dict in dbArray)
@@ -14850,7 +14868,7 @@ static NSArray*	openSubSeriesArray = nil;
             //	queueLock = [[NSConditionLock alloc] initWithCondition: QueueEmpty];
             //	[NSThread detachNewThreadSelector:@selector(runSendQueue:) toTarget:self withObject:nil];
             
-            // bonjour
+            // Bonjour
             bonjourBrowser = [[BonjourBrowser alloc] initWithBrowserController:self];
             [self displayBonjourServices];
             

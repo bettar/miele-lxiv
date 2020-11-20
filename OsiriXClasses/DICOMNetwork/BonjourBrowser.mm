@@ -45,9 +45,10 @@ static BonjourBrowser *currentBrowser = nil;
 	return currentBrowser;
 }
 
--(id)initWithBrowserController:(BrowserController*)bC {
-	if ((self = [super init])) {
-		
+-(id)initWithBrowserController:(BrowserController*)bC
+{
+	if ((self = [super init]))
+    {
 		currentBrowser = self;
 		
 		browser = [[NSNetServiceBrowser alloc] init];
@@ -141,6 +142,7 @@ static BonjourBrowser *currentBrowser = nil;
 
 - (void) buildFixedIPList
 {
+    NSLog(@"%s", __FUNCTION__);
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"syncOsiriXDB"])
 	{
 		[NSThread detachNewThreadSelector:@selector(syncOsiriXDBList)
@@ -170,9 +172,12 @@ static BonjourBrowser *currentBrowser = nil;
 
 - (void) buildDICOMDestinationsList
 {
-	NSArray *dbArray = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
+    NSLog(@"%s", __FUNCTION__);
+
+    NSArray *dbArray = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 	
-	if( dbArray == nil) dbArray = [NSArray array];
+	if (dbArray == nil)
+        dbArray = [NSArray array];
 	
 	for (int i = 0; i < [services count]; i++)
 	{
@@ -193,8 +198,10 @@ static BonjourBrowser *currentBrowser = nil;
 
 - (void) buildLocalPathsList
 {
-	NSArray *dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: localDatabasePaths_a_KEY];
-	NSString *defaultPath = documentsDirectoryFor([[NSUserDefaults standardUserDefaults] integerForKey: DefaultDbLocation_i_KEY],
+    NSLog(@"%s", __FUNCTION__);
+	NSArray<NSDictionary *> *dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: localDatabasePaths_a_KEY];
+
+    NSString *defaultPath = documentsDirectoryFor([[NSUserDefaults standardUserDefaults] integerForKey: DefaultDbLocation_i_KEY],
                                                   [[NSUserDefaults standardUserDefaults] stringForKey: DefaultDbLocationUrl_s_KEY]);
 	
 	if (dbArray == nil)
@@ -234,7 +241,9 @@ static BonjourBrowser *currentBrowser = nil;
 // Order them: first the localPath, fixedIP, bonjour, dicomDestination
 - (void) arrangeServices
 {
-	NSMutableArray *result = [NSMutableArray array];
+    NSLog(@"%s", __FUNCTION__);
+
+    NSMutableArray *result = [NSMutableArray array];
 	
 	for (int i = 0 ; i < [services count]; i++)
 		if ([[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"localPath"])

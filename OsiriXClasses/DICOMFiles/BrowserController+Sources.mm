@@ -581,7 +581,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     return NO;
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+-(void)observeValueForKeyPath:(NSString*)keyPath
+                     ofObject:(id)object
+                       change:(NSDictionary*)change
+                      context:(void*)context
 {
 	if (![NSThread isMainThread])
     {
@@ -594,12 +597,14 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     dontListenToSourcesChanges = YES;
     
     id previousNode = [_browser sourceIdentifierForDatabase:_browser.database];
-    
+
     @try
     {
+#pragma mark LocalBrowserSourcesContext
+
         if (context == LocalBrowserSourcesContext)
         {
-            NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey: localDatabasePaths_a_KEY];
+            NSArray<NSDictionary *> *a = [[NSUserDefaults standardUserDefaults] objectForKey: localDatabasePaths_a_KEY];
 
             // Remove old items
             for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
@@ -615,12 +620,14 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                         }
                     }
             }
-            // add new items
+
+            // Add new items
             for (NSDictionary* d in a)
             {
                 NSString* dpath = [d valueForKey:@"Path"];
                 if ([[DicomDatabase baseDirPathForPath:dpath] isEqualToString:DicomDatabase.defaultDatabase.baseDirPath]) // is already listed as "default database"
                     continue;
+
                 DataNodeIdentifier* dni;
                 NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:dpath];
                 if (i == NSNotFound) {
@@ -636,12 +643,15 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 }
             }
         }
-        
+
+#pragma mark RemoteBrowserSourcesContext
+
         if (context == RemoteBrowserSourcesContext)
         {
             NSHost* currentHost = [AppDefaults currentHost];
             NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey: MieleServers_a_KEY];
-            // remove old items
+
+            // Remove old items
             for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
             {
                 if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && dni.entered) // is a remote database and is flagged as "entered"
@@ -656,21 +666,31 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                         }
                     }
             }
-            // add new items
+
+            // Add new items
     //        NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
             for (NSDictionary* d in a)
             {
                 [NSThread performBlockInBackground:^{
                     // we're now in a background thread
                     NSString* dadd = [d valueForKey:@"Address"];
-                    if ([[self class] host:[NSHost hostWithAddressOrName:dadd] isEqualToHost:currentHost]) // don't list self
+
+                    if ([[self class] host: [NSHost hostWithAddressOrName:dadd]
+                             isEqualToHost: currentHost])
+                    {
+                        // Don't list self
                         return;
+                    }
+
                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                         // we're now back in the main thread
                         DataNodeIdentifier* dni;
                         NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:dadd];
                         if (i == NSNotFound) {
-                            dni = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:dadd port:[[d valueForKey:@"Port"] intValue] description:[d objectForKey:@"Description"] dictionary:d];
+                            dni = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation: dadd
+                                                                                                    port: [[d valueForKey:@"Port"] intValue]
+                                                                                             description: [d objectForKey:@"Description"]
+                                                                                              dictionary: d];
                             dni.entered = YES;
                             [_browser.sources addObject:dni];
                         }
@@ -684,16 +704,23 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 }];
             }
         }
-        
+      
+#pragma mark DicomBrowserSourcesContext
+
         if (context == DicomBrowserSourcesContext)
         {
             NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey: Servers_a_KEY];
             NSMutableDictionary* aa = [NSMutableDictionary dictionary];
             for (NSDictionary* ai in a)
             {
-                if( [[ai objectForKey: @"Activated"] boolValue] && [[ai objectForKey: @"Send"] boolValue])
+                if ([[ai objectForKey: @"Activated"] boolValue] &&
+                    [[ai objectForKey: @"Send"] boolValue])
                 {
-                    NSString *uniqueKey =[NSString stringWithFormat:@"%@%d%@", [ai objectForKey:@"Address"],[[ai objectForKey:@"Port"] unsignedIntValue],[ai objectForKey:@"AETitle"]];
+                    NSString *uniqueKey =[NSString stringWithFormat:@"%@%d%@",
+                                          [ai objectForKey:@"Address"],
+                                          [[ai objectForKey:@"Port"] unsignedIntValue],
+                                          [ai objectForKey:@"AETitle"]];
+
                     [aa setObject:ai forKey:uniqueKey];
                 }
             }
@@ -741,6 +768,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             }
         }
         
+#pragma mark SearchBonjourNodesContext
+
         if (context == SearchBonjourNodesContext)
             @synchronized (_bonjourSources) {
                 if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) // add remote databases detected with bonjour
@@ -766,7 +795,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                         }
                 }
             }
-        
+#pragma mark SearchDicomNodesContext
+
         if (context == SearchDicomNodesContext)
             @synchronized (_bonjourSources) {
                 if (![[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
@@ -799,8 +829,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     
     dontListenToSourcesChanges = NO;
     
-    if( [_browser rowForSourceIdentifier: previousNode] == -1)
-        [_browser performSelector: @selector(setDatabase:) withObject: DicomDatabase.defaultDatabase afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
+    if ([_browser rowForSourceIdentifier: previousNode] == -1)
+    {
+        [_browser performSelector: @selector(setDatabase:)
+                       withObject: DicomDatabase.defaultDatabase
+                       afterDelay: 0.01]; // This will guarantee that it will not happen in middle of a drag & drop, for example
+    }
     else
         [_browser selectSourceForDatabase: _browser.database];
 }

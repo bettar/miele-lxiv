@@ -22,16 +22,20 @@
 #import "options.h"
 
 // /////////////////////////////////////////////////////////////////////////////
-#define OpenViewer_b_KEY            @"OPENVIEWER"                   // boolean. It also has I.B. binding
-#define DbLocation_i_KEY            @"DATABASELOCATION"             // integer
-#define DbLocationUrl_s_KEY         @"DATABASELOCATIONURL"          // string
+// _a_ array
+// _b_ boolean
+// _i_ integer
+// _s_ string
+#define OpenViewer_b_KEY            @"OPENVIEWER"                   // It also has I.B. binding
+#define DbLocation_i_KEY            @"DATABASELOCATION"
+#define DbLocationUrl_s_KEY         @"DATABASELOCATIONURL"
 #define DbVersion_s_KEY             @"DATABASEVERSION"              // contents of file DB_VERSION_FILE
-#define DefaultDbLocation_i_KEY     @"DEFAULT_DATABASELOCATION"     // integer, used by matrix of radio buttons, 0=documents dir, 1=user selected
-#define DefaultDbLocationUrl_s_KEY  @"DEFAULT_DATABASELOCATIONURL"  // string
-#define MieleServers_a_KEY          @"OSIRIXSERVERS"                // array
-#define Servers_a_KEY               @"SERVERS"
+#define DefaultDbLocation_i_KEY     @"DEFAULT_DATABASELOCATION"     // used by matrix of radio buttons, 0=documents dir, 1=user selected
+#define DefaultDbLocationUrl_s_KEY  @"DEFAULT_DATABASELOCATIONURL"
+#define MieleServers_a_KEY          @"OSIRIXSERVERS"    // Array of dictionaries: Activated, Address, AETitle, Port, TransferSyntax, Description
+#define Servers_a_KEY               @"SERVERS"          // Array of dictionaries: Activated, Address, AETitle, Port, Send
 
-#define localDatabasePaths_a_KEY    @"localDatabasePaths"           // array. It also has I.B. binding
+#define localDatabasePaths_a_KEY    @"localDatabasePaths"           // It also has I.B. binding. Array of dictionaries: "Path" "Description"
 
 
 // /////////////////////////////////////////////////////////////////////////////

@@ -3477,6 +3477,7 @@ API_AVAILABLE(macos(10.14))
     
     NSMutableArray *dbArray = [[[[NSUserDefaults standardUserDefaults] arrayForKey: localDatabasePaths_a_KEY] deepMutableCopy] autorelease];
     NSMutableArray *toBeRemoved = [NSMutableArray array];
+
     for (NSMutableDictionary *d in dbArray)
     {
         if ([[d valueForKey:@"Path"] hasPrefix: path] ||

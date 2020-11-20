@@ -286,30 +286,50 @@
 	[pool release];
 }
 
+// Copy types
+//  local to local
+//  local to remote
+//  local to remote DICOM
+//
+//  remote to local
+//  remote to remote
+//  remote to remote DICOM
 -(BOOL)initiateCopyImages:(NSArray*)dicomImages
                  toSource:(DataNodeIdentifier*)destination
 {
     NSLog(@"%s", __FUNCTION__);
-	if (_database.isLocal)
+
+    if (_database.isLocal)
     {
-		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]]) { // local OsiriX to local OsiriX
-            
+        // local OsiriX to local OsiriX
+		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]])
+        {
             DicomDatabase *dst = [DicomDatabase databaseAtPath:destination.location]; // Create the mainDatabase on the MAIN thread, if necessary !
             
-            NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, dst, NULL]] autorelease];
+            NSThread* thread = [[[NSThread alloc] initWithTarget:self
+                                                        selector:@selector(copyImagesToLocalBrowserSourceThread:)
+                                                          object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, dst, NULL]] autorelease];
             thread.name = NSLocalizedString(@"Copying images...", nil);
             thread.supportsCancel = YES;
             [[ThreadsManager defaultManager] addThreadAndStart:thread];
             return YES;
         }
-        else if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]]) { // local OsiriX to remote OsiriX
-            NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
+        
+        // local OsiriX to remote OsiriX
+        if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
+        {
+            NSThread* thread = [[[NSThread alloc] initWithTarget:self
+                                                        selector:@selector(copyImagesToRemoteBrowserSourceThread:)
+                                                          object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
             thread.supportsCancel = YES;
             thread.name = NSLocalizedString(@"Sending images...", nil);
             [[ThreadsManager defaultManager] addThreadAndStart:thread];
             return YES;
         }
-        else if ([destination isKindOfClass:[DicomNodeIdentifier class]]) { // local OsiriX to remote DICOM
+        
+        // local OsiriX to remote DICOM
+        if ([destination isKindOfClass:[DicomNodeIdentifier class]])
+        {
             NSArray* r = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
             for (int i = 0; i < r.count; ++i)
                 if ([destination isEqualToDictionary:[r objectAtIndex:i]])
@@ -321,19 +341,28 @@
 	}
     else
     {
+        // remote OsiriX to local OsiriX
 		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]])
-        { // remote OsiriX to local OsiriX
-            
+        {
             [DicomDatabase databaseAtPath:destination.location]; // Create the mainDatabase on the MAIN thread, if necessary !
             
-            NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyRemoteImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
+            NSThread* thread = [[[NSThread alloc] initWithTarget: self
+                                                        selector: @selector(copyRemoteImagesToLocalBrowserSourceThread:)
+                                                          object: [NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
             thread.name = NSLocalizedString(@"Copying images...", nil);
             thread.supportsCancel = YES;
             [[ThreadsManager defaultManager] addThreadAndStart:thread];
             return YES;
 		}
-        else if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]] || [destination isKindOfClass:[DicomNodeIdentifier class]]) { // remote OsiriX to remote OsiriX // remote OsiriX to remote DICOM
-				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyRemoteImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
+        
+        // remote OsiriX to remote OsiriX
+        // remote OsiriX to remote DICOM
+        if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]] ||
+            [destination isKindOfClass:[DicomNodeIdentifier class]])
+        {
+				NSThread* thread = [[[NSThread alloc] initWithTarget: self
+                                                            selector: @selector(copyRemoteImagesToRemoteBrowserSourceThread:)
+                                                              object: [NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Initiating image transfer...", nil);
                 thread.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
