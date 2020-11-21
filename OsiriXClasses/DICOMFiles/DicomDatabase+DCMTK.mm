@@ -608,8 +608,6 @@
 		NSLog( @"******* test Files FAILED : one of more of these files are corrupted : %@", files);
 	
 	return succeed;
-	
 }
-
 
 @end

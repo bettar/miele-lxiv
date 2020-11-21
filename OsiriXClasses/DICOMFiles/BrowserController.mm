@@ -14725,8 +14725,7 @@ static NSArray*	openSubSeriesArray = nil;
         
     //	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
     //	[waitCompressionWindow setCancel:YES];
-        
-        
+
         [oMatrix setIntercellSpacing:NSMakeSize(-1, -1)];
         
         [wait showWindow:self];

@@ -347,7 +347,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 {
     // Use the DCM framework implementation
     NSMutableString *result = [[DCMCharacterSet stringWithBytes: str
-                                                         length: sizeof(str)
+                                                         length: strlen(str) // Issue #62
                                                       encodings: encodings] mutableCopy];
     if (replace)
         return [DicomFile NSreplaceBadCharacter: result];

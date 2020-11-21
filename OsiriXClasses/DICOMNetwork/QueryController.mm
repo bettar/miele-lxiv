@@ -66,6 +66,7 @@
 #import "tmp_locations.h"
 #import "AppDefaults.h"
 
+// Keys
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
 static NSString *AccessionNumber = @"AccessionNumber";
@@ -334,7 +335,9 @@ extern "C"
     }
 }
 
-+ (NSMutableArray*) queryStudiesForFilters:(NSDictionary*) filters servers: (NSArray*) serversList showErrors: (BOOL) showErrors
++ (NSMutableArray*) queryStudiesForFilters:(NSDictionary*) filters
+                                   servers: (NSArray*) serversList
+                                showErrors: (BOOL) showErrors
 {
 	QueryArrayController *qm = nil;
 	NSMutableArray *studies = [NSMutableArray array];
@@ -962,7 +965,11 @@ extern "C"
     
     [autoQRInstanceName setStringValue: @""];
     
-    [NSApp beginSheet: addAutoQRInstanceWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+    [NSApp beginSheet: addAutoQRInstanceWindow
+       modalForWindow: [self window]
+        modalDelegate: self
+       didEndSelector: nil
+          contextInfo: nil];
 }
 
 - (void) setCurrentAutoQR: (int) index
@@ -1152,7 +1159,11 @@ extern "C"
 {
     [presetName setStringValue: @""];
     
-	[NSApp beginSheet: presetWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+	[NSApp beginSheet: presetWindow
+       modalForWindow: [self window]
+        modalDelegate: self
+       didEndSelector: nil
+          contextInfo: nil];
 }
 
 - (void) emptyPreset:(id) sender
@@ -1604,7 +1615,9 @@ extern "C"
     [self autoQueryTimerFunction: QueryTimer]; 
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(DCMTKQueryNode *) item
+- (id)outlineView:(NSOutlineView *)outlineView
+            child:(NSInteger)index
+           ofItem:(DCMTKQueryNode *) item
 {
 	@try
 	{
@@ -1688,7 +1701,8 @@ extern "C"
 	return NO;
 }
 
-- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(DCMTKQueryNode *) item
+- (NSInteger)outlineView:(NSOutlineView *)outlineView
+  numberOfChildrenOfItem:(DCMTKQueryNode *) item
 {
 	@try
 	{
@@ -1733,7 +1747,8 @@ extern "C"
     return [self localSeries: item context: nil];
 }
 
-- (NSArray*) localSeries:(id) item context: (NSManagedObjectContext*) context
+- (NSArray*) localSeries: (id) item
+                 context: (NSManagedObjectContext*) context
 {
 	NSArray *seriesArray = nil;
 	NSManagedObject *study = [[self localStudy: [outlineView parentForItem: item] context: context] lastObject];
@@ -1917,7 +1932,12 @@ extern "C"
 	return nil;
 }
 
-- (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation;
+- (NSString *)outlineView:(NSOutlineView *)ov
+           toolTipForCell:(NSCell *)cell
+                     rect:(NSRectPointer)rect
+              tableColumn:(NSTableColumn *)tableColumn
+                     item:(id)item
+            mouseLocation:(NSPoint)mouseLocation;
 {
 	@try
 	{
@@ -1984,13 +2004,18 @@ extern "C"
 
 #pragma mark - NSOutlineViewDelegate
 
-- (void)outlineView:(NSOutlineView *)oV willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
+- (void)outlineView:(NSOutlineView *)oV
+    willDisplayCell:(id)cell
+     forTableColumn:(NSTableColumn *)tableColumn
+               item:(id)item
 {
 	@try
 	{
 		if ([[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database?
 		{
-            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"] && [[self window] firstResponder] == outlineView && [outlineView selectedRow] >= 0)
+            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"] &&
+                [[self window] firstResponder] == outlineView &&
+                [outlineView selectedRow] >= 0)
             {
                 id study = nil;
                 
@@ -2001,10 +2026,17 @@ extern "C"
                 
                 id selStudy = [outlineView itemAtRow: [outlineView selectedRow]];
                 
-                NSString *curUid = [NSString stringWithFormat: @"%@ %@", [item valueForKey: @"patientID"], [item valueForKey: @"name"]];
-                NSString *selUid = [NSString stringWithFormat: @"%@ %@", [selStudy valueForKey: @"patientID"], [selStudy valueForKey: @"name"]];
+                NSString *curUid = [NSString stringWithFormat: @"%@ %@",
+                                    [item valueForKey: @"patientID"],
+                                    [item valueForKey: @"name"]];
+
+                NSString *selUid = [NSString stringWithFormat: @"%@ %@",
+                                    [selStudy valueForKey: @"patientID"],
+                                    [selStudy valueForKey: @"name"]];
                 
-                if (item != selStudy && [curUid length] > 0 && [curUid compare: selUid options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+                if (item != selStudy &&
+                    [curUid length] > 0 &&
+                    [curUid compare: selUid options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                 {
                     [cell setDrawsBackground: YES];
                     [cell setBackgroundColor: [NSColor lightGrayColor]];
@@ -2073,7 +2105,9 @@ extern "C"
 	}
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+- (id)outlineView:(NSOutlineView *)outlineView
+objectValueForTableColumn:(NSTableColumn *)tableColumn
+           byItem:(id)item
 {
     @synchronized( self)
     {
@@ -2325,11 +2359,11 @@ extern "C"
 
 - (NSArray*) queryPatientIDwithoutGUI: (NSString*) patientID
 {
-	NSString			*hostname;
-	id					aServer;
-	int					selectedServer;
-	BOOL				atLeastOneSource = NO;
-	NSArray				*copiedSources = [NSArray arrayWithArray: sourcesArray];
+	NSString	*hostname;
+	id			aServer;
+	int			selectedServer;
+	BOOL		atLeastOneSource = NO;
+	NSArray		*copiedSources = [NSArray arrayWithArray: sourcesArray];
 	
 	BOOL noChecked = YES;
 	for (NSUInteger i = 0; i < [copiedSources count]; i++)
@@ -2556,18 +2590,18 @@ extern "C"
             
             for (int v = fromField; v <= toField; v++)
             {
-                switch( v)
+                switch (v)
                 {
-                    case 0:		currentQueryKey = PatientName;          break;
-                    case 1:		currentQueryKey = PatientID;            break;
-                    case 2:		currentQueryKey = AccessionNumber;      break;
-                    case 3:		currentQueryKey = PatientBirthDate;     break;
-                    case 4:		currentQueryKey = StudyDescription;     break;
-                    case 5:		currentQueryKey = ReferringPhysician;	break;
-                    case 6:		currentQueryKey = StudyComments;        break;
-                    case 7:		currentQueryKey = InstitutionName;      break;
-                    case 8:     currentQueryKey = customDICOMField;     break;
-                    case 9:     currentQueryKey = InterpretationStatusID; break;
+                    case 0:	currentQueryKey = PatientName;          break;
+                    case 1:	currentQueryKey = PatientID;            break;
+                    case 2:	currentQueryKey = AccessionNumber;      break;
+                    case 3:	currentQueryKey = PatientBirthDate;     break;
+                    case 4:	currentQueryKey = StudyDescription;     break;
+                    case 5:	currentQueryKey = ReferringPhysician;	break;
+                    case 6:	currentQueryKey = StudyComments;        break;
+                    case 7:	currentQueryKey = InstitutionName;      break;
+                    case 8: currentQueryKey = customDICOMField;     break;
+                    case 9: currentQueryKey = InterpretationStatusID; break;
                 }
                 
                 if (currentQueryKey == customDICOMField &&
@@ -2879,7 +2913,9 @@ extern "C"
                 }
             }
             
-            QueryFilter *dateQueryFilter = nil, *timeQueryFilter = nil, *modalityQueryFilter = nil;
+            QueryFilter *dateQueryFilter = nil;
+            QueryFilter *timeQueryFilter = nil;
+            QueryFilter *modalityQueryFilter = nil;
             
             [QueryController getDateAndTimeQueryFilterWithTag: [[instance objectForKey: @"dateFilterMatrix"] intValue]
                                                      fromDate: fromDate.dateValue
@@ -3261,10 +3297,18 @@ extern "C"
 
 + (NSString*) stringIDForStudy:(id) item
 {
-	return [NSString stringWithFormat:@"%@-%@-%@-%@-%@-%@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"], [item valueForKey:@"date"], [item valueForKey:@"time"], [item valueForKey:@"uid"]];
+	return [NSString stringWithFormat:@"%@-%@-%@-%@-%@-%@",
+            [item valueForKey:@"name"],
+            [item valueForKey:@"patientID"],
+            [item valueForKey:@"accessionNumber"],
+            [item valueForKey:@"date"],
+            [item valueForKey:@"time"],
+            [item valueForKey:@"uid"]];
 }
 
-- (void) addStudyIfNotAvailable: (id) item toArray:(NSMutableArray*) selectedItems context: (NSManagedObjectContext*) context
+- (void) addStudyIfNotAvailable: (id) item
+                        toArray: (NSMutableArray*) selectedItems
+                        context: (NSManagedObjectContext*) context
 {
 	NSArray *studyArray = [self localStudy: item context: context];
 	
@@ -3522,8 +3566,11 @@ extern "C"
 {
 	if ([[instance objectForKey: @"autoRetrieving"] boolValue] && autoQuery)
 	{
-		NSThread *t = [[[NSThread alloc] initWithTarget: self selector:@selector(autoRetrieveThread:) object: instance] autorelease];
-		t.name = NSLocalizedString( @"Retrieving images...", nil);
+		NSThread *t = [[[NSThread alloc] initWithTarget: self
+                                               selector: @selector(autoRetrieveThread:)
+                                                 object: instance] autorelease];
+
+        t.name = NSLocalizedString( @"Retrieving images...", nil);
 		[[ThreadsManager defaultManager] addThreadAndStart: t];
 	}
 }
@@ -5098,7 +5145,10 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 	return array;
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+-(void)observeValueForKeyPath:(NSString*)keyPath
+                     ofObject:(id)object
+                       change:(NSDictionary*)change
+                      context:(void*)context
 {
 	if (object == [NSUserDefaultsController sharedUserDefaultsController])
     {

@@ -118,7 +118,10 @@
 
 - (void)performQuery: (BOOL) showError
 {
-	if( queryLock == nil) queryLock = [[NSLock alloc] init];
+    NSLog(@"%s", __FUNCTION__);
+
+	if (queryLock == nil)
+        queryLock = [[NSLock alloc] init];
     
 	[queryLock lock];
 	
@@ -195,7 +198,7 @@
                         
                         NSString *lastString = nil;
                         
-                        for( NSString *s in sortedUidsArray)
+                        for (NSString *s in sortedUidsArray)
                         {
                             if( [s isEqualToString: lastString])
                             {

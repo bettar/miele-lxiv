@@ -257,14 +257,15 @@
 
 - (void) terminateDrag:(NSArray*) fileArray
 {
-	BOOL	directory;
-	BOOL	done = NO;
+	BOOL directory;
+	BOOL done = NO;
 	
-	if( [fileArray count] == 1 && [[NSFileManager defaultManager] fileExistsAtPath: [fileArray objectAtIndex: 0]  isDirectory: &directory])
+	if ([fileArray count] == 1 &&
+        [[NSFileManager defaultManager] fileExistsAtPath: [fileArray objectAtIndex: 0] isDirectory: &directory])
 	{
-		if( [[[fileArray objectAtIndex: 0] lastPathComponent] isEqualToString: OUR_DATA_LOCATION])	// It's a database folder !
+		if ([[[fileArray objectAtIndex: 0] lastPathComponent] isEqualToString: OUR_DATA_LOCATION])	// It's a database folder !
 		{
-			if( [[NSFileManager defaultManager] fileExistsAtPath: [[fileArray objectAtIndex: 0] stringByAppendingPathComponent: DB_SQL_FILE]])
+			if ([[NSFileManager defaultManager] fileExistsAtPath: [[fileArray objectAtIndex: 0] stringByAppendingPathComponent: DB_SQL_FILE]])
 			{
 				[[BrowserController currentBrowser] openDatabasePath: [[fileArray objectAtIndex: 0] stringByDeletingLastPathComponent]];
 				done = YES;
@@ -272,7 +273,7 @@
 		}
 	}
 	
-	if( done == NO)
+	if (done == NO)
 	{
 		if( [fileArray count] == 1 && [[[fileArray objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file !
 		{

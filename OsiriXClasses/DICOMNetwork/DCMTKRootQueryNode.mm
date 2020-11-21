@@ -35,7 +35,8 @@
 						port:(int)port 
 						transferSyntax:(int)transferSyntax
 						compression: (float)compression
-									extraParameters:(NSDictionary *)extraParameters{
+									extraParameters:(NSDictionary *)extraParameters
+{
 	return [[[DCMTKRootQueryNode alloc] initWithDataset:(DcmDataset *)dataset
 										callingAET:(NSString *)myAET  
 										calledAET:(NSString *)theirAET  

@@ -1924,7 +1924,8 @@ static BOOL protectionAgainstReentry = NO;
 		NSString* dataDirPath = self.dataDirPath;
 		NSString* reportsDirPath = self.reportsDirPath;
 		NSString* errorsDirPath = self.errorsDirPath;
-		int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey:@"combineProjectionSeries"], combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
+        int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey:@"combineProjectionSeries"];
+        int combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
 		BOOL COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
 		BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
         NSString *commentField = [[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"];
@@ -2026,8 +2027,11 @@ static BOOL protectionAgainstReentry = NO;
                         if ([[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] &&
                             [[curDict objectForKey: @"patientUID"] compare: curPatientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                         {
-                            if ([[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
+                            if ([[study valueForKey: @"modality"] isEqualToString: @"SR"] ||
+                                [[study valueForKey: @"modality"] isEqualToString: @"OT"])
+                            {
                                 [study setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
+                            }
                         }
                         else
                         {
@@ -2053,7 +2057,10 @@ static BOOL protectionAgainstReentry = NO;
                                     
                                     // is this actually an empty study? if so, treat it as a newObject
                                     NSSet* series = [tstudy series];
-                                    if (series.count == 1 && [[series.anyObject id] intValue] == 5005 && [[series.anyObject name] isEqualToString:@"OsiriX No Autodeletion"]) {
+                                    if (series.count == 1 &&
+                                        [[series.anyObject id] intValue] == 5005 &&
+                                        [[series.anyObject name] isEqualToString:@"OsiriX No Autodeletion"])
+                                    {
                                         newObject = YES;
                                         tstudy.dateAdded = today;
                                         tstudy.patientUID = [curDict objectForKey: @"patientUID"];
@@ -2811,8 +2818,8 @@ static BOOL protectionAgainstReentry = NO;
                             [NSThread currentThread].progress = float(i)/filesInput.count;
                         }
                         
-                        NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
-                        
+                        NSString *srcPath = [filesInput objectAtIndex: i];
+                        NSString *dstPath = nil;
                         if (copyFiles)
                         {
                             NSString *extension = [srcPath pathExtension];
@@ -2830,7 +2837,7 @@ static BOOL protectionAgainstReentry = NO;
                                     @synchronized( oneCopyAtATime)
                                     {
 #ifndef NDEBUG
-                                        NSLog(@"%d mountedVolume:%d", __LINE__, [[dict objectForKey: @"mountedVolume"] boolValue]);
+                                        NSLog(@"Line %d, mountedVolume:%d", __LINE__, [[dict objectForKey: @"mountedVolume"] boolValue]);
 #endif
                                         if ([[dict objectForKey: @"mountedVolume"] boolValue])
                                         {
@@ -2844,7 +2851,7 @@ static BOOL protectionAgainstReentry = NO;
                                         }
                                       
 #ifndef NDEBUG
-                                        NSLog(@"%s %d dstPath:%@", __FUNCTION__, __LINE__, dstPath);
+                                        NSLog(@"%s Line %d, dstPath:%@", __FUNCTION__, __LINE__, dstPath);
 #endif
                                         if ([[NSFileManager defaultManager] fileExistsAtPath: dstPath])
                                         {
@@ -2927,7 +2934,13 @@ static BOOL protectionAgainstReentry = NO;
                             
                             DicomDatabase *idatabase = self.isMainDatabase ? self.independentDatabase : [self.mainDatabase independentDatabase];
                             
-                            objects = [idatabase addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:YES generatedByOsiriX:NO importedFiles:YES returnArray:YES];
+                            objects = [idatabase addFilesAtPaths:copiedFiles
+                                               postNotifications:YES
+                                                       dicomOnly:onlyDICOM
+                                             rereadExistingItems:YES
+                                               generatedByOsiriX:NO
+                                                   importedFiles:YES
+                                                     returnArray:YES];
                             
                             DicomDatabase* mdatabase = self.isMainDatabase ? self : self.mainDatabase;
                             if ([[BrowserController currentBrowser] database] == mdatabase && [[dict objectForKey:@"addToAlbum"] boolValue])

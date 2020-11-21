@@ -68,7 +68,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	return mutable1;
 }
 
-// Based on dcmtk 3.6.4 function DcmSpecificCharacterSet::convertString()
+// Based on DCMTK 3.6.5 function DcmSpecificCharacterSet::convertString()
 // Used in DCM framework
 // targets miele and decompress both use DCM
 // TODO: Use the DCM framework version instead

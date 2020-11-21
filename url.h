@@ -75,7 +75,7 @@
 // /////////////////////////////////////////////////////////////////////////////
 #define SYNC_DB_URL             @"http://list.dicom.dcm/DB.plist"  // was OsiriXDB.plist"
 #define SYNC_DICOM_NODES_URL    @"http://list.dicom.dcm/DICOMNodes.plist"
-#define HELP_SQL_SYNTAX_URL     @"https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html"
+#define HELP_SQL_SYNTAX_URL         @"https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795-215868"
 
 // /////////////////////////////////////////////////////////////////////////////
 // Our identity

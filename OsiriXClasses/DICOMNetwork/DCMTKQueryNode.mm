@@ -603,6 +603,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) queryWithValues:(NSArray *)values dataset:(DcmDataset*) dataset
 {
+    NSLog(@"%s", __FUNCTION__);
 	@synchronized( self)
 	{
         @try
