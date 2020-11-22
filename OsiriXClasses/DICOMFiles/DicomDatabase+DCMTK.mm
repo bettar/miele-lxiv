@@ -506,6 +506,7 @@
 +(BOOL)testFiles:(NSArray*)files
 {
     NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"Decompress"] path];
+
     if ([[NSFileManager defaultManager] fileExistsAtPath: launchPath] == NO)
         return YES;
     

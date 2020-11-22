@@ -862,7 +862,7 @@ static NSConditionLock *threadLock = nil;
 // Read
 // .pages .app
 // .xml (WADO) .dcmURLs
-// .xip .osirixzip
+// .zip .osirixzip
 // DICOMDIR DICOMDIR.
 - (void) addFilesAndFolderToDatabase:(NSArray*) filenames
 {

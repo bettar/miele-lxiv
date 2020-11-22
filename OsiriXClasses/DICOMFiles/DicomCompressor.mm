@@ -26,9 +26,15 @@
 
 const NSUInteger MaxFilesPassedToDecompress = 200;
 
-+(void)executeDecompressOnFiles:(NSArray*)filePaths toDirectory:(NSString*)dirPath withOptionsPath:(NSString*)optionsPlistPath action:(Compression)action {
-	if (!dirPath) dirPath = @"sameAsDestination";
-	NSMutableArray* args = [NSMutableArray arrayWithObjects: dirPath, NULL];
++(void)executeDecompressOnFiles:(NSArray*)filePaths
+                    toDirectory:(NSString*)dirPath
+                withOptionsPath:(NSString*)optionsPlistPath
+                         action:(Compression)action
+{
+	if (!dirPath)
+        dirPath = @"sameAsDestination";
+
+    NSMutableArray* args = [NSMutableArray arrayWithObjects: dirPath, NULL];
 	
 	if (optionsPlistPath) {
 		[args addObject:@"SettingsPlist"];
@@ -64,34 +70,64 @@ const NSUInteger MaxFilesPassedToDecompress = 200;
 	}
 }
 
-+(void)decompressFiles:(NSArray*)filePaths toDirectory:(NSString*)dirPath {
-	[self decompressFiles:filePaths toDirectory:dirPath withOptions:NULL];
++(void)decompressFiles:(NSArray*)filePaths
+           toDirectory:(NSString*)dirPath
+{
+	[self decompressFiles:filePaths
+              toDirectory:dirPath
+              withOptions:NULL];
 }
 
-+(void)decompressFiles:(NSArray*)filePaths toDirectory:(NSString*)dirPath withOptions:(NSDictionary*)options {
++(void)decompressFiles:(NSArray*)filePaths
+           toDirectory:(NSString*)dirPath
+           withOptions:(NSDictionary*)options
+{
 	NSString* optionsPlistPath = [[NSFileManager defaultManager] tmpFilePathInTmp];
 	[options writeToFile:optionsPlistPath atomically:YES];
-	[self decompressFiles:filePaths toDirectory:dirPath withOptionsPath:optionsPlistPath];
+	[self decompressFiles:filePaths
+              toDirectory:dirPath
+          withOptionsPath:optionsPlistPath];
 	[[NSFileManager defaultManager] removeItemAtPath:optionsPlistPath error:NULL];
 }
 
-+(void)decompressFiles:(NSArray*)filePaths toDirectory:(NSString*)dirPath withOptionsPath:(NSString*)optionsPlistPath {
-	[self executeDecompressOnFiles:filePaths toDirectory:dirPath withOptionsPath:optionsPlistPath action:CompressionDecompress];
++(void)decompressFiles:(NSArray*)filePaths
+           toDirectory:(NSString*)dirPath
+       withOptionsPath:(NSString*)optionsPlistPath
+{
+	[self executeDecompressOnFiles:filePaths
+                       toDirectory:dirPath
+                   withOptionsPath:optionsPlistPath
+                            action:CompressionDecompress];
 }
 
-+(void)compressFiles:(NSArray*)filePaths toDirectory:(NSString*)dirPath {
-	[self compressFiles:filePaths toDirectory:dirPath withOptions:NULL];
++(void)compressFiles:(NSArray*)filePaths
+         toDirectory:(NSString*)dirPath
+{
+	[self compressFiles:filePaths
+            toDirectory:dirPath
+            withOptions:NULL];
 }
 
-+(void)compressFiles:(NSArray*)filePaths toDirectory:(NSString*)dirPath withOptions:(NSDictionary*)options {
++(void)compressFiles:(NSArray*)filePaths
+         toDirectory:(NSString*)dirPath
+         withOptions:(NSDictionary*)options
+{
 	NSString* optionsPlistPath = [[NSFileManager defaultManager] tmpFilePathInTmp];
 	[options writeToFile:optionsPlistPath atomically:YES];
-	[self compressFiles:filePaths toDirectory:dirPath withOptionsPath:optionsPlistPath];
+	[self compressFiles:filePaths
+            toDirectory:dirPath
+        withOptionsPath:optionsPlistPath];
 	[[NSFileManager defaultManager] removeItemAtPath:optionsPlistPath error:NULL];
 }
 
-+(void)compressFiles:(NSArray*)filePaths toDirectory:(NSString*)dirPath withOptionsPath:(NSString*)optionsPlistPath {
-	return [self executeDecompressOnFiles:filePaths toDirectory:dirPath withOptionsPath:optionsPlistPath action:CompressionCompress];
++(void)compressFiles:(NSArray*)filePaths
+         toDirectory:(NSString*)dirPath
+     withOptionsPath:(NSString*)optionsPlistPath
+{
+	return [self executeDecompressOnFiles:filePaths
+                              toDirectory:dirPath
+                          withOptionsPath:optionsPlistPath
+                                   action:CompressionCompress];
 }
 
 

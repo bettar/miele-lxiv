@@ -43,9 +43,7 @@ extern int maindcmdump(int argc, char *argv[]);
 }
 @end
 
-////////////////////////////////////////////////////////////////////////////////
-
-static int validFilePathDepth = 0;
+#pragma mark -
 
 @implementation DicomDirParser
 
@@ -56,7 +54,7 @@ static int validFilePathDepth = 0;
 	[super dealloc];
 }
 
-////////////////////////////////////////////////////////////////////////////////
+static int validFilePathDepth = 0;
 
 - (void) _testForValidFilePath: (NSMutableArray*) dicomdirFileList
                           path: (NSString*) startDirectory
@@ -185,20 +183,15 @@ static int validFilePathDepth = 0;
 	validFilePathDepth--;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
 - (void) parseArray:(NSMutableArray*) files
 {
 	NSMutableArray *result = [NSMutableArray array];
-	long i, start, length;
-	char *buffer;
+	long start;
+	char *buffer = (char*) [data UTF8String];
+	long i = 0;
+	long length = [data length];
 	
-	buffer = (char*) [data UTF8String];
-	
-	i = 0;
-	length = [data length];
-	
-	while( i < length)
+	while (i < length)
 	{
 		if( buffer[ i] == '[')
 		{
@@ -215,7 +208,7 @@ static int validFilePathDepth = 0;
 				
 				NSString *ext = [file pathExtension];
 				
-				if( [ext length] <= 4 && [ext length] >= 3 && [ext holdsIntegerValue] == NO)
+				if ([ext length] <= 4 && [ext length] >= 3 && [ext holdsIntegerValue] == NO)
 					[result addObject: [[file uppercaseString] stringByDeletingPathExtension]];
 				else
 					[result addObject: [file uppercaseString]];

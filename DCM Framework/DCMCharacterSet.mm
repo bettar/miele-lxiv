@@ -73,7 +73,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 // targets miele and decompress both use DCM
 // TODO: Use the DCM framework version instead
 + (NSString *) stringWithBytes:(char *) str
-                        length:(unsigned) length
+                        length:(const size_t) length
                      encodings:(NSStringEncoding*) encodings
 {
 	if (!str)

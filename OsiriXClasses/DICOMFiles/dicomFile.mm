@@ -217,14 +217,14 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	
 	NSMutableString	*mutable1 = [NSMutableString stringWithString: str];
 	
-    [mutable1 replaceOccurrencesOfString:@"," withString:@" " options:0 range:mutable1.range];
-	[mutable1 replaceOccurrencesOfString:@"^" withString:@" " options:0 range:mutable1.range]; 
-	[mutable1 replaceOccurrencesOfString:@"/" withString:@"-" options:0 range:mutable1.range]; 
-	[mutable1 replaceOccurrencesOfString:@"\r" withString:@"" options:0 range:mutable1.range]; 
-	[mutable1 replaceOccurrencesOfString:@"\n" withString:@"" options:0 range:mutable1.range]; 
-	[mutable1 replaceOccurrencesOfString:@"\"" withString:@"'" options:0 range:mutable1.range];
+    [mutable1 replaceOccurrencesOfString:@","   withString:@" " options:0 range:mutable1.range];
+	[mutable1 replaceOccurrencesOfString:@"^"   withString:@" " options:0 range:mutable1.range];
+	[mutable1 replaceOccurrencesOfString:@"/"   withString:@"-" options:0 range:mutable1.range];
+	[mutable1 replaceOccurrencesOfString:@"\r"  withString:@""  options:0 range:mutable1.range];
+	[mutable1 replaceOccurrencesOfString:@"\n"  withString:@""  options:0 range:mutable1.range];
+	[mutable1 replaceOccurrencesOfString:@"\""  withString:@"'" options:0 range:mutable1.range];
     [mutable1 replaceOccurrencesOfString:@"   " withString:@" " options:0 range:mutable1.range]; //triple space -> single space
-	[mutable1 replaceOccurrencesOfString:@"  " withString:@" " options:0 range:mutable1.range];  //double space -> single space
+	[mutable1 replaceOccurrencesOfString:@"  "  withString:@" " options:0 range:mutable1.range];  //double space -> single space
 
 	NSUInteger i = [mutable1 length];
 	while ( --i > 0)

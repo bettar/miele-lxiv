@@ -881,16 +881,18 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                     NSTask *theTask = [[[NSTask alloc] init] autorelease];
                     
                     [theTask setArguments: [NSArray arrayWithObjects:
-                                            outFile, @"writeMovie",
+                                            outFile,
+                                            @"writeMovie",
                                             [outFile stringByAppendingString: @" dir"],
                                             [[NSNumber numberWithInteger:fps] stringValue],
                                             nil]];
                     
-                    NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"Decompress"] path];
+                    NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable: @"Decompress"] path];
                     [theTask setLaunchPath:launchPath];
                     [theTask launch];
                     
-                    while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+                    while ([theTask isRunning])
+                        [NSThread sleepForTimeInterval: 0.01];
                 }
                 @catch (NSException *e)
                 {
@@ -2862,7 +2864,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[aTask setArguments:[NSArray arrayWithObjects:htmlpath, @"pdfFromURL", nil]];
 			[aTask launch];
             NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
-			while( [aTask isRunning] && [NSDate timeIntervalSinceReferenceDate] - start < 10)
+
+            while( [aTask isRunning] && [NSDate timeIntervalSinceReferenceDate] - start < 10)
                 [NSThread sleepForTimeInterval: 0.1];
             
             //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...

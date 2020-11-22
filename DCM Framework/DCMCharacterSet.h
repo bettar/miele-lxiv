@@ -33,7 +33,10 @@
 - (id)initWithCode:(NSString *)characterSet;
 - (id)initWithCharacterSet:(DCMCharacterSet *)characterSet;
 
-+ (NSString *) stringWithBytes:(char *) str length:(unsigned) length encodings: (NSStringEncoding*) encodings;
++ (NSString *) stringWithBytes: (char *) str
+                        length: (const size_t) length
+                     encodings: (NSStringEncoding*) encodings;
+
 + (NSStringEncoding)encodingForDICOMCharacterSet:(NSString *)characterSet;
 
 @end

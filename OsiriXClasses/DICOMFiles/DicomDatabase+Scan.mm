@@ -412,14 +412,14 @@ static NSString* _dcmElementKey(DcmElement* element) {
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
     {
         // Test DICOMDIR validity on a separate process...
-        NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"Decompress"] path];
+        NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable: @"Decompress"] path];
         if( [[NSFileManager defaultManager] fileExistsAtPath: launchPath])
         {
             NSTask *aTask = [[[NSTask alloc] init] autorelease];
             [aTask setLaunchPath: launchPath];
             [aTask setArguments: [NSArray arrayWithObjects: path, @"testDICOMDIR", nil]];
             [aTask launch];
-            while( [aTask isRunning])
+            while ([aTask isRunning])
                 [NSThread sleepForTimeInterval: 0.1];
             
             if( [aTask terminationStatus] != EXIT_SUCCESS)

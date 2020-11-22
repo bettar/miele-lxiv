@@ -85,15 +85,15 @@ void myunlink(const char * path) {
 int compressionForModality( NSArray *array, NSArray *arrayLow, int limit, NSString* mod, int* quality, int resolution)
 {
 	NSArray *s;
-	if( resolution < limit)
+	if (resolution < limit)
 		s = arrayLow;
 	else
 		s = array;
 	
-	if( [mod isEqualToString: @"SR"]) // No compression for DICOM SR
+	if ([mod isEqualToString: @"SR"]) // No compression for DICOM SR
 		return compression_none;
 	
-	for( NSDictionary *dict in s)
+	for (NSDictionary *dict in s)
 	{
 		if( [mod rangeOfString: [dict valueForKey: @"modality"]].location != NSNotFound)
 		{
@@ -192,10 +192,10 @@ static void action_Compress(int argc, const char *argv[], NSString *path)
     for (NSInteger i = fileListFirstItemIndex; i < argc; i++)
     {
         NSString *curFile = @(argv[i]);
-        OFBool status = YES;
+        OFBool status = OFTrue;
         NSString *curFileDest;
         
-        if( destDirec)
+        if (destDirec)
             curFileDest = [destDirec stringByAppendingPathComponent: [curFile lastPathComponent]];
         else
             curFileDest = [curFile stringByAppendingString: @" temp"];
@@ -203,6 +203,7 @@ static void action_Compress(int argc, const char *argv[], NSString *path)
         if ([[curFile pathExtension] isEqualToString: @"zip"] ||
             [[curFile pathExtension] isEqualToString: @"osirixzip"])
         {
+            // TBC: normally we don't come here for a "compress" action
             NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];  // TODO: could be simplified
             
             myunlink([tempCurFileDest fileSystemRepresentation]);
@@ -237,7 +238,7 @@ static void action_Compress(int argc, const char *argv[], NSString *path)
         DcmFileFormat fileformat;
         OFCondition cond = fileformat.loadFile( [curFile UTF8String]);
         // if we can't read it stop
-        if( cond.good())
+        if (cond.good())
         {
             DcmDataset *dataset = fileformat.getDataset();
 //			DcmItem *metaInfo = fileformat.getMetaInfo();
@@ -299,7 +300,7 @@ static void action_Compress(int argc, const char *argv[], NSString *path)
                 }
             }
             
-            if( alreadyCompressed)
+            if (alreadyCompressed)
             {
                 if( destDirec)
                 {
@@ -486,7 +487,7 @@ static void action_Compress(int argc, const char *argv[], NSString *path)
 static void action_Decompress(int argc, const char *argv[], NSString *path)
 {
     NSString *destDirec;
-    if( [path isEqualToString: @"sameAsDestination"])
+    if ([path isEqualToString: @"sameAsDestination"])
         destDirec = nil;
     else
         destDirec = path;
@@ -494,14 +495,13 @@ static void action_Decompress(int argc, const char *argv[], NSString *path)
     for (NSInteger i = fileListFirstItemIndex; i < argc ; i++)
     {
         NSString *curFile = @(argv[i]);
+        OFBool status = OFFalse;
         NSString *curFileDest;
         
-        if( destDirec)
+        if (destDirec)
             curFileDest = [destDirec stringByAppendingPathComponent: [curFile lastPathComponent]];
         else
             curFileDest = [curFile stringByAppendingString: @" temp"];
-        
-        OFBool status = NO;
         
         if ([[curFile pathExtension] isEqualToString: @"zip"] ||
             [[curFile pathExtension] isEqualToString: @"osirixzip"])
@@ -538,21 +538,18 @@ static void action_Decompress(int argc, const char *argv[], NSString *path)
         }
         else
         {
-            OFCondition cond;
-            
-            const char *fname = (const char *)[curFile UTF8String];
-            
+            // TBC: normally we don't come here for a "decompressList" action
             DcmFileFormat fileformat;
-            cond = fileformat.loadFile(fname);
-            
+            OFCondition cond = fileformat.loadFile([curFile UTF8String]);
             if (cond.good())
             {
-                DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+                DcmDataset *dataset = fileformat.getDataset();
+                DcmXfer filexfer(dataset->getOriginalXfer());
                 
                 if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly ||
                     filexfer.getXfer() == EXS_JPEG2000)
                 {
-                    // USe DCMFramework
+                    // Use DCMFramework
                     DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
                     @try
                     {
@@ -637,7 +634,7 @@ static void action_Decompress(int argc, const char *argv[], NSString *path)
             }
         }
         
-        if( status)
+        if (status)
         {
             myunlink([curFile fileSystemRepresentation]);
             if( destDirec == nil)
@@ -684,8 +681,8 @@ int main(int argc, const char *argv[])
     {
         @try
         {
-            NSString* path2 = @(argv[fileListFirstItemIndex]);
-            [dict addEntriesFromDictionary:[NSMutableDictionary dictionaryWithContentsOfFile:path2]];
+            NSString* pathToPlist = @(argv[fileListFirstItemIndex]);
+            [dict addEntriesFromDictionary:[NSMutableDictionary dictionaryWithContentsOfFile:pathToPlist]];
             what = @(argv[4]);
             fileListFirstItemIndex += 2;
         }
@@ -694,10 +691,17 @@ int main(int argc, const char *argv[])
             NSLog(@"Decompress failed reading settings plist at %s: %@", argv[fileListFirstItemIndex], e);
         }
     }
+
 #pragma mark - compress
-    else if ([what isEqualToString:@"compress"])
+    // Don't use "else if" here because 'what' might have been altered
+    if ([what isEqualToString:@"compress"])
     {
         action_Compress(argc, argv, path);
+    }
+# pragma mark - decompressList
+    else if( [what isEqualToString:@"decompressList"])
+    {
+        action_Decompress(argc, argv, path);
     }
 #pragma mark - testDICOMDIR
     else if( [what isEqualToString: @"testDICOMDIR"])
@@ -731,7 +735,7 @@ int main(int argc, const char *argv[])
             
             DCMPix *dcmPix = [[DCMPix alloc] initWithPath: curFile :0 :1 :nil :0 :0 isBonjour: NO imageObj: nil];
             
-            if( dcmPix)
+            if (dcmPix)
             {
                 [dcmPix CheckLoad];
                 //*(long*)0 = 0xDEADBEEF; // Dead Beef ? WTF ??? Will it unlock the matrix....
@@ -740,11 +744,6 @@ int main(int argc, const char *argv[])
             else
                 NSLog( @"dcmPix == nil");
         }
-    }
-# pragma mark - decompressList
-    else if( [what isEqualToString:@"decompressList"])
-    {
-        action_Decompress(argc, argv, path);
     }
 # pragma mark - writeMovie
     else if( [what isEqualToString: @"writeMovie"])
@@ -760,8 +759,8 @@ int main(int argc, const char *argv[])
             
             float frameRate = 0;
             
-            if( fileListFirstItemIndex < argc)
-                frameRate = [[NSString stringWithUTF8String: argv[ fileListFirstItemIndex]] floatValue];
+            if (fileListFirstItemIndex < argc)
+                frameRate = [[NSString stringWithUTF8String: argv[fileListFirstItemIndex]] floatValue];
             
             createSwfMovie(inputFiles, path, frameRate);
             
@@ -798,7 +797,7 @@ int main(int argc, const char *argv[])
             [webView setMaintainsBackForwardList: NO];
             
             NSURL *theURL = [NSURL fileURLWithPath: path];
-            if( theURL)
+            if (theURL)
             {
                 NSURLRequest *request = [NSURLRequest requestWithURL: theURL];
                 

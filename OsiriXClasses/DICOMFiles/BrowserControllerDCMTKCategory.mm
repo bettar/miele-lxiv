@@ -230,6 +230,7 @@ static NSString *uniqueSync = @"uniqueSync";
 	return [_database decompressFilesAtPaths:files intoDirAtPath:dest];
 }
 
+// Unused ?
 -(BOOL)testFiles:(NSArray*)files
 {
 	return [DicomDatabase testFiles:files];
