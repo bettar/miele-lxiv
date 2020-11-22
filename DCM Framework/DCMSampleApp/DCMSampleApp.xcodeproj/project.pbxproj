@@ -8,36 +8,36 @@
 
 /* Begin PBXBuildFile section */
 		7E10C6ED06ADB19D00EA6B63 /* DCMCalendarDate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E10C6EB06ADB19D00EA6B63 /* DCMCalendarDate.h */; };
-		7E10C6EE06ADB19D00EA6B63 /* DCMCalendarDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E10C6EC06ADB19D00EA6B63 /* DCMCalendarDate.m */; };
-		7E52013D06BED08F0054B40C /* jpegdatasrc.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E52013C06BED08F0054B40C /* jpegdatasrc.m */; };
+		7E10C6EE06ADB19D00EA6B63 /* DCMCalendarDate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7E10C6EC06ADB19D00EA6B63 /* DCMCalendarDate.mm */; };
+		7E52013D06BED08F0054B40C /* jpegdatasrc.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7E52013C06BED08F0054B40C /* jpegdatasrc.mm */; };
 		7E52016B06BEE4490054B40C /* jpegdatasrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E52016A06BEE4490054B40C /* jpegdatasrc.h */; };
 		7EAAA864068236D40076E554 /* nameDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7EAAA862068236D40076E554 /* nameDictionary.plist */; };
 		7EAAA865068236D40076E554 /* tagDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7EAAA863068236D40076E554 /* tagDictionary.plist */; };
 		7EAAAB0A068248C60076E554 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAAAAF4068248C60076E554 /* DCMAttribute.h */; };
-		7EAAAB0B068248C60076E554 /* DCMAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAAF5068248C60076E554 /* DCMAttribute.m */; settings = {COMPILER_FLAGS = "-faltivec"; }; };
+		7EAAAB0B068248C60076E554 /* DCMAttribute.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAAF5068248C60076E554 /* DCMAttribute.mm */; settings = {COMPILER_FLAGS = "-faltivec"; }; };
 		7EAAAB0C068248C60076E554 /* DCMAttributeTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAAAAF6068248C60076E554 /* DCMAttributeTag.h */; };
-		7EAAAB0D068248C60076E554 /* DCMAttributeTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAAF7068248C60076E554 /* DCMAttributeTag.m */; };
+		7EAAAB0D068248C60076E554 /* DCMAttributeTag.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAAF7068248C60076E554 /* DCMAttributeTag.mm */; };
 		7EAAAB0E068248C60076E554 /* DCMCharacterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAAAAF8068248C60076E554 /* DCMCharacterSet.h */; };
-		7EAAAB0F068248C60076E554 /* DCMCharacterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAAF9068248C60076E554 /* DCMCharacterSet.m */; };
+		7EAAAB0F068248C60076E554 /* DCMCharacterSet.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAAF9068248C60076E554 /* DCMCharacterSet.mm */; };
 		7EAAAB10068248C60076E554 /* DCMDataContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAAAAFA068248C60076E554 /* DCMDataContainer.h */; };
-		7EAAAB11068248C60076E554 /* DCMDataContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAAFB068248C60076E554 /* DCMDataContainer.m */; };
+		7EAAAB11068248C60076E554 /* DCMDataContainer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAAFB068248C60076E554 /* DCMDataContainer.mm */; };
 		7EAAAB12068248C60076E554 /* DCMObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAAAAFC068248C60076E554 /* DCMObject.h */; };
-		7EAAAB13068248C60076E554 /* DCMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAAFD068248C60076E554 /* DCMObject.m */; settings = {COMPILER_FLAGS = "-faltivec"; }; };
+		7EAAAB13068248C60076E554 /* DCMObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAAFD068248C60076E554 /* DCMObject.mm */; settings = {COMPILER_FLAGS = "-faltivec"; }; };
 		7EAAAB14068248C60076E554 /* DCMSequenceAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAAAAFE068248C60076E554 /* DCMSequenceAttribute.h */; };
-		7EAAAB15068248C60076E554 /* DCMSequenceAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAAFF068248C60076E554 /* DCMSequenceAttribute.m */; };
+		7EAAAB15068248C60076E554 /* DCMSequenceAttribute.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAAFF068248C60076E554 /* DCMSequenceAttribute.mm */; };
 		7EAAAB16068248C60076E554 /* DCMTagDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAAAB00068248C60076E554 /* DCMTagDictionary.h */; };
-		7EAAAB17068248C60076E554 /* DCMTagDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAB01068248C60076E554 /* DCMTagDictionary.m */; };
+		7EAAAB17068248C60076E554 /* DCMTagDictionary.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAB01068248C60076E554 /* DCMTagDictionary.mm */; };
 		7EAAAB18068248C60076E554 /* DCMTagForNameDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAAAB02068248C60076E554 /* DCMTagForNameDictionary.h */; };
-		7EAAAB19068248C60076E554 /* DCMTagForNameDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAB03068248C60076E554 /* DCMTagForNameDictionary.m */; };
+		7EAAAB19068248C60076E554 /* DCMTagForNameDictionary.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAB03068248C60076E554 /* DCMTagForNameDictionary.mm */; };
 		7EAAAB1A068248C60076E554 /* DCMTransferSyntax.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAAAB04068248C60076E554 /* DCMTransferSyntax.h */; };
-		7EAAAB1B068248C60076E554 /* DCMTransferSyntax.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAB05068248C60076E554 /* DCMTransferSyntax.m */; };
+		7EAAAB1B068248C60076E554 /* DCMTransferSyntax.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAB05068248C60076E554 /* DCMTransferSyntax.mm */; };
 		7EAAAB1C068248C60076E554 /* DCMUIDs.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAAAB06068248C60076E554 /* DCMUIDs.h */; };
 		7EAAAB1D068248C60076E554 /* DCMValueRepresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAAAB07068248C60076E554 /* DCMValueRepresentation.h */; };
-		7EAAAB1E068248C60076E554 /* DCMValueRepresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAB08068248C60076E554 /* DCMValueRepresentation.m */; };
+		7EAAAB1E068248C60076E554 /* DCMValueRepresentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAB08068248C60076E554 /* DCMValueRepresentation.mm */; };
 		7EAAAB3D068249190076E554 /* Controller.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAAAB3B068249190076E554 /* Controller.h */; };
 		7EAAAB3E068249190076E554 /* Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EAAAB3C068249190076E554 /* Controller.m */; };
 		7ECBB5D20683947000FF3FF4 /* DCMPixelDataAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECBB5D00683947000FF3FF4 /* DCMPixelDataAttribute.h */; };
-		7ECBB5D30683947000FF3FF4 /* DCMPixelDataAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECBB5D10683947000FF3FF4 /* DCMPixelDataAttribute.m */; };
+		7ECBB5D30683947000FF3FF4 /* DCMPixelDataAttribute.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7ECBB5D10683947000FF3FF4 /* DCMPixelDataAttribute.mm */; };
 		7ED7C0AD06C17F1100136605 /* jas_cm.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ED7C09A06C17F1100136605 /* jas_cm.h */; };
 		7ED7C0AE06C17F1100136605 /* jas_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ED7C09B06C17F1100136605 /* jas_config.h */; };
 		7ED7C0AF06C17F1100136605 /* jas_config2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ED7C09C06C17F1100136605 /* jas_config2.h */; };
@@ -57,11 +57,11 @@
 		7ED7C0BD06C17F1100136605 /* jas_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ED7C0AA06C17F1100136605 /* jas_version.h */; };
 		7ED7C0BE06C17F1100136605 /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ED7C0AB06C17F1100136605 /* jasper.h */; };
 		7ED8E87F06C04240009CF562 /* DCMPixelDataAttributeJPEG8.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ED8E87906C04240009CF562 /* DCMPixelDataAttributeJPEG8.h */; };
-		7ED8E88006C04240009CF562 /* DCMPixelDataAttributeJPEG8.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ED8E87A06C04240009CF562 /* DCMPixelDataAttributeJPEG8.m */; };
+		7ED8E88006C04240009CF562 /* DCMPixelDataAttributeJPEG8.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7ED8E87A06C04240009CF562 /* DCMPixelDataAttributeJPEG8.mm */; };
 		7ED8E88106C04240009CF562 /* DCMPixelDataAttributeJPEG12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ED8E87B06C04240009CF562 /* DCMPixelDataAttributeJPEG12.h */; };
-		7ED8E88206C04240009CF562 /* DCMPixelDataAttributeJPEG12.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ED8E87C06C04240009CF562 /* DCMPixelDataAttributeJPEG12.m */; };
+		7ED8E88206C04240009CF562 /* DCMPixelDataAttributeJPEG12.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7ED8E87C06C04240009CF562 /* DCMPixelDataAttributeJPEG12.mm */; };
 		7ED8E88306C04240009CF562 /* DCMPixelDataAttributeJPEG16.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ED8E87D06C04240009CF562 /* DCMPixelDataAttributeJPEG16.h */; };
-		7ED8E88406C04240009CF562 /* DCMPixelDataAttributeJPEG16.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ED8E87E06C04240009CF562 /* DCMPixelDataAttributeJPEG16.m */; };
+		7ED8E88406C04240009CF562 /* DCMPixelDataAttributeJPEG16.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7ED8E87E06C04240009CF562 /* DCMPixelDataAttributeJPEG16.mm */; };
 		8D1107280486CEB800E47090 /* DCMSampleApp_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32CA4F630368D1EE00C91783 /* DCMSampleApp_Prefix.pch */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -311,7 +311,7 @@
 		BF4AF86B06C084050030B701 /* Makefile.in in Resources */ = {isa = PBXBuildFile; fileRef = BF4AF81B06C084050030B701 /* Makefile.in */; };
 		BF4AF87506C0858E0030B701 /* vecLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4AF87406C0858E0030B701 /* vecLib.framework */; };
 		BF4AF8C306C08F920030B701 /* OpenGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4AF8C106C08F920030B701 /* OpenGLView.h */; };
-		BF4AF8C406C08F920030B701 /* OpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF4AF8C206C08F920030B701 /* OpenGLView.m */; };
+		BF4AF8C406C08F920030B701 /* OpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4AF8C206C08F920030B701 /* OpenGLView.mm */; };
 		BF4AF9A606C0937C0030B701 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4AF9A506C0937C0030B701 /* OpenGL.framework */; };
 		BF6347A2068931520088028B /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6347A1068931520088028B /* DCM.h */; };
 		BF9D33A006C1D25D006084A1 /* libjasper.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9D339F06C1D25D006084A1 /* libjasper.a */; };
@@ -326,38 +326,38 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* DCMSampleApp_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMSampleApp_Prefix.pch; sourceTree = "<group>"; };
 		7E10C6EB06ADB19D00EA6B63 /* DCMCalendarDate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMCalendarDate.h; path = ../DCMCalendarDate.h; sourceTree = SOURCE_ROOT; };
-		7E10C6EC06ADB19D00EA6B63 /* DCMCalendarDate.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMCalendarDate.m; path = ../DCMCalendarDate.m; sourceTree = SOURCE_ROOT; };
+		7E10C6EC06ADB19D00EA6B63 /* DCMCalendarDate.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMCalendarDate.mm; path = ../DCMCalendarDate.mm; sourceTree = SOURCE_ROOT; };
 		7E492E8C0700E38100E41911 /* DCMPixelDataAttributeJPEG2000.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMPixelDataAttributeJPEG2000.m; path = ../DCMPixelDataAttributeJPEG2000.m; sourceTree = SOURCE_ROOT; };
 		7E492E8D0700E38100E41911 /* DCMPixelDataAttributeJPEG2000.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMPixelDataAttributeJPEG2000.h; path = ../DCMPixelDataAttributeJPEG2000.h; sourceTree = SOURCE_ROOT; };
-		7E52013C06BED08F0054B40C /* jpegdatasrc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = jpegdatasrc.m; path = ../jpegdatasrc.m; sourceTree = SOURCE_ROOT; };
+		7E52013C06BED08F0054B40C /* jpegdatasrc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = jpegdatasrc.mm; path = ../jpegdatasrc.mm; sourceTree = SOURCE_ROOT; };
 		7E52016A06BEE4490054B40C /* jpegdatasrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpegdatasrc.h; path = ../jpegdatasrc.h; sourceTree = SOURCE_ROOT; };
-		7EAAA862068236D40076E554 /* nameDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = nameDictionary.plist; path = ../nameDictionary.plist; sourceTree = SOURCE_ROOT; };
-		7EAAA863068236D40076E554 /* tagDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = tagDictionary.plist; path = ../tagDictionary.plist; sourceTree = SOURCE_ROOT; };
+		7EAAA862068236D40076E554 /* nameDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; name = nameDictionary.plist; path = ../nameDictionary.plist; sourceTree = SOURCE_ROOT; };
+		7EAAA863068236D40076E554 /* tagDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; name = tagDictionary.plist; path = ../tagDictionary.plist; sourceTree = SOURCE_ROOT; };
 		7EAAAAF4068248C60076E554 /* DCMAttribute.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMAttribute.h; path = ../DCMAttribute.h; sourceTree = SOURCE_ROOT; };
-		7EAAAAF5068248C60076E554 /* DCMAttribute.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMAttribute.m; path = ../DCMAttribute.m; sourceTree = SOURCE_ROOT; };
+		7EAAAAF5068248C60076E554 /* DCMAttribute.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMAttribute.mm; path = ../DCMAttribute.mm; sourceTree = SOURCE_ROOT; };
 		7EAAAAF6068248C60076E554 /* DCMAttributeTag.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMAttributeTag.h; path = ../DCMAttributeTag.h; sourceTree = SOURCE_ROOT; };
-		7EAAAAF7068248C60076E554 /* DCMAttributeTag.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMAttributeTag.m; path = ../DCMAttributeTag.m; sourceTree = SOURCE_ROOT; };
+		7EAAAAF7068248C60076E554 /* DCMAttributeTag.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMAttributeTag.mm; path = ../DCMAttributeTag.mm; sourceTree = SOURCE_ROOT; };
 		7EAAAAF8068248C60076E554 /* DCMCharacterSet.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMCharacterSet.h; path = ../DCMCharacterSet.h; sourceTree = SOURCE_ROOT; };
-		7EAAAAF9068248C60076E554 /* DCMCharacterSet.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMCharacterSet.m; path = ../DCMCharacterSet.m; sourceTree = SOURCE_ROOT; };
+		7EAAAAF9068248C60076E554 /* DCMCharacterSet.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMCharacterSet.mm; path = ../DCMCharacterSet.mm; sourceTree = SOURCE_ROOT; };
 		7EAAAAFA068248C60076E554 /* DCMDataContainer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMDataContainer.h; path = ../DCMDataContainer.h; sourceTree = SOURCE_ROOT; };
-		7EAAAAFB068248C60076E554 /* DCMDataContainer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMDataContainer.m; path = ../DCMDataContainer.m; sourceTree = SOURCE_ROOT; };
+		7EAAAAFB068248C60076E554 /* DCMDataContainer.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMDataContainer.mm; path = ../DCMDataContainer.mm; sourceTree = SOURCE_ROOT; };
 		7EAAAAFC068248C60076E554 /* DCMObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMObject.h; path = ../DCMObject.h; sourceTree = SOURCE_ROOT; };
-		7EAAAAFD068248C60076E554 /* DCMObject.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMObject.m; path = ../DCMObject.m; sourceTree = SOURCE_ROOT; };
+		7EAAAAFD068248C60076E554 /* DCMObject.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMObject.mm; path = ../DCMObject.mm; sourceTree = SOURCE_ROOT; };
 		7EAAAAFE068248C60076E554 /* DCMSequenceAttribute.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMSequenceAttribute.h; path = ../DCMSequenceAttribute.h; sourceTree = SOURCE_ROOT; };
-		7EAAAAFF068248C60076E554 /* DCMSequenceAttribute.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMSequenceAttribute.m; path = ../DCMSequenceAttribute.m; sourceTree = SOURCE_ROOT; };
+		7EAAAAFF068248C60076E554 /* DCMSequenceAttribute.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMSequenceAttribute.mm; path = ../DCMSequenceAttribute.mm; sourceTree = SOURCE_ROOT; };
 		7EAAAB00068248C60076E554 /* DCMTagDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMTagDictionary.h; path = ../DCMTagDictionary.h; sourceTree = SOURCE_ROOT; };
-		7EAAAB01068248C60076E554 /* DCMTagDictionary.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMTagDictionary.m; path = ../DCMTagDictionary.m; sourceTree = SOURCE_ROOT; };
+		7EAAAB01068248C60076E554 /* DCMTagDictionary.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMTagDictionary.mm; path = ../DCMTagDictionary.mm; sourceTree = SOURCE_ROOT; };
 		7EAAAB02068248C60076E554 /* DCMTagForNameDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMTagForNameDictionary.h; path = ../DCMTagForNameDictionary.h; sourceTree = SOURCE_ROOT; };
-		7EAAAB03068248C60076E554 /* DCMTagForNameDictionary.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMTagForNameDictionary.m; path = ../DCMTagForNameDictionary.m; sourceTree = SOURCE_ROOT; };
+		7EAAAB03068248C60076E554 /* DCMTagForNameDictionary.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMTagForNameDictionary.mm; path = ../DCMTagForNameDictionary.mm; sourceTree = SOURCE_ROOT; };
 		7EAAAB04068248C60076E554 /* DCMTransferSyntax.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMTransferSyntax.h; path = ../DCMTransferSyntax.h; sourceTree = SOURCE_ROOT; };
-		7EAAAB05068248C60076E554 /* DCMTransferSyntax.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMTransferSyntax.m; path = ../DCMTransferSyntax.m; sourceTree = SOURCE_ROOT; };
+		7EAAAB05068248C60076E554 /* DCMTransferSyntax.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMTransferSyntax.mm; path = ../DCMTransferSyntax.mm; sourceTree = SOURCE_ROOT; };
 		7EAAAB06068248C60076E554 /* DCMUIDs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMUIDs.h; path = ../DCMUIDs.h; sourceTree = SOURCE_ROOT; };
 		7EAAAB07068248C60076E554 /* DCMValueRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMValueRepresentation.h; path = ../DCMValueRepresentation.h; sourceTree = SOURCE_ROOT; };
-		7EAAAB08068248C60076E554 /* DCMValueRepresentation.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMValueRepresentation.m; path = ../DCMValueRepresentation.m; sourceTree = SOURCE_ROOT; };
+		7EAAAB08068248C60076E554 /* DCMValueRepresentation.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMValueRepresentation.mm; path = ../DCMValueRepresentation.mm; sourceTree = SOURCE_ROOT; };
 		7EAAAB3B068249190076E554 /* Controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Controller.h; sourceTree = "<group>"; };
 		7EAAAB3C068249190076E554 /* Controller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Controller.m; sourceTree = "<group>"; };
 		7ECBB5D00683947000FF3FF4 /* DCMPixelDataAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMPixelDataAttribute.h; path = ../DCMPixelDataAttribute.h; sourceTree = SOURCE_ROOT; };
-		7ECBB5D10683947000FF3FF4 /* DCMPixelDataAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMPixelDataAttribute.m; path = ../DCMPixelDataAttribute.m; sourceTree = SOURCE_ROOT; };
+		7ECBB5D10683947000FF3FF4 /* DCMPixelDataAttribute.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMPixelDataAttribute.mm; path = ../DCMPixelDataAttribute.mm; sourceTree = SOURCE_ROOT; };
 		7ED7C09A06C17F1100136605 /* jas_cm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_cm.h; sourceTree = "<group>"; };
 		7ED7C09B06C17F1100136605 /* jas_config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_config.h; sourceTree = "<group>"; };
 		7ED7C09C06C17F1100136605 /* jas_config2.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_config2.h; sourceTree = "<group>"; };
@@ -377,11 +377,11 @@
 		7ED7C0AA06C17F1100136605 /* jas_version.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_version.h; sourceTree = "<group>"; };
 		7ED7C0AB06C17F1100136605 /* jasper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jasper.h; sourceTree = "<group>"; };
 		7ED8E87906C04240009CF562 /* DCMPixelDataAttributeJPEG8.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMPixelDataAttributeJPEG8.h; path = ../DCMPixelDataAttributeJPEG8.h; sourceTree = SOURCE_ROOT; };
-		7ED8E87A06C04240009CF562 /* DCMPixelDataAttributeJPEG8.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMPixelDataAttributeJPEG8.m; path = ../DCMPixelDataAttributeJPEG8.m; sourceTree = SOURCE_ROOT; };
+		7ED8E87A06C04240009CF562 /* DCMPixelDataAttributeJPEG8.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMPixelDataAttributeJPEG8.mm; path = ../DCMPixelDataAttributeJPEG8.mm; sourceTree = SOURCE_ROOT; };
 		7ED8E87B06C04240009CF562 /* DCMPixelDataAttributeJPEG12.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMPixelDataAttributeJPEG12.h; path = ../DCMPixelDataAttributeJPEG12.h; sourceTree = SOURCE_ROOT; };
-		7ED8E87C06C04240009CF562 /* DCMPixelDataAttributeJPEG12.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMPixelDataAttributeJPEG12.m; path = ../DCMPixelDataAttributeJPEG12.m; sourceTree = SOURCE_ROOT; };
+		7ED8E87C06C04240009CF562 /* DCMPixelDataAttributeJPEG12.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMPixelDataAttributeJPEG12.mm; path = ../DCMPixelDataAttributeJPEG12.mm; sourceTree = SOURCE_ROOT; };
 		7ED8E87D06C04240009CF562 /* DCMPixelDataAttributeJPEG16.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCMPixelDataAttributeJPEG16.h; path = ../DCMPixelDataAttributeJPEG16.h; sourceTree = SOURCE_ROOT; };
-		7ED8E87E06C04240009CF562 /* DCMPixelDataAttributeJPEG16.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DCMPixelDataAttributeJPEG16.m; path = ../DCMPixelDataAttributeJPEG16.m; sourceTree = SOURCE_ROOT; };
+		7ED8E87E06C04240009CF562 /* DCMPixelDataAttributeJPEG16.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMPixelDataAttributeJPEG16.mm; path = ../DCMPixelDataAttributeJPEG16.mm; sourceTree = SOURCE_ROOT; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* DCMSampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCMSampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF0A6F11069266780032A543 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
@@ -628,18 +628,18 @@
 		BF4AF81B06C084050030B701 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		BF4AF87406C0858E0030B701 /* vecLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vecLib.framework; path = /System/Library/Frameworks/vecLib.framework; sourceTree = "<absolute>"; };
 		BF4AF8C106C08F920030B701 /* OpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLView.h; sourceTree = "<group>"; };
-		BF4AF8C206C08F920030B701 /* OpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenGLView.m; sourceTree = "<group>"; };
+		BF4AF8C206C08F920030B701 /* OpenGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenGLView.mm; sourceTree = "<group>"; };
 		BF4AF9A506C0937C0030B701 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = ../../../../../System/Library/Frameworks/OpenGL.framework; sourceTree = SOURCE_ROOT; };
 		BF6347A1068931520088028B /* DCM.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCM.h; path = ../DCM.h; sourceTree = SOURCE_ROOT; };
 		BF9D339F06C1D25D006084A1 /* libjasper.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjasper.a; path = ../../Binaries/Jasper/libjasper.a; sourceTree = SOURCE_ROOT; };
 		BFC5DC23068A717A007FDAB3 /* DCMUnencodedPixelDataAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMUnencodedPixelDataAttribute.h; path = "/Users/lpysher/osirix/DCM Framework/DCMUnencodedPixelDataAttribute.h"; sourceTree = "<absolute>"; };
-		BFC5DC24068A717A007FDAB3 /* DCMUnencodedPixelDataAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMUnencodedPixelDataAttribute.m; path = "/Users/lpysher/osirix/DCM Framework/DCMUnencodedPixelDataAttribute.m"; sourceTree = "<absolute>"; };
+		BFC5DC24068A717A007FDAB3 /* DCMUnencodedPixelDataAttribute.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMUnencodedPixelDataAttribute.mm; path = "/Users/lpysher/osirix/DCM Framework/DCMUnencodedPixelDataAttribute.mm"; sourceTree = "<absolute>"; };
 		BFC5DC2F068A71B8007FDAB3 /* DCMOBPixelDataAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMOBPixelDataAttribute.h; path = ../DCMOBPixelDataAttribute.h; sourceTree = SOURCE_ROOT; };
-		BFC5DC30068A71B8007FDAB3 /* DCMOBPixelDataAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMOBPixelDataAttribute.m; path = ../DCMOBPixelDataAttribute.m; sourceTree = SOURCE_ROOT; };
+		BFC5DC30068A71B8007FDAB3 /* DCMOBPixelDataAttribute.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMOBPixelDataAttribute.mm; path = ../DCMOBPixelDataAttribute.mm; sourceTree = SOURCE_ROOT; };
 		BFC5DC3D068A71DA007FDAB3 /* DCMOWPixelDataAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMOWPixelDataAttribute.h; path = ../DCMOWPixelDataAttribute.h; sourceTree = SOURCE_ROOT; };
-		BFC5DC3E068A71DA007FDAB3 /* DCMOWPixelDataAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMOWPixelDataAttribute.m; path = ../DCMOWPixelDataAttribute.m; sourceTree = SOURCE_ROOT; };
+		BFC5DC3E068A71DA007FDAB3 /* DCMOWPixelDataAttribute.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMOWPixelDataAttribute.mm; path = ../DCMOWPixelDataAttribute.mm; sourceTree = SOURCE_ROOT; };
 		BFC5DC49068A7213007FDAB3 /* DCMEncapsulatedPixelDataAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMEncapsulatedPixelDataAttribute.h; path = ../DCMEncapsulatedPixelDataAttribute.h; sourceTree = SOURCE_ROOT; };
-		BFC5DC4A068A7213007FDAB3 /* DCMEncapsulatedPixelDataAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMEncapsulatedPixelDataAttribute.m; path = ../DCMEncapsulatedPixelDataAttribute.m; sourceTree = SOURCE_ROOT; };
+		BFC5DC4A068A7213007FDAB3 /* DCMEncapsulatedPixelDataAttribute.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DCMEncapsulatedPixelDataAttribute.mm; path = ../DCMEncapsulatedPixelDataAttribute.mm; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -662,38 +662,38 @@
 			isa = PBXGroup;
 			children = (
 				7E10C6EB06ADB19D00EA6B63 /* DCMCalendarDate.h */,
-				7E10C6EC06ADB19D00EA6B63 /* DCMCalendarDate.m */,
+				7E10C6EC06ADB19D00EA6B63 /* DCMCalendarDate.mm */,
 				BFC5DC16068A70FE007FDAB3 /* DCMPixelDataAttributes */,
 				7EAAAB3B068249190076E554 /* Controller.h */,
 				7EAAAB3C068249190076E554 /* Controller.m */,
 				BF6347A1068931520088028B /* DCM.h */,
 				7EAAAAF4068248C60076E554 /* DCMAttribute.h */,
-				7EAAAAF5068248C60076E554 /* DCMAttribute.m */,
+				7EAAAAF5068248C60076E554 /* DCMAttribute.mm */,
 				7EAAAAF6068248C60076E554 /* DCMAttributeTag.h */,
-				7EAAAAF7068248C60076E554 /* DCMAttributeTag.m */,
+				7EAAAAF7068248C60076E554 /* DCMAttributeTag.mm */,
 				7EAAAAF8068248C60076E554 /* DCMCharacterSet.h */,
-				7EAAAAF9068248C60076E554 /* DCMCharacterSet.m */,
+				7EAAAAF9068248C60076E554 /* DCMCharacterSet.mm */,
 				7EAAAAFA068248C60076E554 /* DCMDataContainer.h */,
-				7EAAAAFB068248C60076E554 /* DCMDataContainer.m */,
+				7EAAAAFB068248C60076E554 /* DCMDataContainer.mm */,
 				7EAAAAFC068248C60076E554 /* DCMObject.h */,
-				7EAAAAFD068248C60076E554 /* DCMObject.m */,
+				7EAAAAFD068248C60076E554 /* DCMObject.mm */,
 				7EAAAAFE068248C60076E554 /* DCMSequenceAttribute.h */,
-				7EAAAAFF068248C60076E554 /* DCMSequenceAttribute.m */,
+				7EAAAAFF068248C60076E554 /* DCMSequenceAttribute.mm */,
 				7EAAAB00068248C60076E554 /* DCMTagDictionary.h */,
-				7EAAAB01068248C60076E554 /* DCMTagDictionary.m */,
+				7EAAAB01068248C60076E554 /* DCMTagDictionary.mm */,
 				7EAAAB02068248C60076E554 /* DCMTagForNameDictionary.h */,
-				7EAAAB03068248C60076E554 /* DCMTagForNameDictionary.m */,
+				7EAAAB03068248C60076E554 /* DCMTagForNameDictionary.mm */,
 				7EAAAB04068248C60076E554 /* DCMTransferSyntax.h */,
-				7EAAAB05068248C60076E554 /* DCMTransferSyntax.m */,
+				7EAAAB05068248C60076E554 /* DCMTransferSyntax.mm */,
 				7EAAAB06068248C60076E554 /* DCMUIDs.h */,
 				7EAAAB07068248C60076E554 /* DCMValueRepresentation.h */,
-				7EAAAB08068248C60076E554 /* DCMValueRepresentation.m */,
+				7EAAAB08068248C60076E554 /* DCMValueRepresentation.mm */,
 				7EAAA862068236D40076E554 /* nameDictionary.plist */,
 				7EAAA863068236D40076E554 /* tagDictionary.plist */,
-				7E52013C06BED08F0054B40C /* jpegdatasrc.m */,
+				7E52013C06BED08F0054B40C /* jpegdatasrc.mm */,
 				7E52016A06BEE4490054B40C /* jpegdatasrc.h */,
 				BF4AF8C106C08F920030B701 /* OpenGLView.h */,
-				BF4AF8C206C08F920030B701 /* OpenGLView.m */,
+				BF4AF8C206C08F920030B701 /* OpenGLView.mm */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1076,21 +1076,21 @@
 				7E492E8C0700E38100E41911 /* DCMPixelDataAttributeJPEG2000.m */,
 				7E492E8D0700E38100E41911 /* DCMPixelDataAttributeJPEG2000.h */,
 				7ED8E87906C04240009CF562 /* DCMPixelDataAttributeJPEG8.h */,
-				7ED8E87A06C04240009CF562 /* DCMPixelDataAttributeJPEG8.m */,
+				7ED8E87A06C04240009CF562 /* DCMPixelDataAttributeJPEG8.mm */,
 				7ED8E87B06C04240009CF562 /* DCMPixelDataAttributeJPEG12.h */,
-				7ED8E87C06C04240009CF562 /* DCMPixelDataAttributeJPEG12.m */,
+				7ED8E87C06C04240009CF562 /* DCMPixelDataAttributeJPEG12.mm */,
 				7ED8E87D06C04240009CF562 /* DCMPixelDataAttributeJPEG16.h */,
-				7ED8E87E06C04240009CF562 /* DCMPixelDataAttributeJPEG16.m */,
+				7ED8E87E06C04240009CF562 /* DCMPixelDataAttributeJPEG16.mm */,
 				7ECBB5D00683947000FF3FF4 /* DCMPixelDataAttribute.h */,
-				7ECBB5D10683947000FF3FF4 /* DCMPixelDataAttribute.m */,
+				7ECBB5D10683947000FF3FF4 /* DCMPixelDataAttribute.mm */,
 				BFC5DC23068A717A007FDAB3 /* DCMUnencodedPixelDataAttribute.h */,
-				BFC5DC24068A717A007FDAB3 /* DCMUnencodedPixelDataAttribute.m */,
+				BFC5DC24068A717A007FDAB3 /* DCMUnencodedPixelDataAttribute.mm */,
 				BFC5DC2F068A71B8007FDAB3 /* DCMOBPixelDataAttribute.h */,
-				BFC5DC30068A71B8007FDAB3 /* DCMOBPixelDataAttribute.m */,
+				BFC5DC30068A71B8007FDAB3 /* DCMOBPixelDataAttribute.mm */,
 				BFC5DC3D068A71DA007FDAB3 /* DCMOWPixelDataAttribute.h */,
-				BFC5DC3E068A71DA007FDAB3 /* DCMOWPixelDataAttribute.m */,
+				BFC5DC3E068A71DA007FDAB3 /* DCMOWPixelDataAttribute.mm */,
 				BFC5DC49068A7213007FDAB3 /* DCMEncapsulatedPixelDataAttribute.h */,
-				BFC5DC4A068A7213007FDAB3 /* DCMEncapsulatedPixelDataAttribute.m */,
+				BFC5DC4A068A7213007FDAB3 /* DCMEncapsulatedPixelDataAttribute.mm */,
 			);
 			name = DCMPixelDataAttributes;
 			sourceTree = "<group>";
@@ -1211,10 +1211,20 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = CE3E1FC2087588B7007FFD6F /* Build configuration list for PBXProject "DCMSampleApp" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+				Base,
+				English,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* DCMSampleApp */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* DCMSampleApp */,
 			);
@@ -1250,23 +1260,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
-				7EAAAB0B068248C60076E554 /* DCMAttribute.m in Sources */,
-				7EAAAB0D068248C60076E554 /* DCMAttributeTag.m in Sources */,
-				7EAAAB0F068248C60076E554 /* DCMCharacterSet.m in Sources */,
-				7EAAAB11068248C60076E554 /* DCMDataContainer.m in Sources */,
-				7EAAAB13068248C60076E554 /* DCMObject.m in Sources */,
-				7EAAAB15068248C60076E554 /* DCMSequenceAttribute.m in Sources */,
-				7EAAAB17068248C60076E554 /* DCMTagDictionary.m in Sources */,
-				7EAAAB19068248C60076E554 /* DCMTagForNameDictionary.m in Sources */,
-				7EAAAB1B068248C60076E554 /* DCMTransferSyntax.m in Sources */,
-				7EAAAB1E068248C60076E554 /* DCMValueRepresentation.m in Sources */,
+				7EAAAB0B068248C60076E554 /* DCMAttribute.mm in Sources */,
+				7EAAAB0D068248C60076E554 /* DCMAttributeTag.mm in Sources */,
+				7EAAAB0F068248C60076E554 /* DCMCharacterSet.mm in Sources */,
+				7EAAAB11068248C60076E554 /* DCMDataContainer.mm in Sources */,
+				7EAAAB13068248C60076E554 /* DCMObject.mm in Sources */,
+				7EAAAB15068248C60076E554 /* DCMSequenceAttribute.mm in Sources */,
+				7EAAAB17068248C60076E554 /* DCMTagDictionary.mm in Sources */,
+				7EAAAB19068248C60076E554 /* DCMTagForNameDictionary.mm in Sources */,
+				7EAAAB1B068248C60076E554 /* DCMTransferSyntax.mm in Sources */,
+				7EAAAB1E068248C60076E554 /* DCMValueRepresentation.mm in Sources */,
 				7EAAAB3E068249190076E554 /* Controller.m in Sources */,
-				7ECBB5D30683947000FF3FF4 /* DCMPixelDataAttribute.m in Sources */,
-				7E10C6EE06ADB19D00EA6B63 /* DCMCalendarDate.m in Sources */,
-				7E52013D06BED08F0054B40C /* jpegdatasrc.m in Sources */,
-				7ED8E88006C04240009CF562 /* DCMPixelDataAttributeJPEG8.m in Sources */,
-				7ED8E88206C04240009CF562 /* DCMPixelDataAttributeJPEG12.m in Sources */,
-				7ED8E88406C04240009CF562 /* DCMPixelDataAttributeJPEG16.m in Sources */,
+				7ECBB5D30683947000FF3FF4 /* DCMPixelDataAttribute.mm in Sources */,
+				7E10C6EE06ADB19D00EA6B63 /* DCMCalendarDate.mm in Sources */,
+				7E52013D06BED08F0054B40C /* jpegdatasrc.mm in Sources */,
+				7ED8E88006C04240009CF562 /* DCMPixelDataAttributeJPEG8.mm in Sources */,
+				7ED8E88206C04240009CF562 /* DCMPixelDataAttributeJPEG12.mm in Sources */,
+				7ED8E88406C04240009CF562 /* DCMPixelDataAttributeJPEG16.mm in Sources */,
 				BF4AF6BA06C083780030B701 /* jaricom.c in Sources */,
 				BF4AF6BB06C083780030B701 /* jcapimin.c in Sources */,
 				BF4AF6BC06C083780030B701 /* jcapistd.c in Sources */,
@@ -1459,7 +1469,7 @@
 				BF4AF86606C084050030B701 /* jquant1.c in Sources */,
 				BF4AF86706C084050030B701 /* jquant2.c in Sources */,
 				BF4AF86806C084050030B701 /* jutils.c in Sources */,
-				BF4AF8C406C08F920030B701 /* OpenGLView.m in Sources */,
+				BF4AF8C406C08F920030B701 /* OpenGLView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
