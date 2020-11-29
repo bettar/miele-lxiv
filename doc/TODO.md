@@ -1,6 +1,5 @@
 ## TODO List
 
-- (2018-12-06) Finish implementing DICOMPrint as 64-bit utility
 - (2018-12-06) Build "Lite" version of the program
 - Finish implementing the new ROI "3D tBall"
 	* Showing the orange circle

@@ -1181,7 +1181,8 @@ SecPolicySearchCreate:
 
 + (void)lockTmpFiles;
 {
-	if(!lockFile) lockFile = [[NSRecursiveLock alloc] init];
+	if (!lockFile)
+        lockFile = [[NSRecursiveLock alloc] init];
 	
 	[lockFile lock];
 }

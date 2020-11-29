@@ -578,6 +578,7 @@ extern "C"
                                         nil]];
 }
 
+// Verify that a server is running. We are the C-ECHO SCU
 + (BOOL) echoServer:(NSDictionary*)serverParameters
 {
 	@try
@@ -591,9 +592,11 @@ extern "C"
 		NSTask* theTask = [[[NSTask alloc] init] autorelease];
 
         NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"echoscu"] path];
-        if (![[NSFileManager defaultManager] fileExistsAtPath: launchPath]) {
+        if (launchPath.length == 0 ||
+            ![[NSFileManager defaultManager] fileExistsAtPath: launchPath])
+        {
             NSLog(@"%s %d file doesn't exist:%@", __FUNCTION__, __LINE__, launchPath);
-			return YES;
+			return NO;
         }
 
 #ifndef NDEBUG
@@ -751,15 +754,13 @@ extern "C"
         
 		if ([theTask terminationStatus] == EXIT_SUCCESS)
             return YES;
-
-        return NO;
 	}
 	@catch (NSException * e)
 	{
 		N2LogExceptionWithStackTrace(e);
 	}
 	
-	return YES;
+	return NO;
 }
 
 - (void) setAutoRefreshQueryResults: (NSInteger) i
@@ -5539,9 +5540,9 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 		switch ([self dicomEcho: [aServer objectForKey:@"server"]])
 		{
             default:
-			case 1:		status = 0;			break;
-			case 0:		status = -1;		break;
-			case -1:	status = -2;		break;
+			case  1: status =  0; break; // white
+			case  0: status = -1; break; // orange
+			case -1: status = -2; break; // red
 		}
 		
 		[aServer setObject:[NSNumber numberWithInt: status] forKey:@"test"];  // see DNDArrayController

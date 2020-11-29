@@ -26,6 +26,7 @@ static NSString *singeDcmDump = @"singeDcmDump";
 extern int maindcmdump(int argc, char *argv[]);
 
 @implementation NSString(NumberStuff)
+
 - (BOOL)holdsIntegerValue
 {
     if ([self length] == 0)
@@ -39,6 +40,7 @@ extern int maindcmdump(int argc, char *argv[]);
         if (![validCharacters characterIsMember:oneChar])
             return NO;
     }
+
     return YES;
 }
 @end
@@ -268,7 +270,7 @@ static int validFilePathDepth = 0;
         
         [theArguments addObject:@"+L"];
         [theArguments addObject:@"+P"];
-        [theArguments addObject:@"0004,1500"];
+        [theArguments addObject:@"0004,1500"]; // ReferencedFileID
         
         [aTask setArguments:theArguments];
         

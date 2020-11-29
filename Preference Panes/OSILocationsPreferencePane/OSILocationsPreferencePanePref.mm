@@ -145,42 +145,44 @@
 	}
 }
 
-- (int) echoAddress: (NSString*) address
-               port: (int) port
-                AET: (NSString*) aet
-{
-	NSTask* theTask = [[[NSTask alloc]init]autorelease];
-	
-    NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"echoscu"] path];
-    if (![[NSFileManager defaultManager] fileExistsAtPath: launchPath]) {
-        NSLog(@"%s %d file doesn't exist:%@", __FUNCTION__, __LINE__, launchPath);
-        return EXIT_FAILURE;
-    }
+// Unused ?
+//- (int) echoAddress: (NSString*) address
+//               port: (int) port
+//                AET: (NSString*) aet
+//{
+//	NSTask* theTask = [[[NSTask alloc]init]autorelease];
+//
+//    NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"echoscu"] path];
+//    if (![[NSFileManager defaultManager] fileExistsAtPath: launchPath]) {
+//        NSLog(@"%s %d file doesn't exist:%@", __FUNCTION__, __LINE__, launchPath);
+//        return EXIT_FAILURE;
+//    }
+//
+//    [theTask setLaunchPath:launchPath];
+//
+//    NSString *dicPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"dicom.dic"];
+//    [theTask setEnvironment:[NSDictionary dictionaryWithObject:dicPath forKey:@"DCMDICTPATH"]];
+//
+//	NSArray *args = [NSArray arrayWithObjects:
+//                     address,
+//                     [NSString stringWithFormat:@"%d", port],
+//                     @"-aet", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"],
+//                     @"-aec", aet,
+//                     @"-to", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"],
+//                     @"-ta", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"],
+//                     @"-td", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"],
+//                     @"-d", nil];
+//
+//	NSLog( @"%@", [args description]);
+//
+//	[theTask setArguments:args];
+//	[theTask launch];
+//	[theTask waitUntilExit];
+//
+//	return [theTask terminationStatus];
+//}
 
-    [theTask setLaunchPath:launchPath];
-
-    NSString *dicPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"dicom.dic"];
-    [theTask setEnvironment:[NSDictionary dictionaryWithObject:dicPath forKey:@"DCMDICTPATH"]];
-
-	NSArray *args = [NSArray arrayWithObjects:
-                     address,
-                     [NSString stringWithFormat:@"%d", port],
-                     @"-aet", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"],
-                     @"-aec", aet,
-                     @"-to", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"],
-                     @"-ta", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"],
-                     @"-td", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"],
-                     @"-d", nil];
-	
-	NSLog( @"%@", [args description]);
-	
-	[theTask setArguments:args];
-	[theTask launch];
-	[theTask waitUntilExit];
-	
-	return [theTask terminationStatus];
-}
-
+// Verify that a server is running. We are the C-ECHO SCU
 + (BOOL) echoServer:(NSDictionary*)serverParameters
 {
     @try
@@ -192,9 +194,11 @@
         NSTask* theTask = [[[NSTask alloc] init] autorelease];
         
         NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"echoscu"] path];
-        if (![[NSFileManager defaultManager] fileExistsAtPath: launchPath]) {
+        if (launchPath.length == 0 ||
+            ![[NSFileManager defaultManager] fileExistsAtPath: launchPath])
+        {
             NSLog(@"%s %d file doesn't exist:%@", __FUNCTION__, __LINE__, launchPath);
-            return EXIT_FAILURE;
+            return NO;
         }
         
         [theTask setLaunchPath:launchPath];
@@ -290,11 +294,15 @@
         [theTask waitUntilExit];
 
         [DDKeychain unlockTmpFiles];
-        
+
         if ([theTask terminationStatus] == EXIT_SUCCESS)
             return YES;
 
-        return NO;
+        if ([theTask terminationStatus] == EXIT_FAILURE)
+            return NO; // Failed to establish association
+
+        // 4 SIGILL (probably sandboxing issue preventing the SCU from running at all)
+        NSLog(@"%s echoscu <%@> termination status:%i", __FUNCTION__, aet, [theTask terminationStatus]);
     }
     @catch (NSException *exception) {
         N2LogException( exception);
@@ -737,7 +745,13 @@
 {
     @autoreleasepool
     {
-        self.testingNodes = YES;
+        if ([NSThread isMainThread])
+            self.testingNodes = YES;
+        else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.testingNodes = YES;
+            });
+        }
         
         for (NSMutableDictionary *aServer in [NSArray arrayWithArray: serverList])
         {
@@ -745,9 +759,9 @@
             
             if ([[aServer objectForKey: @"Activated"] boolValue] &&
                 [OSILocationsPreferencePanePref echoServer:aServer])
-                status = 0;
+                status = 0;     // ok
             else
-                status = -1;
+                status = -1;    // ng -> server entry will be colored orange
             
             [aServer setObject:[NSNumber numberWithInt: status] forKey:@"test"];  // see DNDArrayController
             
@@ -756,7 +770,13 @@
                                                   waitUntilDone:NO];
         }
         
-        self.testingNodes = NO;
+        if ([NSThread isMainThread])
+            self.testingNodes = NO;
+        else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.testingNodes = NO;
+            });
+        }
     }
 }
 
@@ -765,6 +785,27 @@
     if (self.testingNodes)
         return;
     
+    //NSLog(@"%s %d, main thread:%d", __FUNCTION__, __LINE__, [NSThread isMainThread]);
+
+    NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"echoscu"] path];
+    if (launchPath.length == 0 ||
+        ![[NSFileManager defaultManager] fileExistsAtPath: launchPath])
+    {
+        // This should never happen for a properly built app
+        // Check it here so we get the pop up only once
+
+//        dispatch_async(dispatch_get_main_queue(), ^{
+            NSAlert *alert = [[NSAlert alloc] init];
+            [alert setMessageText:@"C-ECHO SCU not found"]; // TODO: localize
+            //[alert setInformativeText:@"Informative text."];
+            //[alert addButtonWithTitle:@"Cancel"];
+            [alert addButtonWithTitle:@"Ok"];
+            [alert runModal];
+//        });
+
+        return;
+    }
+
     for (NSMutableDictionary *server in [dicomNodes arrangedObjects])
         [server setObject: @0 forKey:@"test"];  // see DNDArrayController
     

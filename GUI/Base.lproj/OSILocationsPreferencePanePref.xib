@@ -278,7 +278,7 @@
                                                             <binding destination="283" name="value" keyPath="arrangedObjects.Description" id="306"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn identifier="Transfer Syntax" width="174.953125" minWidth="87.552726745605469" maxWidth="300" id="209">
+                                                    <tableColumn identifier="Transfer Syntax" width="145.953125" minWidth="87.552726745605469" maxWidth="300" id="209">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Send Transfer Syntax">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -597,7 +597,7 @@
                                                             <binding destination="282" name="value" keyPath="arrangedObjects.Address" id="300"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn identifier="Description" width="529" minWidth="4" maxWidth="1000" id="198">
+                                                    <tableColumn identifier="Description" width="500" minWidth="4" maxWidth="1000" id="198">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Description">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -787,7 +787,7 @@
                                                             <binding destination="262" name="value" keyPath="arrangedObjects.Path" id="269"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn identifier="Description" width="243.0908203125" minWidth="65.0908203125" maxWidth="1000" id="257">
+                                                    <tableColumn identifier="Description" width="214.0908203125" minWidth="65.0908203125" maxWidth="1000" id="257">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Description">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -1350,7 +1350,7 @@ Gw
                                                             <binding destination="685" name="value" keyPath="arrangedObjects.Supported" id="690"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn width="299" minWidth="40" maxWidth="1000" id="667">
+                                                    <tableColumn width="270" minWidth="40" maxWidth="1000" id="667">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Cipher">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>

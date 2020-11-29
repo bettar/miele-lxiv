@@ -1741,7 +1741,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		tag = [sender tag];
 		[modeMatrix setState:1 atRow:tag column:0];
 	}
-	[view setMode: tag];
+
+    [view setMode: tag];
 	[view setBlendingMode: tag];
 	
 	if (tag == 1)
@@ -1756,7 +1757,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		_renderingMode = [@"VR" retain];
 		[shadingCheck setEnabled : YES];
 	}
-
 }
 
 - (IBAction) AddOpacity:(id) sender

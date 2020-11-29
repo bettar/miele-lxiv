@@ -31,6 +31,7 @@ Binaries/libjpeg
 Binaries/libpng
 Binaries/LibTiff/
 Binaries/libtiff
+Binaries/libxml2
 Binaries/Ming/
 Binaries/openjpeg
 Binaries/openssl
@@ -42,6 +43,7 @@ Binaries/VTK
 Binaries/VTKHeaders
 Binaries/VTKLibs
 Binaries/weasis/
+Binaries/zlib
 Binaries/._OsiriX Report.template
 Index/
 

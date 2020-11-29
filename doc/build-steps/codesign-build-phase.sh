@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 #test with codesign -vvv
 
 source $PROJECT_DIR/doc/build-steps/identity.conf
 
 chmod -R 777 "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/"
 
-echo "=== @@@ Codesign === $BUILT_PRODUCTS_DIR/$WRAPPER_NAME"
+echo "=== $(basename $0) === $BUILT_PRODUCTS_DIR/$WRAPPER_NAME"
 
 function cs {
   echo "~~~ Codesign <$1>"
@@ -13,11 +13,11 @@ function cs {
 }
 
 function cse {
-  echo "~~~ Codesign with entitlements <$1>"
+  echo "~~~ Codesign $IDENTITY with entitlements <$1>"
   codesign --timestamp --force \
     --sign "$IDENTITY" \
-    -o runtime \
-    --entitlements "$PROJECT_DIR/miele-lxiv-${CONFIGURATION}.entitlements" \
+    --options runtime \
+    --entitlements "$PROJECT_DIR/cli.entitlements" \
     "$1"
 }
 
@@ -42,7 +42,7 @@ cse "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/echoscu"
 cse "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/Decompress"
 cse "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/DICOMPrint"
 
-cse "$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/OsiriX Lite.zip"
+#cse "$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/miele-lxiv-lite.zip"
 #cse "$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/LXIV Launcher.zip"
 
 #codesign --resource-rules Rules.plist -f -s "$IDENTITY" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/"
