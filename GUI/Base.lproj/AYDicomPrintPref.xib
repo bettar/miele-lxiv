@@ -21,11 +21,230 @@
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
             <value key="minSize" type="size" width="213.66399999999999" height="10"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="653" height="461"/>
+                <rect key="frame" x="0.0" y="0.0" width="653" height="465"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <box horizontalCompressionResistancePriority="1000" title="Layout:" translatesAutoresizingMaskIntoConstraints="NO" id="98">
+                    <button id="405">
+                        <rect key="frame" x="18" y="430" width="397" height="16"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="14" id="7g0-gE-NBI"/>
+                        </constraints>
+                        <buttonCell key="cell" type="check" title="Automatically resize window to a 'square size' before printing" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="406">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="227" name="value" keyPath="values.SquareWindowForPrinting" id="407"/>
+                        </connections>
+                    </button>
+                    <box horizontalCompressionResistancePriority="1000" title="DICOM Printers" id="261">
+                        <rect key="frame" x="16" y="238" width="621" height="178"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                        <view key="contentView" id="as7-40-Etk">
+                            <rect key="frame" x="3" y="3" width="615" height="160"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="0.0" verticalLineScroll="19" verticalPageScroll="0.0" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="263">
+                                    <rect key="frame" x="16" y="40" width="583" height="102"/>
+                                    <clipView key="contentView" id="QiF-nX-zm0">
+                                        <rect key="frame" x="1" y="1" width="581" height="100"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <subviews>
+                                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" headerView="404" id="264">
+                                                <rect key="frame" x="0.0" y="0.0" width="581" height="83"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <size key="intercellSpacing" width="3" height="2"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                                <tableColumns>
+                                                    <tableColumn width="145" minWidth="100" maxWidth="1000" id="266">
+                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Printer">
+                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
+                                                        </tableHeaderCell>
+                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="399">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                        <connections>
+                                                            <binding destination="226" name="fontBold" keyPath="arrangedObjects.defaultPrinter" id="311">
+                                                                <dictionary key="options">
+                                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                                </dictionary>
+                                                            </binding>
+                                                            <binding destination="226" name="value" keyPath="arrangedObjects.printerName" id="304"/>
+                                                            <binding destination="-2" name="editable" keyPath="editable" id="364"/>
+                                                        </connections>
+                                                    </tableColumn>
+                                                    <tableColumn width="159" minWidth="10" maxWidth="1000" id="265">
+                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Host">
+                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                        </tableHeaderCell>
+                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="398">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                        <connections>
+                                                            <binding destination="226" name="fontBold" keyPath="arrangedObjects.defaultPrinter" id="313">
+                                                                <dictionary key="options">
+                                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                                </dictionary>
+                                                            </binding>
+                                                            <binding destination="226" name="value" keyPath="arrangedObjects.host" id="276"/>
+                                                            <binding destination="-2" name="editable" keyPath="editable" id="362"/>
+                                                        </connections>
+                                                    </tableColumn>
+                                                    <tableColumn width="74.4521484375" minWidth="25.452150344848633" maxWidth="1000" id="267">
+                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Port">
+                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                        </tableHeaderCell>
+                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="400">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                        <connections>
+                                                            <binding destination="226" name="fontBold" keyPath="arrangedObjects.defaultPrinter" id="315">
+                                                                <dictionary key="options">
+                                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                                </dictionary>
+                                                            </binding>
+                                                            <binding destination="226" name="value" keyPath="arrangedObjects.port" id="277"/>
+                                                            <binding destination="-2" name="editable" keyPath="editable" id="366"/>
+                                                        </connections>
+                                                    </tableColumn>
+                                                    <tableColumn width="152.60888671875" minWidth="45.108890533447266" maxWidth="1000" id="268">
+                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="AETitle">
+                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
+                                                        </tableHeaderCell>
+                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="401">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                        <connections>
+                                                            <binding destination="226" name="value" keyPath="arrangedObjects.aeTitle" id="278"/>
+                                                            <binding destination="226" name="fontBold" keyPath="arrangedObjects.defaultPrinter" id="317">
+                                                                <dictionary key="options">
+                                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                                </dictionary>
+                                                            </binding>
+                                                            <binding destination="-2" name="editable" keyPath="editable" id="368"/>
+                                                        </connections>
+                                                    </tableColumn>
+                                                </tableColumns>
+                                            </tableView>
+                                        </subviews>
+                                    </clipView>
+                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" controlSize="small" horizontal="YES" id="403">
+                                        <rect key="frame" x="-5" y="6" width="0.0" height="11"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                    </scroller>
+                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" controlSize="small" horizontal="NO" id="402">
+                                        <rect key="frame" x="-10" y="11" width="11" height="0.0"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                    </scroller>
+                                    <tableHeaderView key="headerView" wantsLayer="YES" id="404">
+                                        <rect key="frame" x="0.0" y="0.0" width="581" height="17"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                    </tableHeaderView>
+                                </scrollView>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="269">
+                                    <rect key="frame" x="16" y="11" width="20" height="21"/>
+                                    <buttonCell key="cell" type="square" title="+" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" id="395">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="label"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="addPrinter:" target="-2" id="273"/>
+                                    </connections>
+                                </button>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="270">
+                                    <rect key="frame" x="35" y="11" width="18" height="21"/>
+                                    <buttonCell key="cell" type="square" title="-" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" id="396">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="label"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="remove:" target="226" id="272"/>
+                                        <binding destination="226" name="enabled" keyPath="canRemove" id="289"/>
+                                    </connections>
+                                </button>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="271">
+                                    <rect key="frame" x="63" y="11" width="88" height="21"/>
+                                    <buttonCell key="cell" type="square" title="set as default" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="397">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="cellTitle"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="setDefaultPrinter:" target="-2" id="274"/>
+                                        <binding destination="226" name="enabled" keyPath="selection.defaultPrinter" id="308">
+                                            <dictionary key="options">
+                                                <string key="NSValueTransformerName">NSIsNil</string>
+                                            </dictionary>
+                                        </binding>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="413">
+                                    <rect key="frame" x="433" y="7" width="80" height="29"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="18" id="nwT-iq-pAs"/>
+                                    </constraints>
+                                    <buttonCell key="cell" type="push" title="Save as..." bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="416">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="smallSystem"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="saveList:" target="-2" id="417"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="414">
+                                    <rect key="frame" x="512" y="7" width="92" height="27"/>
+                                    <buttonCell key="cell" type="push" title="Load from..." bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="415">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="smallSystem"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="loadList:" target="-2" id="418"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="trailing" secondItem="414" secondAttribute="trailing" constant="17" id="0Op-B7-5aa"/>
+                                <constraint firstAttribute="bottom" secondItem="269" secondAttribute="bottom" constant="11" id="1EQ-WZ-4uX"/>
+                                <constraint firstItem="263" firstAttribute="top" secondItem="as7-40-Etk" secondAttribute="top" constant="25" id="AdG-tH-rB2"/>
+                                <constraint firstItem="270" firstAttribute="leading" secondItem="as7-40-Etk" secondAttribute="leading" constant="35" id="Dsg-gA-mhl"/>
+                                <constraint firstItem="269" firstAttribute="baseline" secondItem="270" secondAttribute="baseline" id="EGn-dD-UPw"/>
+                                <constraint firstItem="271" firstAttribute="baseline" secondItem="270" secondAttribute="baseline" id="G2x-Op-J1D"/>
+                                <constraint firstItem="271" firstAttribute="leading" secondItem="270" secondAttribute="trailing" constant="10" symbolic="YES" id="OXc-94-BtG"/>
+                                <constraint firstItem="271" firstAttribute="baseline" secondItem="413" secondAttribute="baseline" id="Teg-7w-vVf"/>
+                                <constraint firstItem="270" firstAttribute="top" secondItem="263" secondAttribute="bottom" constant="8" symbolic="YES" id="X4X-vF-Vic"/>
+                                <constraint firstItem="414" firstAttribute="leading" secondItem="413" secondAttribute="trailing" constant="11" id="ay0-AC-atC"/>
+                                <constraint firstItem="270" firstAttribute="leading" secondItem="269" secondAttribute="trailing" constant="-1" id="bP6-4f-cxk"/>
+                                <constraint firstAttribute="trailing" secondItem="263" secondAttribute="trailing" constant="16" id="dOM-As-nOl"/>
+                                <constraint firstItem="263" firstAttribute="leading" secondItem="as7-40-Etk" secondAttribute="leading" constant="16" id="fsA-UF-J33"/>
+                                <constraint firstItem="271" firstAttribute="top" secondItem="263" secondAttribute="bottom" constant="8" symbolic="YES" id="fwk-QI-TaK"/>
+                                <constraint firstItem="271" firstAttribute="leading" secondItem="269" secondAttribute="trailing" constant="27" id="jvX-SQ-80i"/>
+                                <constraint firstItem="269" firstAttribute="top" secondItem="263" secondAttribute="bottom" constant="8" symbolic="YES" id="lP4-bq-gu4"/>
+                                <constraint firstItem="263" firstAttribute="leading" secondItem="269" secondAttribute="leading" id="nbl-gt-PcP"/>
+                                <constraint firstItem="413" firstAttribute="top" secondItem="263" secondAttribute="bottom" constant="8" symbolic="YES" id="ra9-O3-y7H"/>
+                                <constraint firstItem="414" firstAttribute="baseline" secondItem="413" secondAttribute="baseline" id="vY8-KC-sXm"/>
+                            </constraints>
+                        </view>
+                    </box>
+                    <box horizontalCompressionResistancePriority="1000" title="Layout:" id="98">
                         <rect key="frame" x="343" y="12" width="149" height="218"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <view key="contentView" id="Kw9-fH-gQs">
                             <rect key="frame" x="3" y="3" width="143" height="200"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -159,8 +378,9 @@
                             </constraints>
                         </view>
                     </box>
-                    <box horizontalHuggingPriority="249" horizontalCompressionResistancePriority="1000" title="Settings:" translatesAutoresizingMaskIntoConstraints="NO" id="117">
+                    <box horizontalHuggingPriority="249" horizontalCompressionResistancePriority="1000" title="Settings:" id="117">
                         <rect key="frame" x="15" y="12" width="324" height="218"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <view key="contentView" id="WTN-wr-s1u">
                             <rect key="frame" x="3" y="3" width="318" height="200"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -370,8 +590,9 @@
                             </constraints>
                         </view>
                     </box>
-                    <box horizontalCompressionResistancePriority="1000" title="Job:" translatesAutoresizingMaskIntoConstraints="NO" id="193">
+                    <box horizontalCompressionResistancePriority="1000" title="Job:" id="193">
                         <rect key="frame" x="494" y="12" width="146" height="218"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
                         <view key="contentView" id="ikd-hP-ask">
                             <rect key="frame" x="3" y="3" width="140" height="200"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -484,229 +705,13 @@
                             </constraints>
                         </view>
                     </box>
-                    <box horizontalCompressionResistancePriority="1000" title="DICOM Printers" translatesAutoresizingMaskIntoConstraints="NO" id="261">
-                        <rect key="frame" x="16" y="235" width="621" height="178"/>
-                        <view key="contentView" id="as7-40-Etk">
-                            <rect key="frame" x="3" y="3" width="615" height="160"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            <subviews>
-                                <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="0.0" verticalLineScroll="19" verticalPageScroll="0.0" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="263">
-                                    <rect key="frame" x="16" y="40" width="583" height="95"/>
-                                    <clipView key="contentView" id="QiF-nX-zm0">
-                                        <rect key="frame" x="1" y="1" width="581" height="93"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" headerView="404" id="264">
-                                                <rect key="frame" x="0.0" y="0.0" width="581" height="76"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <size key="intercellSpacing" width="3" height="2"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
-                                                <tableColumns>
-                                                    <tableColumn width="145" minWidth="100" maxWidth="1000" id="266">
-                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Printer">
-                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
-                                                        </tableHeaderCell>
-                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="399">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
-                                                        <connections>
-                                                            <binding destination="226" name="fontBold" keyPath="arrangedObjects.defaultPrinter" id="311">
-                                                                <dictionary key="options">
-                                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
-                                                                </dictionary>
-                                                            </binding>
-                                                            <binding destination="226" name="value" keyPath="arrangedObjects.printerName" id="304"/>
-                                                            <binding destination="-2" name="editable" keyPath="editable" id="364"/>
-                                                        </connections>
-                                                    </tableColumn>
-                                                    <tableColumn width="159" minWidth="10" maxWidth="1000" id="265">
-                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Host">
-                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
-                                                        </tableHeaderCell>
-                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="398">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
-                                                        <connections>
-                                                            <binding destination="226" name="fontBold" keyPath="arrangedObjects.defaultPrinter" id="313">
-                                                                <dictionary key="options">
-                                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
-                                                                </dictionary>
-                                                            </binding>
-                                                            <binding destination="226" name="value" keyPath="arrangedObjects.host" id="276"/>
-                                                            <binding destination="-2" name="editable" keyPath="editable" id="362"/>
-                                                        </connections>
-                                                    </tableColumn>
-                                                    <tableColumn width="74.4521484375" minWidth="25.452150344848633" maxWidth="1000" id="267">
-                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Port">
-                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
-                                                        </tableHeaderCell>
-                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="400">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
-                                                        <connections>
-                                                            <binding destination="226" name="fontBold" keyPath="arrangedObjects.defaultPrinter" id="315">
-                                                                <dictionary key="options">
-                                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
-                                                                </dictionary>
-                                                            </binding>
-                                                            <binding destination="226" name="value" keyPath="arrangedObjects.port" id="277"/>
-                                                            <binding destination="-2" name="editable" keyPath="editable" id="366"/>
-                                                        </connections>
-                                                    </tableColumn>
-                                                    <tableColumn width="152.60888671875" minWidth="45.108890533447266" maxWidth="1000" id="268">
-                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="AETitle">
-                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
-                                                        </tableHeaderCell>
-                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="401">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
-                                                        <connections>
-                                                            <binding destination="226" name="value" keyPath="arrangedObjects.aeTitle" id="278"/>
-                                                            <binding destination="226" name="fontBold" keyPath="arrangedObjects.defaultPrinter" id="317">
-                                                                <dictionary key="options">
-                                                                    <string key="NSValueTransformerName">NSIsNotNil</string>
-                                                                </dictionary>
-                                                            </binding>
-                                                            <binding destination="-2" name="editable" keyPath="editable" id="368"/>
-                                                        </connections>
-                                                    </tableColumn>
-                                                </tableColumns>
-                                            </tableView>
-                                        </subviews>
-                                    </clipView>
-                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" controlSize="small" horizontal="YES" id="403">
-                                        <rect key="frame" x="-5" y="6" width="0.0" height="11"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                    </scroller>
-                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" controlSize="small" horizontal="NO" id="402">
-                                        <rect key="frame" x="-10" y="11" width="11" height="0.0"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                    </scroller>
-                                    <tableHeaderView key="headerView" wantsLayer="YES" id="404">
-                                        <rect key="frame" x="0.0" y="0.0" width="581" height="17"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                    </tableHeaderView>
-                                </scrollView>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="269">
-                                    <rect key="frame" x="16" y="11" width="20" height="21"/>
-                                    <buttonCell key="cell" type="square" title="+" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" id="395">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="label"/>
-                                    </buttonCell>
-                                    <connections>
-                                        <action selector="addPrinter:" target="-2" id="273"/>
-                                    </connections>
-                                </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="270">
-                                    <rect key="frame" x="35" y="11" width="18" height="21"/>
-                                    <buttonCell key="cell" type="square" title="-" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" id="396">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="label"/>
-                                    </buttonCell>
-                                    <connections>
-                                        <action selector="remove:" target="226" id="272"/>
-                                        <binding destination="226" name="enabled" keyPath="canRemove" id="289"/>
-                                    </connections>
-                                </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="271">
-                                    <rect key="frame" x="63" y="11" width="88" height="21"/>
-                                    <buttonCell key="cell" type="square" title="set as default" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" inset="2" id="397">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="cellTitle"/>
-                                    </buttonCell>
-                                    <connections>
-                                        <action selector="setDefaultPrinter:" target="-2" id="274"/>
-                                        <binding destination="226" name="enabled" keyPath="selection.defaultPrinter" id="308">
-                                            <dictionary key="options">
-                                                <string key="NSValueTransformerName">NSIsNil</string>
-                                            </dictionary>
-                                        </binding>
-                                    </connections>
-                                </button>
-                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="413">
-                                    <rect key="frame" x="433" y="7" width="80" height="29"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="18" id="nwT-iq-pAs"/>
-                                    </constraints>
-                                    <buttonCell key="cell" type="push" title="Save as..." bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="416">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
-                                    </buttonCell>
-                                    <connections>
-                                        <action selector="saveList:" target="-2" id="417"/>
-                                    </connections>
-                                </button>
-                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="414">
-                                    <rect key="frame" x="512" y="7" width="92" height="27"/>
-                                    <buttonCell key="cell" type="push" title="Load from..." bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="415">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="smallSystem"/>
-                                    </buttonCell>
-                                    <connections>
-                                        <action selector="loadList:" target="-2" id="418"/>
-                                    </connections>
-                                </button>
-                            </subviews>
-                            <constraints>
-                                <constraint firstAttribute="trailing" secondItem="414" secondAttribute="trailing" constant="17" id="0Op-B7-5aa"/>
-                                <constraint firstAttribute="bottom" secondItem="269" secondAttribute="bottom" constant="11" id="1EQ-WZ-4uX"/>
-                                <constraint firstItem="263" firstAttribute="top" secondItem="as7-40-Etk" secondAttribute="top" constant="25" id="AdG-tH-rB2"/>
-                                <constraint firstItem="270" firstAttribute="leading" secondItem="as7-40-Etk" secondAttribute="leading" constant="35" id="Dsg-gA-mhl"/>
-                                <constraint firstItem="269" firstAttribute="baseline" secondItem="270" secondAttribute="baseline" id="EGn-dD-UPw"/>
-                                <constraint firstItem="271" firstAttribute="baseline" secondItem="270" secondAttribute="baseline" id="G2x-Op-J1D"/>
-                                <constraint firstItem="271" firstAttribute="leading" secondItem="270" secondAttribute="trailing" constant="10" symbolic="YES" id="OXc-94-BtG"/>
-                                <constraint firstItem="271" firstAttribute="baseline" secondItem="413" secondAttribute="baseline" id="Teg-7w-vVf"/>
-                                <constraint firstItem="270" firstAttribute="top" secondItem="263" secondAttribute="bottom" constant="8" symbolic="YES" id="X4X-vF-Vic"/>
-                                <constraint firstItem="414" firstAttribute="leading" secondItem="413" secondAttribute="trailing" constant="11" id="ay0-AC-atC"/>
-                                <constraint firstItem="270" firstAttribute="leading" secondItem="269" secondAttribute="trailing" constant="-1" id="bP6-4f-cxk"/>
-                                <constraint firstAttribute="trailing" secondItem="263" secondAttribute="trailing" constant="16" id="dOM-As-nOl"/>
-                                <constraint firstItem="263" firstAttribute="leading" secondItem="as7-40-Etk" secondAttribute="leading" constant="16" id="fsA-UF-J33"/>
-                                <constraint firstItem="271" firstAttribute="top" secondItem="263" secondAttribute="bottom" constant="8" symbolic="YES" id="fwk-QI-TaK"/>
-                                <constraint firstItem="271" firstAttribute="leading" secondItem="269" secondAttribute="trailing" constant="27" id="jvX-SQ-80i"/>
-                                <constraint firstItem="269" firstAttribute="top" secondItem="263" secondAttribute="bottom" constant="8" symbolic="YES" id="lP4-bq-gu4"/>
-                                <constraint firstItem="263" firstAttribute="leading" secondItem="269" secondAttribute="leading" id="nbl-gt-PcP"/>
-                                <constraint firstItem="413" firstAttribute="top" secondItem="263" secondAttribute="bottom" constant="8" symbolic="YES" id="ra9-O3-y7H"/>
-                                <constraint firstItem="414" firstAttribute="baseline" secondItem="413" secondAttribute="baseline" id="vY8-KC-sXm"/>
-                            </constraints>
-                        </view>
-                    </box>
-                    <button translatesAutoresizingMaskIntoConstraints="NO" id="405">
-                        <rect key="frame" x="18" y="426" width="397" height="16"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="14" id="7g0-gE-NBI"/>
-                        </constraints>
-                        <buttonCell key="cell" type="check" title="Automatically resize window to a 'square size' before printing" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="406">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <binding destination="227" name="value" keyPath="values.SquareWindowForPrinting" id="407"/>
-                        </connections>
-                    </button>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="98" secondAttribute="bottom" constant="16" id="1dJ-bO-QMe"/>
-                    <constraint firstItem="117" firstAttribute="top" secondItem="261" secondAttribute="bottom" constant="9" id="5O6-WC-Gxf"/>
+                    <constraint firstAttribute="bottom" secondItem="98" secondAttribute="bottom" constant="20" symbolic="YES" id="1dJ-bO-QMe"/>
+                    <constraint firstItem="117" firstAttribute="top" secondItem="261" secondAttribute="bottom" constant="8" symbolic="YES" id="5O6-WC-Gxf"/>
                     <constraint firstItem="261" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="19" id="5Vx-9f-d6G"/>
                     <constraint firstItem="193" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="497" id="FnP-DT-teT"/>
-                    <constraint firstAttribute="bottom" secondItem="117" secondAttribute="bottom" constant="16" id="K4m-rO-6hn"/>
+                    <constraint firstAttribute="bottom" secondItem="117" secondAttribute="bottom" constant="20" symbolic="YES" id="K4m-rO-6hn"/>
                     <constraint firstItem="117" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="18" id="Kcv-Wt-yeR"/>
                     <constraint firstItem="193" firstAttribute="leading" secondItem="98" secondAttribute="trailing" constant="8" id="QzY-Gt-YrI"/>
                     <constraint firstItem="117" firstAttribute="top" secondItem="98" secondAttribute="top" id="UWd-6s-7a3"/>
@@ -714,11 +719,10 @@
                     <constraint firstItem="405" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" symbolic="YES" id="aAa-p9-9Iu"/>
                     <constraint firstItem="117" firstAttribute="top" secondItem="6" secondAttribute="top" constant="231" id="czf-BI-qfP"/>
                     <constraint firstItem="98" firstAttribute="leading" secondItem="117" secondAttribute="trailing" constant="10" id="lnP-NP-a58"/>
-                    <constraint firstAttribute="bottom" secondItem="193" secondAttribute="bottom" constant="16" id="qcS-eF-JmQ"/>
-                    <constraint firstItem="405" firstAttribute="top" secondItem="6" secondAttribute="top" constant="20" symbolic="YES" id="qdQ-jU-le1"/>
+                    <constraint firstAttribute="bottom" secondItem="193" secondAttribute="bottom" constant="20" symbolic="YES" id="qcS-eF-JmQ"/>
                     <constraint firstItem="98" firstAttribute="top" secondItem="193" secondAttribute="top" id="rrP-BV-NEf"/>
                     <constraint firstAttribute="trailing" secondItem="193" secondAttribute="trailing" constant="16" id="sbl-0X-0J5"/>
-                    <constraint firstItem="261" firstAttribute="top" secondItem="405" secondAttribute="bottom" constant="14" id="vdF-4F-1LV"/>
+                    <constraint firstItem="261" firstAttribute="top" secondItem="405" secondAttribute="bottom" constant="8" symbolic="YES" id="vdF-4F-1LV"/>
                 </constraints>
             </view>
             <point key="canvasLocation" x="50" y="123"/>
