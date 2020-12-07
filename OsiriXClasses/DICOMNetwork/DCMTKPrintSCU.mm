@@ -53,7 +53,7 @@
 			compression: 0
 			extraParameters:(NSDictionary *)extraParameters]) {
 			
-	_debug      = 0;           /* default: no debug */
+	_debug      = FALSE;           /* default: no debug */
     _verbose    = OFFalse;     /* default: do not dump presentation state */
     _printerID = NULL;             /* printer ID */
 	_cfgName = NULL;               /* config read file name */
@@ -108,10 +108,11 @@
 	[super dealloc];
 }
 
-- (void)createPrintJob{
+- (void)createPrintJob
+{
 	// turn on debug code
-	_verbose=OFTrue;
-     _debug = 3;
+    _verbose=OFTrue;
+    _debug = TRUE;
 	
 	// film orientation
 	 _filmorientation = DVPSF_default;

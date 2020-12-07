@@ -3593,7 +3593,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
     
 	NSArray *settingsList = [self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]];
 	
-	[numberOfPresetInGroupTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Number of Presets: %d", nil), [settingsList count]]];
+    [numberOfPresetInGroupTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Number of Presets: %lu", nil), (unsigned long)[settingsList count]]];
 
 	// fill the thumbnails
 	int n = 0;

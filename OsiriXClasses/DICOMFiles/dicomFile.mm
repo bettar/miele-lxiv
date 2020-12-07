@@ -74,7 +74,8 @@ extern NSString * convertDICOM( NSString *inputfile);
 extern NSRecursiveLock *Papyrus_Lock;
 
 static BOOL DEFAULTSSET = NO;
-static int TOOLKITPARSER = 1, PREFERPAPYRUSFORCD = 1;
+static int TOOLKITPARSER = 1;
+static int PREFERPAPYRUSFORCD = 1;
 static BOOL COMMENTSAUTOFILL = NO, COMMENTSFROMDICOMFILES = NO;
 static BOOL splitMultiEchoMR = NO;
 static BOOL useSeriesDescription = NO;

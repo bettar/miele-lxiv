@@ -3759,7 +3759,7 @@
 "Rebuilding default OsiriX database..." = "デフォルトのMiele-LXIVデータベースの再構築...";
 
 /* No comment provided by engineer. */
-"Received %d of %d bytes" = "%2$d バイト中 %1$d を受信しました";
+"Received %lu of %ld bytes" = "%2$ld バイト中 %1$lu を受信しました";
 
 /* No comment provided by engineer. */
 "Recent Searches" = "最近の検索";

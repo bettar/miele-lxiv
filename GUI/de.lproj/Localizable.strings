@@ -3758,7 +3758,7 @@
 "Rebuilding default OsiriX database..." = "Umbau Standard-Miele-LXIV-Datenbank ...";
 
 /* No comment provided by engineer. */
-"Received %d of %d bytes" = "Erhielt%1$d von%2$d Bytes";
+"Received %lu of %ld bytes" = "Erhielt%1$lu von%2$ld Bytes";
 
 /* No comment provided by engineer. */
 "Recent Searches" = "Aktuelle Suchanfragen";

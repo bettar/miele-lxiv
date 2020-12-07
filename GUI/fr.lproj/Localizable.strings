@@ -3759,7 +3759,7 @@
 "Rebuilding default OsiriX database..." = "Reconstitution de la base de données Miele-LXIV par défaut...";
 
 /* No comment provided by engineer. */
-"Received %d of %d bytes" = "Reçu %1$d de %2$d octets";
+"Received %lu of %ld bytes" = "Reçu %1$lu de %2$ld octets";
 
 /* No comment provided by engineer. */
 "Recent Searches" = "Recherches Recentes";

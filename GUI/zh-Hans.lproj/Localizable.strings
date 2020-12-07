@@ -3758,7 +3758,7 @@
 "Rebuilding default OsiriX database..." = "重建默认的 Miele-LXIV 数据库...";
 
 /* No comment provided by engineer. */
-"Received %d of %d bytes" = "收到%2$d 字节的 %1$d";
+"Received %lu of %ld bytes" = "收到%2$ld 字节的 %1$lu";
 
 /* No comment provided by engineer. */
 "Recent Searches" = "最近搜索";

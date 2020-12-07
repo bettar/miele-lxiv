@@ -409,7 +409,7 @@
 	}
 		
 	thread.progress = 1.0*obtainedSize.unsignedIntegerValue/databaseIndexSize;
-	thread.progressDetails = [NSString stringWithFormat:NSLocalizedString(@"Received %d of %d bytes", nil), obtainedSize.unsignedIntegerValue, databaseIndexSize];
+    thread.progressDetails = [NSString stringWithFormat:NSLocalizedString(@"Received %lu of %ld bytes", nil), (unsigned long)obtainedSize.unsignedIntegerValue, (long)databaseIndexSize];
 	
 	return data.length;
 }

@@ -296,7 +296,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 -(void)awakeFromNib
 {
 	[authView setDelegate:self];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
 		[authView setString:BUNDLE_IDENTIFIER".preferences.database"];
 	}

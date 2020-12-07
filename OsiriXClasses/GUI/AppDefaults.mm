@@ -1020,7 +1020,7 @@ static NSHost *currentHost = nil;
     [defaultValuesDic setObject: @"10000" forKey: @"maximumNumberOfCFindObjects"];
     [defaultValuesDic setObject: @"0" forKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"];
 	[defaultValuesDic setObject: @"1" forKey: @"SingleProcessMultiThreadedListener"];
-	[defaultValuesDic setObject: @"0" forKey: @"AUTHENTICATION"];
+	[defaultValuesDic setObject: @NO  forKey: @"AUTHENTICATION"];
 	[defaultValuesDic setObject: @YES forKey: @"Check4Updates"];
 	[defaultValuesDic setObject: @(CD_MODE_ASK_USER) forKey:CD_MOUNT_KEY];
 	[defaultValuesDic setObject: @"1" forKey:@"CDDVDEjectAfterAutoCopy"];
@@ -1228,9 +1228,9 @@ static NSHost *currentHost = nil;
     [defaultValuesDic setObject:@"1" forKey:@"bringOsiriXToFrontAfterReceivingMessage"];
     
 #ifdef MACAPPSTORE
-	[defaultValuesDic setObject:@"1" forKey:@"MACAPPSTORE"];
+	[defaultValuesDic setObject:@YES forKey:@"MACAPPSTORE"];
 #else
-	[defaultValuesDic setObject:@"0" forKey:@"MACAPPSTORE"];
+	[defaultValuesDic setObject:@NO  forKey:@"MACAPPSTORE"];
 #endif
 	
 	[defaultValuesDic setObject: [NSArray arrayWithObjects: [DCMAbstractSyntaxUID MRSpectroscopyStorage], nil] forKey:@"additionalDisplayedStorageSOPClassUIDArray"];
