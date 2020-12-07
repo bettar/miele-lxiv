@@ -17,42 +17,21 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window title="&lt;&lt; do not localize &gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" toolbarStyle="expanded" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
-            <rect key="contentRect" x="0.0" y="0.0" width="722" height="667"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="722" height="702"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
             <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="722" height="667"/>
+                <rect key="frame" x="0.0" y="0.0" width="722" height="702"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box horizontalCompressionResistancePriority="1000" title="Global" id="157">
-                        <rect key="frame" x="17" y="496" width="688" height="162"/>
+                        <rect key="frame" x="17" y="514" width="688" height="181"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="ffY-dV-DcU">
-                            <rect key="frame" x="3" y="3" width="682" height="144"/>
+                            <rect key="frame" x="3" y="3" width="682" height="163"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button toolTip="Connect to OsiriX and check for latest version." horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="159">
-                                    <rect key="frame" x="15" y="87" width="462" height="18"/>
-                                    <buttonCell key="cell" type="check" title="Require an 'Administrator' authentication to modify preferences settings" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="183">
-                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="system"/>
-                                    </buttonCell>
-                                    <connections>
-                                        <binding destination="167" name="value" keyPath="values.AUTHENTICATION" id="343"/>
-                                        <binding destination="167" name="hidden" keyPath="values.MACAPPSTORE" id="391"/>
-                                    </connections>
-                                </button>
-                                <button toolTip="Connect to OsiriX and check for latest version." translatesAutoresizingMaskIntoConstraints="NO" id="BXs-xj-ZZ5">
-                                    <rect key="frame" x="15" y="12" width="151" height="18"/>
-                                    <buttonCell key="cell" type="check" title="Display Notifications" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="eOV-F7-aFg">
-                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="system"/>
-                                    </buttonCell>
-                                    <connections>
-                                        <binding destination="167" name="value" keyPath="values.displayGrowlNotification" id="02o-xj-aMf"/>
-                                    </connections>
-                                </button>
-                                <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="341">
-                                    <rect key="frame" x="10" y="107" width="204" height="32"/>
+                                <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="752" translatesAutoresizingMaskIntoConstraints="NO" id="341">
+                                    <rect key="frame" x="10" y="125" width="204" height="32"/>
                                     <buttonCell key="cell" type="push" title="Reset Preferences" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="342">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -62,7 +41,7 @@
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="539">
-                                    <rect key="frame" x="239" y="107" width="204" height="32"/>
+                                    <rect key="frame" x="239" y="125" width="204" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="190" id="a3m-Do-HQD"/>
                                     </constraints>
@@ -75,7 +54,7 @@
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="542">
-                                    <rect key="frame" x="468" y="107" width="204" height="32"/>
+                                    <rect key="frame" x="468" y="125" width="204" height="32"/>
                                     <buttonCell key="cell" type="push" title="Load Preferences..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="543">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -84,8 +63,19 @@
                                         <action selector="loadPreferences:" target="-2" id="550"/>
                                     </connections>
                                 </button>
-                                <button toolTip="Connect to OsiriX and check for latest version." translatesAutoresizingMaskIntoConstraints="NO" id="535">
-                                    <rect key="frame" x="15" y="65" width="321" height="18"/>
+                                <button toolTip="Connect to OsiriX and check for latest version." horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="159">
+                                    <rect key="frame" x="15" y="102" width="462" height="18"/>
+                                    <buttonCell key="cell" type="check" title="Require an 'Administrator' authentication to modify preferences settings" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="183">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="167" name="value" keyPath="values.AUTHENTICATION" id="343"/>
+                                        <binding destination="167" name="hidden" keyPath="values.MACAPPSTORE" id="391"/>
+                                    </connections>
+                                </button>
+                                <button toolTip="Connect to OsiriX and check for latest version." verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="535">
+                                    <rect key="frame" x="15" y="74" width="321" height="18"/>
                                     <buttonCell key="cell" type="check" title="Synchronize preferences at startup with this url :" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="536">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -95,8 +85,22 @@
                                         <binding destination="167" name="value" keyPath="values.SyncPreferencesFromURL" id="552"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="545">
-                                    <rect key="frame" x="57" y="37" width="467" height="21"/>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="546">
+                                    <rect key="frame" x="534" y="45" width="22" height="23"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="20" id="OZ8-ew-tsK"/>
+                                    </constraints>
+                                    <buttonCell key="cell" type="roundTextured" title="Button" bezelStyle="texturedRounded" image="NSRefreshTemplate" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="547">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="refreshPreferencesURLSync:" target="-2" id="553"/>
+                                        <binding destination="167" name="enabled" keyPath="values.SyncPreferencesFromURL" id="555"/>
+                                    </connections>
+                                </button>
+                                <textField verticalHuggingPriority="750" verticalCompressionResistancePriority="751" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="545">
+                                    <rect key="frame" x="57" y="46" width="467" height="21"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="467" id="onX-Wv-Ksi"/>
                                     </constraints>
@@ -110,34 +114,30 @@
                                         <binding destination="167" name="value" keyPath="values.SyncPreferencesURL" id="551"/>
                                     </connections>
                                 </textField>
-                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="546">
-                                    <rect key="frame" x="534" y="36" width="22" height="23"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="20" id="OZ8-ew-tsK"/>
-                                    </constraints>
-                                    <buttonCell key="cell" type="roundTextured" title="Button" bezelStyle="texturedRounded" image="NSRefreshTemplate" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="547">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <button toolTip="Connect to OsiriX and check for latest version." translatesAutoresizingMaskIntoConstraints="NO" id="BXs-xj-ZZ5">
+                                    <rect key="frame" x="15" y="21" width="151" height="18"/>
+                                    <buttonCell key="cell" type="check" title="Display Notifications" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="eOV-F7-aFg">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <connections>
-                                        <action selector="refreshPreferencesURLSync:" target="-2" id="553"/>
-                                        <binding destination="167" name="enabled" keyPath="values.SyncPreferencesFromURL" id="555"/>
+                                        <binding destination="167" name="value" keyPath="values.displayGrowlNotification" id="02o-xj-aMf"/>
                                     </connections>
                                 </button>
                             </subviews>
                             <constraints>
-                                <constraint firstAttribute="bottom" secondItem="BXs-xj-ZZ5" secondAttribute="bottom" constant="13" id="5wn-6e-tJZ"/>
+                                <constraint firstAttribute="bottom" secondItem="BXs-xj-ZZ5" secondAttribute="bottom" constant="22" id="5wn-6e-tJZ"/>
                                 <constraint firstItem="545" firstAttribute="top" secondItem="535" secondAttribute="bottom" constant="8" symbolic="YES" id="5z8-Xr-s1U"/>
                                 <constraint firstItem="341" firstAttribute="leading" secondItem="ffY-dV-DcU" secondAttribute="leading" constant="17" id="Air-8A-tX1"/>
-                                <constraint firstItem="341" firstAttribute="top" secondItem="ffY-dV-DcU" secondAttribute="top" constant="10" id="Cvb-gw-bZu"/>
+                                <constraint firstItem="341" firstAttribute="top" secondItem="ffY-dV-DcU" secondAttribute="top" constant="11" id="Cvb-gw-bZu"/>
                                 <constraint firstItem="545" firstAttribute="top" secondItem="546" secondAttribute="top" id="DWk-tg-5ts"/>
                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="159" secondAttribute="trailing" constant="20" symbolic="YES" id="Eqh-N3-jcX"/>
                                 <constraint firstItem="539" firstAttribute="baseline" secondItem="542" secondAttribute="baseline" id="Fze-nj-hJz"/>
-                                <constraint firstItem="159" firstAttribute="top" secondItem="341" secondAttribute="bottom" constant="10" id="G9b-Ht-f9v"/>
+                                <constraint firstItem="159" firstAttribute="top" secondItem="341" secondAttribute="bottom" constant="13" id="G9b-Ht-f9v"/>
                                 <constraint firstItem="341" firstAttribute="leading" secondItem="159" secondAttribute="leading" id="Hee-dP-6zx"/>
                                 <constraint firstItem="545" firstAttribute="leading" secondItem="ffY-dV-DcU" secondAttribute="leading" constant="57" id="Hf5-Bi-bVH"/>
                                 <constraint firstItem="542" firstAttribute="leading" secondItem="539" secondAttribute="trailing" constant="39" id="I0f-iD-Xdz"/>
-                                <constraint firstItem="535" firstAttribute="top" secondItem="159" secondAttribute="bottom" constant="6" symbolic="YES" id="Khk-tz-BjL"/>
+                                <constraint firstItem="535" firstAttribute="top" secondItem="159" secondAttribute="bottom" constant="12" id="Khk-tz-BjL"/>
                                 <constraint firstItem="BXs-xj-ZZ5" firstAttribute="top" secondItem="545" secondAttribute="bottom" constant="8" symbolic="YES" id="Knc-Pm-tLJ"/>
                                 <constraint firstItem="546" firstAttribute="leading" secondItem="545" secondAttribute="trailing" constant="11" id="Rvt-2e-nHK"/>
                                 <constraint firstItem="341" firstAttribute="baseline" secondItem="539" secondAttribute="baseline" id="T19-Ga-QiY"/>
@@ -152,7 +152,7 @@
                         </view>
                     </box>
                     <box horizontalCompressionResistancePriority="1000" title="DICOM Toolkits" id="133">
-                        <rect key="frame" x="17" y="396" width="688" height="100"/>
+                        <rect key="frame" x="17" y="406" width="688" height="100"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <view key="contentView" id="ipi-hB-k8N">
                             <rect key="frame" x="3" y="3" width="682" height="82"/>
@@ -204,7 +204,7 @@
                         </view>
                     </box>
                     <box verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" title="JPEG Compression" id="357">
-                        <rect key="frame" x="17" y="312" width="688" height="82"/>
+                        <rect key="frame" x="17" y="324" width="688" height="82"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <view key="contentView" id="9i2-wo-BRf">
                             <rect key="frame" x="3" y="3" width="682" height="64"/>
@@ -255,7 +255,7 @@
                         </view>
                     </box>
                     <box horizontalCompressionResistancePriority="1000" title="Check version" id="129">
-                        <rect key="frame" x="17" y="231" width="688" height="79"/>
+                        <rect key="frame" x="17" y="239" width="688" height="79"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <view key="contentView" id="s5w-On-Tfo">
                             <rect key="frame" x="3" y="3" width="682" height="61"/>
@@ -293,7 +293,7 @@
                         </view>
                     </box>
                     <box horizontalCompressionResistancePriority="1000" title="DICOM Editing" id="169">
-                        <rect key="frame" x="17" y="172" width="688" height="57"/>
+                        <rect key="frame" x="17" y="177" width="688" height="57"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <view key="contentView" id="E9j-IO-Cwl">
                             <rect key="frame" x="3" y="3" width="682" height="39"/>
@@ -421,18 +421,18 @@ If multiple languages are enabled, the used language will be chosen according to
                     <constraint firstItem="129" firstAttribute="trailing" secondItem="169" secondAttribute="trailing" id="R1e-FY-HcJ"/>
                     <constraint firstItem="157" firstAttribute="trailing" secondItem="133" secondAttribute="trailing" id="YPg-C8-wyP"/>
                     <constraint firstAttribute="trailing" secondItem="157" secondAttribute="trailing" constant="20" symbolic="YES" id="ahT-sA-1Vr"/>
-                    <constraint firstItem="133" firstAttribute="top" secondItem="157" secondAttribute="bottom" constant="4" id="b1g-gj-ba0"/>
+                    <constraint firstItem="133" firstAttribute="top" secondItem="157" secondAttribute="bottom" constant="12" id="b1g-gj-ba0"/>
                     <constraint firstItem="169" firstAttribute="trailing" secondItem="397" secondAttribute="trailing" id="bC5-To-3cF"/>
-                    <constraint firstItem="129" firstAttribute="top" secondItem="357" secondAttribute="bottom" constant="6" id="ehh-5a-l50"/>
+                    <constraint firstItem="129" firstAttribute="top" secondItem="357" secondAttribute="bottom" constant="10" id="ehh-5a-l50"/>
                     <constraint firstItem="357" firstAttribute="trailing" secondItem="129" secondAttribute="trailing" id="exz-UD-UOC"/>
-                    <constraint firstItem="357" firstAttribute="top" secondItem="133" secondAttribute="bottom" constant="6" id="fed-sL-DQJ"/>
-                    <constraint firstItem="169" firstAttribute="top" secondItem="129" secondAttribute="bottom" constant="6" id="hfo-r9-WPP"/>
-                    <constraint firstItem="397" firstAttribute="top" secondItem="169" secondAttribute="bottom" constant="4" id="jQg-ex-JbJ"/>
+                    <constraint firstItem="357" firstAttribute="top" secondItem="133" secondAttribute="bottom" constant="4" id="fed-sL-DQJ"/>
+                    <constraint firstItem="169" firstAttribute="top" secondItem="129" secondAttribute="bottom" constant="9" id="hfo-r9-WPP"/>
+                    <constraint firstItem="397" firstAttribute="top" secondItem="169" secondAttribute="bottom" constant="9" id="jQg-ex-JbJ"/>
                     <constraint firstItem="133" firstAttribute="trailing" secondItem="357" secondAttribute="trailing" id="t0U-F2-ZdB"/>
                     <constraint firstItem="129" firstAttribute="leading" secondItem="169" secondAttribute="leading" id="uTz-XV-KIt"/>
                 </constraints>
             </view>
-            <point key="canvasLocation" x="132" y="146.5"/>
+            <point key="canvasLocation" x="132" y="164"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="167" userLabel="Shared Defaults"/>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" animationBehavior="default" id="209" userLabel="settings Window">
