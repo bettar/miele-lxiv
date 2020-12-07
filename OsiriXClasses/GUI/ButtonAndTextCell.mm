@@ -48,14 +48,14 @@
 
 		buttonCell = [[NSButtonCell alloc] initImageCell:nil];
 		[buttonCell setButtonType:NSSwitchButton];
-		[buttonCell  setControlSize:NSMiniControlSize];
+		[buttonCell  setControlSize:NSControlSizeMini];
 		[buttonCell setState:NSOnState];
 		
 		//textCell = [[NSTextFieldCell alloc] initTextCell:@""];
 		[self setBezeled:YES];
 		[self setBezelStyle:NSTextFieldSquareBezel];
 		[self setDrawsBackground:YES];
-		[self setControlSize:NSMiniControlSize];
+		[self setControlSize:NSControlSizeMini];
 		[self setEditable:YES];
 	}
 

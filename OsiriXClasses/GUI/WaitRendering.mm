@@ -142,7 +142,7 @@
 			seconds = lastDuration;
 			seconds -= hours*60*60 + minutes*60;
 			
-			[lastTimeText setStringValue:[NSString stringWithFormat: NSLocalizedString( @"Last Duration:\r%2.2d:%2.2d:%2.2d", nil), hours, minutes, seconds]];
+            [lastTimeText setStringValue:[NSString stringWithFormat: NSLocalizedString( @"Last Duration:\r%2.2ld:%2.2ld:%2.2ld", nil), hours, minutes, seconds]];
 		}
 		else
             [lastTimeText setStringValue:@""];

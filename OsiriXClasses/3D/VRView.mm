@@ -218,7 +218,9 @@ public:
 //@synthesize StereoVisionOn;
 //#endif
 
-@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
+@synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage;
+@synthesize renderingMode;
+@synthesize currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
 @synthesize lowResLODFactor, engine, lodDisplayed;
 
 - (BOOL) eventToPlugins: (NSEvent*) event
@@ -7601,7 +7603,8 @@ public:
             *w = size[0];
             *h = size[1];
             
-            if (firstObject.isRGB == NO && ( renderingMode == 1 || renderingMode == 2 || renderingMode == 3))		// MIP
+            if (firstObject.isRGB == NO &&
+                (renderingMode == 1 || renderingMode == 2 || renderingMode == 3)) // MIP
             {
                 unsigned short *destPtr, *destFixedPtr;
                 

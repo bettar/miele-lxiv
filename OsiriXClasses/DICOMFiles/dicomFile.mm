@@ -1173,7 +1173,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 //	return -1;
 //}
 
-#include "BioradHeader.h"
+#include "DICOMFiles/BioradHeader.h" // MieleAPI
 
 -(short) getBioradPicFile
 {

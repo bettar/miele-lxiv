@@ -36,7 +36,7 @@
 	intercellSpacing = NSMakeSize(13,1);
 	
 	dcmTagsPopUpButton = [[AnonymizationTagsPopUpButton alloc] initWithFrame:NSZeroRect];
-	[dcmTagsPopUpButton.cell setControlSize:NSMiniControlSize];
+	[dcmTagsPopUpButton.cell setControlSize:NSControlSizeMini];
 	[dcmTagsPopUpButton setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]-2]];
 	[self addSubview:dcmTagsPopUpButton];
 	
@@ -154,7 +154,7 @@
 	static NSFont* font = [[NSFont labelFontOfSize:[NSFont smallSystemFontSize]-1] retain];
 
 	NSButton* checkBox = [[NSButton alloc] initWithFrame:NSZeroRect];
-	[[checkBox cell] setControlSize:NSMiniControlSize];
+	[[checkBox cell] setControlSize:NSControlSizeMini];
 	[checkBox setFont:font];
 	[[checkBox cell] setLineBreakMode:NSLineBreakByTruncatingMiddle];
 	[checkBox setButtonType:NSSwitchButton];
@@ -162,7 +162,7 @@
 	[self addSubview:checkBox];
 	
 	N2TextField* textField = [[N2TextField alloc] initWithFrame:NSZeroRect];
-	[[textField cell] setControlSize:NSMiniControlSize];
+	[[textField cell] setControlSize:NSControlSizeMini];
 	[textField setFont:font];
 	[textField setBezeled:YES];
 	[textField setBezelStyle:NSTextFieldSquareBezel];

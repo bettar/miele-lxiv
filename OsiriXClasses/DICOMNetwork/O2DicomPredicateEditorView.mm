@@ -255,7 +255,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         
         _tagsPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
         _tagsPopUp.bezelStyle = NSRoundRectBezelStyle;
-        [_tagsPopUp.cell setControlSize:NSSmallControlSize];
+        [_tagsPopUp.cell setControlSize:NSControlSizeSmall];
         _tagsPopUp.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         _tagsPopUp.autoenablesItems = NO;
         _tagsPopUp.noSelectionLabel = NSLocalizedString(@"Select a Tag...", nil);
@@ -349,7 +349,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         
         _operatorsPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
         _operatorsPopUp.bezelStyle = NSRoundRectBezelStyle;
-        [_operatorsPopUp.cell setControlSize:NSSmallControlSize];
+        [_operatorsPopUp.cell setControlSize:NSControlSizeSmall];
         _operatorsPopUp.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         _operatorsPopUp.autoenablesItems = NO;
         
@@ -389,7 +389,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         // string value field
         
         _stringValueTextField = [[NSTextField alloc] initWithFrame:NSZeroRect];
-        [_stringValueTextField.cell setControlSize:NSSmallControlSize];
+        [_stringValueTextField.cell setControlSize:NSControlSizeSmall];
         _stringValueTextField.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         
         [_stringValueTextField bind:@"value"
@@ -403,7 +403,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         // number value field
         
         _numberValueTextField = [[NSTextField alloc] initWithFrame:NSZeroRect];
-        [_numberValueTextField.cell setControlSize:NSSmallControlSize];
+        [_numberValueTextField.cell setControlSize:NSControlSizeSmall];
         _numberValueTextField.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         
         [_numberValueTextField bind:@"value" toObject:self withKeyPath:@"numberValue" options:[NSDictionary dictionaryWithObject:@YES forKey:NSContinuouslyUpdatesValueBindingOption]];
@@ -411,7 +411,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         // date picker
         
         _datePicker = [[O2DicomPredicateEditorDatePicker alloc] initWithFrame:NSZeroRect];
-        [_datePicker.cell setControlSize:NSSmallControlSize];
+        [_datePicker.cell setControlSize:NSControlSizeSmall];
         _datePicker.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         _datePicker.datePickerElements = NSYearMonthDayDatePickerElementFlag;
         
@@ -420,7 +420,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         // time picker
         
         _timePicker = [[O2DicomPredicateEditorDatePicker alloc] initWithFrame:NSZeroRect];
-        [_timePicker.cell setControlSize:NSSmallControlSize];
+        [_timePicker.cell setControlSize:NSControlSizeSmall];
         _timePicker.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         _timePicker.datePickerElements = NSHourMinuteDatePickerElementFlag;
         
@@ -429,7 +429,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         // datetime picker
         
         _dateTimePicker = [[O2DicomPredicateEditorDatePicker alloc] initWithFrame:NSZeroRect];
-        [_dateTimePicker.cell setControlSize:NSSmallControlSize];
+        [_dateTimePicker.cell setControlSize:NSControlSizeSmall];
         _dateTimePicker.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         _dateTimePicker.datePickerElements = NSYearMonthDayDatePickerElementFlag|NSHourMinuteDatePickerElementFlag;
         
@@ -439,7 +439,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         
         _withinPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
         _withinPopUp.bezelStyle = NSRoundRectBezelStyle;
-        [_withinPopUp.cell setControlSize:NSSmallControlSize];
+        [_withinPopUp.cell setControlSize:NSControlSizeSmall];
         _withinPopUp.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         _withinPopUp.autoenablesItems = NO;
         
@@ -473,7 +473,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         
         _codeStringPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
         _codeStringPopUp.bezelStyle = NSRoundRectBezelStyle;
-        [_codeStringPopUp.cell setControlSize:NSSmallControlSize];
+        [_codeStringPopUp.cell setControlSize:NSControlSizeSmall];
         _codeStringPopUp.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         _codeStringPopUp.autoenablesItems = NO;
         
@@ -484,7 +484,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         // is
         
         _isLabel = [[NSTextField alloc] initWithFrame:NSZeroRect];
-        [_isLabel.cell setControlSize:NSSmallControlSize];
+        [_isLabel.cell setControlSize:NSControlSizeSmall];
         _isLabel.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         _isLabel.stringValue = NSLocalizedString(@"is", nil);
         _isLabel.bordered = NO;

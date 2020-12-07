@@ -792,7 +792,8 @@
                 }
 				
                 NSString *photometricInterpretation = @"MONOCHROME2";
-                if (spp == 3) photometricInterpretation = @"RGB";
+                if (spp == 3)
+                    photometricInterpretation = @"RGB";
                 
                 if (dcmtkFileFormat)
                     delete dcmtkFileFormat;

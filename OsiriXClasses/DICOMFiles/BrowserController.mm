@@ -395,10 +395,10 @@ static volatile BOOL waitForRunningProcess = NO;
     if (mode == 0) // Regular
     {
         if ([type isEqualToString: @"threadNameSize"])
-            return [NSFont systemFontSizeForControlSize:NSSmallControlSize];
+            return [NSFont systemFontSizeForControlSize:NSControlSizeSmall];
         
         if ([type isEqualToString: @"threadNameStatus"])
-            return [NSFont systemFontSizeForControlSize:NSMiniControlSize];
+            return [NSFont systemFontSizeForControlSize:NSControlSizeMini];
         
         if ([type isEqualToString: @"comparativeLineSpace"])
             return 14;
@@ -1755,7 +1755,7 @@ static NSConditionLock *threadLock = nil;
 
 -(void)setDatabase:(DicomDatabase*)db
 {
-    NSLog(@"%s db:<%@>", __FUNCTION__, db);
+    //NSLog(@"%s db:<%@>", __FUNCTION__, db);
 
     [[db retain] autorelease]; // avoid multithreaded release
 	
@@ -1962,7 +1962,7 @@ static NSConditionLock *threadLock = nil;
 - (void)setDBWindowTitle
 {
 	[self.window setTitle: _database ? [_database name] : @""];
-    NSLog(@"%s title:<%@>", __FUNCTION__, self.window.title);
+    //NSLog(@"%s title:<%@>", __FUNCTION__, self.window.title);
     
     NSString *prefix = NSTemporaryDirectory();
 

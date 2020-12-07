@@ -222,11 +222,11 @@
 {
 	[super showWindow:sender];
 	NSButtonCell *cDisplay = [columnDisplay dataCell];
-	[cDisplay setControlSize:NSMiniControlSize];
+	[cDisplay setControlSize:NSControlSizeMini];
 	[columnDisplay setDataCell:cDisplay];
 	
 	NSSliderCell *smallSliderCell = [[NSSliderCell alloc] init];
-	[smallSliderCell setControlSize:NSMiniControlSize];
+	[smallSliderCell setControlSize:NSControlSizeMini];
 	[smallSliderCell setMinValue:0.0];
 	[smallSliderCell setMaxValue:1.0];
 	

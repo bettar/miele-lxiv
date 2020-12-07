@@ -132,8 +132,8 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
         {
-            int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
-            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
+            bool AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"];
+            [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"AlwaysScaleToFit"];
             
             windowFrameToRestore = m_CurrentViewer.window.frame;
             NSRect newFrame = [AppController usefulRectForScreen: m_CurrentViewer.window.screen];
@@ -144,9 +144,10 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
                 newFrame.size.width = newFrame.size.height;
             
             [AppController resizeWindowWithAnimation: m_CurrentViewer.window newSize: newFrame];
-            if (scaleFitToRestore) [m_CurrentViewer.imageView scaleToFit];
+            if (scaleFitToRestore)
+                [m_CurrentViewer.imageView scaleToFit];
             
-            [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
+            [[NSUserDefaults standardUserDefaults] setBool: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
         }
         
         for( ViewerController *v in [ViewerController getDisplayed2DViewers])
@@ -266,14 +267,15 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] && NSIsEmptyRect( windowFrameToRestore) == NO)
     {
-        int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
-        [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
+        bool AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"];
+        [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"AlwaysScaleToFit"];
         
         [AppController resizeWindowWithAnimation: m_CurrentViewer.window newSize: windowFrameToRestore];
         
-        if (scaleFitToRestore) [m_CurrentViewer.imageView scaleToFit];
+        if (scaleFitToRestore)
+            [m_CurrentViewer.imageView scaleToFit];
         
-        [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
+        [[NSUserDefaults standardUserDefaults] setBool: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
     }
     
     for( ViewerController *v in [ViewerController get2DViewers])

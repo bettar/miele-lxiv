@@ -5442,7 +5442,7 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 	NSButtonCell *buttonCell = [[[NSButtonCell alloc] init] autorelease];
 	[buttonCell setTarget: self];
 	[buttonCell setAction: @selector(retrieveClick:)];
-	[buttonCell setControlSize: NSMiniControlSize];
+	[buttonCell setControlSize: NSControlSizeMini];
 	[buttonCell setImage: [NSImage imageNamed:@"InArrow.tif"]];
 	[buttonCell setBezelStyle: NSRoundRectBezelStyle]; // was NSRegularSquareBezelStyle
 	[tableColumn setDataCell: buttonCell];

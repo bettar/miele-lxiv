@@ -108,7 +108,7 @@ void PFMoveToApplicationsFolderIfNecessary() {
 			[alert setShowsSuppressionButton:YES];
 
 			if (PFUseSmallAlertSuppressCheckbox) {
-				[[[alert suppressionButton] cell] setControlSize:NSSmallControlSize];
+				[[[alert suppressionButton] cell] setControlSize:NSControlSizeSmall];
 				[[[alert suppressionButton] cell] setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
 			}
 		}

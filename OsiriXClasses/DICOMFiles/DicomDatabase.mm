@@ -107,7 +107,7 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 
 +(NSString*)baseDirPathForPath:(NSString*)path
 {
-    NSLog(@"%s path:\n\t%@", __FUNCTION__, path);
+    //NSLog(@"%s path:\n\t%@", __FUNCTION__, path);
 	// were we given a path inside a OUR_DATA_LOCATION dir?
 	NSArray* pathParts = path.pathComponents;
 	for (int i = (int)(pathParts.count-1); i >= 0; --i)
@@ -125,7 +125,7 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 
 +(NSString*)baseDirPathForMode:(int)mode path:(NSString*)path
 {
-    NSLog(@"%s, mode:%i, path: <%@>", __FUNCTION__, mode, path);
+    //NSLog(@"%s, mode:%i, path: <%@>", __FUNCTION__, mode, path);
 
     switch (mode) {
 		case 0:  // Documents directory
@@ -299,7 +299,7 @@ static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init]
 +(DicomDatabase*)databaseAtPath:(NSString*)path
                            name:(NSString*)name
 {
-    NSLog(@"%s %@, name: <%@>", __FUNCTION__, path, name);
+    //NSLog(@"%s %@, name: <%@>", __FUNCTION__, path, name);
 	path = [self baseDirPathForPath:path];
 	
     DicomDatabase* database = nil;
@@ -321,7 +321,7 @@ static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init]
 
 +(DicomDatabase*)existingDatabaseAtPath:(NSString*)path
 {
-    NSLog(@"%s path:\n%@", __FUNCTION__, path);
+    //NSLog(@"%s path:\n%@", __FUNCTION__, path);
     DicomDatabase *database = nil;
     
 	[databasesDictionaryLock lock];
@@ -416,7 +416,7 @@ static DicomDatabase* activeLocalDatabase = nil;
           context:(NSManagedObjectContext*)c
      mainDatabase:(N2ManagedDatabase*)mainDbReference
 {
-    NSLog(@"%s path:\n\t%@", __FUNCTION__, p); // *.sql
+    //NSLog(@"%s path:\n\t%@", __FUNCTION__, p); // *.sql
 
     @try {
         p = [DicomDatabase baseDirPathForPath:p];

@@ -38,7 +38,7 @@
 
 -(void)awakeFromNib {
 	NSArray* columnDescriptors = [NSArray arrayWithObject:[N2ColumnDescriptor descriptor]];
-	N2ColumnLayout* layout = [[[N2ColumnLayout alloc] initForView:self columnDescriptors:columnDescriptors controlSize:NSMiniControlSize] autorelease];
+	N2ColumnLayout* layout = [[[N2ColumnLayout alloc] initForView:self columnDescriptors:columnDescriptors controlSize:NSControlSizeMini] autorelease];
 	[layout setForcesSuperviewHeight:YES];
 	[layout setSeparation:NSZeroSize];
 

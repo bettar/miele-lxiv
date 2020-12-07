@@ -2374,7 +2374,7 @@ didGenerateVolume:(CPRVolumeData *)volume
 	N3Vector pixVector;
 	N3Vector lineStart;
 	N3Vector lineEnd;
-	CGFloat height;
+	//CGFloat height;
 	CGFloat distance;
 	CGFloat minDistance;
     

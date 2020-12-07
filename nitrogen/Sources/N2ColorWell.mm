@@ -53,12 +53,12 @@
 	self = [super initWithFrame:frameRect];
 	
 	NSCell* cell = [[N2ColorWellCell alloc] init];
-	[cell setControlSize:NSMiniControlSize];
+	[cell setControlSize:NSControlSizeMini];
 	[self setCell:cell];
 	[cell release];
 	
 	[self setBezelStyle:NSRecessedBezelStyle];
-	[self setFont:[NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:NSMiniControlSize]]];
+	[self setFont:[NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:NSControlSizeMini]]];
 	
 	[self setTitle:@""];
 	[self setAction:@selector(click:)];

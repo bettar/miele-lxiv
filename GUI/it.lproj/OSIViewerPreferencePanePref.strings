@@ -53,10 +53,10 @@
 "348.title" = "Zoom con rotella di scorrimento orizzontale";
 
 /* Class = "NSButtonCell"; title = "No 'Propagate settings in series' for:"; ObjectID = "349"; */
-"349.title" = "Nessuna ‘Propaga impostazioni nelle serie’ per:";
+"349.title" = "Nessuna ‘Propaga impostazioni nelle Serie’ per:";
 
 /* Class = "NSButtonCell"; title = "Apply Next/Previous Series button to all opened viewers"; ObjectID = "350"; */
-"350.title" = "Applicare il pulsante serie Successiva/Precedente a tutte le viste aperte";
+"350.title" = "Applicare il pulsante Serie Successiva/Precedente a tutte le viste aperte";
 
 /* Class = "NSButtonCell"; title = "High Quality Zoom (Lanczos 5)"; ObjectID = "351"; */
 "351.title" = "Zoom di alta qualità (Lanczos 5)";
@@ -68,10 +68,10 @@
 "353.title" = "Se ci sono viste affiancate, esportare tutte le viste affiancate, non solo la vista selezionata";
 
 /* Class = "NSButtonCell"; title = "Automatically Tile Windows when closing or opening a new series"; ObjectID = "358"; */
-"358.title" = "Affianca automaticamente le finestre quando si chiude o si apre una nuova serie";
+"358.title" = "Affianca automaticamente le finestre quando si chiude o si apre una nuova Serie";
 
 /* Class = "NSButtonCell"; title = "Group series of same study on same screen"; ObjectID = "359"; */
-"359.title" = "Raggruppa sullo stesso schermo Serie dello stesso studio";
+"359.title" = "Raggruppa sullo stesso schermo Serie dello stesso Studio";
 
 /* Class = "NSButtonCell"; title = "Magnetic Windows for move & resize"; ObjectID = "360"; */
 "360.title" = "Finestre magnetiche per spostare e ridimensionare";
@@ -80,7 +80,7 @@
 "362.title" = "Salva automaticamente lo stato dello spazio di lavoro alla chiusura di tutte le viste";
 
 /* Class = "NSButtonCell"; title = "Automatically load Workspace State when opening a study"; ObjectID = "363"; */
-"363.title" = "Carica automaticamente lo stato dello spazio di lavoro all'apertura di uno studio";
+"363.title" = "Carica automaticamente lo stato dello spazio di lavoro all'apertura di uno Studio";
 
 /* Class = "NSButtonCell"; title = "Radio"; ObjectID = "366"; */
 "366.title" = "Radio";
@@ -116,10 +116,10 @@
 "422.title" = "Contrassegnare l'immagine ROI come immagine chiave";
 
 /* Class = "NSButtonCell"; title = "Loop in the series with mouse scroll wheel"; ObjectID = "426"; */
-"426.title" = "Ciclo nella serie con la rotella di scorrimento del mouse";
+"426.title" = "Ciclo nella Serie con la rotella di scorrimento del mouse";
 
 /* Class = "NSButtonCell"; title = "Scroll through image and series for:"; ObjectID = "432"; */
-"432.title" = "Scorrere l'immagine e le serie per:";
+"432.title" = "Scorrere l'immagine e le Serie per:";
 
 /* Class = "NSButtonCell"; title = "Full 32-bit OpenGL pipeline"; ObjectID = "435"; */
 "435.title" = "Pipeline OpenGL a tutti 32-bit";
@@ -179,7 +179,7 @@
 "549.title" = "Ordine inverso";
 
 /* Class = "NSButtonCell"; title = "Don't switch series if already displayed"; ObjectID = "556"; */
-"556.title" = "Non commutare la serie se già visualizzata";
+"556.title" = "Non commutare la Serie se già visualizzata";
 
 /* Class = "NSMenuItem"; title = "DX"; ObjectID = "ai8-gB-ewz"; */
 "ai8-gB-ewz.title" = "DX";
@@ -230,13 +230,13 @@
 "seo-e0-Zo4.title" = "RF";
 
 /* Class = "NSTextFieldCell"; title = "Series List:"; ObjectID = "uep-14-VL5"; */
-"uep-14-VL5.title" = "Elenco serie:";
+"uep-14-VL5.title" = "Elenco Serie:";
 
 /* Class = "NSMenuItem"; title = "RF"; ObjectID = "uMP-Y0-V9I"; */
 "uMP-Y0-V9I.title" = "RF";
 
 /* Class = "NSButtonCell"; title = "Single Series List per screen"; ObjectID = "Uq0-8g-c6d"; */
-"Uq0-8g-c6d.title" = "Elenco delle serie singole per schermata";
+"Uq0-8g-c6d.title" = "Elenco delle Serie singole per schermata";
 
 /* Class = "NSMenuItem"; title = "DR"; ObjectID = "WGV-vh-73b"; */
 "WGV-vh-73b.title" = "DR";

@@ -142,7 +142,7 @@ static BonjourBrowser *currentBrowser = nil;
 
 - (void) buildFixedIPList
 {
-    NSLog(@"%s", __FUNCTION__);
+    //NSLog(@"%s", __FUNCTION__);
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"syncOsiriXDB"])
 	{
 		[NSThread detachNewThreadSelector:@selector(syncOsiriXDBList)
@@ -172,8 +172,7 @@ static BonjourBrowser *currentBrowser = nil;
 
 - (void) buildDICOMDestinationsList
 {
-    NSLog(@"%s", __FUNCTION__);
-
+    //NSLog(@"%s", __FUNCTION__);
     NSArray *dbArray = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 	
 	if (dbArray == nil)
@@ -198,7 +197,7 @@ static BonjourBrowser *currentBrowser = nil;
 
 - (void) buildLocalPathsList
 {
-    NSLog(@"%s", __FUNCTION__);
+    //NSLog(@"%s", __FUNCTION__);
 	NSArray<NSDictionary *> *dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: localDatabasePaths_a_KEY];
 
     NSString *defaultPath = documentsDirectoryFor([[NSUserDefaults standardUserDefaults] integerForKey: DefaultDbLocation_i_KEY],
@@ -241,8 +240,7 @@ static BonjourBrowser *currentBrowser = nil;
 // Order them: first the localPath, fixedIP, bonjour, dicomDestination
 - (void) arrangeServices
 {
-    NSLog(@"%s", __FUNCTION__);
-
+    //NSLog(@"%s", __FUNCTION__);
     NSMutableArray *result = [NSMutableArray array];
 	
 	for (int i = 0 ; i < [services count]; i++)

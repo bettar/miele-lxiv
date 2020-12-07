@@ -929,9 +929,11 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject:@"1" forKey:@"useDCMTKForDicomExport"];
     [defaultValuesDic setObject:@"1" forKey:@"SupportQRModalitiesinStudy"];
     [defaultValuesDic setObject:@"1" forKey:@"CapitalizedString"];
-    [defaultValuesDic setObject:@"1" forKey:@"hasFULL32BITPIPELINE"];
-    [defaultValuesDic setObject:@"1" forKey:@"FULL32BITPIPELINE"];
+
+    [defaultValuesDic setObject:@YES forKey:@"hasFULL32BITPIPELINE"];
+    [defaultValuesDic setObject:@YES forKey:@"FULL32BITPIPELINE"];
     [defaultValuesDic setObject:@"4" forKey:@"MAXNUMBEROF32BITVIEWERS"];
+
     [defaultValuesDic setObject:@"1" forKey:@"CFINDCommentsAndStatusSupport"];
     [defaultValuesDic setObject:@"1" forKey:@"restorePasswordWebServer"];
     [defaultValuesDic setObject:@"comment" forKey:@"commentFieldForAutoFill"];
@@ -1106,7 +1108,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject: @"1" forKey: @"Scroll Wheel Reversed"];
 	[defaultValuesDic setObject: @"Miele-LXIV" forKey: @"ALBUMNAME"];
 	[defaultValuesDic setObject: @"1" forKey: @"DisplayCrossReferenceLines"];
-	[defaultValuesDic setObject: @"0" forKey: @"AlwaysScaleToFit"];
+	[defaultValuesDic setObject:@NO  forKey: @"AlwaysScaleToFit"];
 	[defaultValuesDic setObject:@(VR_VIEW_SIZE_SQUARE_FULL_SCREEN) forKey: VRDefaultViewSize_KEY];
 	[defaultValuesDic setObject:@"0" forKey: @"RunListenerOnlyIfActive"];
 	[defaultValuesDic setObject:@"0" forKey: @"UseShutter"];

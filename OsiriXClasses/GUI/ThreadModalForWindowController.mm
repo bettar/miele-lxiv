@@ -218,7 +218,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 }
 
 -(NSFont*)smallSystemFont {
-    return [NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSSmallControlSize]];
+    return [NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSControlSizeSmall]];
 }
 
 -(void)observeValueForKeyPath:(NSString*)keyPath

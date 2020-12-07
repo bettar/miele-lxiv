@@ -41,8 +41,9 @@ void renderer_setProgram(GLuint p, GLuint fromLine)
     }
 
   #ifdef DEBUG_RENDERER_CALLS
+    NSString *s = [NSString stringWithFormat:@" from line %d", fromLine];
     NSLog(@"%s, change program from %d to %d,%@ %@", __FUNCTION__,
-          currentProgram,
+          sScene.currentProgram,
           p,
           (fromLine>0) ? s : @"",
           [NSOpenGLContext currentContext]);
@@ -74,7 +75,7 @@ void renderer_reset_scale_translate_MV(CGSize scaleFactor,
 
 #ifdef WITH_OPENGL_32
   #ifdef DEBUG_RENDERER_CALLS
-    NSLog(@"%s %d, currentProgram:%d, scale:%@", __FUNCTION__, __LINE__, currentProgram, NSStringFromSize(scaleFactor));
+    NSLog(@"%s %d, currentProgram:%d, scale:%@", __FUNCTION__, __LINE__, sScene.currentProgram, NSStringFromSize(scaleFactor));
   #endif
 
     assert(sScene != nil && sScene.currentProgram != 0);
@@ -144,7 +145,7 @@ void renderer_reset_scale_MV(CGSize scaleFactor, BOOL flipX, BOOL flipY, GLuint 
   #ifdef DEBUG_RENDERER_CALLS
     NSString *s = [NSString stringWithFormat:@" from line %d", fromLine];
     NSLog(@"%s %d, currentProgram:%d, scale factor:%@%@", __FUNCTION__, __LINE__,
-          currentProgram,
+          sScene.currentProgram,
           NSStringFromSize(scaleFactor),
           (fromLine>0) ? s : @"");
   #endif
@@ -188,7 +189,7 @@ void renderer_reset_scale_rotate_MV(CGSize scaleFactor,
 
     #ifdef DEBUG_RENDERER_CALLS
     NSLog(@"%s %d, currentProgram:%d, scale:%@, rotation(deg):%.1f, MV loc:%i", __FUNCTION__, __LINE__,
-          currentProgram,
+          sScene.currentProgram,
           NSStringFromSize(scaleFactor),
           rotationAngleDeg,
           MVLocation);
@@ -440,7 +441,7 @@ void renderer_set_rgba(GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLuint fromLi
   #ifdef DEBUG_RENDERER_CALLS
     NSString *s = [NSString stringWithFormat:@" from line %d", fromLine];
     NSLog(@"%s %d, currentProgram:%d, mode:%ld, color:(%.1f,%.1f,%.1f, %.1f)%@", __FUNCTION__, __LINE__,
-          currentProgram, (long)sStatus->currentShaderMode, r,g,b,a, s);
+          sScene.currentProgram, (long)sScene.currentShaderMode, r,g,b,a, s);
   #endif
 #else
     NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
@@ -991,8 +992,8 @@ void renderer_draw_xyz_uv(NSArray *pArray, GLenum mode)
 #ifdef DEBUG_RENDERER_CALLS
     NSLog(@"%s %d, %@, program:%d, shader mode:%ld", __FUNCTION__, __LINE__,
           [NSOpenGLContext currentContext],
-          currentProgram,
-          (long)sStatus->sStatus->currentShaderMode);
+          sScene.currentProgram,
+          (long)sScene.currentShaderMode);
 #endif
 
 #ifdef WITH_OPENGL_32

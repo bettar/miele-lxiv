@@ -39,7 +39,7 @@
 	
 	switch ([self bezelStyle]) {
 		case NSRecessedBezelStyle:
-			if ([[self cell] controlSize] == NSMiniControlSize)
+			if ([[self cell] controlSize] == NSControlSizeMini)
                 size.height -= 4;
 
             break;

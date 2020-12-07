@@ -561,7 +561,7 @@ struct edge *UpdateActive( struct edge *active, struct edge *edgeTable[], long c
 
 static DCMPix **restoreImageCache = nil;
 
-static inline void DrawRuns(	struct edge *active,
+static inline void DrawRuns(struct edge *active,
 							long curY,
 							float *pix,
 							long w,
@@ -2815,12 +2815,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						
 						if (doit)
 						{
-							long	xx = x;
-							long	yy = y;
+							long xx = x;
+							long yy = y;
 							
 							if (isRGB)
 							{
-								unsigned char*  rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
+								unsigned char* rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
 								
 								if (addition)
 								{
@@ -2837,7 +2837,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							}
 							else
 							{
-								float	*fTempImage = &fImage[ (yy * width) + xx];
+								float *fTempImage = &fImage[ (yy * width) + xx];
 								
 								if (addition)
 								{
@@ -2996,9 +2996,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			{
 				switch (orientationStack)
 				{
-					case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
-					case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
-					case 2:		fTempImage = fImage + width*y;							break;
+					case 1:	fTempImage = fImage + (y * ims) + stackNo*width;	break;
+					case 0:	fTempImage = fImage + (y * ims) + stackNo;			break;
+					case 2:	fTempImage = fImage + width*y;						break;
 				}
 				
 				for (long x = 0; x < width ; x++)
@@ -3098,9 +3098,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			switch (orientationStack)
 			{
-				case 0:	yIm = pixArray.count;		xIm = width;	break;
-				case 1:	yIm = pixArray.count;		xIm = height;	break;
-				case 2:	yIm = height;				xIm = width;	break;
+				case 0:	yIm = pixArray.count;	xIm = width;	break;
+				case 1:	yIm = pixArray.count;	xIm = height;	break;
+				case 2:	yIm = height;			xIm = width;	break;
 			}
 			
 			if (isRGB)
@@ -3109,9 +3109,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				{
 					switch (orientationStack)
 					{
-						case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
-						case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
-						case 2:		fTempImage = fImage + width*y;							break;
+						case 1:	fTempImage = fImage + (y * ims) + stackNo*width;	break;
+						case 0:	fTempImage = fImage + (y * ims) + stackNo;			break;
+						case 2:	fTempImage = fImage + width*y;						break;
 					}
 					
 					for (long x = 0; x < xIm ; x++)
@@ -3213,7 +3213,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					{
 						if (!isRGB)
 						{
-							float	val = *fImageTemp;
+							float val = *fImageTemp;
 							
 							count++;
 							//NSLog(@"x: %d  y: %d Calcium %f",xx, yy,  val);
@@ -4067,7 +4067,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     return copy;
 }
 
-#include "BioradHeader.h"
+//#include "DICOMFiles/BioradHeader.h"
+#include <MieleAPI/BioradHeader.h>
 
 -(void) LoadBioradPic
 {
@@ -5935,7 +5936,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #ifdef OSIRIX_VIEWER
     NSManagedObjectContext *iContext = nil;
     
-    if (savedHeightInDB != 0 && savedHeightInDB != height)
+    if (savedHeightInDB != 0 &&
+        savedHeightInDB != height)
     {
         if (savedHeightInDB != OsirixDicomImageSizeUnknown)
             NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
@@ -6803,21 +6805,29 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             NSString *colorspace = [dcmObject attributeValueWithName:@"PhotometricInterpretation"];
             if ([colorspace rangeOfString:@"MONOCHROME1"].location != NSNotFound)
             {
-                if ([[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"OpacityTableNM"] == YES && [[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"NM"]))
+                if ([[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"PT"] ||
+                    ([[NSUserDefaults standardUserDefaults] boolForKey:@"OpacityTableNM"] == YES && [[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"NM"]))
                 {
                     
                 }
-                else
-                    inverseVal = YES; savedWL = -savedWL;
+                else {
+                    inverseVal = YES;
+                    savedWL = -savedWL;
+                }
             }
-            /*else if ( [colorspace hasPrefix:@"MONOCHROME2"])	{inverseVal = NO; savedWL = savedWL;} */
+            /*
+            else if ( [colorspace hasPrefix:@"MONOCHROME2"]) {
+                inverseVal = NO;
+                savedWL = savedWL; }
+             */
+
             if ( [colorspace hasPrefix:@"YBR"]) {
                 isRGB = YES;
             }
             else if ( [colorspace hasPrefix:@"PALETTE"])	{
                 bitsAllocated = 8;
                 isRGB = YES;
-                NSLog(@"Palette depth conveted to 8 bit");
+                NSLog(@"Palette depth converted to 8 bit");
             }
             
             if ([colorspace rangeOfString:@"RGB"].location != NSNotFound)
@@ -6846,11 +6856,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     // RGB_FFF
                     unsigned short *bufPtr = (unsigned short*) oImage;
                     while (loop-- > 0)
-                    {		//unsigned short=16 bit, then I suppose A should be 65535
+                    {
+                        // unsigned short=16 bit, then I suppose A should be 65535
                         *ptr++	= 255;			//ptr++;
-                        *ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-                        *ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-                        *ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+                        *ptr++	= *bufPtr++;	//ptr++;  bufPtr++;
+                        *ptr++	= *bufPtr++;	//ptr++;  bufPtr++;
+                        *ptr++	= *bufPtr++;	//ptr++;  bufPtr++;
                     }
                 }
                 else
@@ -6867,12 +6878,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     while (loop-- > 0)
                     {
                         *ptr++	= 255;			//ptr++;
-                        *ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-                        *ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-                        *ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+                        *ptr++	= *bufPtr++;	//ptr++;  bufPtr++;
+                        *ptr++	= *bufPtr++;	//ptr++;  bufPtr++;
+                        *ptr++	= *bufPtr++;	//ptr++;  bufPtr++;
                     }
-                    
                 }
+
                 free(oImage);
                 oImage = (short*) tmpImage;
             }
@@ -6922,6 +6933,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     {
                         *ptr++ = *bufPtr++;
                     }
+
                     free(oImage);
                     oImage = (short*) tmpImage;
                 }
@@ -7109,7 +7121,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         
         if (pixelSpacingY != 0)
         {
-            if (fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
+            if (fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 ||
+                fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
             {
                 pixelSpacingX = 1;
                 pixelSpacingY = 1;
@@ -7118,7 +7131,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         
         if (pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
         if (pixelSpacingY < 0) pixelSpacingY = -pixelSpacingY;
-        if (pixelSpacingY != 0 && pixelSpacingX != 0)
+
+        if (pixelSpacingX != 0 &&
+            pixelSpacingY != 0)
         {
             if (estimatedRadiographicMagnificationFactor)
             {
@@ -7158,7 +7173,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if (purgeCacheLock == nil)
 		purgeCacheLock = [[NSConditionLock alloc] initWithCondition: 0];
 	
-	if ([purgeCacheLock lockWhenCondition: 0 beforeDate: [NSDate dateWithTimeIntervalSinceNow: 10]])
+	if ([purgeCacheLock lockWhenCondition: 0
+                               beforeDate: [NSDate dateWithTimeIntervalSinceNow: 10]])
     {
         [Papyrus_Lock lock];
         
@@ -7188,7 +7204,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         {
             NSMutableDictionary *cachedGroupsForThisFile = [cachedDCMFrameworkFiles valueForKey: srcFile];
             
-            if (cachedGroupsForThisFile && retainedCacheGroup == cachedGroupsForThisFile)
+            if (cachedGroupsForThisFile &&
+                cachedGroupsForThisFile == retainedCacheGroup)
             {
                 [cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile objectForKey: @"count"] intValue]-1] forKey: @"count"];
                 retainedCacheGroup = nil;
@@ -7220,7 +7237,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #ifdef OSIRIX_VIEWER
 	if (imageObjectID)
 	{
-        if (fileTypeHasPrefixDICOM == NO) readable = NO;
+        if (fileTypeHasPrefixDICOM == NO)
+            readable = NO;
 	}
 	else
 #endif
@@ -7256,7 +7274,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #ifdef OSIRIX_VIEWER
                 NSManagedObjectContext *iContext = nil;
                 
-                if (savedHeightInDB != 0 && savedHeightInDB != height)
+                if (savedHeightInDB != 0 &&
+                    savedHeightInDB != height)
                 {
                     if (savedHeightInDB != OsirixDicomImageSizeUnknown)
                         NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
@@ -10293,7 +10312,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     // ***** ***** ***** ***** ***** 
     // ***** SOURCE IMAGE IS 32 BIT FLOAT
     // ***** ***** ***** ***** *****
-    
+#ifdef DEBUG_ISSUE_E4
+    NSLog(@"%s %d SOURCE IMAGE IS 32 BIT FLOAT, isRGB:%d", __FUNCTION__, __LINE__, isRGB);
+#endif
+
     if (!isRGB) // fImage case
     {
         vImage_Buffer srcf, dst8;
@@ -11301,7 +11323,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                         value = [value stringByAppendingString:@" "];
                                 }
                                 
-                                if (value) [contentOUT addObject:value];
+                                if (value)
+                                    [contentOUT addObject:value];
                             }
                             
                             @catch (NSException *e)

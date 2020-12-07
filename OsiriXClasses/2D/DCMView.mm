@@ -15003,7 +15003,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
          resampledBaseAddr: (char**) rAddr
      resampledBaseAddrSize: (int*) rBAddrSize
 {
-    //NSLog(@"DCmView.mm %d loadTextureIn >>> START %@ %p", __LINE__, NSStringFromClass([self class]), self);
+    //NSLog(@"=== DCMView.mm %d loadTextureIn >>> START %@ %p", __LINE__, NSStringFromClass([self class]), self);
 	// *tX, *tY, *tW, *tH are output parameters ?
     checkOpenGLErrors(__LINE__);
 
@@ -15031,7 +15031,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	if (curDCM.pwidth >= _minMaxTextureSize)
 		intFULL32BITPIPELINE = NO;
 	
-	if (!blending)
+#ifdef DEBUG_ISSUE_E4
+    NSLog(@"loadTextureIn %d, intFULL32BITPIPELINE:%d", __LINE__, intFULL32BITPIPELINE);
+#endif
+
+    if (!blending)
         currentAlphaTable = opaqueTable;
 	
 	if (rT == nil)
@@ -15086,6 +15090,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	if (localColorTransfer || blending)
 		intFULL32BITPIPELINE = NO;
 		
+#ifdef DEBUG_ISSUE_E4
+    NSLog(@"loadTextureIn %d, intFULL32BITPIPELINE:%d, isRGB:%d", __LINE__, intFULL32BITPIPELINE, isRGB);
+#endif
+
 	if (curDCM.needToCompute8bitRepresentation && !intFULL32BITPIPELINE)
 		[curDCM compute8bitRepresentation];
 	
@@ -15263,6 +15271,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     
 	if ([self softwareInterpolation])
 	{
+#ifdef DEBUG_ISSUE_E4
+        NSLog(@"%s %d softwareInterpolation [if A]", __FUNCTION__, __LINE__);
+#endif
+
 		zoomIsSoftwareInterpolated = YES;
 		
 		if (curDCM.pwidth <= 256)
@@ -15278,8 +15290,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		
 		if (*tH >= _minMaxTextureSize)
 			intFULL32BITPIPELINE = NO;
-		
-		vImage_Buffer src, dst;
+        
+#ifdef DEBUG_ISSUE_E4
+        NSLog(@"loadTextureIn %d, intFULL32BITPIPELINE:%d", __LINE__, intFULL32BITPIPELINE);
+#endif
+
+        vImage_Buffer src, dst;
 		
 		src.width = curDCM.pwidth;
 		src.height = curDCM.pheight;
@@ -15383,6 +15399,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	}
 	else if (intFULL32BITPIPELINE)
 	{
+#ifdef DEBUG_ISSUE_E4
+        NSLog(@"loadTextureIn %d NOT softwareInterpolation, intFULL32BITPIPELINE [if B]", __LINE__);
+#endif
         // NOT softwareInterpolation, intFULL32BITPIPELINE
 
         *tW = curDCM.pwidth;
@@ -15395,6 +15414,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         // NOT softwareInterpolation, NOT intFULL32BITPIPELINE
 		if (isRGB|| [curDCM thickSlabVRActivated])
 		{
+#ifdef DEBUG_ISSUE_E4
+            NSLog(@"loadTextureIn %d NOT softwareInterpolation, NOT intFULL32BITPIPELINE [if C1]", __LINE__);
+#endif
 			*tW = curDCM.pwidth;
 			rowBytes = curDCM.pwidth * 4;
 			baseAddr = curDCM.baseAddr;
@@ -15408,12 +15430,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		}
 		else if (localColorTransfer || blending)
 		{
+#ifdef DEBUG_ISSUE_E4
+            NSLog(@"loadTextureIn %d NOT softwareInterpolation, NOT intFULL32BITPIPELINE [if C2]", __LINE__);
+#endif
 			*tW = curDCM.pwidth;
 			rowBytes = curDCM.pwidth;
 			baseAddr = (char *) *colorBufPtr;
 		}
 		else
 		{
+#ifdef DEBUG_ISSUE_E4
+            NSLog(@"loadTextureIn %d NOT softwareInterpolation, NOT intFULL32BITPIPELINE [if C3]", __LINE__);
+#endif
 			*tW = curDCM.pwidth;
 			rowBytes = curDCM.pwidth;
 			baseAddr = curDCM.baseAddr;
@@ -15568,6 +15596,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     // Allocate memory for a texture
                     if (isRGB || [curDCM thickSlabVRActivated])
                     {
+#ifdef DEBUG_ISSUE_E4
+                        NSLog(@"loadTextureIn %d, isRGB (case A)", __LINE__);
+#endif
+#ifdef WITH_OPENGL_32
+                        // Fix issue E4
+                        glm::mat4 CCM = glm::mat4(1.0);
+                        [scene.imageProgram Bind];
+                        [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
+#endif
                         glTexImage2D (_textRectMode, 0,
                                       GL_RGBA,
                                       currWidth, currHeight, 0,
@@ -15576,6 +15613,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     }
                     else if (localColorTransfer || blending)
                     {
+#ifdef DEBUG_ISSUE_E4
+                        NSLog(@"loadTextureIn %d, NOT isRGB (case B)", __LINE__);
+#endif
 #ifdef WITH_OPENGL_32
                         glm::mat4 CCM = glm::mat4(1.0);
                         [scene.imageProgram Bind];
@@ -15596,6 +15636,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     {
                         if (!intFULL32BITPIPELINE)
                         {
+#ifdef DEBUG_ISSUE_E4
+                            NSLog(@"loadTextureIn %d, NOT isRGB, NOT intFULL32BITPIPELINE (case C1)", __LINE__);
+                            // FIXME: need to load the correct program ?
+#endif
 #ifdef WITH_OPENGL_32
                             GLenum target = GL_TEXTURE_RECTANGLE;
                             GLint internalFormat = GL_R8;
@@ -15614,6 +15658,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                         }
                         else  // intFULL32BITPIPELINE
                         {
+#ifdef DEBUG_ISSUE_E4
+                            NSLog(@"loadTextureIn %d, NOT isRGB, intFULL32BITPIPELINE (case C2)", __LINE__);
+#endif
 							float min = curWL - curWW / 2;
 							float max = curWL + curWW / 2;
 							if (max-min == 0)
@@ -16892,11 +16939,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             {
                 NSPoint o = NSMakePoint( HUGE_VALF, HUGE_VALF);
                 
-                if ([image valueForKey:@"xOffset"])  o.x = [[image valueForKey:@"xOffset"] floatValue];
-                else if (!onlyImage) o.x = [[series valueForKey:@"xOffset"] floatValue];
+                if ([image valueForKey:@"xOffset"])
+                    o.x = [[image valueForKey:@"xOffset"] floatValue];
+                else if (!onlyImage)
+                    o.x = [[series valueForKey:@"xOffset"] floatValue];
                 
-                if ([image valueForKey:@"yOffset"])  o.y = [[image valueForKey:@"yOffset"] floatValue];
-                else if (!onlyImage) o.y = [[series valueForKey:@"yOffset"] floatValue];
+                if ([image valueForKey:@"yOffset"])
+                    o.y = [[image valueForKey:@"yOffset"] floatValue];
+                else if (!onlyImage)
+                    o.y = [[series valueForKey:@"yOffset"] floatValue];
                 
                 if (o.x != HUGE_VALF && o.y != HUGE_VALF)
                     [self setOrigin: o];

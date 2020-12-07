@@ -213,9 +213,11 @@ static float backgroundInset = 1.5;
 		if (![[self cell] isKindOfClass:[KBDelayedPopUpButtonCell class]])
 		{
 			NSString *title = [self title];
-			if (title == nil) title = @"";			
-			[self setCell:[[[KBDelayedPopUpButtonCell alloc] initTextCell:title] autorelease]];
-			[[self cell] setControlSize:NSRegularControlSize];
+			if (title == nil)
+                title = @"";
+
+            [self setCell:[[[KBDelayedPopUpButtonCell alloc] initTextCell:title] autorelease]];
+			[[self cell] setControlSize:NSControlSizeRegular];
 		}
 	}
 	return self;

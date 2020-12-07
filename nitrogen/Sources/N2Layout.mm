@@ -33,15 +33,17 @@
 	[self setEnabled:YES];
 	
 	switch (_controlSize = size) {
-		case NSRegularControlSize:
+        case NSControlSizeLarge:
+            // TODO: for the time being fall through
+        case NSControlSizeRegular:
 			_margin = NSMakeRect(NSMakePoint(17,17), NSMakeSize(34));
 			_separation = NSMakeSize(2,6);
 			break;
-		case NSSmallControlSize:
+		case NSControlSizeSmall:
 			_margin = NSMakeRect(NSMakePoint(10,10), NSMakeSize(20));
 			_separation = NSMakeSize(2,3);
 			break;
-		case NSMiniControlSize:
+		case NSControlSizeMini:
 			_margin = NSMakeRect(NSMakePoint(5,5), NSMakeSize(10));
 			_separation = NSMakeSize(1,1);
 			break;

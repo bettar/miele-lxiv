@@ -238,14 +238,15 @@
     }
 }
 
--(id)methodCall:(NSString*)methodName params:(NSArray*)params error:(NSError**)error {
+-(id)methodCall:(NSString*)methodName params:(NSArray*)params error:(NSError**)error
+{
     BOOL methodSelectorIsValidated = NO;
     NSString* methodSelectorString = [self selectorStringForXMLRPCRequestMethodName:methodName isValidated:&methodSelectorIsValidated];
     SEL methodSelector = NSSelectorFromString(methodSelectorString);
     if (!methodSelectorIsValidated && (![_delegate respondsToSelector:methodSelector] || ([_delegate respondsToSelector:@selector(isMethodAvailableToXMLRPC:)] && ![_delegate isSelectorAvailableToXMLRPC:methodSelectorString])))
         [NSException raise:NSGenericException format:@"invalid XMLRPC method call: %@", methodName];
 
-    //		DLog(@"\tHandled by: %@", methodSelectorString);
+    //DLog(@"\tHandled by: %@", methodSelectorString);
     
     NSInvocation* invocation = [NSInvocation invocationWithSelector:methodSelector target:_delegate];
    

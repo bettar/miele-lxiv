@@ -3060,17 +3060,17 @@ static BOOL initialized = NO;
                     }
                 }
                 
-                NSLog(@"%s line %d, dataBasePath: %@", __FUNCTION__, __LINE__, dataBasePath);
+                //NSLog(@"%s line %d, dataBasePath: %@", __FUNCTION__, __LINE__, dataBasePath);
                 // now, sometimes databases point to other volumes for data storage through the DBFOLDER_LOCATION file, so if it's the case verify that that volume is mounted, too
                 dataBasePath = [DicomDatabase baseDirPathForPath:dataBasePath]; // we know this is the OUR_DATA_LOCATION path
-                NSLog(@"%s line %d, dataBasePath: %@", __FUNCTION__, __LINE__, dataBasePath);
+                //NSLog(@"%s line %d, dataBasePath: %@", __FUNCTION__, __LINE__, dataBasePath);
 
                 // TODO: sometimes people use an alias... and if it's an alias, we should check that it points to an available volume..... should.
 
                 NSString* dataBaseDataPath = [NSString stringWithContentsOfFile: [dataBasePath stringByAppendingPathComponent: DB_FOLDER_FILE]
                                                                        encoding: NSUTF8StringEncoding
                                                                           error: NULL];
-                NSLog(@"%s line %d, dataBaseDataPath: %@", __FUNCTION__, __LINE__, dataBaseDataPath);
+                //NSLog(@"%s line %d, dataBaseDataPath: %@", __FUNCTION__, __LINE__, dataBaseDataPath);
                 if ([dataBaseDataPath hasPrefix:@"/Volumes/"])
                 {
                     NSString* volumePath = [[[dataBaseDataPath componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(0,3)] componentsJoinedByString:@"/"];

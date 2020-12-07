@@ -5700,7 +5700,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         NSString *name = [dcmStudy.studyName stringByTruncatingToLength: 34];
                         
                         NSString *stateText = nil;
-                        NSUInteger stateIndex = [dcmStudy.stateText intValue];
+                        //NSUInteger stateIndex = [dcmStudy.stateText intValue];
                         
                         if (stateText == nil)
                             stateText = @"";
@@ -19339,15 +19339,15 @@ static BOOL viewerControllerPlaying = NO;
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] &&
         NSIsEmptyRect( windowFrameToRestore) == NO)
     {
-        int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
-        [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
+        bool AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"];
+        [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"AlwaysScaleToFit"];
         
         [AppController resizeWindowWithAnimation: [self window] newSize: windowFrameToRestore];
         
         if (scaleFitToRestore)
             [imageView scaleToFit];
         
-        [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
+        [[NSUserDefaults standardUserDefaults] setBool: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
     }
     
     for (ViewerController *v in [ViewerController get2DViewers])
@@ -19797,8 +19797,8 @@ static BOOL viewerControllerPlaying = NO;
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
     {
-        int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
-        [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
+        bool AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"];
+        [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"AlwaysScaleToFit"];
         
         windowFrameToRestore = [[self window] frame];
         NSRect newFrame = [AppController usefulRectForScreen: self.window.screen];
@@ -19812,7 +19812,7 @@ static BOOL viewerControllerPlaying = NO;
         if (scaleFitToRestore)
             [imageView scaleToFit];
         
-        [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
+        [[NSUserDefaults standardUserDefaults] setBool: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
     }
     
     for (ViewerController *v in [ViewerController getDisplayed2DViewers])
