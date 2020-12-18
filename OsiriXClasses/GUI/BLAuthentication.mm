@@ -138,10 +138,10 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 
 @implementation BLAuthentication
 
-// returns an instace of itself, creating one if needed
+// returns an instance of itself, creating one if needed
 + sharedInstance {
     static id sharedTask = nil;
-    if(sharedTask==nil) {
+    if (sharedTask==nil) {
         sharedTask = [[BLAuthentication alloc] init];
     }
     return sharedTask;
@@ -164,26 +164,27 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 //============================================================================
 //	- (BOOL)isAuthenticated:(NSArray *)forCommands
 //============================================================================
-// Find outs if the user has the appropriate authorization rights for the 
+// Find out if the user has the appropriate authorization rights for the
 // commands listed in (NSArray *)forCommands.
 // This should be called each time you need to know whether the user
 // is authorized, since the AuthorizationRef can be invalidated elsewhere, or
 // may expire after a short period of time.
 //
-- (BOOL)isAuthenticated:(NSArray *)forCommands {
+- (BOOL)isAuthenticated:(NSArray *)forCommands
+{
 	AuthorizationRights rights;
 	AuthorizationRights *authorizedRights;
 	AuthorizationFlags flags;
 	
 	int numItems = [forCommands count];
 	AuthorizationItem *items = (AuthorizationItem *)malloc( sizeof(AuthorizationItem) * numItems );
-	char paths[20][128]; // only handles upto 20 commands with paths upto 128 characters in length
+	char paths[20][128]; // only handles upto 20 commands with paths up to 128 characters in length
 	
 	OSStatus err = 0;
 	BOOL authorized = NO;
 	int i = 0;
 
-	if(authorizationRef==NULL) {
+	if (authorizationRef==NULL) {
 		rights.count=0;
 		rights.items = NULL;
 		
@@ -192,7 +193,7 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 		err = AuthorizationCreate(&rights, kAuthorizationEmptyEnvironment, flags, &authorizationRef);
 	}
     	
-	if( numItems < 1 )
+	if ( numItems < 1 )
     {
         free( items);
 		return authorized;
@@ -218,10 +219,10 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 
     authorized = (errAuthorizationSuccess==err);
 
-	if(authorized)
+	if (authorized)
 		AuthorizationFreeItemSet(authorizedRights);
 	
-    if( items)
+    if (items)
         free(items);
 	
     return authorized;
@@ -389,7 +390,6 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 	}
 }
 
-
 //============================================================================
 //	-(void)executeCommand:(NSString *)pathToCommand withArgs:(NSArray *)arguments
 //============================================================================
@@ -417,7 +417,7 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 	
 	if (arguments == nil || [arguments count] < 1)
     {
-        err = AuthorizationExecuteWithPrivilegesStdErrAndPid(   authorizationRef, 
+        err = AuthorizationExecuteWithPrivilegesStdErrAndPid(authorizationRef,
                                                              [pathToCommand UTF8String], 
                                                              kAuthorizationFlagDefaults, 
                                                              nil, 

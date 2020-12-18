@@ -41,7 +41,7 @@ const static void *namesKey = &namesKey;
     
     NSString *bundleIdentifier = [[NSBundle bundleForClass: [notificationObserver class]] bundleIdentifier];
     
-    if( [bundleIdentifier hasPrefix: @(BUNDLE_IDENTIFIER_PREFIX)] == NO &&
+    if ([bundleIdentifier hasPrefix: @(BUNDLE_IDENTIFIER_PREFIX)] == NO &&
         [bundleIdentifier hasPrefix: @"com.apple"] == NO &&
         [bundleIdentifier hasPrefix: @"dk.infinite-loop.crashreporter"] == NO) // ILCrashReporter
     {

@@ -497,8 +497,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	
 	if (resolvedPath == nil)
         return inPath;
-	else
-        return [(NSString *) resolvedPath autorelease];
+
+    return [(NSString *) resolvedPath autorelease];
 }
 
 + (void) releaseInstanciedObjectsOfClass: (Class) theClass
@@ -718,7 +718,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
         NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:PINFO_CF_BUNDLE_NAME];
 
         NSString *appSupport = [NSString stringWithFormat:@"Library/Application Support/%@/", bundleName];
-        NSString *appAppStoreSupport = [NSString stringWithFormat:@"Library/Application Support/%@ App/", bundleName];
+        NSString *appAppStoreSupport = [NSString stringWithFormat:@"Library/Application Support/%@ App/", bundleName]; // Obsolete ?
 		NSString *appPath = [[NSBundle mainBundle] builtInPlugInsPath];
 
         NSString *userAppStorePath = [NSHomeDirectory() stringByAppendingPathComponent:appAppStoreSupport];
@@ -1140,7 +1140,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	NSString *completePluginPath = nil;
 	BOOL found = NO;
 	
-	while((path = [pathEnum nextObject]) && !found)
+	while ((path = [pathEnum nextObject]) && !found)
 	{
 		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
 		NSString *name;
@@ -1156,7 +1156,6 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	
 	NSString *directory = [completePluginPath stringByDeletingLastPathComponent];
 	NSMutableString *newDirectory = [NSMutableString stringWithString:@""];
-	
 	
 	if ([availability isEqualTo:[availabilities objectAtIndex:0]])  // user
 	{
@@ -1198,7 +1197,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	}
 }
 
-#pragma mark - Instalation
+#pragma mark - Installation
 
 + (void) installPluginFromPath: (NSString*) path
 {
@@ -1296,14 +1295,16 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 		else
 			directory = [PluginManager userInactivePluginsDirectoryPath];
 	}
-	else if (availabilities.count >= 1 && [availability isEqualToString:[availabilities objectAtIndex:1]])  // system
+	else if (availabilities.count >= 1 &&
+             [availability isEqualToString:[availabilities objectAtIndex:1]])  // system
 	{
 		if (isActive)
 			directory = [PluginManager systemActivePluginsDirectoryPath];
 		else
 			directory = [PluginManager systemInactivePluginsDirectoryPath];
 	}
-	else if (availabilities.count >= 2 && [availability isEqualToString:[availabilities objectAtIndex:2]])  // app bundle
+	else if (availabilities.count >= 2 &&
+             [availability isEqualToString:[availabilities objectAtIndex:2]])  // app bundle
 	{
 		if (isActive)
 			directory = [PluginManager appActivePluginsDirectoryPath];
@@ -1315,7 +1316,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	{
 		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
 		NSString *name;
-		while(name = [e nextObject])
+		while (name = [e nextObject])
 		{
 			if ([[name stringByDeletingPathExtension] isEqualToString: [pluginName stringByDeletingPathExtension]] && (directory == nil || [directory isEqualTo: path]))
 			{
@@ -1334,7 +1335,6 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 					[args addObject:[NSString stringWithFormat:@"%@/%@", path, name]];
 					[args addObject:[NSString stringWithFormat:@"%@/%@", trashDir, name]];
 					[[BLAuthentication sharedInstance] executeCommand:@"/bin/mv" withArgs:args];
-
 				}
 				
 				returnPath = path;

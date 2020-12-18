@@ -3149,7 +3149,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	[self updateImage:self];
 
-	float   iwl, iww;
+	float iwl, iww;
 	[imageView getWLWW:&iwl :&iww];
 	[imageView setWLWW:iwl :iww];
 	
@@ -10178,7 +10178,6 @@ static int avoidReentryRefreshDatabase = 0;
                                                         object: self
                                                       userInfo: nil];
 }
-
 
 - (void)executeFilter:(id)sender
 {

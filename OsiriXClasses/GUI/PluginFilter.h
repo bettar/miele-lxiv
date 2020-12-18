@@ -60,7 +60,6 @@
 - (BOOL) isCertifiedForMedicalImaging;
 
 /** Opportunity for plugins to make Menu changes if necessary */
-
 - (void)setMenus;
 
 // UTILITY FUNCTIONS - Defined in the PluginFilter.m file

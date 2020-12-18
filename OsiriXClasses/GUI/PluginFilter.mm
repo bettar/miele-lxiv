@@ -58,7 +58,7 @@
 
 - (long) prepareFilter:(ViewerController*) vC
 {
-	NSLog( @"Prepare Filter");
+	NSLog(@"%s", __PRETTY_FUNCTION__);
 	viewerController = vC;
 	
 	return 0;

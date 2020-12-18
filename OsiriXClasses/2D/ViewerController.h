@@ -448,7 +448,6 @@ enum
 * @param message  The message for the Wait window to display */
 - (id) startWaitWindow :(NSString*) message;
 
-
 /**  Display a Wait window with the message  progress length of max
 * @param message  The message for the Wait window to display
 * @param max  Progress bar max */
@@ -459,7 +458,6 @@ enum
 * @param val  Amount to increment the Wait window 
 */
 - (void) waitIncrementBy:(id) waitWindow :(long) val;
-
 
 /** End the wait window */
 - (void) endWaitWindow:(id) waitWindow;

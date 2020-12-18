@@ -441,6 +441,10 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
                                     NSTemporaryDirectory(),
                                     lastComponent];
 
+#if 1 //ndef NDEBUG
+    NSLog(@"%s %d, downloadedFilePath:<%@>", __FUNCTION__, __LINE__, downloadedFilePath);
+#endif
+
     @synchronized( downloadingPlugins)
     {
         if ([downloadingPlugins objectForKey: downloadedFilePath]) {
@@ -461,9 +465,6 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
             NSURLDownload *download = [[[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:url] delegate:self] autorelease];
 
-#ifndef NDEBUG
-            NSLog(@"%s %d, downloadedFilePath:<%@>", __FUNCTION__, __LINE__, downloadedFilePath);
-#endif
             [download setDestination: downloadedFilePath allowOverwrite:YES];
             
             [downloadingPlugins setObject: download forKey: downloadedFilePath];
@@ -597,6 +598,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (BOOL)isZippedFileAtPath:(NSString*)path;
 {
+    NSLog(@"%s path:<%@>", __PRETTY_FUNCTION__, path);
 	return [[path pathExtension] isEqualTo:@"zip"];
 }
 
