@@ -712,21 +712,33 @@ static bool isGrantedNotificationAccess = false;
 @synthesize XMLRPCServer;
 @synthesize bonjourPublisher = _bonjourPublisher;
 
-+(BOOL) hasMacOSX_AfterBigSur
++(BOOL) notValidatedWithThisMacOS
 {
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
+#if 1
+    // This way it gets updated automatically with system updates
+    int ver = version.majorVersion*10000 + version.minorVersion*100;
+    BOOL ng = (ver > MAC_OS_X_VERSION_MAX_ALLOWED);
+    return ng;
+#else
+    // MAC_OS_VERSION_11_1
     if ((version.majorVersion > 11) ||
-        (version.majorVersion == 11 && version.minorVersion > 0))  // MAC_OS_X_VERSION_10_15
+        (version.majorVersion == 11 && version.minorVersion > 1))
     {
-        return YES;
+        return YES; // not validated
     }
     
     return NO;
+#endif
 }
 
 +(BOOL) hasAtLeastMacOS_Mavericks
 {
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
+#if 0
+    int ver = version.majorVersion*100 + version.minorVersion;
+    bool ok = (ver >= MAC_OS_X_VERSION_10_9); // careful: 1090 not 1009
+#else
     if (version.majorVersion > 10)
         return YES;
 
@@ -735,6 +747,7 @@ static bool isGrantedNotificationAccess = false;
         return YES;
     
     return NO;
+#endif
 }
 
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // __deprecated
@@ -1077,7 +1090,10 @@ static bool isGrantedNotificationAccess = false;
 		for (NSString *path in pluginsArray)
             [PluginManager installPluginFromPath: path];
 		
-		[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
+		[PluginManager setMenus: filtersMenu
+                               : roisMenu
+                               : othersMenu
+                               : dbMenu];
 		
 #ifndef MIELE_LIGHT
 		// refresh the plugin manager window (if open)
@@ -3681,7 +3697,7 @@ API_AVAILABLE(macos(10.14))
         }
     }
     
-    if ([AppController hasMacOSX_AfterBigSur])
+    if ([AppController notValidatedWithThisMacOS])
     {
 #ifdef WITH_OS_VALIDATION
         NSAlert *alert = [[NSAlert new] autorelease];
