@@ -412,10 +412,12 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 	int i = 0;
 	pid_t processid;
     
-	if (![self authenticate:[NSArray arrayWithObject:pathToCommand]])
+    if (![self authenticate:[NSArray arrayWithObject:pathToCommand]]) {
+        NSLog(@"%s command <%@> not authenticated ", __PRETTY_FUNCTION__, pathToCommand);
 		return NO;
-	
-	if (arguments == nil || [arguments count] < 1)
+    }
+
+    if (arguments == nil || [arguments count] < 1)
     {
         err = AuthorizationExecuteWithPrivilegesStdErrAndPid(authorizationRef,
                                                              [pathToCommand UTF8String], 

@@ -19914,8 +19914,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setAction: @selector(anonymizeDICOM:)];
     } 
     else if ([itemIdent isEqualToString: QueryToolbarItemIdentifier])
-	{
-        
+	{        
 		[toolbarItem setLabel: NSLocalizedString(@"Query",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Query",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Query and retrieve a DICOM study from a DICOM node\rShift + click to query selected patient.",nil)];
@@ -19926,7 +19925,6 @@ static volatile int numberOfThreadsForJPEG = 0;
     }
     else if ([itemIdent isEqualToString: SendToolbarItemIdentifier])
 	{
-        
 		[toolbarItem setLabel: NSLocalizedString(@"Send",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Send",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Send selected study/series to a DICOM node",@"Send selected study/series to a DICOM node")];
@@ -19936,7 +19934,6 @@ static volatile int numberOfThreadsForJPEG = 0;
     }
     else if ([itemIdent isEqualToString: ViewerToolbarItemIdentifier])
 	{
-        
 		[toolbarItem setLabel: NSLocalizedString(@"2D Viewer",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"2D Viewer",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"View selected study/series",nil)];
@@ -19956,7 +19953,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 //    }
 	else if ([itemIdent isEqualToString: MovieToolbarItemIdentifier])
 	{
-        
 		[toolbarItem setLabel: NSLocalizedString(@"4D Viewer",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"4D Viewer",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Load multiple series into an animated 4D series",nil)];
@@ -19966,7 +19962,6 @@ static volatile int numberOfThreadsForJPEG = 0;
     } 
 	else if ([itemIdent isEqualToString: TrashToolbarItemIdentifier])
 	{
-        
 		[toolbarItem setLabel: NSLocalizedString(@"Delete",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Delete",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Delete selected images from the database",nil)];
@@ -20065,7 +20060,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			//			NSLog( [info objectForKey:PINFO_TB_ICON]);
 			
 			NSImage	*image = [[[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:[info objectForKey:PINFO_TB_ICON]]] autorelease];
-			if (!image) image = [[NSWorkspace sharedWorkspace] iconForFile: [bundle bundlePath]];
+			if (!image)
+                image = [[NSWorkspace sharedWorkspace] iconForFile: [bundle bundlePath]];
 			[toolbarItem setImage: image];
 			
 			[toolbarItem setTarget: self];
@@ -20159,12 +20155,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if ([[info objectForKey: PINFO_TYPE] isEqualToString: PTYPE_DATABASE])
 		{
-			id allowToolbarIcon = [info objectForKey: PINFO_ALLOW_TB_ICON];
+			id allowToolbarIcon = [info objectForKey: PINFO_TB_ICON_ALLOW];
 			if (allowToolbarIcon)
 			{
 				if ([allowToolbarIcon boolValue])
 				{
-					NSArray *toolbarNames = [info objectForKey:PINFO_TOOLBAR_NAMES];
+					NSArray *toolbarNames = [info objectForKey:PINFO_TB_NAMES];
 					if (toolbarNames)
 					{
 						if ([toolbarNames containsObject: plugin])

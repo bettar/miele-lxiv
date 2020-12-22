@@ -23,7 +23,7 @@
 }
 // returns a shared instance of the class
 + sharedInstance;
-// checks if user is authentcated forCommands
+// checks if user is authenticated forCommands
 - (BOOL)isAuthenticated:(NSArray *)forCommands;
 // authenticates user forCommands
 - (BOOL)authenticate:(NSArray *)forCommands;

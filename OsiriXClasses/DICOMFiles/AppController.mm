@@ -81,9 +81,11 @@
 #import "Window3DController.h"
 #import "N2Stuff.h"
 #import "OSIGeneralPreferencePanePref.h"
-#import "Security/Security.h"
-#import "Security/SecRequirement.h"
-#import "Security/SecCode.h"
+
+#import <Security/Security.h>
+#import <Security/SecRequirement.h>
+#import <Security/SecCode.h>
+
 #import "PFMoveApplication.h"
 #import "OSIGeneralPreferencePanePref.h"
 #import "NSArray+N2.h"
@@ -3126,6 +3128,7 @@ static BOOL initialized = NO;
                     }
                 }
                 
+                // This will "discover" the installed plugins
                 pluginManager = [[PluginManager alloc] init];
                 
 				// Add Endoscopy LUT, WL/WW, shading to existing prefs

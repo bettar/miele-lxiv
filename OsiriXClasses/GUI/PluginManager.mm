@@ -446,7 +446,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	}
 }
 
-- (id)init
+- (instancetype)init
 {
 	if (self = [super init])
 	{
@@ -678,7 +678,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                                     }
                                 }
                                 
-                                NSArray *toolbarNames = [[plugin infoDictionary] objectForKey:PINFO_TOOLBAR_NAMES];
+                                NSArray *toolbarNames = [[plugin infoDictionary] objectForKey:PINFO_TB_NAMES];
                                 
                                 if (toolbarNames)
                                 {
@@ -827,6 +827,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
         
         NSMutableArray* pathsOfPluginsToLoad = [NSMutableArray array];
         for (id path in paths)
+        {
             @try {
                 NSArray* doNotLoadNames = nil;
                 if (![path isKindOfClass:[NSNull class]])
@@ -847,7 +848,9 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                     NSMutableArray* cl = [NSMutableArray array];
                     NSArray* args = [[NSProcessInfo processInfo] arguments];
                     for (NSInteger i = 0; i < [args count]; ++i)
-                        if ([[args objectAtIndex:i] isEqualToString:@"--LoadPlugin"] && [args count] > i+1) {
+                        if ([[args objectAtIndex:i] isEqualToString:@"--LoadPlugin"] &&
+                            [args count] > i+1)
+                        {
                             [cl addObject:[args objectAtIndex:++i]];
                         }
 
@@ -862,9 +865,11 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                         NSString *s = [path stringByAppendingPathComponent:name];
                         [pathsOfPluginsToLoad addObject:[s stringByStandardizingPath]];
                     }
-            } @catch (NSException* e) {
+            }
+            @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
             }
+        }
         
         // some plugins require other plugins to be loaded before them
         for (__block NSInteger i = pathsOfPluginsToLoad.count-1; i >= 0; --i)
@@ -1027,6 +1032,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     [args addObject:sourcePath];
     [args addObject:destinationPath];
 
+    // Before moving it prompts for password if necessary
 	[[BLAuthentication sharedInstance] executeCommand:@"/bin/mv" withArgs:args];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath: destinationPath] == NO)
@@ -1109,7 +1115,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     
     if (!gPluginsAlertAlreadyDisplayed)
         NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""),
-                                     NSLocalizedString( @"Restart OsiriX to apply the changes to the plugins.", @""),
+                                     NSLocalizedString(@"Restart OsiriX to apply the changes to the plugins.", @""),
                                      NSLocalizedString(@"OK", @""),
                                      nil,
                                      nil);

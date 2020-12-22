@@ -31,11 +31,11 @@
 #define PINFO_REQUIREMENTS      @"Requirements"
 #define PINFO_TYPE              @"pluginType"
 #define PINFO_MENU_TITLES       @"MenuTitles"
-#define PINFO_TOOLBAR_NAMES     @"ToolbarNames"
-#define PINFO_FILE_FORMATS      @"FileFormats"
-#define PINFO_ALLOW_TB_ICON     @"allowToolbarIcon"
+#define PINFO_TB_NAMES          @"ToolbarNames"
+#define PINFO_TB_ICON_ALLOW     @"allowToolbarIcon"
 #define PINFO_TB_ICON           @"ToolbarIcon"
 #define PINFO_TB_TOOLTIPS       @"ToolbarToolTips"
+#define PINFO_FILE_FORMATS      @"FileFormats"
 
 // For PINFO_TYPE:
 #define PTYPE_DATABASE          @"Database"
@@ -46,6 +46,8 @@
 #define PTYPE_ROI_TOOL          @"roiTool"
 #define PTYPE_OTHER             @"other"
 
+// For PINFO_MENU_TITLES
+// Put this in a line by itself to have a separator in the menu entries
 #define PINFO_MENU_ITEM_SEPARATOR   @"(-"
 
 /** \brief Mangages PluginFilter loading */

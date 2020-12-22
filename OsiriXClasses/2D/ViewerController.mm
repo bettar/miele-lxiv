@@ -7392,13 +7392,13 @@ static ViewerController *draggedController = nil;
             [pluginType isEqualToString: PTYPE_ROI_TOOL] == YES ||
             [pluginType isEqualToString: PTYPE_OTHER] == YES)
 		{
-			id allowToolbarIcon = [info objectForKey: PINFO_ALLOW_TB_ICON];
+			id allowToolbarIcon = [info objectForKey: PINFO_TB_ICON_ALLOW];
             
 			if (allowToolbarIcon)
 			{
 				if ([allowToolbarIcon boolValue] == YES)
 				{
-					NSArray* toolbarNames = [info objectForKey: PINFO_TOOLBAR_NAMES];
+					NSArray* toolbarNames = [info objectForKey: PINFO_TB_NAMES];
 					if (toolbarNames)
 					{
 						if ([toolbarNames containsObject: plugin])
@@ -10113,7 +10113,7 @@ static int avoidReentryRefreshDatabase = 0;
 	
     [PluginManager startProtectForCrashWithFilter: filter];
     
-    NSLog(@"%s %d executeFilter", __FUNCTION__, __LINE__);
+    //NSLog(@"%s %d executeFilter", __FUNCTION__, __LINE__);
 	
 	@try
 	{
@@ -10126,7 +10126,6 @@ static int avoidReentryRefreshDatabase = 0;
                             nil,
                             nil);
             [PluginManager endProtectForCrash];
-            
 			return;
 		}
 	}
