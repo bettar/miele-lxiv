@@ -87,10 +87,10 @@ static void storeCallback(
   DcmDataset **imageDataSet,        /* being received into */
   /* out */
   T_DIMSE_C_StoreRSP *rsp,          /* final store response */
-  DcmDataset **stDetail)
+  DcmDataset **statusDetail)
 {
   DcmQueryRetrieveStoreContext *context = OFstatic_cast(DcmQueryRetrieveStoreContext *, callbackData);
-  context->callbackHandler(progress, req, imageFileName, imageDataSet, rsp, stDetail);
+  context->callbackHandler(progress, req, imageFileName, imageDataSet, rsp, statusDetail);
 }
 
 #pragma mark - class DcmQueryRetrieveOsiriSCP

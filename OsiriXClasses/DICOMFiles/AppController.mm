@@ -717,15 +717,16 @@ static bool isGrantedNotificationAccess = false;
 +(BOOL) notValidatedWithThisMacOS
 {
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
-#if 1
+#if 0
     // This way it gets updated automatically with system updates
+    // Problem is it goes with the SDK which could still be 11.1 when the OS is 11.2
     int ver = version.majorVersion*10000 + version.minorVersion*100;
     BOOL ng = (ver > MAC_OS_X_VERSION_MAX_ALLOWED);
     return ng;
 #else
     // MAC_OS_VERSION_11_1
     if ((version.majorVersion > 11) ||
-        (version.majorVersion == 11 && version.minorVersion > 1))
+        (version.majorVersion == 11 && version.minorVersion > 2))
     {
         return YES; // not validated
     }

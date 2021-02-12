@@ -481,10 +481,10 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
     DcmStack result_stack;
     DcmObject *elem;
     // get references to all matching tags in dataset and store them in stack
-    OFLOG_DEBUG(mdfdsmanLogger, "looking for occurences of: " << key.toString());
+    OFLOG_DEBUG(mdfdsmanLogger, "looking for occurrences of: " << key.toString());
     result=dset->findAndGetElements(key, result_stack);
     // if there are elements found, modify metaheader if necessary
-    OFLOG_DEBUG(mdfdsmanLogger, "found " << result_stack.card() << " occurences");
+    OFLOG_DEBUG(mdfdsmanLogger, "found " << result_stack.card() << " occurrences");
     // as long there are matching elements left on the stack
     while( result_stack.card() > 0 && result.good() )
     {
@@ -652,7 +652,7 @@ OFCondition MdfDatasetManager::saveFile(const char *file_name,
                                  opt_padenc,
                                  OFstatic_cast(Uint32, opt_filepad),
                                  OFstatic_cast(Uint32, opt_itempad),
-                                 (opt_dataset) ? EWM_dataset : EWM_fileformat);
+                                 (opt_dataset) ? EWM_dataset : EWM_createNewMeta);
 
     } else {
         OFLOG_DEBUG(mdfdsmanLogger, "no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName() << " possible!");
