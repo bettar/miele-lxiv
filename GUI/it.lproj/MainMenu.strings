@@ -227,7 +227,7 @@
 "11171.title" = "Cerca";
 
 /* Class = "NSMenuItem"; title = "Customize Toolbar..."; ObjectID = "11219"; */
-"11219.title" = "Personalizzare la barra degli strumenti...";
+"11219.title" = "Personalizza la barra degli strumenti...";
 
 /* Class = "NSMenuItem"; title = "Set Pixel Values to..."; ObjectID = "11232"; */
 "11232.title" = "Imposta i valori dei pixel a...";
@@ -308,7 +308,7 @@
 "11470.title" = "Importa immagine da URL...";
 
 /* Class = "NSMenuItem"; title = "Close All Viewers"; ObjectID = "11473"; */
-"11473.title" = "Chiudere tutte le viste";
+"11473.title" = "Chiudere tutte le finestre di visualizzazione";
 
 /* Class = "NSMenuItem"; title = "Reset to Initial View"; ObjectID = "11477"; */
 "11477.title" = "Ripristino alla visualizzazione iniziale";
@@ -407,13 +407,13 @@
 "11675.title" = "Finestra";
 
 /* Class = "NSTableColumn"; headerCell.title = "Sources"; ObjectID = "11694"; */
-"11694.headerCell.title" = "Fonti";
+"11694.headerCell.title" = "Sorgenti";
 
 /* Class = "NSBox"; title = "Albums"; ObjectID = "11696"; */
 "11696.title" = "Album";
 
 /* Class = "NSBox"; title = "Sources"; ObjectID = "11698"; */
-"11698.title" = "Fonti";
+"11698.title" = "Sorgenti";
 
 /* Class = "NSTableColumn"; headerCell.title = "Referring Physician"; ObjectID = "11708"; */
 "11708.headerCell.title" = "Medico di rinvio";
@@ -521,19 +521,19 @@
 "12341.title" = "Vista sagittale di destra";
 
 /* Class = "NSMenuItem"; title = "Report"; ObjectID = "12353"; */
-"12353.title" = "Relazione";
+"12353.title" = "Referto";
 
 /* Class = "NSMenu"; title = "Report"; ObjectID = "12354"; */
-"12354.title" = "Relazione";
+"12354.title" = "Referto";
 
 /* Class = "NSMenuItem"; title = "Open report"; ObjectID = "12355"; */
-"12355.title" = "Apri relazione";
+"12355.title" = "Apri referto";
 
 /* Class = "NSMenuItem"; title = "Delete report"; ObjectID = "12356"; */
-"12356.title" = "Cancellare la relazione";
+"12356.title" = "Cancellare il referto";
 
 /* Class = "NSTableColumn"; headerCell.title = "Report"; ObjectID = "12364"; */
-"12364.headerCell.title" = "Relazione";
+"12364.headerCell.title" = "Referto";
 
 /* Class = "NSWindow"; title = "Window"; ObjectID = "12366"; */
 "12366.title" = "Finestra";
@@ -1742,13 +1742,13 @@
 "14512.title" = "OK";
 
 /* Class = "NSMenuItem"; title = "Tile 2D Viewer Windows"; ObjectID = "14587"; */
-"14587.title" = "Affiancare le finestre del visualizzatore di piastrelle 2D";
+"14587.title" = "Affiancare le finestre del visualizzatore 2D";
 
 /* Class = "NSMenuItem"; title = "Tile 3D Viewer Windows"; ObjectID = "14588"; */
-"14588.title" = "Finestre del visualizzatore di piastrelle 3D";
+"14588.title" = "Affiancare le finestre del visualizzatore 3D";
 
 /* Class = "NSMenuItem"; title = "Toggle Albums & Sources drawer"; ObjectID = "14591"; */
-"14591.title" = "Alterna cassette Album & Fonti";
+"14591.title" = "Mostra/Nascondi barra laterale Album & Sorgenti";
 
 /* Class = "NSMenuItem"; title = "Albums"; ObjectID = "14593"; */
 "14593.title" = "Album";
@@ -1808,7 +1808,7 @@
 "14726.title" = "Text Cell";
 
 /* Class = "NSMenuItem"; title = "Toggle History drawer"; ObjectID = "14744"; */
-"14744.title" = "Attivare il cassetto Storia";
+"14744.title" = "Mostra/Nascondi barra laterale Cronologia";
 
 /* Class = "NSTextFieldCell"; title = "Multiline Label"; ObjectID = "14752"; */
 "14752.title" = "Etichetta multilinea";

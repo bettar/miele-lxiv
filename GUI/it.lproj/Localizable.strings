@@ -590,7 +590,7 @@
 "Album: %@" = "Album: %@";
 
 /* No comment provided by engineer. */
-"Albums & Sources" = "Album e Fonti";
+"Albums & Sources" = "Album e Sorgenti";
 
 /* No comment provided by engineer. */
 "All" = "Tutto";
@@ -1580,7 +1580,7 @@
 "Delete Protocol" = "Cancellare il protocollo";
 
 /* No comment provided by engineer. */
-"Delete report" = "Cancellare la relazione";
+"Delete report" = "Cancellare il referto";
 
 /* No comment provided by engineer. */
 "Delete Route" = "Elimina percorso";
@@ -1916,7 +1916,7 @@
 "Export QTVR" = "Esporta QTVR";
 
 /* No comment provided by engineer. */
-"Export Report" = "Esportare Relazione";
+"Export Report" = "Esportare Referto";
 
 /* No comment provided by engineer. */
 "Export ROI and Key Images as a DICOM Series" = "Esporta ROI e immagini chiave come una serie DICOM";
@@ -3860,22 +3860,22 @@
 "Replace Images with current Key Images?" = "Sostituire le immagini con le attuali immagini chiave?";
 
 /* No comment provided by engineer. */
-"Report" = "Relazione";
+"Report" = "Referto";
 
 /* No comment provided by engineer. */
 "Report Error" = "Segnala errore";
 
 /* No comment provided by engineer. */
-"Report file is not found... Should I create a new one?" = "Il file della relazione non viene trovato... Dovrei crearne uno nuovo?";
+"Report file is not found... Should I create a new one?" = "Il file del referto non viene trovato... Dovrei crearne uno nuovo?";
 
 /* No comment provided by engineer. */
 "Report PDF" = "Rapporto PDF";
 
 /* No comment provided by engineer. */
-"Report Plugin not available." = "Plugin Relazione non disponibile.";
+"Report Plugin not available." = "Plugin Referto non disponibile.";
 
 /* No comment provided by engineer. */
-"Report Style" = "Stile Relazione";
+"Report Style" = "Stile Referto";
 
 /* No comment provided by engineer. */
 "Repulsor" = "Repulsore";
@@ -4493,7 +4493,7 @@
 "Source Code Repository" = "Repository del codice sorgente";
 
 /* No comment provided by engineer. */
-"Sources" = "Fonti";
+"Sources" = "Sorgenti";
 
 /* No comment provided by engineer. */
 "Spline Interpolation Error" = "Errore di interpolazione della scanalatura";
@@ -5036,7 +5036,7 @@
 "TOES" = "DITA DEI PIEDI";
 
 /* No comment provided by engineer. */
-"Toggle Albums & Sources drawer" = "Alterna cassetto Album & Fonti";
+"Toggle Albums & Sources drawer" = "Mostra/Nascondi barra laterale Album & Sorgenti";
 
 /* No comment provided by engineer. */
 "Toggle Images/Series Displaying" = "Attivare/visualizzare le immagini/Serie";
