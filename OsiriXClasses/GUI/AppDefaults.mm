@@ -948,7 +948,7 @@ static NSHost *currentHost = nil;
     
 #pragma mark DELETEFILELISTENER
 
-    [defaultValuesDic setObject:@"1" forKey:@"DELETEFILELISTENER"];
+    [defaultValuesDic setObject:@YES forKey:@"DELETEFILELISTENER"];
     
     [defaultValuesDic setObject:@"1" forKey:@"UseFloatingThumbnailsList"];
     [defaultValuesDic setObject:@"0.2" forKey: @"MinimumTitledGantryTolerance"]; // in degrees
@@ -1068,7 +1068,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject: @"" forKey: @"AUTOCLEANINGCOMMENTSTEXT"];
 	[defaultValuesDic setObject: @"0" forKey: @"AUTOCLEANINGDONTCONTAIN"];
 	[defaultValuesDic setObject: @"0" forKey: @"AUTOCLEANINGDELETEORIGINAL"];
-	[defaultValuesDic setObject: @"0" forKey: @"COMMENTSAUTOFILL"];
+	[defaultValuesDic setObject: @NO forKey: @"COMMENTSAUTOFILL"];
 	[defaultValuesDic setObject: SYNC_DICOM_NODES_URL forKey: @"syncDICOMNodesURL"];
 	[defaultValuesDic setObject: SYNC_DB_URL forKey: @"syncOsiriXDBURL"];
 	[defaultValuesDic setObject: @"1" forKey: @"BurnOsirixApplication"];
@@ -1322,7 +1322,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject: @"1" forKey: @"USESTORESCP"];
 	[defaultValuesDic setObject: @"1" forKey: @"splitMultiEchoMR"];
 	[defaultValuesDic setObject: @"0" forKey: @"useSeriesDescription"];
-	[defaultValuesDic setObject: @"1" forKey: @"combineProjectionSeries"];
+	[defaultValuesDic setObject: @YES forKey: @"combineProjectionSeries"];
 	[defaultValuesDic setObject: @"1" forKey: @"combineProjectionSeriesMode"];
 	[defaultValuesDic setObject: @(LISTENER_COMPRESSION_DONT_MODIFY) forKey:ListenerCompressionSettings_KEY];
 	[defaultValuesDic setObject: @"localizer,scout,survey,locator,tracker" forKey: @"NOLOCALIZER_Strings"];

@@ -615,7 +615,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 }
 
 - (void)DBVER {
-    NSString	*versString = [[NSUserDefaults standardUserDefaults] stringForKey: DbVersion_s_KEY];
+    NSString *versString = [[NSUserDefaults standardUserDefaults] stringForKey: DbVersion_s_KEY];
     
     [self writeData:[NSMutableData dataWithData: [versString dataUsingEncoding: NSASCIIStringEncoding]]];
     

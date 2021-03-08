@@ -32,7 +32,7 @@
 " / Result = %@ studies (%@ images)" = " / 結果 = %1$@ スタディ (%2$@ 画像)";
 
 /* No comment provided by engineer. */
-" / Search: Accession Number = %@" = " / 検索: 受託番号 = %@";
+" / Search: Accession Number = %@" = " / 検索: 受付番号 = %@";
 
 /* No comment provided by engineer. */
 " / Search: All fields = %@" = " / 検索: すべてのフィールド = %@";
@@ -2660,10 +2660,10 @@
 "Locations" = "場所";
 
 /* No comment provided by engineer. */
-"Lock Studies" = "ロック研究";
+"Lock Studies" = "ロック検査";
 
 /* No comment provided by engineer. */
-"Locked Studies" = "ロックされた研究";
+"Locked Studies" = "ロックされた検査";
 
 /* No comment provided by engineer. */
 "Locking database..." = "データベースのロック中...";
@@ -2780,7 +2780,7 @@
 "Merge Series" = "マージシリーズ";
 
 /* No comment provided by engineer. */
-"Merge Studies" = "マージ研究";
+"Merge Studies" = "マージ検査";
 
 /* No comment provided by engineer. */
 "Meta-Data" = "メタデータ";
@@ -2973,10 +2973,10 @@
 "New Route" = "新しいルート";
 
 /* Web portal, study list, title */
-"New Studies" = "新しい研究";
+"New Studies" = "新しい検査";
 
 /* No comment provided by engineer. */
-"New Study" = "新しい研究";
+"New Study" = "新しい検査";
 
 /* No comment provided by engineer. */
 "New Version Available" = "新しいバージョンが利用可能";
@@ -3099,7 +3099,7 @@
 "No smart album exists." = "スマートアルバムは存在しません。";
 
 /* No comment provided by engineer. */
-"No Study Selected" = "研究が選択されていない";
+"No Study Selected" = "検査が選択されていない";
 
 /* No comment provided by engineer. */
 "No synchronization for this window" = "このウィンドウの同期がありません";
@@ -4101,7 +4101,7 @@
 "Same Patient" = "同患者";
 
 /* No comment provided by engineer. */
-"Same Study" = "同じ研究";
+"Same Study" = "同じ検査";
 
 /* No comment provided by engineer. */
 "Same Widths" = "同じ幅";
@@ -4530,16 +4530,16 @@
 "Stored SOP Class UIDs" = "格納されたSOPクラスUID";
 
 /* No comment provided by engineer. */
-"studies" = "研究";
+"studies" = "検査";
 
 /* No comment provided by engineer. */
-"studies found" = "研究が見つかりました";
+"studies found" = "検査が見つかりました";
 
 /* No comment provided by engineer. */
 "study" = "スタディ";
 
 /* No comment provided by engineer. */
-"Study Date" = "スタディの日付";
+"Study Date" = "検査日付";
 
 /* No comment provided by engineer. */
 "Study Deleted" = "スタディが削除されました";
@@ -4551,7 +4551,7 @@
 "Study Filter" = "スタディフィルター";
 
 /* No comment provided by engineer. */
-"study found" = "研究が見つかりました";
+"study found" = "検査が見つかりました";
 
 /* No comment provided by engineer. */
 "Study ID" = "スタディID";
@@ -4560,25 +4560,25 @@
 "Study level" = "学習レベル";
 
 /* No comment provided by engineer. */
-"Study list" = "研究リスト";
+"Study list" = "検査リスト";
 
 /* Web portal, study list, title */
-"Study List" = "研究リスト";
+"Study List" = "検査リスト";
 
 /* No comment provided by engineer. */
-"Study not available" = "研究は利用できません";
+"Study not available" = "検査は利用できません";
 
 /* No comment provided by engineer. */
-"Study not found" = "研究が見つかりません";
+"Study not found" = "検査が見つかりません";
 
 /* Web Portal, study, share, error */
 "Study share failed: cannot identify user." = "学習共有に失敗しました:ユーザーを特定できません。";
 
 /* Web Portal, study, share, error */
-"Study share failed: not authorized." = "研究のシェアは失敗しました。";
+"Study share failed: not authorized." = "検査のシェアは失敗しました。";
 
 /* No comment provided by engineer. */
-"Study Status" = "研究状況";
+"Study Status" = "検査状況";
 
 /* No comment provided by engineer. */
 "Subtraction" = "減算";
@@ -4767,7 +4767,7 @@
 "The study is not available in the local Database, you cannot modify or set the comments/status fields." = "調査はローカルのデータベースでは利用できません。コメント/ステータスフィールドを変更または設定することはできません。";
 
 /* No comment provided by engineer. */
-"The upgrade encountered %lu errors. These corrupted studies have been removed: %@" = "アップグレードで %1$lu 個のエラーが発生しました。これらの破損した研究は削除されました: %2$@";
+"The upgrade encountered %lu errors. These corrupted studies have been removed: %@" = "アップグレードで %1$lu 個のエラーが発生しました。これらの破損した検査は削除されました: %2$@";
 
 /* No comment provided by engineer. */
 "The ZIP file was successfully decompressed and the images successfully incorporated in OsiriX database. Should I delete the ZIP file?" = "ZIPファイルは正常に解凍され、画像はMiele-LXIVデータベースに正常に組み込まれました。 ZIPファイルを削除する必要がありますか？";
@@ -4797,7 +4797,7 @@
 "These 2D planes are not parallel. If you continue the result will be distorted. You can instead perform a 'Point-based registration' to have correct alignment/orientation." = "これらの2D平面は平行ではありません。続けると結果が歪んでしまいます。代わりに、正しい位置合わせ/向きを持つために「ポイントベースの登録」を実行することができます。";
 
 /* No comment provided by engineer. */
-"These images are stored in locked studies. First, unlock these studies to delete them." = "これらの画像は、ロックされた研究に保存されています。まず、これらの研究のロックを解除して削除します。";
+"These images are stored in locked studies. First, unlock these studies to delete them." = "これらの画像は、ロックされた検査に保存されています。まず、これらの検査のロックを解除して削除します。";
 
 /* No comment provided by engineer. */
 "These images don't have the same height and width to allow a 3D reconstruction..." = "これらの画像は3D再構成を可能にするために同じ高さと幅を持っていません...";
@@ -4818,7 +4818,7 @@
 "These slices have not the same orientation. Gantry Tilt Correction cannot be applied to this dataset." = "これらのスライスは同じ向きではありません。 Gantry Tilt Correctionはこのデータセットに適用できません。";
 
 /* No comment provided by engineer. */
-"These studies are not stored locally, you cannot delete them" = "これらの研究は局所的には保存されず、削除することはできません";
+"These studies are not stored locally, you cannot delete them" = "これらの検査は局所的には保存されず、削除することはできません";
 
 /* No comment provided by engineer. */
 "These values (weight and dose) are not correct." = "これらの値(体重および線量)は正しくありません。";
@@ -4908,7 +4908,7 @@
 "This image is not calibrated." = "この画像は校正されていません。";
 
 /* No comment provided by engineer. */
-"This is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them." = "これはDICOM宛先ノードです。コンテンツを参照することはできません。あなたは研究をドラッグ＆ドロップすることしかできません。";
+"This is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them." = "これはDICOM宛先ノードです。コンテンツを参照することはできません。あなたは検査をドラッグ＆ドロップすることしかできません。";
 
 /* No comment provided by engineer. */
 "This is an example" = "これは例です";
@@ -5109,7 +5109,7 @@
 "Unknown UID" = "未知のUID";
 
 /* No comment provided by engineer. */
-"Unlock Studies" = "研究のロックを解除する";
+"Unlock Studies" = "検査のロックを解除する";
 
 /* No comment provided by engineer. */
 "Unnamed" = "無題";
@@ -5357,7 +5357,7 @@ alpha : %1.3f" = "値 : %1$.0f
 "Warning! Slice interval/thickness is varying, it can create distortion in 3D." = "警告!スライス間隔/厚さが変化すると、3Dで歪みが生じることがあります。";
 
 /* No comment provided by engineer. */
-"Warning! With this option, each time OsiriX is restarted, the entire database will be erased. All studies will be deleted. This cannot be undone." = "警告!このオプションを使用すると、Miele-LXIVを再起動するたびにデータベース全体が消去されます。すべての研究が削除されます。これは、元に戻すことはできません。";
+"Warning! With this option, each time OsiriX is restarted, the entire database will be erased. All studies will be deleted. This cannot be undone." = "警告!このオプションを使用すると、Miele-LXIVを再起動するたびにデータベース全体が消去されます。すべての検査が削除されます。これは、元に戻すことはできません。";
 
 /* Panel in preferences window */
 "Web Server" = "Web サーバー";

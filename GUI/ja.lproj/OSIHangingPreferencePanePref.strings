@@ -68,10 +68,10 @@
 "286.title" = "XA";
 
 /* Class = "NSTableColumn"; headerCell.title = "Previous Study"; ObjectID = "291"; */
-"291.headerCell.title" = "以前の研究";
+"291.headerCell.title" = "以前の検査";
 
 /* Class = "NSTextFieldCell"; title = "Previous Study:"; ObjectID = "295"; */
-"295.title" = "以前の研究:";
+"295.title" = "以前の検査:";
 
 /* Class = "NSButtonCell"; title = "Same Modality"; ObjectID = "297"; */
 "297.title" = "同じモダリティ";

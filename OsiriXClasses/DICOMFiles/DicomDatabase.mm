@@ -1576,7 +1576,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications
 {
-	return [self addFilesAtPaths:paths postNotifications:postNotifications dicomOnly:[[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"] rereadExistingItems:NO];
+	return [self addFilesAtPaths:paths
+               postNotifications:postNotifications
+                       dicomOnly:[[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]
+             rereadExistingItems:NO];
 }
 
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems
@@ -1641,13 +1644,13 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"], addFailed = NO;
 		NSMutableArray *dicomFilesArray = [NSMutableArray arrayWithCapacity:chunkRange.length];
 		
-		if ([[NSFileManager defaultManager] fileExistsAtPath: dataDirPath] == NO)
+		if ([[NSFileManager defaultManager] fileExistsAtPath: dataDirPath] == NO) // TODO: maybe move it outside of for loop
 			[[NSFileManager defaultManager] createDirectoryAtPath: dataDirPath
                                       withIntermediateDirectories: YES
                                                        attributes: nil
                                                             error: nil];
 		
-		if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirPath] == NO)
+		if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirPath] == NO) // TODO: maybe move it outside of for loop
 			[[NSFileManager defaultManager] createDirectoryAtPath: reportsDirPath
                                       withIntermediateDirectories: YES
                                                        attributes: nil
@@ -1924,8 +1927,8 @@ static BOOL protectionAgainstReentry = NO;
 		NSString* dataDirPath = self.dataDirPath;
 		NSString* reportsDirPath = self.reportsDirPath;
 		NSString* errorsDirPath = self.errorsDirPath;
-        int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey:@"combineProjectionSeries"];
-        int combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
+        bool combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey:@"combineProjectionSeries"];
+        int combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] integerForKey: @"combineProjectionSeriesMode"];
 		BOOL COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
 		BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
         NSString *commentField = [[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"];
@@ -2570,7 +2573,7 @@ static BOOL protectionAgainstReentry = NO;
     //								if (seriesTable && [addedSeries containsObject: seriesTable] == NO)
     //									[addedSeries addObject: seriesTable];
                                     
-                                    if (DICOMSR == NO && [curDict valueForKey:@"album"] !=nil)
+                                    if (DICOMSR == NO && [curDict valueForKey:@"album"] != nil)
                                     {
                                         NSArray* albumArray = self.albums;
                                         
@@ -2619,8 +2622,8 @@ static BOOL protectionAgainstReentry = NO;
                                         study.dateAdded = today;
                                     }
                                 }
-                            }
-                        }
+                            } // for numberOfFrames
+                        } // for NoOfSeries
                     }
                     else
                     {
@@ -2650,7 +2653,7 @@ static BOOL protectionAgainstReentry = NO;
                     N2LogExceptionWithStackTrace(e);
                 }
             }
-        }
+        } // for dicomFilesArray
         
         [studiesArrayStudyInstanceUID release];
 		[studiesArray release];
@@ -2669,7 +2672,7 @@ static BOOL protectionAgainstReentry = NO;
         if (protectionAgainstReentry == NO)
         {
             protectionAgainstReentry = YES;
-            [self.managedObjectContext save:NULL];
+            [self.managedObjectContext save:NULL]; // Update SQL file
             protectionAgainstReentry = NO;
         }
     }
@@ -2729,9 +2732,11 @@ static BOOL protectionAgainstReentry = NO;
                                                                                           completeAddedImagesPerCreatorUID, OsirixAddToDBNotificationImagesPerAETDictionary,
                                                                                           nil]];
 				}
-			} @catch (NSException* e) {
+			}
+            @catch (NSException* e) {
 				N2LogExceptionWithStackTrace(e);
-			} @finally {
+			}
+            @finally {
 				[pool release];
 			}
 				
@@ -3279,8 +3284,8 @@ static BOOL protectionAgainstReentry = NO;
                             }
                         }
                         [file closeFile];
-                        if (dicomFileCreated)[[NSFileManager defaultManager] removeItemAtPath:srcPath error:nil];
-                        
+                        if (dicomFileCreated)
+                            [[NSFileManager defaultManager] removeItemAtPath:srcPath error:nil];
                     }
                     //===========================
                     //JF end wado rest multi-part

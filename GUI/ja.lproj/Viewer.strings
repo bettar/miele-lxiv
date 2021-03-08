@@ -530,7 +530,7 @@
 "1887.title" = "患者情報";
 
 /* Class = "NSButtonCell"; title = "Study info"; ObjectID = "1888"; */
-"1888.title" = "研究情報";
+"1888.title" = "検査情報";
 
 /* Class = "NSButtonCell"; title = "White background"; ObjectID = "1889"; */
 "1889.title" = "白色の背景";

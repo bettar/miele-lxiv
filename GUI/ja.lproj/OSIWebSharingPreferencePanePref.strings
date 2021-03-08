@@ -62,7 +62,7 @@
 "575.ibShadowedDisplayName" = "電子メール";
 
 /* Class = "CocoaBindingsConnection"; ibShadowedDisplayName = "Study Predicate"; ObjectID = "576"; */
-"576.ibShadowedDisplayName" = "研究の述語";
+"576.ibShadowedDisplayName" = "検査の述語";
 
 /* Class = "CocoaBindingsConnection"; ibShadowedDisplayName = "Name"; ObjectID = "577"; */
 "577.ibShadowedDisplayName" = "名前";
@@ -110,7 +110,7 @@
 "739.title" = "テスト";
 
 /* Class = "NSTextFieldCell"; title = "List of specific studies:"; ObjectID = "742"; */
-"742.title" = "特定の研究のリスト:";
+"742.title" = "特定の検査のリスト:";
 
 /* Class = "NSTextFieldCell"; title = "Study Instance UIDs & Patient UIDs"; ObjectID = "765"; */
 "765.title" = "調査インスタンスUIDと患者UID";

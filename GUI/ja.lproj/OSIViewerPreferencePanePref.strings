@@ -71,7 +71,7 @@
 "358.title" = "新しいシリーズを閉じるときや開いたときに自動的にWindowsを並べ替える";
 
 /* Class = "NSButtonCell"; title = "Group series of same study on same screen"; ObjectID = "359"; */
-"359.title" = "同じ画面で同じ研究のグループシリーズ";
+"359.title" = "同じ画面で同じ検査のグループシリーズ";
 
 /* Class = "NSButtonCell"; title = "Magnetic Windows for move & resize"; ObjectID = "360"; */
 "360.title" = "移動＆サイズ変更のための磁気ウィンドウ";

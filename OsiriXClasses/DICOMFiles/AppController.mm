@@ -2960,7 +2960,8 @@ static BOOL initialized = NO;
                 [[NSUserDefaults standardUserDefaults] setInteger: 20 forKey: @"UndoQueueSize"];
                 
                 // AutoClean evolution: old defaults AUTOCLEANINGSPACEPRODUCED and AUTOCLEANINGSPACEOPENED are merged into AutocleanSpaceMode
-                if ([[NSUserDefaults standardUserDefaults] objectForKey:@"AutocleanSpaceMode"] == nil) {
+                if ([[NSUserDefaults standardUserDefaults] objectForKey:@"AutocleanSpaceMode"] == nil)
+                {
                     BOOL cleanOldest = [[[NSUserDefaults standardUserDefaults] objectForKey:@"AUTOCLEANINGSPACEPRODUCED"] boolValue];
                     BOOL cleanOldestUnopened = [[[NSUserDefaults standardUserDefaults] objectForKey:@"AUTOCLEANINGSPACEOPENED"] boolValue];
                     

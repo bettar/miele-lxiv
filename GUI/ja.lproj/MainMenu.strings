@@ -32,7 +32,7 @@
 "58.title" = "Miele-LXIVについて";
 
 /* Class = "NSMenuItem"; title = "Recent Studies"; ObjectID = "62R-VA-Hjt"; */
-"62R-VA-Hjt.title" = "最近の研究";
+"62R-VA-Hjt.title" = "最近の検査";
 
 /* Class = "NSMenuItem"; title = "Hide Miele-LXIV"; ObjectID = "134"; */
 "134.title" = "Miele-LXIVを非表示にする";
@@ -251,7 +251,7 @@
 "11380.title" = "患者ID:";
 
 /* Class = "NSFormCell"; title = "Study Description:"; ObjectID = "11381"; */
-"11381.title" = "研究の説明:";
+"11381.title" = "検査の説明:";
 
 /* Class = "NSFormCell"; title = "Rows:"; ObjectID = "11387"; */
 "11387.title" = "行:";
@@ -743,10 +743,10 @@
 "13071.title" = "現在のシリーズの設定を反映する";
 
 /* Class = "NSMenuItem"; title = "Sync Series (Same Study)"; ObjectID = "13072"; */
-"13072.title" = "同期シリーズ(同じ研究)";
+"13072.title" = "同期シリーズ(同じ検査)";
 
 /* Class = "NSMenu"; title = "Sync Series (Same Study)"; ObjectID = "13073"; */
-"13073.title" = "同期シリーズ(同じ研究)";
+"13073.title" = "同期シリーズ(同じ検査)";
 
 /* Class = "NSMenuItem"; title = "Off"; ObjectID = "13074"; */
 "13074.title" = "オフ";
@@ -758,7 +758,7 @@
 "13077.title" = "スライスID  - 絶対値";
 
 /* Class = "NSMenuItem"; title = "Limit to Same Study"; ObjectID = "13079"; */
-"13079.title" = "同じ研究に制限する";
+"13079.title" = "同じ検査に制限する";
 
 /* Class = "NSMenuItem"; title = "Slice ID - Relative"; ObjectID = "13080"; */
 "13080.title" = "スライスID  - 相対";
@@ -869,7 +869,7 @@
 "13156.title" = "プラグインのみ";
 
 /* Class = "NSMenuItem"; title = "Sync Series (Different Studies) at Current Position"; ObjectID = "13157"; */
-"13157.title" = "現在の位置での同期シリーズ(異なる研究)";
+"13157.title" = "現在の位置での同期シリーズ(異なる検査)";
 
 /* Class = "NSMenuItem"; title = "Window Width & Level"; ObjectID = "13159"; */
 "13159.title" = "ウィンドウの幅とレベル";
@@ -1631,7 +1631,7 @@
 "14383.title" = "Radio";
 
 /* Class = "NSButtonCell"; ibShadowedToolTip = "OsiriX will re-import all files available in the DATABASE folder. OsiriX will then check if all images of the studies are available. If not, OsiriX will remove those studies without associated DICOM files."; ObjectID = "14384"; */
-"14384.ibShadowedToolTip" = "Miele-LXIVは、DATABASEフォルダー内のすべてのファイルを再インポートします。 Miele-LXIVは、研究のすべての画像が利用可能かどうかをチェックします。そうでない場合、Miele-LXIVは関連するDICOMファイルなしでこれらの研究を削除します。";
+"14384.ibShadowedToolTip" = "Miele-LXIVは、DATABASEフォルダー内のすべてのファイルを再インポートします。 Miele-LXIVは、検査のすべての画像が利用可能かどうかをチェックします。そうでない場合、Miele-LXIVは関連するDICOMファイルなしでこれらの検査を削除します。";
 
 /* Class = "NSButtonCell"; title = "Re-import DICOM files and clean"; ObjectID = "14384"; */
 "14384.title" = "DICOMファイルを再インポートしてクリーンアップする";
@@ -1907,7 +1907,7 @@
 "14847.title" = "平面が平行である場合のみズームレベルを伝播する";
 
 /* Class = "NSMenu"; title = "Recent Studies"; ObjectID = "a5x-qR-mZL"; */
-"a5x-qR-mZL.title" = "最近の研究";
+"a5x-qR-mZL.title" = "最近の検査";
 
 /* Class = "NSMenuItem"; title = "Empty"; ObjectID = "jhM-yg-NvV"; */
 "jhM-yg-NvV.title" = "空";

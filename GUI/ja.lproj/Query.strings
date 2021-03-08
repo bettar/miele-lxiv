@@ -140,7 +140,7 @@
 "751.placeholderString" = "受入番号";
 
 /* Class = "NSTextFieldCell"; title = "XX studies found"; ObjectID = "752"; */
-"752.title" = "XXの研究が見つかりました";
+"752.title" = "XXの検査が見つかりました";
 
 /* Class = "NSTextFieldCell"; title = "DICOM Nodes:"; ObjectID = "753"; */
 "753.title" = "DICOMノード:";
@@ -289,7 +289,7 @@
 "863.title" = "検索された各調査について、必要に応じて利用可能な場合も検索します。";
 
 /* Class = "NSButtonCell"; title = "with same Study Description"; ObjectID = "865"; */
-"865.title" = "同じ研究の説明付き";
+"865.title" = "同じ検査の説明付き";
 
 /* Class = "NSMenu"; title = "OtherViews"; ObjectID = "868"; */
 "868.title" = "OtherViews";

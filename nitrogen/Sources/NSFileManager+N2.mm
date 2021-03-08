@@ -318,7 +318,7 @@
 }
 
 -(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path {
-	return [self destinationOfAliasOrSymlinkAtPath:path resolved:NULL];
+	return [self destinationOfAliasOrSymlinkAtPath:path resolved:NULL]; // NULL ? Should it be FALSE ?
 }
 
 -(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path resolved:(BOOL*)r

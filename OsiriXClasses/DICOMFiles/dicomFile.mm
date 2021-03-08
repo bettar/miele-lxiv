@@ -407,7 +407,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			NOLOCALIZER = [sd boolForKey: @"NOLOCALIZER"];
 			oneFileOnSeriesForUS = [sd boolForKey: @"oneFileOnSeriesForUS"];
 			combineProjectionSeries = [sd boolForKey: @"combineProjectionSeries"];
-			combineProjectionSeriesMode = [sd boolForKey: @"combineProjectionSeriesMode"];
+			combineProjectionSeriesMode = [sd boolForKey: @"combineProjectionSeriesMode"]; // TODO: int
 			
             gUsePatientBirthDateForUID = [sd boolForKey: @"UsePatientBirthDateForUID"];
             gUsePatientIDForUID = [sd boolForKey: @"UsePatientIDForUID"];

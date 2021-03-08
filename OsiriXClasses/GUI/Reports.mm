@@ -523,7 +523,7 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
             }
         }
         
-        if (!templatesCount)
+        if (!templatesCount) // templatesCount == 0 ?
         {
             if ([[NSFileManager defaultManager] fileExistsAtPath: oldReportFilePath])
             {
@@ -554,7 +554,8 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
     if (path == nil)
         path = DicomDatabase.defaultBaseDirPath;
     
-    NSString *folder = [path stringByAppendingPathComponent:@"TEMPLATES/WORD"];
+    path = [path stringByAppendingPathComponent:TEMPLATES_PATH];
+    NSString *folder = [path stringByAppendingPathComponent:@"WORD"];
     
     NSFileManager *fm = [NSFileManager defaultManager];
     BOOL isDirectory;
@@ -813,7 +814,8 @@ static BOOL Pages5orHigher = FALSE;
     if (path == nil)
         path = DicomDatabase.defaultBaseDirPath;
     
-    return [path stringByAppendingPathComponent:@"TEMPLATES/PAGES"];
+    path = [path stringByAppendingPathComponent:TEMPLATES_PATH];
+    return [path stringByAppendingPathComponent:@"PAGES"];
 }
 
 // Called from AppController initialize
