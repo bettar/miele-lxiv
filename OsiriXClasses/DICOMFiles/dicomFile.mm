@@ -83,7 +83,7 @@ static BOOL NOLOCALIZER = NO;
 static BOOL combineProjectionSeries = NO, oneFileOnSeriesForUS = NO;
 static int combineProjectionSeriesMode = NO;
 //static int CHECKFORLAVIM = -1;
-static int COMMENTSGROUP = NO, COMMENTSGROUP2 = NO, COMMENTSGROUP3 = NO, COMMENTSGROUP4 = NO;
+static int COMMENTSGROUP = NO, COMMENTSGROUP2 = NO, COMMENTSGROUP3 = NO, COMMENTSGROUP4 = NO; // Assign NO to an int ?
 static int COMMENTSELEMENT = NO, COMMENTSELEMENT2 = NO, COMMENTSELEMENT3 = NO, COMMENTSELEMENT4 = NO;
 static BOOL gUsePatientIDForUID = YES, gUsePatientBirthDateForUID = YES, gUsePatientNameForUID = YES;
 static BOOL SEPARATECARDIAC4D = NO;
@@ -1984,7 +1984,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	{
 		[DicomFile setDefaults];
 		
-		//width and height need to greater than 0 or get validation errors
+		// width and height need to be greater than 0 or get validation errors
 		
 		width = 1;
 		height = 1;

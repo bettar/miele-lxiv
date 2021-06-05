@@ -21,8 +21,11 @@
 #import "DicomDatabase+Scan.h"
 #import "NSThread+N2.h"
 #import "NSDate+N2.h"
+
 #import "dcmtk/dcmdata/dcdicdir.h"
 #import "dcmtk/dcmdata/dcdeftag.h"
+#import "dcmtk/dcmdata/dcuid.h"
+
 #import "NSString+N2.h"
 #import "NSFileManager+N2.h"
 #import "DicomImage.h"
@@ -234,7 +237,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
             
             //NSLog(@"\n\n%@\nDICOMDIR info:%@", path, elements);
             
-            if ([[[elements objectForKeyRemove: @"0004,1512"] stringValue] isEqualToString:@"1.2.840.10008.1.2.4.100"])
+            if ([[[elements objectForKeyRemove: @"0004,1512"] stringValue] isEqualToString:@(UID_MPEG2MainProfileAtMainLevelTransferSyntax)])
                 [item setObject:@"DICOMMPEG2" forKey:@"fileType"];
             else
                 [item setObject:@"DICOM" forKey:@"fileType"];

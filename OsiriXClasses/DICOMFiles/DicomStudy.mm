@@ -571,7 +571,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	[rootDict setObject: albumsArray forKey: @"albums"];
 	
-	// ***************************************************************************************************
+	// *************************************************************************
 	
 	// Series Level
 	
@@ -1568,7 +1568,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 }
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 
 - (NSSet*) paths
 {
@@ -1629,7 +1629,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return nil;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 // Series subselections
 
 + (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid andSeriesDescription: (NSString*) description containingOnlyPixels: (BOOL) pixels

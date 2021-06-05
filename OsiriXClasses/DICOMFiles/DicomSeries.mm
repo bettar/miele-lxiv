@@ -317,14 +317,14 @@
 
 -(NSData*)thumbnail
 {
-    NSData* thumbnailData = nil;
+    NSData* tnData = nil;
     
     [self.managedObjectContext lock];
     @try
     {
-        thumbnailData = [[self primitiveValueForKey:@"thumbnail"] retain]; // autoreleased when returning
+        tnData = [[self primitiveValueForKey:@"thumbnail"] retain]; // autoreleased when returning
         
-        if( !thumbnailData)
+        if( !tnData)
         {
             NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
             
@@ -337,16 +337,16 @@
                     
                     NSImage* thumbAv = [image thumbnailIfAlreadyAvailable];
                     if (thumbAv) {
-                        NSImage* thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(THUMBNAILSIZE, THUMBNAILSIZE)] autorelease];
+                        NSImage* thumbnailImg = [[[NSImage alloc] initWithSize: NSMakeSize(THUMBNAILSIZE, THUMBNAILSIZE)] autorelease];
                         
-                        [thumbnail lockFocus];
+                        [thumbnailImg lockFocus];
                         [thumbAv drawInRect:NSMakeRect(0,0,THUMBNAILSIZE,THUMBNAILSIZE)
                                    fromRect:[thumbAv alignmentRect]
                                   operation:NSCompositeCopy
                                    fraction:1.0];
-                        [thumbnail unlockFocus];
+                        [thumbnailImg unlockFocus];
                         
-                        thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
+                        tnData = [[thumbnailImg TIFFRepresentation] retain]; // autoreleased when returning
                     }
                     else
                     if ([[NSFileHandle fileHandleForReadingAtPath: image.completePath] readDataOfLength: 100])	// This means the file is readable...
@@ -363,30 +363,30 @@
                         [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
                         [[[[self.study objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
                         
-                        NSImage *thumbnail = nil;
+                        NSImage *tnImage = nil;
                         NSString *seriesSOPClassUID = self.seriesSOPClassUID;
                         
                         if( [[DCMAbstractSyntaxUID RTStructureSetStorage] isEqualToString: seriesSOPClassUID])
                         {
-                            thumbnail = [NSImage imageNamed: @"RTStructIcon.jpg"];
-                            thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
+                            tnImage = [NSImage imageNamed: @"RTStructIcon.jpg"];
+                            tnData = [[tnImage TIFFRepresentation] retain]; // autoreleased when returning
                         }
                         else if( [DCMAbstractSyntaxUID isSpectroscopy: seriesSOPClassUID])
                         {
-                            thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"];
-                            thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
+                            tnImage = [NSImage imageNamed: @"SpectroIcon.jpg"];
+                            tnData = [[tnImage TIFFRepresentation] retain]; // autoreleased when returning
                         }
                         else if( [DCMAbstractSyntaxUID isStructuredReport: seriesSOPClassUID] || [DCMAbstractSyntaxUID isPDF: seriesSOPClassUID])
                         {
                             NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"txt"];
                             
-                            thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( THUMBNAILSIZE, THUMBNAILSIZE)] autorelease];
+                            tnImage = [[[NSImage alloc] initWithSize: NSMakeSize( THUMBNAILSIZE, THUMBNAILSIZE)] autorelease];
                             
-                            [thumbnail lockFocus];
+                            [tnImage lockFocus];
                             [icon drawInRect: NSMakeRect( 0, 0, THUMBNAILSIZE, THUMBNAILSIZE) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
-                            [thumbnail unlockFocus];
+                            [tnImage unlockFocus];
                             
-                            thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
+                            tnData = [[tnImage TIFFRepresentation] retain]; // autoreleased when returning
                         }
                         else if( [DCMAbstractSyntaxUID isImageStorage: seriesSOPClassUID] || [DCMAbstractSyntaxUID isRadiotherapy: seriesSOPClassUID] || [seriesSOPClassUID length] == 0)
                         {
@@ -404,27 +404,27 @@
                                 }
                             }
                             
-                            thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
+                            tnImage = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
                             
                             if (!dcmPix.notAbleToLoadImage)
-                                thumbnailData = [[thumbnail JPEGRepresentationWithQuality:0.3] retain]; // autoreleased when returning
+                                tnData = [[tnImage JPEGRepresentationWithQuality:0.3] retain]; // autoreleased when returning
                             
                             [dcmPix release];
                         }
                         else
                         {
-                            thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
-                            thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
+                            tnImage = [NSImage imageNamed: @"FileNotFound.tif"];
+                            tnData = [[tnImage TIFFRepresentation] retain]; // autoreleased when returning
                         }
                         
                         [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
                     }
                 }
 
-                if (thumbnailData)
+                if (tnData)
                 {
                     [self willChangeValueForKey: @"thumbnail"];
-                    [self setPrimitiveValue:thumbnailData forKey:@"thumbnail"];
+                    [self setPrimitiveValue:tnData forKey:@"thumbnail"];
                     [self didChangeValueForKey: @"thumbnail"];
                 }
             }
@@ -438,14 +438,14 @@
     }
     @catch (NSException * e)
     {
-        thumbnailData = [[[NSImage imageNamed: @"FileNotFound.tif"] TIFFRepresentation] retain];
+        tnData = [[[NSImage imageNamed: @"FileNotFound.tif"] TIFFRepresentation] retain];
     }
     @finally
     {
         [self.managedObjectContext unlock];
     }
         
-	return [thumbnailData autorelease];
+	return [tnData autorelease];
 }
 
 - (NSString*) modalities

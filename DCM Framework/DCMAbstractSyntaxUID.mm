@@ -19,6 +19,7 @@
 =========================================================================*/
 
 #import <DCM/DCMAbstractSyntaxUID.h>
+#include "dcmtk/dcmdata/dcuid.h"
 
 static NSArray *imagesSyntaxes = nil;
 static NSArray *hiddenImagesSyntaxes = nil;
@@ -28,8 +29,8 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 // Images ...
 
-	static NSString *ComputedRadiographyImageStorage = @"1.2.840.10008.5.1.4.1.1.1";
-	static NSString *DigitalXRayImageStorageForPresentation = @"1.2.840.10008.5.1.4.1.1.1.1";
+	static NSString *ComputedRadiographyImageStorage = @(UID_ComputedRadiographyImageStorage);
+	static NSString *DigitalXRayImageStorageForPresentation = @(UID_DigitalXRayImageStorageForPresentation);
 	static NSString *DigitalXRayImageStorageForProcessing = @"1.2.840.10008.5.1.4.1.1.1.1.1";
 	static NSString *DigitalMammographyXRayImageStorageForPresentation = @"1.2.840.10008.5.1.4.1.1.1.2";
 	static NSString *DigitalMammographyXRayImageStorageForProcessing = @"1.2.840.10008.5.1.4.1.1.1.2.1";
@@ -38,12 +39,12 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *CTImageStorage = @"1.2.840.10008.5.1.4.1.1.2";
 	static NSString *EnhancedCTImageStorage = @"1.2.840.10008.5.1.4.1.1.2.1";
 	static NSString *EnhancedPETImageStorage = @"1.2.840.10008.5.1.4.1.1.130";
-	static NSString *UltrasoundMultiframeImageStorageRetired = @"1.2.840.10008.5.1.4.1.1.3";
+	static NSString *UltrasoundMultiframeImageStorageRetired = @(UID_RETIRED_UltrasoundMultiframeImageStorage);
 	static NSString *UltrasoundMultiframeImageStorage = @"1.2.840.10008.5.1.4.1.1.3.1";
 	static NSString *MRImageStorage = @"1.2.840.10008.5.1.4.1.1.4";
 	static NSString *EnhancedMRImageStorage = @"1.2.840.10008.5.1.4.1.1.4.1";
-	static NSString *NuclearMedicineImageStorageRetired = @"1.2.840.10008.5.1.4.1.1.5";
-	static NSString *UltrasoundImageStorageRetired = @"1.2.840.10008.5.1.4.1.1.6";
+	static NSString *NuclearMedicineImageStorageRetired = @(UID_RETIRED_NuclearMedicineImageStorage);
+	static NSString *UltrasoundImageStorageRetired = @(UID_RETIRED_UltrasoundImageStorage);
 	static NSString *UltrasoundImageStorage = @"1.2.840.10008.5.1.4.1.1.6.1";
     static NSString *EnhancedUSVolumeStorage = @"1.2.840.10008.5.1.4.1.1.6.2";
 	static NSString *SecondaryCaptureImageStorage = @"1.2.840.10008.5.1.4.1.1.7";
@@ -57,7 +58,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *EnhancedXRFImageStorage = @"1.2.840.10008.5.1.4.1.1.12.2.1";
 	static NSString *XRay3DAngiographicImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.1";
 	static NSString *XRay3DCraniofacialImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.2";
-    static NSString *BreastTomosynthesisImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.3";
+    static NSString *BreastTomosynthesisImageStorage = @(UID_BreastTomosynthesisImageStorage);
 	static NSString *GE3DModelStorage = @"1.2.840.113619.4.26";
 	static NSString *GECollageStorage = @"1.2.528.1.1001.5.1.1.1";
 	static NSString *GEeNTEGRAProtocolOrNMGenieStorage = @"1.2.840.113619.4.27";
@@ -96,23 +97,23 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *PhilipsPrivatePrefixStorage = @"1.3.46.670589"; // Prefix
 
     static NSString *SiemensCSAPrivateNonImageStorage = @"1.3.12.2.1107.5.9.1";
-	static NSString *XrayAngiographicBiplaneImageStorage = @"1.2.840.10008.5.1.4.1.1.12.3";
+	static NSString *XrayAngiographicBiplaneImageStorage = @(UID_RETIRED_XRayAngiographicBiPlaneImageStorage);
 	static NSString *NuclearMedicineImageStorage = @"1.2.840.10008.5.1.4.1.1.20";
-	static NSString *VisibleLightDraftImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1";
-	static NSString *VisibleLightMultiFrameDraftImageStorage = @"1.2.840.10008.5.1.4.1.1.77.2";
-	static NSString *VisibleLightEndoscopicImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1.1";
+	static NSString *VisibleLightDraftImageStorage = @(UID_RETIRED_VLImageStorage);
+	static NSString *VisibleLightMultiFrameDraftImageStorage = @(UID_RETIRED_VLMultiframeImageStorage);
+	static NSString *VisibleLightEndoscopicImageStorage = @(UID_VLEndoscopicImageStorage);
 	static NSString *VideoEndoscopicImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1.1.1";
-	static NSString *VisibleLightMicroscopicImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1.2";
+	static NSString *VisibleLightMicroscopicImageStorage = @(UID_VLMicroscopicImageStorage);
 	static NSString *VideoMicroscopicImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1.2.1";
-	static NSString *VisibleLightSlideCoordinatesMicroscopicImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1.3";
-	static NSString *VisibleLightPhotographicImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1.4";
+	static NSString *VisibleLightSlideCoordinatesMicroscopicImageStorage = @(UID_VLSlideCoordinatesMicroscopicImageStorage);
+	static NSString *VisibleLightPhotographicImageStorage = @(UID_VLPhotographicImageStorage);
 	static NSString *VideoPhotographicImageStorage = @"1.2.840.10008.5.1.4.1.1.77.1.4.1";
-	static NSString *PETImageStorage = @"1.2.840.10008.5.1.4.1.1.128";
+	static NSString *PETImageStorage = @(UID_PositronEmissionTomographyImageStorage);
 	static NSString *RTImageStorage = @"1.2.840.10008.5.1.4.1.1.481.1";
 
 // Directory ...
 
-	static NSString *MediaStorageDirectoryStorage = @"1.2.840.10008.1.3.10";
+	static NSString *MediaStorageDirectoryStorage = @(UID_MediaStorageDirectoryStorage);
 
 // Structured Report ...
 
@@ -122,8 +123,8 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *ProcedureLogStorage = @"1.2.840.10008.5.1.4.1.1.88.40";
 	static NSString *MammographyCADSRStorage = @"1.2.840.10008.5.1.4.1.1.88.50";
 	static NSString *ChestCADSR = @"1.2.840.10008.5.1.4.1.1.88.65";
-	static NSString *XRayRadiationDoseSR = @"1.2.840.10008.5.1.4.1.1.88.67";
-	static NSString *KeyObjectSelectionDocumentStorage = @"1.2.840.10008.5.1.4.1.1.88.59";
+	static NSString *XRayRadiationDoseSR = @(UID_XRayRadiationDoseSRStorage);
+	static NSString *KeyObjectSelectionDocumentStorage = @(UID_KeyObjectSelectionDocumentStorage);
 
 // Presentation State ...
 
@@ -134,25 +135,25 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 // Waveforms ...
 
-	static NSString *TwelveLeadECGStorage = @"1.2.840.10008.5.1.4.1.1.9.1.1";
-	static NSString *GeneralECGStorage = @"1.2.840.10008.5.1.4.1.1.9.1.2";
-	static NSString *AmbulatoryECGStorage = @"1.2.840.10008.5.1.4.1.1.9.1.3";
+	static NSString *TwelveLeadECGStorage = @(UID_TwelveLeadECGWaveformStorage);
+	static NSString *GeneralECGStorage = @(UID_GeneralECGWaveformStorage);
+	static NSString *AmbulatoryECGStorage = @(UID_AmbulatoryECGWaveformStorage);
 	static NSString *HemodynamicWaveformStorage = @"1.2.840.10008.5.1.4.1.1.9.2.1";
 	static NSString *CardiacElectrophysiologyWaveformStorage = @"1.2.840.10008.5.1.4.1.1.9.3.1";
-	static NSString *BasicVoiceStorage = @"1.2.840.10008.5.1.4.1.1.9.4.1";
+	static NSString *BasicVoiceStorage = @(UID_BasicVoiceAudioWaveformStorage);
 
 // Standalone ...
 
-	static NSString *StandaloneOverlayStorage = @"1.2.840.10008.5.1.4.1.1.8";
-	static NSString *StandaloneCurveStorage = @"1.2.840.10008.5.1.4.1.1.10";
-	static NSString *StandaloneModalityLUTStorage = @"1.2.840.10008.5.1.4.1.1.10";
-	static NSString *StandaloneVOILUTStorage = @"1.2.840.10008.5.1.4.1.1.11";
-	static NSString *StandalonePETCurveStorage = @"1.2.840.10008.5.1.4.1.1.129";
+	static NSString *StandaloneOverlayStorage = @(UID_RETIRED_StandaloneOverlayStorage);
+	static NSString *StandaloneCurveStorage = @("1.2.840.10008.5.1.4.1.1.10");
+	static NSString *StandaloneModalityLUTStorage = @(UID_RETIRED_StandaloneModalityLUTStorage);
+	static NSString *StandaloneVOILUTStorage = @(UID_RETIRED_StandaloneVOILUTStorage);
+	static NSString *StandalonePETCurveStorage = @(UID_RETIRED_StandalonePETCurveStorage);
 
 // Radiotherapy ...
 
 	static NSString *RTDoseStorage = @"1.2.840.10008.5.1.4.1.1.481.2";
-	static NSString *RTStructureSetStorage = @"1.2.840.10008.5.1.4.1.1.481.3";
+	static NSString *RTStructureSetStorage = @(UID_RTStructureSetStorage);
 	static NSString *RTBeamsTreatmentRecordStorage = @"1.2.840.10008.5.1.4.1.1.481.4";
 	static NSString *RTPlanStorage = @"1.2.840.10008.5.1.4.1.1.481.5";
 	static NSString *RTBrachyTreatmentRecordStorage = @"1.2.840.10008.5.1.4.1.1.481.6";
@@ -160,11 +161,11 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 // Spectroscopy ...
 
-	static NSString *MRSpectroscopyStorage = @"1.2.840.10008.5.1.4.1.1.4.2";
+	static NSString *MRSpectroscopyStorage = @(UID_MRSpectroscopyStorage);
 
 // Raw Data ...
 
-	static NSString *RawDataStorage = @"1.2.840.10008.5.1.4.1.1.66";
+	static NSString *RawDataStorage = @(UID_RawDataStorage);
 
 // Query-Retrieve SOP Classes ...
 
@@ -172,8 +173,8 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *StudyRootQueryRetrieveInformationModelMove = @"1.2.840.10008.5.1.4.1.2.2.2";
 
 // PDF storage
-	static NSString *PDFStorageClassUID = @"1.2.840.10008.5.1.4.1.1.104.1";
-	static NSString *EncapsulatedCDAStorage = @"1.2.840.10008.5.1.4.1.1.104.2";
+	static NSString *PDFStorageClassUID = @(UID_EncapsulatedPDFStorage);
+	static NSString *EncapsulatedCDAStorage = @(UID_EncapsulatedCDAStorage);
 
 // Printing
 	static NSString *BasicGrayscalePrintManagementMetaSOPClassUID = @"1.2.840.10008.5.1.1.9";
@@ -636,7 +637,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 }
 
 + (BOOL) isPresentationState:(NSString *)sopClassUID {
-		return sopClassUID != nil && [[DCMAbstractSyntaxUID presentationStateSyntaxes] containsObject: sopClassUID];
+    return sopClassUID != nil && [[DCMAbstractSyntaxUID presentationStateSyntaxes] containsObject: sopClassUID];
 }
 
 + (NSArray*) supportedPrivateClasses

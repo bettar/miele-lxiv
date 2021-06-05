@@ -20,34 +20,35 @@
 
 #import <DCM/DCMTransferSyntax.h>
 #import "DCM.h"
+#include "dcmtk/dcmdata/dcuid.h"
 
-static NSString *DCM_ExplicitVRBigEndian = @"1.2.840.10008.1.2.2";
-static NSString *DCM_ExplicitVRLittleEndian = @"1.2.840.10008.1.2.1";
-static NSString *DCM_ImplicitVRLittleEndian = @"1.2.840.10008.1.2";
-static NSString *DCM_JPEG1012Retired = @"1.2.840.10008.1.2.4.55";
-static NSString *DCM_JPEG1113Retired = @"1.2.840.10008.1.2.4.56";
-static NSString *DCM_JPEG1618Retired = @"1.2.840.10008.1.2.4.59";
-static NSString *DCM_JPEG1719Retired = @"1.2.840.10008.1.2.4.60";
-static NSString *DCM_JPEG2000Lossless = @"1.2.840.10008.1.2.4.90";
-static NSString *DCM_JPEG2000Lossy = @"1.2.840.10008.1.2.4.91";
-static NSString *DCM_JPEG2022Retired = @"1.2.840.10008.1.2.4.61";
-static NSString *DCM_JPEG2123Retired = @"1.2.840.10008.1.2.4.62";
-static NSString *DCM_JPEG2426Retired = @"1.2.840.10008.1.2.4.63";
-static NSString *DCM_JPEG2527Retired = @"1.2.840.10008.1.2.4.64";
-static NSString *DCM_JPEG29Retired = @"1.2.840.10008.1.2.4.66";
-static NSString *DCM_JPEG68Retired = @"1.2.840.10008.1.2.4.53";
-static NSString *DCM_JPEG79Retired = @"1.2.840.10008.1.2.4.54";
-static NSString *DCM_JPEGBaseline = @"1.2.840.10008.1.2.4.50";
-static NSString *DCM_JPEGExtended = @"1.2.840.10008.1.2.4.51";
-static NSString *DCM_JPEGExtended35Retired = @"1.2.840.10008.1.2.4.52";
-static NSString *DCM_JPEGLoRetired = @"1.2.840.10008.1.2.4.65";
-static NSString *DCM_JPEGLossless = @"1.2.840.10008.1.2.4.70";
-static NSString *DCM_JPEGLossless14 = @"1.2.840.10008.1.2.4.57";
-static NSString *DCM_JPEGLossless15Retired = @"1.2.840.10008.1.2.4.58";
-static NSString *DCM_JPEGLSLossless = @"1.2.840.10008.1.2.4.80";
-static NSString *DCM_JPEGLSLossy = @"1.2.840.10008.1.2.4.81";
-static NSString *DCM_RLELossless = @"1.2.840.10008.1.2.5";
-static NSString *DCM_MPEG2Main = @"1.2.840.10008.1.2.4.100";
+static NSString *DCM_ExplicitVRBigEndian = @(UID_BigEndianExplicitTransferSyntax);
+static NSString *DCM_ExplicitVRLittleEndian = @(UID_LittleEndianExplicitTransferSyntax);
+static NSString *DCM_ImplicitVRLittleEndian = @(UID_LittleEndianImplicitTransferSyntax);
+static NSString *DCM_JPEG1012Retired = @(UID_JPEGProcess10_12TransferSyntax);
+static NSString *DCM_JPEG1113Retired = @(UID_JPEGProcess11_13TransferSyntax);
+static NSString *DCM_JPEG1618Retired = @(UID_JPEGProcess16_18TransferSyntax);
+static NSString *DCM_JPEG1719Retired = @(UID_JPEGProcess17_19TransferSyntax);
+static NSString *DCM_JPEG2000Lossless = @(UID_JPEG2000LosslessOnlyTransferSyntax);
+static NSString *DCM_JPEG2000Lossy = @(UID_JPEG2000TransferSyntax);
+static NSString *DCM_JPEG2022Retired = @(UID_JPEGProcess20_22TransferSyntax);
+static NSString *DCM_JPEG2123Retired = @(UID_JPEGProcess21_23TransferSyntax);
+static NSString *DCM_JPEG2426Retired = @(UID_JPEGProcess24_26TransferSyntax);
+static NSString *DCM_JPEG2527Retired = @(UID_JPEGProcess25_27TransferSyntax);
+static NSString *DCM_JPEG29Retired = @(UID_JPEGProcess29TransferSyntax);
+static NSString *DCM_JPEG68Retired = @(UID_JPEGProcess6_8TransferSyntax);
+static NSString *DCM_JPEG79Retired = @(UID_JPEGProcess7_9TransferSyntax);
+static NSString *DCM_JPEGBaseline = @(UID_JPEGProcess1TransferSyntax);
+static NSString *DCM_JPEGExtended = @(UID_JPEGProcess2_4TransferSyntax);
+static NSString *DCM_JPEGExtended35Retired = @(UID_JPEGProcess3_5TransferSyntax);
+static NSString *DCM_JPEGLoRetired = @(UID_JPEGProcess28TransferSyntax);
+static NSString *DCM_JPEGLossless = @(UID_JPEGProcess14SV1TransferSyntax);
+static NSString *DCM_JPEGLossless14 = @(UID_JPEGProcess14TransferSyntax);
+static NSString *DCM_JPEGLossless15Retired = @(UID_JPEGProcess15TransferSyntax);
+static NSString *DCM_JPEGLSLossless = @(UID_JPEGLSLosslessTransferSyntax);
+static NSString *DCM_JPEGLSLossy = @(UID_JPEGLSLossyTransferSyntax);
+static NSString *DCM_RLELossless = @(UID_RLELosslessTransferSyntax);
+static NSString *DCM_MPEG2Main = @(UID_MPEG2MainProfileAtMainLevelTransferSyntax);
 
 @implementation DCMTransferSyntax
 
@@ -189,7 +190,7 @@ static NSMutableDictionary *gTransferSyntaxes = nil;
                 //only Big Endian in ExplictVRBE
                 if ([key isEqualToString:DCM_ExplicitVRBigEndian])
                     littleEndian = NO;
-                //unencasualted TSs
+                //unencapsualted TSs
                 if ([key isEqualToString:DCM_ExplicitVRBigEndian] ||					
                     [key isEqualToString:DCM_ExplicitVRLittleEndian] ||
                     [key isEqualToString:DCM_ImplicitVRLittleEndian])

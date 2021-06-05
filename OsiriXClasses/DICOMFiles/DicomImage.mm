@@ -351,7 +351,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         
         [self willChangeValueForKey:@"storedInDatabaseFolder"];
         if ([f boolValue] == YES)
-            [self setPrimitiveValue: nil forKey:@"storedInDatabaseFolder"];
+            [self setPrimitiveValue: nil forKey:@"storedInDatabaseFolder"]; // TBC
         else
             [self setPrimitiveValue: f forKey:@"storedInDatabaseFolder"];
         [self didChangeValueForKey:@"storedInDatabaseFolder"];
@@ -529,7 +529,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     [self didChangeValueForKey:@"series"];
     
     [self.series.study setNumberOfImages: nil];
-    [self.series setNumberOfImages: nil];
+    [self.series setNumberOfImages: nil];           // ?!? where does it go ?
 }
 
 //#pragma mark -
@@ -905,7 +905,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (NSString*) type
 {
-	return  @"Image";
+	return @"Image";
 }
 
 - (void) dealloc
@@ -1012,7 +1012,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         }
         
 #ifdef OSIRIX_VIEWER
-        if ([self.inDatabaseFolder boolValue] == YES)
+        if ([self.inDatabaseFolder boolValue])
         {
             NSString *path = self.path;
             

@@ -1089,8 +1089,8 @@ PixelRepresentation
                        dicomData:(DCMDataContainer *)dicomData
                       byteOffset:(int *)byteOffset
                     lengthToRead:(int)lengthToRead
-            specificCharacterSet:(DCMCharacterSet *)aSpecificCharacterSet{
-
+            specificCharacterSet:(DCMCharacterSet *)aSpecificCharacterSet
+{
 	BOOL undefinedLength = (lengthToRead == 0xFFFFFFFF);
 	int endByteOffset = (undefinedLength) ? 0xFFFFFFFF : (*byteOffset + lengthToRead - 1);
 	NSException *myException;
@@ -1107,7 +1107,7 @@ PixelRepresentation
                 int group = [self getGroup:dicomData];
                 int element = [self getElement:dicomData];
                 DCMAttributeTag *tag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
-                *byteOffset += 4; // TODO: why are we incrementing by 4 an integer pointer ?
+                *byteOffset += 4; // We are not incrementing the pointer, but the dereferenced value
                 
                 long vl = [dicomData nextUnsignedLong];		// always implicit VR form for items and delimiters
                 *byteOffset += 4;
@@ -2155,7 +2155,7 @@ PixelRepresentation
 
 }
 
-//subclasses can overide to just pick out certain attributes and speed up 
+//subclasses can override to just pick out certain attributes and speed up
 - (BOOL)isNeededAttribute:(char *)tagString{
 	return YES;
 }

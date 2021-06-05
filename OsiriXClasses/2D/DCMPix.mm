@@ -3736,8 +3736,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     :(float) oZ
                     :(BOOL) volSize
 {
-    //NSLog(@"DCMPix.mm:%d %s", __LINE__, __PRETTY_FUNCTION__);
-    
 	//if (pixelSize != 32)
     //  NSLog( @"Only floating images are supported...");
     
@@ -3867,7 +3865,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (id) initWithImageObj: (Dicom_Image *) image
 {
-    NSLog(@"DCMPix.mm:%d %s", __LINE__, __PRETTY_FUNCTION__);
 	return  [self initWithPath: image.completePath
                               : 0
                               : 1
@@ -5759,7 +5756,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         patientPosition = [[dcmObject attributeValueWithName:@"PatientPosition"] retain];
     }
     
-    if ([dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"]) cineRate = [[dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"] floatValue];
+    if ([dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"])
+        cineRate = [[dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"] floatValue];
     
     if (!cineRate && [dcmObject attributeValueWithName:@"CineRate"])
         cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue];
@@ -5981,7 +5979,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         savedWW = (int)[[dcmObject attributeValueWithName:@"WindowWidth"] floatValue];
     
     if (savedWW < 0)
-        savedWW =-savedWW;
+        savedWW = -savedWW;
     
     // rescale type
     self.rescaleType = [dcmObject attributeValueWithName:@"RescaleType"];
@@ -6349,9 +6347,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
             [pdfImage addRepresentation: rep];
 
-            NSLog(@"DCMPix.mm:%d %s", __LINE__, __PRETTY_FUNCTION__);
             [self getDataFromNSImage: pdfImage];
-            NSLog(@"DCMPix.mm:%d %s", __LINE__, __PRETTY_FUNCTION__);
             
             [self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
             
@@ -6632,10 +6628,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             {
                 NSString *value;
                 
-                if (preferredDate == nil && (value = [[dcmObject attributeValueWithName: [priority objectAtIndex: v]] dateString])) preferredDate = value;
+                if (preferredDate == nil && (value = [[dcmObject attributeValueWithName: [priority objectAtIndex: v]] dateString]))
+                    preferredDate = value;
+
                 v++;
                 
-                if (preferredTime == nil && (value = [[dcmObject attributeValueWithName: [priority objectAtIndex: v]] timeString])) preferredTime = value;
+                if (preferredTime == nil && (value = [[dcmObject attributeValueWithName: [priority objectAtIndex: v]] timeString]))
+                    preferredTime = value;
+
                 v++;
             }
             
@@ -7526,7 +7526,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 if (numberOfFrames <= 1)
                     [self clearCachedDCMFrameworkFiles];
 			}
-            
             @catch ( NSException *e)
 			{
 				NSLog( @"CheckLoadIn Exception");
@@ -7629,12 +7628,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				{
 					// NIfTI support developed by Zack Mahdavi at the Center for Neurological Imaging, a division of Harvard Medical School
 					// For more information: http://cni.bwh.harvard.edu/
-					// For questions or suggestions regarding NIfTI integration in OsiriX, please contact zmahdavi@bwh.harvard.edu
-					long			totSize;
-					struct nifti_1_header  *NIfTI;
+					// For questions or suggestions regarding NIfTI integration, please contact zmahdavi@bwh.harvard.edu
+					long totSize;
+					struct nifti_1_header *NIfTI;
 					nifti_image *nifti_imagedata;
-					NSData			*fileData;
-					BOOL			swapByteOrder = NO;
+					NSData *fileData;
+					BOOL swapByteOrder = NO;
 					
                     NIfTI = (nifti_1_header *) nifti_read_header([srcFile UTF8String], nil, 0);
                     
@@ -7850,7 +7849,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						}
 						
 						// Set up origins for nifti file.
-						//   - This portion tells OsiriX which view is active for the image.  This allows OsiriX to determine whether the 
+						//   - This portion tells us which view is active for the image.  This allows us to determine whether the 
 						//	   image is axial, sagittal, or coronal.  
 						// Grab orientations for i, j, and k axes based on either qform or sform matrices.
 						int icod, jcod, kcod;
@@ -8266,7 +8265,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						while (TIFFReadDirectory(tif))
 							count++;
 						
-						if (count != 1) USECUSTOMTIFF = YES;
+						if (count != 1)
+                            USECUSTOMTIFF = YES;
 						
 						TIFFClose(tif);
 					}

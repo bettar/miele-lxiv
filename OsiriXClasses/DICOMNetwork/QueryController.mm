@@ -957,7 +957,7 @@ extern "C"
     if (autoQRInstances.count >= MAXINSTANCE)
     {
         NSRunCriticalAlertPanel(NSLocalizedString( @"Create Auto QR Instance", nil),
-                                NSLocalizedString(@"Too many Auto QR Instances already exist.", nil),
+                                NSLocalizedString( @"Too many Auto QR Instances already exist.", nil),
                                 NSLocalizedString( @"OK", nil),
                                 nil,
                                 nil);

@@ -37,6 +37,8 @@
 
 #define localDatabasePaths_a_KEY    @"localDatabasePaths"           // It also has I.B. binding. Array of dictionaries: "Path" "Description"
 
+#define DEFAULT_FolderSizeForDB     10000
+#define FolderSizeForDB_i_KEY       @"DefaultFolderSizeForDB"
 
 // /////////////////////////////////////////////////////////////////////////////
 // Security scoped bookmarks

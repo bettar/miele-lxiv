@@ -328,7 +328,6 @@ char* DCMreplaceInvalidCharacter( char* str ) {
     else if( [characterSet isEqualToString:@"ISO IR 166"]) encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingISOLatinThai);
 	else if( [characterSet isEqualToString:@"GB18030"])    encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingGB_18030_2000);
 	else if( [characterSet isEqualToString:@"ISO IR 192"]) encoding = NSUTF8StringEncoding;
-	else if( [characterSet isEqualToString:@"ISO IR 13"])  encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingMacJapanese);
 	else if( [characterSet isEqualToString:@"ISO IR 6"])   encoding = NSISOLatin1StringEncoding;
     else if( [characterSet isEqualToString:@"ISO IR 13"])  encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingMacJapanese);
     else if( [characterSet isEqualToString:@"ISO IR 58"])  encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingISO_2022_CN);
@@ -345,7 +344,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
             NSArray *multipleEncoding = [characterSet componentsSeparatedByString:@"\\"];
             if( [multipleEncoding count] > 1)
             {
-                NSLog( @"**** error: multiple encoding in %s : %@", __PRETTY_FUNCTION__, characterSet);
+                NSLog( @"**** error: multiple encodings in %s : %@", __PRETTY_FUNCTION__, characterSet);
                 return [DCMCharacterSet encodingForDICOMCharacterSet: [multipleEncoding objectAtIndex: 0]];
             }
         }

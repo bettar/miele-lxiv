@@ -920,7 +920,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject:@"1" forKey:@"dontDeleteStudiesWithComments"];
 	[defaultValuesDic setObject:@"1" forKey:@"displaySamePatientWithColorBackground"];
 	[defaultValuesDic setObject:@"Exported Series" forKey:@"default2DViewerSeriesName"];
-	[defaultValuesDic setObject:@"10000" forKey:@"DefaultFolderSizeForDB"];
+	[defaultValuesDic setObject:@(DEFAULT_FolderSizeForDB) forKey:FolderSizeForDB_i_KEY];
 	[defaultValuesDic setObject:@"10000" forKey:@"maxNumberOfFilesForCheckIncoming"];
 	[defaultValuesDic setObject:@"0" forKey:@"useSoundexForName"];
 	[defaultValuesDic setObject:@"1" forKey:@"printAt100%Minimum"];

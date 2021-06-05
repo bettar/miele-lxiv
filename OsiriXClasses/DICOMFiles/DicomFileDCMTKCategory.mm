@@ -310,7 +310,7 @@ extern NSRecursiveLock *Papyrus_Lock;
     const char *string = NULL;
     if (fileformat.getMetaInfo()->findAndGetString(DCM_TransferSyntaxUID, string, OFFalse).good() &&
         string != NULL &&
-        [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] isEqualToString:@"1.2.840.10008.1.2.4.100"])
+        [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] isEqualToString:@(UID_MPEG2MainProfileAtMainLevelTransferSyntax)])
     {
         fileType = [@"DICOMMPEG2" retain];
     }
@@ -546,7 +546,7 @@ extern NSRecursiveLock *Papyrus_Lock;
     [dicomElements setObject:Modality forKey:@"modality"];
     
     
-    //Acquistion Date
+    //Acquisition Date
     NSString *studyDate = nil;
     if (dataset->findAndGetString(DCM_AcquisitionDate, string, OFFalse).good() && string != NULL && strlen( string) > 0)
         studyDate = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
@@ -807,7 +807,7 @@ extern NSRecursiveLock *Papyrus_Lock;
     if (sopClassUID != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: sopClassUID])
         self.serieID = [NSString stringWithFormat:@"%@ %@", self.serieID , sopClassUID];
     
-    //Segregate by TE  values
+    //Segregate by TE values
     if (echoTime != nil && [self splitMultiEchoMR])
         self.serieID = [NSString stringWithFormat:@"%@ TE-%@", self.serieID , echoTime];
         
@@ -978,13 +978,13 @@ extern NSRecursiveLock *Papyrus_Lock;
         else
             NSLog(@"*** NoOfFrames != sliceLocationArray.count for MR/CT/US multiframe sliceLocation computation (%d, %d)", (int)NoOfFrames, (int)sliceLocationArray.count);
     }
+
     if (imageCardiacTriggerArray.count)
     {
         if (NoOfFrames == imageCardiacTriggerArray.count)
             [dicomElements setObject: imageCardiacTriggerArray forKey:@"imageCommentPerFrame"];
         else
             NSLog(@"*** NoOfFrames != imageCardiacTriggerArray.count for MR/CT multiframe image type frame computation (%d, %d)", (int)NoOfFrames, (int)imageCardiacTriggerArray.count);
-        
     }
     
     // Is it PDF DICOM file?

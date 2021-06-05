@@ -531,8 +531,7 @@ void signal_EXC(int sig_num)
 			for ( NSString *dateString in dateArray ) {
 				DCMCalendarDate *dcmDate = [DCMCalendarDate dicomDate:dateString];
 				if (dcmDate )
-					[dates addObject:dcmDate];
-				
+					[dates addObject:dcmDate];				
 			}
 		}
 		position += length;
@@ -570,8 +569,8 @@ void signal_EXC(int sig_num)
 
 - (NSMutableArray *)nextTimesWithLength:(int)length
 {
-	if (DCMDEBUG)
-		NSLog(@"%s, length: %d", __FUNCTION__, length);
+//	if (DCMDEBUG)
+//		NSLog(@"%s, length: %d", __FUNCTION__, length);
 
     NSException *exception = [self testForLength:length];
 
@@ -977,7 +976,6 @@ void signal_EXC(int sig_num)
 {
     [transferSyntaxInUse release];
 	transferSyntaxInUse = [[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] retain];
-	NSException* exception;
 	position = 128;
 	int group;
 	int element;
@@ -1084,6 +1082,7 @@ void signal_EXC(int sig_num)
 		}
 	}
 	NSLog(@"Not a valid DICOM file");
+    NSException* exception;
 	@try {
         exception = [NSException exceptionWithName:@"DCMNotDicomError"
                                             reason:@"File is not DICOM"
@@ -1091,7 +1090,7 @@ void signal_EXC(int sig_num)
         [exception raise];
 	}
     @catch( NSException *localException) {
-		NSLog(@"ERROR:%@  REASON:%@", [exception name], [exception reason]);
+		NSLog(@"ERROR:%@  REASON:%@", [localException name], [localException reason]);
 	}
     
 	return NO;			
@@ -1110,7 +1109,7 @@ void signal_EXC(int sig_num)
                             [NSNumber numberWithInt:[dicomData length]],
                             nil];
 	
-		NSDictionary *userInfo =  [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
 		if (DCMDEBUG)
 			NSLog(@"error Info: %@", [userInfo description]);
         

@@ -32,7 +32,7 @@ static DCMTagDictionary *sharedTagDictionary;
 		if (path == nil)
             NSLog(@"Cannot find tagDictionary");
 
-        sharedTagDictionary  = [[DCMTagDictionary alloc] initWithContentsOfFile:path];
+        sharedTagDictionary = [[DCMTagDictionary alloc] initWithContentsOfFile:path];
 		
 //		NSLog( @"%@", sharedTagDictionary);
 		

@@ -639,9 +639,9 @@ static int gTotalN2ManagedObjectContext = 0;
     
     NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = e;
-	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
+	req.predicate = p ? p : [NSPredicate predicateWithValue:YES];
     req.sortDescriptors = sortDescriptors;
-    if( fetchLimit>0)
+    if (fetchLimit>0)
         req.fetchLimit = fetchLimit;
     
     [self.managedObjectContext lock];

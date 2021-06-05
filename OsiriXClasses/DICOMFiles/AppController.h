@@ -136,7 +136,7 @@ extern AppController* OsiriX;
 + (BOOL) willExecutePlugin:(id) filter;
 
 + (BOOL) hasAtLeastMacOS_Mavericks;     // 10.9
-+ (BOOL) notValidatedWithThisMacOS;       // > 11.0
++ (BOOL) validatedWithThisMacOS;        // <= 11.4
 
 +(NSString*)UID;
 
@@ -157,7 +157,7 @@ extern AppController* OsiriX;
 + (void)checkForHTMLTemplates __deprecated;
 
 #pragma mark - Server management
-- (void) terminate :(id) sender; /**< Terminate listener (Q/R SCP) */
+- (void) terminate:(id) sender; /**< Terminate listener (Q/R SCP) */
 - (void) restartSTORESCP; /**< Restart listener (Q/R SCP) */
 - (void) startSTORESCP:(id) sender; /**< Start listener (Q/R SCP) */
 - (void) startSTORESCPTLS:(id) sender; /**< Start TLS listener (Q/R SCP) */

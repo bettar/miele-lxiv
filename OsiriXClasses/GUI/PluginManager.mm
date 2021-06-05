@@ -1528,7 +1528,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 			{
 				NSString *currVersion = [installedPlugin objectForKey:@"version"];
 				NSString *onlineVersion = [onlinePlugin objectForKey:@"version"];
-                NSLog(@"currVersion:%@, onlineVersion:%@", currVersion, onlineVersion);
+                //NSLog(@"currVersion:%@, onlineVersion:%@", currVersion, onlineVersion);
 				
 				if (currVersion &&
                     onlineVersion &&

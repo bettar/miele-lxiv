@@ -524,11 +524,12 @@ static volatile BOOL waitForRunningProcess = NO;
 {
 	if (DefaultFolderSizeForDB == 0)
 	{
-		DefaultFolderSizeForDB = [[NSUserDefaults standardUserDefaults] integerForKey: @"DefaultFolderSizeForDB"];
-		if (DefaultFolderSizeForDB == 0)
+		DefaultFolderSizeForDB = [[NSUserDefaults standardUserDefaults] integerForKey: FolderSizeForDB_i_KEY];
+
+        if (DefaultFolderSizeForDB == 0)
 		{
-			DefaultFolderSizeForDB = 10000;
-			[[NSUserDefaults standardUserDefaults] setInteger: DefaultFolderSizeForDB forKey: @"DefaultFolderSizeForDB"];
+			DefaultFolderSizeForDB = DEFAULT_FolderSizeForDB;
+			[[NSUserDefaults standardUserDefaults] setInteger: DefaultFolderSizeForDB forKey: FolderSizeForDB_i_KEY];
 		}
 	}
 	
@@ -3376,7 +3377,7 @@ static NSConditionLock *threadLock = nil;
 	
 	description = [description stringByAppendingFormat: NSLocalizedString(@" / Result = %@ studies (%@ images)", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt: [outlineViewArray count]]], [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:images]]];
 	
-	outlineViewArray = [outlineViewArray retain];
+	outlineViewArray = [outlineViewArray retain]; // ???
 	
 //	[_database unlock];
 	
@@ -3745,7 +3746,7 @@ static NSConditionLock *threadLock = nil;
     
 	if ([item isDeleted])
 	{
-        if ([item isDeleted])
+        if ([item isDeleted]) // Check again ?
             NSLog( @"----- isDeleted - childrenArray : we have to refresh the outlineView...");
         
         if ([item isDeleted] || item == nil)
@@ -8277,7 +8278,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		if ([matrixViewArray count] > [[oMatrix selectedCell] tag])
 		{
-			NSManagedObject		*curObj = [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]];
+			NSManagedObject *curObj = [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]];
 			
 			if ([[curObj valueForKey:@"type"] isEqualToString:@"Image"])
 			{ 
@@ -9385,7 +9386,7 @@ static BOOL withReset = NO;
 			if ([cell tag] >= [matrixViewArray count])
                 return;
 			
-			NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+			NSManagedObject *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 			if ([[aFile valueForKey:@"type"] isEqualToString:@"Series"] &&
                 [[[aFile valueForKey:@"images"] allObjects] count] == 1 &&
                 [[[[[aFile valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1) // multi frame image that is directly selected
@@ -10378,7 +10379,7 @@ static BOOL withReset = NO;
                 {
                     // only do it on a delayed basis
                     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
-                    if (now-_timeIntervalOfLastLoadIconsDisplayIcons > 0.5)
+                    if (now - _timeIntervalOfLastLoadIconsDisplayIcons > 0.5)
                     {
                         _timeIntervalOfLastLoadIconsDisplayIcons = now;
                         @synchronized( previewPixThumbnails)
@@ -12729,7 +12730,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 					
 						if (p1 && p2 && [ViewerController computeIntervalForDCMPix: p1 And: p2] < 0)
 						{
-							//Inverse the array
+							//Invert the array
 							a = [[a reverseObjectEnumerator] allObjects];
 							
 							preFlippedData = YES;
@@ -12833,7 +12834,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
                                                     NSLocalizedString(@"Continue",nil), nil, nil,
                                                     N2LocalizedSingularPluralCount( [loadList count] - [viewerPix[0] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil)));
 					}
-					//opening images refered to in viewerPix[0] in the adequate viewer
+					//opening images referred to in viewerPix[0] in the adequate viewer
 					
                     [DCMView setDontListenToSyncMessage: YES];
                     
@@ -13657,12 +13658,12 @@ constrainSplitPosition:(CGFloat)proposedPosition
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer
 {
-	return [self viewerDICOMInt:  movieViewer dcmFile: selectedLines viewer: viewer tileWindows: YES protocol: nil];
+	/*return*/ [self viewerDICOMInt:  movieViewer dcmFile: selectedLines viewer: viewer tileWindows: YES protocol: nil];
 }
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer tileWindows: (BOOL) tileWindows
 {
-	return [self viewerDICOMInt:  movieViewer dcmFile: selectedLines viewer: viewer tileWindows: tileWindows protocol: nil];
+	/*return*/ [self viewerDICOMInt:  movieViewer dcmFile: selectedLines viewer: viewer tileWindows: tileWindows protocol: nil];
 }
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer tileWindows: (BOOL) tileWindows protocol: (NSDictionary*) protocol
@@ -13856,7 +13857,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 
 - (void)newViewerDICOM: (id)sender
 {
@@ -13911,7 +13912,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
     [self closeWaitWindowIfNecessary];
 }
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 
 - (void)viewerDICOMMergeSelection: (id)sender
 {

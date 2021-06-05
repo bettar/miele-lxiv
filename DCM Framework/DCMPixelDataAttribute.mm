@@ -693,7 +693,7 @@ void info_callback(const char *msg, void *a) {
 
     if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"NumberofFrames"]])
     {
-		_numberOfFrames = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"NumberofFrames"]] value] intValue]; // Why not @"NumberOfFrames" ?
+		_numberOfFrames = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"NumberofFrames"]] value] intValue]; // Why not @"NumberOfFrames" ? Because that's how it's spelled in 'nameDictionary.plist
 #if 1 // Issue i26
         if (_numberOfFrames == -1)
             _numberOfFrames = 1;
@@ -746,7 +746,6 @@ void info_callback(const char *msg, void *a) {
 			[dicomData nextDataWithLength:vl];
 		}
 	}
-	
 }
 
 - (void)addFrame:(NSMutableData *)data{
@@ -1840,7 +1839,7 @@ void info_callback(const char *msg, void *a) {
 		[self createFrames];
 	if (!_isDecoded)
 	{
-		for (int i = 0; i < [_values count] ;i++)
+		for (int i = 0; i < [_values count]; i++)
 			[self replaceFrameAtIndex:i withFrame:[self decodeFrameAtIndex:i]];
 	}
     
@@ -1856,7 +1855,7 @@ void info_callback(const char *msg, void *a) {
 		for ( NSString *key in attributes )
         {
 			DCMAttribute *attr = [attributes objectForKey:key];
-			if ( [(DCMAttributeTag *)[attr attrTag] group] == 0x0028 &&
+			if ([(DCMAttributeTag *)[attr attrTag] group] == 0x0028 &&
                 ([(DCMAttributeTag *)[attr attrTag] element] > 0x1100 &&
                  [(DCMAttributeTag *)[attr attrTag] element] <= 0x1223))
             {
@@ -3431,9 +3430,10 @@ void info_callback(const char *msg, void *a) {
     return subData;
 }
 
-- (void)createFrames{
-	
-	if (!_framesCreated){
+- (void)createFrames
+{
+	if (!_framesCreated)
+    {
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		if (DCMDEBUG)
 			NSLog(@"Decode Data");

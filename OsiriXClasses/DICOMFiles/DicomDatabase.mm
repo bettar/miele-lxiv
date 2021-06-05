@@ -400,7 +400,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 -(NSManagedObjectModel*)managedObjectModel {
 	static NSManagedObjectModel* managedObjectModel = NULL;
 	if (!managedObjectModel)
-		managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent: DicomDatabase.modelName]]];
+		managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent: DicomDatabase.modelName]]]; // OsiriXDB_DataModel.momd
     return managedObjectModel;
 }
 
@@ -670,7 +670,8 @@ static DicomDatabase* activeLocalDatabase = nil;
     return;
 }
 
--(void)observeIndependentDatabaseNotification:(NSNotification*)notification {
+-(void)observeIndependentDatabaseNotification:(NSNotification*)notification
+{
     if (![NSThread isMainThread])
         [self performSelectorOnMainThread:@selector(observeIndependentDatabaseNotification:) withObject:notification waitUntilDone:NO];
     else
@@ -1916,9 +1917,9 @@ static BOOL protectionAgainstReentry = NO;
 		
 		NSDate *defaultDate = [NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil];
 		
-		DicomStudy *study = nil;
-		DicomSeries *seriesTable = nil;
-		Dicom_Image *image = nil;
+		DicomStudy *studySqlTable = nil;
+		DicomSeries *seriesSqlTable = nil;
+		Dicom_Image *imageSqlTable = nil;
 		NSMutableArray *studiesArrayStudyInstanceUID = [[studiesArray valueForKey:@"studyInstanceUID"] mutableCopy];
 		NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil;
 		BOOL newObject = NO;
@@ -2030,10 +2031,10 @@ static BOOL protectionAgainstReentry = NO;
                         if ([[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] &&
                             [[curDict objectForKey: @"patientUID"] compare: curPatientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                         {
-                            if ([[study valueForKey: @"modality"] isEqualToString: @"SR"] ||
-                                [[study valueForKey: @"modality"] isEqualToString: @"OT"])
+                            if ([[studySqlTable valueForKey: @"modality"] isEqualToString: @"SR"] ||
+                                [[studySqlTable valueForKey: @"modality"] isEqualToString: @"OT"])
                             {
-                                [study setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
+                                [studySqlTable setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
                             }
                         }
                         else
@@ -2041,7 +2042,7 @@ static BOOL protectionAgainstReentry = NO;
                             /* ******************************************/
                             /* ********** Find study object *************/
                             // match: StudyInstanceUID and patientUID (see patientUID function in dicomFile.m, based on patientName, patientID and patientBirthDate)
-                            study = nil;
+                            studySqlTable = nil;
                             curSerieID = nil;
                             
                             NSUInteger index = [studiesArrayStudyInstanceUID indexOfObject:[curDict objectForKey: @"studyID"]];
@@ -2052,7 +2053,7 @@ static BOOL protectionAgainstReentry = NO;
                             {
                                 if ([[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) // We do this double check only for DICOM files.
                                 {
-                                    study = [studiesArray objectAtIndex: index];
+                                    studySqlTable = [studiesArray objectAtIndex: index];
                                 }
                                 else
                                 {
@@ -2073,7 +2074,7 @@ static BOOL protectionAgainstReentry = NO;
                                         tstudy.patientUID = [curDict objectForKey: @"patientUID"];
                                     
                                     if ([[curDict objectForKey: @"patientUID"] compare:tstudy.patientUID options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] == NSOrderedSame)
-                                        study = tstudy;
+                                        studySqlTable = tstudy;
                                     else
                                     {
                                         // Are there multiple studies with same studyInstanceUID ???
@@ -2085,11 +2086,11 @@ static BOOL protectionAgainstReentry = NO;
                                             if ([uid isEqualToString: curUID])
                                             {
                                                 if ([[curDict objectForKey: @"patientUID"] compare:[[studiesArray objectAtIndex: i] patientUID] options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] == NSOrderedSame)
-                                                        study = [studiesArray objectAtIndex:i];
+                                                        studySqlTable = [studiesArray objectAtIndex:i];
                                             }
                                         }
                                         
-                                        if (study == nil)
+                                        if (studySqlTable == nil)
                                         {
                                             NSLog( @"-*-*-*-*-* same studyUID (%@), but not same patientUID (%@ versus %@)",
                                                   [curDict objectForKey: @"studyID"],
@@ -2097,24 +2098,24 @@ static BOOL protectionAgainstReentry = NO;
                                                   [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
                                             
                                             if (self.hasPotentiallySlowDataAccess) // It's a CD... be less restrictive !
-                                                study = tstudy;
+                                                studySqlTable = tstudy;
                                         }
                                     }
                                 }
                             }
                             
-                            if (study == nil)
+                            if (studySqlTable == nil)
                             {
                                 // Fields
-                                study = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:self.managedObjectContext];
+                                studySqlTable = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:self.managedObjectContext];
                                 
                                 newObject = YES;
                                 newStudy = YES;
                                 
-                                study.dateAdded = today;
+                                studySqlTable.dateAdded = today;
                                 
-                                [newStudies addObject: study];
-                                [studiesArray addObject: study];
+                                [newStudies addObject: studySqlTable];
+                                [studiesArray addObject: studySqlTable];
                                 if ([curDict objectForKey: @"studyID"])
                                     [studiesArrayStudyInstanceUID addObject: [curDict objectForKey: @"studyID"]];
                                 else
@@ -2128,72 +2129,72 @@ static BOOL protectionAgainstReentry = NO;
                             
                             if (newObject || inParseExistingObject)
                             {
-                                study.studyInstanceUID = [curDict objectForKey: @"studyID"];
-                                study.accessionNumber = [curDict objectForKey: @"accessionNumber"];
-                                study.modality = study.modalities;
-                                study.dateOfBirth = [curDict objectForKey: @"patientBirthDate"];
-                                study.patientSex = [curDict objectForKey: @"patientSex"];
-                                study.patientID = [curDict objectForKey: @"patientID"];
-                                study.name = [curDict objectForKey: @"patientName"];
-                                study.patientUID = [curDict objectForKey: @"patientUID"];
-                                study.id = [curDict objectForKey: @"studyNumber"];
+                                studySqlTable.studyInstanceUID = [curDict objectForKey: @"studyID"];
+                                studySqlTable.accessionNumber = [curDict objectForKey: @"accessionNumber"];
+                                studySqlTable.modality = studySqlTable.modalities;
+                                studySqlTable.dateOfBirth = [curDict objectForKey: @"patientBirthDate"];
+                                studySqlTable.patientSex = [curDict objectForKey: @"patientSex"];
+                                studySqlTable.patientID = [curDict objectForKey: @"patientID"];
+                                studySqlTable.name = [curDict objectForKey: @"patientName"];
+                                studySqlTable.patientUID = [curDict objectForKey: @"patientUID"];
+                                studySqlTable.id = [curDict objectForKey: @"studyNumber"];
                                 
                                 if (([DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] || [DCMAbstractSyntaxUID isPDF: SOPClassUID]) && inParseExistingObject)
                                 {
                                     if ([[curDict objectForKey: @"studyDescription"] length] && [[curDict objectForKey: @"studyDescription"] isEqualToString: @"unnamed"] == NO)
-                                        study.studyName = [curDict objectForKey: @"studyDescription"];
+                                        studySqlTable.studyName = [curDict objectForKey: @"studyDescription"];
 
                                     if ([[curDict objectForKey: @"referringPhysiciansName"] length] > 0)
-                                        study.referringPhysician = [curDict objectForKey: @"referringPhysiciansName"];
+                                        studySqlTable.referringPhysician = [curDict objectForKey: @"referringPhysiciansName"];
 
                                     if ([[curDict objectForKey: @"performingPhysiciansName"] length] > 0)
-                                        study.performingPhysician = [curDict objectForKey: @"performingPhysiciansName"];
+                                        studySqlTable.performingPhysician = [curDict objectForKey: @"performingPhysiciansName"];
 
                                     if ([[curDict objectForKey: @"institutionName"] length] > 0)
-                                        study.institutionName = [curDict objectForKey: @"institutionName"];
+                                        studySqlTable.institutionName = [curDict objectForKey: @"institutionName"];
                                 }
                                 else
                                 {
-                                    study.studyName = [curDict objectForKey: @"studyDescription"];
-                                    study.referringPhysician = [curDict objectForKey: @"referringPhysiciansName"];
-                                    study.performingPhysician = [curDict objectForKey: @"performingPhysiciansName"];
-                                    study.institutionName = [curDict objectForKey: @"institutionName"];
+                                    studySqlTable.studyName = [curDict objectForKey: @"studyDescription"];
+                                    studySqlTable.referringPhysician = [curDict objectForKey: @"referringPhysiciansName"];
+                                    studySqlTable.performingPhysician = [curDict objectForKey: @"performingPhysiciansName"];
+                                    studySqlTable.institutionName = [curDict objectForKey: @"institutionName"];
                                 }
                                 
-                                if (study.studyName.length == 0 || [study.studyName isEqualToString: @"unnamed"])
-                                    study.studyName = [curDict objectForKey: @"seriesDescription"];
+                                if (studySqlTable.studyName.length == 0 || [studySqlTable.studyName isEqualToString: @"unnamed"])
+                                    studySqlTable.studyName = [curDict objectForKey: @"seriesDescription"];
                                 
                                 //need to know if is DICOM so only DICOM is queried for Q/R
                                 if ([curDict objectForKey: @"hasDICOM"])
-                                    study.hasDICOM = [curDict objectForKey: @"hasDICOM"];
+                                    studySqlTable.hasDICOM = [curDict objectForKey: @"hasDICOM"];
                                 
                                 if (newObject)
-                                    [self checkForExistingReportForStudy:study];
+                                    [self checkForExistingReportForStudy:studySqlTable];
                             }
                             else
                             {
-                                if ([[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
-                                    study.modality = [curDict objectForKey: @"modality"];
+                                if ([[studySqlTable valueForKey: @"modality"] isEqualToString: @"SR"] || [[studySqlTable valueForKey: @"modality"] isEqualToString: @"OT"])
+                                    studySqlTable.modality = [curDict objectForKey: @"modality"];
                                 
-                                if ([study valueForKey: @"studyName"] == nil ||
-                                    [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] ||
-                                    [[study valueForKey: @"studyName"] isEqualToString: @""])
-                                    study.studyName = [curDict objectForKey: @"studyDescription"];
+                                if ([studySqlTable valueForKey: @"studyName"] == nil ||
+                                    [[studySqlTable valueForKey: @"studyName"] isEqualToString: @"unnamed"] ||
+                                    [[studySqlTable valueForKey: @"studyName"] isEqualToString: @""])
+                                    studySqlTable.studyName = [curDict objectForKey: @"studyDescription"];
 
-                                if (study.studyName.length == 0 || [study.studyName isEqualToString: @"unnamed"])
-                                    study.studyName = [curDict objectForKey: @"seriesDescription"];
+                                if (studySqlTable.studyName.length == 0 || [studySqlTable.studyName isEqualToString: @"unnamed"])
+                                    studySqlTable.studyName = [curDict objectForKey: @"seriesDescription"];
                             }
                             
                             if ([curDict objectForKey: @"studyDate"] && [[curDict objectForKey: @"studyDate"] isEqualToDate: defaultDate] == NO)
                             {
-                                if ([study valueForKey: @"date"] == 0L || [[study valueForKey: @"date"] isEqualToDate: defaultDate] || [[study valueForKey: @"date"] timeIntervalSinceDate: [curDict objectForKey: @"studyDate"]] >= 0)
-                                    [study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
+                                if ([studySqlTable valueForKey: @"date"] == 0L || [[studySqlTable valueForKey: @"date"] isEqualToDate: defaultDate] || [[studySqlTable valueForKey: @"date"] timeIntervalSinceDate: [curDict objectForKey: @"studyDate"]] >= 0)
+                                    [studySqlTable setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
                             }
                             
                             curStudyID = [curDict objectForKey: @"studyID"];
                             curPatientUID = [curDict objectForKey: @"patientUID"];
                             
-                            [modifiedStudiesArray addObject: study];
+                            [modifiedStudiesArray addObject: studySqlTable];
                         }
                         
                         int NoOfSeries = [[curDict objectForKey: @"numberOfSeries"] intValue];
@@ -2210,45 +2211,45 @@ static BOOL protectionAgainstReentry = NO;
                                 /********************************************/
                                 /*********** Find series object *************/
                                 
-                                NSArray *seriesArray = [[study valueForKey:@"series"] allObjects];
+                                NSArray *seriesArray = [[studySqlTable valueForKey:@"series"] allObjects];
                                 
                                 NSUInteger index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]];
                                 if (index == NSNotFound)
                                 {
                                     // Fields
-                                    seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:self.managedObjectContext];
-                                    [seriesTable setValue:today forKey:@"dateAdded"];
+                                    seriesSqlTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:self.managedObjectContext];
+                                    [seriesSqlTable setValue:today forKey:@"dateAdded"];
                                     
                                     newObject = YES;
                                 }
                                 else
                                 {
-                                    seriesTable = [seriesArray objectAtIndex: index];
+                                    seriesSqlTable = [seriesArray objectAtIndex: index];
                                     newObject = NO;
                                 }
                                 
                                 if (newObject || inParseExistingObject)
                                 {
                                     if ([curDict objectForKey: @"seriesDICOMUID"])
-                                        [seriesTable setValue:[curDict objectForKey: @"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
+                                        [seriesSqlTable setValue:[curDict objectForKey: @"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
                                     
                                     if ([curDict objectForKey: @"SOPClassUID"])
-                                        [seriesTable setValue:[curDict objectForKey: @"SOPClassUID"] forKey:@"seriesSOPClassUID"];
+                                        [seriesSqlTable setValue:[curDict objectForKey: @"SOPClassUID"] forKey:@"seriesSOPClassUID"];
                                     
-                                    [seriesTable setValue:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] forKey:@"seriesInstanceUID"];
-                                    [seriesTable setValue:[curDict objectForKey: [@"seriesDescription" stringByAppendingString:SeriesNum]] forKey:@"name"];
-                                    [seriesTable setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
-                                    [seriesTable setValue:[curDict objectForKey: [@"seriesNumber" stringByAppendingString:SeriesNum]] forKey:@"id"];
-                                    [seriesTable setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
-                                    [seriesTable setValue:[curDict objectForKey: @"protocolName"] forKey:@"seriesDescription"];
+                                    [seriesSqlTable setValue:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] forKey:@"seriesInstanceUID"];
+                                    [seriesSqlTable setValue:[curDict objectForKey: [@"seriesDescription" stringByAppendingString:SeriesNum]] forKey:@"name"];
+                                    [seriesSqlTable setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
+                                    [seriesSqlTable setValue:[curDict objectForKey: [@"seriesNumber" stringByAppendingString:SeriesNum]] forKey:@"id"];
+                                    [seriesSqlTable setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
+                                    [seriesSqlTable setValue:[curDict objectForKey: @"protocolName"] forKey:@"seriesDescription"];
                                     
                                     // Relations
-                                    [seriesTable setValue:study forKey:@"study"];
+                                    [seriesSqlTable setValue:studySqlTable forKey:@"study"];
                                     // If a study has an SC or other non primary image  series. May need to change modality to true modality
-                                    if (([[study valueForKey:@"modality"] isEqualToString:@"OT"] || [[study valueForKey:@"modality"] isEqualToString:@"SC"])
+                                    if (([[studySqlTable valueForKey:@"modality"] isEqualToString:@"OT"] || [[studySqlTable valueForKey:@"modality"] isEqualToString:@"SC"])
                                         && !([[curDict objectForKey: @"modality"] isEqualToString:@"OT"] || [[curDict objectForKey: @"modality"] isEqualToString:@"SC"]))
                                     {
-                                        [study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
+                                        [studySqlTable setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
                                     }
                                 }
                                 
@@ -2262,14 +2263,14 @@ static BOOL protectionAgainstReentry = NO;
                             if (dataDirPath && [newFile hasPrefix:dataDirPath])
                                 local = YES;
                             
-                            NSArray	*imagesArray = [[seriesTable valueForKey:@"images"] allObjects];
+                            NSArray	*imagesArray = [[seriesSqlTable valueForKey:@"images"] allObjects];
                             int numberOfFrames = [[curDict objectForKey: @"numberOfFrames"] intValue];
                             if (numberOfFrames == 0)
                                 numberOfFrames = 1;
                             
                             for (int f = 0 ; f < numberOfFrames; f++)
                             {
-                                image = nil;
+                                imageSqlTable = nil;
                                 
                                 NSString *SOPUID = [curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]];
                                 
@@ -2279,20 +2280,20 @@ static BOOL protectionAgainstReentry = NO;
                                     {
                                         if ([ii.sopInstanceUID isEqualToString: SOPUID] && [ii.frameID intValue] == f)
                                         {
-                                            image = ii;
+                                            imageSqlTable = ii;
                                             break;
                                         }
                                     }
                                 }
                                 
-                                if (image)
+                                if (imageSqlTable)
                                 {
                                     // Does this image contain a valid image path? If not replace it, with the new one
-                                    if ([[NSFileManager defaultManager] fileExistsAtPath: [Dicom_Image completePathForLocalPath: [image valueForKey:@"path"] directory:self.dataBaseDirPath]] == YES && inParseExistingObject == NO)
+                                    if ([[NSFileManager defaultManager] fileExistsAtPath: [Dicom_Image completePathForLocalPath: [imageSqlTable valueForKey:@"path"] directory:self.dataBaseDirPath]] == YES && inParseExistingObject == NO)
                                     {
                                         if (local)	// Delete this file, it's already in the DB folder
                                         {
-                                            if ([[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
+                                            if ([[imageSqlTable valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
                                                 [[NSFileManager defaultManager] removeItemAtPath: newFile error:nil];
                                         }
                                         
@@ -2302,9 +2303,9 @@ static BOOL protectionAgainstReentry = NO;
                                     {
                                         newObject = YES;
                                         
-                                        NSString *imPath = [Dicom_Image completePathForLocalPath: [image valueForKey:@"path"] directory:self.dataBaseDirPath];
+                                        NSString *imPath = [Dicom_Image completePathForLocalPath: [imageSqlTable valueForKey:@"path"] directory:self.dataBaseDirPath];
                                         
-                                        if ([[image valueForKey:@"inDatabaseFolder"] boolValue] && [imPath isEqualToString: newFile] == NO)
+                                        if ([[imageSqlTable valueForKey:@"inDatabaseFolder"] boolValue] && [imPath isEqualToString: newFile] == NO)
                                         {
                                             if ([[NSFileManager defaultManager] fileExistsAtPath: imPath])
                                                 [[NSFileManager defaultManager] removeItemAtPath: imPath error:nil];
@@ -2313,11 +2314,11 @@ static BOOL protectionAgainstReentry = NO;
                                 }
                                 else
                                 {
-                                    image = [self newObjectForEntity:self.imageEntity];
+                                    imageSqlTable = [self newObjectForEntity:self.imageEntity];
                                     newObject = YES;
                                 }
                                 
-                                [completeAddedImageObjects addObject:image];
+                                [completeAddedImageObjects addObject:imageSqlTable];
                                 
                                 NSString* imagePrivateInformationCreatorUID = [curDict objectForKey:@"PrivateInformationCreatorUID"];
                                 if (imagePrivateInformationCreatorUID.length == 0)
@@ -2327,95 +2328,95 @@ static BOOL protectionAgainstReentry = NO;
                                 if (!completeAddedImagesForImageCreator)
                                     [completeAddedImagesPerCreatorUID setObject:(completeAddedImagesForImageCreator = [NSMutableArray array]) forKey:imagePrivateInformationCreatorUID];
                                 
-                                [completeAddedImagesForImageCreator addObject:image];
+                                [completeAddedImagesForImageCreator addObject:imageSqlTable];
                                 
                                 if (newObject || inParseExistingObject)
                                 {
                                     if (DICOMSR == NO)
                                     {
-                                        [seriesTable setValue:today forKey:@"dateAdded"];
-                                        study.dateAdded = today;
+                                        [seriesSqlTable setValue:today forKey:@"dateAdded"];
+                                        studySqlTable.dateAdded = today;
                                     }
                                     
                                     if (numberOfFrames > 1)
                                     {
-                                        [image setValue: [NSNumber numberWithInt: f] forKey:@"frameID"];
+                                        [imageSqlTable setValue: [NSNumber numberWithInt: f] forKey:@"frameID"];
                                         
-                                        NSString *Modality = [study valueForKey: @"modality"];
+                                        NSString *Modality = [studySqlTable valueForKey: @"modality"];
                                         if (combineProjectionSeries && combineProjectionSeriesMode == 0 && ([Modality isEqualToString:@"MG"] || [Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
                                         {
                                             // *******Combine all CR and DR Modality series in a study into one series
                                             long imageInstance = [[curDict objectForKey: [ @"imageID" stringByAppendingString: SeriesNum]] intValue];
                                             imageInstance *= 10000;
                                             imageInstance += f;
-                                            [image setValue: [NSNumber numberWithLong: imageInstance] forKey:@"instanceNumber"];
+                                            [imageSqlTable setValue: [NSNumber numberWithLong: imageInstance] forKey:@"instanceNumber"];
                                         }
                                         else
                                         {
                                             int instanceNumber = [[curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] intValue];
-                                            [image setValue: [NSNumber numberWithInt: instanceNumber + f] forKey:@"instanceNumber"];
+                                            [imageSqlTable setValue: [NSNumber numberWithInt: instanceNumber + f] forKey:@"instanceNumber"];
                                         }
                                     }
                                     else
-                                        [image setValue: [curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] forKey:@"instanceNumber"];
+                                        [imageSqlTable setValue: [curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] forKey:@"instanceNumber"];
                                     
                                     if (local)
-                                        [image setValue: [newFile lastPathComponent] forKey:@"path"];
+                                        [imageSqlTable setValue: [newFile lastPathComponent] forKey:@"path"];
                                     else
-                                        [image setValue:newFile forKey:@"path"];
+                                        [imageSqlTable setValue:newFile forKey:@"path"];
                                     
-                                    [image setValue:[NSNumber numberWithBool: local] forKey:@"inDatabaseFolder"];
+                                    [imageSqlTable setValue:[NSNumber numberWithBool: local] forKey:@"inDatabaseFolder"];
                                     
-                                    [image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
+                                    [imageSqlTable setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
                                     
-                                    [image setValue:SOPUID forKey:@"sopInstanceUID"];
+                                    [imageSqlTable setValue:SOPUID forKey:@"sopInstanceUID"];
                                     
                                     if ([[curDict objectForKey: @"sliceLocationArray"] count] > f)
-                                        [image setValue: [[curDict objectForKey: @"sliceLocationArray"] objectAtIndex: f] forKey:@"sliceLocation"];
+                                        [imageSqlTable setValue: [[curDict objectForKey: @"sliceLocationArray"] objectAtIndex: f] forKey:@"sliceLocation"];
                                     else
-                                        [image setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
+                                        [imageSqlTable setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
                                     
                                     if ([[curDict objectForKey: @"imageCommentPerFrame"] count] > f)
-                                        [image setValue: [[curDict objectForKey: @"imageCommentPerFrame"] objectAtIndex: f] forKey:@"comment"];
+                                        [imageSqlTable setValue: [[curDict objectForKey: @"imageCommentPerFrame"] objectAtIndex: f] forKey:@"comment"];
 
-                                    [image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
-                                    [image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
+                                    [imageSqlTable setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
+                                    [imageSqlTable setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
                                     
-                                    [image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
-                                    [image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
-                                    [image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
-                                    [image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
+                                    [imageSqlTable setValue:[curDict objectForKey: @"height"] forKey:@"height"];
+                                    [imageSqlTable setValue:[curDict objectForKey: @"width"] forKey:@"width"];
+                                    [imageSqlTable setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
+                                    [imageSqlTable setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
                                     
-                                    [image setThumbnail:[curDict objectForKey:@"NSImageThumbnail"]];
+                                    [imageSqlTable setThumbnail:[curDict objectForKey:@"NSImageThumbnail"]];
                                     
                                     if (importedFiles)
-                                        image.importedFile = @YES;
+                                        imageSqlTable.importedFile = @YES;
                                     else
-                                        image.importedFile = nil;
+                                        imageSqlTable.importedFile = nil;
                                     
                                     if (generatedByOsiriX)
-                                        [image setValue: [NSNumber numberWithBool: generatedByOsiriX] forKey: @"generatedByOsiriX"];
+                                        [imageSqlTable setValue: [NSNumber numberWithBool: generatedByOsiriX] forKey: @"generatedByOsiriX"];
                                     else
-                                        [image setValue: 0L forKey: @"generatedByOsiriX"];
+                                        [imageSqlTable setValue: 0L forKey: @"generatedByOsiriX"];
                                     
                                     if (newObject) {
-                                        [seriesTable setValue: nil forKey: @"windowWidth"];
-                                        [seriesTable setValue: nil forKey: @"windowLevel"];
+                                        [seriesSqlTable setValue: nil forKey: @"windowWidth"];
+                                        [seriesSqlTable setValue: nil forKey: @"windowLevel"];
                                     }
                                     
-                                    [image setValue: [curDict objectForKey: @"modality"]  forKey:@"modality"];
-                                    [study setValue:[study valueForKey:@"modalities"] forKey:@"modality"];
-                                    [seriesTable setValue: nil forKey:@"thumbnail"];
+                                    [imageSqlTable setValue: [curDict objectForKey: @"modality"]  forKey:@"modality"];
+                                    [studySqlTable setValue:[studySqlTable valueForKey:@"modalities"] forKey:@"modality"];
+                                    [seriesSqlTable setValue: nil forKey:@"thumbnail"];
                                     
                                     if (DICOMSR && [curDict objectForKey: @"numberOfROIs"] && [curDict objectForKey: @"referencedSOPInstanceUID"]) // OsiriX ROI SR
                                     {
                                         NSString *s = [curDict objectForKey: @"referencedSOPInstanceUID"];
-                                        [image setValue: s forKey:@"comment"];
-                                        [image setValue: [curDict objectForKey: @"numberOfROIs"] forKey:@"scale"];
+                                        [imageSqlTable setValue: s forKey:@"comment"];
+                                        [imageSqlTable setValue: [curDict objectForKey: @"numberOfROIs"] forKey:@"scale"];
                                     }
                                     
                                     // Relations
-                                    [image setValue:seriesTable forKey:@"series"];
+                                    [imageSqlTable setValue:seriesSqlTable forKey:@"series"];
                                     
                                     if (DICOMSR == NO)
                                     {
@@ -2423,42 +2424,42 @@ static BOOL protectionAgainstReentry = NO;
                                         {
                                             if ([curDict objectForKey: @"commentsAutoFill"])
                                             {
-                                                [seriesTable willChangeValueForKey: commentField];
-                                                [study willChangeValueForKey: commentField];
+                                                [seriesSqlTable willChangeValueForKey: commentField];
+                                                [studySqlTable willChangeValueForKey: commentField];
                                                 
                                                 if (COMMENTSAUTOFILLSeriesLevel)
-                                                    [seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
+                                                    [seriesSqlTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
                                                 
                                                 if (COMMENTSAUTOFILLStudyLevel)
                                                 {
-                                                    if ([[curDict objectForKey: @"commentsAutoFill"] length] > [[study valueForKey: commentField] length])
-                                                        [study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
+                                                    if ([[curDict objectForKey: @"commentsAutoFill"] length] > [[studySqlTable valueForKey: commentField] length])
+                                                        [studySqlTable setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
                                                 }
                                                 
-                                                [seriesTable didChangeValueForKey: commentField];
-                                                [study didChangeValueForKey: commentField];
+                                                [seriesSqlTable didChangeValueForKey: commentField];
+                                                [studySqlTable didChangeValueForKey: commentField];
                                             }
                                         }
                                         
                                         if (generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"seriesComments"] length] > 0)
                                         {
-                                            [seriesTable willChangeValueForKey: @"comment"];
-                                            [seriesTable setPrimitiveValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
-                                            [seriesTable didChangeValueForKey: @"comment"];
+                                            [seriesSqlTable willChangeValueForKey: @"comment"];
+                                            [seriesSqlTable setPrimitiveValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
+                                            [seriesSqlTable didChangeValueForKey: @"comment"];
                                         }
                                         
                                         if (generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"studyComments"] length] > 0)
                                         {
-                                            [study willChangeValueForKey: @"comment"];
-                                            [study setPrimitiveValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
-                                            [study didChangeValueForKey: @"comment"];
+                                            [studySqlTable willChangeValueForKey: @"comment"];
+                                            [studySqlTable setPrimitiveValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
+                                            [studySqlTable didChangeValueForKey: @"comment"];
                                         }
                                         
-                                        if (generatedByOsiriX == NO && [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
+                                        if (generatedByOsiriX == NO && [[studySqlTable valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
                                         {
-                                            [study willChangeValueForKey: @"stateText"];
-                                            [study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
-                                            [study didChangeValueForKey: @"stateText"];
+                                            [studySqlTable willChangeValueForKey: @"stateText"];
+                                            [studySqlTable setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
+                                            [studySqlTable didChangeValueForKey: @"stateText"];
                                         }
                                         
                                         if (generatedByOsiriX == NO && [curDict objectForKey: @"keyFrames"])
@@ -2469,9 +2470,9 @@ static BOOL protectionAgainstReentry = NO;
                                                 {
                                                     if ([k intValue] == f) // corresponding frame
                                                     {
-                                                        [image willChangeValueForKey: @"storedIsKeyImage"];
-                                                        [image setPrimitiveValue: @YES forKey: @"storedIsKeyImage"];
-                                                        [image didChangeValueForKey: @"storedIsKeyImage"];
+                                                        [imageSqlTable willChangeValueForKey: @"storedIsKeyImage"];
+                                                        [imageSqlTable setPrimitiveValue: @YES forKey: @"storedIsKeyImage"];
+                                                        [imageSqlTable didChangeValueForKey: @"storedIsKeyImage"];
                                                         break;
                                                     }
                                                 }
@@ -2484,9 +2485,9 @@ static BOOL protectionAgainstReentry = NO;
                                     
                                     if (DICOMSR && [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX WindowsState SR"])
                                     {
-                                        Dicom_Image *reportSR = [study windowsStateImage]; // return the most recent sr
+                                        Dicom_Image *reportSR = [studySqlTable windowsStateImage]; // return the most recent sr
                                         
-                                        if (reportSR == image) // Because we can have multiple sr -> only the most recent one is valid
+                                        if (reportSR == imageSqlTable) // Because we can have multiple sr -> only the most recent one is valid
                                         {
                                             @try {
                                                 SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: newFile] autorelease];
@@ -2495,9 +2496,9 @@ static BOOL protectionAgainstReentry = NO;
                                                 
                                                 if (viewers.count > 0)
                                                 {
-                                                    [study willChangeValueForKey: @"windowsState"];
-                                                    [study setPrimitiveValue: r.dataEncapsulated forKey: @"windowsState"];
-                                                    [study didChangeValueForKey: @"windowsState"];
+                                                    [studySqlTable willChangeValueForKey: @"windowsState"];
+                                                    [studySqlTable setPrimitiveValue: r.dataEncapsulated forKey: @"windowsState"];
+                                                    [studySqlTable didChangeValueForKey: @"windowsState"];
                                                 }
                                             }
                                             @catch (NSException *exception) {
@@ -2509,7 +2510,7 @@ static BOOL protectionAgainstReentry = NO;
                                     if (DICOMSR && [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
                                     {
                                         BOOL reportUpToDate = NO;
-                                        NSString *p = [study reportURL];
+                                        NSString *p = [studySqlTable reportURL];
                                         
                                         if (p && [[NSFileManager defaultManager] fileExistsAtPath: p])
                                         {
@@ -2522,9 +2523,9 @@ static BOOL protectionAgainstReentry = NO;
                                         {
 //                                            NSString *reportURL = nil; // <- For an empty DICOM SR File
                                             
-                                            Dicom_Image *reportSR = [study reportImage];
+                                            Dicom_Image *reportSR = [studySqlTable reportImage];
                                             
-                                            if (reportSR == image) // Because we can have multiple reports -> only the most recent one is valid
+                                            if (reportSR == imageSqlTable) // Because we can have multiple reports -> only the most recent one is valid
                                             {
                                                 NSString *reportURL = nil, *reportPath = [DicomDatabase extractReportSR: newFile contentDate: [curDict objectForKey: @"studyDate"]];
                                                 
@@ -2552,23 +2553,23 @@ static BOOL protectionAgainstReentry = NO;
                                                     NSLog( @"--- DICOM SR -> Report : %@", [curDict valueForKey: @"patientName"]);
                                                 }
                                                 
-                                                [study willChangeValueForKey: @"reportURL"];
+                                                [studySqlTable willChangeValueForKey: @"reportURL"];
                                                 if ([reportURL length] > 0)
-                                                    [study setPrimitiveValue: reportURL forKey: @"reportURL"];
+                                                    [studySqlTable setPrimitiveValue: reportURL forKey: @"reportURL"];
                                                 else
-                                                    [study setPrimitiveValue: 0L forKey: @"reportURL"];
-                                                [study didChangeValueForKey: @"reportURL"];
+                                                    [studySqlTable setPrimitiveValue: 0L forKey: @"reportURL"];
+                                                [studySqlTable didChangeValueForKey: @"reportURL"];
                                             }
                                         }
                                     }
                                     
-                                    [addedImageObjects addObject:image];
+                                    [addedImageObjects addObject:imageSqlTable];
                                     
                                     NSMutableArray* addedImagesForImageCreator = [addedImagesPerCreatorUID objectForKey:imagePrivateInformationCreatorUID];
                                     if (!addedImagesForImageCreator)
                                         [addedImagesPerCreatorUID setObject:(addedImagesForImageCreator = [NSMutableArray array]) forKey:imagePrivateInformationCreatorUID];
                                     
-                                    [addedImagesForImageCreator addObject:image];
+                                    [addedImagesForImageCreator addObject:imageSqlTable];
                                     
     //								if (seriesTable && [addedSeries containsObject: seriesTable] == NO)
     //									[addedSeries addObject: seriesTable];
@@ -2609,8 +2610,8 @@ static BOOL protectionAgainstReentry = NO;
                                         if ( [[album valueForKey:@"smartAlbum"] boolValue] == NO)
                                         {
                                             NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];	
-                                            [studies addObject: [image valueForKeyPath:@"series.study"]];
-                                            [[image valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
+                                            [studies addObject: [imageSqlTable valueForKeyPath:@"series.study"]];
+                                            [[imageSqlTable valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
                                         }
                                     }
                                 }
@@ -2618,8 +2619,8 @@ static BOOL protectionAgainstReentry = NO;
                                 {
                                     if (DICOMSR == NO)
                                     {
-                                        [seriesTable setValue:today forKey:@"dateAdded"];
-                                        study.dateAdded = today;
+                                        [seriesSqlTable setValue:today forKey:@"dateAdded"];
+                                        studySqlTable.dateAdded = today;
                                     }
                                 }
                             } // for numberOfFrames

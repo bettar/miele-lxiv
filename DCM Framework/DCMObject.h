@@ -38,7 +38,7 @@
 
 	NSMutableDictionary *attributes;
 	NSDictionary *dicomDict;
-	DCMTagDictionary *sharedTagDictionary;
+    DCMTagDictionary *sharedTagDictionary;
 	DCMTagForNameDictionary *sharedTagForNameDictionary;
 	DCMCharacterSet *specificCharacterSet;
 	DCMTransferSyntax *transferSyntax;

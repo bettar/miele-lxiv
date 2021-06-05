@@ -81,14 +81,14 @@ extern XYZ ArbitraryRotate(XYZ p, double theta, XYZ r);
 	NSArray				*pixArray;
     NSManagedObjectID	*imageObjectID;	/**< Core data object ID for image */
     
-	float				*fImage /**< float buffer of image Data */;
+    float				*fImage; /**< float buffer of image Data */
     float               *fExternalOwnedImage;  /**< float buffer of image Data - provided by another source, not owned by this object, not release by this object */
 	
 //DICOM TAGS
 
 //	orientation
 	BOOL				isOriginDefined;
-	double				originX /**< x position of image origin */ , originY /**< y Position of image origin */ , originZ /**< Z position of image origin*/;
+	double				originX /**< X position of image origin */ , originY /**< Y Position of image origin */ , originZ /**< Z position of image origin*/;
 	double				orientation[ 9];  /**< pointer to orientation vectors  */
 
 //	pixel representation

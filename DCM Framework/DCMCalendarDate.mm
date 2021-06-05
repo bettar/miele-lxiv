@@ -66,13 +66,13 @@
 		//format for TM is HHMMSS.ffffff = @"%H%M%S.%U";
         //if (DCMDEBUG) NSLog (@"time string: %@", string);
 
-        if (string  && [string intValue]) {
+        if (string && [string intValue]) {
 			NSArray *timeComponents = [string componentsSeparatedByString:@"."];
 			NSString *firstComponent = [timeComponents objectAtIndex:0];
 			NSString *format = @"%H%M%S";
 			if ([firstComponent length] == 8)
 				format = @"%H:%M:%S";
-			if ([firstComponent length] == 6)
+			else if ([firstComponent length] == 6)
 				format = @"%H%M%S";
 			else if ([firstComponent length] == 4)
 				format = @"%H%M";

@@ -70,7 +70,7 @@ END_EXTERN_C
 
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmnet/dicom.h"     /* for DICOM_APPLICATION_REQUESTOR */
-#include "dcmtk/dcmdata/dcostrmz.h"  /* for dcmZlibCompressionLevel */
+#include "dcmtk/dcmdata/dcostrmz.h" /* for dcmZlibCompressionLevel */
 #include "dcmtk/dcmnet/dcasccfg.h"  /* for class DcmAssociationConfiguration */
 #include "dcmtk/dcmnet/dcasccff.h"  /* for class DcmAssociationConfigurationFile */
 
