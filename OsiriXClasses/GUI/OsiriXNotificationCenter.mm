@@ -81,7 +81,9 @@ const static void *namesKey = &namesKey;
     [pool release];
 }
 
-- (void) my_removeObserver:(id)notificationObserver name:(NSString *)notificationName object:(id)notificationSender
+- (void) my_removeObserver:(id)notificationObserver
+                      name:(NSString *)notificationName
+                    object:(id)notificationSender
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     

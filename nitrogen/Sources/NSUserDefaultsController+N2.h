@@ -58,7 +58,7 @@ CF_EXTERN_C_END
 -(id)valueForValuesKey:(NSString*)keyPath;
 -(void)setValue:(id)value forValuesKey:(NSString*)keyPath;
 -(void)bind:(NSString*)binding toObject:(id)observable withValuesKey:(NSString*)key options:(NSDictionary*)options;
--(void)addObserver:(NSObject*)observer forValuesKey:(NSString*)key options:(NSKeyValueObservingOptions)options context:(void*)context;
--(void)removeObserver:(NSObject*)observer forValuesKey:(NSString*)key;
+-(void)addObserver:(id)observer forValuesKey:(NSString*)key options:(NSKeyValueObservingOptions)options context:(void*)context;
+-(void)removeObserver:(id)observer forValuesKey:(NSString*)key;
 
 @end;

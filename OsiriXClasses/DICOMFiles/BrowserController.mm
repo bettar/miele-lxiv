@@ -8812,6 +8812,7 @@ static NSConditionLock *threadLock = nil;
     
     NSEnableScreenUpdates();
     
+    // What's the point ? There are no observers...
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDidLoadNewObjectNotification object:study userInfo:nil];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: copyPatientsSettings forKey: @"onlyDisplayImagesOfSamePatient"];
@@ -13907,6 +13908,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	
 	[_database unlock];
 	
+    // What's the point ? There are no observers...
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDidLoadNewObjectNotification object:item userInfo:nil];
 
     [self closeWaitWindowIfNecessary];
