@@ -727,7 +727,7 @@ void info_callback(const char *msg, void *a) {
 		int element = [dicomData nextUnsignedShort];
 		
 		int  vl = [dicomData nextUnsignedLong];
-		DCMAttributeTag *attrTag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
+		DCMAttributeTag *attrTag = [[[DCMAttributeTag alloc] initWithGroup:group element:element] autorelease];
 		
 		if (DCMDEBUG)
 			NSLog(@"Attr tag: %@", attrTag.description );

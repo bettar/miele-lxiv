@@ -4044,7 +4044,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[wlwwPresetsMenu release];
 		wlwwPresetsMenu = [[NSMenu alloc] init];
 		
-		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:nil keyEquivalent:@""];
+		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:nil keyEquivalent:@""]; // What's the point of doing this ?
 		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Other", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
 		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
 		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Full dynamic", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
@@ -6553,7 +6553,7 @@ static ViewerController *draggedController = nil;
 		if (!timer)
             [self PlayStop:[self findPlayStopButton]];  // PLAY
 		
-		NSLog( @"%@", [event characters]);
+		//NSLog( @"%s %@", __FUNCTION__, [event characters]);
 		
 		if ((c >='a' && c <= 'g')) {c -= 'a' -1;	direction = -1;}
         
@@ -9842,7 +9842,7 @@ static int avoidReentryRefreshDatabase = 0;
     // Check if there is a CLUT available in DICOM files -> Rebuild CLUT menu
     BOOL clutMenuUpdated = NO;
     
-    if (clutMenuUpdated)
+    if (clutMenuUpdated) // Dead code ?
     {
         if ([[NSUserDefaults standardUserDefaults] boolForKey: @"alwaysUsePaletteIfAvailable"] && [firstPix isRGB] == NO)
             [self ApplyCLUTString: NSLocalizedString( @"DICOM File CLUT", nil)];
@@ -12013,7 +12013,7 @@ static int avoidReentryRefreshDatabase = 0;
 		}
 		else
 		{
-			NSArray		*value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] objectForKey: name];
+			NSArray *value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] objectForKey: name];
 			[imageView setWLWW:[[value objectAtIndex: 0] floatValue]
                               :[[value objectAtIndex: 1] floatValue]];
 		}
@@ -13082,7 +13082,7 @@ long				x, y;
 {
     if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSEventModifierFlagShift)
     {
-        NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteOpacity:returnCode:contextInfo:), NULL, [sender title], NSLocalizedString( @"Are you sure you want to delete this Opacity Table : '%@'", nil), [sender title]);
+        NSBeginAlertSheet( NSLocalizedString(@"Remove an Opacity Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteOpacity:returnCode:contextInfo:), NULL, [sender title], NSLocalizedString( @"Are you sure you want to delete this Opacity Table : '%@'", nil), [sender title]);
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: [NSDictionary dictionary]];
 	}
@@ -14171,7 +14171,7 @@ long				x, y;
 
 - (NSImage*) imageForROI: (int) i
 {
-	NSString	*filename = nil;
+	NSString *filename = nil;
 	switch( i)
 	{
 		case tWL:			filename = @"WLWW";				break;
@@ -14185,8 +14185,8 @@ long				x, y;
 		case tOval:			filename = @"Oval";				break;
 		case tText:			filename = @"Text";				break;
 		case tArrow:		filename = @"Arrow";			break;
-		case tOpenPolygon:		filename = @"Open Polygon";	break;
-		case tClosedPolygon:		filename = @"Closed Polygon";	break;
+		case tOpenPolygon:  filename = @"Open Polygon";	break;
+		case tClosedPolygon: filename = @"Closed Polygon"; break;
 		case tPencil:		filename = @"Pencil";			break;
 		case t2DPoint:		filename = @"Point";			break;
 		case tPlain:		filename = @"Brush";			break;
@@ -14194,7 +14194,7 @@ long				x, y;
 		case tROISelector:	filename = @"ROISelector";		break;
 		case tAxis:			filename = @"Axis";				break;
 		case tDynAngle:		filename = @"DynamicAngle";		break;
-        case tTAGT:         filename = @"PerpendicularLines";             break;
+        case tTAGT:         filename = @"PerpendicularLines"; break;
         case tBall:         filename = @"Ball";             break;
         case tOvalAngle:    filename = @"CircleAngle"; break;
 	}
@@ -24296,7 +24296,7 @@ static BOOL viewerControllerPlaying = NO;
 
 - (void)setImageRows:(int)rows columns:(int)columns rescale: (BOOL) rescale
 {
-	if (rows > 8) rows = 8;
+	if (rows > 8) rows = 8; // why 8 ? use TILING_DIMENSION ?
 	if (columns > 8) columns = 8;
 
 	if (rows < 1) rows = 1;

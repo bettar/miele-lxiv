@@ -247,8 +247,8 @@ typedef NS_ENUM(NSInteger, BlendingMode2DType) {
 #define STRCAPACITY 800
 	NSMutableDictionary	*stringTextureDic; // cache ? similar to FreeType map, but for entire words
 	
-	BOOL _dragInProgress; // Are we drag and dropping
-	NSTimer *_mouseDownTimer; // Timer to check if mouseDown is Persisiting;
+	BOOL _dragInProgress; // Are we doing drag and drop ?
+	NSTimer *_mouseDownTimer; // Timer to check if mouseDown is Persisting
 	NSTimer *_rightMouseDownTimer; // Checking For Right hold
 	NSImage *destinationImage; // image will be dropping
 	

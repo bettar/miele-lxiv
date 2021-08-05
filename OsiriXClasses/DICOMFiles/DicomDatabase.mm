@@ -681,7 +681,7 @@ static DicomDatabase* activeLocalDatabase = nil;
         [self lock];
         @try
         {
-            DicomDatabase *idatabase = self.isMainDatabase? self : self.mainDatabase; // We are on the main thread : we can 'safely' use the maindatabase
+            DicomDatabase *idatabase = self.isMainDatabase? self : self.mainDatabase; // We are on the main thread : we can 'safely' use the main database
             
             NSArray* independentObjects = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesArray];
             if (independentObjects) {

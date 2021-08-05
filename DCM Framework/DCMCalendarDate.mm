@@ -192,7 +192,7 @@
 + (id)dicomTimeWithDate:(NSDate *)date
 {
 	NSString *format = @"%H%M%S";
-	NSCalendarDate  *cDate= [date dateWithCalendarFormat:format timeZone:nil];
+	NSCalendarDate *cDate= [date dateWithCalendarFormat:format timeZone:nil];
 	NSString *dateString = [cDate descriptionWithCalendarFormat:format];
 	return [DCMCalendarDate dicomTime:dateString];
 }

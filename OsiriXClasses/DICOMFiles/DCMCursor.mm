@@ -81,7 +81,6 @@ static NSCursor *rotateAxisCursor;
         stackCursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"StackCursor.tif"] hotSpot:NSMakePoint(7,7)];
 	
 	return stackCursor;
-
 }
 
 +(NSCursor*) contrastCursor

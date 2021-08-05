@@ -1507,7 +1507,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     }
 }
 
-- (unsigned char*)LUT12baseAddr;
+- (unsigned char*)LUT12baseAddr
 {
     [self CheckLoad];
     if (LUT12baseAddr == nil)
@@ -6694,7 +6694,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     for ( int j = 0; j < iop.count; j++)
                         orientation[ j ] = [[iop objectAtIndex:j] doubleValue];
                 }
-                else // doesnt the root Image Orientation contains valid data? if not use the normal vector
+                else // doesn't the root Image Orientation contains valid data? if not use the normal vector
                 {
                     equalZero = YES;
                     for ( int j = 0; j < 6; j++)
@@ -7044,7 +7044,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             
                             if ([pixData length] == height*width) // 8 bits??
                             {
-                                NSLog( @"************* [[pixData length] == height*width : 8 bits? but declared as 16 bits...");
+                                NSLog( @"************* [pixData length] == height*width : 8 bits? but declared as 16 bits...");
                                 
                                 unsigned long x = height * width;
                                 float *tDestF = (float*) dstf.data;
@@ -7545,10 +7545,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             
 #ifdef OSIRIX_VIEWER
 			id fileFormatBundle;
-			if ((fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[srcFile pathExtension]]))
+            fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[srcFile pathExtension]];
+			if (fileFormatBundle)
 			{
 				PluginFileFormatDecoder *decoder = [[[fileFormatBundle principalClass] alloc] init];
-                
                 [PluginManager startProtectForCrashWithFilter: decoder];
                 
 				fImage = [decoder checkLoadAtPath:srcFile];
@@ -10509,7 +10509,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	if (baseAddr == nil)
 	{
-		[self checkImageAvailble:newWW :newWL];
+		[self checkImageAvailable:newWW :newWL];
 		return;
 	}
 	
@@ -10568,7 +10568,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	baseAddr = nil;
 }
 
-- (void)checkImageAvailble: (float)newWW : (float)newWL
+- (void)checkImageAvailable: (float)newWW : (float)newWL
 {
 	[self CheckLoad];
 	

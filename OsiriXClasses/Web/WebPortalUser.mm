@@ -436,7 +436,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 }
                 else if ([obj count] == 0)
                 {
-                    // It means this study doesnt exist in the entire DB -> remove it from this user list
+                    // It means this study doesn't exist in the entire DB -> remove it from this user list
                     NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
                     [self.managedObjectContext deleteObject:study];
                     [self.managedObjectContext save: nil];

@@ -1155,7 +1155,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject:@"10" forKey:@"defaultFrameRate"];
 	[defaultValuesDic setObject:@"10" forKey:@"quicktimeExportRateValue"];
     [defaultValuesDic setObject:AVVideoCodecJPEG forKey:@"selectedMenuAVFoundationExport"];
-	[defaultValuesDic setObject:@"0" forKey:@"32bitDICOMAreAlwaysIntegers"];
+	[defaultValuesDic setObject:@NO forKey:@"32bitDICOMAreAlwaysIntegers"];
 	[defaultValuesDic setObject:@"1" forKey:@"archiveReportsAndAnnotationsAsDICOMSR"];
 	[defaultValuesDic setObject:@"1" forKey:@"SelectWindowScrollWheel"];
 	[defaultValuesDic setObject:@"1" forKey:@"useDCMTKForJP2K"]; // deprecated
@@ -1331,7 +1331,7 @@ static NSHost *currentHost = nil;
 	NSMutableDictionary *hotkeys = [NSMutableDictionary dictionary];
 	
 	NSString *stringValue;
-	NSArray *array = [NSArray arrayWithObjects:
+	NSArray *array = [NSArray arrayWithObjects:  // TBC matching 'enum HotKeyActions' ?
 						@"~",	//DefaultWWWLHotKeyAction
 						@"0",	//FullDynamicWWWLHotKeyAction
 						@"1",	//Preset1WWWLHotKeyAction

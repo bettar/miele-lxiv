@@ -625,7 +625,7 @@ Note setter is different to not break existing usage. :-( */
 /** Releases the current NSImage */
 - (void) kill8bitsImage;
 
-- (void) checkImageAvailble:(float)newWW :(float)newWL;
+- (void) checkImageAvailable:(float)newWW :(float)newWL;
 
 /** Load the DICOM image using the DCMFramework.
  * There should be no reason to call this. The class will call it when needed. */

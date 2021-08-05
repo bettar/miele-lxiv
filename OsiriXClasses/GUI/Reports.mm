@@ -655,7 +655,7 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 
 - (BOOL)createNewWordReportForStudy:(NSManagedObject*)study toDestinationPath:(NSString*)destinationFile
 {
-    // Applescript doesnt support UTF-8 encoding
+    // Applescript doesn't support UTF-8 encoding
     
 //    NSString* tempPath = [[[destinationFile stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"MSTempReport"] stringByAppendingPathExtension:[destinationFile pathExtension]];
   //  [[NSFileManager defaultManager] removeItemAtPath: tempPath error: nil];

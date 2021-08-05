@@ -37,7 +37,7 @@
 }
 
 -(NSSize)frameSizeForContentSize:(NSSize)contentSize {
-	return [self frameRectForContentRect:NSMakeRect([self frame].origin, contentSize)].size; // [self frame].origin isnt't correct but that doesnt matter
+	return [self frameRectForContentRect:NSMakeRect([self frame].origin, contentSize)].size; // [self frame].origin isnt't correct but that doesn't matter
 }
 
 -(CGFloat)toolbarHeight

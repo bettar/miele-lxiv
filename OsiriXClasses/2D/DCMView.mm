@@ -2524,7 +2524,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			[r setROIMode : ROI_sleep];
 		}
 		
-		curWL = curDCM.wl;
+		curWL = curDCM.wl; // It will call CheckLoad
 		curWW = curDCM.ww;
 		curWLWWSUVConverted = curDCM.SUVConverted;
 		curWLWWSUVFactor = 1.0;
@@ -2537,7 +2537,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		//get Presentation State info from series Object
 		[self updatePresentationStateFromSeries];
 		
-		[curDCM checkImageAvailble :curWW :curWL];
+		[curDCM checkImageAvailable :curWW :curWL];
 		
 		if (sizeToFit && [self is2DViewer] == NO)
 		{
@@ -3049,7 +3049,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 						[self reapplyWindowLevel];
 					}
 					else
-                        [curDCM checkImageAvailble :curWW :curWL];
+                        [curDCM checkImageAvailable :curWW :curWL];
 				
 					[self updatePresentationStateFromSeriesOnlyImageLevel: YES];
 					done = YES;
@@ -3071,7 +3071,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 					[self reapplyWindowLevel];
 				}
 				else
-                    [curDCM checkImageAvailble :curWW :curWL];
+                    [curDCM checkImageAvailable :curWW :curWL];
 			}
 			
 			[self loadTextures];
@@ -3517,7 +3517,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			}
 			
 			[self setNeedsDisplay:YES];
-		}
+		} // Jog
 		
         if (previmage != curImage)
 		{
@@ -3527,7 +3527,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                 [self setIndexWithReset:curImage :YES];
             
             if (matrix ) {
-                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                NSInteger rows, cols;
+                [matrix getNumberOfRows:&rows columns:&cols];
                 if (cols < 1)
                     cols = 1;
                 
@@ -3681,6 +3682,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	}
 }
 
+// NSResponder method: modifier key was pressed or released
 - (void) flagsChanged:(NSEvent *)event
 {
 	[self deleteLens];
@@ -3964,6 +3966,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             break;
         default:
             result = NO;
+            break;
 	}
 	
 	return result;
@@ -4306,7 +4309,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     else
                         pixelMouseValue = [curDCM getPixelValueX: xPos Y:yPos];
 
-                    if (	cmouseXPos != mouseXPos || cmouseYPos != mouseYPos)
+                    if (cmouseXPos != mouseXPos || cmouseYPos != mouseYPos)
                     {
                         self.mousePosUSRegion = nil;
                         if (curDCM.hasUSRegions)
@@ -4472,12 +4475,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         
         [drawLock unlock];
         
-        if (	cpixelMouseValueR != pixelMouseValueR)	needUpdate = YES;
-        if (	cpixelMouseValueG != pixelMouseValueG)	needUpdate = YES;
-        if (	cpixelMouseValueB != pixelMouseValueB)	needUpdate = YES;
-        if (	cmouseXPos != mouseXPos)	needUpdate = YES;
-        if (	cmouseYPos != mouseYPos)	needUpdate = YES;
-        if (	cpixelMouseValue != pixelMouseValue)	needUpdate = YES;
+        if (cpixelMouseValueR != pixelMouseValueR) needUpdate = YES;
+        if (cpixelMouseValueG != pixelMouseValueG) needUpdate = YES;
+        if (cpixelMouseValueB != pixelMouseValueB) needUpdate = YES;
+        if (cmouseXPos != mouseXPos) needUpdate = YES;
+        if (cmouseYPos != mouseYPos) needUpdate = YES;
+        if (cpixelMouseValue != pixelMouseValue) needUpdate = YES;
         if (cblendingMouseXPos != blendingMouseXPos) needUpdate = YES;
         if (cblendingMouseYPos != blendingMouseYPos) needUpdate = YES;
         if (cblendingPixelMouseValue != blendingPixelMouseValue) needUpdate = YES;
@@ -4513,13 +4516,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         blendingMouseXPos = blendingMouseYPos = blendingPixelMouseValue = blendingPixelMouseValueR = blendingPixelMouseValueG = blendingPixelMouseValueB = 0;
         
         BOOL needUpdate = NO;
-        
-        if (	cpixelMouseValueR != pixelMouseValueR) needUpdate = YES;
-        if (	cpixelMouseValueG != pixelMouseValueG) needUpdate = YES;
-        if (	cpixelMouseValueB != pixelMouseValueB) needUpdate = YES;
-        if (	cmouseXPos != mouseXPos) needUpdate = YES;
-        if (	cmouseYPos != mouseYPos) needUpdate = YES;
-        if (	cpixelMouseValue != pixelMouseValue) needUpdate = YES;
+        // This code is redundantly duplicated by the code posting the notification
+        if (cpixelMouseValueR != pixelMouseValueR) needUpdate = YES;
+        if (cpixelMouseValueG != pixelMouseValueG) needUpdate = YES;
+        if (cpixelMouseValueB != pixelMouseValueB) needUpdate = YES;
+        if (cmouseXPos != mouseXPos) needUpdate = YES;
+        if (cmouseYPos != mouseYPos) needUpdate = YES;
+        if (cpixelMouseValue != pixelMouseValue) needUpdate = YES;
         if (cblendingMouseXPos != blendingMouseXPos) needUpdate = YES;
         if (cblendingMouseYPos != blendingMouseYPos) needUpdate = YES;
         if (cblendingPixelMouseValue != blendingPixelMouseValue) needUpdate = YES;
@@ -4624,7 +4627,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             tool = tWL;
 	}
 	
-	if ([self roiTool:currentTool] != YES &&
+	if ([self roiTool:currentTool] == NO &&
         currentTool != tROISelector)   // Not a ROI TOOL !
 	{
 		if (([event modifierFlags] & NSEventModifierFlagCommand) &&
@@ -4987,7 +4990,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			originStart = origin;
 			
 			measureB = measureA = [self convertPoint:eventLocation fromView: nil];
-			measureB.y = measureA.y = size.size.height - measureA.y ;
+			measureB.y = measureA.y = size.size.height - measureA.y;
 			
 			roiRect.origin = [self convertPoint:eventLocation fromView: nil];
 			roiRect.origin.y = size.size.height - roiRect.origin.y;
@@ -6001,7 +6004,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             return;
 	}
 	
-	// We have dragged before timer went off, turn off timer and contine with drag
+	// We have dragged before timer went off, turn off timer and continue with drag
 	if (_dragInProgress == NO &&
         ([event deltaX] != 0 || [event deltaY] != 0))
     {
@@ -6437,6 +6440,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	}
 }
 
+// TODO: improve duplication of code with 'mouseDraggedWindowLevel'
 - (void)mouseDraggedBlending:(NSEvent *)event
 {
 	float WWAdapter = bdstartWW / 100.0;
@@ -6549,7 +6553,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			
 			switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 			{
-				case 0:
+				case PETWindowingMode_CLASSIC:
 					eWL = startWL + (current.y - start.y)*WWAdapter;
 					eWW = startWW + (current.x - start.x)*WWAdapter;
 					
@@ -6559,7 +6563,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     break;
 				
 				case PETWindowingMode_FIXED_MIN:
-					endlevel = startMax + (current.y - start.y) * WWAdapter ;
+					endlevel = startMax + (current.y - start.y) * WWAdapter;
 					
 					eWL = (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
 					eWW = endlevel - startMin;
@@ -6573,8 +6577,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     break;
 				
 				case PETWindowingMode_MAXIMUM:
-					endlevel   = startMax + (current.y - start.y) * WWAdapter ;
-					startlevel = startMin + (current.x - start.x) * WWAdapter ;
+					endlevel   = startMax + (current.y - start.y) * WWAdapter;
+					startlevel = startMin + (current.x - start.x) * WWAdapter;
 					
 					if (startlevel < 0)
                         startlevel = 0;
@@ -8534,7 +8538,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	return [self ConvertFromUpLeftView2GL: a];
 }
 
-- (NSPoint) ConvertFromView2GL:(NSPoint) a;
+- (NSPoint) ConvertFromView2GL:(NSPoint) a
 {
 	a.x += [self drawingFrameRect].size.width/2.;
 	a.y += [self drawingFrameRect].size.height/2.;
@@ -12454,7 +12458,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #pragma mark subclasses
 				[self subDrawRect: aRect];
 
-                self.scaleValue = scaleValue;
+                self.scaleValue = scaleValue;  // TBC: assigning to itself ?
 				
                 //NSLog(@"%s %d, %@, %p, Xref lines: %d", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, DISPLAYCROSSREFERENCELINES);
 
@@ -12571,7 +12575,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 						else
 						{
                             // See also drawCrossLines
-                            NSLog(@"%s %d draw 4 segments to make up a cross marker", __FUNCTION__, __LINE__);
+                            //NSLog(@"%s %d draw 4 segments to make up a cross marker", __FUNCTION__, __LINE__);
 							float crossx = tempPoint3D[0];
 							float crossy = tempPoint3D[1];
 
@@ -17281,7 +17285,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         [pboard setPropertyList:[NSArray arrayWithObject: path] forType:NSFilenamesPboardType];
         
         if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
-            N2LogStackTrace( @"file doesnt exist: %@", path);
+            N2LogStackTrace( @"file doesn't exist: %@", path);
         
         [self dragImage: thumbnail at:local_point offset:dragOffset event:event pasteboard:pboard source:self slideBack:YES];
     }
@@ -17655,7 +17659,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     return [self _checkHasChanged:NO];
 }
 
-#pragma mark - Window Controler methods
+#pragma mark - Window Controller methods
 
 - (id) windowController
 {
@@ -17672,7 +17676,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		is2DViewerCached = YES;
 		is2DViewerValue = [[self windowController] is2DViewer];
 	}
-//	else NSLog( @"**** NO Window defined");
+//	else NSLog( @"**** No window defined");
 	
 	return is2DViewerValue;
 }

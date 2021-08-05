@@ -697,9 +697,9 @@ ss
                         }
                         
                         if (curWW != 0)
-                            [dcmPix checkImageAvailble:curWW :curWL];
+                            [dcmPix checkImageAvailable:curWW :curWL];
                         else
-                            [dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+                            [dcmPix checkImageAvailable:[dcmPix savedWW] :[dcmPix savedWL]];
                         
                         if (x == 0 && [dcmPix cineRate])
                             *fpsP = [dcmPix cineRate];
@@ -2423,7 +2423,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					
 					if (self.response.data.length == 0)
 					{
-						[dcmPix checkImageAvailble: curWW :curWL];
+						[dcmPix checkImageAvailable: curWW :curWL];
 						
 						image = [dcmPix image];
 						float width = [image size].width;
@@ -3015,9 +3015,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	}
 	
 	if (curWW != 0)
-		[dcmPix checkImageAvailble:curWW :curWL];
+		[dcmPix checkImageAvailable:curWW :curWL];
 	else
-        [dcmPix checkImageAvailble:dcmPix.savedWW :dcmPix.savedWL];
+        [dcmPix checkImageAvailable:dcmPix.savedWW :dcmPix.savedWL];
 	
     NSImage* image = [dcmPix image];
 	

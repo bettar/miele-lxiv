@@ -348,9 +348,9 @@ extern NSRecursiveLock *Papyrus_Lock;
         }
     }
     
-    if ([self autoFillComments]  == YES) // ||[self checkForLAVIM] == YES)
+    if ([self autoFillComments] == YES) // ||[self checkForLAVIM] == YES)
     {
-        if ([self autoFillComments])
+        if ([self autoFillComments]) // again ?
         {
             NSString *commentsField = nil;
             DcmItem *dicomItems = nil;

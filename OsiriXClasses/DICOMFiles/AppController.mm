@@ -721,7 +721,7 @@ static bool isGrantedNotificationAccess = false;
     // This way it gets updated automatically with system updates
     // Problem: it goes with the SDK which could still be 11.1 when the OS is 11.2
     int ver = version.majorVersion*10000 + version.minorVersion*100;
-    BOOL ok = (ver <= MAC_OS_X_VERSION_MAX_ALLOWED); // MAC_OS_VERSION_11_1
+    BOOL ok = (ver <= MAC_OS_X_VERSION_MAX_ALLOWED); // MAC_OS_VERSION_11_3
     return ok;
 #else
     if (version.majorVersion > 11)
@@ -2166,9 +2166,9 @@ static bool isGrantedNotificationAccess = false;
 	[dict setValue:[AppController UID] forKey: @"UID"]; 
 	
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"activateCGETSCP"])
-        [dict setValue: @"YES" forKey: @"CGET"]; // TXTRECORD doesnt support NSNumber
+        [dict setValue: @"YES" forKey: @"CGET"]; // TXTRECORD doesn't support NSNumber
     else
-        [dict setValue: @"NO" forKey: @"CGET"];  // TXTRECORD doesnt support NSNumber
+        [dict setValue: @"NO" forKey: @"CGET"];  // TXTRECORD doesn't support NSNumber
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"activateCFINDSCP"])
         [dict setValue: @"YES" forKey: @"CFIND"];
@@ -2184,7 +2184,7 @@ static bool isGrantedNotificationAccess = false;
         [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
 	{
 		int port = [NSUserDefaults webPortalPortNumber];
-		[dict setValue: @"YES" forKey: @"WADO"]; // TXTRECORD doesnt support NSNumber
+		[dict setValue: @"YES" forKey: @"WADO"]; // TXTRECORD doesn't support NSNumber
 		[dict setValue: [NSString stringWithFormat:@"%d", port] forKey: @"WADOPort"];
 		[dict setValue: @"/wado" forKey: @"WADOURL"];
 		
@@ -4562,7 +4562,7 @@ static BOOL firstCall = YES;
 {
 	[msg retain];
 	
-	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	if ([msg isEqualToString:@"LISTENER"])
 	{
@@ -5929,20 +5929,20 @@ displayThumbnailsList: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseF
 	[[[BrowserController currentBrowser] database] checkForHtmlTemplates];
 }
 
-#pragma mark - 12 Bit Display support.
+#pragma mark - 12 Bit Display support
 
-+ (BOOL)canDisplay12Bit;
++ (BOOL)canDisplay12Bit
 {
 	return canDisplay12Bit;
 }
 
-+ (void)setCanDisplay12Bit:(BOOL)boo;
++ (void)setCanDisplay12Bit:(BOOL)boo
 {
 	canDisplay12Bit = boo;
 	[[NSUserDefaults standardUserDefaults] setBool:boo forKey:@"is12bitPluginAvailable"];
 }
 
-+ (void)setLUT12toRGB:(unsigned char*)lut;
++ (void)setLUT12toRGB:(unsigned char*)lut
 {
 	LUT12toRGB = lut;
 }
@@ -5952,13 +5952,13 @@ displayThumbnailsList: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseF
 	return LUT12toRGB;
 }
 
-+ (void)set12BitInvocation:(NSInvocation*)invocation;
++ (void)set12BitInvocation:(NSInvocation*)invocation
 {
 	[fill12BitBufferInvocation release];
 	fill12BitBufferInvocation = [invocation retain];
 }
 
-+ (NSInvocation*)fill12BitBufferInvocation;
++ (NSInvocation*)fill12BitBufferInvocation
 {
 	return fill12BitBufferInvocation;
 }

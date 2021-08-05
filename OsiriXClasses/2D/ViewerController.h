@@ -104,7 +104,9 @@ enum
 	
             DCMView			*imageView;
 	
-    IBOutlet NSView         *windowsTiling, *annotations, *seriesPopupView;
+    IBOutlet NSView         *windowsTiling;
+    IBOutlet NSView         *annotations;
+    IBOutlet NSView         *seriesPopupView;
 	IBOutlet NSView         *orientationView;
 	IBOutlet NSMatrix		*orientationMatrix;
 	

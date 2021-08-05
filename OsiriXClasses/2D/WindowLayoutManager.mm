@@ -125,7 +125,7 @@ static WindowLayoutManager *sharedLayoutManager = nil;
         int tag = [[protocol objectForKey: @"ImageTiling"] intValue];
         
         if (tag < MAX_TILING_TAG)
-            return (tag %  TILING_DIMENSION) + 1; // See SetImageTiling ViewerController.m
+            return (tag % TILING_DIMENSION) + 1; // See SetImageTiling ViewerController.m
     }
     
 	if( [[protocol objectForKey: @"Image Columns"] intValue] > 0)

@@ -107,7 +107,7 @@ static int gTotalN2ManagedObjectContext = 0;
     [_database checkForCorrectContextThread: self];
 #endif
     @try {
-        return [super existingObjectWithID:objectID error:error];
+        return [super existingObjectWithID:objectID error:error]; // ssuper is NSObject ?!
     } @catch (...) {
         @throw;
     } @finally {

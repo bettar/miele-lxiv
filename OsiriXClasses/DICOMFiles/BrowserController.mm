@@ -4089,7 +4089,7 @@ static NSConditionLock *threadLock = nil;
 	return selectedFiles;
 }
 
-- (NSMutableArray*)filesForDatabaseOutlineSelection:(NSMutableArray*)correspondingManagedObjects onlyImages:(BOOL)onlyImages {
+- (NSMutableArray*)filesForDatabaseOutlineSelection: (NSMutableArray*)correspondingManagedObjects onlyImages:(BOOL)onlyImages {
     return [self filesForDatabaseOutlineSelection:correspondingManagedObjects treeObjects:nil onlyImages:onlyImages];
 }
 
@@ -5165,17 +5165,17 @@ static NSConditionLock *threadLock = nil;
 			}
             
 			BOOL refreshMatrix = YES;
-			long nowFiles = [[item valueForKey:@"noFiles"] intValue];
+			long numFiles = [[item valueForKey:@"noFiles"] intValue];
 			
 			if (item == previousItem || ([previousItem isKindOfClass: [NSManagedObject class]] && [item isKindOfClass: [NSManagedObject class]] && [[previousItem objectID] isEqual: [item objectID]]))
 			{
-				if (nowFiles == previousNoOfFiles)
+				if (numFiles == previousNoOfFiles)
 					refreshMatrix = NO;
 			}
 			else 
 				DatabaseIsEdited = NO;
 			
-			previousNoOfFiles = nowFiles;
+			previousNoOfFiles = numFiles;
 			
 			if (refreshMatrix)
 			{
@@ -9712,7 +9712,7 @@ static BOOL withReset = NO;
         setDCMDone = NO;
         loadPreviewIndex = 0;
         
-        [self previewMatrixScrollViewFrameDidChange: nil];
+        [self previewMatrixScrollViewFrameDidChange: nil]; // call notification directly ? strange
         
         NSInteger rows, columns;
         [oMatrix getNumberOfRows:&rows columns:&columns];
@@ -9945,7 +9945,7 @@ static BOOL withReset = NO;
         }
         @catch( NSException *ne)
         {
-            if (![[ne name] isEqualToString:NSObjectInaccessibleException])
+            if (![[ne name] isEqualToString: NSObjectInaccessibleException])
                 N2LogExceptionWithStackTrace(ne);
         }
         @finally
@@ -10424,10 +10424,10 @@ static BOOL withReset = NO;
                 
                 if (!imageLevel)
                 {
-                    NSData* dbThmb = image.series.thumbnail;
+                    NSData* dbThmb = image.series.thumbnail; // TN is generated here the first time
                     if (dbThmb)
                     {
-                        NSImageRep* rep = [[[NSBitmapImageRep alloc] initWithData:dbThmb] autorelease];
+                        NSImageRep* rep = [[[NSBitmapImageRep alloc] initWithData:dbThmb] autorelease]; // how is the rep size calculated from NSData length ?
                         NSImage* dbIma = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
                         [dbIma addRepresentation:rep];
                         
@@ -10670,7 +10670,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
     
     NSInteger selectedCellTag = [oMatrix.selectedCell tag];
     
-    CGFloat rcs = oMatrix.cellSize.width+oMatrix.intercellSpacing.width;
+    CGFloat rcs = oMatrix.cellSize.width + oMatrix.intercellSpacing.width;
     
     NSSize size = thumbnailsScrollView.bounds.size;
     size.width += oMatrix.intercellSpacing.width;
@@ -12365,7 +12365,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 			if (testPtr[ x] == nil)
 			{
 				enoughMemory = NO;
-				NSLog(@"Failed to allocate memory for: %llu Mb", (memBlock) / (1024 * 1024));
+				NSLog(@"Failed to allocate memory for: %llu MB", (memBlock) / (1024 * 1024));
 			}
 		}
 		
@@ -12543,7 +12543,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 						}
 					}
 					
-					if ( memBlock < 256 * 256) memBlock = 256 * 256;  // This is the size of array created when when an image doesn't exist, a 256 square graduated gray scale.
+					if ( memBlock < 256 * 256) memBlock = 256 * 256;  // This is the size of array created when an image doesn't exist, a 256 square graduated gray scale.
 					
 					testPtr[ x] = (unsigned char *)malloc( (memBlock * sizeof(float)) + 4096);
 					if (testPtr[ x] == nil)
@@ -12569,7 +12569,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 						{
 							memTestFailed = YES;
 							
-							NSLog(@"Failed to allocate memory for: %lu Mb", (memBlock * sizeof(float)) / (1024 * 1024));
+							NSLog(@"Failed to allocate memory for: %lu MB", (memBlock * sizeof(float)) / (1024 * 1024));
 						}
 					}
 					memBlockSize[ x] = memBlock;
@@ -12643,7 +12643,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 		{
 			if (movieViewer == NO)
 			{
-//				NSLog(@"I will try to allocate: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
+//				NSLog(@"I will try to allocate: %d MB", (mem * sizeof(float)) / (1024 * 1024));
 //				
 //				fVolumePtr = malloc(mem * sizeof(float));
 //				if (fVolumePtr == nil)
@@ -12668,11 +12668,11 @@ constrainSplitPosition:(CGFloat)proposedPosition
 			{
 				char **memBlockTestPtr = (char **)calloc( [toOpenArray count], sizeof( char*));
 				
-				NSLog(@"4D Viewer TOTAL: %lu Mb", (mem * sizeof(float)) / (1024 * 1024));
+				NSLog(@"4D Viewer TOTAL: %lu MB", (mem * sizeof(float)) / (1024 * 1024));
 				for (unsigned long x = 0; x < [toOpenArray count]; x++)
 				{
 					memBlockTestPtr[ x] = (char *)malloc(memBlockSize[ x] * sizeof(float));
-					NSLog(@"4D Viewer: I will try to allocate: %lu Mb", (memBlockSize[ x]* sizeof(float)) / (1024 * 1024));
+					NSLog(@"4D Viewer: I will try to allocate: %lu MB", (memBlockSize[ x]* sizeof(float)) / (1024 * 1024));
 					
 					if (memBlockTestPtr[ x] == nil)
                         notEnoughMemory = YES;
@@ -15344,7 +15344,7 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		[pressedKeys appendString: [event characters]];
 		
-		NSLog(@"%@", pressedKeys);
+		//NSLog(@"%s %@", __FUNCTION__, pressedKeys);
 		
 		NSArray		*result = [outlineViewArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name BEGINSWITH[cd] %@", [NSString stringWithFormat:@"%@", pressedKeys]]];
 		
@@ -17081,9 +17081,9 @@ static volatile int numberOfThreadsForJPEG = 0;
                             }
                             
                             if (curWW != 0 && curWW !=curWL)
-                                [dcmPix checkImageAvailble :curWW :curWL];
+                                [dcmPix checkImageAvailable :curWW :curWL];
                             else
-                                [dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+                                [dcmPix checkImageAvailable :[dcmPix savedWW] :[dcmPix savedWL]];
 
                             NSImage *im = [dcmPix image];
                             
@@ -17361,9 +17361,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				
 				if (curWW != 0 && curWW !=curWL)
-					[dcmPix checkImageAvailble :curWW :curWL];
+					[dcmPix checkImageAvailable :curWW :curWL];
 				else
-					[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+					[dcmPix checkImageAvailable :[dcmPix savedWW] :[dcmPix savedWL]];
 				
 				if ([format isEqualToString:@"jpg"])
 				{
@@ -19451,7 +19451,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						}
 						else
 						{
-							NSLog( @"***** reportURL contains a path, but file doesnt exist.");
+							NSLog( @"***** reportURL contains a path, but file doesn't exist.");
 							
 							if (NSRunInformationalAlertPanel(NSLocalizedString(@"Report", nil),
                                                              NSLocalizedString(@"Report file is not found... Should I create a new one?", nil),
