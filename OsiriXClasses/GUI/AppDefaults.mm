@@ -915,7 +915,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject:@"1" forKey:@"magnifyingLens"];
 	[defaultValuesDic setObject:@"12" forKey:@"LabelFONTSIZE"];
 	[defaultValuesDic setObject:@"Geneva" forKey:@"LabelFONTNAME"];
-	[defaultValuesDic setObject:@"1" forKey:@"EmptyNameForNewROIs"];
+	[defaultValuesDic setObject:@YES forKey:@"EmptyNameForNewROIs"];
 	[defaultValuesDic setObject:@"1" forKey:@"nextSeriesToAllViewers"];
 	[defaultValuesDic setObject:@"1" forKey:@"dontDeleteStudiesWithComments"];
 	[defaultValuesDic setObject:@"1" forKey:@"displaySamePatientWithColorBackground"];

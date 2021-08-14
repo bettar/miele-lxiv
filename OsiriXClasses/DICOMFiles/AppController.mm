@@ -3717,7 +3717,7 @@ API_AVAILABLE(macos(10.14))
         
         NSInteger button = [alert runModal];
         
-        #if 0 //def MACAPPSTORE
+        #ifdef MACAPPSTORE
         NSString *upgradePage = URL_MIELE_MAC_APP_STORE;
         #else
         NSString *upgradePage = URL_MIELE_WEB_PAGE;

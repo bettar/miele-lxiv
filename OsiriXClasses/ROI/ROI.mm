@@ -5805,9 +5805,9 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
 						{
 							// Add a point here, if distant from existing points.
 
-			                                if (correspondingSegments)
+                            if (correspondingSegments)
 								[points insertObject: [MyPoint point: pt] atIndex: [[correspondingSegments objectAtIndex: i] intValue] +1];
-			                                else
+                            else
 								[points insertObject: [MyPoint point: pt] atIndex: i +1];
 							break;
 						}
@@ -10451,7 +10451,8 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	return cachedSplinePointsWithoutScale;
 }
 
--(NSMutableArray*) splinePoints:(float) scale correspondingSegmentArray: (NSMutableArray**) correspondingSegmentArray
+-(NSMutableArray*) splinePoints: (float) scale
+      correspondingSegmentArray: (NSMutableArray**) correspondingSegmentArray
 {
     if (pixelSpacingX != 0 && pixelSpacingY != 0)
     {

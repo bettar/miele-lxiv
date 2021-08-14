@@ -3255,7 +3255,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
  * This method calculates the skewness of a data set. Skewness is the third central moment divided by the third
  * power of the standard deviation.
  */
- 
 + (double) skewness: (float*) data length: (long) length mean: (double) mean
 {
     if (data == nil || length < 2)
