@@ -4044,7 +4044,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[wlwwPresetsMenu release];
 		wlwwPresetsMenu = [[NSMenu alloc] init];
 		
-		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:nil keyEquivalent:@""]; // What's the point of doing this ?
+		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:nil keyEquivalent:@""]; // show the current selection here, without numerical prefix
 		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Other", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
 		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
 		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Full dynamic", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
@@ -7580,7 +7580,7 @@ return YES;
 		break;
 	}
 	
-	if (tag >= 0)
+	if (tag >= tWL)
 		[imageView setCurrentTool: (ToolMode)tag];
 }
 
@@ -7601,7 +7601,7 @@ return YES;
 
 	[toolsMatrix selectCellWithTag: tag];
 	
-	if (tag >= 0)
+	if (tag >= tWL)
         [imageView setRightTool: (ToolMode)tag];
 }
 
@@ -13143,8 +13143,8 @@ long				x, y;
 {
     if ([sender tag])   //User clicks OK Button
     {
-		NSMutableDictionary		*opacityDict	= [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] mutableCopy] autorelease];
-		NSMutableDictionary		*aOpacityFilter	= [NSMutableDictionary dictionary];
+		NSMutableDictionary *opacityDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] mutableCopy] autorelease];
+		NSMutableDictionary *aOpacityFilter	= [NSMutableDictionary dictionary];
 		
 		[aOpacityFilter setObject: [[[OpacityView getPoints] copy] autorelease] forKey: @"Points"];
 		[opacityDict setObject: aOpacityFilter forKey: [OpacityName stringValue]];

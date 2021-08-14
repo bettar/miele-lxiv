@@ -107,7 +107,7 @@ typedef enum ToolMode_
 {
 	NSRecursiveLock *roiLock;
 	
-    int	textureWidth;
+    int textureWidth;
     int textureHeight;
     unsigned char *textureBuffer;
 

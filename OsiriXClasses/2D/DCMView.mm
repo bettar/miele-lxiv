@@ -6131,7 +6131,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	return haveHit;			
 }
 
-// Modifies the Selected ROIs for the drag. Can rotate, scalem move the ROI or the Text Box.
+// Modifies the Selected ROIs for the drag. Can rotate, scale move the ROI or the Text Box.
 - (BOOL) mouseDraggedForROIs:(NSEvent *)event
 {
 	BOOL action = NO;
@@ -15416,7 +15416,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	else
 	{
         // NOT softwareInterpolation, NOT intFULL32BITPIPELINE
-		if (isRGB|| [curDCM thickSlabVRActivated])
+		if (isRGB || [curDCM thickSlabVRActivated])
 		{
 #ifdef DEBUG_ISSUE_E4
             NSLog(@"loadTextureIn %d NOT softwareInterpolation, NOT intFULL32BITPIPELINE [if C1]", __LINE__);
@@ -15643,6 +15643,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #ifdef DEBUG_ISSUE_E4
                             NSLog(@"loadTextureIn %d, NOT isRGB, NOT intFULL32BITPIPELINE (case C1)", __LINE__);
                             // FIXME: need to load the correct program ?
+                            //[self setShaderProgramImage];
 #endif
 #ifdef WITH_OPENGL_32
                             GLenum target = GL_TEXTURE_RECTANGLE;
@@ -15653,7 +15654,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                             GLint internalFormat = GL_INTENSITY8;
                             GLenum format = GL_LUMINANCE;
 #endif
-                            glTexImage2D(target, 0,
+                            glTexImage2D(target, 0, // @@@ Opacity log table
                                          internalFormat,
                                          currWidth, currHeight, 0,
 
@@ -15718,7 +15719,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                 glTexParameteriv(target, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask); checkOpenGLErrors(__LINE__);
   #endif
                                 // Give the image to OpenGL
-                                glTexImage2D(target, 0,
+                                glTexImage2D(target, 0,  // @@@ preview, 2D view, Opacity linear table
                                              GL_RGBA,
                                              currWidth, currHeight, 0,
                                              GL_RED, GL_FLOAT,

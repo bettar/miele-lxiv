@@ -676,8 +676,8 @@ typedef NS_ENUM(NSInteger, BlendingMode2DType) {
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx;
 - (BOOL)_checkHasChanged:(BOOL)flag;
 
-// Methods for mouse drag response  Can be modified for subclassing
-// This allow the various tools to  have different responses in different subclasses.
+// Methods for mouse drag response. They can be modified for subclassing
+// This allow the various tools to have different responses in different subclasses.
 // Making it easy to modify mouseDragged:
 - (BOOL)checkROIsForHitAtPoint:(NSPoint)point forEvent:(NSEvent *)event;
 - (BOOL)mouseDraggedForROIs:(NSEvent *)event;

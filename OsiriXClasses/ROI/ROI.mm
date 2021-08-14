@@ -51,6 +51,7 @@
 static float fontHeight = 0;
 static NSString *defaultName;
 static int gUID = 0;
+static const float ARROWSIZEConstant = 25.0f;
 
 extern long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer);
 extern void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *outCount, NSPoint clipMin, NSPoint clipMax);
@@ -548,7 +549,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
         // If there is another line, compute Cobb's angle, and draw reference line thicker background
         if (curView &&
             displayCobbAngle && // enabled from main menu
-            self.displayCMOrPixels == NO)
+            self.displayCMOrPixels == NO)  // Why 'self' ?
         {
             NSArray *roiList = curView.curRoiList;
             
@@ -1507,8 +1508,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 }
 
 #pragma mark - tArrow (14)
-
-static const float ARROWSIZEConstant = 25.0f;
 
 // Define an array of 3 NSPoint 'arh', the triangle representing the arrow head
 - (void) tArrow_defineHead: (NSPoint) a
@@ -5696,7 +5695,7 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
         
 		for (int i = 0; i < CIRCLE_RESOLUTION ; i++ )
 		{
-			angle = i * 2 * M_PI /CIRCLE_RESOLUTION;
+			angle = i * 2 * M_PI / CIRCLE_RESOLUTION;
 		  
             NSPoint pt = NSMakePoint(rect.origin.x + rect.size.width*cos(angle),
                                      rect.origin.y + rect.size.height*sin(angle));
@@ -6210,7 +6209,7 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 							break;
 						}
                     }
-				}
+				} // if
 			}
                 break;
 			
@@ -6291,7 +6290,7 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 //				break;
 //			}
             default:
-		break;
+                break;
 		}
 	}
 	
@@ -6412,7 +6411,7 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
                 
             default:
                 break;
-		}
+		} // switch
 		
 		clickPoint = pt;
 	}
@@ -7339,14 +7338,12 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
             textureWidth /= 4;
             textureWidth *= 4;
             textureWidth += 4;
-            
         }
 
         if (textureHeight % 4) {
             textureHeight /= 4;
             textureHeight *= 4;
             textureHeight += 4;
-            
         }
 
         if (textureWidth != oldTextureWidth ||
@@ -8396,7 +8393,7 @@ void gl_round_box(int mode,
     if (hidden)
         return NO;
     
-	// NO text for Calcium Score
+	// No text for Calcium Score
 	if (_displayCalciumScoring)
 		return NO;
 		
@@ -8803,7 +8800,7 @@ void gl_round_box(int mode,
              prepareTextualData: YES];
 }
 
-- (void) drawOneROI :(float) scaleValue :(NSPoint) offset :(NSSize) spacing;
+- (void) drawOneROI :(float) scaleValue :(NSPoint) offset :(NSSize) spacing
 {
     [self drawROIWithScaleValue: scaleValue
                          offset: offset

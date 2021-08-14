@@ -728,7 +728,7 @@ static bool isGrantedNotificationAccess = false;
         return NO;
     
     if (version.majorVersion == 11 &&
-         version.minorVersion > 4)
+        version.minorVersion > 5)
     {
         return NO;
     }
@@ -3717,8 +3717,13 @@ API_AVAILABLE(macos(10.14))
         
         NSInteger button = [alert runModal];
         
+        #if 0 //def MACAPPSTORE
+        NSString *upgradePage = URL_MIELE_MAC_APP_STORE;
+        #else
+        NSString *upgradePage = URL_MIELE_WEB_PAGE;
+        #endif
         if (button == NSAlertSecondButtonReturn)
-            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_WEB_PAGE]];
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:upgradePage]];
 #endif
     }
     

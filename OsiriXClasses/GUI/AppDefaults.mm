@@ -595,7 +595,7 @@ static NSHost *currentHost = nil;
 		[points addObject:[NSNumber numberWithLong: 192L]];
 		
 		[colors addObject:[NSArray arrayWithObjects: @1.0F, @1.0F, @1.0F, nil]];
-		[points addObject:[NSNumber numberWithLong: 256]];
+		[points addObject:[NSNumber numberWithLong: 256L]];
 		
 		[aCLUTFilter setObject:colors forKey:@"Colors"];
 		[aCLUTFilter setObject:points forKey:@"Points"];
@@ -879,8 +879,8 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject:@"6" forKey:@"PETWLWWTOSUV"];
 	[defaultValuesDic setObject:@(EXPORT_SIZE_CURRENT) forKey:EXPORTMATRIXFOR3D_KEY];
 	[defaultValuesDic setObject:@"0" forKey:@"ROITEXTNAMEONLY"];
-	[defaultValuesDic setObject:@"0" forKey:@"DEFAULTLEFTTOOL"];	// WL TOOL
-	[defaultValuesDic setObject:@"2" forKey:@"DEFAULTRIGHTTOOL"];	// ZOOM TOOL
+	[defaultValuesDic setObject:@(tWL) forKey:@"DEFAULTLEFTTOOL"];
+	[defaultValuesDic setObject:@(tZoom) forKey:@"DEFAULTRIGHTTOOL"];
 	[defaultValuesDic setObject:@"1" forKey:@"AUTOCLEANINGSPACE"];
 //	[defaultValuesDic setObject:@"1" forKey:@"AUTOCLEANINGSPACEPRODUCED"];
 //	[defaultValuesDic setObject:@"1" forKey:@"AUTOCLEANINGSPACEOPENED"];
@@ -1122,7 +1122,6 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject:@"ISO_IR 100" forKey: @"STRINGENCODING"];
 	[defaultValuesDic setObject:@"1" forKey:@"syncPreviewList"];
 	[defaultValuesDic setObject:@"1" forKey:@"openPDFwithPreview"];
-	[defaultValuesDic setObject:@"1" forKey:@"ROIArrowThickness"];
 	[defaultValuesDic setObject:@"1" forKey:@"loopScrollWheel"];
 	[defaultValuesDic setObject:@"1" forKey:@"UseJPEGColorSpace"];
 	[defaultValuesDic setObject:@"0" forKey:@"displayCobbAngle"];
@@ -1237,6 +1236,7 @@ static NSHost *currentHost = nil;
 	
 #pragma mark  ROI Default
 
+    [defaultValuesDic setObject:@1.0F forKey:@"ROIArrowThickness"];
     [defaultValuesDic setObject:@2.0F forKey:@"ROIThickness"];
 	[defaultValuesDic setObject:@3.0F forKey:@"ROITextThickness"];
 	[defaultValuesDic setObject:@1.0F forKey:@"ROIOpacity"];
