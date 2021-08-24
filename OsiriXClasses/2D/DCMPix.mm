@@ -3181,7 +3181,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	[self fillROI:roi :newVal :minValue :maxValue :outside :2 :-1];
 }
 
-- (int)calciumCofactorForROI:(ROI *)roi threshold:(int)threshold{
+- (int)calciumCofactorForROI:(ROI *)roi threshold:(int)threshold
+{
 	int cf1Count = 0;
 	int cf2Count = 0;
 	int cf3Count = 0;
@@ -6998,7 +6999,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             double dOffset = offset;
                             double dSlope = slope;
                             
-                            if (fIsSigned > 0)
+                            if (fIsSigned)
                             {
                                 unsigned long x = height * width;
                                 while (x-- > 0)
@@ -8452,7 +8453,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 + (NSPoint) rotatePoint:(NSPoint)pt
             aroundPoint:(NSPoint)c
-                  angle:(float)angleRad;
+                  angle:(float)angleRad
 {
 	NSPoint rot;
 	

@@ -16633,7 +16633,7 @@ long				x, y;
 	}
 }
 
-- (void)bringToFrontROI:(ROI*) roi;
+- (void)bringToFrontROI:(ROI*) roi
 {
 	if ([roi groupID]==0.0) // not grouped
 	{
@@ -16661,7 +16661,7 @@ long				x, y;
 	}
 }
 
-- (void)sendToBackROI:(ROI*) roi;
+- (void)sendToBackROI:(ROI*) roi
 {
 	if ([roi groupID]==0.0) // not grouped
 	{

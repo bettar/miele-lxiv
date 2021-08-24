@@ -69,8 +69,8 @@ PURPOSE.
    forTableColumn:(NSTableColumn *)aTableColumn
 			  row:(NSInteger)rowIndex
 {
-	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
-	ROI				*editedROI = [curRoiList objectAtIndex: rowIndex];
+	NSMutableArray *curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
+	ROI *editedROI = [curRoiList objectAtIndex: rowIndex];
 	
 
 //	[editedROI setName:anObject];

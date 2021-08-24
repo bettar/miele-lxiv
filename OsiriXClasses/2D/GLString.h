@@ -105,7 +105,7 @@
 - (NSColor *) borderColor; // get the pre-multiplied border color (includes alpha) alpha of 0.0 means no border
 - (BOOL) staticFrame; // returns whether or not a static frame will be used
 
-- (NSSize) frameSize; // returns either dynamc frame (text size + margins) or static frame size (switch with staticFrame)
+- (NSSize) frameSize; // returns either dynamic frame (text size + margins) or static frame size (switch with staticFrame)
 
 - (NSSize) marginSize; // current margins for text offset and pads for dynamic frame
 

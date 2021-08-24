@@ -542,7 +542,7 @@ enum
 - (IBAction) closeModal:(id) sender;
 
 /** Brings ROI to front of ROI array for current image.
-* If roi is in a group, the whole group is brought to the front
+* If ROI is in a group, the whole group is brought to the front
 * @param roi The ROI that should be up front
 */
 - (void)bringToFrontROI:(ROI*)roi;
