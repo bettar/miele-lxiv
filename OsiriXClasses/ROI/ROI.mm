@@ -418,7 +418,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 @synthesize groupID, mouseOverROI;
 @synthesize isLayerOpacityConstant, canColorizeLayer, displayTextualData, clickPoint;
 
-#pragma mark - tMeasure (5), tArrow (14), maybe tOpenPolygon (10)
+#pragma mark - tMeasure (5), tArrow (14), also tOpenPolygon (10)
 
 - (void) tMeasure_tArrow_drawWithScaleValue:(float)scaleValue
                                      offset:(NSPoint)offset
@@ -1479,7 +1479,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     if (stringTex == nil )
-        self.name = name;
+        self.name = name;  // Assigning to itself ?
     
     [stringTex setFlippedX: [curView xFlipped] Y:[curView yFlipped]];
     
@@ -2206,11 +2206,11 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                                                    ((int)roiPoint2.y >= usRegionMinY) && ((int)roiPoint2.y <= usRegionMaxY));
                         }
                     }
-                    
                 }
 
                 //if (pixelSpacingX != 0 && pixelSpacingY != 0 )
-                if (roiInside2DUSRegion || ((pixelSpacingX != 0 && pixelSpacingY != 0) && (![[self pix] hasUSRegions])))
+                if (roiInside2DUSRegion ||
+                    ((pixelSpacingX != 0 && pixelSpacingY != 0) && (![[self pix] hasUSRegions])))
                 // <--- US Regions (Brush)
                 {
                     if (area*pixelSpacingX*pixelSpacingY < 1.)
@@ -7779,8 +7779,8 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 			switch (mode)
 			{
 				case ROI_drawing:
-                    
                     [[points lastObject] setPoint: pt];
+
                     if (type == tMeasure)
                     {
                         if ((modifier & NSEventModifierFlagShift) &&
@@ -8067,14 +8067,14 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 - (void) setThickness: (float) a
              globally: (BOOL) g
 {
-	float v = roundf( a);	// To reduce the Opengl memory leak - PointSize LineWidth
+	float v = roundf( a);	// To reduce the OpenGL memory leak - PointSize LineWidth
 	
 	if (v < 1) v = 1;
 	if (v > 20) v = 20;
 	
 	thickness = v;
     
-     NSLog(@"%s %d, thickness: %f", __FUNCTION__, __LINE__, thickness);
+    //NSLog(@"%s %d, thickness: %f", __FUNCTION__, __LINE__, thickness);
 	
 	if (type == tPlain)
 	{
@@ -8156,7 +8156,7 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 		case tDynAngle:
 		case tAxis:
         case tTAGT:
-			if (selectedModifyPoint>3 && selectedModifyPoint >= 0)
+			if (selectedModifyPoint>3 && selectedModifyPoint >= 0) // ?!
 			{
 				if (mode == ROI_selectedModify)
 					[points removeObjectAtIndex: selectedModifyPoint];
@@ -8828,7 +8828,8 @@ void gl_round_box(int mode,
     
     if (physicalUnitsXYDirection == nil)
         physicalUnitsXYDirection = [[NSArray arrayWithObjects:
-                                     NSLocalizedString( @"none", nil), @"%",
+                                     NSLocalizedString( @"none", nil),
+                                     @"%",
                                      NSLocalizedString( @"dB", @"decibel"),
                                      NSLocalizedString( @"cm", nil),
                                      NSLocalizedString( @"sec", @"second"),
@@ -8838,7 +8839,8 @@ void gl_round_box(int mode,
                                      NSLocalizedString( @"cm\u00B2", @"cm2"),
                                      NSLocalizedString( @"cm\u00B2/sec", @"cm2/sec"),
                                      NSLocalizedString( @"cm\u00B3", @"cm3"),
-                                     NSLocalizedString( @"cm\u00B3/sec", @"cm3/sec"), @"\u00B0",
+                                     NSLocalizedString( @"cm\u00B3/sec", @"cm3/sec"),
+                                     @"\u00B0",
                                      nil] retain];
     
     return physicalUnitsXYDirection;
@@ -9614,7 +9616,7 @@ void gl_round_box(int mode,
 #pragma mark highlight selected
 					if ((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 					{
-						[curView window];
+						[curView window];  // What is this doing ?
 						
 						NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: nil];
 						tempPt = [curView ConvertFromNSView2GL:tempPt];
@@ -10396,7 +10398,7 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 
 - (NSPoint)rotatePoint:(NSPoint)point
              withAngle:(float)alphaDeg
-          aroundCenter:(NSPoint)center;
+          aroundCenter:(NSPoint)center
 {
     if (alphaDeg == 0)
         return point;
@@ -10407,14 +10409,14 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	return NSMakePoint(x+center.x, y+center.y);
 }
 
-- (void)setIsLayerOpacityConstant:(BOOL)boo;
+- (void)setIsLayerOpacityConstant:(BOOL)boo
 {
 	isLayerOpacityConstant = boo;
 	while ([ctxArray count])
         [self deleteTexture: [ctxArray lastObject]];
 }
 
-- (void)setCanColorizeLayer:(BOOL)boo;
+- (void)setCanColorizeLayer:(BOOL)boo
 {
 	canColorizeLayer = boo;
 	while ([ctxArray count])
@@ -10428,7 +10430,7 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 
 #define DEFAULTSPLINESCALE 5.0
 
--(NSMutableArray*) splinePoints:(float) scale;
+-(NSMutableArray*) splinePoints:(float) scale
 {
     if (scale <= previousScaleForSplinePoints && cachedSplinePoints)
         return cachedSplinePoints;
@@ -10603,9 +10605,9 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 {
     [self computeROIIfNedeed];
     
-    NSString *s = [NSString stringWithFormat:@"%@ %p t:%d <%@> mean:%.3f min:%.3fb max:%.3f tot:%.3f dev:%.3f",
+    NSString *s = [NSString stringWithFormat:@"%@ %p t:%d <%@> mean:%.3f min:%.3fb max:%.3f tot:%.3f dev:%.3f, mode %d, %@",
                    [self class], self,
-                   type, name, rmean, rmin, rmax, rtotal, rdev];
+                   type, name, rmean, rmin, rmax, rtotal, rdev, mode, points];
     
     if ([curView blendingView])
     {

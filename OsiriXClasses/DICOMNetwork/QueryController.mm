@@ -3900,6 +3900,7 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
     if ([selectedItems count] == 0)
         return;
 
+#if 0
     __block NSInteger idx;
     if ([NSThread isMainThread])
         idx = [sendToPopup indexOfSelectedItem];
@@ -3908,9 +3909,11 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
             idx = [sendToPopup indexOfSelectedItem];
         });
     }
+    if (idx > 0 && forViewing)
+#else
+    if ([sendToPopup indexOfSelectedItem] > 0 && forViewing)
+#endif
 
-    if (idx > 0 &&
-        forViewing)
     {
         if (showGUI)
             NSRunCriticalAlertPanel(NSLocalizedString( @"DICOM Query & Retrieve",nil),
@@ -4126,16 +4129,22 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 			
 			NSDictionary *dstDict = nil;
             
-            __block NSInteger idx;
+#if 0 // original
+            __block NSInteger idx = -1; //NSNotFound;
             if ([NSThread isMainThread])
                 idx = [sendToPopup indexOfSelectedItem];
             else {
-                dispatch_async(dispatch_get_main_queue(), ^{
+                dispatch_sync(dispatch_get_main_queue(), ^{
                     idx = [sendToPopup indexOfSelectedItem];
                 });
             }
 
+            assert(idx != -1);
             if (idx > 0)
+#else
+            NSInteger idx = [sendToPopup indexOfSelectedItem];
+            if (idx >= 2)
+#endif
 			{
 				NSInteger index = idx - 2;
 				

@@ -2482,7 +2482,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         [[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
     }
 }
-
+// Code similar to setIndex
 - (void) setIndexWithReset:(short) index :(BOOL) sizeToFit
 {
 	TextureComputed32bitPipeline = NO;
@@ -2966,7 +2966,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		N2LogExceptionWithStackTrace(e);
 	}
 }
-
+// Code similar to setIndexWithReset
 - (void) setIndex:(short) index
 {
 	[self delete3DROIsAliases];
@@ -3824,10 +3824,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		@try 
 		{
 			[self mouseMoved: event];	// Update some variables...
-		
 			if (curImage != startImage && (matrix && [BrowserController currentBrowser]))
 			{
-                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];  if (cols < 1) cols = 1;
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                if (cols < 1) cols = 1;
                 NSButtonCell *cell = [matrix cellAtRow:curImage/cols column:curImage%cols];
 				[cell performClick:nil];
 				[matrix selectCellAtRow :curImage/cols column:curImage%cols];
@@ -3849,10 +3849,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 				}
 			}
 			
-			if ([self roiTool: tool] )
+			if ([self roiTool: tool])
 			{
-				NSPoint     eventLocation = [event locationInWindow];
-				NSPoint		tempPt = [self convertPoint:eventLocation fromView: nil];
+				NSPoint eventLocation = [event locationInWindow];
+				NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 				
 				tempPt = [self ConvertFromNSView2GL:tempPt];
 				
@@ -4939,8 +4939,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	if (_mouseDownTimer)
 		[self deleteMouseDownTimer];
 	
-	if ([event type] == NSLeftMouseDown)
-		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval: self.timeIntervalForDrag target:self selector:@selector(startDrag:) userInfo: event  repeats:NO] retain];
+    if ([event type] == NSLeftMouseDown) { NSLog(@"%s %d Start timer", __FUNCTION__, __LINE__);
+        _mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval: self.timeIntervalForDrag target:self selector:@selector(startDrag:) userInfo: event  repeats:NO] retain];}
 	
     if (dcmPixList)
 	{

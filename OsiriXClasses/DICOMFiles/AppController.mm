@@ -728,7 +728,7 @@ static bool isGrantedNotificationAccess = false;
         return NO;
     
     if (version.majorVersion == 11 &&
-        version.minorVersion > 5)
+        version.minorVersion > 6)
     {
         return NO;
     }
@@ -2913,13 +2913,13 @@ static BOOL initialized = NO;
                 NSLog(@"Application Support dir: %@", NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject);
                 NSLog(@"Shared Public dir______: %@", NSSearchPathForDirectoriesInDomains(NSSharedPublicDirectory, NSUserDomainMask, YES).firstObject);
                 //NSLog(@"Preference Panes Dir___: %@", NSSearchPathForDirectoriesInDomains(NSPreferencePanesDirectory, NSUserDomainMask, YES).firstObject);
-
+#endif
                 NSString *bundleIdentifier = [d objectForKey:@"CFBundleIdentifier"];
                 NSLog(@"Defaults file__________: %@/Preferences/%@.plist",
                       NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES).firstObject,
                       bundleIdentifier);
-
                 NSLog(@"DATABASELOCATION_______: %@", [DicomDatabase defaultBaseDirPath]);
+#ifndef NDEBUG
                 NSLog(@"resourcePath___________: %@", [[NSBundle mainBundle] resourcePath]);       // Contents/Resources
                 NSLog(@"sharedSupportPath______: %@", [[NSBundle mainBundle] sharedSupportPath]);  // Contents/SharedSupport
                 NSLog(@"builtInPlugInsPath_____: %@", [[NSBundle mainBundle] builtInPlugInsPath]); // Contents/PlugIns
