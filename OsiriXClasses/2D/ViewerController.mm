@@ -6360,9 +6360,9 @@ static ViewerController *draggedController = nil;
     }
 	else
 	{
-	    NSArray			*types = [NSArray arrayWithObjects:NSFilenamesPboardType, nil];
-		NSString		*desiredType = [paste availableTypeFromArray:types];
-		NSData			*carriedData = nil;
+	    NSArray *types = [NSArray arrayWithObjects:NSFilenamesPboardType, nil];
+		NSString *desiredType = [paste availableTypeFromArray:types];
+		NSData *carriedData = nil;
 		
 		if (desiredType)
             carriedData = [paste dataForType: desiredType];
@@ -6484,7 +6484,7 @@ static ViewerController *draggedController = nil;
 	if (draggedController == nil)
 	{
 		draggedController = self;
-		NSLog(@"catched");
+		NSLog(@"%s", __FUNCTION__);
 	}
 	
     if ((NSDragOperationGeneric & [sender draggingSourceOperationMask]) == NSDragOperationGeneric)
@@ -6502,7 +6502,7 @@ static ViewerController *draggedController = nil;
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender
 {
-	NSLog(@"exited");
+    NSLog(@"%s", __FUNCTION__);
 	
     // we aren't particularily interested in this so we will do nothing
     // this is one of the methods that we do not have to implement
@@ -6528,12 +6528,12 @@ static ViewerController *draggedController = nil;
     // We don't do anything in our implementation
     // this could be ommitted since NSDraggingDestination is an infomal
     // protocol and returns nothing
-	NSLog(@"draggingEnded");
+    NSLog(@"%s", __FUNCTION__);
 }
 
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender
 {
-	NSLog(@"prepareForDragOperation");
+    NSLog(@"%s", __FUNCTION__);
     return YES;
 }
 

@@ -561,7 +561,7 @@ enum
 - (BOOL) isPostprocessed;
 
 /** returns postprocessed status */
-- (BOOL) postprocessed;
+- (BOOL) postprocessed; // redundant, same as isPostprocessed
 
 /** Apply the opacity setting
 * @param str The name of the opacity setting.  Should be one of the menu item name from the opacity menu 

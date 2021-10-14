@@ -91,8 +91,13 @@
     if (!base) {
         base = [[NSMutableDictionary alloc] init];
         
-        for (NSString* tpl in [NSArray arrayWithObjects: @"dicom3tools-libsrc-strval-base", @"osirix-complementary", nil]) {
-            NSString* str = [NSString stringWithContentsOfFile:[[NSBundle bundleForClass:[self class]] pathForResource:tpl ofType:@"tpl"] encoding:NSUTF8StringEncoding error:nil];
+        for (NSString* tpl in [NSArray arrayWithObjects:
+                               @"dicom3tools-libsrc-strval-base",
+                               @"osirix-complementary",
+                               nil]) {
+            NSString* str = [NSString stringWithContentsOfFile:[[NSBundle bundleForClass:[self class]] pathForResource:tpl ofType:@"tpl"]
+                                                      encoding:NSUTF8StringEncoding
+                                                         error:nil];
             str = [str stringByReplacingOccurrencesOfString:@"\r" withString:@"\n"];
             str = [str stringByReplacingOccurrencesOfString:@"  " withString:@" "];
             str = [str stringByReplacingOccurrencesOfString:@", \n" withString:@",\n"];

@@ -234,7 +234,7 @@ unsigned char* CreateIconFrom16 (float* image,
 				iconPtr = icon + rowBytes*i;
 				for (long j = 0; j < destWidth; j++)         // columns
 				{
-					for (int x = 1; x< 4; x++, iconPtr++)		// Don't take alpha channel
+					for (int x = 1; x < 4; x++, iconPtr++)		// Don't take alpha channel
 					{
 						value = *( rgbImage + line + x + (long) (j * ratio)*4); //ARGB
 						

@@ -6039,7 +6039,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 				
 				NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 				
-				// get point in Open GL
+				// get point in OpenGL
 				tempPt = [self ConvertFromNSView2GL:tempPt];
 				
 				// check ROIs for hit Test.
@@ -6290,8 +6290,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	{
 		NSPoint oo = [self convertPointToBacking: start];
 		
-		oo.x = (oo.x - drawingFrameRect.size.width/2.)  - (((oo.x - drawingFrameRect.size.width/2. )* scaleValue) / startScaleValue);
-		oo.y = (oo.y - drawingFrameRect.size.height/2.) - (((oo.y - drawingFrameRect.size.height/2.)* scaleValue) / startScaleValue);
+		oo.x = (oo.x - drawingFrameRect.size.width/2.)  - (((oo.x - drawingFrameRect.size.width/2. ) * scaleValue) / startScaleValue);
+		oo.y = (oo.y - drawingFrameRect.size.height/2.) - (((oo.y - drawingFrameRect.size.height/2.) * scaleValue) / startScaleValue);
 		
 		oo.y = -oo.y;
 		
@@ -12458,7 +12458,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #pragma mark subclasses
 				[self subDrawRect: aRect];
 
-                self.scaleValue = scaleValue;  // TBC: assigning to itself ?
+                self.scaleValue = scaleValue;
 				
                 //NSLog(@"%s %d, %@, %p, Xref lines: %d", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, DISPLAYCROSSREFERENCELINES);
 
@@ -15135,34 +15135,39 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 					cgreenTable[ i] = gT[ i] * greenFactor;
 					cblueTable[ i]  = bT[ i] * blueFactor;
 				}
-//#if __BIG_ENDIAN__
+#if __BIG_ENDIAN__
 				vImageTableLookUp_ARGB8888(&dest, &dest,
                                            (Pixel_8*) currentAlphaTable,
                                            (Pixel_8*) &credTable,
                                            (Pixel_8*) &cgreenTable,
                                            (Pixel_8*) &cblueTable,
                                            0);
-//#else
-//				vImageTableLookUp_ARGB8888(&dest, &dest,
-//                                           (Pixel_8*) &cblueTable,
-//                                           (Pixel_8*) &cgreenTable,
-//                                           (Pixel_8*) &credTable,
-//                                           (Pixel_8*) currentAlphaTable,
-//                                           0);
-//#endif
+#else
+				vImageTableLookUp_ARGB8888(&dest, &dest,
+                                           (Pixel_8*) &cblueTable,
+                                           (Pixel_8*) &cgreenTable,
+                                           (Pixel_8*) &credTable,
+                                           (Pixel_8*) currentAlphaTable,
+                                           0);
+#endif
 			}
 			else
 			{
-//#if __BIG_ENDIAN__
+#if __BIG_ENDIAN__
 				vImageTableLookUp_ARGB8888(&dest, &dest,
                                            (Pixel_8*) currentAlphaTable,
                                            (Pixel_8*) rT,
                                            (Pixel_8*) gT,
                                            (Pixel_8*) bT,
                                            0);
-//#else
-				//vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) bT, (Pixel_8*) gT, (Pixel_8*) rT, (Pixel_8*) currentAlphaTable, 0);
-//#endif
+#else
+				vImageTableLookUp_ARGB8888( &dest, &dest,
+                                           (Pixel_8*) bT,
+                                           (Pixel_8*) gT,
+                                           (Pixel_8*) rT,
+                                           (Pixel_8*) currentAlphaTable,
+                                           0);
+#endif
 			}
 		}
 		else if (redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0)
@@ -15190,16 +15195,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 				cblueTable[ i]  = bT[ i] * blueFactor;
 			}
 
-//#if __BIG_ENDIAN__
+#if __BIG_ENDIAN__
 			vImageTableLookUp_ARGB8888(&dest, &dest,
                                        (Pixel_8*) currentAlphaTable,
                                        (Pixel_8*) &credTable,
                                        (Pixel_8*) &cgreenTable,
                                        (Pixel_8*) &cblueTable,
                                        0);
-//#else
-			//vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &cblueTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &credTable, (Pixel_8*) currentAlphaTable, 0);
-//#endif
+#else
+			vImageTableLookUp_ARGB8888( &dest, &dest,
+                                       (Pixel_8*) &cblueTable,
+                                       (Pixel_8*) &cgreenTable,
+                                       (Pixel_8*) &credTable,
+                                       (Pixel_8*) currentAlphaTable,
+                                       0);
+#endif
 		}
 	}
 	else if (localColorTransfer || blending)  // && grayscale
@@ -15480,6 +15490,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #ifdef WITH_GLEW
     NSLog(@"%s %d, GLEW_APPLE_texture_range %d", __FILE__, __LINE__, GLEW_APPLE_texture_range);
     if (GLEW_APPLE_texture_range)
+#else
+    if (checkExtension("GL_APPLE_texture_range"))
 #endif
     {
         glTextureRangeAPPLE(_textRectMode, (*tW) * (*tH) * 4, baseAddr);
@@ -15719,8 +15731,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                 glTexParameteriv(target, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask); checkOpenGLErrors(__LINE__);
   #endif
                                 // Give the image to OpenGL
-                                glTexImage2D(target, 0,  // @@@ preview, 2D view, Opacity linear table
-                                             GL_RGBA,
+                                glTexImage2D(target, 0,  // preview, 2D view, Opacity linear table
+                                             GL_R32F, //GL_RGBA,
                                              currWidth, currHeight, 0,
                                              GL_RED, GL_FLOAT,
                                              pBuffer);
@@ -16901,7 +16913,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     if ([[image valueForKey:@"scale"] floatValue] != 0)
                         [self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
                     else
-                        [self scaleToFit];
+                        [self scaleToFit]; // "scale" == 0
                 }
                 else if (!onlyImage)
                 {
@@ -16917,19 +16929,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                 [self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
                         }
                         else
-                            [self scaleToFit];
+                            [self scaleToFit]; // "scale" != 0
                     }
                     else
-                        [self scaleToFit];
+                        [self scaleToFit]; // ! "scale"
                 }
                 else 
-                    [self scaleToFit];
+                    [self scaleToFit]; // onlyImage
             }
             else
-                [self scaleToFit];
+                [self scaleToFit]; // "AlwaysScaleToFit"
         }
         else
-            [self scaleToFit];
+            [self scaleToFit]; // "previewDatabase"
 		
 		if ([image valueForKey:@"rotationAngle"])
 			[self setRotation: [[image valueForKey:@"rotationAngle"] floatValue]];

@@ -1312,7 +1312,14 @@ extern int delayedTileWindows;
     NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"dciodvfy"] path];
     [theTask setLaunchPath:launchPath];
 
+#if 1
 	[theTask setArguments: [NSMutableArray arrayWithObject: srcFile]];
+#else
+    [theTask setArguments: [NSArray arrayWithObjects:
+                            @"-new", // since 20210831
+                            srcFile,
+                            nil]];
+#endif
 	[theTask setStandardError: thePipe];
 	[theTask launch];
 	
@@ -1320,10 +1327,14 @@ extern int delayedTileWindows;
 	
     while( [theTask isRunning])
         [NSThread sleepForTimeInterval: 0.1];
-	
-	NSString *resString = nil;
+
+#if 1
+    //[theTask waitUntilExit];
+    if ([theTask terminationStatus] != EXIT_SUCCESS)
+        NSLog(@"dciodvfy terminated with exit code %i", [theTask terminationStatus]);
+#endif
     
-    resString = [[[NSString alloc] initWithData:resData encoding: NSUTF8StringEncoding] autorelease];
+	NSString *resString = [[[NSString alloc] initWithData:resData encoding: NSUTF8StringEncoding] autorelease];
     
     if (resString == nil)
         resString = [[[NSString alloc] initWithData:resData encoding: NSASCIIStringEncoding] autorelease];

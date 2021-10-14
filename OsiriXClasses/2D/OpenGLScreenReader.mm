@@ -122,10 +122,11 @@
     CGContextRef bitmap = CGBitmapContextCreate(mData, mWidth, mHeight, 8, mByteWidth,
                                     cSpace,  
 	#if __BIG_ENDIAN__
-		kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Big /* XRGB Big Endian */);
+		kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Big /* XRGB Big Endian */
 	#else
-		kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little /* XRGB Little Endian */);
-	#endif                                    
+		kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little /* XRGB Little Endian */
+	#endif
+                                                );
     NSAssert( bitmap != NULL, @"CGBitmapContextCreate failure");
 
     // Get rid of color space

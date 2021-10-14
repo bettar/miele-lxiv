@@ -470,7 +470,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
     glGetIntegerv( GL_LIST_INDEX, &curListIndex );
     if (curListIndex != 0 )
     {
-        [ NSFont doOpenGLLog:@"Display list already under construction" ];
+        [NSFont doOpenGLLog:@"Display list already under construction" ];
         return FALSE;
     }
 #endif

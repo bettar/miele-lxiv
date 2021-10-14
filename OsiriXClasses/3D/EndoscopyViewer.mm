@@ -80,7 +80,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	
 	[[vrController view] setProjectionMode: 2]; // endoscopy mode
     
-	//[[vrController view] setEngine:1]; // Open GL engine
+	//[[vrController view] setEngine:1]; // OpenGL engine
 	
 	[vrController setCurrentTool:tCamera3D]; // 3D camera rotate tool
 	
