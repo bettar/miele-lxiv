@@ -6657,7 +6657,7 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 //	}
 	else
 	{
-        NSLog(@"%s %d, type:%d", __FUNCTION__, __LINE__, type);
+        //NSLog(@"%s %d, type:%d", __FUNCTION__, __LINE__, type);
 		if ([[points lastObject] isNearToPoint: pt : scale/(thickness*backingScaleFactor) :[[curView curDCM] pixelRatio]] == NO)
 		{
 			mypt = [[MyPoint alloc] initWithPoint: pt];
@@ -7961,7 +7961,7 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 	if (a == nil)
 		a = @"";
 	
-	if (name != a && ![name isEqualToString:a])
+	if (name != a && ![name isEqualToString:a]) // checking twice the same condition ?
 	{
 		[name release];
 		
@@ -10319,7 +10319,7 @@ void gl_round_box(int mode,
 
 #ifdef WITH_OPENGL_32
     // TODO:
-    NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+    //NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
 #else
     // The cached hint specifies to cache texture data in video memory. This hint is recommended when you have textures that you plan to use multiple times or that use linear filtering
 	glTexParameteri(target, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);

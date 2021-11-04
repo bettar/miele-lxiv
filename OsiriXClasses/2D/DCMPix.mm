@@ -4064,8 +4064,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     return copy;
 }
 
-//#include "DICOMFiles/BioradHeader.h"
-#include <MieleAPI/BioradHeader.h>
+#include "DICOMFiles/BioradHeader.h"
+//#include <MieleAPI/BioradHeader.h>
 
 -(void) LoadBioradPic
 {
@@ -11010,77 +11010,76 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
     DCMAttribute *attr = [dcmObject attributeForTag: [DCMAttributeTag tagWithGroup: group element: element]];
     
-    if (attr)
+    if (!attr)
+        return nil;
+
+    NSMutableString *result = nil;
+    
+    for (id field in [attr values])
     {
-        NSMutableString *result = nil;
-        
-        for (id field in [attr values])
+        if ([field isKindOfClass:[NSString class]])
         {
+            NSString *vr = [attr vr];
+            
+            if ([vr isEqualToString:@"DS"])
+                field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
+            
+            if (result == nil)
+                result = [NSMutableString stringWithString: field];
+            else
+                [result appendFormat: @" / %@", field];
+        }
+        else if ([field isKindOfClass:[NSNumber class]])
+        {
+            NSString *vr = [attr vr];
+            
+            if ([vr isEqualToString:@"FD"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
+            if ([vr isEqualToString:@"FL"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
+            
             if ([field isKindOfClass:[NSString class]])
             {
-                NSString *vr = [attr vr];
-                
-                if ([vr isEqualToString:@"DS"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
-                
                 if (result == nil)
                     result = [NSMutableString stringWithString: field];
                 else
                     [result appendFormat: @" / %@", field];
             }
-            else if ([field isKindOfClass:[NSNumber class]])
+            else
             {
-                NSString *vr = [attr vr];
-                
-                if ([vr isEqualToString:@"FD"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
-                if ([vr isEqualToString:@"FL"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
-                
-                if ([field isKindOfClass:[NSString class]])
-                {
-                    if (result == nil)
-                        result = [NSMutableString stringWithString: field];
-                    else
-                        [result appendFormat: @" / %@", field];
-                }
+                if (result == nil)
+                    result = [NSMutableString stringWithString: [field stringValue]];
                 else
-                {
-                    if (result == nil)
-                        result = [NSMutableString stringWithString: [field stringValue]];
-                    else
-                        [result appendFormat: @" / %@", [field stringValue]];
-                }
-            }
-            else if ([field isKindOfClass:[NSCalendarDate class]])
-            {
-                NSString *vr = [attr vr];
-                if ([vr isEqualToString:@"DA"])
-                {
-                    if (result == nil)
-                        result = [NSMutableString stringWithString: [[NSUserDefaults dateFormatter] stringFromDate:field]];
-                    else
-                        [result appendFormat: @" / %@", [[NSUserDefaults dateFormatter] stringFromDate:field]];
-                }
-                else if ([vr isEqualToString:@"TM"])
-                {
-                    if (result == nil)
-                        result = [NSMutableString stringWithString: [BrowserController TimeWithSecondsFormat: field]];
-                    else
-                        [result appendFormat: @" / %@", [BrowserController TimeWithSecondsFormat: field]];
-                }
-                else
-                {
-                    if (result == nil)
-                        result = [NSMutableString stringWithString: [BrowserController DateTimeWithSecondsFormat: field]];
-                    else
-                        [result appendFormat: @" / %@", [BrowserController DateTimeWithSecondsFormat: field]];
-                }
+                    [result appendFormat: @" / %@", [field stringValue]];
             }
         }
-        
-        return result;
+        else if ([field isKindOfClass:[NSCalendarDate class]])
+        {
+            NSString *vr = [attr vr];
+            if ([vr isEqualToString:@"DA"])
+            {
+                if (result == nil)
+                    result = [NSMutableString stringWithString: [[NSUserDefaults dateFormatter] stringFromDate:field]];
+                else
+                    [result appendFormat: @" / %@", [[NSUserDefaults dateFormatter] stringFromDate:field]];
+            }
+            else if ([vr isEqualToString:@"TM"])
+            {
+                if (result == nil)
+                    result = [NSMutableString stringWithString: [BrowserController TimeWithSecondsFormat: field]];
+                else
+                    [result appendFormat: @" / %@", [BrowserController TimeWithSecondsFormat: field]];
+            }
+            else
+            {
+                if (result == nil)
+                    result = [NSMutableString stringWithString: [BrowserController DateTimeWithSecondsFormat: field]];
+                else
+                    [result appendFormat: @" / %@", [BrowserController DateTimeWithSecondsFormat: field]];
+            }
+        }
     }
-    return nil;
+    
+    return result;
 }
-
 
 - (void)loadCustomImageAnnotationsDBFields: (Dicom_Image*) imageObj
 {
@@ -11095,8 +11094,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     {
         annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey: self.modalityString];
         
-        if (!annotationsForModality) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
-        if ([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
+        if (!annotationsForModality)
+            annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
+
+        if ([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1)
+            annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
         
         annotationsForModality = [[annotationsForModality copy] autorelease];
     }
@@ -11111,7 +11113,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         if (![key isEqualToString:@"sameAsDefault"])
         {
             NSArray *annotations = [annotationsForModality objectForKey: key];
-            NSMutableArray *annotationsOUT = [NSMutableArray array];
+            NSMutableArray *annotationsOUT = [NSMutableArray array]; // unused ?
             
             @try
             {
@@ -11162,12 +11164,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                 }
                             }
                         }
-                        
                         @catch (NSException *e)
                         {
                             NSLog(@"CustomImageAnnotations Exception: %@", e);
                         }
-                    }
+                    } // for f
                 }
             }
             @catch( NSException *e) {
@@ -11176,7 +11177,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         }
     }
     [imageObj.managedObjectContext unlock];
-#endif
+#endif // OSIRIX_VIEWER
 }
 
 - (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject
@@ -11188,13 +11189,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		{
 			annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey: self.modalityString];
 			
-			if (!annotationsForModality) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
-			if ([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
+			if (!annotationsForModality)
+                annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
+
+            if ([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1)
+                annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
 			
-			annotationsForModality = [[annotationsForModality copy] autorelease];
+			annotationsForModality = [[annotationsForModality copy] autorelease]; // What's this ?
 		}
 		
-		// image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
+		// Image sides: LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight, sameAsDefault
 		NSArray *keys = [annotationsForModality allKeys];
 		
 		for (NSString *key in keys)
@@ -11281,7 +11285,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                         else
                                         {
                                             value = [value description];
-                                            if ([value length] == 0) value = @"-";
+                                            if ([value length] == 0)
+                                                value = @"-";
                                         }
                                     }
                                     @catch (NSException *e)
@@ -11296,10 +11301,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                     {
                                         value = [field objectForKey:@"field"];
                                         
-                                        if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", nil)] || [value isEqualToString: (@"Patient's Actual Age")])
+                                        if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", nil)] || [value isEqualToString: @"Patient's Actual Age"])
                                             value = yearOld;
                                         
-                                        if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", nil)] || [value isEqualToString: (@"Patient's Age At Acquisition")])
+                                        if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", nil)] || [value isEqualToString: @"Patient's Age At Acquisition"])
                                             value = yearOldAcquisition;
                                         
                                         if (value==nil || [value length] == 0)
@@ -11412,6 +11417,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 }
 
-#endif
+#endif // OSIRIX_VIEWER
 
 @end

@@ -253,7 +253,7 @@
 }
 
 // Generates the texture without drawing texture to current context
-- (GLuint) genTextureWithBackingScaleFactor: (float) backingScaleFactor;
+- (GLuint) genTextureWithBackingScaleFactor: (float) backingScaleFactor
 {
     //NSLog(@"%s %d, <%@>", __FUNCTION__, __LINE__, attrString.string);
     if (backingScaleFactor != 1.0 &&
@@ -294,7 +294,8 @@
 	GLuint textureID = 0;
 	
 	[bitmap release];
-	bitmap = nil;
+	
+    bitmap = nil;
 	NSImage *image = [[NSImage alloc] initWithSize:frameSize];
 	if ([image size].width > 0 &&
         [image size].height > 0)
@@ -303,8 +304,10 @@
 		
         if (backingScaleFactor == 1) // On Retina system, this will cancel the default 2x resolution in the NSImage "world"
             [[NSAffineTransform transform] set];
-        
-		[[NSGraphicsContext currentContext] setShouldAntialias: antialiasing];
+
+#ifndef WITH_OPENGL_32
+		[[NSGraphicsContext currentContext] setShouldAntialias: antialiasing]; // #i43
+#endif
 		
 		if ([boxColor alphaComponent])
 		{ // this should be == 0.0f but need to make sure
@@ -315,34 +318,22 @@
         if ([borderColor alphaComponent])
 		{
 			[borderColor set]; 
-			NSFrameRect (NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height));
+			NSFrameRect( NSMakeRect(0.0f, 0.0f, frameSize.width, frameSize.height));
 		}
 
-        [textColor set];    // Issue #61 ?
+        [textColor set];
 		[attrString drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)];
 		
         if (frameSize.width > 0 && frameSize.height > 0)
-            bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect(0.0f, 0.0f, frameSize.width, frameSize.height)];
+        {
+            bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect: NSMakeRect(0.0f, 0.0f, frameSize.width, frameSize.height)];
+        }
 		else
             NSLog( @"StringTexture: frameSize.width > 0 && frameSize.height > 0");
-        
-#ifdef DEBUG_TEXTURE_BITMAP
-        if ([attrString.string isEqualToString:@"R"]) {
-            NSLog(@"%s %d %@, SPP:%ld, BPS:%ld, PPR:%ld", __FUNCTION__, __LINE__,
-                  NSStringFromSize(bitmap.size),
-                  (long)bitmap.samplesPerPixel, // 4
-                  (long)bitmap.bitsPerSample, // 8
-                  (long)[bitmap pixelsWide]); // pixels per row
-            assert((bitmap.bytesPerRow / (bitmap.bitsPerPixel/8)) == [bitmap pixelsWide]);
 
-            unsigned int *bmp = (unsigned int *)self->bitmap.bitmapData;
-            for (int i=0; i<(self->bitmap.size.width * self->bitmap.size.height); i++) {
-                if ((i%(int)self->bitmap.size.width) == 0)
-                    printf("\n");
-                printf("%3d ", bmp[i]);
-            }
-            printf("\n\n");
-        }
+#ifdef DEBUG_TEXTURE_BITMAP
+//#include "../../snippets/1.mm"
+#include "../../snippets/2.mm"
 #endif
         
 		[image unlockFocus];

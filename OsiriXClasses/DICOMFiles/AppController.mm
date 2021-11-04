@@ -721,14 +721,14 @@ static bool isGrantedNotificationAccess = false;
     // This way it gets updated automatically with system updates
     // Problem: it goes with the SDK which could still be 11.1 when the OS is 11.2
     int ver = version.majorVersion*10000 + version.minorVersion*100;
-    BOOL ok = (ver <= MAC_OS_X_VERSION_MAX_ALLOWED); // MAC_OS_VERSION_11_3
+    BOOL ok = (ver <= MAC_OS_X_VERSION_MAX_ALLOWED); // MAC_OS_VERSION_12_0
     return ok;
 #else
-    if (version.majorVersion > 11)
+    if (version.majorVersion > 12)
         return NO;
     
-    if (version.majorVersion == 11 &&
-        version.minorVersion > 6)
+    if (version.majorVersion == 12 &&
+        version.minorVersion > 0)
     {
         return NO;
     }

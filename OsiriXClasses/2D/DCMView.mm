@@ -1315,7 +1315,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 // Draw a yellow filled circle with opacity varying over time
 // The circle radius depends on how close we clicked to the ROI
-- (void)drawRepulsorToolArea;
+- (void)drawRepulsorToolArea
 {
     int circleRes = 20;
     circleRes = (repulsorRadius> 5) ? 30 : circleRes;
@@ -1369,7 +1369,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	[self setNeedsDisplay:YES];
 }
 
-- (void)drawROISelectorRegion;
+- (void)drawROISelectorRegion
 {
 #ifndef WITH_OPENGL_32
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -2008,7 +2008,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
  * Some of the image text annotations
  * (e.g., mouse position (px and mm), zoom, image position, WLWW)
  * are displayed only when the mouse
- * is over the image and the change with each mouse movement. This is
+ * is over the image and they change with each mouse movement. This is
  * a lot of processing and updating, not suitable for "cached textures",
  * therefore in OpenGL 2.1 they are displayed with
  * "raster operations".
@@ -2019,7 +2019,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                       :(long)x
                       :(long)y
                  align:(DCMViewTextAlign)align
-      useStringTexture:(BOOL)stringTex;
+      useStringTexture:(BOOL)stringTex
 {
     //NSLog(@"DCMView.mm %d DrawNSStringGL, <%@> at XY: %ld %ld", __LINE__, str, x, y);
 
@@ -2069,6 +2069,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
             
 			stringTex = [[StringTexture alloc] initWithString:str withAttributes:stanStringAttrib];
+//            [stringTex setAntiAliasing: YES]; // One possible fix for issue #i43
 			[stringTex genTextureWithBackingScaleFactor:self.window.backingScaleFactor];
 			[stringTextureDic setObject:stringTex forKey:str];
 			[stringTex release];
@@ -2099,9 +2100,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             //GLenum target = GL_TEXTURE_2D;
 #else
             GLenum target = GL_TEXTURE_RECTANGLE_EXT;
-#ifndef DEBUG_TEXTURE_WITH_SHADER
+            #ifndef DEBUG_TEXTURE_WITH_SHADER
             glEnable(target);
-#endif
+            #endif
 #endif
             checkOpenGLErrors(__LINE__);
 
@@ -2253,7 +2254,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                      :(long)x
                      :(long)y
                 align:(DCMViewTextAlign)align
-     useStringTexture:(BOOL)stringTex;
+     useStringTexture:(BOOL)stringTex
 {
 	[self DrawNSStringGL:[NSString stringWithCString:cstrOut encoding:NSUTF8StringEncoding]
                         :fontL
@@ -4675,7 +4676,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     
     return nil;
 }
-
+#
 - (ROI*) clickInROI: (NSPoint) tempPt
 {
     return [self clickInROI: tempPt testTextBox:NO];
@@ -5622,7 +5623,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             {
                 [[self window] makeKeyAndOrderFront: self];
                 NSNotification *notification = nil; //[NSNotification notificationWithName:NSWindowDidBecomeMainNotification object:self.window];
-                [self.windowController windowDidBecomeMain: notification]; //If the application is in background, it will not automatically called.
+                [self.windowController windowDidBecomeMain: notification]; //If the application is in background, it will not automatically be called.
             }
         }
         else if ([[self window] isMainWindow] == NO)
@@ -17462,7 +17463,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                         
                         if (drawingROI == NO)
                         {
-                            if (drawingROI == NO)
+                            if (drawingROI == NO) // again ?
                             {
                                 [[self windowController] fullScreenMenu: self];
                             }

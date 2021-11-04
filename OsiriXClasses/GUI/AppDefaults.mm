@@ -1052,7 +1052,8 @@ static NSHost *currentHost = nil;
 	NSDictionary *defaultAnnotations = [NSDictionary dictionaryWithContentsOfFile: [[NSBundle mainBundle] pathForResource:@"AnnotationsDefault" ofType:@"plist"]];
 	if (defaultAnnotations)
 		[defaultValuesDic setObject: defaultAnnotations forKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
-	[defaultValuesDic setObject:@"0" forKey:@"SERIESORDER"];
+
+    [defaultValuesDic setObject:@"0" forKey:@"SERIESORDER"];
 	[defaultValuesDic setObject:@"40" forKey:@"DICOMTimeout"];
     [defaultValuesDic setObject:@"10" forKey:@"DICOMConnectionTimeout"];
 	[defaultValuesDic setObject:@"1" forKey:@"NSWindowsSetFrameAnimate"];
@@ -1074,7 +1075,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject: @"1" forKey: @"BurnOsirixApplication"];
 	[defaultValuesDic setObject: @"1" forKey: @"BurnHtml"];
 	[defaultValuesDic setObject: @"0" forKey: @"BurnSupplementaryFolder"];
-	[defaultValuesDic setObject: @"1" forKey: @"splineForROI"];
+	[defaultValuesDic setObject: @YES forKey: @"splineForROI"];
 	[defaultValuesDic setObject:@"0" forKey:@"ThreeDViewerOnAnotherScreen"];
 	[defaultValuesDic setObject:@"512" forKey:@"SOFTWAREINTERPOLATION_MAX"];
 	[defaultValuesDic setObject:@"1" forKey:@"SOFTWAREINTERPOLATION"];

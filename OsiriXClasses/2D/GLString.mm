@@ -191,7 +191,7 @@
 
 #pragma mark -
 
-- (void) genTexture; // generates the texture without drawing texture to current context
+- (void) genTexture // generates the texture without drawing texture to current context
 {
 	if ((NO == staticFrame) &&
         (0.0f == frameSize.width) &&

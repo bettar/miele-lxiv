@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19162" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19162"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -72,7 +72,7 @@
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             </textFieldCell>
                                         </tableColumn>
-                                        <tableColumn identifier="stringValue" width="536.87792999999999" minWidth="46.377929999999999" maxWidth="800" id="11">
+                                        <tableColumn identifier="stringValue" width="507.87792999999999" minWidth="46.377929999999999" maxWidth="800" id="11">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Content">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -138,6 +138,7 @@
                 <constraint firstItem="27" firstAttribute="leading" secondItem="26" secondAttribute="leading" constant="8" id="EcP-RQ-GQV"/>
                 <constraint firstAttribute="trailing" secondItem="27" secondAttribute="trailing" constant="6" id="r71-Ro-tSn"/>
             </constraints>
+            <point key="canvasLocation" x="2" y="-363"/>
         </customView>
         <menu title="Menu" id="32" userLabel="Menu (Menu)">
             <items>
@@ -148,6 +149,7 @@
                 </menuItem>
                 <menuItem title="Clear Recent Searchs" tag="1002" id="35"/>
             </items>
+            <point key="canvasLocation" x="-25" y="-492"/>
         </menu>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="39" userLabel="add">
             <windowStyleMask key="styleMask" titled="YES"/>
@@ -322,6 +324,7 @@ Gw
                     <constraint firstItem="82" firstAttribute="leading" secondItem="83" secondAttribute="trailing" constant="38" id="zfg-Kq-f78"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="-25" y="-732"/>
         </window>
         <customView id="53" userLabel="editTool">
             <rect key="frame" x="0.0" y="0.0" width="246" height="49"/>
@@ -479,7 +482,7 @@ Gw
                         <rect key="frame" x="-1" y="20" width="816" height="272"/>
                         <clipView key="contentView" drawsBackground="NO" id="GC4-7X-dVP">
                             <rect key="frame" x="1" y="1" width="799" height="255"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="142">
                                     <rect key="frame" x="0.0" y="0.0" width="799" height="255"/>
@@ -602,11 +605,11 @@ Gw
                             </subviews>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="141">
-                            <rect key="frame" x="1" y="255" width="814" height="16"/>
+                            <rect key="frame" x="1" y="256" width="799" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="140">
-                            <rect key="frame" x="799" y="1" width="16" height="270"/>
+                            <rect key="frame" x="800" y="1" width="15" height="255"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
@@ -646,6 +649,7 @@ Gw
                     <constraint firstItem="139" firstAttribute="leading" secondItem="138" secondAttribute="leading" constant="-1" id="q5m-zX-oIP"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="-926" y="465"/>
         </window>
     </objects>
     <resources>
