@@ -3597,7 +3597,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 				if ([description length] > 0)
                     [description appendString:@"\r"];
                 
-				if ([curStudy valueForKey: @"name"])
+				if ([curStudy valueForKey: @"name"]) // why checking again ?
                     [description appendString: [curStudy valueForKey: @"name"]];
 			}
 		}
@@ -3615,7 +3615,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 				if ([description length] > 0)
                     [description appendString:@"\r"];
                 
-				if ([curStudy valueForKey: @"studyName"])
+				if ([curStudy valueForKey: @"studyName"]) // why checking again ?
 					[description appendString: [curStudy valueForKey: @"studyName"]];
 			}
 		}
@@ -3625,7 +3625,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			if ([description length] > 0)
                 [description appendString:@"\r"];
             
-			if ([curSeries valueForKey:@"name"])
+			if ([curSeries valueForKey:@"name"]) // why checking again ?
 				[description appendString: [curSeries valueForKey:@"name"]];
 		}
 		
@@ -9404,7 +9404,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	{
 		if (curDCM.stack > 1)
 		{
-			long maxVal = self.flippedData ? maxVal = curImage-curDCM.stack : curImage+curDCM.stack;
+			long maxVal = self.flippedData ? curImage-curDCM.stack : curImage+curDCM.stack;
 			
 			if (maxVal < 0)
                 maxVal = curImage;
@@ -9420,9 +9420,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			float pp;
 			
 			if (self.flippedData)
-				pp = ([(DCMPix*)[dcmPixList objectAtIndex: curImage] sliceLocation] + [(DCMPix*)[dcmPixList objectAtIndex: curImage - maxVal+1] sliceLocation])/2.;
+				pp = ([(DCMPix*)[dcmPixList objectAtIndex: curImage] sliceLocation] +
+                      [(DCMPix*)[dcmPixList objectAtIndex: curImage - maxVal+1] sliceLocation])/2.;
 			else
-				pp = ([(DCMPix*)[dcmPixList objectAtIndex: curImage] sliceLocation] + [(DCMPix*)[dcmPixList objectAtIndex: curImage + maxVal-1] sliceLocation])/2.;
+				pp = ([(DCMPix*)[dcmPixList objectAtIndex: curImage] sliceLocation] +
+                      [(DCMPix*)[dcmPixList objectAtIndex: curImage + maxVal-1] sliceLocation])/2.;
 				
 			*thickness = vv;
 			*location = pp;
@@ -9738,6 +9740,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             NSMutableString *tempString3;
             NSMutableString *tempString4;
 						
+            // again?
 			if ([key hasPrefix:@"Lower"])
 				enumerator = [annotations reverseObjectEnumerator];
 			else
@@ -9865,7 +9868,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                         // See AnnotationsDefault.plist, edited from Preferences
                         else if ([a isEqualToString:@"Rotation Angle"] && fullText)
                         {
-                            NSString *s = [NSString stringWithFormat:@"%@: %.0f\u00B0",
+                            NSString *s = [NSString stringWithFormat:@" %@: %.0f\u00B0",
                                            NSLocalizedString(@"Rotation Angle", nil), self.rotation];
                             [tempString appendString:s];
                             useStringTexture = NO;
@@ -15533,13 +15536,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 				{
 					if (intFULL32BITPIPELINE )
 					{
-						pBuffer = (unsigned char*) baseAddr +
+						pBuffer = (unsigned char*) baseAddr + // Normal
 								  offsetY * rowBytes * 4 +
 								  offsetX;
 					}
 					else
 					{
-						pBuffer = (unsigned char*) baseAddr +
+						pBuffer = (unsigned char*) baseAddr + // Subtraction
 								  offsetY * rowBytes +
 								  offsetX;
 					}
@@ -15622,7 +15625,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                         [scene.imageProgram Bind];
                         [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
 #endif
-                        glTexImage2D (_textRectMode, 0,
+                        glTexImage2D(_textRectMode, 0,
                                       GL_RGBA,
                                       currWidth, currHeight, 0,
                                       _format, _type,
@@ -15639,7 +15642,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                         [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
 #endif
                         // grayscale image with LUT
-                        glTexImage2D (_textRectMode, 0,
+                        glTexImage2D(_textRectMode, 0,
                                       GL_RGBA,
                                       currWidth, currHeight, 0,
                                       _format, _type,
@@ -15655,19 +15658,25 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                         {
 #ifdef DEBUG_ISSUE_E4
                             NSLog(@"loadTextureIn %d, NOT isRGB, NOT intFULL32BITPIPELINE (case C1)", __LINE__);
-                            // FIXME: need to load the correct program ?
-                            //[self setShaderProgramImage];
 #endif
 #ifdef WITH_OPENGL_32
-                            GLenum target = GL_TEXTURE_RECTANGLE;
-                            GLint internalFormat = GL_R8;
+                            { // issue #e4, issue #i45
+                                [self setShaderProgramImage];
+                                // We don't use WW/WL in this case, so reset the CCM
+                                glm::mat4 CCM = glm::mat4(1.0);
+                                // Set the CCM so we get grayscale from red
+                                CCM[0].g =CCM[0].b = 1;
+                                [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
+                            }
+                            GLenum target = GL_TEXTURE_2D;
+                            GLint internalFormat = GL_R32F;//GL_R8;//GL_RGBA
                             GLenum format = GL_RED;
 #else
                             GLenum target = _textRectMode;
                             GLint internalFormat = GL_INTENSITY8;
                             GLenum format = GL_LUMINANCE;
 #endif
-                            glTexImage2D(target, 0, // @@@ Opacity log table
+                            glTexImage2D(target, 0, // Opacity "log table", Subtraction (#i45)
                                          internalFormat,
                                          currWidth, currHeight, 0,
 
@@ -15732,7 +15741,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                 glTexParameteriv(target, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask); checkOpenGLErrors(__LINE__);
   #endif
                                 // Give the image to OpenGL
-                                glTexImage2D(target, 0,  // preview, 2D view, Opacity linear table
+                                glTexImage2D(target, 0,  // preview, 2D view, Opacity "linear table"
                                              GL_R32F, //GL_RGBA,
                                              currWidth, currHeight, 0,
                                              GL_RED, GL_FLOAT,

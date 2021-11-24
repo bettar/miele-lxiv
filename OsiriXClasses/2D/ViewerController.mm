@@ -19523,7 +19523,7 @@ static BOOL viewerControllerPlaying = NO;
 			[self setImageRows: 1 columns: 1];
 		
 		BOOL copyFULL32BITPIPELINE = FULL32BITPIPELINE;
-		BOOL whiteBackground = imageView.whiteBackground;
+		BOOL whiteBackgroundSav = imageView.whiteBackground;
         
         if ([[settings objectForKey: @"backgroundColor"] boolValue] &&
             [[settings objectForKey: @"backgroundColorR"] floatValue] == 1 &&
@@ -19628,7 +19628,7 @@ static BOOL viewerControllerPlaying = NO;
 				break;
 		}
         
-        imageView.whiteBackground = whiteBackground;
+        imageView.whiteBackground = whiteBackgroundSav;
 		FULL32BITPIPELINE = copyFULL32BITPIPELINE;
 		
 		//

@@ -83,7 +83,7 @@
 	BOOL requiresUpdate;
 }
 
-// this API requires a current rendering context and all operations will be performed in regards to thar context
+// this API requires a current rendering context and all operations will be performed in regards to that context
 // the same context should be current for all method calls for a particular object instance
 
 // designated initializer
@@ -117,8 +117,8 @@
 - (void) setString:(NSString *)aString withAttributes:(NSDictionary *)attribs; // set string after initial creation
 
 - (void) setTextColor:(NSColor *)color; // set default text color
-- (void) setBoxColor:(NSColor *)color; // set default text color
-- (void) setBorderColor:(NSColor *)color; // set default text color
+- (void) setBoxColor:(NSColor *)color; // set default box color
+- (void) setBorderColor:(NSColor *)color; // set default border color
 
 - (BOOL) antialias;
 - (void) setAntialias:(bool)request;

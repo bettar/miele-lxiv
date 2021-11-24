@@ -9107,7 +9107,7 @@ static NSConditionLock *threadLock = nil;
 		{
 			[e setSourceFile: sourceFile];
 			
-			int bpp = [rep bitsPerPixel] / [rep samplesPerPixel];
+			int bpp = [rep bitsPerPixel] / [rep samplesPerPixel]; // TODO: name should be bps
 			int spp = [rep samplesPerPixel];
 			
 			if ([rep bitsPerPixel] == 32 && spp == 3)

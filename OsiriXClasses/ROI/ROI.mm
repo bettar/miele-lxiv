@@ -1039,7 +1039,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                 ROI *b = [[self copy] autorelease];
                 b.pix = blendedPix;
                 b.curView = curView.blendingView;
-                [b setOriginAndSpacing: blendedPix.pixelSpacingX: blendedPix.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: blendedPix]];
+                [b setOriginAndSpacing: blendedPix.pixelSpacingX
+                                      : blendedPix.pixelSpacingY
+                                      : [DCMPix originCorrectedAccordingToOrientation: blendedPix]];
                 [b computeROIIfNedeed];
                 
                 NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
@@ -8292,13 +8294,14 @@ void gl_round_box(int mode,
 
 #pragma mark - TextualData
 
-- (NSRect) findAnEmptySpaceForMyRect:(NSRect) dRect :(BOOL*) moved
+- (NSRect) findAnEmptySpaceForMyRect:(NSRect) dRect
+                                    :(BOOL*) movedOut // output parameter
 {
 	NSMutableArray *rectArray = [curView rectArray];
 	
 	if (rectArray == nil)
 	{
-		*moved = NO;
+		*movedOut = NO;
 		return dRect;
 	}
 	
@@ -8308,7 +8311,7 @@ void gl_round_box(int mode,
 
     int maxRedo = [rectArray count] + 2;
 	
-	*moved = NO;
+	*movedOut = NO;
 	
 	dRect.origin.x += 8;
 	dRect.origin.y += 8;
@@ -8373,11 +8376,11 @@ void gl_round_box(int mode,
 			if (maxRedo-- >= 0)
                 i = -1;
 			
-			*moved = YES;
+			*movedOut = YES;
 		}
 	}
 	
-	if (*moved)
+	if (*movedOut)
 		dRect.origin.x += 5;
 	
 	[rectArray addObject: [NSValue valueWithRect: dRect]];
@@ -9310,7 +9313,7 @@ void gl_round_box(int mode,
                                             self.textualBoxLine2 = [self.textualBoxLine2 stringByAppendingString: @" "];
                                             
                                             if (area *pixelSpacingX*pixelSpacingY < 1.)
-                                                self.textualBoxLine2 = [self.textualBoxLine2 stringByAppendingFormat: NSLocalizedString( @"(W:a %0.1f %cm H: %0.1f %cm)", nil), sideW *pixelSpacingX * 1000.0, 0xB5, sideH *pixelSpacingX * 1000.0, 0xB5];
+                                                self.textualBoxLine2 = [self.textualBoxLine2 stringByAppendingFormat: NSLocalizedString( @"(W:a %0.1f %cm H: %0.1f %cm)", nil), sideW *pixelSpacingX * 1000.0, 0xB5, sideH *pixelSpacingX * 1000.0, 0xB5]; // TBC: why "W:a" ?
                                             else if (area *pixelSpacingX*pixelSpacingY/100. < 1.)
                                                 self.textualBoxLine2 = [self.textualBoxLine2 stringByAppendingFormat: NSLocalizedString( @"(W: %0.3f mm H: %0.3f mm)", nil), sideW *pixelSpacingY, sideH *pixelSpacingX];
                                             else

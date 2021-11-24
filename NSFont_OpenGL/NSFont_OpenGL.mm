@@ -203,7 +203,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
 + (void) initFontImage:(unichar) first
                  count:(int) count
                   font:(NSFont*) font
-              fontType:(int) fontType
+              fontType:(FontType) fontType
                scaling:(float) scaling
 {
 	if (fontOpenGLInitialized == NO)
@@ -229,7 +229,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
         scaling = [[NSScreen mainScreen] backingScaleFactor];
     }
     
-    NSMutableArray *curArray;
+    NSMutableArray *curArray_A;
     long *curSizeArray;
     unsigned char **curPtrArray = nil;
 
@@ -238,19 +238,19 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
         switch (fontType)
         {
             case FONT_TYPE_PREVIEW:
-                curArray = imageArrayPreviewScale2;
+                curArray_A = imageArrayPreviewScale2;
                 curSizeArray = charSizeArrayPreviewScale2;
                 curPtrArray = charPtrArrayPreviewScale2;
                 break;
                 
             case FONT_TYPE_0:
-                curArray = imageArrayScale2;
+                curArray_A = imageArrayScale2;
                 curSizeArray = charSizeArrayScale2;
                 curPtrArray = charPtrArrayScale2;
                 break;
                 
             case FONT_TYPE_ROI:
-                curArray = imageArrayROIScale2;
+                curArray_A = imageArrayROIScale2;
                 curSizeArray = charSizeArrayROIScale2;
                 curPtrArray = charPtrArrayROIScale2;
                 break;
@@ -261,19 +261,19 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
         switch (fontType)
         {
             case FONT_TYPE_PREVIEW:
-                curArray = imageArrayPreview;
+                curArray_A = imageArrayPreview;
                 curSizeArray = charSizeArrayPreview;
                 curPtrArray = charPtrArrayPreview;
                 break;
             
             case FONT_TYPE_0:
-                curArray = imageArray;
+                curArray_A = imageArray;
                 curSizeArray = charSizeArray;
                 curPtrArray = charPtrArray;
                 break;
             
             case FONT_TYPE_ROI:
-                curArray = imageArrayROI;
+                curArray_A = imageArrayROI;
                 curSizeArray = charSizeArrayROI;
                 curPtrArray = charPtrArrayROI;
                 break;
@@ -288,10 +288,10 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
         curPtrArray[ i] = 0;
     }
 	
-	if (curArray == nil)
-        curArray = [[NSMutableArray alloc] initWithCapacity:0];
+	if (curArray_A == nil)
+        curArray_A = [[NSMutableArray alloc] initWithCapacity:0];
 	else
-        [curArray removeAllObjects];
+        [curArray_A removeAllObjects];
     
     NSColor *blackColor = [ NSColor blackColor ];
     NSDictionary *attribDict = [ NSDictionary dictionaryWithObjectsAndKeys:
@@ -315,7 +315,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
 				charSize = [currentChar sizeWithAttributes: attribDict];
                 
 				charRect.size = charSize;
-				charRect = NSIntegralRect( charRect );
+				charRect = NSIntegralRect( charRect);
 			}	
             
             NSImage *theImage = [[NSImage alloc] initWithSize:NSZeroSize];
@@ -345,10 +345,10 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
                 else
                     curSizeArray[currentUnichar] = bitmap.pixelsWide;
                 
-				[curArray addObject: bitmap];
+				[curArray_A addObject: bitmap];
 				[theImage release];
 				
-				curPtrArray[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
+				curPtrArray[ currentUnichar] = [NSFont createCharacterWithImage:[curArray_A objectAtIndex: currentUnichar - first]];
 			}
 		}
 		@catch (NSException * e)
@@ -361,18 +361,18 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
     {
         switch (fontType)
         {
-            case FONT_TYPE_PREVIEW: imageArrayPreviewScale2 = curArray; break;
-            case FONT_TYPE_0: imageArrayScale2 = curArray; break;
-            case FONT_TYPE_ROI: imageArrayROIScale2 = curArray; break;
+            case FONT_TYPE_PREVIEW: imageArrayPreviewScale2 = curArray_A; break;
+            case FONT_TYPE_0: imageArrayScale2 = curArray_A; break;
+            case FONT_TYPE_ROI: imageArrayROIScale2 = curArray_A; break;
         }
     }
     else
     {
         switch (fontType)
         {
-            case FONT_TYPE_PREVIEW: imageArrayPreview = curArray; break;
-            case FONT_TYPE_0: imageArray = curArray; break;
-            case FONT_TYPE_ROI: imageArrayROI = curArray; break;
+            case FONT_TYPE_PREVIEW: imageArrayPreview = curArray_A; break;
+            case FONT_TYPE_0: imageArray = curArray_A; break;
+            case FONT_TYPE_ROI: imageArrayROI = curArray_A; break;
         }
     }
 }
@@ -384,7 +384,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
                           count:(int) count
                            base:(GLint) base
                                :(long*) charSizeArrayIn
-                               :(int) fontType
+                               :(FontType) fontType
                                :(float) scaling
 {
     //NSLog(@"makeGLDisplayListFirst %d, font list: %i, type: %d", __LINE__, base, fontType);
@@ -393,7 +393,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
 	//unichar currentUnichar;
 	BOOL retval;
 	
-	NSMutableArray *curArray = nil;
+	NSMutableArray *curArray_B = nil;
 	long *curSizeArray = nil;
 	unsigned char **curPtrArray = nil;
     
@@ -405,7 +405,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
                 if (imageArrayScale2 == nil)
                     [NSFont initFontImage:' ' count:NUM_DISPLAY_LISTS font:self fontType: fontType scaling: scaling];
                 
-                curArray = imageArrayScale2;
+                curArray_B = imageArrayScale2;
                 curSizeArray = charSizeArrayScale2;
                 curPtrArray = charPtrArrayScale2;
                 break;
@@ -414,7 +414,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
                 if (imageArrayPreviewScale2 == nil)
                     [NSFont initFontImage:' ' count:NUM_DISPLAY_LISTS font:self fontType: fontType scaling: scaling];
                 
-                curArray = imageArrayPreviewScale2;
+                curArray_B = imageArrayPreviewScale2;
                 curSizeArray = charSizeArrayPreviewScale2;
                 curPtrArray = charPtrArrayPreviewScale2;
                 break;
@@ -423,7 +423,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
                 if (imageArrayROIScale2 == nil)
                     [NSFont initFontImage:' ' count:NUM_DISPLAY_LISTS font:self fontType: fontType scaling: scaling];
                 
-                curArray = imageArrayROIScale2;
+                curArray_B = imageArrayROIScale2;
                 curSizeArray = charSizeArrayROIScale2;
                 curPtrArray = charPtrArrayROIScale2;
                 break;
@@ -437,7 +437,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
                 if (imageArray == nil)
                     [NSFont initFontImage:' ' count:NUM_DISPLAY_LISTS font:self fontType: fontType scaling: scaling];
                 
-                curArray = imageArray;
+                curArray_B = imageArray;
                 curSizeArray = charSizeArray;
                 curPtrArray = charPtrArray;
                 break;
@@ -446,7 +446,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
                 if (imageArrayPreview == nil)
                     [NSFont initFontImage:' ' count:NUM_DISPLAY_LISTS font:self fontType: fontType scaling: scaling];
                 
-                curArray = imageArrayPreview;
+                curArray_B = imageArrayPreview;
                 curSizeArray = charSizeArrayPreview;
                 curPtrArray = charPtrArrayPreview;
                 break;
@@ -455,7 +455,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
                 if (imageArrayROI == nil)
                     [NSFont initFontImage:' ' count:NUM_DISPLAY_LISTS font:self fontType: fontType scaling: scaling];
                     
-                curArray = imageArrayROI;
+                curArray_B = imageArrayROI;
                 curSizeArray = charSizeArrayROI;
                 curPtrArray = charPtrArrayROI;
                 break;
@@ -506,9 +506,9 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
    {
 	   charSizeArrayIn[ currentUnichar] = curSizeArray[ currentUnichar];
 		
-	   if (currentUnichar - first < curArray.count)
+	   if (currentUnichar - first < curArray_B.count)
        {
-			NSBitmapImageRep *bitmap = [curArray objectAtIndex: currentUnichar - first];
+			NSBitmapImageRep *bitmap = [curArray_B objectAtIndex: currentUnichar - first];
             if (bitmap)
             {
 #ifndef WITH_OPENGL_32

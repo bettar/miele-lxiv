@@ -6242,7 +6242,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         return NO;
     }
     
-    self.SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
+    self.SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"]; // 0008,0016
+    self.modalityString = [dcmObject attributeValueWithName:@"Modality"]; // 0008,0060 issue #i45
     self.referencedSOPInstanceUID = [dcmObject attributeValueWithName:@"ReferencedSOPInstanceUID"];
     //-----------------------common---------------------------------------------
     
@@ -9126,9 +9127,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (BOOL) is3DPlane
 {
     if (orientation[6] != 0 || orientation[7] != 0 || orientation[8] != 0)
-        return  YES;
-    else
-        return NO;
+        return YES;
+
+    return NO;
 }
 
 -(void) convertPixX: (float) x

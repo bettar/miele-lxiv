@@ -9,6 +9,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+#include "mieleTypes.h"
+
 @interface NSFont (withay_OpenGL)
 
 + (void) setOpenGLLogging:(BOOL)logEnabled;
@@ -17,14 +19,14 @@
 + (void) initFontImage:(unichar) first
                  count:(int) count
                   font:(NSFont*) font
-              fontType:(int) preview
+              fontType:(FontType) preview
                scaling:(float) scaling;
 
 - (BOOL) makeGLDisplayListFirst:(unichar)first
                           count:(int)count
                            base:(GLint)base
                                :(long*) charSizeArrayIn
-                               :(int) fontType
+                               :(FontType) fontType
                                :(float) scaling;
 
 + (unsigned char*) createCharacterWithImage:(NSBitmapImageRep *)bitmap;

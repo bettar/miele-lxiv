@@ -306,13 +306,13 @@
             [[NSAffineTransform transform] set];
 
 #ifndef WITH_OPENGL_32
-		[[NSGraphicsContext currentContext] setShouldAntialias: antialiasing]; // #i43
+		[[NSGraphicsContext currentContext] setShouldAntialias: YES]; // #i43 antialiasing
 #endif
 		
 		if ([boxColor alphaComponent])
 		{ // this should be == 0.0f but need to make sure
 			[boxColor set]; 
-			NSRectFill (NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height));
+			NSRectFill( NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height));
 		}
 
         if ([borderColor alphaComponent])
