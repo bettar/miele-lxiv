@@ -347,7 +347,7 @@
 "1618.title" = "楕円形";
 
 /* Class = "NSMenuItem"; title = "Rectangle"; ObjectID = "1619"; */
-"1619.title" = "四角";
+"1619.title" = "矩形";
 
 /* Class = "NSMenuItem"; title = "Length"; ObjectID = "1620"; */
 "1620.title" = "長さ";
