@@ -30,7 +30,7 @@
 #include "dcmtk/dcmsr/dsrtypes.h"
 #include "dcmtk/dcmsr/dsrimgtn.h"
 
-@implementation Dicom_Image(DicomImageDCMTKCategory)
+@implementation Dicom_Image (DicomImageDCMTKCategory)
 
 - (NSString*) keyObjectType
 {

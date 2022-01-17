@@ -20,7 +20,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class DicomSeries, Dicom_Image;
+@class DicomSeries, Dicom_Image, DicomAlbum;
 
 /** \brief  Core Data Entity for a Study */
 @interface DicomStudy : NSManagedObject
@@ -31,37 +31,6 @@
 	NSString *cachedModalites;
     BOOL reentry;
 }
-
-@property(nonatomic, retain) NSString* accessionNumber;
-@property(nonatomic, retain) NSString* comment;
-@property(nonatomic, retain) NSString* comment2;
-@property(nonatomic, retain) NSString* comment3;
-@property(nonatomic, retain) NSString* comment4;
-@property(nonatomic, retain) NSDate* date;
-@property(nonatomic, retain) NSDate* dateAdded;
-@property(nonatomic, retain) NSDate* dateOfBirth;
-@property(nonatomic, retain) NSDate* dateOpened;
-@property(nonatomic, retain) NSString* dictateURL;
-@property(nonatomic, retain) NSNumber* expanded;
-@property(nonatomic, retain) NSNumber* hasDICOM;
-@property(nonatomic, retain) NSString* id;
-@property(nonatomic, retain) NSString* institutionName;
-@property(nonatomic, retain) NSNumber* lockedStudy;
-@property(nonatomic, retain) NSString* modality;
-@property(nonatomic, retain) NSString* name;
-@property(nonatomic, retain) NSNumber* numberOfImages;
-@property(nonatomic, retain) NSString* patientID;
-@property(nonatomic, retain) NSString* patientSex;
-@property(nonatomic, retain) NSString* patientUID;
-@property(nonatomic, retain) NSString* performingPhysician;
-@property(nonatomic, retain) NSString* referringPhysician;
-@property(nonatomic, retain) NSString* reportURL;
-@property(nonatomic, retain) NSNumber* stateText;
-@property(nonatomic, retain) NSString* studyInstanceUID;
-@property(nonatomic, retain) NSString* studyName;
-@property(nonatomic, retain) NSData* windowsState;
-@property(nonatomic, retain) NSSet* albums;
-@property(nonatomic, retain) NSSet* series;
 
 + (NSRecursiveLock*) dbModifyLock;
 + (NSString*) soundex: (NSString*) s;
@@ -106,23 +75,62 @@
 - (NSArray*) roiImages;
 - (NSNumber*) dicomTime;
 - (NSArray*) generateDICOMSCImagesForKeyImages: (BOOL) keyImages andROIImages: (BOOL) ROIImages;
-@end
-
-@interface DicomStudy (CoreDataGeneratedAccessors)
-
-- (void) addAlbumsObject:(NSManagedObject*) value;
-- (void) removeAlbumsObject:(NSManagedObject*) value;
-- (void) addAlbums:(NSSet*) value;
-- (void) removeAlbums:(NSSet*) value;
-
-- (void) addSeriesObject:(DicomSeries*) value;
-- (void) removeSeriesObject:(DicomSeries*) value;
-- (void) addSeries:(NSSet*) value;
-- (void) removeSeries:(NSSet*) value;
 
 - (NSArray*) imagesForKeyImages:(BOOL) keyImages andForROIs:(BOOL)alsoImagesWithROIs;
 
 + (NSString*) scrambleString: (NSString*) t;
+@end
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface DicomStudy (CoreDataProperties)
+
+@property(nonatomic, retain) NSString* accessionNumber;
+@property(nonatomic, retain) NSString* comment;
+@property(nonatomic, retain) NSString* comment2;
+@property(nonatomic, retain) NSString* comment3;
+@property(nonatomic, retain) NSString* comment4;
+@property(nonatomic, retain) NSDate* date;
+@property(nonatomic, retain) NSDate* dateAdded;
+@property(nonatomic, retain) NSDate* dateOfBirth;
+@property(nonatomic, retain) NSDate* dateOpened;
+@property(nonatomic, retain) NSString* dictateURL;
+@property(nonatomic, retain) NSNumber* expanded;
+@property(nonatomic, retain) NSNumber* hasDICOM;
+@property(nonatomic, retain) NSString* id;
+@property(nonatomic, retain) NSString* institutionName;
+@property(nonatomic, retain) NSNumber* lockedStudy;
+@property(nonatomic, retain) NSString* modality;
+@property(nonatomic, retain) NSString* name;
+@property(nonatomic, retain) NSNumber* numberOfImages;
+@property(nonatomic, retain) NSString* patientID;
+@property(nonatomic, retain) NSString* patientSex;
+@property(nonatomic, retain) NSString* patientUID;
+@property(nonatomic, retain) NSString* performingPhysician;
+@property(nonatomic, retain) NSString* referringPhysician;
+@property(nonatomic, retain) NSString* reportURL;
+@property(nonatomic, retain) NSNumber* stateText;
+@property(nonatomic, retain) NSString* studyInstanceUID;
+@property(nonatomic, retain) NSString* studyName;
+@property(nonatomic, retain) NSData* windowsState;
+@property(nonatomic, retain) NSSet<DicomAlbum *> *albums;
+@property(nonatomic, retain) NSSet<DicomSeries *> *series;
 
 @end
+
+@interface DicomStudy (CoreDataGeneratedAccessors)
+
+- (void) addAlbumsObject:(DicomAlbum *)value;
+- (void) removeAlbumsObject:(DicomAlbum *)value;
+- (void) addAlbums:(NSSet<DicomAlbum *> *)values;
+- (void) removeAlbums:(NSSet<DicomAlbum *> *)values;
+
+- (void) addSeriesObject:(DicomSeries *)value;
+- (void) removeSeriesObject:(DicomSeries *)value;
+- (void) addSeries:(NSSet<DicomSeries *> *)values;
+- (void) removeSeries:(NSSet<DicomSeries *> *)values;
+
+@end
+
+NS_ASSUME_NONNULL_END
 

@@ -176,7 +176,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 #pragma mark -
 
-@implementation Dicom_Image
+@implementation Dicom_Image (CoreDataProperties)
+
+@dynamic generatedByOsiriX; // new
 
 @dynamic comment, comment2, comment3, comment4;
 @dynamic compressedSopInstanceUID;
@@ -208,6 +210,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 @dynamic yOffset;
 @dynamic zoom;
 @dynamic series;
+
+@end
+
+#pragma mark -
+
+@implementation Dicom_Image
 
 - (BOOL) isDistant
 {

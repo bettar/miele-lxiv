@@ -25,6 +25,7 @@
 #import "DICOMFiles/dicomFile.h"
 #import "N2Debug.h"
 #import "Notifications.h"
+#import "LogEntry.h"
 
 static LogManager *currentLogManager = nil;
 
@@ -153,7 +154,7 @@ static LogManager *currentLogManager = nil;
                         {
                             NSManagedObjectContext *context = [NSThread isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext];
                             
-                            NSManagedObject *logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext: context];
+                            LogEntry *logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext: context];
                             
                             [logEntry setValue:[dict valueForKey: @"logStartTime"]  forKey:@"startTime"];
                             [logEntry setValue:[dict valueForKey: @"logType"] forKey:@"type"];

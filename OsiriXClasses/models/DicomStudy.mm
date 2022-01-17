@@ -177,7 +177,7 @@ NSString* soundex4( NSString *inString)
 
 #pragma mark -
 
-@implementation DicomStudy
+@implementation DicomStudy (CoreDataProperties)
 
 @dynamic accessionNumber;
 @dynamic comment, comment2, comment3, comment4;
@@ -207,6 +207,11 @@ NSString* soundex4( NSString *inString)
 @dynamic albums;
 @dynamic series;
 
+@end
+
+#pragma mark -
+
+@implementation DicomStudy
 
 static NSRecursiveLock *dbModifyLock = nil;
 

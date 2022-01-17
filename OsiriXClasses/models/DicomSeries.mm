@@ -39,9 +39,7 @@
 #import "VRController.h"
 #endif
 
-@implementation DicomSeries
-
-@synthesize dicomTime;
+@implementation DicomSeries (CoreDataProperties)
 
 @dynamic comment, comment2, comment3, comment4;
 @dynamic date;
@@ -49,6 +47,7 @@
 @dynamic dateOpened;
 @dynamic displayStyle;
 @dynamic id;
+@dynamic keySeries; // new
 @dynamic modality;
 @dynamic mountedVolume;
 @dynamic name;
@@ -70,6 +69,15 @@
 @dynamic yOffset;
 @dynamic images;
 @dynamic study;
+
+@end
+
+#pragma mark -
+
+@implementation DicomSeries
+
+@synthesize dicomTime;
+
 
 - (BOOL) isDistant
 {

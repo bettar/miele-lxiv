@@ -20,13 +20,20 @@
 
 #import "DicomAlbum.h"
 
-@implementation DicomAlbum
+@implementation DicomAlbum (CoreDataProperties)
 
+@dynamic smartAlbum;
 @dynamic index;
 @dynamic name;
 @dynamic predicateString;
-@dynamic smartAlbum;
 @dynamic studies;
+
+@end
+
+#pragma mark -
+
+@implementation DicomAlbum
+
 @synthesize numberOfStudies;
 
 @end

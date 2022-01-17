@@ -52,40 +52,6 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 
 @property(retain) NSNumber* numberOfFrames;
 
-@property(nonatomic, retain) NSString* comment;
-@property(nonatomic, retain) NSString* comment2;
-@property(nonatomic, retain) NSString* comment3;
-@property(nonatomic, retain) NSString* comment4;
-@property(nonatomic, retain) NSData* compressedSopInstanceUID;
-@property(nonatomic, retain) NSDate* date;
-@property(nonatomic, retain) NSNumber* frameID;
-@property(nonatomic, retain) NSNumber* instanceNumber;
-@property(nonatomic, retain) NSNumber* importedFile;
-@property(nonatomic, retain) NSNumber* pathNumber;
-@property(nonatomic, retain) NSString* pathString;
-@property(nonatomic, retain) NSNumber* rotationAngle;
-@property(nonatomic, retain) NSNumber* scale;
-@property(nonatomic, retain) NSNumber* sliceLocation;
-@property(nonatomic, retain) NSString* stateText;
-@property(nonatomic, retain) NSString* storedExtension;
-@property(nonatomic, retain) NSString* storedFileType;
-@property(nonatomic, retain) NSNumber* storedHeight;
-@property(nonatomic, retain) NSNumber* storedInDatabaseFolder;
-@property(nonatomic, retain) NSNumber* storedIsKeyImage;
-@property(nonatomic, retain) NSString* storedModality;
-@property(nonatomic, retain) NSNumber* storedMountedVolume __deprecated;
-@property(nonatomic, retain) NSNumber* storedNumberOfFrames;
-@property(nonatomic, retain) NSNumber* storedNumberOfSeries;
-@property(nonatomic, retain) NSNumber* storedWidth;
-@property(nonatomic, retain) NSNumber* windowLevel;
-@property(nonatomic, retain) NSNumber* windowWidth;
-@property(nonatomic, retain) NSNumber* xFlipped;
-@property(nonatomic, retain) NSNumber* xOffset;
-@property(nonatomic, retain) NSNumber* yFlipped;
-@property(nonatomic, retain) NSNumber* yOffset;
-@property(nonatomic, retain) NSNumber* zoom;
-@property(nonatomic, retain) DicomSeries* series;
-
 - (NSNumber*) isImageStorage;
 + (NSData*) sopInstanceUIDEncodeString:(NSString*) s;
 - (NSString*) uniqueFilename;
@@ -122,3 +88,46 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 
 @end
 
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Dicom_Image (CoreDataProperties)
+
+@property (nullable, nonatomic, copy) NSNumber *generatedByOsiriX; // new
+
+@property(nonatomic, retain) NSString* comment;
+@property(nonatomic, retain) NSString* comment2;
+@property(nonatomic, retain) NSString* comment3;
+@property(nonatomic, retain) NSString* comment4;
+@property(nonatomic, retain) NSData* compressedSopInstanceUID;
+@property(nonatomic, retain) NSDate* date;
+@property(nonatomic, retain) NSNumber* frameID;
+@property(nonatomic, retain) NSNumber* instanceNumber;
+@property(nonatomic, retain) NSNumber* importedFile;
+@property(nonatomic, retain) NSNumber* pathNumber;
+@property(nonatomic, retain) NSString* pathString;
+@property(nonatomic, retain) NSNumber* rotationAngle;
+@property(nonatomic, retain) NSNumber* scale;
+@property(nonatomic, retain) NSNumber* sliceLocation;
+@property(nonatomic, retain) NSString* stateText;
+@property(nonatomic, retain) NSString* storedExtension;
+@property(nonatomic, retain) NSString* storedFileType;
+@property(nonatomic, retain) NSNumber* storedHeight;
+@property(nonatomic, retain) NSNumber* storedInDatabaseFolder;
+@property(nonatomic, retain) NSNumber* storedIsKeyImage;
+@property(nonatomic, retain) NSString* storedModality;
+@property(nonatomic, retain) NSNumber* storedMountedVolume __deprecated;
+@property(nonatomic, retain) NSNumber* storedNumberOfFrames;
+@property(nonatomic, retain) NSNumber* storedNumberOfSeries;
+@property(nonatomic, retain) NSNumber* storedWidth;
+@property(nonatomic, retain) NSNumber* windowLevel;
+@property(nonatomic, retain) NSNumber* windowWidth;
+@property(nonatomic, retain) NSNumber* xFlipped;
+@property(nonatomic, retain) NSNumber* xOffset;
+@property(nonatomic, retain) NSNumber* yFlipped;
+@property(nonatomic, retain) NSNumber* yOffset;
+@property(nonatomic, retain) NSNumber* zoom;
+@property(nonatomic, retain) DicomSeries* series;
+
+@end
+
+NS_ASSUME_NONNULL_END

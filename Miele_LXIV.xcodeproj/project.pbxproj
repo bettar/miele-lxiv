@@ -36,6 +36,13 @@
 		430CB70E218C66CD000C2547 /* SRController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 430CB70D218C66CD000C2547 /* SRController.mm */; };
 		430D9F102199FB37006EA1B1 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */; };
 		43110BEB21679E5B00B0405B /* DCM.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		431213982795975400730A52 /* LogEntry.mm in Sources */ = {isa = PBXBuildFile; fileRef = 431213902795974F00730A52 /* LogEntry.mm */; };
+		431213992795975400730A52 /* DicomImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = 431213912795974F00730A52 /* DicomImage.mm */; };
+		4312139A2795975400730A52 /* DicomAlbum.mm in Sources */ = {isa = PBXBuildFile; fileRef = 431213932795975000730A52 /* DicomAlbum.mm */; };
+		4312139B2795975400730A52 /* DicomStudy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 431213952795975100730A52 /* DicomStudy.mm */; };
+		4312139C2795975400730A52 /* DicomSeries.mm in Sources */ = {isa = PBXBuildFile; fileRef = 431213972795975300730A52 /* DicomSeries.mm */; };
+		431213A12795A0D900730A52 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4312139E2795A0D800730A52 /* DicomImageDCMTKCategory.mm */; };
+		431213A22795A0D900730A52 /* DicomStudy+Report.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4312139F2795A0D800730A52 /* DicomStudy+Report.mm */; };
 		4314A2A6247FE6FC0008EC19 /* libpng16.16.37.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4314A2A5247FE6FC0008EC19 /* libpng16.16.37.0.dylib */; };
 		4314A2A7247FE71F0008EC19 /* libpng16.16.37.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4314A2A5247FE6FC0008EC19 /* libpng16.16.37.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		4323CE1A23E036A400E96458 /* GLProgramLoupe.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4323CE1923E036A400E96458 /* GLProgramLoupe.mm */; };
@@ -233,7 +240,6 @@
 		5969033E12DDE30800379E41 /* WebPortalConnection+Data.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */; };
 		5969034612DDE5EA00379E41 /* WebPortalResponse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969034412DDE5EA00379E41 /* WebPortalResponse.mm */; };
 		596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */ = {isa = PBXBuildFile; fileRef = 596D30AE1439B98A004EE9EC /* pages2pdf.applescript */; };
-		596D30B71439BA17004EE9EC /* DicomStudy+Report.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596D30B51439BA17004EE9EC /* DicomStudy+Report.mm */; };
 		596D30BC1439BABD004EE9EC /* NSAppleScript+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596D30B91439BABD004EE9EC /* NSAppleScript+N2.mm */; };
 		596EB3071189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */; };
 		596EB3F7118ABBB000880192 /* NSWindow+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3F5118ABBB000880192 /* NSWindow+N2.mm */; };
@@ -288,7 +294,6 @@
 		59DC290B11C6178500DAD5B4 /* DiscBurningOptions.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC290911C6178500DAD5B4 /* DiscBurningOptions.mm */; };
 		59DC290F11C617A300DAD5B4 /* DicomCompressor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC290D11C617A300DAD5B4 /* DicomCompressor.mm */; };
 		59E379D0116B293A00E84FE3 /* NSImage+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E379CE116B293A00E84FE3 /* NSImage+OsiriX.mm */; };
-		59E379D9116B295B00E84FE3 /* DicomAlbum.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E379D7116B295B00E84FE3 /* DicomAlbum.mm */; };
 		59E5236012BF5E440094E668 /* N2Task.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E5235F12BF5E3E0094E668 /* N2Task.mm */; };
 		59E52B3812C109B80094E668 /* DicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E52B3612C109B80094E668 /* DicomDatabase.mm */; };
 		59E8352812F9ABAC006B930A /* N2ManagedDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E8352612F9ABAC006B930A /* N2ManagedDatabase.mm */; };
@@ -788,7 +793,6 @@
 		BF1745D508E0C7E200822756 /* LogWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1745D308E0C7E200822756 /* LogWindowController.mm */; };
 		BF18A85C09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */; };
 		BF2425520A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
-		BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */ = {isa = PBXBuildFile; fileRef = BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */; };
 		BF34857B0951270C00B05AD2 /* SendController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF3485770951270C00B05AD2 /* SendController.mm */; };
 		BF398B8B065B124700AD1F25 /* InArrow.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF398B8A065B124700AD1F25 /* InArrow.tif */; };
@@ -948,8 +952,6 @@
 		CE97630008FABDA600E6F8B0 /* ROIManagerController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE9762FC08FABDA600E6F8B0 /* ROIManagerController.mm */; };
 		CE97630308FABDA600E6F8B0 /* PaletteController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE9762FF08FABDA600E6F8B0 /* PaletteController.mm */; };
 		CE995076183E05D60087E409 /* PerpendicularLines.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CE995075183E05D60087E409 /* PerpendicularLines.pdf */; };
-		CE9DD284086B35050058DD2A /* DicomStudy.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD280086B35050058DD2A /* DicomStudy.mm */; };
-		CE9DD287086B35050058DD2A /* DicomSeries.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD283086B35050058DD2A /* DicomSeries.mm */; };
 		CE9E11D013DBB5DD008B2848 /* OsiriX.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE9E11CF13DBB5DD008B2848 /* OsiriX.sdef */; };
 		CEA20538073A810100F0DAB7 /* Photos.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEA20534073A810100F0DAB7 /* Photos.mm */; };
 		CEA4F07515AEA5FE009584C7 /* Cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07215AEA5FE009584C7 /* Cloud.png */; };
@@ -1016,7 +1018,6 @@
 		CEDF6DCB0B46FE99008B45B8 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
 		CEDF6DCC0B46FE99008B45B8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
 		CEDF6E1D0B46FF40008B45B8 /* DICOMPrint.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEDF6E1C0B46FF40008B45B8 /* DICOMPrint.mm */; };
-		CEE1922E08636FA100DED1F0 /* DicomImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE1922C08636FA100DED1F0 /* DicomImage.mm */; };
 		CEE619EF0912C73000C31D78 /* OrientationWidget.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEE619EE0912C73000C31D78 /* OrientationWidget.tif */; };
 		CEE6717D077D5ECF00E4BB10 /* SyncLock.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEE67176077D5ECE00E4BB10 /* SyncLock.pdf */; };
 		CEE73FCA08F44724002A395F /* FVTiff.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.mm */; };
@@ -1504,6 +1505,20 @@
 		4307C62B1A2091900083877C /* url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = url.h; sourceTree = "<group>"; };
 		430CB70C218C66CD000C2547 /* SRController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRController.h; sourceTree = "<group>"; };
 		430CB70D218C66CD000C2547 /* SRController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SRController.mm; sourceTree = "<group>"; };
+		4312138E2795974E00730A52 /* DicomSeries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DicomSeries.h; path = OsiriXClasses/models/DicomSeries.h; sourceTree = "<group>"; };
+		4312138F2795974E00730A52 /* DicomAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DicomAlbum.h; path = OsiriXClasses/models/DicomAlbum.h; sourceTree = "<group>"; };
+		431213902795974F00730A52 /* LogEntry.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = LogEntry.mm; path = OsiriXClasses/models/LogEntry.mm; sourceTree = "<group>"; };
+		431213912795974F00730A52 /* DicomImage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DicomImage.mm; path = OsiriXClasses/models/DicomImage.mm; sourceTree = "<group>"; };
+		431213922795975000730A52 /* DicomImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DicomImage.h; path = OsiriXClasses/models/DicomImage.h; sourceTree = "<group>"; };
+		431213932795975000730A52 /* DicomAlbum.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DicomAlbum.mm; path = OsiriXClasses/models/DicomAlbum.mm; sourceTree = "<group>"; };
+		431213942795975100730A52 /* DicomStudy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DicomStudy.h; path = OsiriXClasses/models/DicomStudy.h; sourceTree = "<group>"; };
+		431213952795975100730A52 /* DicomStudy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DicomStudy.mm; path = OsiriXClasses/models/DicomStudy.mm; sourceTree = "<group>"; };
+		431213962795975200730A52 /* LogEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogEntry.h; path = OsiriXClasses/models/LogEntry.h; sourceTree = "<group>"; };
+		431213972795975300730A52 /* DicomSeries.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DicomSeries.mm; path = OsiriXClasses/models/DicomSeries.mm; sourceTree = "<group>"; };
+		4312139D2795A0D800730A52 /* DicomImageDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DicomImageDCMTKCategory.h; path = OsiriXClasses/models/DicomImageDCMTKCategory.h; sourceTree = "<group>"; };
+		4312139E2795A0D800730A52 /* DicomImageDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = DicomImageDCMTKCategory.mm; path = OsiriXClasses/models/DicomImageDCMTKCategory.mm; sourceTree = "<group>"; };
+		4312139F2795A0D800730A52 /* DicomStudy+Report.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "DicomStudy+Report.mm"; path = "OsiriXClasses/models/DicomStudy+Report.mm"; sourceTree = "<group>"; };
+		431213A02795A0D900730A52 /* DicomStudy+Report.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "DicomStudy+Report.h"; path = "OsiriXClasses/models/DicomStudy+Report.h"; sourceTree = "<group>"; };
 		4314A2A5247FE6FC0008EC19 /* libpng16.16.37.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.37.0.dylib; path = "../../../install/miele-20200527/libpng-1.6.37/lib/libpng16.16.37.0.dylib"; sourceTree = "<group>"; };
 		4323CE1823E036A400E96458 /* GLProgramLoupe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramLoupe.h; sourceTree = "<group>"; };
 		4323CE1923E036A400E96458 /* GLProgramLoupe.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GLProgramLoupe.mm; sourceTree = "<group>"; };
@@ -1864,8 +1879,6 @@
 		596D30AC1439B979004EE9EC /* odt2pdf */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = odt2pdf; path = Binaries/ReportsToPDF/odt2pdf/build/odt2pdf; sourceTree = "<group>"; };
 		596D30AE1439B98A004EE9EC /* pages2pdf.applescript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.applescript; name = pages2pdf.applescript; path = Binaries/ReportsToPDF/pages2pdf.applescript; sourceTree = "<group>"; };
 		596D30AF1439B98A004EE9EC /* word2pdf.applescript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.applescript; name = word2pdf.applescript; path = Binaries/ReportsToPDF/word2pdf.applescript; sourceTree = "<group>"; };
-		596D30B41439BA17004EE9EC /* DicomStudy+Report.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DicomStudy+Report.h"; sourceTree = "<group>"; };
-		596D30B51439BA17004EE9EC /* DicomStudy+Report.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "DicomStudy+Report.mm"; sourceTree = "<group>"; };
 		596D30B81439BABD004EE9EC /* NSAppleScript+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAppleScript+N2.h"; path = "nitrogen/Sources/NSAppleScript+N2.h"; sourceTree = "<group>"; };
 		596D30B91439BABD004EE9EC /* NSAppleScript+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSAppleScript+N2.mm"; path = "nitrogen/Sources/NSAppleScript+N2.mm"; sourceTree = "<group>"; };
 		596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPreferencePane+OsiriX.h"; sourceTree = "<group>"; };
@@ -1963,8 +1976,6 @@
 		59E088A80FF0AB9400452F19 /* Notifications.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Notifications.mm; sourceTree = "<group>"; };
 		59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+OsiriX.h"; sourceTree = "<group>"; };
 		59E379CE116B293A00E84FE3 /* NSImage+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSImage+OsiriX.mm"; sourceTree = "<group>"; };
-		59E379D6116B295B00E84FE3 /* DicomAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomAlbum.h; sourceTree = "<group>"; };
-		59E379D7116B295B00E84FE3 /* DicomAlbum.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomAlbum.mm; sourceTree = "<group>"; };
 		59E5235E12BF5E3E0094E668 /* N2Task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Task.h; path = nitrogen/Sources/N2Task.h; sourceTree = "<group>"; };
 		59E5235F12BF5E3E0094E668 /* N2Task.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2Task.mm; path = nitrogen/Sources/N2Task.mm; sourceTree = "<group>"; };
 		59E52B3512C109B80094E668 /* DicomDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomDatabase.h; sourceTree = "<group>"; };
@@ -2712,8 +2723,6 @@
 		BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppControllerDCMTKCategory.mm; sourceTree = "<group>"; };
 		BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomFileDCMTKCategory.h; sourceTree = "<group>"; };
 		BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomFileDCMTKCategory.mm; sourceTree = "<group>"; };
-		BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomImageDCMTKCategory.h; sourceTree = "<group>"; };
-		BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomImageDCMTKCategory.mm; sourceTree = "<group>"; };
 		BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = vtkPowerCrustSurfaceReconstruction.cxx; sourceTree = "<group>"; };
 		BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vtkPowerCrustSurfaceReconstruction.h; sourceTree = "<group>"; };
 		BF3485760951270C00B05AD2 /* SendController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendController.h; sourceTree = "<group>"; };
@@ -2954,10 +2963,6 @@
 		CE9762FE08FABDA600E6F8B0 /* PaletteController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PaletteController.h; sourceTree = "<group>"; };
 		CE9762FF08FABDA600E6F8B0 /* PaletteController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = PaletteController.mm; sourceTree = "<group>"; };
 		CE995075183E05D60087E409 /* PerpendicularLines.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = PerpendicularLines.pdf; sourceTree = "<group>"; };
-		CE9DD280086B35050058DD2A /* DicomStudy.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomStudy.mm; sourceTree = "<group>"; };
-		CE9DD281086B35050058DD2A /* DicomStudy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomStudy.h; sourceTree = "<group>"; };
-		CE9DD282086B35050058DD2A /* DicomSeries.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomSeries.h; sourceTree = "<group>"; };
-		CE9DD283086B35050058DD2A /* DicomSeries.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomSeries.mm; sourceTree = "<group>"; };
 		CE9E11CF13DBB5DD008B2848 /* OsiriX.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = OsiriX.sdef; sourceTree = "<group>"; };
 		CEA20533073A810100F0DAB7 /* Photos.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Photos.h; sourceTree = "<group>"; };
 		CEA20534073A810100F0DAB7 /* Photos.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = Photos.mm; sourceTree = "<group>"; };
@@ -3053,8 +3058,6 @@
 		CEDEF7D50D020E9100CADB15 /* JPEGSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = JPEGSmall.tif; sourceTree = "<group>"; };
 		CEDF6DD00B46FE99008B45B8 /* DICOMPrint */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DICOMPrint; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDF6E1C0B46FF40008B45B8 /* DICOMPrint.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = DICOMPrint.mm; path = DICOMPrint/DICOMPrint.mm; sourceTree = "<group>"; };
-		CEE1922C08636FA100DED1F0 /* DicomImage.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomImage.mm; sourceTree = "<group>"; };
-		CEE1922D08636FA100DED1F0 /* DicomImage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomImage.h; sourceTree = "<group>"; };
 		CEE619EE0912C73000C31D78 /* OrientationWidget.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OrientationWidget.tif; sourceTree = "<group>"; };
 		CEE67176077D5ECE00E4BB10 /* SyncLock.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = SyncLock.pdf; sourceTree = "<group>"; };
 		CEE73FC708F44724002A395F /* FVTiff.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FVTiff.h; sourceTree = "<group>"; };
@@ -3315,6 +3318,20 @@
 		324AD88708B23B0500101139 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				431213922795975000730A52 /* DicomImage.h */,
+				431213912795974F00730A52 /* DicomImage.mm */,
+				4312139D2795A0D800730A52 /* DicomImageDCMTKCategory.h */,
+				4312139E2795A0D800730A52 /* DicomImageDCMTKCategory.mm */,
+				431213942795975100730A52 /* DicomStudy.h */,
+				431213952795975100730A52 /* DicomStudy.mm */,
+				431213A02795A0D900730A52 /* DicomStudy+Report.h */,
+				4312139F2795A0D800730A52 /* DicomStudy+Report.mm */,
+				4312138F2795974E00730A52 /* DicomAlbum.h */,
+				431213932795975000730A52 /* DicomAlbum.mm */,
+				4312138E2795974E00730A52 /* DicomSeries.h */,
+				431213972795975300730A52 /* DicomSeries.mm */,
+				431213962795975200730A52 /* LogEntry.h */,
+				431213902795974F00730A52 /* LogEntry.mm */,
 				59E3E445127EE6150077B88A /* Studies */,
 				59E3E446127EE6260077B88A /* Web Portal */,
 			);
@@ -3681,8 +3698,6 @@
 				A085E104141E53210072BF0D /* DCMUSRegion.mm */,
 				71A28B751637F0D200489F2A /* DCMWaveform.h */,
 				71A28B761637F0D200489F2A /* DCMWaveform.mm */,
-				59E379D6116B295B00E84FE3 /* DicomAlbum.h */,
-				59E379D7116B295B00E84FE3 /* DicomAlbum.mm */,
 				59DC290C11C617A300DAD5B4 /* DicomCompressor.h */,
 				59DC290D11C617A300DAD5B4 /* DicomCompressor.mm */,
 				ABFA7CD2056056F300963FF8 /* dicomData.mm */,
@@ -3707,16 +3722,6 @@
 				AB06EDEF05635642006AFFB9 /* dicomFile.mm */,
 				BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */,
 				BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */,
-				CEE1922D08636FA100DED1F0 /* DicomImage.h */,
-				CEE1922C08636FA100DED1F0 /* DicomImage.mm */,
-				BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */,
-				BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */,
-				CE9DD282086B35050058DD2A /* DicomSeries.h */,
-				CE9DD283086B35050058DD2A /* DicomSeries.mm */,
-				596D30B41439BA17004EE9EC /* DicomStudy+Report.h */,
-				596D30B51439BA17004EE9EC /* DicomStudy+Report.mm */,
-				CE9DD281086B35050058DD2A /* DicomStudy.h */,
-				CE9DD280086B35050058DD2A /* DicomStudy.mm */,
 				BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */,
 				BF7A835E09B8B8E70051F091 /* DICOMToNSString.mm */,
 				59DC290811C6178500DAD5B4 /* DiscBurningOptions.h */,
@@ -6364,12 +6369,14 @@
 				ABD578ED0623179E00616F39 /* HistogramWindow.mm in Sources */,
 				ABD5790B06231FEF00616F39 /* HistoView.mm in Sources */,
 				AB6AC6470624AC5200AFC7AF /* VRView.mm in Sources */,
+				431213A12795A0D900730A52 /* DicomImageDCMTKCategory.mm in Sources */,
 				AB6AC6490624AC5200AFC7AF /* VRController.mm in Sources */,
 				ABCA5BA50625FC1100637E73 /* OpacityTransferView.mm in Sources */,
 				AB154F820627413600BD57AF /* SRView.mm in Sources */,
 				AB94E72506343D91003E4C48 /* MutableArrayCategory.mm in Sources */,
 				AB0128650635991400A74AA1 /* QuicktimeExport.mm in Sources */,
 				ABE3336C063D624400C8E087 /* QueryFilter.mm in Sources */,
+				4312139C2795975400730A52 /* DicomSeries.mm in Sources */,
 				AB73E13B06497EDA00545980 /* PreviewView.mm in Sources */,
 				7E56939A065007D6001A9762 /* SmartWindowController.mm in Sources */,
 				BF5C0188065320A800BAFCF7 /* ImageAndTextCell.mm in Sources */,
@@ -6382,6 +6389,7 @@
 				CE0E08E906A106D700F2C01C /* ThickSlabController.mm in Sources */,
 				BF76A59A06ACC6FD00FABE42 /* ButtonAndTextField.mm in Sources */,
 				BF76A5A806ACC70C00FABE42 /* ButtonAndTextCell.mm in Sources */,
+				4312139A2795975400730A52 /* DicomAlbum.mm in Sources */,
 				CEF0E60406AEF326001FF9E5 /* Mailer.mm in Sources */,
 				CE39BFA406BC5DAE006D6824 /* Scripting_Additions.mm in Sources */,
 				7E55ADDE06C7FFCD0059D6EB /* SeriesView.mm in Sources */,
@@ -6410,9 +6418,6 @@
 				183C865908563F3A000E6A68 /* Spline3D.mm in Sources */,
 				183C865B08563F3A000E6A68 /* SRFlyThruAdapter.mm in Sources */,
 				183C865D08563F3A000E6A68 /* VRFlyThruAdapter.mm in Sources */,
-				CEE1922E08636FA100DED1F0 /* DicomImage.mm in Sources */,
-				CE9DD284086B35050058DD2A /* DicomStudy.mm in Sources */,
-				CE9DD287086B35050058DD2A /* DicomSeries.mm in Sources */,
 				433DA138215A5B2600D5A70B /* BrowserController.mm in Sources */,
 				A99B7ECB0885A61F004328C0 /* BonjourPublisher.mm in Sources */,
 				A99B7ECD0885A621004328C0 /* BonjourBrowser.mm in Sources */,
@@ -6470,7 +6475,6 @@
 				AB6FF59C0A47D08000C501F0 /* AppDefaults.mm in Sources */,
 				BFA7D2190A51D1460013F76E /* BrowserControllerDCMTKCategory.mm in Sources */,
 				BF2425520A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */,
-				BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
 				43E27D2B1AF338FA007B92CA /* ROI3DSettingsWindow.mm in Sources */,
 				A95B98A50A6E65B100E476D4 /* QTExportHTMLSummary.mm in Sources */,
 				A95837B40AAF0DC80001D415 /* SRAnnotation.mm in Sources */,
@@ -6513,6 +6517,7 @@
 				A978DEA10CB0D4BE00FB2C3D /* NFHUDSliderCell.mm in Sources */,
 				A978DEA30CB0D4BE00FB2C3D /* NFHUDSlider.mm in Sources */,
 				A978DEA40CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.mm in Sources */,
+				431213A22795A0D900730A52 /* DicomStudy+Report.mm in Sources */,
 				A978DEA70CB0D4BE00FB2C3D /* NSImage+FrameworkImage.mm in Sources */,
 				A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.mm in Sources */,
 				BF84E5420CB16A2900431BC2 /* FlyThruTableView.mm in Sources */,
@@ -6602,7 +6607,6 @@
 				84ADF481115B622D00FE18B2 /* VTKStereoVRView.mm in Sources */,
 				84ADF483115B622D00FE18B2 /* Window3DController+StereoVision.mm in Sources */,
 				59E379D0116B293A00E84FE3 /* NSImage+OsiriX.mm in Sources */,
-				59E379D9116B295B00E84FE3 /* DicomAlbum.mm in Sources */,
 				59BDEF42117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */,
 				59BDF113117EE6A1007F1F2C /* PreferencesWindowController.mm in Sources */,
 				59BDF11F117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm in Sources */,
@@ -6723,6 +6727,7 @@
 				CEB98C841335088C0083F3FD /* AYDicomPrintPref.mm in Sources */,
 				59B696651337C957009356ED /* N2DirectoryEnumerator.mm in Sources */,
 				84E191FC1369966A008DCFC8 /* WADODownload.mm in Sources */,
+				4312139B2795975400730A52 /* DicomStudy.mm in Sources */,
 				4FC5E3F7138AB91E00CB635F /* CPRStretchedOperation.mm in Sources */,
 				4F00A9E4139A778000ABD529 /* CPRStretchedView.mm in Sources */,
 				4F368CA5139B7E1D00BE3D1C /* CPRView.mm in Sources */,
@@ -6741,7 +6746,6 @@
 				4F832D5A13FA5F8C00511070 /* OSIVolumeWindow.mm in Sources */,
 				4F832D5D13FA5F8C00511070 /* pluginSDKAdditions.mm in Sources */,
 				4F1FCE1C143092DC008683F9 /* OSIPlanarBrushROI.mm in Sources */,
-				596D30B71439BA17004EE9EC /* DicomStudy+Report.mm in Sources */,
 				596D30BC1439BABD004EE9EC /* NSAppleScript+N2.mm in Sources */,
 				CE5EEFC9182D249B009D2045 /* ThumbnailsListPanel.mm in Sources */,
 				43F8F9B31AA7DE44008F318C /* PathForImage.mm in Sources */,
@@ -6753,6 +6757,7 @@
 				CE0E0DB31863970400417C4C /* DCMTKFileFormat.mm in Sources */,
 				841722B110D90595001A833F /* DDKeychain.mm in Sources */,
 				59DB270014507ACA00E78E03 /* PrettyCell.mm in Sources */,
+				431213982795975400730A52 /* LogEntry.mm in Sources */,
 				59DB270614507ADF00E78E03 /* N2MutableUInteger.mm in Sources */,
 				59DB270C14507B1400E78E03 /* RemoteDicomDatabase.mm in Sources */,
 				59DB271A14515B5900E78E03 /* BrowserController+Sources.mm in Sources */,
@@ -6769,6 +6774,7 @@
 				A0344496143DE4AA003E1AFA /* DCMUSRegion.mm in Sources */,
 				71353C531469260B00359CAB /* NSDate+N2.mm in Sources */,
 				7128FD791487D54A00AB54A1 /* N2UnclickableSplitView.mm in Sources */,
+				431213992795975400730A52 /* DicomImage.mm in Sources */,
 				714943D414D3008B008BCC08 /* NSHost+N2.mm in Sources */,
 				71512E9E15234F6B00B87012 /* DiscMountedAskTheUserDialogController.mm in Sources */,
 				714D3BB3152AE40C003EB087 /* O2ScreensPrefsView.mm in Sources */,

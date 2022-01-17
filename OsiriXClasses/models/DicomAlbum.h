@@ -28,13 +28,20 @@
     int numberOfStudies;
 }
 
+//@property(nonatomic, retain) NSDictionary *correspondingDICOMNodeQuery;
+@property int numberOfStudies;
+
+@end
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface DicomAlbum (CoreDataProperties)
+
+@property(nonatomic, retain) NSNumber* smartAlbum;
 @property(nonatomic, retain) NSNumber* index;
 @property(nonatomic, retain) NSString* name;
 @property(nonatomic, retain) NSString* predicateString;
-//@property(nonatomic, retain) NSDictionary *correspondingDICOMNodeQuery;
-@property(nonatomic, retain) NSNumber* smartAlbum;
-@property(nonatomic, retain) NSSet* studies;
-@property int numberOfStudies;
+@property(nonatomic, retain) NSSet<DicomStudy *> *studies;
 
 @end
 
@@ -42,8 +49,9 @@
 
 - (void)addStudiesObject:(DicomStudy *)value;
 - (void)removeStudiesObject:(DicomStudy *)value;
-- (void)addStudies:(NSSet *)value;
-- (void)removeStudies:(NSSet *)value;
+- (void)addStudies:(NSSet<DicomStudy *> *)values;
+- (void)removeStudies:(NSSet<DicomStudy *> *)values;
 
 @end
 
+NS_ASSUME_NONNULL_END
