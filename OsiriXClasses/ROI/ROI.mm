@@ -841,7 +841,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                         if ([r type] == tMeasure)
                         {
                             NSArray *B = [r points];
-                            NSPoint    u1 = [[[self points] objectAtIndex: 0] point],
+                            NSPoint u1 = [[[self points] objectAtIndex: 0] point],
                                     u2 = [[[self points] objectAtIndex: 1] point],
                                     v1 = [[B objectAtIndex: 0] point],
                                     v2 = [[B objectAtIndex: 1] point];

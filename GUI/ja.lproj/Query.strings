@@ -316,7 +316,7 @@
 "898.title" = "Text Cell";
 
 /* Class = "NSTableColumn"; headerCell.title = "Local Status"; ObjectID = "899"; */
-"899.headerCell.title" = "ローカルステータス";
+"899.headerCell.title" = "ローカル状況";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "900"; */
 "900.title" = "Text Cell";
@@ -547,13 +547,13 @@
 "1184.title" = "Text Cell";
 
 /* Class = "NSButtonCell"; title = "Keep this window on top of all other windows"; ObjectID = "1186"; */
-"1186.title" = "このウィンドウを他のすべてのウィンドウの上に置いてください";
+"1186.title" = "このウィンドウをトップに";
 
 /* Class = "NSTableColumn"; headerCell.title = "Server Comments"; ObjectID = "1195"; */
 "1195.headerCell.title" = "サーバーのコメント";
 
 /* Class = "NSTableColumn"; headerCell.title = "Server Status"; ObjectID = "1196"; */
-"1196.headerCell.title" = "サーバーの状態";
+"1196.headerCell.title" = "サーバー状態";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "1197"; */
 "1197.title" = "Text Cell";

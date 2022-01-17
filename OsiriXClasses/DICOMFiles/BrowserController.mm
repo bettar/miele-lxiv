@@ -3369,13 +3369,13 @@ static NSConditionLock *threadLock = nil;
 		outlineViewArray = [outlineViewArray sortedArrayUsingDescriptors: sortDescriptors];
 	}
 	
-	long images = 0;
+	long imagesCount = 0;
 	for (id obj in outlineViewArray)
 	{
-		images += [[obj valueForKey:@"noFiles"] intValue];
+		imagesCount += [[obj valueForKey:@"noFiles"] intValue];
 	}
 	
-	description = [description stringByAppendingFormat: NSLocalizedString(@" / Result = %@ studies (%@ images)", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt: [outlineViewArray count]]], [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:images]]];
+	description = [description stringByAppendingFormat: NSLocalizedString(@" / Result = %@ studies (%@ images)", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt: [outlineViewArray count]]], [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:imagesCount]]];
 	
 	outlineViewArray = [outlineViewArray retain]; // ???
 	
@@ -5999,7 +5999,7 @@ static NSConditionLock *threadLock = nil;
                         }
                         else
                         {
-                            [study setValue:@0  forKey:@"numberOfImages"];
+                            [study setValue:@0 forKey:@"numberOfImages"];
                             [study setValue:[study valueForKey: @"modalities"] forKey:@"modality"];
                         }
                     }
@@ -9211,7 +9211,7 @@ static BOOL withReset = NO;
 			cell = [oMatrix selectedCell];
 		}
 		
-		NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+		NSManagedObject *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 		if ([[aFile valueForKey:@"type"] isEqualToString:@"Series"] &&
             [[[aFile valueForKey:@"images"] allObjects] count] == 1 &&
             [[[[[aFile valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1)
@@ -9301,7 +9301,7 @@ static BOOL withReset = NO;
 			NSData *volumeData = nil;
 			
             @try {
-				// We need to temporarly retain all these objects
+				// We need to temporarily retain all these objects
 				vFileList = [[v fileList] copy];
 				vPixList = [[v pixList] copy];
 				volumeData = [[v volumeData] retain];
@@ -9334,20 +9334,20 @@ static BOOL withReset = NO;
 				
 				if (i != NSNotFound)
 				{
-					DCMPix *dcmPix = [vPixList objectAtIndex: i];
+					DCMPix *dcmPix1 = [vPixList objectAtIndex: i];
 					
-					[dcmPix.checking lock];
+					[dcmPix1.checking lock];
 					
-					[dcmPix CheckLoad];
+					[dcmPix1 CheckLoad];
 					
-					if ([dcmPix isLoaded])
+					if ([dcmPix1 isLoaded])
 					{
 						DCMPix *dcmPixCopy = [[vPixList objectAtIndex: i] copy];
 						
-						float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+						float *fImage = (float*) malloc( dcmPix1.pheight*dcmPix1.pwidth*sizeof( float));
 						if (fImage)
 						{
-							memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+							memcpy( fImage, dcmPix1.fImage, dcmPix1.pheight*dcmPix1.pwidth*sizeof( float));
 							[dcmPixCopy setfImage: fImage];
 							[dcmPixCopy freefImageWhenDone: YES];
 						
@@ -9356,7 +9356,7 @@ static BOOL withReset = NO;
 						else
 							[dcmPixCopy release];
 					}
-					[dcmPix.checking unlock];
+					[dcmPix1.checking unlock];
 				}
 			}
 			@catch (NSException * e) 
@@ -9397,26 +9397,26 @@ static BOOL withReset = NO;
 				noOfImages = [[image valueForKey:@"numberOfFrames"] intValue];
 				animate = YES;
 				
-				DCMPix *dcmPix = nil;
+				DCMPix *dcmPix2 = nil;
 				
 				//Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
-				dcmPix = [[self getDCMPixFromViewerIfAvailable: [image valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
+				dcmPix2 = [[self getDCMPixFromViewerIfAvailable: [image valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
 				
-				if (dcmPix == nil)
-					dcmPix = [[DCMPix alloc] initWithPath: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:image];
+				if (dcmPix2 == nil)
+					dcmPix2 = [[DCMPix alloc] initWithPath: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:image];
 				
-				if (dcmPix)
+				if (dcmPix2)
 				{
-					float   wl, ww;
+					float wl, ww;
 					
 					[imageView getWLWW:&wl :&ww];
 					
                     @synchronized( previewPixThumbnails)
                     {
-                        [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
+                        [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix2];
 					}
                     
-					[dcmPix release];
+					[dcmPix2 release];
 					
 					[imageView setIndex:[cell tag]];
 				}
@@ -9454,16 +9454,16 @@ static BOOL withReset = NO;
 						if ([[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO ||
                            [[imageObj valueForKey: @"frameID"] intValue] != [[imageView curDCM] frameNo])
 						{
-							DCMPix *dcmPix = nil;
+							DCMPix *dcmPix3 = nil;
 							
-							dcmPix = [[self getDCMPixFromViewerIfAvailable: [imageObj valueForKey:@"completePath"] frameNumber: [[imageObj valueForKey: @"frameID"] intValue]] retain];
+							dcmPix3 = [[self getDCMPixFromViewerIfAvailable: [imageObj valueForKey:@"completePath"] frameNumber: [[imageObj valueForKey: @"frameID"] intValue]] retain];
 							
-							if (dcmPix == nil)
-								dcmPix = [[DCMPix alloc] initWithPath: [imageObj valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :nil :[[imageObj valueForKey: @"frameID"] intValue] :[[imageObj valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj: imageObj];
+							if (dcmPix3 == nil)
+								dcmPix3 = [[DCMPix alloc] initWithPath: [imageObj valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :nil :[[imageObj valueForKey: @"frameID"] intValue] :[[imageObj valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj: imageObj];
 							
-							if (dcmPix)
+							if (dcmPix3)
 							{
-								float   wl, ww;
+								float wl, ww;
 								
 								[imageView getWLWW:&wl :&ww];
 								
@@ -9471,9 +9471,9 @@ static BOOL withReset = NO;
                                 {
                                     DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
                                     
-                                    [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
+                                    [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix3];
                                     
-                                    [dcmPix release];
+                                    [dcmPix3 release];
                                     
                                     if (withReset)
                                         [imageView setIndexWithReset:[cell tag] :YES];
@@ -9484,7 +9484,7 @@ static BOOL withReset = NO;
                                     {
                                         for (DCMPix *p in previewPix)
                                         {
-                                            if (p != dcmPix)
+                                            if (p != dcmPix3)
                                             {
                                                 [p kill8bitsImage];
                                                 [p revert: NO];
@@ -9506,16 +9506,16 @@ static BOOL withReset = NO;
 						   || [[imageView curDCM] frameNo] != [animationSlider intValue]
 						   || [[imageView curDCM] serieNo] != [[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue])
 						{
-							DCMPix *dcmPix = nil;
+							DCMPix *dcmPix4 = nil;
 							
-							dcmPix = [[self getDCMPixFromViewerIfAvailable: [[images objectAtIndex: 0] valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
+							dcmPix4 = [[self getDCMPixFromViewerIfAvailable: [[images objectAtIndex: 0] valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
 							
-							if (dcmPix == nil)
-								dcmPix = [[DCMPix alloc] initWithPath: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:[images objectAtIndex: 0]];
+							if (dcmPix4 == nil)
+								dcmPix4 = [[DCMPix alloc] initWithPath: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:[images objectAtIndex: 0]];
 							
-							if (dcmPix)
+							if (dcmPix4)
 							{
-								float   wl, ww;
+								float wl, ww;
 								
 								[imageView getWLWW:&wl :&ww];
 								
@@ -9523,8 +9523,8 @@ static BOOL withReset = NO;
                                 {
                                     DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
                                     
-                                    [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
-                                    [dcmPix release];
+                                    [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix4];
+                                    [dcmPix4 release];
                                     
                                     if (withReset)
                                         [imageView setIndexWithReset:[cell tag] :YES];
@@ -9535,7 +9535,7 @@ static BOOL withReset = NO;
                                     {
                                         for (DCMPix *p in previewPix)
                                         {
-                                            if (p != dcmPix)
+                                            if (p != dcmPix4)
                                             {
                                                 [p kill8bitsImage];
                                                 [p revert: NO];
@@ -9665,7 +9665,6 @@ static BOOL withReset = NO;
 		}
 	}
 	
-	
 	[animationSlider setEnabled:NO];
 	[animationSlider setMaxValue:0];
 	[animationSlider setNumberOfTickMarks:1];
@@ -9712,7 +9711,7 @@ static BOOL withReset = NO;
         setDCMDone = NO;
         loadPreviewIndex = 0;
         
-        [self previewMatrixScrollViewFrameDidChange: nil]; // call notification directly ? strange
+        [self previewMatrixScrollViewFrameDidChange: nil]; // call notification directly ? strange !
         
         NSInteger rows, columns;
         [oMatrix getNumberOfRows:&rows columns:&columns];
@@ -10418,9 +10417,9 @@ static BOOL withReset = NO;
                 if (image.frameID)
                     frame = image.frameID.intValue;
                 
-                DCMPix* dcmPix = [self getDCMPixFromViewerIfAvailable:image.completePath frameNumber: frame];
-                if (dcmPix == nil)
-                    dcmPix = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![idatabase isLocal] imageObj: image] autorelease];
+                DCMPix* dcmPix5 = [self getDCMPixFromViewerIfAvailable:image.completePath frameNumber: frame];
+                if (dcmPix5 == nil)
+                    dcmPix5 = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![idatabase isLocal] imageObj: image] autorelease];
                 
                 if (!imageLevel)
                 {
@@ -10431,7 +10430,7 @@ static BOOL withReset = NO;
                         NSImage* dbIma = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
                         [dbIma addRepresentation:rep];
                         
-                        DCMPix *pix = (dcmPix ? dcmPix : [[[DCMPix alloc] myinitEmpty] autorelease]);
+                        DCMPix *pix = (dcmPix5 ? dcmPix5 : [[[DCMPix alloc] myinitEmpty] autorelease]);
                         
                         [tempPreviewPixThumbnails replaceObjectAtIndex: i withObject: dbIma];
                         [tempPreviewPix addObject: pix];
@@ -10439,7 +10438,7 @@ static BOOL withReset = NO;
                     }
                 }
 
-                if (dcmPix)
+                if (dcmPix5)
                 {
                     if ([DCMAbstractSyntaxUID isStructuredReport:image.series.seriesSOPClassUID] || [DCMAbstractSyntaxUID isPDF:image.series.seriesSOPClassUID])
                     {
@@ -10455,17 +10454,17 @@ static BOOL withReset = NO;
                         [thumbnail unlockFocus];
                         
                         [tempPreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
-                        [tempPreviewPix addObject: dcmPix];
+                        [tempPreviewPix addObject: dcmPix5];
                     }
                     else
                     {
-                        NSImage* thumbnail = [dcmPix generateThumbnailImageWithWW:image.series.windowWidth.floatValue WL:image.series.windowLevel.floatValue];
-                        [dcmPix revert:NO];	// <- Kill the raw data
-                        if (thumbnail == nil || dcmPix.notAbleToLoadImage)
+                        NSImage* thumbnail = [dcmPix5 generateThumbnailImageWithWW:image.series.windowWidth.floatValue WL:image.series.windowLevel.floatValue];
+                        [dcmPix5 revert:NO];	// <- Kill the raw data
+                        if (thumbnail == nil || dcmPix5.notAbleToLoadImage)
                             thumbnail = notFoundImage;
                         
                         [tempPreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
-                        [tempPreviewPix addObject: dcmPix];
+                        [tempPreviewPix addObject: dcmPix5];
                     }
                     continue;
                 }
@@ -11778,11 +11777,11 @@ constrainSplitPosition:(CGFloat)proposedPosition
 
 - (NSManagedObject*) findStudyUID: (NSString*) uid
 {
-	NSArray						*studyArray = nil;
-	NSError						*error = nil;
-	NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
-	NSManagedObjectContext		*context = BrowserController.currentBrowser.database.managedObjectContext;
-	NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", uid];
+	NSArray					*studyArray = nil;
+	NSError					*error = nil;
+	NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
+	NSManagedObjectContext	*context = BrowserController.currentBrowser.database.managedObjectContext;
+	NSPredicate				*predicate = [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", uid];
 	
 	[request setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
 	[request setPredicate: predicate];
@@ -12764,50 +12763,50 @@ constrainSplitPosition:(CGFloat)proposedPosition
 				if (fVolumePtr)
 				{
 					volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:memBlockSize[ x]*sizeof( float) freeWhenDone:YES];
-					NSArray *loadList = [toOpenArray objectAtIndex: x];
+					NSArray *loadList3 = [toOpenArray objectAtIndex: x];
 					
-					if ([loadList count])
-						[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: [[loadList objectAtIndex: 0] valueForKeyPath:@"series.study.modality"] description:[[loadList objectAtIndex: 0] valueForKeyPath:@"series.study.studyName"]];
+					if ([loadList3 count])
+						[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: [[loadList3 objectAtIndex: 0] valueForKeyPath:@"series.study.modality"] description:[[loadList3 objectAtIndex: 0] valueForKeyPath:@"series.study.studyName"]];
 					
 					// Why viewerPix[0] (fixed value) within the loop? Because it's not a 4D volume !
 					viewerPix[0] = [[NSMutableArray alloc] initWithCapacity:0];
 					NSMutableArray *correspondingObjects = [[NSMutableArray alloc] initWithCapacity:0];
 					
-					if ([loadList count] == 1 && [[[loadList objectAtIndex: 0] valueForKey:@"numberOfFrames"] intValue] > 1)
+					if ([loadList3 count] == 1 && [[[loadList3 objectAtIndex: 0] valueForKey:@"numberOfFrames"] intValue] > 1)
 					{
 						multiFrame = YES;							
-						NSManagedObject*  curFile = [loadList objectAtIndex: 0];
+						NSManagedObject*  curFile = [loadList3 objectAtIndex: 0];
 						
 						for (unsigned long i = 0; i < [[curFile valueForKey:@"numberOfFrames"] intValue]; i++)
 						{
-							NSManagedObject*  curFile = [loadList objectAtIndex: 0];								
-							DCMPix*	dcmPix = [[DCMPix alloc] initWithPath: [curFile valueForKey:@"completePath"] :i :[[curFile valueForKey:@"numberOfFrames"] intValue] :fVolumePtr+mem :i :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:curFile];
+							NSManagedObject*  curFile = [loadList3 objectAtIndex: 0];								
+							DCMPix*	dcmPix6 = [[DCMPix alloc] initWithPath: [curFile valueForKey:@"completePath"] :i :[[curFile valueForKey:@"numberOfFrames"] intValue] :fVolumePtr+mem :i :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:curFile];
 							
-							if (dcmPix)
+							if (dcmPix6)
 							{
 								mem += ([[curFile valueForKey:@"width"] intValue]) * ([[curFile valueForKey:@"height"] intValue]);
 								
-								[viewerPix[0] addObject: dcmPix];
+								[viewerPix[0] addObject: dcmPix6];
 								[correspondingObjects addObject: curFile];
-								[dcmPix release];
+								[dcmPix6 release];
 							}
 						} //end for
 					}
 					else
 					{
 						//multiframe==NO
-						for (unsigned long i = 0; i < [loadList count]; i++)
+						for (unsigned long i = 0; i < [loadList3 count]; i++)
 						{
-							NSManagedObject*  curFile = [loadList objectAtIndex: i];
-							DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curFile valueForKey:@"completePath"] :i :[loadList count] :fVolumePtr+mem :[[curFile valueForKey:@"frameID"] intValue] :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:curFile];
+							NSManagedObject*  curFile = [loadList3 objectAtIndex: i];
+							DCMPix* dcmPix7 = [[DCMPix alloc] initWithPath: [curFile valueForKey:@"completePath"] :i :[loadList3 count] :fVolumePtr+mem :[[curFile valueForKey:@"frameID"] intValue] :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:curFile];
 							
-							if (dcmPix)
+							if (dcmPix7)
 							{
 								mem += ([[curFile valueForKey:@"width"] intValue]) * ([[curFile valueForKey:@"height"] intValue]);
 								
-								[viewerPix[0] addObject: dcmPix];
+								[viewerPix[0] addObject: dcmPix7];
 								[correspondingObjects addObject: curFile];
-								[dcmPix release];
+								[dcmPix7 release];
 							}
 							else
 							{
@@ -12816,7 +12815,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 						}
 					}
 					
-					if ([viewerPix[0] count] != [loadList count] && multiFrame == NO)
+					if ([viewerPix[0] count] != [loadList3 count] && multiFrame == NO)
 					{
 						for (unsigned int i = 0; i < [viewerPix[0] count]; i++)
 						{
@@ -12833,7 +12832,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 							NSRunCriticalAlertPanel(NSLocalizedString(@"Not all files available (readable)", nil),
                                                     NSLocalizedString(@"Not all files are available (readable) in this series.\r%@ are missing.", nil),
                                                     NSLocalizedString(@"Continue",nil), nil, nil,
-                                                    N2LocalizedSingularPluralCount( [loadList count] - [viewerPix[0] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil)));
+                                                    N2LocalizedSingularPluralCount( [loadList3 count] - [viewerPix[0] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil)));
 					}
 					//opening images referred to in viewerPix[0] in the adequate viewer
 					
@@ -13046,7 +13045,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	numberImages = 0;
 	if (movieViewer) // First check if all series contain same amount of images
 	{
-		if ([toOpenArray count] == 1)	// Just one thumbnail is selected, check if multiples lines are selected
+		if ([toOpenArray count] == 1)	// Just one thumbnail is selected, check if multiple lines are selected
 		{
 			NSArray *singleSeries = [toOpenArray objectAtIndex: 0];
 			NSMutableArray *splittedSeries = [NSMutableArray array];
@@ -13341,11 +13340,11 @@ constrainSplitPosition:(CGFloat)proposedPosition
 					{
 						NSManagedObject	*oob = [[splittedSeries objectAtIndex:i] objectAtIndex: [[splittedSeries objectAtIndex:i] count] / 2];
 						
-						DCMPix *dcmPix  = [[DCMPix alloc] initWithPath:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj: oob];
+						DCMPix *dcmPix8  = [[DCMPix alloc] initWithPath:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj: oob];
 						
-						if (dcmPix)
+						if (dcmPix8)
 						{
-							NSImage	 *img = [dcmPix generateThumbnailImageWithWW:[[oob valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[oob valueForKeyPath: @"series.windowLevel"] floatValue]];
+							NSImage	 *img = [dcmPix8 generateThumbnailImageWithWW:[[oob valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[oob valueForKeyPath: @"series.windowLevel"] floatValue]];
 							
 							NSButtonCell *cell = [subOpenMatrix3D cellAtRow:0 column: i];
 							[cell setTransparent:NO];
@@ -13354,7 +13353,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 							[cell setImagePosition: NSImageBelow];
 							[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [[splittedSeries objectAtIndex:i] count]]];
 							[cell setImage: img];
-							[dcmPix release];
+							[dcmPix8 release];
 						}
 					}
 					
@@ -13364,11 +13363,11 @@ constrainSplitPosition:(CGFloat)proposedPosition
 						{
 							NSManagedObject	*oob = [[splittedSeries objectAtIndex: 0] objectAtIndex: i];
 							
-							DCMPix *dcmPix  = [[DCMPix alloc] initWithPath:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj: oob];
+							DCMPix *dcmPix9  = [[DCMPix alloc] initWithPath:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj: oob];
 							
-							if (dcmPix)
+							if (dcmPix9)
 							{
-								NSImage	 *img = [dcmPix generateThumbnailImageWithWW:[[oob valueForKeyPath: @"series.windowWidth"] floatValue] WL:[[oob valueForKeyPath: @"series.windowLevel"] floatValue]];
+								NSImage	 *img = [dcmPix9 generateThumbnailImageWithWW:[[oob valueForKeyPath: @"series.windowWidth"] floatValue] WL:[[oob valueForKeyPath: @"series.windowLevel"] floatValue]];
 								
 								NSButtonCell *cell = [subOpenMatrix4D cellAtRow:0 column: i];
 								[cell setTransparent:NO];
@@ -13377,7 +13376,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 								[cell setImagePosition: NSImageBelow];
 								[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [splittedSeries count]]];
 								[cell setImage: img];
-								[dcmPix release];
+								[dcmPix9 release];
 							}
 						}
 					}
@@ -13729,7 +13728,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 			NSMutableArray	*toOpenArray = [NSMutableArray array];
 			
 			int x = 0;
-			if ([cells count] == 1 && [selectedLines count] > 1)	// Just one thumbnail is selected, but multiples lines are selected
+			if ([cells count] == 1 && [selectedLines count] > 1)	// Just one thumbnail is selected, but multiple lines are selected
 			{
 				for (NSManagedObject* curFile in selectedLines)
 				{
@@ -15346,7 +15345,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		//NSLog(@"%s %@", __FUNCTION__, pressedKeys);
 		
-		NSArray		*result = [outlineViewArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name BEGINSWITH[cd] %@", [NSString stringWithFormat:@"%@", pressedKeys]]];
+		NSArray *result = [outlineViewArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name BEGINSWITH[cd] %@", [NSString stringWithFormat:@"%@", pressedKeys]]];
 		
 		[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys selector:@selector(setString:) object:@""];
 		[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
@@ -17067,9 +17066,9 @@ static volatile int numberOfThreadsForJPEG = 0;
                         if ([curImage valueForKey:@"frameID"])
                             frame = [[curImage valueForKey:@"frameID"] intValue];
                         
-                        DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:browser.isCurrentDatabaseBonjour imageObj:curImage];
+                        DCMPix* dcmPix10 = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:browser.isCurrentDatabaseBonjour imageObj:curImage];
                         
-                        if (dcmPix)
+                        if (dcmPix10)
                         {
                             float curWW = 0;
                             float curWL = 0;
@@ -17081,24 +17080,24 @@ static volatile int numberOfThreadsForJPEG = 0;
                             }
                             
                             if (curWW != 0 && curWW !=curWL)
-                                [dcmPix checkImageAvailable :curWW :curWL];
+                                [dcmPix10 checkImageAvailable :curWW :curWL];
                             else
-                                [dcmPix checkImageAvailable :[dcmPix savedWW] :[dcmPix savedWL]];
+                                [dcmPix10 checkImageAvailable :[dcmPix10 savedWW] :[dcmPix10 savedWL]];
 
-                            NSImage *im = [dcmPix image];
+                            NSImage *im = [dcmPix10 image];
                             
                             if (im)
                             {
                                 [imagesArray addObject: im];
                                 [imagesArrayObjects addObject: curImage];
                                 
-                                if (cineRateSet == NO && [dcmPix cineRate])
+                                if (cineRateSet == NO && [dcmPix10 cineRate])
                                 {
-                                    fps = [dcmPix cineRate];
+                                    fps = [dcmPix10 cineRate];
                                 }
                             }
                             
-                            [dcmPix release];
+                            [dcmPix10 release];
                         }
                     }
                     @catch( NSException *e)
@@ -17347,9 +17346,9 @@ static volatile int numberOfThreadsForJPEG = 0;
                                          nil]];
 			}
 			
-			DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :[[curImage valueForKey:@"frameID"] intValue] :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:curImage];
+			DCMPix* dcmPix11 = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :[[curImage valueForKey:@"frameID"] intValue] :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:curImage];
 			
-			if (dcmPix)
+			if (dcmPix11)
 			{
 				float curWW = 0;
 				float curWL = 0;
@@ -17361,22 +17360,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				
 				if (curWW != 0 && curWW !=curWL)
-					[dcmPix checkImageAvailable :curWW :curWL];
+					[dcmPix11 checkImageAvailable :curWW :curWL];
 				else
-					[dcmPix checkImageAvailable :[dcmPix savedWW] :[dcmPix savedWL]];
+					[dcmPix11 checkImageAvailable :[dcmPix11 savedWW] :[dcmPix11 savedWL]];
 				
 				if ([format isEqualToString:@"jpg"])
 				{
-					NSArray *representations = [[dcmPix image] representations];
+					NSArray *representations = [[dcmPix11 image] representations];
 					NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 					[bitmapData writeToFile:dest atomically:YES];
 				}
 				else
 				{
-					[[[dcmPix image] TIFFRepresentation] writeToFile:dest atomically:YES];
+					[[[dcmPix11 image] TIFFRepresentation] writeToFile:dest atomically:YES];
 				}
 				
-				[dcmPix release];
+				[dcmPix11 release];
 			}
 			
 			[splash incrementBy:1];

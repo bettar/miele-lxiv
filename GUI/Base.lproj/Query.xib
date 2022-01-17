@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19455" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19455"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -1447,7 +1447,7 @@
                             </connections>
                         </segmentedControl>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="49D15368-6723-47A7-8F90-2CD6E81BC31D" label="Delete" paletteLabel="Delete" image="NSRemoveTemplate" id="1114">
+                    <toolbarItem implicitItemIdentifier="49D15368-6723-47A7-8F90-2CD6E81BC31D" label="Delete" paletteLabel="Delete" image="NSRemoveTemplate" title="Lock" id="1114">
                         <nil key="toolTip"/>
                         <size key="minSize" width="40" height="25"/>
                         <size key="maxSize" width="40" height="25"/>
@@ -1464,7 +1464,7 @@
                             <binding destination="-2" name="enabled" keyPath="self.isUnlocked" id="1172"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="EDE26A27-4F8F-44D6-90DF-4D7D43114E1B" label="Create" paletteLabel="Create" image="NSAddTemplate" id="1122">
+                    <toolbarItem implicitItemIdentifier="EDE26A27-4F8F-44D6-90DF-4D7D43114E1B" label="Create" paletteLabel="Create" image="NSAddTemplate" title="Lock" id="1122">
                         <nil key="toolTip"/>
                         <size key="minSize" width="40" height="25"/>
                         <size key="maxSize" width="40" height="25"/>
@@ -1481,7 +1481,7 @@
                             <binding destination="-2" name="enabled" keyPath="self.isUnlocked" id="1173"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="A9FB2C16-102A-4508-B57E-3A3E5D2040DD" label="Authentication" paletteLabel="Authentication" image="NSLockUnlockedTemplate" id="1103">
+                    <toolbarItem implicitItemIdentifier="A9FB2C16-102A-4508-B57E-3A3E5D2040DD" label="Authentication" paletteLabel="Authentication" image="NSLockUnlockedTemplate" title="Lock" id="1103">
                         <nil key="toolTip"/>
                         <size key="minSize" width="40" height="25"/>
                         <size key="maxSize" width="40" height="25"/>

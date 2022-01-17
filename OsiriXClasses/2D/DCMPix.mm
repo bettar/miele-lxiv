@@ -1374,12 +1374,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         int startLine = [[dict valueForKey:@"start"] intValue];
                         int endLine = [[dict valueForKey:@"end"] intValue];
                         
-                        int			ii = (endLine - startLine) * [o pwidth];
+                        int ii = (endLine - startLine) * [o pwidth];
                         unsigned char	*dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
-                        float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
-                        float			from = [o wl] - [o ww]/2.;
-                        float			ratio = 4096. / [o ww];
-                        float			*tfPtr = [o transferFunctionPtr];
+                        float *src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
+                        float from = [o wl] - [o ww]/2.;
+                        float ratio = 4096. / [o ww];
+                        float *tfPtr = [o transferFunctionPtr];
                         
                         src32Ptr += startLine * [o pwidth];
                         
@@ -5044,20 +5044,20 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		fseek(fp, TIF_CZ_LSMINFO + 88, SEEK_SET);
 		fread( &SCANTYPE, 2, 1, fp);		SCANTYPE = EndianU16_LtoN( SCANTYPE);
 		
-		//		switch (SCANTYPE) {
-		//			case 3:
-		//				NoOfFrames = TIMESTACKSIZE;
-		//				break;
-		//			case 4:
-		//				NoOfFrames = TIMESTACKSIZE;
-		//				break;
-		//			case 6:
-		//				NoOfFrames = TIMESTACKSIZE * DIMENSION_Z;
-		//				break;
-		//			default:
-		//				NoOfFrames = DIMENSION_Z;
-		//				break;
-		//		}
+//		switch (SCANTYPE) {
+//			case 3:
+//				NoOfFrames = TIMESTACKSIZE;
+//				break;
+//			case 4:
+//				NoOfFrames = TIMESTACKSIZE;
+//				break;
+//			case 6:
+//				NoOfFrames = TIMESTACKSIZE * DIMENSION_Z;
+//				break;
+//			default:
+//				NoOfFrames = DIMENSION_Z;
+//				break;
+//		}
 		
 		if (fExternalOwnedImage)
             fImage = fExternalOwnedImage;
@@ -6741,7 +6741,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         maxFrame = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
         if (maxFrame == 0) maxFrame = 1;
         if (pixArray == nil) maxFrame = 1;
-        //pixelAttr contains the whole PixelData attribute of every frames. Hence needs to be before the loop
+        //pixelAttr contains the whole PixelData attribute of every frame. Hence needs to be before the loop
         if ([dcmObject attributeValueWithName:@"PixelData"])
         {
             DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
@@ -7529,9 +7529,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			}
             @catch ( NSException *e)
 			{
-				NSLog( @"CheckLoadIn Exception");
-				NSLog( @"%@", [e description]);
-				NSLog( @"Exception for this file: %@", srcFile);
+				NSLog(@"CheckLoadIn Exception");
+				NSLog(@"%@", [e description]);
+				NSLog(@"Exception for this file: %@", srcFile);
 				success = NO;
 			}
 			
@@ -10377,7 +10377,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         for (int i = 0; i < numberOfThreadsForCompute; i++)
                         {
                             [nonLinearWLWWThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", nil]];
-                            [NSThread detachNewThreadSelector: @selector(applyNonLinearWLWWThread:) toTarget:[[PixThread alloc] init] withObject: [nonLinearWLWWThreads lastObject]];
+                            [NSThread detachNewThreadSelector: @selector(applyNonLinearWLWWThread:)
+                                                     toTarget: [[PixThread alloc] init]
+                                                   withObject: [nonLinearWLWWThreads lastObject]];
                         }
                     } 
                     

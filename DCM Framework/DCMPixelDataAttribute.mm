@@ -3421,7 +3421,7 @@ void info_callback(const char *msg, void *a) {
             else
                 NSLog(@"%s:%i %s", __FILE__, __LINE__, MALLOC_ERROR_MESSAGE);
 		}
-		//only one fame
+		//only one frame
 		else {
 			subData =[_values objectAtIndex:0];
 		}

@@ -695,9 +695,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     
     if (gDontListenToSyncMessage == NO)
     {
-        ViewerController *v = [ViewerController frontMostDisplayed2DViewer];
-        if (v.isEverythingLoaded)
-            [[v imageView] sendSyncMessage: 0];
+        ViewerController *vc = [ViewerController frontMostDisplayed2DViewer];
+        if (vc.isEverythingLoaded)
+            [[vc imageView] sendSyncMessage: 0];
     }
 }
 
@@ -12591,9 +12591,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                             pCrossMarker[3] = glm::vec2(scaleValue * (crossx + 5/curDCM.pixelSpacingX), scaleValue*(crossy));
 
                             pCrossMarker[4] = glm::vec2(scaleValue * (crossx), scaleValue*(crossy-LINELENGTH/curDCM.pixelSpacingX));
-                            pCrossMarker[5] = glm::vec2(scaleValue * (crossx), scaleValue*(crossy-5/curDCM.pixelSpacingX));;
-                            pCrossMarker[6] = glm::vec2(scaleValue * (crossx), scaleValue*(crossy+5/curDCM.pixelSpacingX));;
-                            pCrossMarker[7] = glm::vec2(scaleValue * (crossx), scaleValue*(crossy+LINELENGTH/curDCM.pixelSpacingX));;
+                            pCrossMarker[5] = glm::vec2(scaleValue * (crossx), scaleValue*(crossy-5/curDCM.pixelSpacingX));
+                            pCrossMarker[6] = glm::vec2(scaleValue * (crossx), scaleValue*(crossy+5/curDCM.pixelSpacingX));
+                            pCrossMarker[7] = glm::vec2(scaleValue * (crossx), scaleValue*(crossy+LINELENGTH/curDCM.pixelSpacingX));
 
                             for (int i=0; i<nPoints; i++)
                                 [pArray addObject: [NSValue valueWithBytes:&pCrossMarker[i] objCType:@encode(glm::vec2)]];

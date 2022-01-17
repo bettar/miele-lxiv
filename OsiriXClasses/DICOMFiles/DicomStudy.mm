@@ -291,7 +291,6 @@ static NSRecursiveLock *dbModifyLock = nil;
             }];
 }
 
-
 - (NSString*) studyName
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
@@ -921,7 +920,9 @@ static NSRecursiveLock *dbModifyLock = nil;
         // skip the "OsiriX No Autodeletion" series
         NSMutableArray* series = [[[self.series allObjects] mutableCopy] autorelease];
         for (DicomSeries* serie in series)
-            if (serie.id.intValue == 5005 && [serie.name isEqualToString:@"OsiriX No Autodeletion"]) {
+            if (serie.id.intValue == 5005 &&
+                [serie.name isEqualToString:@"OsiriX No Autodeletion"])
+            {
                 [series removeObject:serie];
                 break;
             }
@@ -1526,7 +1527,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			BOOL framesInSeries = NO;
 			
 			for (DicomSeries *s in [self.series allObjects])
-			{
+			{ // po s.images.count 26
                 if ([DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
                     [DCMAbstractSyntaxUID isSupportedPrivateClasses: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
                     [DCMAbstractSyntaxUID isPresentationState: [s valueForKey: @"seriesSOPClassUID"]] == NO)

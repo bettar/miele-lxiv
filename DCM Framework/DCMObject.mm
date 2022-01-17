@@ -376,7 +376,8 @@ static NSString* getMacAddressNumber( void)
                     atomically:YES];
 }
 
-+ (id)secondaryCaptureObjectFromTemplate:(DCMObject *)object{
++ (id)secondaryCaptureObjectFromTemplate:(DCMObject *)object
+{
 	//NSLog(@"Secondary capture");
 	DCMObject *scObject = [[object copy] autorelease];
 	NSMutableDictionary *attrs = [scObject attributes];
@@ -554,7 +555,8 @@ static NSString* getMacAddressNumber( void)
 }
 
 + (id)secondaryCaptureObjectWithBitDepth: (int)bitDepth
-                         samplesPerPixel: (int)spp numberOfFrames:(int)nff
+                         samplesPerPixel: (int)spp
+                          numberOfFrames: (int)nff
 {
 	DCMObject *scObject = [[[DCMObject alloc] init] autorelease];
 	NSString *abstractSyntax;
@@ -1353,7 +1355,7 @@ PixelRepresentation
 		gl += attr.paddedLength;
 	}
 	
-			//groupLengthTag
+    //groupLengthTag
 	tag = [[DCMAttributeTag alloc] initWithName:@"MetaElementGroupLength"];
 	attr = [[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag];
 	[attr addValue:[NSNumber numberWithInt:gl]];

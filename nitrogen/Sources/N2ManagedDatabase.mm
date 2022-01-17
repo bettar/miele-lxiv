@@ -107,7 +107,7 @@ static int gTotalN2ManagedObjectContext = 0;
     [_database checkForCorrectContextThread: self];
 #endif
     @try {
-        return [super existingObjectWithID:objectID error:error]; // ssuper is NSObject ?!
+        return [super existingObjectWithID:objectID error:error]; // super is NSObject ?!
     } @catch (...) {
         @throw;
     } @finally {
@@ -385,7 +385,6 @@ static int gTotalN2ManagedObjectContext = 0;
                     NSString *modelsPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: [[self class] modelName]];
                     [[NSFileManager defaultManager] removeItemAtPath: localModelsPath error: nil];
                     [[NSFileManager defaultManager] copyItemAtPath:modelsPath toPath:localModelsPath error:nil];
-
                 }
                 
                 if (isNewFile) {

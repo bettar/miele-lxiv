@@ -495,7 +495,7 @@ extern NSRecursiveLock *Papyrus_Lock;
         if ([imageTypeArray count] > 2)
         {
             imageType = [[imageTypeArray objectAtIndex: 2] retain];
-            [dicomElements setObject:imageType forKey:@"imageType"];
+            [dicomElements setObject:imageType forKey:@"imageType"]; // redundant: done again a few lines below
         }
     }
     else
@@ -703,7 +703,8 @@ extern NSRecursiveLock *Papyrus_Lock;
     if (dataset->findAndGetString(DCM_ProtocolName, string, OFFalse).good() && string != NULL)
     {
         NSString *protocol = [DicomFile stringWithBytes: (char*) string encodings: myEncodings];
-        if (protocol == nil) protocol = [[[NSString alloc] initWithCString: string encoding: myEncodings[ 0]]  autorelease];
+        if (protocol == nil)
+            protocol = [[[NSString alloc] initWithCString: string encoding: myEncodings[ 0]]  autorelease];
         [dicomElements setObject:protocol  forKey:@"protocolName"];
     }
     

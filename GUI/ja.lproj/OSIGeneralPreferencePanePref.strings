@@ -5,7 +5,7 @@
 "101.ibShadowedToolTip" = "Miele-LXIVに接続し、最新バージョンを確認してください。";
 
 /* Class = "NSBox"; title = "Check version"; ObjectID = "129"; */
-"129.title" = "バージョンを確認する";
+"129.title" = "バージョンを確認";
 
 /* Class = "NSBox"; title = "DICOM Toolkits"; ObjectID = "133"; */
 "133.title" = "DICOMツールキット";

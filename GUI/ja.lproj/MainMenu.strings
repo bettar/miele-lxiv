@@ -353,7 +353,7 @@
 "11550.title" = "Photosにエクスポート";
 
 /* Class = "NSTableColumn"; headerCell.title = "Study Description"; ObjectID = "11576"; */
-"11576.headerCell.title" = "ABテストの説明";
+"11576.headerCell.title" = "検査部位";
 
 /* Class = "NSTableColumn"; headerCell.title = "ID"; ObjectID = "11577"; */
 "11577.headerCell.title" = "ID";
@@ -371,7 +371,7 @@
 "11587.title" = "コメント";
 
 /* Class = "NSMenuItem"; title = "Study Description"; ObjectID = "11588"; */
-"11588.title" = "ABテストの説明";
+"11588.title" = "検査部位";
 
 /* Class = "NSMenuItem"; title = "Modality"; ObjectID = "11597"; */
 "11597.title" = "モダリティ";
@@ -416,13 +416,13 @@
 "11698.title" = "ソース";
 
 /* Class = "NSTableColumn"; headerCell.title = "Referring Physician"; ObjectID = "11708"; */
-"11708.headerCell.title" = "参照医師";
+"11708.headerCell.title" = "依頼者名";
 
 /* Class = "NSTableColumn"; headerCell.title = "Performing Physician"; ObjectID = "11709"; */
-"11709.headerCell.title" = "医師を務める";
+"11709.headerCell.title" = "実施者名";
 
 /* Class = "NSTableColumn"; headerCell.title = "Institution"; ObjectID = "11710"; */
-"11710.headerCell.title" = "機関";
+"11710.headerCell.title" = "施設";
 
 /* Class = "NSTableColumn"; headerCell.title = "Date of Birth"; ObjectID = "11711"; */
 "11711.headerCell.title" = "生年月日";
