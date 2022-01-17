@@ -27,13 +27,22 @@
 #import "DicomDatabase.h"
 
 
-@implementation WebPortalStudy
+@implementation WebPortalStudy (CoreDataProperties)
+
++ (NSFetchRequest<WebPortalStudy *> *)fetchRequest {
+    return [NSFetchRequest fetchRequestWithEntityName:@"Study"];
+}
 
 @dynamic dateAdded;
 @dynamic patientUID;
 @dynamic studyInstanceUID;
 @dynamic user;
 
+@end
+
+# pragma mark -
+
+@implementation WebPortalStudy
 
 // TODO: we're accessing the defaultWebPortal database, and this is bad
 -(DicomStudy*)study

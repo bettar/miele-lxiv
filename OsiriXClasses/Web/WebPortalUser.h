@@ -28,34 +28,6 @@
 @interface WebPortalUser : NSManagedObject {
 }
 
-@property (nonatomic, retain) NSString * address;
-@property (nonatomic, retain) NSNumber * autoDelete;
-@property (nonatomic, retain) NSNumber * canAccessPatientsOtherStudies;
-@property (nonatomic, retain) NSNumber * canSeeAlbums;
-@property (nonatomic, retain) NSDate * creationDate;
-@property (nonatomic, retain) NSDate * deletionDate;
-@property (nonatomic, retain) NSNumber * downloadZIP;
-@property (nonatomic, retain) NSString * email;
-@property (nonatomic, retain) NSNumber * emailNotification;
-@property (nonatomic, retain) NSNumber * encryptedZIP;
-@property (nonatomic, retain) NSNumber * isAdmin;
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSString * password;
-@property (nonatomic, retain) NSString * passwordHash;
-@property (nonatomic, retain) NSDate * passwordCreationDate;
-@property (nonatomic, retain) NSString * phone;
-@property (nonatomic, retain) NSNumber * sendDICOMtoAnyNodes;
-@property (nonatomic, retain) NSNumber * sendDICOMtoSelfIP;
-@property (nonatomic, retain) NSNumber * shareStudyWithUser;
-@property (nonatomic, retain) NSNumber * createTemporaryUser;
-@property (nonatomic, retain) NSString * studyPredicate;
-@property (nonatomic, retain) NSNumber * uploadDICOM;
-@property (nonatomic, retain) NSNumber * downloadReport;
-@property (nonatomic, retain) NSNumber * uploadDICOMAddToSpecificStudies;
-@property (nonatomic, retain) NSSet* studies;
-@property (nonatomic, retain) NSSet* recentStudies;
-@property (nonatomic, retain) NSNumber * showRecentPatients;
-
 -(void)generatePassword;
 -(void)convertPasswordToHashIfNeeded;
 
@@ -82,13 +54,54 @@
 +(NSArray*)studiesForUser: (WebPortalUser*) user album:(NSString*)albumName sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies;
 @end
 
-@interface WebPortalUser (CoreDataGeneratedAccessors)
+NS_ASSUME_NONNULL_BEGIN
 
-- (void)addStudiesObject:(WebPortalStudy*)value;
-- (void)removeStudiesObject:(WebPortalStudy*)value;
-- (void)addStudies:(NSSet *)value;
-- (void)removeStudies:(NSSet *)value;
-- (void)addRecentStudies:(NSSet *)value;
-- (void)removeRecentStudies:(NSSet *)value;
+@interface WebPortalUser (CoreDataProperties)
+
++ (NSFetchRequest<WebPortalUser *> *)fetchRequest NS_SWIFT_NAME(fetchRequest());
+
+@property (nonatomic, retain) NSString * address;
+@property (nonatomic, retain) NSNumber * autoDelete;
+@property (nonatomic, retain) NSNumber * canAccessPatientsOtherStudies;
+@property (nonatomic, retain) NSNumber * canSeeAlbums;
+@property (nonatomic, retain) NSNumber * createTemporaryUser;
+@property (nonatomic, retain) NSDate * creationDate;
+@property (nonatomic, retain) NSDate * deletionDate;
+@property (nonatomic, retain) NSNumber * downloadReport;
+@property (nonatomic, retain) NSNumber * downloadZIP;
+@property (nonatomic, retain) NSString * email;
+@property (nonatomic, retain) NSNumber * emailNotification;
+@property (nonatomic, retain) NSNumber * encryptedZIP;
+@property (nonatomic, retain) NSNumber * isAdmin;
+@property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSString * password;
+@property (nonatomic, retain) NSString * passwordHash;
+@property (nonatomic, retain) NSDate * passwordCreationDate;
+@property (nonatomic, retain) NSString * phone;
+@property (nonatomic, retain) NSNumber * sendDICOMtoAnyNodes;
+@property (nonatomic, retain) NSNumber * sendDICOMtoSelfIP;
+@property (nonatomic, retain) NSNumber * shareStudyWithUser;
+@property (nonatomic, retain) NSNumber * showRecentPatients;
+@property (nonatomic, retain) NSString * studyPredicate;
+@property (nonatomic, retain) NSNumber * uploadDICOM;
+@property (nonatomic, retain) NSNumber * uploadDICOMAddToSpecificStudies;
+
+@property (nonatomic, retain) NSSet<WebPortalStudy *> * studies;
+@property (nonatomic, retain) NSSet<WebPortalStudy *> * recentStudies;
+
 @end
 
+@interface WebPortalUser (CoreDataGeneratedAccessors)
+
+- (void)addStudiesObject:(WebPortalStudy *)value;
+- (void)removeStudiesObject:(WebPortalStudy *)value;
+- (void)addStudies:(NSSet<WebPortalStudy *> *)values;
+- (void)removeStudies:(NSSet<WebPortalStudy *> *)values;
+
+//- (void)addRecentStudiesObject:(WebPortalStudy *)value;
+//- (void)removeRecentStudiesObject:(WebPortalStudy *)value;
+- (void)addRecentStudies:(NSSet<WebPortalStudy *> *)values;
+- (void)removeRecentStudies:(NSSet<WebPortalStudy *> *)values;
+@end
+
+NS_ASSUME_NONNULL_END

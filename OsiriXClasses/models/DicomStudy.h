@@ -102,7 +102,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, retain) NSNumber* lockedStudy;
 @property(nonatomic, retain) NSString* modality;
 @property(nonatomic, retain) NSString* name;
-@property(nonatomic, retain) NSNumber* numberOfImages;
+@property(nullable, nonatomic, retain) NSNumber* numberOfImages;
 @property(nonatomic, retain) NSString* patientID;
 @property(nonatomic, retain) NSString* patientSex;
 @property(nonatomic, retain) NSString* patientUID;

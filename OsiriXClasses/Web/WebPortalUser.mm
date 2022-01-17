@@ -37,7 +37,11 @@
 static PSGenerator *generator = nil;
 static NSMutableDictionary *studiesForUserCache = nil;
 
-@implementation WebPortalUser
+@implementation WebPortalUser (CoreDataProperties)
+
++ (NSFetchRequest<WebPortalUser *> *)fetchRequest {
+    return [NSFetchRequest fetchRequestWithEntityName:@"User"];
+}
 
 @dynamic address;
 @dynamic autoDelete;
@@ -66,6 +70,12 @@ static NSMutableDictionary *studiesForUserCache = nil;
 @dynamic studies;
 @dynamic recentStudies;
 @dynamic showRecentPatients;
+
+@end
+
+#pragma mark -
+
+@implementation WebPortalUser
 
 #define TIMEOUT 5*60
 

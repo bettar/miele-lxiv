@@ -407,13 +407,13 @@
 "11675.title" = "Window";
 
 /* Class = "NSTableColumn"; headerCell.title = "Sources"; ObjectID = "11694"; */
-"11694.headerCell.title" = "软件源";
+"11694.headerCell.title" = "Fuentes";
 
 /* Class = "NSBox"; title = "Albums"; ObjectID = "11696"; */
 "11696.title" = "Álbumes";
 
 /* Class = "NSBox"; title = "Sources"; ObjectID = "11698"; */
-"11698.title" = "软件源";
+"11698.title" = "Fuentes";
 
 /* Class = "NSTableColumn"; headerCell.title = "Referring Physician"; ObjectID = "11708"; */
 "11708.headerCell.title" = "Médico que lo derivó";

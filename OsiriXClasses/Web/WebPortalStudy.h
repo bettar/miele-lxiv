@@ -24,11 +24,21 @@
 
 @interface WebPortalStudy : NSManagedObject
 
+@property (readonly) DicomStudy* study;
+
+@end
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface WebPortalStudy (CoreDataProperties)
+
++ (NSFetchRequest<WebPortalStudy *> *)fetchRequest NS_SWIFT_NAME(fetchRequest());
+
 @property (nonatomic, retain) NSDate * dateAdded;
 @property (nonatomic, retain) NSString * patientUID;
 @property (nonatomic, retain) NSString * studyInstanceUID;
 @property (nonatomic, retain) WebPortalUser * user;
 
-@property (readonly) DicomStudy* study;
-
 @end
+
+NS_ASSUME_NONNULL_END
