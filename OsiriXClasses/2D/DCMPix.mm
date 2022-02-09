@@ -230,11 +230,11 @@ unsigned char* CreateIconFrom16 (float* image,
 			
 			for (long i = 0; i < destHeight; i++)  // lines
 			{
-				line = width * (long) (ratio * i)*4 ;   //ARGB
+				line = width * (long) (ratio * i)*4 ; //ARGB
 				iconPtr = icon + rowBytes*i;
-				for (long j = 0; j < destWidth; j++)         // columns
+				for (long j = 0; j < destWidth; j++) // columns
 				{
-					for (int x = 1; x < 4; x++, iconPtr++)		// Don't take alpha channel
+					for (int x = 1; x < 4; x++, iconPtr++) // Don't take alpha channel
 					{
 						value = *( rgbImage + line + x + (long) (j * ratio)*4); //ARGB
 						
@@ -2731,8 +2731,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				for (y = textureUpLeftCornerY; y < textureUpLeftCornerY + textHeight; y++)
 				{
 					if (isRGB)
-					{
-						
+					{						
 						unsigned char *rgbPtr = (unsigned char*) (fImage + textureUpLeftCornerX + y*width);
 						unsigned char *fTempRestore = nil;
 						if (restore) fTempRestore = (unsigned char*) &[restoreImageCache[ stackNo] fImage][textureUpLeftCornerX + y*width];
@@ -6746,7 +6745,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         {
             DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
             
-            //=====================================================================
+            //============================================================
             
 #pragma mark - loading a frame
             
@@ -6798,7 +6797,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     NSLog( @"----- Major memory problems 2...");
             }
             
-            //-----------------------frame data already loaded in (short) oImage --------------
+            //---------------------- frame data already loaded in (short) oImage --------------
             
             isRGB = NO;
             inverseVal = NO;

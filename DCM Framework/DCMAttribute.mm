@@ -507,7 +507,7 @@
 	return nil;
 }
 
-- (NSString *)valueAsString{
+- (NSString *)valueAsString { // Unused ?
 	return nil;
 }
 
@@ -686,7 +686,8 @@
 - (void)swapBytes:(NSMutableData *)data{
 }
 
-- (NSXMLNode *)xmlNode{
+- (NSXMLNode *)xmlNode
+{
 	NSXMLNode *myNode;
 	NSXMLNode *groupAttr = [NSXMLNode attributeWithName:@"group" stringValue:[NSString stringWithFormat:@"%04x", self.attrTag.group]];
 	NSXMLNode *elementAttr = [NSXMLNode attributeWithName:@"element" stringValue:[NSString stringWithFormat:@"%04x", self.attrTag.element]];

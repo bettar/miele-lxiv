@@ -2197,7 +2197,7 @@ PixelRepresentation
 	NSXMLDocument *xmlDocument = [[[NSXMLDocument alloc] initWithRootElement:rootElement] autorelease];
 	NSError *error = nil;
 	if(![xmlDocument validateAndReturnError:&error])
-        NSLog(@"xml Document erorr:\n%@", [error description]);
+        NSLog(@"xml Document error:\n%@", [error description]);
 	return xmlDocument;
 }
 

@@ -10534,7 +10534,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	{
         _splitViewVertDividerRatio = proposedPosition/sender.bounds.size.width;
 
-		CGFloat rcs = oMatrix.cellSize.width+oMatrix.intercellSpacing.width;
+		CGFloat rcs = oMatrix.cellSize.width + oMatrix.intercellSpacing.width;
 		
         CGFloat scrollbarWidth = 0;
         if ([thumbnailsScrollView isKindOfClass:[NSScrollView class]])
@@ -10547,8 +10547,8 @@ constrainSplitPosition:(CGFloat)proposedPosition
         
         proposedPosition -= scrollbarWidth;
 
-        int hcells = MAX(roundf((proposedPosition+oMatrix.intercellSpacing.width)/rcs), 1);
-        proposedPosition = rcs*hcells-oMatrix.intercellSpacing.width;
+        int hcells = MAX(roundf((proposedPosition + oMatrix.intercellSpacing.width)/rcs), 1);
+        proposedPosition = rcs*hcells - oMatrix.intercellSpacing.width;
         proposedPosition = MIN(proposedPosition, [sender maxPossiblePositionOfDividerAtIndex:offset]);
         
         proposedPosition += (scrollbarWidth?scrollbarWidth+3:2);
@@ -11059,7 +11059,6 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	
 	if (cells != nil && aFile != nil)
 	{
-		
 		for (NSCell *cell in cells)
 		{
 			if ([cell isEnabled])
@@ -13692,9 +13691,9 @@ constrainSplitPosition:(CGFloat)proposedPosition
 		else
             [[AppController sharedAppController] addStudyToRecentStudiesMenu: selectedLine.objectID];
         
-		//////////////////////////////////////
+		// ////////////////////////////////////
 		// Open selected images only !!!
-		//////////////////////////////////////
+		// ////////////////////////////////////
 		
 		if ([cells count] > 1 && [[selectedLine valueForKey:@"type"] isEqualToString: @"Series"])
 		{
@@ -19049,7 +19048,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction) viewXML:(id) sender
 {
-    XMLController * xmlController = [[XMLController alloc] initWithImage: [self firstObjectForDatabaseMatrixSelection] windowName:[NSString stringWithFormat: NSLocalizedString( @"Meta-Data: %@", nil), [[self firstObjectForDatabaseMatrixSelection] valueForKey:@"completePath"]] viewer: nil];
+    Dicom_Image *di = [self firstObjectForDatabaseMatrixSelection];
+    XMLController * xmlController = [[XMLController alloc] initWithImage: di windowName:[NSString stringWithFormat: NSLocalizedString( @"Meta-Data: %@", nil), [di valueForKey:@"completePath"]] viewer: nil];
     
     [xmlController showWindow:self];
 }

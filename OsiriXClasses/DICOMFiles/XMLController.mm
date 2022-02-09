@@ -605,7 +605,9 @@ extern int delayedTileWindows;
 		[self changeImageObject: [viewer currentImage]];
 }
 
--(id) initWithImage:(Dicom_Image*) image windowName:(NSString*) name viewer:(ViewerController*) v
+-(id) initWithImage:(Dicom_Image*) image
+         windowName:(NSString*) name
+             viewer:(ViewerController*) v
 {
     if (image == nil)
         return nil;

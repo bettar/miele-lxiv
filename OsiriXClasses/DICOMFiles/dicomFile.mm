@@ -517,7 +517,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	// For questions or suggestions regarding NIfTI integration in OsiriX, please contact zmahdavi@bwh.harvard.edu
 	
 	int success = NO;
-	NSString	*extension = [[file pathExtension] lowercaseString];
+	NSString *extension = [[file pathExtension] lowercaseString];
 	struct nifti_1_header  *NIfTI;
 	
 	if ([extension isEqualToString:@"hdr"] ||

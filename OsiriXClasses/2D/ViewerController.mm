@@ -6211,7 +6211,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	[self checkEverythingLoaded];
 	
-	NSString	*path = [[BrowserController currentBrowser] getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] : 0];
+	NSString *path = [[BrowserController currentBrowser] getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] : 0];
 	[[self window] setRepresentedFilename: path];
 	
 	Dicom_Image *im = [fileList[curMovieIndex] objectAtIndex:[imageView curImage]];

@@ -142,7 +142,6 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
 	int width, height;
 	OPJ_BOOL hasAlpha, fails = OPJ_FALSE;
 	OPJ_CODEC_FORMAT codec_format;
-	unsigned char rc, gc, bc, ac;
 
     OFLOG_DEBUG(logger, THIS_FILE_NAME << ":" << __LINE__ <<  " decompressJPEG2KWithBuffer");
 
@@ -218,7 +217,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
          * For OPJ_CODEC_JP2 it will call 'opj_jp2_read_header()' in jp2.c:2276
          * then call 'opj_j2k_read_header()'
          */
-        if( !opj_read_header(decodeInfo.stream, decodeInfo.codec, &(decodeInfo.image))) {
+        if (!opj_read_header(decodeInfo.stream, decodeInfo.codec, &(decodeInfo.image))) {
             OFLOG_ERROR(logger, THIS_FILE_NAME << ":" << __LINE__ << " read header");
             break;
         }
@@ -287,7 +286,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     
     decodeInfo.deleteImage = OPJ_TRUE;
 
-    if(decodeInfo.image->color_space == OPJ_CLRSPC_SYCC)
+    if (decodeInfo.image->color_space == OPJ_CLRSPC_SYCC)
     {
         //disable for now
         //color_sycc_to_rgb(decodeInfo.image);
@@ -304,7 +303,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     {
 	    decodeInfo.image->color_space = OPJ_CLRSPC_GRAY;
     }
-    
+    // 1596
     if (decodeInfo.image->icc_profile_buf)
     {
 #if defined(HAVE_LIBLCMS1) || defined(HAVE_LIBLCMS2)
@@ -315,7 +314,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
         decodeInfo.image->icc_profile_len = 0;
     }
 
-    //---
+    //--- See convert.c: 2426 imagetoraw_common()
     
     width = decodeInfo.image->comps[0].w;
     height = decodeInfo.image->comps[0].h;
@@ -328,16 +327,22 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     if (!inputBuffer )
         inputBuffer = malloc(decompressSize);
 
+    unsigned char* ptrUC8 = (unsigned char *)inputBuffer;
+    char* ptrC8 = (char *)inputBuffer;
+    short* ptrS16 = (short *)inputBuffer;//
+    unsigned short* ptrUS16 = (unsigned short *)inputBuffer; //
+
     if (colorModel)
         *colorModel = 0;
 
+    // convertbmp.c:926
     if ((decodeInfo.image->numcomps >= 3
 	 && decodeInfo.image->comps[0].dx == decodeInfo.image->comps[1].dx
-	 && decodeInfo.image->comps[1].dx == decodeInfo.image->comps[2].dx
+	 && decodeInfo.image->comps[0].dx == decodeInfo.image->comps[2].dx
 	 && decodeInfo.image->comps[0].dy == decodeInfo.image->comps[1].dy
-	 && decodeInfo.image->comps[1].dy == decodeInfo.image->comps[2].dy
+	 && decodeInfo.image->comps[0].dy == decodeInfo.image->comps[2].dy
 	 && decodeInfo.image->comps[0].prec == decodeInfo.image->comps[1].prec
-	 && decodeInfo.image->comps[1].prec == decodeInfo.image->comps[2].prec
+	 && decodeInfo.image->comps[0].prec == decodeInfo.image->comps[2].prec
 	 )/* RGB[A] */
 	||
 	(decodeInfo.image->numcomps == 2
@@ -347,17 +352,131 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
 	 )
 	) /* GA */
     {
-        int  has_alpha4, has_alpha2, has_rgb;
-        int *red, *green, *blue, *alpha;
-
         if (colorModel)
             *colorModel = 1;
+        
+#if 0 // issue 72
+  #if 1
+        // Possible improvement over original, as it should be able to handle also precisions > 8 bits
+        int curr, mask;
+        unsigned char uc;
+        int numcomps = decodeInfo.image->numcomps;
+        if (numcomps > 4)
+            numcomps = 4;
 
-        alpha = NULL;
+        for (int pixel = 0; pixel < width * height; pixel++)
+        {
+            for (unsigned int compno = 0; compno < numcomps; compno++)
+            {
+                mask = (1 << decodeInfo.image->comps[compno].prec) - 1;
+                curr = decodeInfo.image->comps[compno].data[pixel];
+                
+                if (decodeInfo.image->comps[compno].prec <= 8)
+                {
+                    if (decodeInfo.image->comps[compno].sgnd == 1)
+                    {
+                        if (curr > 127) curr = 127;
+                        else if (curr < -128) curr = -128;
+                    }
+                    else if (decodeInfo.image->comps[compno].sgnd == 0)
+                    {
+                        if (curr > 255) curr = 255;
+                        else if (curr < 0) curr = 0;
+                    }
 
-        has_rgb = (decodeInfo.image->numcomps == 3);
-        has_alpha4 = (decodeInfo.image->numcomps == 4);
-        has_alpha2 = (decodeInfo.image->numcomps == 2);
+                    uc = (unsigned char)(curr & mask);
+                    *ptrUC8++ = uc;
+                }
+                else if (decodeInfo.image->comps[compno].prec <= 16)
+                {
+                    if (decodeInfo.image->comps[compno].sgnd == 1)
+                    {
+                        if (curr > 32767) curr = 32767;
+                        else if (curr < -32768) curr = -32768;
+
+                        *ptrS16++ = (short)(curr & mask);
+                    }
+                    else if (decodeInfo.image->comps[compno].sgnd == 0)
+                    {
+                        if (curr > 65535) curr = 65535;
+                        else if (curr < 0) curr = 0;
+
+                        *ptrUS16++ = (unsigned short)(curr & mask);
+                    }
+                }
+                else if (decodeInfo.image->comps[compno].prec <= 32) {
+                    fprintf(stderr, "More than 16 bits per component not handled yet\n");
+                    return inputBuffer;
+                }
+                else {
+                    fprintf(stderr, "Error: invalid precision: %d\n", decodeInfo.image->comps[compno].prec);
+                    return inputBuffer;
+                }
+            }
+        }
+  #else
+        // If the precision is >8 bits, the data is scaled down to fit 8 bits per channel
+        // This is necessary to export BMP data, but not for us here.
+
+        // See imagetobmp()
+        int adjust[4]; // RGBA
+        OPJ_UINT8* ptrIBody = (OPJ_UINT8*)inputBuffer;
+
+        int w = (int)decodeInfo.image->comps[0].w;
+        int h = (int)decodeInfo.image->comps[0].h;
+        
+        for (int compno = 0; // channel
+             compno < decodeInfo.image->numcomps;
+             compno++)
+        {
+            if (decodeInfo.image->comps[compno].prec > 8) {
+                adjust[compno] = (int)decodeInfo.image->comps[compno].prec - 8;
+                printf("Truncating component %d from %d bits to 8 bits\n",
+                compno, decodeInfo.image->comps[compno].prec);
+            } else {
+                adjust[compno] = 0;
+            }
+        }
+        
+        for (int pixel = 0; pixel < w * h; pixel++)
+        {
+            OPJ_UINT8 comp8[4]; // rgba
+            int comp32[4];
+
+            //int idx = w * h - (pixel / w + 1) * w + pixel % w; // ok but upside down for .bmp format
+            int idx = pixel;
+
+            for (int compno=0; // channel
+                 compno < decodeInfo.image->numcomps;
+                 compno++)
+            {
+                comp32[compno] = decodeInfo.image->comps[compno].data[idx];
+                comp32[compno] += (decodeInfo.image->comps[compno].sgnd ? 1 << (decodeInfo.image->comps[compno].prec - 1) : 0);
+                if (adjust[compno] > 0) {
+                    comp32[compno] = ((comp32[compno] >> adjust[compno]) + ((comp32[compno] >> (adjust[compno] - 1)) % 2));
+                }
+                
+                if (comp32[compno] > 255) {
+                    comp32[compno] = 255;
+                } else if (comp32[compno] < 0) {
+                    comp32[compno] = 0;
+                }
+
+                comp8[compno] = (OPJ_UINT8)comp32[compno];
+                
+                *ptrIBody++ = comp8[compno];
+            } // for channel
+        } // for pixel
+  #endif
+#else
+        // Similar to original, but fixed issue g72
+        // Good point: it handles the case of 2 channels (gray8 + alpha8)
+        int *red, *green, *blue;
+        int *alpha = nullptr;
+        
+        bool has_rgb = (decodeInfo.image->numcomps == 3);
+        bool has_alpha4 = (decodeInfo.image->numcomps == 4);
+        bool has_alpha2 = (decodeInfo.image->numcomps == 2);
         hasAlpha = (has_alpha4 || has_alpha2);
 
         if (has_rgb)
@@ -367,51 +486,37 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             blue = decodeInfo.image->comps[2].data;
 
             if (has_alpha4)
-            {
                 alpha = decodeInfo.image->comps[3].data;
-            }
-
-        }	/* if(has_rgb) */
+        }
         else
         {
             red = green = blue = decodeInfo.image->comps[0].data;
-            if (has_alpha2)
-            {
-                alpha = decodeInfo.image->comps[1].data;
-            }
-        }	/* if(has_rgb) */
 
-        ac = 255;/* 255: FULLY_OPAQUE; 0: FULLY_TRANSPARENT */
-        
-        int* ptrIBody = (int*)inputBuffer;
+            if (has_alpha2)
+                alpha = decodeInfo.image->comps[1].data;
+        }
+
         for (int i = 0; i < width*height; i++)
         {
-            rc = (unsigned char)*red++;
-            gc = (unsigned char)*green++;
-            bc = (unsigned char)*blue++;
-            if ((hasAlpha) && (alpha != NULL))
-            {
-                ac = (unsigned char)*alpha++;
-            }
-            
-            /*                         A        R          G       B
-             */
-            *ptrIBody++ = (int)((ac<<24) | (rc<<16) | (gc<<8) | bc);
+            *ptrUC8++ = (unsigned char)red[i];
+            *ptrUC8++ = (unsigned char)green[i];
+            *ptrUC8++ = (unsigned char)blue[i];
 
-        }	/* for(i) */
-    }/* if (decodeInfo.image->numcomps >= 3  */
+            if ((hasAlpha) && (alpha != NULL))
+                *ptrUC8++ = (unsigned char)alpha[i];
+        }
+#endif
+    }
     else if(decodeInfo.image->numcomps == 1) /* Grey */
 	{
 	    /* 1 component 8 or 16 bpp decodeInfo.image
 	     */
 	    int *grey = decodeInfo.image->comps[0].data;
-	    if(decodeInfo.image->comps[0].prec <= 8)
+	    if (decodeInfo.image->comps[0].prec <= 8)
 	    {
-            char* ptrBBody = (char*)inputBuffer;
             for (int i=0; i<width*height; i++)
-            {
-                *ptrBBody++ = *grey++;
-            }
+                *ptrC8++ = *grey++;
+
             /* Replace image8 buffer:
              */
 	    }
@@ -420,12 +525,10 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             int *grey = decodeInfo.image->comps[0].data;
             //int ushift = 0, dshift = 0, force16 = 0;
 
-            short* ptrSBody = (short*)inputBuffer;
-
             for (int i=0; i<width*height; i++)
             {
                 //disable shift up for signed data: don't know why we are doing this
-                *ptrSBody++ = *grey++;
+                *ptrS16++ = *grey++;
             }
             /* Replace image16 buffer:
              */
@@ -433,7 +536,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
 	}
 	else
 	{
-        OFLOG_ERROR(logger, THIS_FILE_NAME << ":" << __LINE__ << " Can show only first component of decodeInfo.image");
+        OFLOG_ERROR(logger, THIS_FILE_NAME << ":" << __LINE__ << " Can show only first component of image");
         OFLOG_INFO(logger, "  components(" << decodeInfo.image->numcomps << ")"
                     << " prec(" << decodeInfo.image->comps[0].prec << ")"
                     << " color_space[" << decodeInfo.image->color_space << "](" << clr_space(decodeInfo.image->color_space) << ")" << OFendl
@@ -459,9 +562,8 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
         int *grey = decodeInfo.image->comps[0].data;
 	    if (decodeInfo.image->comps[0].prec <= 8)
 	    {
-            char* ptrBBody = (char*)inputBuffer;
             for (int i=0; i<width*height; i++)
-                *ptrBBody++ = *grey++;
+                *ptrC8++ = *grey++;
 
             /* Replace image8 buffer:
              */
@@ -473,10 +575,8 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
 
             grey = decodeInfo.image->comps[0].data;
 
-            short* ptrSBody = (short*)inputBuffer;
-
             for (int i=0; i<width*height; i++)
-                *ptrSBody++ = *grey++;
+                *ptrS16++ = *grey++;
 
             /* Replace image16 buffer:
              */

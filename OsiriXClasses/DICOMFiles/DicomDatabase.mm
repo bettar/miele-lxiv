@@ -2259,8 +2259,8 @@ static BOOL protectionAgainstReentry = NO;
                                 curSerieID = curDictSeriesID;
                             }
                             
-                            /*******************************************/
-                            /*********** Find image object *************/
+                            /* ******************************************/
+                            /* ********** Find image object *************/
                             
                             BOOL local = NO;
                             if (dataDirPath && [newFile hasPrefix:dataDirPath])

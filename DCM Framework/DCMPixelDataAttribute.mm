@@ -660,7 +660,7 @@ void info_callback(const char *msg, void *a) {
 	if (DCMDEBUG)
 		NSLog(@"init Pixel Data");
 		
-	// may an ImageIconSequence in an encapsualted file. The icon is not encapsulated so don't de-encapsulate
+	// maybe an ImageIconSequence in an encapsualted file. The icon is not encapsulated so don't de-encapsulate
 	if ( dicomData.isEncapsulated && vl == 0xFFFFFFFFL)
 	{
 		self = [super initWithAttributeTag:tag vr:theVR];
@@ -1354,7 +1354,8 @@ void info_callback(const char *msg, void *a) {
     return pixelData;
 }
 
-- (NSData *)convertRLEToHost:(NSData *)rleData{
+- (NSData *)convertRLEToHost:(NSData *)rleData
+{
 	/*
 		RLE header is 64 bytes long as a sequence of 16  unsigned longs.
 		First elements is number of segments.  The next are length of the segments.
@@ -1470,7 +1471,7 @@ void info_callback(const char *msg, void *a) {
 	}
 	//NSLog(@"Decompressed RLE data");
 	} @catch( NSException *localException) {
-		NSLog(@"Error deompressing RLE");
+		NSLog(@"Error decompressing RLE");
 		decompressedData = nil;
 	}
 	return decompressedData;
@@ -2425,7 +2426,7 @@ void info_callback(const char *msg, void *a) {
 }
 
 - (NSData *)convertPaletteToRGB:(NSData *)data
-{	
+{
 	BOOL fSetClut = NO, fSetClut16 = NO;
 	unsigned char *clutRed = nil, *clutGreen = nil, *clutBlue = nil;
 	int clutEntryR = 0, clutEntryG = 0, clutEntryB = 0;
@@ -2475,7 +2476,7 @@ void info_callback(const char *msg, void *a) {
 		if (segmentedRedData)	// SEGMENTED PALETTE - 16 BIT !
 		{
 			//NSLog(@"Segmented LUT");
-			if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
+			if (clutDepthR == 16 && clutDepthG == 16 && clutDepthB == 16)
 			{
                 long length;
                 long xxindex;
@@ -2534,7 +2535,7 @@ void info_callback(const char *msg, void *a) {
                                 break;
 							
 							default:
-								NSLog(@"Error, Error, OsiriX will soon crash...");
+								NSLog(@"Error, Error, App will soon crash...");
                                 break;
 						}
 					}
@@ -2592,7 +2593,7 @@ void info_callback(const char *msg, void *a) {
                                 break;
 							
 							default:
-								NSLog(@"Error, Error, OsiriX will soon crash...");
+								NSLog(@"Error, Error, App will soon crash...");
                                 break;
 						}
 					}
@@ -2650,7 +2651,7 @@ void info_callback(const char *msg, void *a) {
                                 break;
 							
 							default:
-								NSLog(@"Error, Error, OsiriX will soon crash...");
+								NSLog(@"Error, Error, App will soon crash...");
                                 break;
 						}
 					}
@@ -2891,7 +2892,7 @@ void info_callback(const char *msg, void *a) {
 
     if (clutRed != nil)
 		free(clutRed);
-	if ( clutGreen != nil)
+	if (clutGreen != nil)
 		free(clutGreen);
 	if (clutBlue != nil)
 		free(clutBlue);
@@ -2902,7 +2903,7 @@ void info_callback(const char *msg, void *a) {
 		free(shortGreen);
 	if (shortBlue != nil)
 		free(shortBlue);
-	//NSLog(@"end palette conversion end length: %d", [rgbData length]);
+	//NSLog(@"end palette conversion, length: %d", [rgbData length]);
 	_pixelDepth = 8;	
 	return rgbData;
 }
@@ -3067,6 +3068,7 @@ void info_callback(const char *msg, void *a) {
 		}  //YBR 422
     //  } // switch ...kind of YBR
 	break;
+
     case 1 : // each plane is stored separately (only allowed for YBR_FULL)
     {
       unsigned char *pY, *pB, *pR;	// ptr to Y, Cb and Cr channels of the original image
@@ -3079,7 +3081,7 @@ void info_callback(const char *msg, void *a) {
       // loop on the pixels of the image
       for (loop = 0; loop < size; loop++, pY++, pB++, pR++)
       {
-	  		a = (int) *pY;
+        a = (int) *pY;
 		b = (int) *pB;
 		c = (int) *pR;
 
@@ -3131,7 +3133,6 @@ void info_callback(const char *msg, void *a) {
   } // switch
     
   return rgbData;
-  
 }
 
 - (NSData *)convertToFloat:(NSData *)data{
@@ -3225,6 +3226,7 @@ void info_callback(const char *msg, void *a) {
 	
 	return floatData;	
 }
+
 - (NSData *)convertDataToRGBColorSpace:(NSData *)data
 {
 	NSData *rgbData = nil;
@@ -3233,7 +3235,7 @@ void info_callback(const char *msg, void *a) {
 	if ([colorspace hasPrefix:@"YBR"])
 		rgbData = [self convertYBrToRGB:data kind:colorspace isPlanar:isPlanar];
 	else if ([colorspace hasPrefix:@"PALETTE"])
-		rgbData = [self  convertPaletteToRGB:data];
+		rgbData = [self convertPaletteToRGB:data];
 	else
 		rgbData = data;
 	
@@ -3300,7 +3302,7 @@ void info_callback(const char *msg, void *a) {
 		if ( transferSyntax.isEncapsulated )
 		{
             if (DCMDEBUG)
-                NSLog(@"%s %d, encapsulated", __FUNCTION__, __LINE__);
+                NSLog(@"Data is encapsulated"); // (A)
 
 			NSMutableArray *offsetTable = [NSMutableArray array];
 			/*offset table will be first fragment
@@ -3421,9 +3423,9 @@ void info_callback(const char *msg, void *a) {
             else
                 NSLog(@"%s:%i %s", __FILE__, __LINE__, MALLOC_ERROR_MESSAGE);
 		}
-		//only one frame
-		else {
-			subData =[_values objectAtIndex:0];
+		else // Only one frame
+        {
+			subData = [_values objectAtIndex:0];
 		}
 	}
 
@@ -3442,7 +3444,7 @@ void info_callback(const char *msg, void *a) {
 		if ( transferSyntax.isEncapsulated )
         {
 			if (DCMDEBUG)
-				NSLog(@"Data is encapsulated");
+				NSLog(@"Data is encapsulated"); // (B)
 
             NSMutableArray *offsetTable = [NSMutableArray array];
 			/*offset table will be first fragment
@@ -3473,9 +3475,9 @@ void info_callback(const char *msg, void *a) {
 			else 
 				[offsetTable addObject:[NSNumber numberWithLong:0L]];
 
-			//most likely way to have data with one frame per data object.
+			// Most likely way to have data with one frame per data object.
 			NSMutableArray *values = [NSMutableArray arrayWithArray:_values];
-			//remove offset table
+			// Remove offset table
 			[values removeObjectAtIndex:0];
 			
 			[_values removeAllObjects];
@@ -3492,7 +3494,7 @@ void info_callback(const char *msg, void *a) {
 				if ([values count] == _numberOfFrames)
 					subData = [values objectAtIndex:i];
 				
-				//need to figure out where the data starts and ends
+				// Need to figure out where the data starts and ends
 				else{
 				
 					int currentOffset = [[offsetTable objectAtIndex:i] longValue];
@@ -3507,7 +3509,7 @@ void info_callback(const char *msg, void *a) {
 
                         currentLength = itemsLength - currentOffset;
 					}
-					/*now we need to find the item that == the start of the offset
+					/* Now we need to find the item that == the start of the offset
 						find which items contain the data.
 						need to add for item tag and length 8 bytes * (n - 1) items
 					*/
@@ -3542,7 +3544,7 @@ void info_callback(const char *msg, void *a) {
 				int depth = 1;
 				if (_bitsAllocated <= 8) 
 					depth = 1;
-				else if (_bitsAllocated  <= 16)
+				else if (_bitsAllocated <= 16)
 					depth = 2;
 				else
 					depth = 4;
@@ -3604,7 +3606,7 @@ void info_callback(const char *msg, void *a) {
 	}
 	@catch (NSException *e)
 	{
-		NSLog(@"exception decodeFrameAtIndex: %@", e);
+		NSLog(@"exception decodeFrameAtIndex %d, %@", index, e);
 		[singleThread unlock];
 		
 		return nil;

@@ -1064,7 +1064,7 @@ void signal_EXC(int sig_num)
 				}
 				DCMAttributeTag *tag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
 				//NSDictionary *tagValues = [[DCMTagDictionary sharedTagDictionary] objectForKey:[tag stringValue]];
-				// have valid tag. Should be dicom
+				// Have valid tag. Should be DICOM
 				if (tag) {
 					
 					[transferSyntaxForMetaheader release];

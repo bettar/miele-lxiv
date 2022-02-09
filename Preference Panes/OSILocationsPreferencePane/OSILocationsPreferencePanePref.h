@@ -60,7 +60,7 @@
 	NSURL							*TLSDHParameterFileURL;
 	TLSCertificateVerificationType	TLSCertificateVerification;
 	
-	IBOutlet NSWindow						*mainWindow;
+	IBOutlet NSWindow				*mainWindow;
     BOOL                            testingNodes;
 }
 
