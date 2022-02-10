@@ -7,7 +7,6 @@
 
 #import <assert.h>
 #import <stdlib.h>
-//#include <iostream>
 #import <string.h>
 
 #include "options.h"
@@ -496,15 +495,21 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
                 alpha = decodeInfo.image->comps[1].data;
         }
 
-        for (int i = 0; i < width*height; i++)
-        {
-            *ptrUC8++ = (unsigned char)red[i];
-            *ptrUC8++ = (unsigned char)green[i];
-            *ptrUC8++ = (unsigned char)blue[i];
-
-            if ((hasAlpha) && (alpha != NULL))
-                *ptrUC8++ = (unsigned char)alpha[i];
-        }
+        if (hasAlpha && (alpha != NULL))
+            for (int i = 0; i < width*height; i++)
+            {
+                *ptrUC8++ = (unsigned char)*red++;
+                *ptrUC8++ = (unsigned char)*green++;
+                *ptrUC8++ = (unsigned char)*blue++;
+                *ptrUC8++ = (unsigned char)*alpha++;
+            }
+        else
+            for (int i = 0; i < width*height; i++)
+            {
+                *ptrUC8++ = (unsigned char)*red++;
+                *ptrUC8++ = (unsigned char)*green++;
+                *ptrUC8++ = (unsigned char)*blue++;
+            }
 #endif
     }
     else if(decodeInfo.image->numcomps == 1) /* Grey */
