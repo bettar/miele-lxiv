@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -22,17 +22,17 @@
             <windowStyleMask key="styleMask" utility="YES" nonactivatingPanel="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="299" y="668" width="278" height="80"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
             <value key="minSize" type="size" width="122" height="50"/>
             <view key="contentView" id="8">
                 <rect key="frame" x="0.0" y="0.0" width="278" height="80"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="5">
-                        <rect key="frame" x="130" y="30" width="16" height="16"/>
+                        <rect key="frame" x="130" y="31" width="16" height="16"/>
                     </progressIndicator>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="18">
-                        <rect key="frame" x="62" y="50" width="153" height="17"/>
+                        <rect key="frame" x="62" y="51" width="153" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Rendering in progress..." id="41">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -40,7 +40,7 @@
                         </textFieldCell>
                     </textField>
                     <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="31">
-                        <rect key="frame" x="110" y="-1" width="56" height="27"/>
+                        <rect key="frame" x="109" y="1" width="58" height="27"/>
                         <buttonCell key="cell" type="push" title="Abort" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="42">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -53,7 +53,7 @@ Gw
                         </connections>
                     </button>
                     <textField hidden="YES" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="35">
-                        <rect key="frame" x="211" y="5" width="63" height="22"/>
+                        <rect key="frame" x="211" y="8" width="63" height="22"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="43">
                             <font key="font" metaFont="miniSystem"/>
                             <string key="title">Last Duration
@@ -63,7 +63,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField hidden="YES" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="37">
-                        <rect key="frame" x="3" y="5" width="63" height="22"/>
+                        <rect key="frame" x="3" y="8" width="63" height="22"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" id="44">
                             <font key="font" metaFont="miniSystem"/>
                             <string key="title">Elapsed Time
@@ -88,6 +88,7 @@ Gw
                     <constraint firstAttribute="centerX" secondItem="18" secondAttribute="centerX" constant="0.5" id="xJJ-9F-ajq"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="-144" y="107"/>
         </window>
     </objects>
 </document>

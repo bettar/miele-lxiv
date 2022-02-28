@@ -650,7 +650,7 @@ void info_callback(const char *msg, void *a) {
 	_pixelDepth = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"BitsStored"]] value] intValue];
 	_bitsAllocated = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"BitsAllocated"]] value] intValue];
 		
-	if ( ts.isExplicit && ([vr isEqualToString:@"OB"] || [vr isEqualToString:@"OW"]))
+	if (ts.isExplicit && ([vr isEqualToString:@"OB"] || [vr isEqualToString:@"OW"]))
 		theVR = vr;	
 	else if ( _bitsAllocated <= 8 || dicomData.isEncapsulated ) 
 		theVR = @"OB";

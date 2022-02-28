@@ -187,8 +187,8 @@ void SwitchFloat (float *theFloat)
 //}
 
 // Create an icon from an 12 or 16 bit image
-unsigned char* CreateIconFrom16 (float* image,
-                                 unsigned char* icon,
+unsigned char* CreateIconFrom16 (float* imageSrc,
+                                 unsigned char* iconDst,
                                  int height,
                                  int width,
                                  int iconWidth,
@@ -225,18 +225,18 @@ unsigned char* CreateIconFrom16 (float* image,
         
 		if (isRGB)
 		{
-			unsigned char *rgbImage = (unsigned char*) image;
-			int rowBytes = iconWidth*4;
+			unsigned char *rgbImage = (unsigned char *)imageSrc;
+			int rowBytes = iconWidth*4; // RGBA for the destination buffer. The 'A' channel seems to get skipped by the for loops below, but the layout must be preserved.
 			
-			for (long i = 0; i < destHeight; i++)  // lines
+			for (long i = 0; i < destHeight; i++)  // rows
 			{
-				line = width * (long) (ratio * i)*4 ; //ARGB
-				iconPtr = icon + rowBytes*i;
+				line = width * (long) (ratio * i)*4 ; // ARGB
+				iconPtr = iconDst + rowBytes*i;
 				for (long j = 0; j < destWidth; j++) // columns
 				{
-					for (int x = 1; x < 4; x++, iconPtr++) // Don't take alpha channel
+					for (int x = 1; x < 4; x++, iconPtr++) // Don't take alpha channel 0
 					{
-						value = *( rgbImage + line + x + (long) (j * ratio)*4); //ARGB
+						value = *( rgbImage + line + x + (long) (j * ratio)*4); // ARGB
 						
 						if (value > max)
                             value = max;
@@ -254,10 +254,10 @@ unsigned char* CreateIconFrom16 (float* image,
 			for (long i = 0; i < destHeight; i++)  // lines
 			{
 				line = width * (long) (ratio * i) ;
-				iconPtr = icon + rowBytes*i;
+				iconPtr = iconDst + rowBytes*i;
 				for (long j = 0; j < destWidth; j++, iconPtr++)         // columns
 				{ 
-					value = *( image + line + (long) (j * ratio));
+					value = *( imageSrc + line + (long) (j * ratio));
 					
 					if (value > max)
                         value = max;
@@ -270,7 +270,7 @@ unsigned char* CreateIconFrom16 (float* image,
 		}
 	}
 	
-	return icon;
+	return iconDst;
 }
 
 // POLY CLIP

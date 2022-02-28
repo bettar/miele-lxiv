@@ -218,7 +218,7 @@ static const NSInteger labelHeight = 38, labelSeparator = 3;
 
 -(void)buttonAction:(NSButton*)sender
 {
-    NSLog(@"%s %d", __FUNCTION__, __LINE__);
+    //NSLog(@"%s %d", __FUNCTION__, __LINE__);
 	[[self buttonActionTarget] performSelector:[self buttonActionSelector]
                                     withObject:[[sender cell] representedObject]];
 }

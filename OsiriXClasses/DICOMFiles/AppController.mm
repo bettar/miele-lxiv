@@ -2374,7 +2374,7 @@ static bool isGrantedNotificationAccess = false;
 
 -(void) startSTORESCP:(id) sender
 {
-	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
+	// this method is always executed as a new thread detached from the NSThread command of RestartSTORESCP method
 #ifndef MIELE_LIGHT
 	[STORESCP_Lock lock];
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -2918,6 +2918,21 @@ static BOOL initialized = NO;
                 NSLog(@"Defaults file__________: %@/Preferences/%@.plist",
                       NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES).firstObject,
                       bundleIdentifier);
+#ifdef MACAPPSTORE
+                {
+                    // Issue 75, sandbox (start)
+                    if ([[NSUserDefaults standardUserDefaults] integerForKey: DbLocation_i_KEY] == 1)
+                    {
+                        NSURL *url = [AppDefaults resolveStoredBookmark: DbLocationUrl_bk_KEY];
+                        [url startAccessingSecurityScopedResource];
+                    }
+                    
+                    {
+                        NSURL *url = [AppDefaults resolveStoredBookmark: LocalDbPath_bk_KEY];
+                        [url startAccessingSecurityScopedResource];
+                    }
+                }
+#endif
                 NSLog(@"DATABASELOCATION_______: %@", [DicomDatabase defaultBaseDirPath]);
 #ifndef NDEBUG
                 NSLog(@"resourcePath___________: %@", [[NSBundle mainBundle] resourcePath]);       // Contents/Resources
@@ -3024,7 +3039,16 @@ static BOOL initialized = NO;
 //                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
 				
                 // if we are loading a database that isn't on the root volume, then we must wait for it to load - if it doesn't become available after a few minutes, then we'll just let the app switch to the DB at ~/Documents as it would do anyway
-                
+#if 0 //def MACAPPSTORE
+                {
+                    // Issue 75, sandbox (CC)
+                    NSInteger rb = [[NSUserDefaults standardUserDefaults] integerForKey: DbLocation_i_KEY];
+                    if (rb == 1) {
+                        NSURL *url = [AppDefaults resolveStoredBookmark:DbLocationUrl_bk_KEY];
+                        //NSLog(@"Line %d, rb: %ld, %@", __LINE__, (long)rb, url);
+                    }
+                }
+#endif
                 NSString* dataBasePath = nil;
                 @try {
                     dataBasePath = [DicomDatabase baseDirPathForMode: [[NSUserDefaults standardUserDefaults] integerForKey: DbLocation_i_KEY]
@@ -3084,7 +3108,7 @@ static BOOL initialized = NO;
                 
                 //NSLog(@"%s line %d, dataBasePath: %@", __FUNCTION__, __LINE__, dataBasePath);
                 // now, sometimes databases point to other volumes for data storage through the DBFOLDER_LOCATION file, so if it's the case verify that that volume is mounted, too
-                dataBasePath = [DicomDatabase baseDirPathForPath:dataBasePath]; // we know this is the OUR_DATA_LOCATION path
+                dataBasePath = [DicomDatabase baseDirPathForPath:dataBasePath]; // we know this is the path: OUR_DATA_LOCATION
                 //NSLog(@"%s line %d, dataBasePath: %@", __FUNCTION__, __LINE__, dataBasePath);
 
                 // TODO: sometimes people use an alias... and if it's an alias, we should check that it points to an available volume..... should.
@@ -4169,6 +4193,21 @@ API_AVAILABLE(macos(10.14))
 
     [[NSFileManager defaultManager] confirmDirectoryAtPath: incomingDirectoryPath];
     [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
+
+#ifdef MACAPPSTORE
+    // Issue 75, sandbox (stop using bookmark)
+    if ([[NSUserDefaults standardUserDefaults] integerForKey: DbLocation_i_KEY] == 1)
+    {
+        NSURL *url = [AppDefaults resolveStoredBookmark: DbLocationUrl_bk_KEY];
+        [url stopAccessingSecurityScopedResource];
+    }
+    
+    {
+        // sandbox (stop using bookmark)
+        NSURL *url = [AppDefaults resolveStoredBookmark: LocalDbPath_bk_KEY];
+        [url stopAccessingSecurityScopedResource];
+    }
+#endif
 }
 
 static BOOL firstCall = YES;

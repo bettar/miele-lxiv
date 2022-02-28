@@ -514,10 +514,12 @@
 	long result = [oPanel runModal];
     if (result == NSOKButton)
 	{
+#ifdef MACAPPSTORE
         {
             NSURL *locationUrl = [oPanel URL];
             [AppDefaults createAndStoreBookmark:locationUrl underKey:DbLocationUrl_bk_KEY];
         }
+#endif
 		NSString *location = [oPanel directory]; // API_DEPRECATED("Use -directoryURL instead"
 		
 		if ([[location lastPathComponent] isEqualToString:OUR_DATA_LOCATION])

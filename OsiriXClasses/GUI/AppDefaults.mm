@@ -1852,23 +1852,28 @@ static NSHost *currentHost = nil;
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSData *bookmark = [userDefaults objectForKey:key];
     if (bookmark == nil) {
-        NSLog(@"No bookmark stored for key %@", key);
+        NSLog(@"No bookmark stored for key: <%@>", key);
         return nil;
     }
 
     BOOL isStale;
-    NSError *error;
+    NSError *error = NULL;
     url = [NSURL URLByResolvingBookmarkData: bookmark
                                       options: NSURLBookmarkResolutionWithSecurityScope
-                                relativeToURL: nil
+                                relativeToURL: nil  // app scoped
                           bookmarkDataIsStale: &isStale
                                         error: &error];
-    if (error != nil) {
-        NSLog(@"Error resolving URL from bookmark %@", key);
-        [NSApp presentError:error];
+    if (error != nil)
+    {
+        NSLog(@"Cannot resolve URL bookmark from key: <%@> %@", key, [error localizedDescription]);
+
+//        NSDictionary *d = [NSURL resourceValuesForKeys:[NSArray arrayWithObject:key] fromBookmarkData:bookmark];
+//        NSLog(@"%s:%d, %@", __FUNCTION__, __LINE__, d);
+        //[NSApp presentError:error];
         return nil;
     }
-    else if (isStale) {
+    
+    if (isStale) {
         if ([url startAccessingSecurityScopedResource])
         {
 #if DEBUG

@@ -172,6 +172,13 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 {
 	NSString* path = nil;
 	@try {
+#if 0 //def MACAPPSTORE
+        // Issue 75, sandbox
+        if ([[NSUserDefaults standardUserDefaults] integerForKey: DbLocation_i_KEY] == 1)
+        {
+            NSURL *url = [AppDefaults resolveStoredBookmark:DbLocationUrl_bk_KEY];
+        }
+#endif
 		path = [self baseDirPathForMode: [[NSUserDefaults standardUserDefaults] integerForKey: DbLocation_i_KEY]
                                    path: [[NSUserDefaults standardUserDefaults] stringForKey: DbLocationUrl_s_KEY]];
 
@@ -1307,7 +1314,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                           @"(modality CONTAINS[cd] 'XA') AND (date >= $NSDATE_YESTERDAY AND date <= $NSDATE_TODAY)", NSLocalizedString( @"Yesterday XA", nil),
                           @"(modality CONTAINS[cd] 'RF') AND (date >= $NSDATE_YESTERDAY AND date <= $NSDATE_TODAY)", NSLocalizedString( @"Yesterday RF", nil),
                           
-                          [NSNull null], NSLocalizedString( @"Interesting Cases", nil),
+                          [NSNull null], NSLocalizedString( @"Interesting Cases", nil), // not a smart album
                           
                           @"(comment != '' AND comment != NIL)", NSLocalizedString( @"Cases with comments", nil),
                           

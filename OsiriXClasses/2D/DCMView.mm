@@ -11015,7 +11015,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     {
         k1 = k2 = 1.0;
 #ifndef NDEBUG
-        NSLog(@"%s %d, Skip", __PRETTY_FUNCTION__, __LINE__);
+        static bool warnedOnce = false;
+        if (!warnedOnce) {
+            NSLog(@"%s %d, Skip drawing ruler because of pixelSpacing %f, %f", __PRETTY_FUNCTION__, __LINE__, curDCM.pixelSpacingX, curDCM.pixelSpacingY);
+            warnedOnce = true;
+        }
 #endif
         return;
     }

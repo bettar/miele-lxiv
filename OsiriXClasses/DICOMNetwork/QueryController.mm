@@ -752,8 +752,19 @@ extern "C"
         if ([wait aborted])
             return NO;
         
-		if ([theTask terminationStatus] == EXIT_SUCCESS)
-            return YES;
+        switch ([theTask terminationStatus]) {
+            case EXIT_SUCCESS:
+                return YES;
+                break;
+                
+            case EXIT_FAILURE:// Failed to establish association
+                break;
+                
+            default:
+                // 4 SIGILL (probably sandboxing issue preventing the SCU from running at all)
+                NSLog(@"%s echoscu <%@> termination status:%i", __FUNCTION__, aet, [theTask terminationStatus]);
+                break;
+        }
 	}
 	@catch (NSException * e)
 	{
@@ -795,7 +806,7 @@ extern "C"
 	NSNumber *retrieveSameModality = [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameModality"];
 	NSNumber *retrieveSameDescription = [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameDescription"];
 
-	[NSApp beginSheet:	autoRetrieveWindow
+	[NSApp beginSheet: autoRetrieveWindow
 				modalForWindow: self.window
 				modalDelegate: nil
 				didEndSelector: nil
@@ -3252,7 +3263,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    BOOL performQuery = NO;
+    BOOL performQueryFlag = NO;
     
     @synchronized( self)
     {
@@ -3268,13 +3279,13 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             else
                 [progressIndicator startAnimation:nil];
             
-            performQuery = YES;
+            performQueryFlag = YES;
             
             [performingQueryThreads addObject: [NSThread currentThread]];
         }
     }
     
-    if (performQuery)
+    if (performQueryFlag)
     {
         [queryManager performQuery: [showErrors boolValue]];
         
@@ -4996,14 +5007,14 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 	
 	for (NSUInteger i = 0; i < [sourcesArray count]; i++)
 	{
-		NSMutableDictionary		*source = [NSMutableDictionary dictionaryWithDictionary: [sourcesArray objectAtIndex: i]];
+		NSMutableDictionary *source = [NSMutableDictionary dictionaryWithDictionary: [sourcesArray objectAtIndex: i]];
 		
 		if ([sender selectedRow] == i)
             [source setObject: @YES forKey:@"activated"];
 		else
             [source setObject: @NO forKey:@"activated"];
 		
-		[sourcesArray	replaceObjectAtIndex: i withObject:source];
+		[sourcesArray replaceObjectAtIndex: i withObject:source];
 	}
 	
 	[self didChangeValueForKey:@"sourcesArray"];
@@ -5210,7 +5221,8 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 		[queryArrayPrefs retain];
 		
 		sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: queryArrayPrefs] mutableCopy];
-		if (sourcesArray == nil) sourcesArray = [[NSMutableArray array] retain];
+		if (sourcesArray == nil)
+            sourcesArray = [[NSMutableArray array] retain];
 		
 		[self refreshSources];
 		
@@ -5547,7 +5559,7 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 		NSMutableDictionary *aServer = [sourcesArray objectAtIndex: i];
 		
 		switch ([self dicomEcho: [aServer objectForKey:@"server"]])
-		{
+		{   // FIXME: the result from dicomEcho can only be true or false, why are we handling 3 cases below ?
             default:
 			case  1: status =  0; break; // white
 			case  0: status = -1; break; // orange

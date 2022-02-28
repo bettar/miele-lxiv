@@ -295,14 +295,19 @@
 
         [DDKeychain unlockTmpFiles];
 
-        if ([theTask terminationStatus] == EXIT_SUCCESS)
-            return YES;
-
-        if ([theTask terminationStatus] == EXIT_FAILURE)
-            return NO; // Failed to establish association
-
-        // 4 SIGILL (probably sandboxing issue preventing the SCU from running at all)
-        NSLog(@"%s echoscu <%@> termination status:%i", __FUNCTION__, aet, [theTask terminationStatus]);
+        switch ([theTask terminationStatus]) {
+            case EXIT_SUCCESS:
+                return YES;
+                break;
+                
+            case EXIT_FAILURE:// Failed to establish association
+                break;
+                
+            default:
+                // 4 SIGILL (probably sandboxing issue preventing the SCU from running at all)
+                NSLog(@"%s echoscu <%@> termination status:%i", __FUNCTION__, aet, [theTask terminationStatus]);
+                break;
+        }
     }
     @catch (NSException *exception) {
         N2LogException( exception);
@@ -880,13 +885,16 @@
 
 	if ([oPanel runModal] == NSModalResponseOK)
 	{
+#ifdef MACAPPSTORE
         {
+            // Avoid sandbox
             NSURL *locationUrl = [oPanel URL];
             [AppDefaults createAndStoreBookmark:locationUrl underKey:LocalDbPath_bk_KEY];
-            NSLog(@"%s line %d\n\t path: %@\n\t %@", __FUNCTION__, __LINE__,
-                  [[oPanel URL] path],
-                  [oPanel filename]);
+//            NSLog(@"%s line %d\n\t path: %@\n\t %@", __FUNCTION__, __LINE__,
+//                  [[oPanel URL] path],
+//                  [oPanel filename]);
         }
+#endif
 		NSString *location = [oPanel filename];
         /*
          /Users/lxiv/Documents/projects/p68_lxiv/temp/20201119/Miele-LXIV Data

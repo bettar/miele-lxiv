@@ -1328,7 +1328,7 @@ Gw
                                     <rect key="frame" x="16" y="59" width="341" height="107"/>
                                     <clipView key="contentView" id="fjY-p3-qL3">
                                         <rect key="frame" x="1" y="1" width="339" height="105"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="13" id="664">
                                                 <rect key="frame" x="0.0" y="0.0" width="339" height="105"/>
@@ -1549,6 +1549,7 @@ Gw
                     <constraint firstItem="708" firstAttribute="top" secondItem="706" secondAttribute="bottom" constant="8" symbolic="YES" id="uEl-cO-FXS"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="-675" y="-590"/>
         </window>
         <arrayController id="685" userLabel="TLSSupportedCipherSuite" customClass="DNDArrayController">
             <declaredKeys>

@@ -396,8 +396,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			transferSyntax:(int)transferSyntax
 			compression: (float)compression
 			extraParameters:(NSDictionary *)extraParameters
-			{
-			
+{			
 	if (self = [super initWithCallingAET:(NSString *)myAET  
 							calledAET:(NSString *)theirAET  
 							hostname:(NSString *)hostname 

@@ -267,7 +267,7 @@ NSString* const OsirixWebPortalUsersCanRestorePasswordDefaultsKey = @"restorePas
 
 // MARK: DICOM Communications
 
-+ (NSString*)defaultAETitle;
++ (NSString*)defaultAETitle
 {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
 	{
@@ -281,7 +281,7 @@ NSString* const OsirixWebPortalUsersCanRestorePasswordDefaultsKey = @"restorePas
 	return [[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"];
 }
 
-+ (int)defaultAEPort;
++ (int)defaultAEPort
 {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
 	{

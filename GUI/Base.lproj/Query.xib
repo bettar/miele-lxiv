@@ -677,7 +677,7 @@
                                                             </tableView>
                                                         </subviews>
                                                     </clipView>
-                                                    <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="0.0043492959248174366" controlSize="small" horizontal="YES" id="782">
+                                                    <scroller key="horizontalScroller" verticalHuggingPriority="750" controlSize="small" horizontal="YES" id="782">
                                                         <rect key="frame" x="1" y="127" width="355" height="11"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
@@ -1208,7 +1208,7 @@
                                                 </tableView>
                                             </subviews>
                                         </clipView>
-                                        <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="0.00028995306165449582" controlSize="small" horizontal="YES" id="779">
+                                        <scroller key="horizontalScroller" verticalHuggingPriority="750" controlSize="small" horizontal="YES" id="779">
                                             <rect key="frame" x="1" y="362" width="903" height="11"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>

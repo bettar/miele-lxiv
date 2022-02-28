@@ -34,7 +34,7 @@
 
 @implementation QueryArrayController
 
-- (id)initWithCallingAET:(NSString *) myAET distantServer: (NSDictionary*) ds;
+- (id)initWithCallingAET:(NSString *) myAET distantServer: (NSDictionary*) ds
 {
 	if (self = [super init])
 	{
@@ -147,7 +147,7 @@
             }
         }
         
-        if( sameAddress)
+        if (sameAddress)
         {
             if( [NSThread isMainThread] && showError)
             {
