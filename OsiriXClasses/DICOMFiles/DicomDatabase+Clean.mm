@@ -355,7 +355,8 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
     [self autorelease];
 }
 
--(void)cleanForFreeSpace {
+-(void)cleanForFreeSpace
+{
 	if (self.isReadOnly)
         return;
     

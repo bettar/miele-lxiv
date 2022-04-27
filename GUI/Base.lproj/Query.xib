@@ -69,11 +69,11 @@
                         <tabViewItems>
                             <tabViewItem label="Name" identifier="1" id="660">
                                 <view key="view" id="661">
-                                    <rect key="frame" x="10" y="28" width="900" height="21"/>
+                                    <rect key="frame" x="10" y="19" width="900" height="30"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <searchField wantsLayer="YES" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="667">
-                                            <rect key="frame" x="47" y="-6" width="777" height="22"/>
+                                            <rect key="frame" x="47" y="3" width="777" height="22"/>
                                             <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" alignment="left" placeholderString="Patient Name" bezelStyle="round" sendsWholeSearchString="YES" maximumRecents="20" recentsAutosaveName="LastQueryPatientName" id="749">
                                                 <font key="font" metaFont="cellTitle"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -94,11 +94,11 @@
                             </tabViewItem>
                             <tabViewItem label="Patient ID" identifier="2" id="658">
                                 <view key="view" id="659">
-                                    <rect key="frame" x="10" y="19" width="929" height="30"/>
+                                    <rect key="frame" x="10" y="19" width="900" height="30"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <searchField wantsLayer="YES" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="665">
-                                            <rect key="frame" x="47" y="3" width="806" height="22"/>
+                                            <rect key="frame" x="47" y="3" width="777" height="22"/>
                                             <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" alignment="left" placeholderString="Patient ID" bezelStyle="round" sendsWholeSearchString="YES" maximumRecents="20" recentsAutosaveName="LastQueryPatientID" id="748">
                                                 <font key="font" metaFont="cellTitle"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>

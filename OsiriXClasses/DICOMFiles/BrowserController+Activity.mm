@@ -41,6 +41,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation BrowserController (Activity)
 
@@ -68,6 +69,7 @@
 
 @end
 
+#pragma mark -
 
 @implementation ThreadsTableView
 
@@ -82,11 +84,14 @@
 
 @end
 
+#pragma mark -
+
 @implementation BrowserActivityHelper
 
 static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperContext";
 
--(id)initWithBrowser:(BrowserController*)browser {
+-(id)initWithBrowser:(BrowserController*)browser
+{
 	if ((self = [super init])) {
 		_browser = browser; // no retaining here
 		_cells = [[NSMutableArray alloc] init];
@@ -118,9 +123,15 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
     [self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(NSArrayController*)object change:(NSDictionary*)change context:(void*)context {
+-(void)observeValueForKeyPath:(NSString*)keyPath
+                     ofObject:(NSArrayController*)object
+                       change:(NSDictionary*)change
+                      context:(void*)context
+{
 	if (![NSThread isMainThread]) {
-        [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, object, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO];
+        [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:)
+                               withObject:[NSArray arrayWithObjects: keyPath, object, change, [NSValue valueWithPointer:context], nil]
+                            waitUntilDone:NO];
         return;
     }
 
@@ -159,7 +170,9 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
                 id cell = [self cellForThread: thread];
                 if (cell == nil)
                 {
-                    [_cells addObject: [[[ThreadCell alloc] initWithThread:thread manager:ThreadsManager.defaultManager view:_browser._activityTableView] autorelease]];
+                    [_cells addObject: [[[ThreadCell alloc] initWithThread:thread
+                                                                   manager:ThreadsManager.defaultManager
+                                                                      view:_browser._activityTableView] autorelease]];
                     needToReloadData = YES;
                 }
             }

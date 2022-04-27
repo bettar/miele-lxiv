@@ -40,7 +40,8 @@
 						port:(int)port 
 						transferSyntax:(int)transferSyntax
 						compression: (float)compression
-						extraParameters:(NSDictionary *)extraParameters{
+						extraParameters:(NSDictionary *)extraParameters
+{
 	return [[[DCMTKStudyQueryNode alloc] initWithDataset:(DcmDataset *)dataset
 									callingAET:(NSString *)myAET  
 									calledAET:(NSString *)theirAET  
@@ -58,7 +59,8 @@
 									port:(int)port 
 									transferSyntax:(int)transferSyntax
 									compression: (float)compression
-									extraParameters:(NSDictionary *)extraParameters{
+									extraParameters:(NSDictionary *)extraParameters
+{
 	if (self = [super initWithDataset:(DcmDataset *)dataset
 									callingAET:(NSString *)myAET  
 									calledAET:(NSString *)theirAET  
@@ -66,8 +68,8 @@
 									port:(int)port 
 									transferSyntax:(int)transferSyntax
 									compression: (float)compression
-									extraParameters:(NSDictionary *)extraParameters]) {
-		
+									extraParameters:(NSDictionary *)extraParameters])
+    {		
 		const char *string = nil;
 		NSStringEncoding myEncodings[NUM_ENCODINGS];
         myEncodings[0] = NSISOLatin1StringEncoding;

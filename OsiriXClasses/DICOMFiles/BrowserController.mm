@@ -2363,7 +2363,7 @@ static NSConditionLock *threadLock = nil;
 			t.supportsCancel = YES;
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
 		}
-		else
+		else // synch copy
 		{
 			Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying into Database...", nil)];
 			
@@ -3470,6 +3470,8 @@ static NSConditionLock *threadLock = nil;
     autoretrievingPACSOnDemandSmartAlbum = YES;
     {
         #ifndef MIELE_LIGHT
+        // Note: studies is an array, not a dictionary
+        // Invoke -setValue:forKey: on each of the receiver's elements.
         [studies setValue:@YES forKey:@"isAutoRetrieve"];
         [QueryController retrieveStudies: studies showErrors: NO checkForPreviousAutoRetrieve: YES];
         #endif
@@ -3942,7 +3944,7 @@ static NSConditionLock *threadLock = nil;
 
 #define BONJOURPACKETS 50
 
-- (NSMutableArray*)filesForDatabaseOutlineSelection:(NSMutableArray*)correspondingManagedObjects treeObjects:(NSMutableSet*)treeManagedObjects onlyImages:(BOOL)onlyImages 
+- (NSMutableArray*)filesForDatabaseOutlineSelection:(NSMutableArray*) correspondingManagedObjects treeObjects:(NSMutableSet*)treeManagedObjects onlyImages:(BOOL)onlyImages
 {
 	NSMutableArray *selectedFiles = [NSMutableArray array];
 	NSIndexSet *rowEnumerator = [databaseOutline selectedRowIndexes];
@@ -3961,7 +3963,7 @@ static NSConditionLock *threadLock = nil;
         return selectedFiles;
 	}
 	
-	NSManagedObjectContext	*context = self.database.managedObjectContext;
+	NSManagedObjectContext *context = self.database.managedObjectContext;
 	
 	if (correspondingManagedObjects == nil)
         correspondingManagedObjects = [NSMutableArray array];
@@ -6362,10 +6364,10 @@ static NSConditionLock *threadLock = nil;
         
         [self refreshMatrix: self];
         
-        #ifndef MIELE_LIGHT
+#ifndef MIELE_LIGHT
         [[QueryController currentQueryController] executeRefresh: self];
         [[QueryController currentAutoQueryController] executeRefresh: self];
-        #endif
+#endif
 	}
 	else if (![_database isLocal])
 	{
@@ -6750,7 +6752,7 @@ static NSConditionLock *threadLock = nil;
 		if ([[tableColumn identifier] isEqualToString:@"accessionNumber"])		return @"";
         if ([[tableColumn identifier] isEqualToString:@"noSeries"])             return @"";
 	}
-    
+
     if ([[tableColumn identifier] isEqualToString:@"yearOld"])
     {
         switch ( [[NSUserDefaults standardUserDefaults] integerForKey: @"yearOldDatabaseDisplay"])
@@ -8022,7 +8024,7 @@ static NSConditionLock *threadLock = nil;
                     
                     for (int i = 0 ; i < [seriesToOpen count]; i++)
                     {
-                        NSMutableArray * toOpenArray = [NSMutableArray array];
+                        NSMutableArray * toOpenArray1 = [NSMutableArray array];
                         
                         NSDictionary *dict = [viewersToLoad objectAtIndex: i];
                         
@@ -8030,13 +8032,13 @@ static NSConditionLock *threadLock = nil;
                         {
                             NSArray *loadList = [self childrenArray: curFile];
                             if (loadList)
-                                [toOpenArray addObject: loadList];
+                                [toOpenArray1 addObject: loadList];
                         }
                         
                         if ([[dict valueForKey: @"4DData"] boolValue])
-                            [self processOpenViewerDICOMFromArray: toOpenArray movie: YES viewer: nil];
+                            [self processOpenViewerDICOMFromArray: toOpenArray1 movie: YES viewer: nil];
                         else
-                            [self processOpenViewerDICOMFromArray: toOpenArray movie: NO viewer: nil];
+                            [self processOpenViewerDICOMFromArray: toOpenArray1 movie: NO viewer: nil];
                     }
                     
                     NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
@@ -9906,7 +9908,7 @@ static BOOL withReset = NO;
                 
                 if (setDCMDone == NO)
                 {
-                    NSIndexSet  *index = [databaseOutline selectedRowIndexes];
+                    NSIndexSet *index = [databaseOutline selectedRowIndexes];
                     if ([index count] >= 1)
                     {
                         NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
@@ -12296,7 +12298,8 @@ constrainSplitPosition:(CGFloat)proposedPosition
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Open 2D/4D Viewer functions
 
-- (BOOL)computeEnoughMemory: (NSArray*)toOpenArray :(unsigned long*)requiredMem
+- (BOOL)computeEnoughMemory: (NSArray*)toOpenArray
+                           : (unsigned long*)requiredMem
 {
 	NSThread* thread = [NSThread currentThread];
     BOOL enoughMemory = YES;
@@ -13724,7 +13727,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 			// Prepare an array that contains arrays of series
 			//////////////////////////////////////
 			
-			NSMutableArray	*toOpenArray = [NSMutableArray array];
+			NSMutableArray	*toOpenArray2 = [NSMutableArray array];
 			
 			int x = 0;
 			if ([cells count] == 1 && [selectedLines count] > 1)	// Just one thumbnail is selected, but multiple lines are selected
@@ -13750,7 +13753,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 					}
 					
 					if (loadList)
-                        [toOpenArray addObject: loadList];
+                        [toOpenArray2 addObject: loadList];
 				}
 			}
 			else
@@ -13777,12 +13780,12 @@ constrainSplitPosition:(CGFloat)proposedPosition
                             loadList = [self childrenArray: curFile onlyImages: YES];
                         
                         if (loadList)
-                            [toOpenArray addObject: loadList];
+                            [toOpenArray2 addObject: loadList];
                     }
 				}
 			}
 			
-			[self processOpenViewerDICOMFromArray: toOpenArray movie: movieViewer viewer: viewer];
+			[self processOpenViewerDICOMFromArray: toOpenArray2 movie: movieViewer viewer: viewer];
 		}
 		
 		if (tileWindows)
@@ -13854,7 +13857,6 @@ constrainSplitPosition:(CGFloat)proposedPosition
 			[self newViewerDICOM: sender];
 	}
 }
-
 
 // /////////////////////////////////////////////////////////////////////////////
 
@@ -14285,7 +14287,7 @@ static NSArray*	openSubSeriesArray = nil;
 	if (self)
 	{
 		// Remove identical local sources
-		
+        
 		NSArray<NSDictionary *> *dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: localDatabasePaths_a_KEY];
 		NSMutableArray *filteredArray = [NSMutableArray arrayWithCapacity: [dbArray count]];
 		

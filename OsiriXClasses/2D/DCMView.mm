@@ -2839,14 +2839,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
         self.mousePosUSRegion = nil;
     }
-    
     @catch (NSException * e)
 	{
 		N2LogExceptionWithStackTrace(e);
 	}
     
     [pool release];
-    
     [super dealloc];
 }
 

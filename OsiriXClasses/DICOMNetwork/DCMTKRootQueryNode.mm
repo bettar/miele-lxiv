@@ -98,7 +98,7 @@
 	{
         if( [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"] > 0 && _children.count > [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])
         {
-            NSLog( @"----- C-Find maximumNumberOfCFindObjects reached: %d, %d", (int) _children.count, (int) [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"]);
+            NSLog( @"C-FIND max # of objects reached: %d, %d", (int) _children.count, (int) [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"]);
         }
         else
         {

@@ -728,7 +728,7 @@ static bool isGrantedNotificationAccess = false;
         return NO;
     
     if (version.majorVersion == 12 &&
-        version.minorVersion > 2)
+        version.minorVersion > 3)
     {
         return NO;
     }
@@ -1019,7 +1019,7 @@ static bool isGrantedNotificationAccess = false;
 
 // Plugins installation
 - (void) installPlugins: (NSArray*) pluginsArray
-{	
+{
 	NSMutableString *pluginNames = [NSMutableString string];
 	NSMutableString *replacingPlugins = [NSMutableString string];
 	
@@ -3660,7 +3660,7 @@ API_AVAILABLE(macos(10.14))
 //                {
 //                    case 1:
 //                    {
-//                        Survey        *survey = [[Survey alloc] initWithWindowNibName:@"Survey"];
+//                        Survey *survey = [[Survey alloc] initWithWindowNibName:@"Survey"];
 //                        [[survey window] center];
 //                        [survey showWindow:self];
 //                    }

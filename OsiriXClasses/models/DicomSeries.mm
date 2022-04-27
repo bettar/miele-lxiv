@@ -515,24 +515,22 @@
 
 - (NSSet*) images
 {
-    if( self.managedObjectContext.deletedObjects.count == 0)
+    if (self.managedObjectContext.deletedObjects.count == 0)
         return [self primitiveValueForKey: @"images"];
-    else
+
+    NSSet *s = nil;
+    @autoreleasepool
     {
-        NSSet *s = nil;
-        @autoreleasepool
-        {
-            s = [[[self primitiveValueForKey: @"images"] objectsWithOptions: NSEnumerationConcurrent passingTest:^BOOL(Dicom_Image *obj, BOOL *stop)
-                {
-                    if( obj.isDeleted)
-                        return NO;
-                    
-                    return YES;
-                }] retain];
-        }
-        
-        return [s autorelease];
+        s = [[[self primitiveValueForKey: @"images"] objectsWithOptions: NSEnumerationConcurrent passingTest:^BOOL(Dicom_Image *obj, BOOL *stop)
+            {
+                if (obj.isDeleted)
+                    return NO;
+                
+                return YES;
+            }] retain];
     }
+    
+    return [s autorelease];
 }
 
 - (NSNumber *) noFiles
@@ -540,7 +538,7 @@
     @try {
         int n = [[self primitiveValueForKey:@"numberOfImages"] intValue];
         
-        if( n == 0)
+        if (n == 0)
         {
             NSNumber* no = nil;
             
@@ -554,7 +552,7 @@
                     
                     int count = [self.images count];
                     
-                    if( v > 1) // There are frames !
+                    if (v > 1) // There are frames !
                         no = [NSNumber numberWithInt: -count];
                     else
                         no = [NSNumber numberWithInt: count];

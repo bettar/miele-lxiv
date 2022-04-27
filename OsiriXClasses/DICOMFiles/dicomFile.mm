@@ -202,7 +202,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	return NO;
 }
 
-+ (void) setFilesAreFromCDMedia: (BOOL) f;
++ (void) setFilesAreFromCDMedia: (BOOL) f
 {
 	filesAreFromCDMedia = f;
 }
@@ -341,7 +341,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
                             encodings: encoding
                  replaceBadCharacters: YES];
 }
-
+#
 + (NSString *) stringWithBytes: (char *) str
                      encodings: (NSStringEncoding*) encodings
           replaceBadCharacters: (BOOL) replace

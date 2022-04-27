@@ -1192,7 +1192,7 @@ static NSHost *currentHost = nil;
     [defaultValuesDic setObject:@"1" forKey:@"allow_qr_blank_query"];
     [defaultValuesDic setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
     [defaultValuesDic setObject:@"2" forKey:@"MaxConcurrentPODRetrieves"];
-	[defaultValuesDic setObject:@"1" forKey:@"QRRemoveDuplicateEntries"];
+	[defaultValuesDic setObject:@YES forKey:@"QRRemoveDuplicateEntries"];
     [defaultValuesDic setObject:@"1" forKey:@"tileWindowsOrderByStudyDate"];
     [defaultValuesDic setObject:@"1" forKey:@"AllowPluginAuthenticationForWebPortal"];
 	[defaultValuesDic setObject:@"1" forKey:@"UsePatientBirthDateForUID"];

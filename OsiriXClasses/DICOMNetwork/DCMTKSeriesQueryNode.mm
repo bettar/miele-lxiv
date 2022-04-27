@@ -167,10 +167,10 @@
         dataset-> insertEmptyElement(DCM_ImageComments, OFTrue);
     
 	return dataset;
-	
 }
 
-- (DcmDataset *)moveDataset{
+- (DcmDataset *)moveDataset
+{
 	DcmDataset *dataset = new DcmDataset();
 	dataset-> putAndInsertString(DCM_SeriesInstanceUID, [_uid UTF8String], OFTrue);
 	dataset-> putAndInsertString(DCM_StudyInstanceUID, [_studyInstanceUID UTF8String], OFTrue);

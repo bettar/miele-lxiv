@@ -115,7 +115,7 @@ progressCallback(
         DcmDataset *responseIdentifiers
         )
     /*
-     * This function.is used to indicate progress when findscu receives search results over the
+     * This function is used to indicate progress when findscu receives search results over the
      * network. This function will simply cause some information to be dumped to stdout.
      *
      * Parameters:
@@ -602,7 +602,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) queryWithValues:(NSArray *)values dataset:(DcmDataset*) dataset
 {
-    NSLog(@"%s", __FUNCTION__);
+    //NSLog(@"%s", __FUNCTION__);
 	@synchronized( self)
 	{
         @try
@@ -1163,7 +1163,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    if( [self isKindOfClass:[DCMTKStudyQueryNode class]])
+    if ([self isKindOfClass:[DCMTKStudyQueryNode class]])
     {
         // We are at STUDY level, and we want to go direclty to IMAGE level
         
@@ -1177,7 +1177,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         [self queryWithValues: nil dataset: &dataset];
     }
     
-    if( [self isKindOfClass:[DCMTKSeriesQueryNode class]])
+    if ([self isKindOfClass:[DCMTKSeriesQueryNode class]])
     {
         NSArray *childrenArray = [self children];
         
@@ -1772,7 +1772,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         params, 1, abstractSyntax,
         transferSyntaxes, numTransferSyntaxes);
 		
-	// For C-GET we also need the storage presentation contexts : the is only one association
+	// For C-GET we also need the storage presentation contexts : there is only one association
 	if (strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
 		strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
 		strcmp(abstractSyntax, UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
@@ -1804,7 +1804,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     
     static BOOL avoidErrorMessageReentry = NO;
     
-    if( avoidErrorMessageReentry == NO)
+    if (avoidErrorMessageReentry == NO)
     {
         NSLog( @"*** listener error (not displayed - hideListenerError): %@ %@ %@",
               [msg objectAtIndex: 0],
@@ -1848,14 +1848,14 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     [NSThread currentThread].name = @"DCMTKQueryNode ASC_requestAssociation";
     
     T_ASC_Association *assoc = NULL;
-    if( _abortAssociation == NO)
+    if (_abortAssociation == NO)
     {
         @try
         {
             OFCondition cond = ASC_requestAssociation(net, params, &assoc);
             globalCondition = cond;
             
-            if( cond == EC_Normal)
+            if (cond == EC_Normal)
                 [dict setObject: [NSValue valueWithPointer: assoc] forKey: @"assoc"];
         }
         @catch (NSException* e) {
@@ -1866,7 +1866,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         }
     }
     
-    if( _abortAssociation && assoc)
+    if (_abortAssociation && assoc)
     {
         AbortAssociationTimeOut = 2;
         ASC_abortAssociation( assoc);
@@ -1880,7 +1880,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	[pool release];
 }
-
 
 - (void) cFindThread: (NSMutableDictionary*) dict
 {
@@ -2047,7 +2046,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 //	DIMSE_debug(OFTrue);
 //	SetDebugLevel(3);
 		
-		if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+		if (strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
 			strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
 			strcmp(abstractSyntax, UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
 		{
@@ -2288,7 +2287,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
 			/* Set the transport layer type (type of network connection) in the params */
-			/* strucutre. The default is an insecure connection; where OpenSSL is  */
+			/* structure. The default is an insecure connection; where OpenSSL is  */
 			/* available the user is able to request an encrypted,secure connection. */
 			cond = ASC_setTransportLayerType(params, _secureConnection);
 			if (cond.bad()) {
@@ -2372,7 +2371,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 					[wait run];
 					[NSThread sleepForTimeInterval: 0.05];
                     
-                    if( [lock tryLock])
+                    if ([lock tryLock])
                     {
                         [lock unlock];
                         break;

@@ -2943,7 +2943,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
             
             if ([timeQueryFilter object] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_study_date"])
             {
-                [queryManager addFilter:[timeQueryFilter filteredValue] forDescription:@"StudyTime"];
+                [queryManager addFilter:[timeQueryFilter filteredValue]
+                         forDescription:@"StudyTime"];
                 queryItem = YES;
             }
             
@@ -2954,7 +2955,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                 if (queryItem || [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_modality"])
                 {
                     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
-                        [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
+                        [queryManager addFilter:[modalityQueryFilter filteredValue]
+                                 forDescription:@"ModalitiesinStudy"];
                     else
                         [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"Modality"];
                     
@@ -2997,7 +2999,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                             [alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
                             [alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
                             
-                            if ([alert runModal] == NSAlertFirstButtonReturn) doit = YES;
+                            if ([alert runModal] == NSAlertFirstButtonReturn)
+                                doit = YES;
                         }
                     }
                     else
@@ -4438,9 +4441,13 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
     if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
     {
         if (modalityArray.count)
-            modalityFilter = [QueryFilter queryFilterWithObject: [modalityArray componentsJoinedByString:@"\\"] ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"];
+            modalityFilter = [QueryFilter queryFilterWithObject: [modalityArray componentsJoinedByString:@"\\"]
+                                                   ofSearchType: searchExactMatch
+                                                         forKey: @"ModalitiesinStudy"];
         else
-            modalityFilter = [QueryFilter queryFilterWithObject: nil ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"];
+            modalityFilter = [QueryFilter queryFilterWithObject: nil
+                                                   ofSearchType: searchExactMatch
+                                                         forKey: @"ModalitiesinStudy"];
     }
     else
     {
@@ -5073,7 +5080,7 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 		
 		if (([[server valueForKey:@"QR"] boolValue] == YES ||
               [server valueForKey:@"QR"] == nil ))
-		
+        {
 			[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                       @NO, @"activated",
                                       [server valueForKey:@"Description"], @"name",
@@ -5081,6 +5088,7 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
                                       [NSString stringWithFormat:@"%@:%@", [server valueForKey:@"Address"], [server valueForKey:@"Port"]], @"AddressAndPort",
                                       server, @"server",
                                       nil]];
+        }
 	}
 	
 	[sourcesTable reloadData];

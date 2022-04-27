@@ -23,8 +23,8 @@
 
 @implementation DCMCalendarDate
 
-+ (id)dicomDate:(NSString *)string{
-
++ (id)dicomDate:(NSString *)string
+{
 	if (string == nil)
 		return nil;
 		
@@ -226,11 +226,12 @@
 	return date;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 
-
-- (id) initWithString:(NSString *)description calendarFormat:(NSString *)format microseconds: (unsigned long) usecs
+- (id) initWithString: (NSString *)description
+       calendarFormat: (NSString *)format
+         microseconds: (unsigned long) usecs
 {
     NSCalendarDate *d = [NSCalendarDate dateWithString: description calendarFormat: format];
     
@@ -245,12 +246,14 @@
     return self;
 }
 
-- (id)copyWithZone:(NSZone *)zone{
+- (id)copyWithZone:(NSZone *)zone
+{
 	DCMCalendarDate *date = [super copyWithZone:zone];
 	return date;
 }
 
-- (NSString *)dateString{
+- (NSString *)dateString
+{
 	if (isQuery)
 		return queryString;
     
@@ -258,7 +261,8 @@
 	return [self descriptionWithCalendarFormat:format];
 }
 
-- (NSString *)timeStringWithMilliseconds{
+- (NSString *)timeStringWithMilliseconds
+{
 	if (isQuery)
 		return queryString;
     
@@ -266,7 +270,8 @@
 	return [self descriptionWithCalendarFormat:format];
 }
 
-- (NSString *)timeString {
+- (NSString *)timeString
+{
 	if (isQuery)
 		return queryString;
     

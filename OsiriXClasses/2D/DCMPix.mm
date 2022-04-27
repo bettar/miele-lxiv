@@ -6612,13 +6612,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             if (gSUVAcquisitionTimeField == 0) // Prefer SeriesTime
                 priority = [NSArray arrayWithObjects: @"SeriesDate", @"SeriesTime", @"AcquisitionDate", @"AcquisitionTime", @"ContentDate", @"ContentTime", @"StudyDate", @"StudyTime", nil];
             
-            if (gSUVAcquisitionTimeField == 1) // Prefer AcquisitionTime
+            else if (gSUVAcquisitionTimeField == 1) // Prefer AcquisitionTime
                 priority = [NSArray arrayWithObjects: @"AcquisitionDate", @"AcquisitionTime", @"SeriesDate", @"SeriesTime", @"ContentDate", @"ContentTime", @"StudyDate", @"StudyTime", nil];
             
-            if (gSUVAcquisitionTimeField == 2) // Prefer ContentTime
+            else if (gSUVAcquisitionTimeField == 2) // Prefer ContentTime
                 priority = [NSArray arrayWithObjects: @"ContentDate", @"ContentTime", @"SeriesDate", @"SeriesTime", @"AcquisitionDate", @"AcquisitionTime", @"StudyDate", @"StudyTime", nil];
             
-            if (gSUVAcquisitionTimeField == 3) // Prefer StudyTime
+            else if (gSUVAcquisitionTimeField == 3) // Prefer StudyTime
                 priority = [NSArray arrayWithObjects: @"StudyDate", @"StudyTime", @"SeriesDate", @"SeriesTime", @"AcquisitionDate", @"AcquisitionTime", @"ContentDate", @"ContentTime", nil];
             
             NSString *preferredTime = nil;
@@ -6664,7 +6664,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             DCMObject *detectorInformation = [detectorInformationSequence.sequence objectAtIndex:0];
             
             NSArray *ipp = [detectorInformation attributeArrayWithName:@"ImagePositionPatient"];
-            if (ipp)
+            if (ipp && ipp.count >= 3)
             {
                 originX = [[ipp objectAtIndex:0] doubleValue];
                 originY = [[ipp objectAtIndex:1] doubleValue];
@@ -10864,12 +10864,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 	}
 	
-    
 	if (baseAddr)
 	{
 		free( baseAddr);
 		baseAddr = nil;
 	}
+
 	[imageObjectID release];
 	imageObjectID = nil;
     

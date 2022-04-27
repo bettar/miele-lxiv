@@ -1334,7 +1334,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return [result stringByAppendingFormat:@"\rdicomTime: %@\rsopInstanceUID: %@", [self dicomTime], [self sopInstanceUID]];
 }
 
-+(NSMutableArray*)dicomImagesInObjects:(NSArray*)objects {
++(NSMutableArray*)dicomImagesInObjects:(NSArray*)objects
+{
 	NSMutableArray* dicomImages = [NSMutableArray array];
 	
 	for (NSManagedObject* object in objects) {
@@ -1351,6 +1352,5 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 	return dicomImages;
 }
-
 
 @end

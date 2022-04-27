@@ -86,8 +86,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 	[super awakeFromNib];
 }
 
-
-
+// TODO: deprecated in 10.4. Use tableView:writeRowsWithIndexes:toPasteboard: instead.
 - (BOOL)tableView:(NSTableView *)tv
 		writeRows:(NSArray*)rows
 	 toPasteboard:(NSPasteboard*)pboard

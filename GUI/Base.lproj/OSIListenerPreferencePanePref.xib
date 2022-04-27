@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -1014,7 +1014,7 @@ Gw
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <clipView key="contentView" id="pXh-lH-7a9">
                                         <rect key="frame" x="1" y="1" width="339" height="105"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="13" id="749">
                                                 <rect key="frame" x="0.0" y="0.0" width="339" height="105"/>
@@ -1037,7 +1037,7 @@ Gw
                                                             <binding destination="793" name="value" keyPath="arrangedObjects.Supported" id="799"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn width="299" minWidth="40" maxWidth="1000" id="751">
+                                                    <tableColumn width="270" minWidth="40" maxWidth="1000" id="751">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Cipher">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -1165,6 +1165,7 @@ Gw
                     </box>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="-37" y="-275"/>
         </window>
         <arrayController id="793" userLabel="TLSSupportedCipherSuite" customClass="DNDArrayController">
             <declaredKeys>

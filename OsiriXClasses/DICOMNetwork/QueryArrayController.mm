@@ -92,7 +92,7 @@
 	else if ([description rangeOfString:@"Time"].location != NSNotFound)
 		filter = [DCMCalendarDate queryDate:filter];
 	
-    if( filter)
+    if (filter)
         [filters setObject:filter forKey:description];
 }
 
@@ -182,9 +182,9 @@
                 }
                 [rootNode setShowErrorMessage: showError];
                 [rootNode queryWithValues:filterArray];
-                
-        //		NSLog( @"Query values: %@", filterArray);
-                
+#ifndef NDEBUG
+        		//NSLog( @"Query values: %@", filterArray);
+#endif
                 if( [[NSThread currentThread] isCancelled] == NO)
                 {
                     [queries release];

@@ -1328,7 +1328,7 @@ Gw
                                     <rect key="frame" x="16" y="59" width="341" height="107"/>
                                     <clipView key="contentView" id="fjY-p3-qL3">
                                         <rect key="frame" x="1" y="1" width="339" height="105"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="13" id="664">
                                                 <rect key="frame" x="0.0" y="0.0" width="339" height="105"/>

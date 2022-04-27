@@ -35,7 +35,10 @@
 @synthesize manager = _manager;
 @synthesize view = _view;
 
--(id)initWithThread:(NSThread*)thread manager:(ThreadsManager*)manager view:(NSTableView*)view {
+-(id)initWithThread:(NSThread*)thread
+            manager:(ThreadsManager*)manager
+               view:(NSTableView*)view
+{
 	self = [super init];
     
 	_view = view;
