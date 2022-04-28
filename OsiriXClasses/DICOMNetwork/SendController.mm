@@ -40,6 +40,8 @@
 
 static volatile int sendControllerObjects = 0;
 
+#pragma mark -
+
 @interface DCMTKStoreSCUOperation: NSOperation
 {
     NSArray *files;
@@ -53,6 +55,8 @@ static volatile int sendControllerObjects = 0;
 - (id) initWithFiles:(NSArray*) a server: (NSDictionary*) s;
 
 @end
+
+#pragma mark -
 
 @implementation DCMTKStoreSCUOperation
 @synthesize files, server, thread;
@@ -125,6 +129,8 @@ static volatile int sendControllerObjects = 0;
 
 @end
 
+#pragma mark -
+
 @implementation SendController
 
 +(int) sendControllerObjects
@@ -137,7 +143,9 @@ static volatile int sendControllerObjects = 0;
 	return [SendController sendFiles: files toNode: node usingSyntax: SendExplicitLittleEndian];
 }
 
-+ (void) sendFiles:(NSArray *) files toNode: (NSDictionary*) node usingSyntax: (int) syntax
++ (void) sendFiles: (NSArray *) files
+            toNode: (NSDictionary*) node
+       usingSyntax: (int) syntax
 {
 	BOOL s = [[NSUserDefaults standardUserDefaults] boolForKey: @"sendROIs"];
 
@@ -162,7 +170,7 @@ static volatile int sendControllerObjects = 0;
 		return;
 	}
 
-	if ([files  count])
+	if ([files count])
 	{
 		if ([[DCMNetServiceDelegate DICOMServersListSendOnly: YES QROnly: NO] count] > 0)
 		{
