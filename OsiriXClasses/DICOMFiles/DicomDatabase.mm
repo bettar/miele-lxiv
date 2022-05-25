@@ -1647,7 +1647,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         NSAutoreleasePool* pool2 = [[NSAutoreleasePool alloc] init];
         
         NSRange chunkRange = [[chunkRanges objectAtIndex:chunkIndex] rangeValue];
-        //NSLog(@"Line %d, +++ (E) %lu,%lu", __LINE__, (unsigned long)chunkRange.location, (unsigned long)chunkRange.length);
+
         BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
         BOOL addFailed = NO;
 		NSMutableArray *dicomFilesArray = [NSMutableArray arrayWithCapacity:chunkRange.length];
@@ -1686,7 +1686,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				NSString* newFile = [paths objectAtIndex:i];
 				DicomFile *curFile = nil;
 				NSMutableDictionary	*curDict1 = nil;
-                //NSLog(@"Line %d, +++ (F) %lu,%@", __LINE__, (unsigned long)i, newFile);
+
 				@try {
 #ifdef RANDOMFILES
 					curFile = [[DicomFile alloc] initRandom];
@@ -1893,7 +1893,7 @@ static BOOL protectionAgainstReentry = NO;
     
     NSThread* thread = [NSThread currentThread];
     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
-//NSLog(@"Line %d, +++ (G) %lu", __LINE__, (unsigned long)dicomFilesArray.count);
+
     NSMutableArray* newStudies = [NSMutableArray array];
     
 	NSMutableArray* addedImageObjects = nil;
@@ -1961,7 +1961,7 @@ static BOOL protectionAgainstReentry = NO;
     //				NSLog(@"curDict: %@", curDict);
                     
                     newFile = [curDict2 objectForKey:@"filePath"];
-//NSLog(@"Line %d, +++ (H) %ld %@", __LINE__, (long)i, newFile);
+
                     BOOL DICOMSR = NO;
                     BOOL inParseExistingObject = rereadExistingItems;
                     
@@ -2045,7 +2045,7 @@ static BOOL protectionAgainstReentry = NO;
                             }
                         }
                         else
-                        { //NSLog(@"Line %d, +++ (J) Find study object", __LINE__);
+                        {
                             /* ******************************************/
                             /* ********** Find study object *************/
                             // match: StudyInstanceUID and patientUID (see patientUID function in dicomFile.m, based on patientName, patientID and patientBirthDate)
@@ -2219,7 +2219,7 @@ static BOOL protectionAgainstReentry = NO;
                             {
                             }
                             else
-                            { //NSLog(@"Line %d, +++ (K) Find series object", __LINE__);
+                            {
                                 /********************************************/
                                 /*********** Find series object *************/
                                 
@@ -2267,7 +2267,7 @@ static BOOL protectionAgainstReentry = NO;
                                 
                                 curSerieID = curDictSeriesID;
                             }
-//NSLog(@"Line %d, +++ (L) Find image object", __LINE__);
+
                             /* ******************************************/
                             /* ********** Find image object *************/
                             
@@ -2281,7 +2281,7 @@ static BOOL protectionAgainstReentry = NO;
                                 numberOfFrames = 1;
                             
                             for (int f = 0 ; f < numberOfFrames; f++)
-                            { //NSLog(@"Line %d, +++ (M) %d/%d", __LINE__, f, numberOfFrames);
+                            {
                                 imageSqlRow = nil;
                                 
                                 NSString *SOPUID = [curDict2 objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]];
@@ -2299,7 +2299,7 @@ static BOOL protectionAgainstReentry = NO;
                                 }
                                 
                                 if (imageSqlRow)
-                                { //NSLog(@"Line %d, +++ (Ma)", __LINE__);
+                                {
                                     // Does this image contain a valid image path? If not replace it, with the new one
                                     if ([[NSFileManager defaultManager] fileExistsAtPath: [Dicom_Image completePathForLocalPath: [imageSqlRow valueForKey:@"path"] directory:self.dataBaseDirPath]] == YES && inParseExistingObject == NO)
                                     {
@@ -2325,7 +2325,7 @@ static BOOL protectionAgainstReentry = NO;
                                     }
                                 }
                                 else
-                                { //NSLog(@"Line %d, +++ (Mb)", __LINE__);
+                                {
                                     imageSqlRow = [self newObjectForEntity:self.imageEntity];
                                     newObject = YES;
                                 }
@@ -2811,7 +2811,7 @@ static BOOL protectionAgainstReentry = NO;
 
         __block BOOL studySelected = NO;
         NSArray *filesInput = [[dict objectForKey: @"filesInput"] sortedArrayUsingSelector:@selector(compare:)]; // sorting the array should make the data access faster on optical media
-        NSLog(@"Line %d, ### Copy files %lu", __LINE__, (unsigned long)filesInput.count);
+        //NSLog(@"Line %d, ### Copy files %lu", __LINE__, (unsigned long)filesInput.count);
         for (int i = 0; i < [filesInput count];)
         {
             if ([[NSThread currentThread] isCancelled])
@@ -2824,12 +2824,12 @@ static BOOL protectionAgainstReentry = NO;
                     NSMutableArray *copiedFiles = [NSMutableArray array];
                     NSTimeInterval lastGUIUpdate = 0;
                     NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 5; // actually fiveSeconds 
-//NSLog(@"Line %d, +++ (A) [filesInput count]:%lu", __LINE__, (unsigned long)[filesInput count]);
+
                     for ( ; i < [filesInput count] && twentySeconds > [NSDate timeIntervalSinceReferenceDate]; i++)
                     {
                         if ([[NSThread currentThread] isCancelled])
                             break;
-//NSLog(@"Line %d, +++ (B) i:%d", __LINE__, i);
+                        
                         if ([NSDate timeIntervalSinceReferenceDate] - lastGUIUpdate > 1)
                         {
                             lastGUIUpdate = [NSDate timeIntervalSinceReferenceDate];
@@ -2870,9 +2870,6 @@ static BOOL protectionAgainstReentry = NO;
                                                 NSLog( @"***** copyItemAtPath %@ failed", srcPath);
                                         }
                                       
-#ifndef NDEBUG
-//NSLog(@"Line %d, +++ (C) dstPath:%@", __LINE__, dstPath);
-#endif
                                         if ([[NSFileManager defaultManager] fileExistsAtPath: dstPath])
                                         {
                                             if ([extension isEqualToString: @"dcm"] == NO)
@@ -2885,7 +2882,7 @@ static BOOL protectionAgainstReentry = NO;
                                                 }
                                             }
                                             [copiedFiles addObject: dstPath];
-                                            NSLog( @"=== # copied files: %lu", (unsigned long)copiedFiles.count);
+                                            //NSLog( @"=== # copied files: %lu", (unsigned long)copiedFiles.count);
                                         }
                                     } // @synchronized
                                 }
@@ -2931,9 +2928,7 @@ static BOOL protectionAgainstReentry = NO;
                         if ([NSThread currentThread].isCancelled)
                             break;
                     } // for
-                    
-NSLog( @"=== copiedFiles === %@", copiedFiles);
-                    
+
                     [queue addOperationWithBlock:^{
                         NSThread* thread = [NSThread currentThread];
                         thread.name = NSLocalizedString(@"Adding files...", nil);
@@ -2963,7 +2958,7 @@ NSLog( @"=== copiedFiles === %@", copiedFiles);
                                                generatedByOsiriX:NO
                                                    importedFiles:YES
                                                      returnArray:YES];
-//NSLog(@"Line %d, +++ (D) %@", __LINE__, objects);
+
                             DicomDatabase* mdatabase = self.isMainDatabase ? self : self.mainDatabase;
                             if ([[BrowserController currentBrowser] database] == mdatabase && [[dict objectForKey:@"addToAlbum"] boolValue])
                             {
@@ -4165,23 +4160,23 @@ NSLog( @"=== copiedFiles === %@", copiedFiles);
 	
 	[context lock];
 	@try {
-		NSArray* studiesArray = [context executeFetchRequest:dbRequest error:nil];
+		NSArray* studiesArray4 = [context executeFetchRequest:dbRequest error:nil];
         
-        if (studiesArray.count)
+        if (studiesArray4.count)
         {
             NSLog(@"-------------- Recompute Patient UIDs -- START");
             
             Wait *wait = nil;
-            if ([NSThread isMainThread] && studiesArray.count > 200)
+            if ([NSThread isMainThread] && studiesArray4.count > 200)
                 wait = [[[Wait alloc] initWithString: NSLocalizedString(@"Recomputing Patient UIDs...", nil)] autorelease];
             
             [wait showWindow:self];
             
-            [[wait progress] setMaxValue: studiesArray.count];
+            [[wait progress] setMaxValue: studiesArray4.count];
             
             int i = 0;
             
-            for (DicomStudy* study in studiesArray)
+            for (DicomStudy* study in studiesArray4)
             {
                 NSAutoreleasePool *pool = [NSAutoreleasePool new];
                 

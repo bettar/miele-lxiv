@@ -7273,7 +7273,7 @@ static NSConditionLock *threadLock = nil;
 		NSArray *images = [self childrenArray: item onlyImages: NO];
 		
 		Dicom_Image *im = nil;
-		
+        
 		if ([images count] > [animationSlider intValue])
 			im = [images objectAtIndex: [animationSlider intValue]];
 		else
@@ -7296,7 +7296,7 @@ static NSConditionLock *threadLock = nil;
 			r = YES;
 		}
 		
-		#ifndef MIELE_LIGHT
+#ifndef MIELE_LIGHT
 		
 		if (([[[im valueForKey:@"modality"] lowercaseString] isEqualToString:@"pdf"] || [DCMAbstractSyntaxUID isPDF: [im valueForKeyPath: @"series.seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isStructuredReport: [im valueForKeyPath: @"series.seriesSOPClassUID"]]) && [[NSUserDefaults standardUserDefaults] boolForKey: @"openPDFwithPreview"])
 		{
@@ -7411,7 +7411,7 @@ static NSConditionLock *threadLock = nil;
             }
 		}
 		
-		#endif
+#endif
 		
 		[_database unlock];
 	}
@@ -7796,13 +7796,13 @@ static NSConditionLock *threadLock = nil;
     waitOpeningWindow = nil;
 }
 
-- (void) databaseOpenStudy: (NSManagedObject*) item
+- (void) databaseOpenStudy: (NSManagedObject*) item4
 {
 #ifndef  MIELE_LIGHT
-    if ([item isKindOfClass: [DCMTKStudyQueryNode class]])
+    if ([item4 isKindOfClass: [DCMTKStudyQueryNode class]])
     {
         // Check to see if already in retrieving mode, if not download it
-        [self retrieveComparativeStudy: (DCMTKStudyQueryNode*) item select: YES open: YES];
+        [self retrieveComparativeStudy: (DCMTKStudyQueryNode*) item4 select: YES open: YES];
         return;
     }
 #endif
@@ -7816,17 +7816,17 @@ static NSConditionLock *threadLock = nil;
         [oMatrix selectCell: [cells objectAtIndex: 0]];
     }
     
-	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
+	if ([[item4 valueForKey:@"type"] isEqualToString:@"Series"])
 	{
-		if ([self isUsingExternalViewer: item] == NO)
+		if ([self isUsingExternalViewer: item4] == NO)
 		{
 			// DICOM & others
-			[self viewerDICOMInt :NO  dcmFile: [NSArray arrayWithObject:item] viewer:nil];
+			[self viewerDICOMInt :NO  dcmFile: [NSArray arrayWithObject:item4] viewer:nil];
 		}
 	}
 	else	// STUDY - Hanging Protocols - Windows State
 	{
-        DicomStudy *currentStudy = (DicomStudy*) item;
+        DicomStudy *currentStudy = (DicomStudy*) item4;
         
         [self checkIfLocalStudyHasMoreOrSameNumberOfImagesOfADistantStudy: [NSArray arrayWithObject: currentStudy]];
         
@@ -9378,8 +9378,8 @@ static BOOL withReset = NO;
 
 - (void) previewSliderAction:(id) sender
 {
-	BOOL	animate = NO;
-	long	noOfImages = 0;
+	BOOL animate = NO;
+	long noOfImages = 0;
 	
     NSButtonCell *cell = [oMatrix selectedCell];
     if (cell && dontUpdatePreviewPane == NO)
@@ -12514,7 +12514,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 				
 				if ([loadList count])
 				{
-					Dicom_Image*  curFile = [loadList objectAtIndex: 0];
+					Dicom_Image* curFile = [loadList objectAtIndex: 0];
 					[curFile setValue:[NSDate date] forKeyPath:@"series.dateOpened"];
 					[curFile setValue:[NSDate date] forKeyPath:@"series.study.dateOpened"];
 					
@@ -12711,8 +12711,8 @@ constrainSplitPosition:(CGFloat)proposedPosition
 		if (notEnoughMemory == NO)
 		{
 			// Pre-Flip data ?
-			
-			NSMutableArray *resortedToOpenArray = [NSMutableArray array], *isFlippedData = [NSMutableArray array];
+            NSMutableArray *resortedToOpenArray = [NSMutableArray array];
+            NSMutableArray *isFlippedData = [NSMutableArray array];
 			
 			for (NSArray *a in toOpenArray)
 			{
@@ -13676,14 +13676,14 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	[_database lock];
 	
 	@try
-	{
-		NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
-		NSInteger			row, column;
-		NSMutableArray		*selectedFilesList;
-		NSArray				*loadList;
+    {
+		NSManagedObject *selectedLine = [selectedLines objectAtIndex: 0];
+		NSInteger row, column;
+		NSMutableArray *selectedFilesList;
+		//NSArray *loadList4;
 			
-		NSArray				*cells = [oMatrix selectedCells];
-		
+		NSArray *cells = [oMatrix selectedCells];
+
 		if ([cells count] == 0 && [[oMatrix cells] count] > 0)
 		{
 			cells = [NSArray arrayWithObject: [[oMatrix cells] objectAtIndex: 0]];
@@ -13719,23 +13719,24 @@ constrainSplitPosition:(CGFloat)proposedPosition
 		}
 		else
 		{
-			//////////////////////////////////////
+			// ////////////////////////////////////
 			// Open series !!!
-			//////////////////////////////////////
+			// ////////////////////////////////////
 			
-			//////////////////////////////////////
+			// ////////////////////////////////////
 			// Prepare an array that contains arrays of series
-			//////////////////////////////////////
+			// ////////////////////////////////////
 			
-			NSMutableArray	*toOpenArray2 = [NSMutableArray array];
-			
-			int x = 0;
+			NSMutableArray *toOpenArray2 = [NSMutableArray array];
+            NSArray *loadList4;
+
+			int x = 0; // useless ?
 			if ([cells count] == 1 && [selectedLines count] > 1)	// Just one thumbnail is selected, but multiple lines are selected
 			{
 				for (NSManagedObject* curFile in selectedLines)
 				{
 					x++;
-					loadList = nil;
+					loadList4 = nil;
 					
 					if ([[curFile valueForKey:@"type"] isEqualToString: @"Study"])
 					{
@@ -13743,17 +13744,17 @@ constrainSplitPosition:(CGFloat)proposedPosition
 						if ([[curFile valueForKey:@"imageSeries"] count])
 						{
 							curFile = [[curFile valueForKey:@"imageSeries"] objectAtIndex: 0];
-							loadList = [self childrenArray: curFile];
+							loadList4 = [self childrenArray: curFile];
 						}
 					}
 					
 					if ([[curFile valueForKey:@"type"] isEqualToString: @"Series"])
 					{
-						loadList = [self childrenArray: curFile];
+						loadList4 = [self childrenArray: curFile];
 					}
 					
-					if (loadList)
-                        [toOpenArray2 addObject: loadList];
+					if (loadList4)
+                        [toOpenArray2 addObject: loadList4];
 				}
 			}
 			else
@@ -13767,20 +13768,20 @@ constrainSplitPosition:(CGFloat)proposedPosition
 						column = 0;
 					}
 					
-					loadList = nil;
+					loadList4 = nil;
 					
                     if (matrixViewArray.count > [cell tag])
                     {
-                        NSManagedObject*  curFile = [matrixViewArray objectAtIndex: [cell tag]];
+                        NSManagedObject* curFile = [matrixViewArray objectAtIndex: [cell tag]];
                         
                         if ([[curFile valueForKey:@"type"] isEqualToString: @"Image"])
-                            loadList = [self childrenArray: selectedLine onlyImages: YES];
+                            loadList4 = [self childrenArray: selectedLine onlyImages: YES];
                         
                         if ([[curFile valueForKey:@"type"] isEqualToString: @"Series"])
-                            loadList = [self childrenArray: curFile onlyImages: YES];
+                            loadList4 = [self childrenArray: curFile onlyImages: YES];
                         
-                        if (loadList)
-                            [toOpenArray2 addObject: loadList];
+                        if (loadList4)
+                            [toOpenArray2 addObject: loadList4];
                     }
 				}
 			}
@@ -13867,7 +13868,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	NSManagedObject	*item = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
 	
 	@try 
-	{
+    {
 		if (sender == Nil &&
             [[oMatrix selectedCells] count] == 1 &&
             [[item valueForKey:@"type"] isEqualToString:@"Study"])
@@ -13920,8 +13921,8 @@ constrainSplitPosition:(CGFloat)proposedPosition
 {
 	NSMutableArray	*images = [NSMutableArray array];
 	
-	
-	if (([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: images];
+	if (([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
+        [self filesForDatabaseMatrixSelection: images];
 	else
         [self filesForDatabaseOutlineSelection: images];
 	

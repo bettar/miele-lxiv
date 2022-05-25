@@ -172,7 +172,8 @@ static NSString* const NSThreadSubRangeKey = @"subRange";
 static NSString* const SuperThreadProgressKey = @"SuperThreadProgress";
 static NSString* const SuperThreadNameKey = @"SuperThreadName";
 
--(void)enterOperation {
+-(void)enterOperation
+{
 	@synchronized (self) {
         NSNumber* n = [NSNumber numberWithFloat:self.progress];
 		[self.stackArray addObject:[NSMutableDictionary dictionary]];
@@ -200,7 +201,8 @@ static NSString* const SuperThreadNameKey = @"SuperThreadName";
 	}
 }
 
--(void)exitOperation {
+-(void)exitOperation
+{
 	@synchronized (self) {
 		if (self.stackArray.count > 1) {
             [self willChangeValueForKey:NSThreadStatusKey];
