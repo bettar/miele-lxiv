@@ -39,13 +39,13 @@
 
 #define ON_THE_FLY_COMPRESSION 1
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#define INCLUDE_CERRNO
-#define INCLUDE_CSTDARG
-#define INCLUDE_CCTYPE
-#define INCLUDE_CTIME
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
+#include <cstdarg>
+#include <cctype>
+#include <ctime>
 #include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
@@ -864,22 +864,22 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     }
 
     /* prepare the transmission of data */
-    bzero(OFreinterpret_cast(char *, &req), sizeof(req));
+    memset(OFreinterpret_cast(char *, &req), 0, sizeof(req));
     req.MessageID = msgId;
-    strcpy(req.AffectedSOPClassUID, sopClass);
-    strcpy(req.AffectedSOPInstanceUID, sopInstance);
+    OFStandard::strlcpy(req.AffectedSOPClassUID, sopClass, sizeof(req.AffectedSOPClassUID));
+    OFStandard::strlcpy(req.AffectedSOPInstanceUID, sopInstance, sizeof(req.AffectedSOPInstanceUID));
     req.DataSetType = DIMSE_DATASET_PRESENT;
     req.Priority = DIMSE_PRIORITY_LOW;
 
     /* if required, dump some more general information */
     OFLOG_INFO(storescuLogger, "Sending Store Request (MsgID " << msgId << ", "
-               << dcmSOPClassUIDToModality(sopClass) << ")");
+               << dcmSOPClassUIDToModality(sopClass, "OT") << ")");
 
     /* finally conduct transmission of data */
     cond = DIMSE_storeUser(assoc, presId, &req,
         NULL, dcmff.getDataset(), progressCallback, NULL,
         opt_blockMode, opt_dimse_timeout,
-        &rsp, &statusDetail, NULL, OFStandard::getFileSize(fname));
+        &rsp, &statusDetail, NULL, OFstatic_cast(long, OFStandard::getFileSize(fname)));
 
     /*
      * If store command completed normally, with a status
@@ -887,11 +887,14 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
      */
     if (cond == EC_Normal && (rsp.DimseStatus == STATUS_Success || DICOM_WARNING_STATUS(rsp.DimseStatus))) {
         unsuccessfulStoreEncountered = OFFalse;
+        // TODO: renameFile(fname, ".done");
     }
     else
     {
         if (cond == EC_Normal)
             DIMSE_printCStoreRSP(stdout, &rsp);
+        
+        // TODO: renameFile(fname, ".bad");
     }
 
     /* remember the response's status for later transmissions of data */
@@ -1304,12 +1307,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 	//dcmMaxOutgoingPDUSize.set((Uint32)opt_maxSendPDULength);
 
 #ifdef WITH_OPENSSL
-#if OFFIS_DCMTK_VERSION_NUMBER < 364
-    int keyFileFormat = SSL_FILETYPE_PEM;
-#else
     DcmKeyFileFormat keyFileFormat = DCF_Filetype_PEM;
-#endif
-
 	DcmTLSTransportLayer *tLayer = NULL;
 #endif
 
@@ -1330,43 +1328,14 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
                 @try
                 {
                     const char *current = NULL;
-    #if OFFIS_DCMTK_VERSION_NUMBER < 364
-                    const char *currentOpenSSL;
-                    
-                    opt_ciphersuites.clear();
-                    
+
                     for (NSString *suite in _cipherSuites)
                     {
                         current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
                         
-                        if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
-                        {
-                            NSLog(@"ciphersuite '%s' is unknown.", current);
-                            NSLog(@"Known ciphersuites are:");
-                            unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-                            for (unsigned long cs=0; cs < numSuites; cs++)
-                            {
-                                NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
-                            }
-                            
-                            localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil] retain];
-                            [localException raise];
-                        }
-                        else
-                        {
-                            if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
-                            opt_ciphersuites += currentOpenSSL;
-                        }
-                    } // for
-    #else
-                    for (NSString *suite in _cipherSuites)
-                    {
-                        current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
-                        
-                        if (TCS_ok != tLayer->addCipherSuite(current))
+                        if (EC_Normal != tLayer->addCipherSuite(current))
                             NSLog(@"ciphersuite '%s' is unknown.", current);// DCMTLS_EC_UnknownCiphersuite( current );
                     }
-    #endif
                 }
                 @catch ( NSException *e)
                 {
@@ -1477,11 +1446,8 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
         {
             @synchronized( opensslSync)
             {
-  #if OFFIS_DCMTK_VERSION_NUMBER < 364
-                tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, _readSeedFile);
-  #else
                 tLayer = new DcmTLSTransportLayer(NET_REQUESTOR, _readSeedFile, OFTrue);
-  #endif
+
                 if (tLayer == NULL)
                 {
                     NSLog(@"unable to create TLS transport layer");
@@ -1497,7 +1463,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
                     
                     for (NSString *cert in trustedCertificates)
                     {
-                        if (TCS_ok != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
+                        if (EC_Normal != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
                         {
                             localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]] userInfo:nil] retain];
                             [localException raise];
@@ -1513,7 +1479,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 //                        do
 //                        {
 //                            app.checkValue(cmd.getValue(current));
-//                            if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
+//                            if (EC_Normal != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
 //                            {
 //                                DCMQRDB_ERROR("warning unable to load certificates from directory '" << current << "', ignoring");
 //                            }
@@ -1536,13 +1502,13 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
                     NSString *_privateKeyFile = [DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // generates the PEM file for the private key
                     NSString *_certificateFile = [DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // generates the PEM file for the certificate		
                     
-                    if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
+                    if (EC_Normal != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
                     {
                         localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil] retain];
                         [localException raise];
                     }
                     
-                    if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
+                    if (EC_Normal != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
                     {
                         localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil] retain];
                         [localException raise];
@@ -1555,15 +1521,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
                     }
                 }
                 
-#if OFFIS_DCMTK_VERSION_NUMBER < 364
-                if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
-                {
-                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)"
-                                                              reason:@"Unable to set selected cipher suites"
-                                                            userInfo:nil] retain];
-                    [localException raise];
-                }
-#else
+
     #if 0
 //                // determine TLS profile
 //                OFString profileName;
@@ -1579,14 +1537,13 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 //                // set TLS profile
 //                (void) tLayer->setTLSProfile(tlsProfile);
     #endif
-                if (TCS_ok != tLayer->activateCipherSuites())
+                if (EC_Normal != tLayer->activateCipherSuites())
                 {
                     localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)"
                                                               reason:@"Unable to set selected cipher suites"
                                                             userInfo:nil] retain];
                     [localException raise];
                 }
-#endif
                 
                 DcmCertificateVerification _certVerification;
                 

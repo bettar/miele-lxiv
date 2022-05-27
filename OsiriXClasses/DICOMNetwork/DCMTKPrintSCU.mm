@@ -23,8 +23,8 @@
 
 #import "DCMTKPrintSCU.h"
 
-#define INCLUDE_CCTYPE
-#define INCLUDE_CTIME
+#include <cctype>
+#include <ctime>
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/ofstd/ofstream.h"

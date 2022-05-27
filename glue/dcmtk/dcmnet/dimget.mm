@@ -22,11 +22,11 @@
 #import "DicomDatabase.h"
 #import "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#define INCLUDE_CSTDARG
-#define INCLUDE_CTIME
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cstdarg>
+#include <ctime>
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_FCNTL_H
@@ -117,8 +117,8 @@ DIMSE_getUser(
     if (requestIdentifiers == NULL)
         return DIMSE_NULLKEY;
 
-    bzero((char*)&req, sizeof(req));
-    bzero((char*)&rsp, sizeof(rsp));
+    memset((char*)&req, 0, sizeof(req));
+    memset((char*)&rsp, 0, sizeof(rsp));
     
     req.CommandField = DIMSE_C_GET_RQ;
     request->DataSetType = DIMSE_DATASET_PRESENT;
@@ -170,7 +170,7 @@ DIMSE_getUser(
             /* break; */ // never reached after continue statement
         }
 
-        bzero((char*)&rsp, sizeof(rsp));
+        memset((char*)&rsp, 0, sizeof(rsp));
 
         cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, &rsp, statusDetail);
         if (cond != EC_Normal) {
@@ -263,7 +263,7 @@ DIMSE_sendGetResponse(T_ASC_Association * assoc,
     T_DIMSE_Message rsp;
     unsigned int opts;
 
-    bzero((char*)&rsp, sizeof(rsp));
+    memset((char*)&rsp, 0, sizeof(rsp));
     rsp.CommandField = DIMSE_C_GET_RSP;
     rsp.msg.CGetRSP = *response;
     /* copy over stuff from request */
@@ -345,7 +345,7 @@ DIMSE_getProvider(
         }
         else
         {
-            bzero((char*)&rsp, sizeof(rsp));
+            memset((char*)&rsp, 0, sizeof(rsp));
             rsp.DimseStatus = STATUS_Pending;   /* assume */
             
             while (cond == EC_Normal && rsp.DimseStatus == STATUS_Pending && normal)

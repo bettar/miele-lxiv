@@ -476,7 +476,7 @@ static DCMNetServiceDelegate *_netServiceDelegate = nil;
 	struct sockaddr_in service;
 	const char	*host_name = [address UTF8String];
 	
-	bzero((char *) &service, sizeof(service));
+    memset((char *) &service, 0, sizeof(service));
 	service.sin_family = AF_INET;
 	
 	if (host_name)

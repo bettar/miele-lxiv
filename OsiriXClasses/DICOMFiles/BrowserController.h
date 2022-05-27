@@ -19,8 +19,10 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#define INCLUDE_CTIME
+
+#include <ctime>
 #include "dcmtk/dcmnet/dcompat.h"    /* compatibility routines */
+
 #import <Accelerate/Accelerate.h>
 
 // They need to match tags in MainMenu.xib TimeInterval

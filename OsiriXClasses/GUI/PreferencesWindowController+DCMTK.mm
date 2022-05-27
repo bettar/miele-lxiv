@@ -31,8 +31,8 @@
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/dcuid.h"
 
-#define INCLUDE_CSTDIO
-#define INCLUDE_CTIME
+#include <cstdio>
+#include <ctime>
 #include "dcmtk/ofstd/ofstdinc.h"
 
 @implementation PreferencesWindowController (DCMTK)

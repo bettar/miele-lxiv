@@ -255,7 +255,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		struct sockaddr_in service;
 		const char	*host_name = [[node valueForKey:@"Address"] UTF8String];
 		
-		bzero((char *) &service, sizeof(service));
+        memset((char *) &service, 0, sizeof(service));
 		service.sin_family = AF_INET;
 		
 		if (host_name)
@@ -375,7 +375,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	const char* inaddc = [[node valueForKey:@"Address"] UTF8String];
 	
 	struct sockaddr_in service;
-	bzero((char*)&service, sizeof(service));
+    memset((char*)&service, 0, sizeof(service));
 	
 	service.sin_family = AF_INET6;
 	

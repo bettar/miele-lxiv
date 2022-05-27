@@ -728,7 +728,7 @@ static bool isGrantedNotificationAccess = false;
         return NO;
     
     if (version.majorVersion == 12 &&
-        version.minorVersion > 3)
+        version.minorVersion > 4)
     {
         return NO;
     }
@@ -2881,7 +2881,7 @@ static BOOL initialized = NO;
                       [d valueForKey:@"LSMinimumSystemVersion"]);
                 NSLog(@"VTK %s", VTK_VERSION);
                 NSLog(@"ITK %s", ITK_VERSION);
-                NSLog(@"DCMTK %s %s", OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE);
+                NSLog(@"DCMTK %s %s", OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE); // OFFIS_DCMTK_VERSION_NUMBER
                 NSLog(@"JPEG-LS %s", DJLSDecoderRegistration::getLibraryVersionString().c_str());
                 NSLog(@"OpenJPEG %d.%d.%d", OPJ_VERSION_MAJOR, OPJ_VERSION_MINOR, OPJ_VERSION_BUILD);
                 // To read the OpenGL version we need a context. Too early here.

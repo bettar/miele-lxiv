@@ -296,9 +296,9 @@ void DcmQueryRetrieveGetOurContext::getNextImage(DcmQueryRetrieveDatabaseStatus 
     char subImgFileName[MAXPATHLEN + 1];    /* sub-operation image file */
     
     /* clear out strings */
-    bzero(subImgFileName, sizeof(subImgFileName));
-    bzero(subImgSOPClass, sizeof(subImgSOPClass));
-    bzero(subImgSOPInstance, sizeof(subImgSOPInstance));
+    memset(subImgFileName, 0, sizeof(subImgFileName));
+    memset(subImgSOPClass, 0, sizeof(subImgSOPClass));
+    memset(subImgSOPInstance, 0, sizeof(subImgSOPInstance));
     
     /* get DB response */
     dbcond = dbHandle.nextMoveResponse(subImgSOPClass, sizeof(subImgSOPClass),

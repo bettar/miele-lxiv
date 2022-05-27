@@ -419,9 +419,9 @@ extern short Altivec;
     unsigned char *dst = (unsigned char*) malloc( height * width * 4);
     unsigned char *dstPlan = (unsigned char*) malloc( height * width * 4);
     
-    dstFloatR = (float*) malloc( height * width * sizeof(float));		//bzero(dstFloatR, height * width * sizeof(float));
-    dstFloatG = (float*) malloc( height * width * sizeof(float));		//bzero(dstFloatG, height * width * sizeof(float));
-    dstFloatB = (float*) malloc( height * width * sizeof(float));		//bzero(dstFloatB, height * width * sizeof(float));
+    dstFloatR = (float*) malloc( height * width * sizeof(float));		//memset(dstFloatR, 0, height * width * sizeof(float));
+    dstFloatG = (float*) malloc( height * width * sizeof(float));		//memset(dstFloatG, 0, height * width * sizeof(float));
+    dstFloatB = (float*) malloc( height * width * sizeof(float));		//memset(dstFloatB, 0, height * width * sizeof(float));
     
     unsigned char *dstA = (unsigned char*) malloc( height * width);
     memset(dstA, 255, height * width);

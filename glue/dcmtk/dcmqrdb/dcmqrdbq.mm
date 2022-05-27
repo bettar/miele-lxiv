@@ -39,9 +39,9 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#define INCLUDE_CCTYPE
-#define INCLUDE_CSTDARG
-#define INCLUDE_CTIME
+#include <cctype>
+#include <cstdarg>
+#include <ctime>
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
@@ -311,7 +311,7 @@ static OFCondition DB_GetTagKeyAttr (DcmTagKey tag, DB_KEY_TYPE *keyAttr)
 #ifdef HANDLE_QUERY_IDENTIFIER
 static void DB_DuplicateElement (DB_SmallDcmElmt *src, DB_SmallDcmElmt *dst)
 {
-    bzero( (char*)dst, sizeof (DB_SmallDcmElmt));
+    memset( (char*)dst, 0, sizeof (DB_SmallDcmElmt));
     dst -> XTag = src -> XTag;
     dst -> ValueLength = src -> ValueLength;
 
@@ -319,7 +319,7 @@ static void DB_DuplicateElement (DB_SmallDcmElmt *src, DB_SmallDcmElmt *dst)
         dst -> PValueField = NULL;
     else {
         dst -> PValueField = (char *)malloc ((int) src -> ValueLength+1);
-        bzero(dst->PValueField, (size_t)(src->ValueLength+1));
+        memset(dst->PValueField, 0, (size_t)(src->ValueLength+1));
         if (dst->PValueField != NULL) {
             memcpy (dst -> PValueField,  src -> PValueField,
                 (size_t) src -> ValueLength);
@@ -1253,7 +1253,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 
     if (handle_)
     {
-        bzero( handle_, sizeof(DB_OsiriX_Handle));
+        memset( handle_, 0, sizeof(DB_OsiriX_Handle));
         handle_ -> callingAET = [NSString stringWithUTF8String: callingAET];
         handle_ -> findRequestList = NULL;
         handle_ -> findResponseList = NULL;

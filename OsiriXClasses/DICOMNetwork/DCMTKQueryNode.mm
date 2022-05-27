@@ -2067,11 +2067,8 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 #ifdef WITH_OPENSSL
         DcmTLSTransportLayer *tLayer = NULL;
 		NSString *uniqueStringID = [NSString stringWithFormat:@"%d.%d.%d", getpid(), inc++, (int) random()];
-  #if OFFIS_DCMTK_VERSION_NUMBER < 364
-        int keyFileFormat = SSL_FILETYPE_PEM;
-  #else
+
         DcmKeyFileFormat keyFileFormat = DCF_Filetype_PEM;
-  #endif
 #endif
 
 	//	if (_secureConnection)
@@ -2083,44 +2080,14 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			if (_cipherSuites)
 			{
 				const char *current = NULL;
-    #if OFFIS_DCMTK_VERSION_NUMBER < 364
-				const char *currentOpenSSL;
-				
-				opt_ciphersuites.clear();
-				
-				for (NSString *suite in _cipherSuites)
-				{
-					current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
-					
-					if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
-					{
-						NSLog(@"ciphersuite '%s' is unknown.", current);
-						NSLog(@"Known ciphersuites are:");
-						unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-						for (unsigned long cs=0; cs < numSuites; cs++)
-						{
-							NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
-						}
-						
-                        [[NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil] raise];
-					}
-					else
-					{
-						if (opt_ciphersuites.length() > 0)
-                            opt_ciphersuites += ":";
 
-                        opt_ciphersuites += currentOpenSSL;
-					}
-				} // for
-    #else
                 for (NSString *suite in _cipherSuites)
                 {
                     current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
                     
-                    if (TCS_ok != tLayer->addCipherSuite(current))
+                    if (EC_Normal != tLayer->addCipherSuite(current))
                         NSLog(@"ciphersuite '%s' is unknown.", current);// DCMTLS_EC_UnknownCiphersuite( current );
                 }
-    #endif
 			}
 #endif
 
@@ -2146,11 +2113,9 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			if (_secureConnection)
 			{
 				[DDKeychain generatePseudoRandomFileToPath:TLS_SEED_FILE];
-    #if OFFIS_DCMTK_VERSION_NUMBER < 364
-				tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, _readSeedFile);
-    #else
+
                 tLayer = new DcmTLSTransportLayer(NET_REQUESTOR, _readSeedFile, OFTrue);
-    #endif
+                
 				if (tLayer == NULL)
 				{
 					NSLog(@"unable to create TLS transport layer");
@@ -2168,7 +2133,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 					
 					for (NSString *cert in trustedCertificates)
 					{
-						if (TCS_ok != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
+						if (EC_Normal != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
 						{
 							[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)"
                                                      reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]]
@@ -2184,7 +2149,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 //				do
 //				{
 //					app.checkValue(cmd.getValue(current));
-//					if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
+//					if (EC_Normal != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
 //					{
 //                        DCMQRDB_ERROR("warning unable to load certificates from directory '" << current << "', ignoring");
 
@@ -2209,14 +2174,14 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 					NSString *_privateKeyFile = [DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // generates the PEM file for the private key
 					NSString *_certificateFile = [DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // generates the PEM file for the certificate
 					
-					if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
+					if (EC_Normal != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
 					{
 						[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)"
                                                  reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile]
                                                userInfo:nil] raise];
 					}
 					
-					if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
+					if (EC_Normal != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
 					{
 						[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)"
                                                  reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile]
@@ -2231,21 +2196,12 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 					}
 				}
 				
-    #if OFFIS_DCMTK_VERSION_NUMBER < 364
-				if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
-				{
-					[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)"
-                                             reason:@"Unable to set selected cipher suites"
-                                           userInfo:nil] raise];
-				}
-    #else
-                if (TCS_ok != tLayer->activateCipherSuites())
+                if (EC_Normal != tLayer->activateCipherSuites())
                 {
                     [[NSException exceptionWithName:@"DICOM Network Failure (TLS query)"
                                              reason:@"Unable to set selected cipher suites"
                                            userInfo:nil] raise];
                 }
-    #endif
 				
 				DcmCertificateVerification _certVerification;
 				
@@ -2760,7 +2716,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
     }
 	
     /* prepare C-FIND-RQ message */
-    bzero(OFreinterpret_cast(char*, &req), sizeof(req));
+    memset(OFreinterpret_cast(char*, &req), 0, sizeof(req));
     req.MessageID = msgId;
     OFStandard::strlcpy(req.AffectedSOPClassUID,
                         UID_FINDStudyRootQueryRetrieveInformationModel,

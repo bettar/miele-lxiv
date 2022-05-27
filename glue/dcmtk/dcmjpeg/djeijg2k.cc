@@ -40,9 +40,10 @@
 #include <sys/types.h>
 #include <sys/sysctl.h>
 
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSETJMP
-#define INCLUDE_CTIME
+#include <cstdio>
+#include <csetjmp>
+#include <ctime>
+
 #include "dcmtk/ofstd/ofstdinc.h"
 
 // These two macros are re-defined in the IJG header files.

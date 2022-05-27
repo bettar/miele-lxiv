@@ -32,13 +32,13 @@
 
 //#include "dcmtk/dcmnet/dcompat.h"
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#define INCLUDE_CSTDARG
-#define INCLUDE_CERRNO
-#define INCLUDE_CTIME
-#define INCLUDE_LIBC
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cstdarg>
+#include <cerrno>
+#include <ctime>
+#include <libc.h>
 #include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
@@ -203,11 +203,7 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 
 - (void)run
 {
-#if OFFIS_DCMTK_VERSION_NUMBER < 364
-    int keyFileFormat = SSL_FILETYPE_PEM;
-#else
     DcmKeyFileFormat keyFileFormat = DCF_Filetype_PEM;
-#endif
     
 	OFCondition cond = EC_Normal;
     OFCmdUnsignedInt overrideMaxPDU = 0;
@@ -377,14 +373,9 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 	
 	if ([[_params objectForKey:@"TLSEnabled"] boolValue])
 	{
-  #if OFFIS_DCMTK_VERSION_NUMBER < 364
-        tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_ACCEPTOR, // for server
-                                          [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding]);
-  #else
         tLayer = new DcmTLSTransportLayer(NET_ACCEPTOR, // for server
                                           [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding],
                                           OFTrue);
-  #endif
         
 		if (tLayer == NULL)
 		{
@@ -404,7 +395,7 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 			
 			for (NSString *cert in trustedCertificates)
 			{
-				if (TCS_ok != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
+				if (EC_Normal != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
 				{
 					NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load certificate file %@. You can turn OFF TLS Listener in Preferences->Listener.", [trustedCertificatesDir stringByAppendingPathComponent:cert]];
 					[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: errMessage waitUntilDone: NO];
@@ -421,7 +412,7 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 //				do
 //				{
 //					app.checkValue(cmd.getValue(current));
-//					if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
+//					if (EC_Normal != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
 //					{
 //                      DCMQRDB_ERROR("warning unable to load certificates from directory '" << current << "', ignoring");
 
@@ -445,14 +436,14 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 			NSString *_privateKeyFile = [DICOMTLS keyPathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"]; // generates the PEM file for the private key
 			NSString *_certificateFile = [DICOMTLS certificatePathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"]; // generates the PEM file for the certificate
 			
-			if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
+			if (EC_Normal != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
 			{
 				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load private TLS key from %@. You can turn OFF TLS Listener in Preferences->Listener.", _privateKeyFile];
 				[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: errMessage waitUntilDone: NO];
 				return;
 			}
 			
-			if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
+			if (EC_Normal != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
 			{
 				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load certificate from %@. You can turn OFF TLS Listener in Preferences->Listener.", _certificateFile];
 				[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: errMessage waitUntilDone: NO];
@@ -481,60 +472,17 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 		if (_cipherSuites)
 		{
 			const char *current = NULL;
-#if OFFIS_DCMTK_VERSION_NUMBER < 364
-			const char *currentOpenSSL;
-			
-#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
-            static OFString opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
-#else
-            static OFString opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
-#endif
-			opt_ciphersuites.clear();
-			
-			for (NSString *suite in _cipherSuites)
-			{
-				current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
-				
-				if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
-				{
-					NSLog(@"ciphersuite '%s' is unknown.", current);
-					NSLog(@"Known ciphersuites are:");
-					
-					unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-					for (unsigned long cs=0; cs < numSuites; cs++)
-					{
-						NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
-					}
-					
-					NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Ciphersuite '%s' is unknown. You can turn OFF TLS Listener in Preferences->Listener.", current];
-					[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: errMessage waitUntilDone: NO];
-					return;
-				}
-				else
-				{
-					if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
-					opt_ciphersuites += currentOpenSSL;
-				}
-			} // for
 
-			if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
-			{
-				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to set selected cipher suites. You can turn OFF TLS Listener in Preferences->Listener."];
-				[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: errMessage waitUntilDone: NO];
-				return;
-			}
-    #else
             for (NSString *suite in _cipherSuites)
             {
                 current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
 
-                if (TCS_ok != tLayer->addCipherSuite(current))
+                if (EC_Normal != tLayer->addCipherSuite(current))
                     return;// DCMTLS_EC_UnknownCiphersuite( current );
             }
             
-            if (TCS_ok != tLayer->activateCipherSuites())
+            if (EC_Normal != tLayer->activateCipherSuites())
                 return;
-    #endif
 		}
 
 		DcmCertificateVerification _certVerification;

@@ -11,18 +11,62 @@
 
 #include "options.h"
 #include "OPJSupport.h"
-#include "openjpeg-2.4/openjpeg.h"
+#include "openjpeg-2.5/openjpeg.h"
 #include "format_defs.h"
 #include "dcmtk/oflog/oflog.h"
 
 static const char* const THIS_FILE_NAME = strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__;
 
-//#define WITH_OPJ_BUFFER_STREAM
-#define WITH_OPJ_FILE_STREAM
-//#define OPJ_VERBOSE
-
 //OFLogger::Logger logger = OFLogger::Logger::getInstance(DCMTK_LOG4CPLUS_TEXT("OpenJPEG"));
 static OFLogger logger = OFLog::getLogger(DCMTK_LOG4CPLUS_TEXT("OpenJPEG"));
+
+//#define WITH_OPJ_BUFFER_STREAM_ENCODE
+#define WITH_OPJ_FILE_STREAM_ENCODE
+
+#define WITH_OPJ_FILE_STREAM_DECODE
+
+//#define OPJ_VERBOSE
+
+#ifdef WITH_OPJ_FILE_STREAM_DECODE
+#include <fstream>
+#include <cstdio>
+#endif
+
+opj_stream_t* opj_stream_create_buffer_stream(
+    OPJ_BYTE *buf,
+    OPJ_SIZE_T p_size,
+    OPJ_BOOL p_is_read_stream)
+{
+    //opj_stream_t* l_stream = 00;
+    
+    FILE *p_file;
+#ifdef WITH_OPJ_FILE_STREAM_DECODE
+    {
+  #if 0
+        char outfile[L_tmpnam];
+        std::tmpnam(outfile);
+        p_file = fopen(outfile, "wb+");
+  #else
+        p_file = std::tmpfile();
+  #endif
+        if (!p_file) {
+            perror(__FUNCTION__);
+            return NULL;
+        }
+
+        fwrite(buf, (size_t)p_size, 1, p_file);
+        rewind(p_file); //fseek(p_file, 0, SEEK_SET);
+    }
+#else
+    // https://github.com/NimbusKit/memorymapping/blob/master/src/fmemopen.c
+    p_file = fmemopen((void *)buf, (size_t)p_size, "rb"); //implemented with funopen()
+#endif
+    
+    if (!p_file)
+        return NULL;
+    
+    return opj_stream_create_stream(p_file, p_size, p_is_read_stream);
+}
 
 typedef struct decode_info
 {
@@ -763,7 +807,7 @@ OPJSupport::compressJPEG2K(  void *data,
     parameters.cp_disto_alloc = 1;
     parameters.tcp_rates[0] = rate;
     parameters.cod_format = JP2_CFMT;//J2K_CFMT; /* J2K format output */
-#ifdef WITH_OPJ_FILE_STREAM
+#ifdef WITH_OPJ_FILE_STREAM_ENCODE
     strcpy(parameters.outfile,tmpnam(NULL));
 #endif
     
@@ -818,12 +862,12 @@ OPJSupport::compressJPEG2K(  void *data,
     }
  
     // Create the stream
-#ifdef WITH_OPJ_BUFFER_STREAM
+#ifdef WITH_OPJ_BUFFER_STREAM_ENCODE
     OPJ_SIZE_T jp2DataSize = rows * columns;
     l_stream = opj_stream_create_buffer_stream((OPJ_BYTE *)data, jp2DataSize, OPJ_STREAM_WRITE);
 #endif
     
-#ifdef WITH_OPJ_FILE_STREAM
+#ifdef WITH_OPJ_FILE_STREAM_ENCODE
     l_stream = opj_stream_create_default_file_stream(parameters.outfile, OPJ_STREAM_WRITE);
 #endif
     if (!l_stream){
@@ -876,7 +920,7 @@ OPJSupport::compressJPEG2K(  void *data,
         break;
     } // while
     
-#ifdef WITH_OPJ_FILE_STREAM
+#ifdef WITH_OPJ_FILE_STREAM_ENCODE
     // Open the temp file and get the encoded data into 'to'
     // and the length into 'length'
     FILE *f = fopen(parameters.outfile, "rb");
