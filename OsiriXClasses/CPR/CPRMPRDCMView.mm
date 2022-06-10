@@ -1267,13 +1267,13 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         }
     }
     
-    NSArray *roiList = [viewer2D roiList: [windowController curMovieIndex]];
-    NSArray *pixList = [viewer2D pixList: [windowController curMovieIndex]];
+    NSArray *roiList2 = [viewer2D roiList: [windowController curMovieIndex]];
+    NSArray *pixList2 = [viewer2D pixList: [windowController curMovieIndex]];
     
-    for ( int i = 0; i < [roiList count]; i++)
+    for ( int i = 0; i < [roiList2 count]; i++)
     {
-        NSArray *pts = [roiList objectAtIndex: i];
-        DCMPix *p = [pixList objectAtIndex: i];
+        NSArray *pts = [roiList2 objectAtIndex: i];
+        DCMPix *p = [pixList2 objectAtIndex: i];
         
         for ( ROI *r in pts)
         {

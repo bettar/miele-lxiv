@@ -67,8 +67,8 @@ extern BOOL FULL32BITPIPELINE;
 - (NSDictionary*) _getAnnotationDictionary: (ViewerController*) viewController
 {
 	int					currentPos = [[viewController imageView] curImage];
-	NSMutableArray		*filelist = [viewController fileList];
-	NSManagedObject		*curImage = [filelist objectAtIndex: currentPos];
+	NSMutableArray		*filelist2 = [viewController fileList];
+	NSManagedObject		*curImage = [filelist2 objectAtIndex: currentPos];
 	NSManagedObject		*study = [curImage valueForKeyPath:@"series.study"];
 	NSMutableDictionary *infoDict = [NSMutableDictionary dictionary];
 
@@ -126,7 +126,7 @@ extern BOOL FULL32BITPIPELINE;
 	[infoDict setObject: helpString forKey: @"windowCenter"];
 	helpString = [NSString stringWithFormat: @"%.0f", ww];
 	[infoDict setObject: helpString forKey: @"windowWidth"];
-	NSString *imageNumString = [NSString stringWithFormat: @"%d / %d", currentPos + 1, (int) [filelist count]];
+	NSString *imageNumString = [NSString stringWithFormat: @"%d / %d", currentPos + 1, (int) [filelist2 count]];
 	[infoDict setObject: imageNumString forKey: @"imageNumber"];
 	//NSMutableArray *pixlist = [viewController pixList];
 	//float thickness = [[pixlist objectAtIndex: currentPos] sliceThickness];
@@ -153,14 +153,14 @@ extern BOOL FULL32BITPIPELINE;
                      withAnnotations: (BOOL) annotations
 {
     NSMutableArray *images = [NSMutableArray array];
-	NSArray *fileList = [currentViewer fileList];
+	NSArray *fileList2 = [currentViewer fileList];
 	
 	if ([[options valueForKey:@"mode"] intValue] == eCurrentImage)
 	{
 		int i;
 		
 		if ([[currentViewer imageView] flippedData])
-            i = (long) [fileList count] -1 -[[currentViewer imageView] curImage];
+            i = (long) [fileList2 count] -1 -[[currentViewer imageView] curImage];
 		else
             i = [[currentViewer imageView] curImage];
 		
@@ -177,17 +177,17 @@ extern BOOL FULL32BITPIPELINE;
 	}
 	else if ([[options valueForKey:@"mode"] intValue] == eKeyImages)
 	{
-		for (int i = 0; i < [fileList count]; i++)
+		for (int i = 0; i < [fileList2 count]; i++)
 		{
 			NSManagedObject *image;
             NSUInteger index = 0;
 			
 			if( [[currentViewer imageView] flippedData])
-                index = [fileList count] -1 -i;
+                index = [fileList2 count] -1 -i;
 			else
                 index = i;
             
-            image = [fileList objectAtIndex: index];
+            image = [fileList2 objectAtIndex: index];
 			
 			if (![[image valueForKey: @"isKeyImage"] boolValue] &&
                 [[[currentViewer roiList] objectAtIndex:index] count] == 0)

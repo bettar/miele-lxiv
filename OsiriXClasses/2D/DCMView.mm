@@ -2987,13 +2987,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             index < [dcmPixList count] &&
             [[dcmFilesList objectAtIndex: index] isDistant] == NO)
 		{
-            BOOL isScaledFit = NO;
+            BOOL isScaledFit2 = NO;
             if ([[self.imageObj.completePath lastPathComponent] isEqualToString:@"Empty.tif"])
                 noScale = YES;
             else
             {
                 if (curImage >= 0 && COPYSETTINGSINSERIES)
-                    isScaledFit = self.isScaledFit;
+                    isScaledFit2 = self.isScaledFit;
                 
                 noScale = NO;
             }
@@ -3055,7 +3055,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 				}
                 else
                 {
-                    if (isScaledFit)
+                    if (isScaledFit2)
                         [self scaleToFit];
                 }
                 
@@ -4299,7 +4299,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     int xPos = (int)mouseXPos;
                     int yPos = (int)mouseYPos;
                     
-                    if (curDCM.isRGB )
+                    if (curDCM.isRGB)
                     {
                         pixelMouseValueR = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +1];
                         pixelMouseValueG = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +2];
@@ -4674,7 +4674,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     
     return nil;
 }
-#
+
 - (ROI*) clickInROI: (NSPoint) tempPt
 {
     return [self clickInROI: tempPt testTextBox:NO];
@@ -5261,7 +5261,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 					{
 						for (ROI *r in curRoiList)
 						{
-							if ([r clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
+							if ([r clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES]) // TBC != ROI_sleep
 							{
 								selectedIdx = [curRoiList indexOfObject: r];
 								roiFound = YES;
@@ -6216,7 +6216,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			{
 				if ([r ROImode] == ROI_selected)
 				{
-					if ([r clickInTextBox]) textBoxMove = YES;
+					if ([r clickInTextBox])
+                        textBoxMove = YES;
 				}
 			}
 			// Move text Box

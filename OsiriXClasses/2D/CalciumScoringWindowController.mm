@@ -65,8 +65,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
                                                    @0.0F, @"volume",
                                                    nil]];
 				// get exisiting ROIs
-				NSArray *roiList = [_viewer roisWithName:name];
-				[_rois addObjectsFromArray:roiList];
+				NSArray *roiList2 = [_viewer roisWithName:name];
+				[_rois addObjectsFromArray:roiList2];
 		}
 		
 		[(NSMutableArray *)_vessels addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -530,8 +530,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		[itk release];
 	}
 	
-	NSArray *roiList = [_viewer roisWithName:name];
-	for(ROI *roi in roiList)
+	NSArray *roiList3 = [_viewer roisWithName:name];
+	for (ROI *roi in roiList3)
 	{
 		[roi setDisplayCalciumScoring:YES];
 		if (addROIs)

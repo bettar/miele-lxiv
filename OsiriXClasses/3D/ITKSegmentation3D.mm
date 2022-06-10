@@ -130,7 +130,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	long					x, y, z, zz, s = w*h;
 	float					*srcPtrZ, *srcPtrY, *srcPtrX;
 	unsigned char			*rPtr, *rPtrZ, *rPtrY, *rPtrX;
-	NSMutableArray			*roiList = [NSMutableArray array];
+	NSMutableArray			*roiList2 = [NSMutableArray array];
 
 	if( seed[ 0] <= 1) seed[ 0] = 2;	if( seed[ 0] >= w - 2)		seed[ 0] = w - 3;
 	if( seed[ 1] <= 1) seed[ 1] = 2;	if( seed[ 1] >= h - 2)		seed[ 1] = h - 3;
@@ -354,7 +354,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 											imageOrigin:NSMakePoint([[pixList objectAtIndex: i] originX], [[pixList objectAtIndex: i] originY])];
 			if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
 			{
-				[roiList addObject: [NSDictionary dictionaryWithObjectsAndKeys: theNewROI, @"roi", [pixList objectAtIndex: i], @"curPix", nil]];
+				[roiList2 addObject: [NSDictionary dictionaryWithObjectsAndKeys: theNewROI, @"roi", [pixList objectAtIndex: i], @"curPix", nil]];
 //				[[roiList objectAtIndex:i] addObject:theNewROI];		// roiList
 //				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];	
 //				[theNewROI setROIMode: ROI_selected];
@@ -368,7 +368,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		free( rPtr);
 	}
 	
-	return roiList;
+	return roiList2;
 }
 
 + (NSMutableArray*) extractContour:(unsigned char*) map

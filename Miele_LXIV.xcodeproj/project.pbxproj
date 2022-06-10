@@ -582,7 +582,7 @@
 		AB0CA46205BE159500F52729 /* ColorTransferView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB0CA46005BE159500F52729 /* ColorTransferView.mm */; };
 		AB0F20AD06460F7F0075465D /* Burner.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB0F20AB06460F7F0075465D /* Burner.icns */; };
 		AB10FA231129302A009EB238 /* PopUpArrows.png in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA221129302A009EB238 /* PopUpArrows.png */; };
-		AB10FA680B96C95500D74684 /* OsirixDownload.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA670B96C95500D74684 /* OsirixDownload.icns */; };
+		AB10FA680B96C95500D74684 /* miele-lxiv-download.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA670B96C95500D74684 /* miele-lxiv-download.icns */; };
 		AB10FAAE11293378009EB238 /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
 		AB10FAB011293378009EB238 /* N2Operators.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA211293378009EB238 /* N2Operators.mm */; };
 		AB10FAB211293378009EB238 /* N2MinMax.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA411293378009EB238 /* N2MinMax.mm */; };
@@ -2413,7 +2413,7 @@
 		AB0F20AB06460F7F0075465D /* Burner.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Burner.icns; sourceTree = "<group>"; };
 		AB0F3A2C1046BD2B004129DD /* MieleAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MieleAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB10FA221129302A009EB238 /* PopUpArrows.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = PopUpArrows.png; path = nitrogen/Resources/PopUpArrows.png; sourceTree = SOURCE_ROOT; };
-		AB10FA670B96C95500D74684 /* OsirixDownload.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = OsirixDownload.icns; sourceTree = "<group>"; };
+		AB10FA670B96C95500D74684 /* miele-lxiv-download.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "miele-lxiv-download.icns"; sourceTree = "<group>"; };
 		AB10FA9F11293378009EB238 /* N2Debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Debug.h; path = nitrogen/Sources/N2Debug.h; sourceTree = "<group>"; };
 		AB10FAA011293378009EB238 /* N2Debug.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2Debug.mm; path = nitrogen/Sources/N2Debug.mm; sourceTree = "<group>"; };
 		AB10FAA111293378009EB238 /* N2Operators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Operators.h; path = nitrogen/Sources/N2Operators.h; sourceTree = "<group>"; };
@@ -4944,7 +4944,7 @@
 				A9B23D1E15CFE917000E47C3 /* Open Polygon.pdf */,
 				CEE619EE0912C73000C31D78 /* OrientationWidget.tif */,
 				A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */,
-				AB10FA670B96C95500D74684 /* OsirixDownload.icns */,
+				AB10FA670B96C95500D74684 /* miele-lxiv-download.icns */,
 				A97B73970CB380EF00E5348D /* mieleplugin.icns */,
 				CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */,
 				A9B23D1215CFE8B3000E47C3 /* Oval.pdf */,
@@ -5866,7 +5866,7 @@
 				CEDCFB460B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
 				CEBD8E5F0B675A75008FD772 /* Propagate.tif in Resources */,
 				CEBD8EF80B6761CC008FD772 /* PropagateOn.tif in Resources */,
-				AB10FA680B96C95500D74684 /* OsirixDownload.icns in Resources */,
+				AB10FA680B96C95500D74684 /* miele-lxiv-download.icns in Resources */,
 				AB3674A90BE0CEB1003634E6 /* HUDButtonFillN.tif in Resources */,
 				AB3674AA0BE0CEB1003634E6 /* HUDButtonFillP.tif in Resources */,
 				43A02CA5219D889700E788B6 /* MainMenu.xib in Resources */,

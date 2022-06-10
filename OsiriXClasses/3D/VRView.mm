@@ -4500,7 +4500,7 @@ public:
 				WaitRendering	*waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Applying Bone Removal...", nil)];
 				[waiting showWindow:self];
 				
-				NSArray	*roiList = nil;
+				NSArray	*roiList2 = nil;
 				
 				NSLog( @"ITKSegmentation3D");
 				
@@ -4546,14 +4546,14 @@ public:
                                        nil]];
 					}
 					
-					roiList = d;
+					roiList2 = d;
 					
 					[itkSegmentation release];
 					
 					// Dilatation
 					
-					[[controller viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"dilate" radius: 10 sendNotification:NO];
-					[[controller viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"erode" radius: 6 sendNotification:NO];
+					[[controller viewer2D] applyMorphology: [roiList2 valueForKey:@"roi"] action:@"dilate" radius: 10 sendNotification:NO];
+					[[controller viewer2D] applyMorphology: [roiList2 valueForKey:@"roi"] action:@"erode" radius: 6 sendNotification:NO];
 					
 					BOOL addition = NO;
 					
@@ -4565,7 +4565,7 @@ public:
 					NSNumber *nsaddition = [NSNumber numberWithBool: addition];
 					NSMutableArray *roiToProceed = [NSMutableArray array];
 					
-					for (NSDictionary *rr in roiList)
+					for (NSDictionary *rr in roiList2)
 					{
 						[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:
                                                   [rr objectForKey:@"roi"], @"roi",

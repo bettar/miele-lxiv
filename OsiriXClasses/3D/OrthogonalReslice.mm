@@ -119,9 +119,10 @@
 	
 	float sliceInterval;
 	
-	if ([[pixList objectAtIndex:0] sliceInterval]==0)
+	if ([[pixList objectAtIndex:0] sliceInterval] == 0)
 	{
-		sliceInterval = [[pixList objectAtIndex: 1] sliceLocation]-[[pixList objectAtIndex:0] sliceLocation];
+		sliceInterval = [[pixList objectAtIndex:1] sliceLocation] -
+                        [[pixList objectAtIndex:0] sliceLocation];
 	}
 	else
 	{

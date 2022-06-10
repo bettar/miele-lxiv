@@ -178,7 +178,11 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	}
 }
 
-- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC
+- (id) initWithPixList:(NSMutableArray*) pix
+                      :(NSArray*) files
+                      :(NSData*) vData
+                      :(ViewerController*) vC
+                      :(ViewerController*) bC
 {
 	viewer = [vC retain];
 	

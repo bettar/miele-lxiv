@@ -400,12 +400,12 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	else if ([[m_ImageSelection selectedCell] tag] == eCurrentImage) no_of_images = 1;
 	else if ([[m_ImageSelection selectedCell] tag] == eKeyImages)
 	{
-		NSArray *fileList = [m_CurrentViewer fileList];
-        NSArray *roiList = [m_CurrentViewer roiList];
+		NSArray *fileList2 = [m_CurrentViewer fileList];
+        NSArray *roiList2 = [m_CurrentViewer roiList];
 		no_of_images = 0;
-		for (int i = 0; i < [fileList count]; i++)
+		for (int i = 0; i < [fileList2 count]; i++)
 		{
-			if ([[[fileList objectAtIndex: i] valueForKey: @"isKeyImage"] boolValue] || [[roiList objectAtIndex: i] count]) no_of_images++;
+			if ([[[fileList2 objectAtIndex: i] valueForKey: @"isKeyImage"] boolValue] || [[roiList2 objectAtIndex: i] count]) no_of_images++;
 		}
 	}
 	

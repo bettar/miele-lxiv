@@ -273,8 +273,8 @@
 		
 	for(int t=0; t<[[self viewer] maxMovieIndex]; t++)
 	{
-		NSMutableArray *pixList = [[self viewer] pixList:t];
-		for(int z=0; z<[pixList count]; z++)
+		NSMutableArray *pixList2 = [[self viewer] pixList:t];
+		for(int z=0; z<[pixList2 count]; z++)
 		{
 			[thumbnailsTextureArray addObject:[NSNumber numberWithInt:-1]];
 			[isTextureWLWWUpdated addObject:@NO];
@@ -289,8 +289,8 @@
 	if (!thumbnailsTextureArray || i >= [thumbnailsTextureArray count])
         [self initTextureArray];
 	
-	NSMutableArray *pixList = [[self viewer] pixList:t];
-	DCMPix *pix = [pixList objectAtIndex:z];
+	NSMutableArray *pixList3 = [[self viewer] pixList:t];
+	DCMPix *pix = [pixList3 objectAtIndex:z];
 	
 	if (![[isTextureWLWWUpdated objectAtIndex:i] boolValue])
         [pix changeWLWW:wl :ww];
@@ -489,11 +489,11 @@
             highlightLine = YES;
 		
 		BOOL highlightThumbnail = NO;
-		NSMutableArray *pixList = [[self viewer] pixList:t];
+		NSMutableArray *pixList4 = [[self viewer] pixList:t];
 		
 		BOOL flippedData = [[[self viewer] imageView] flippedData];
 		
-		for (int z=0; z<[pixList count]; z++)
+		for (int z=0; z<[pixList4 count]; z++)
 		{
 			highlightThumbnail = highlightLine || (z == [[self viewer] imageIndex]);
 			
@@ -518,12 +518,12 @@
 			
 			if (NSIntersectsRect(thumbRect, viewFrame))
 			{
-				int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
+				int correctedZ = (flippedData) ? [pixList4 count]-z-1 : z ;
 				
 				GLuint textureId = [self generateTextureForSlice:correctedZ movieIndex:t arrayIndex:i];
 				
 				{
-					DCMPix *pix = [pixList objectAtIndex:correctedZ];
+					DCMPix *pix = [pixList4 objectAtIndex:correctedZ];
 					
                     NSPoint texUpperLeft  = NSMakePoint(0, 0);
                     NSPoint texUpperRight = NSMakePoint(pix.pwidth, 0);
@@ -676,22 +676,22 @@
     #endif
 		for (int t=0; t<[[self viewer] maxMovieIndex]; t++)
 		{
-			NSMutableArray *pixList = [[self viewer] pixList:t];
-			NSMutableArray *roiList = [[self viewer] roiList:t];
+			NSMutableArray *pixList5 = [[self viewer] pixList:t];
+			NSMutableArray *roiList5 = [[self viewer] roiList:t];
 			
 			BOOL flippedData = [[[self viewer] imageView] flippedData];
 					
-			for (int z=0; z<[pixList count]; z++)
+			for (int z=0; z<[pixList5 count]; z++)
 			{
-				int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
-				DCMPix *pix = [pixList objectAtIndex:correctedZ];
+				int correctedZ = (flippedData) ? [pixList5 count]-z-1 : z ;
+				DCMPix *pix = [pixList5 objectAtIndex:correctedZ];
 				
 				upperLeft = NSMakePoint(z*scaledThumbnailWidth-viewBounds.origin.x, t*scaledThumbnailHeight+viewBounds.origin.y+viewSize.height-viewFrame.size.height);
 				
 				glScissor( upperLeft.x, viewSize.height - (upperLeft.y+scaledThumbnailHeight), scaledThumbnailWidth, scaledThumbnailHeight);
 				glEnable(GL_SCISSOR_TEST);
 		
-				NSArray *rois = [roiList objectAtIndex:correctedZ];
+				NSArray *rois = [roiList5 objectAtIndex:correctedZ];
 
     #ifdef WITH_OPENGL_32
                 //[overlayProgram Bind: __LINE__];

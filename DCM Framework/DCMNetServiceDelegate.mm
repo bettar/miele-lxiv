@@ -392,7 +392,7 @@ static DCMNetServiceDelegate *_netServiceDelegate = nil;
                                     alreadyHere = YES;
                                 else if ([[DCMNetServiceDelegate getIPAddress: [d valueForKey: @"Address"]] isEqualToString: [DCMNetServiceDelegate getIPAddress: [s valueForKey: @"Address"]]])
                                 {
-                                    // If one of these addresses is numeric -> keep the dns name
+                                    // If one of these addresses is numeric -> keep the DNS name
                                     if ([[NSCharacterSet decimalDigitCharacterSet] characterIsMember: [[d valueForKey: @"Address"] characterAtIndex: 0]])
                                     {
                                         [serversArray objectAtIndex: v];

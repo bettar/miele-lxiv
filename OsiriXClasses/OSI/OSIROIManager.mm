@@ -472,7 +472,7 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 
 - (NSArray *)_coalescedROIListForWatchedOsiriXROIs:(NSArray **)watchedROIs;
 {
-	NSArray *roiList;
+	NSArray *roiList2;
 	NSArray *roisToCoalesce;
 	NSMutableArray *coalescedROIs;
 	NSMutableSet *roiNames;
@@ -480,12 +480,12 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 	NSMutableDictionary *groupedNamesDict;
 	OSIROI *roi;
 
-	roiList = [self _ROIListForWatchedOsiriXROIs:watchedROIs];
+	roiList2 = [self _ROIListForWatchedOsiriXROIs:watchedROIs];
 	roiNames = [[NSMutableSet alloc] init];
 	coalescedROIs = [NSMutableArray array];
 	groupedNamesDict = [[NSMutableDictionary alloc] init];
 	
-	for (roi in roiList) {
+	for (roi in roiList2) {
 		if ([roiNames containsObject:[roi name]] == NO) {
 			[roiNames addObject:[roi name]];
 		}
@@ -495,7 +495,7 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 		[groupedNamesDict setObject:[NSMutableArray array] forKey:name];
 	}
 	
-	for (roi in roiList) {
+	for (roi in roiList2) {
 		[[groupedNamesDict objectForKey:[roi name]] addObject:roi];
 	}
 	

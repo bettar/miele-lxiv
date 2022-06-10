@@ -551,13 +551,13 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
             displayCobbAngle && // enabled from main menu
             self.displayCMOrPixels == NO)  // Why 'self' ?
         {
-            NSArray *roiList = curView.curRoiList;
+            NSArray *roiList2 = curView.curRoiList;
             
-            NSUInteger index = [roiList indexOfObject: self];
+            NSUInteger index = [roiList2 indexOfObject: self];
             if (index != NSNotFound)
             {
                 int no = 0;
-                for (ROI *r in roiList)
+                for (ROI *r in roiList2)
                 {
                     if ([r type] == tMeasure)
                     {
@@ -572,7 +572,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                     BOOL f = NO;
                     for (int i = 0; i < index; i++)
                     {
-                        ROI *r = [roiList objectAtIndex: i];
+                        ROI *r = [roiList2 objectAtIndex: i];
                         
                         if ([r type] == tMeasure)
                         {
@@ -827,16 +827,16 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                 self.displayCMOrPixels == NO &&
                 displayCobbAngleIntern)
             {
-                NSArray *roiList = curView.curRoiList;
+                NSArray *roiList3 = curView.curRoiList;
                 
-                NSUInteger index = [roiList indexOfObject: self];
+                NSUInteger index = [roiList3 indexOfObject: self];
                 if (index != NSNotFound)
                 {
                     //if (index > 0)
                     //{
                     for (int i = 0; i < index; i++)
                     {
-                        ROI *r = [roiList objectAtIndex: i];
+                        ROI *r = [roiList3 objectAtIndex: i];
                         
                         if ([r type] == tMeasure)
                         {
@@ -1332,9 +1332,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                 ROI *b = [[self copy] autorelease];
                 b.pix = blendedPix;
                 b.curView = curView.blendingView;
-                [b setOriginAndSpacing:blendedPix.pixelSpacingX
-                                      :blendedPix.pixelSpacingY
-                                      :[DCMPix originCorrectedAccordingToOrientation: blendedPix]];
+                [b setOriginAndSpacing: blendedPix.pixelSpacingX
+                                      : blendedPix.pixelSpacingY
+                                      : [DCMPix originCorrectedAccordingToOrientation: blendedPix]];
                 [b computeROIIfNedeed];
                 
                 NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
@@ -2248,7 +2248,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                 DCMPix *blendedPix = [[curView blendingView] curDCM];
                 ROI *b = [[self copy] autorelease];
                 b.pix = blendedPix;
-                [b setOriginAndSpacing: blendedPix.pixelSpacingX: blendedPix.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: blendedPix]];
+                [b setOriginAndSpacing: blendedPix.pixelSpacingX
+                                      : blendedPix.pixelSpacingY
+                                      : [DCMPix originCorrectedAccordingToOrientation: blendedPix]];
                 [b computeROIIfNedeed];
                 
                 NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
@@ -3364,9 +3366,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                 ROI *b = [[self copy] autorelease];
                 b.pix = blendedPix;
                 b.curView = curView.blendingView;
-                [b setOriginAndSpacing:blendedPix.pixelSpacingX
-                                      :blendedPix.pixelSpacingY
-                                      :[DCMPix originCorrectedAccordingToOrientation: blendedPix]];
+                [b setOriginAndSpacing: blendedPix.pixelSpacingX
+                                      : blendedPix.pixelSpacingY
+                                      : [DCMPix originCorrectedAccordingToOrientation: blendedPix]];
                 [b computeROIIfNedeed];
                 
                 NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
@@ -3487,15 +3489,15 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
                         for (int i = 0; i < v.maxMovieIndex; i++)
                         {
                             // Aliases & 3D ROI : the same ROI object can be contained in several images !
-                            for (NSMutableArray *roiList in [v roiList: i])
-                                [roiList removeObject: r];
+                            for (NSMutableArray *roiList4 in [v roiList: i])
+                                [roiList4 removeObject: r];
                         }
                     }
                     else
                     {
                         // Aliases & 3D ROI : the same ROI object can be contained in several images !
-                        for (NSMutableArray *roiList in r.curView.dcmRoiList)
-                            [roiList removeObject: r];
+                        for (NSMutableArray *roiList5 in r.curView.dcmRoiList)
+                            [roiList5 removeObject: r];
                     }
                 }
             }
@@ -4774,7 +4776,7 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
 
 - (void) setOriginAndSpacing :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin :(BOOL) sendNotification :(BOOL) inImageCheck
 {
-	BOOL	change = NO;
+	BOOL change = NO;
 	
 	if (ipixelSpacingx == 0) return;
 	if (ipixelSpacingy == 0) return;
@@ -4881,8 +4883,7 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
 				if (inImage == NO)
 					[self roiMove: NSMakePoint( -offset.x, -offset.y) :sendNotification];
 			}
-			
-			
+
 			rect.origin.x *= (pixelSpacingX/ipixelSpacingx);
 			rect.origin.y *= (pixelSpacingY/ipixelSpacingy);
 			rect.size.width *= (pixelSpacingX/ipixelSpacingx);
@@ -6164,7 +6165,9 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
                         
                         if (distance*scale < rect.size.width)
                         {
+#ifndef NDEBUG
                             NSLog(@"ROI.m:%i %p B", __LINE__, self);
+#endif
                             imode = ROI_selected;
                             break;
                         }
@@ -6517,7 +6520,9 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
                                                                 :[[curView curDCM] pixelRatio]])
                     {
                         PointUnderMouse = i;
+#if 0 //ndef NDEBUG
                         NSLog(@"%s %d, PointUnderMouse index %d", __FUNCTION__, __LINE__, i);
+#endif
                         break;
                     }
                 }
@@ -6675,7 +6680,9 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 		}
 		else	// Click on same point as last object -> STOP drawing
 		{
+#ifndef NDEBUG
             NSLog(@"%s %d, STOP drawing", __FUNCTION__, __LINE__);
+#endif
 			self.ROImode = ROI_selected;
 		}
 		
@@ -8338,7 +8345,7 @@ void gl_round_box(int mode,
 		}
 	}
 	
-	for (int i = 0; i < [rectArray count]; i++ )
+	for (int i = 0; i < [rectArray count]; i++)
 	{
 		NSRect curRect = [[rectArray objectAtIndex: i] rectValue];
 		
@@ -8377,8 +8384,8 @@ void gl_round_box(int mode,
                 i = -1;
 			
 			*movedOut = YES;
-		}
-	}
+		} // if intersect
+	} // for
 	
 	if (*movedOut)
 		dRect.origin.x += 5;
@@ -9343,9 +9350,9 @@ void gl_round_box(int mode,
                                             ROI *b = [[self copy] autorelease];
                                             b.pix = blendedPix;
                                             b.curView = curView.blendingView;
-                                            [b setOriginAndSpacing:blendedPix.pixelSpacingX
-                                                                  :blendedPix.pixelSpacingY
-                                                                  :[DCMPix originCorrectedAccordingToOrientation: blendedPix]];
+                                            [b setOriginAndSpacing: blendedPix.pixelSpacingX
+                                                                  : blendedPix.pixelSpacingY
+                                                                  : [DCMPix originCorrectedAccordingToOrientation: blendedPix]];
                                             [b computeROIIfNedeed];
                                             
                                             NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
@@ -10620,7 +10627,9 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
             ROI *b = [[self copy] autorelease];
             b.pix = blendedPix;
             b.curView = curView.blendingView;
-            [b setOriginAndSpacing: blendedPix.pixelSpacingX: blendedPix.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: blendedPix]];
+            [b setOriginAndSpacing: blendedPix.pixelSpacingX
+                                  : blendedPix.pixelSpacingY
+                                  : [DCMPix originCorrectedAccordingToOrientation: blendedPix]];
             [b computeROIIfNedeed];
             
             s = [s stringByAppendingFormat: @"\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f", b.mean, b.min, b.max, b.total, b.dev];

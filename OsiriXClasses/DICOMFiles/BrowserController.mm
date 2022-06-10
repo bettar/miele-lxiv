@@ -5153,7 +5153,7 @@ static NSConditionLock *threadLock = nil;
             }
             else
             {
-                /**********
+                /* *********
                  post notification of new selected item. Can be used by plugins to update RIS connection
                  **********/
                 DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
@@ -9915,7 +9915,12 @@ static BOOL withReset = NO;
                         
                         @synchronized( previewPixThumbnails)
                         {
-                            [imageView setPixels:previewPix files:[self imagesArray: aFile preferredObject: oAny] rois:nil firstImage:[[oMatrix selectedCell] tag] level:'i' reset:YES];
+                            [imageView setPixels:previewPix
+                                           files:[self imagesArray: aFile preferredObject: oAny]
+                                            rois:nil
+                                      firstImage:[[oMatrix selectedCell] tag]
+                                           level:'i'
+                                           reset:YES];
                         }
                         
                         [imageView setStringID:@"previewDatabase"];

@@ -1394,28 +1394,28 @@ return YES;
     
     for (int m = 0; m < viewerController.maxMovieIndex; m++)
     {
-        DCMPix *curPix = nil;
+        DCMPix *curPix2 = nil;
         BOOL OK = YES;
         
-        NSArray *pixList = [viewerController pixList: m];
+        NSArray *pixList2 = [viewerController pixList: m];
         
-        curPix = [pixList objectAtIndex: pixList.count/2];   //pixList.count/2];
+        curPix2 = [pixList2 objectAtIndex: pixList2.count/2];   //pixList2.count/2];
         
         long imageSize, size;
         
         @try
         {
-            imageSize = [curPix pwidth] * [curPix pheight];
-            size = sizeof(float) * [pixList count]/2 * imageSize;
+            imageSize = [curPix2 pwidth] * [curPix2 pheight];
+            size = sizeof(float) * [pixList2 count]/2 * imageSize;
             
             double orientation[ 9];
             double origin[ 3];
             double matrix[ 12];
             
-            [curPix orientationDouble: orientation];
-            origin[ 0] = [curPix originX]; origin[ 1] = [curPix originY]; origin[ 2] = [curPix originZ];
+            [curPix2 orientationDouble: orientation];
+            origin[ 0] = [curPix2 originX]; origin[ 1] = [curPix2 originY]; origin[ 2] = [curPix2 originZ];
             
-            for (DCMPix *p in pixList)
+            for (DCMPix *p in pixList2)
             {
                 double o[ 9];
                 double xyz[ 3];
@@ -1444,9 +1444,9 @@ return YES;
             
             if (OK)
             {
-                for (DCMPix *p in pixList)
+                for (DCMPix *p in pixList2)
                 {
-                    if (p != curPix)
+                    if (p != curPix2)
                     {
                         double o[ 9];
                         double xyz[ 3];
@@ -1457,7 +1457,7 @@ return YES;
                         double vectorModel[ 9], vectorSensor[ 9];
                         
                         [p orientationDouble: vectorSensor];
-                        [curPix orientationDouble: vectorModel];
+                        [curPix2 orientationDouble: vectorModel];
                         
                         double length;
                         
@@ -1503,7 +1503,7 @@ return YES;
                         
                         long size = 0;
                         
-                        float *resultBuff = [ITKTransform reorient2Dimage: matrix firstObject: curPix firstObjectOriginal: p length: &size];
+                        float *resultBuff = [ITKTransform reorient2Dimage: matrix firstObject: curPix2 firstObjectOriginal: p length: &size];
                         if (resultBuff)
                         {
                             if (size == p.pheight*p.pwidth*sizeof( float))
@@ -1541,7 +1541,7 @@ return YES;
                     [viewerController waitIncrementBy:w :1];
                 }
                 
-                for (DCMPix *p in pixList)
+                for (DCMPix *p in pixList2)
                     [p setSliceInterval: 0];
             }
         }
@@ -8867,9 +8867,9 @@ static int avoidReentryRefreshDatabase = 0;
 	if (curMovieIndex != 0)
 		[self setMovieIndex: 0];
 	
-	BOOL		sameSeries = NO;
-	long		i, previousColumns = [imageView columns], previousRows = [imageView rows];
-	int			previousFusion = [popFusion selectedTag], previousFusionActivated = [activatedFusion state];
+	BOOL sameSeries = NO;
+	long i, previousColumns = [imageView columns], previousRows = [imageView rows];
+	int previousFusion = [popFusion selectedTag], previousFusionActivated = [activatedFusion state];
 		
 	NSString	*previousPatientUID = [imageView.studyObj.patientUID retain];
 	NSString	*previousStudyInstanceUID = [imageView.studyObj.studyInstanceUID retain];
@@ -16500,7 +16500,7 @@ long				x, y;
 	return selectedRois;
 }
 
-- (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
+- (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID
 {
 	if (groupID==0.0)
         return;
@@ -16515,7 +16515,7 @@ long				x, y;
             [loopItem setROIMode:(ROI_mode)mode];
 }
 
-- (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
+- (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther
 {
 	if (deselectOther)
 	{
@@ -18425,7 +18425,7 @@ long				x, y;
 	if (i < 0)
         i = 0;
     
-	if (i>= maxMovieIndex)
+	if (i >= maxMovieIndex)
         i = maxMovieIndex-1;
 	
 	return pixList[ i];

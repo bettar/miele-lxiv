@@ -151,7 +151,8 @@ typedef NS_ENUM(NSInteger, BlendingMode2DType) {
 	
     NSMutableArray  *dcmPixList;
     NSArray			*dcmFilesList;
-	NSMutableArray  *dcmRoiList, *curRoiList;
+    NSMutableArray  *dcmRoiList; // array of arrays of ROI
+    NSMutableArray  *curRoiList; // array of ROI
     DCMPix			*curDCM;
 	DCMExportPlugin	*dcmExportPlugin;
 	

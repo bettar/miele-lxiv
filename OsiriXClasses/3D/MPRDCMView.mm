@@ -122,7 +122,12 @@ unsigned int minimumStep;
 	return NO;
 }
 
-- (void) setDCMPixList:(NSMutableArray*)pixList filesList:(NSArray*)files roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
+- (void) setDCMPixList:(NSMutableArray*)pixList
+             filesList:(NSArray*)files
+               roiList:(NSMutableArray*)rois
+            firstImage:(short)firstImage
+                  type:(char)type
+                 reset:(BOOL)reset;
 {
 	[super setPixels:pixList files:files rois:rois firstImage:firstImage level:type reset:reset];
 
@@ -130,7 +135,6 @@ unsigned int minimumStep;
 											selector: @selector(removeROI:)
 											name: OsirixRemoveROINotification
 											object: nil];
-
 
 	self.rotation = 0;
 	
@@ -1373,13 +1377,13 @@ unsigned int minimumStep;
         }
     }
     
-    NSArray *roiList = [viewer2D roiList: [windowController curMovieIndex]];
-    NSArray *pixList = [viewer2D pixList: [windowController curMovieIndex]];
+    NSArray *roiList3 = [viewer2D roiList: [windowController curMovieIndex]];
+    NSArray *pixList3 = [viewer2D pixList: [windowController curMovieIndex]];
     
-    for (int i = 0; i < [roiList count]; i++)
+    for (int i = 0; i < [roiList3 count]; i++)
     {
-        NSArray *pts = [roiList objectAtIndex: i];
-        DCMPix *p = [pixList objectAtIndex: i];
+        NSArray *pts = [roiList3 objectAtIndex: i];
+        DCMPix *p = [pixList3 objectAtIndex: i];
         
         for( ROI *r in pts)
         {

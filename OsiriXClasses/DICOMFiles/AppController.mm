@@ -6054,9 +6054,9 @@ static NSMutableDictionary* _receivingDict = nil;
 -(void)_receivingIconUpdate
 {
 	if (!_receivingDict.count)
-		[NSApp setApplicationIconImage:[NSImage imageNamed:@"miele-lxiv.icns"]];
+		[NSApp setApplicationIconImage:[NSImage imageNamed: @"miele-lxiv.icns"]];
 	else
-        [NSApp setApplicationIconImage:[NSImage imageNamed:@"OsirixDownload.icns"]];
+        [NSApp setApplicationIconImage:[NSImage imageNamed: @"miele-lxiv-download.icns"]];
 }
 
 -(void)_receivingIconSet:(BOOL)flag {
