@@ -9844,17 +9844,17 @@ void gl_round_box(int mode,
                 [array setObject: [NSNumber numberWithFloat:rmax] forKey:@"Max"];
                 
                 float length = 0;
-                long i;
+                long ii;
                 NSMutableArray* ptsTemp = self.points;
                 if ([self.points count] > 0)
                 {
-                    for (i = 0; i < (long)[ptsTemp count]-1; i++ )
-                        length += [self Length:[[ptsTemp objectAtIndex:i] point]
-                                              :[[ptsTemp objectAtIndex:i+1] point]];
+                    for (ii = 0; ii < (long)[ptsTemp count]-1; ii++ )
+                        length += [self Length:[[ptsTemp objectAtIndex:ii] point]
+                                              :[[ptsTemp objectAtIndex:ii+1] point]];
                 }
                 
                 if (type != tOpenPolygon && [ptsTemp count] > 0)
-                    length += [self Length:[[ptsTemp objectAtIndex:i] point]
+                    length += [self Length:[[ptsTemp objectAtIndex:ii] point]
                                           :[[ptsTemp objectAtIndex:0] point]];
                 
                 [array setObject: [NSNumber numberWithFloat:length] forKey:@"Length"];

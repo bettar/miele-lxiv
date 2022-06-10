@@ -1462,43 +1462,43 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 			bottomTransverseView.curvedPath = curvedPath;
 		}
 		
-        //		if ([[[u lastObject] objectForKey: @"type"] isEqualToString:@"roi"])
-        //		{
-        //			NSMutableArray	*rois = [[u lastObject] objectForKey: @"rois"];
-        //			
-        //			int i, x, z;
-        //			
-        //			for( i = 0; i < maxMovieIndex+1; i++)
-        //			{
-        //				for( x = 0; x < [roiList[ i] count] ; x++)
-        //				{
-        //					for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
-        //						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: nil];
-        //						
-        //					[[roiList[ i] objectAtIndex: x] removeAllObjects];
-        //				}
-        //			}
-        //			
-        //			for( i = 0; i < maxMovieIndex+1; i++)
-        //			{
-        //				NSArray *r = [rois objectAtIndex: i];
-        //				
-        //				for( x = 0; x < [roiList[ i] count] ; x++)
-        //				{
-        //					[[roiList[ i] objectAtIndex: x] addObjectsFromArray: [r objectAtIndex: x]];
-        //					
-        //					for( ROI *r in [roiList[ i] objectAtIndex: x])
-        //					{
-        //						[imageView roiSet: r];
-        //						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: r userInfo: nil];
-        //					}
-        //				}
-        //			}
-        //			
-        //			[imageView setIndex: [imageView curImage]];
-        //			
-        //			NSLog( @"roi undo");
-        //		}
+//		if ([[[u lastObject] objectForKey: @"type"] isEqualToString:@"roi"])
+//		{
+//			NSMutableArray	*rois = [[u lastObject] objectForKey: @"rois"];
+//
+//			int i, x, z;
+//
+//			for( i = 0; i < maxMovieIndex+1; i++)
+//			{
+//				for( x = 0; x < [roiList[ i] count] ; x++)
+//				{
+//					for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
+//						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: nil];
+//
+//					[[roiList[ i] objectAtIndex: x] removeAllObjects];
+//				}
+//			}
+//
+//			for( i = 0; i < maxMovieIndex+1; i++)
+//			{
+//				NSArray *r = [rois objectAtIndex: i];
+//
+//				for( x = 0; x < [roiList[ i] count] ; x++)
+//				{
+//					[[roiList[ i] objectAtIndex: x] addObjectsFromArray: [r objectAtIndex: x]];
+//
+//					for( ROI *r in [roiList[ i] objectAtIndex: x])
+//					{
+//						[imageView roiSet: r];
+//						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: r userInfo: nil];
+//					}
+//				}
+//			}
+//
+//			[imageView setIndex: [imageView curImage]];
+//
+//			NSLog( @"roi undo");
+//		}
 		
 		[u removeLastObject];
 	}
@@ -1897,26 +1897,25 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	{
 		NSDictionary *aCLUT;
 		NSArray *array;
-		long i;
 		unsigned char red[256], green[256], blue[256];
 		
 		aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: str];
 		if (aCLUT)
 		{
 			array = [aCLUT objectForKey:@"Red"];
-			for( i = 0; i < 256; i++)
+			for (long i = 0; i < 256; i++)
 			{
 				red[i] = [[array objectAtIndex: i] longValue];
 			}
 			
 			array = [aCLUT objectForKey:@"Green"];
-			for( i = 0; i < 256; i++)
+			for (long i = 0; i < 256; i++)
 			{
 				green[i] = [[array objectAtIndex: i] longValue];
 			}
 			
 			array = [aCLUT objectForKey:@"Blue"];
-			for( i = 0; i < 256; i++)
+			for (long i = 0; i < 256; i++)
 			{
 				blue[i] = [[array objectAtIndex: i] longValue];
 			}

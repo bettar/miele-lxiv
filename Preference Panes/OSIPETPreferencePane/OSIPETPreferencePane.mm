@@ -66,16 +66,15 @@
 
 - (void) buildCLUTMenu :(NSPopUpButton*) clutPopup
 {
-    short							i;
-    NSArray							*keys;
-    NSArray							*sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
 
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
     [[clutPopup menu] removeAllItems];
 		
-    for( i = 0; i < [sortedKeys count]; i++)
+    for (short i = 0; i < [sortedKeys count]; i++)
     {
         [[clutPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:0L keyEquivalent:@""];
     }

@@ -214,10 +214,8 @@
 }
 
 - (void) setCurrentCLUT :( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
-{
-	long i;
-	
-	for( i = 0; i < 256; i++)
+{	
+	for (long i = 0; i < 256; i++)
 	{
 		red[ i] = r[i];
 		green[ i] = g[i];

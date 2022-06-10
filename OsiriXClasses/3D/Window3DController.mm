@@ -477,19 +477,18 @@ static float oldsetww, oldsetwl;
     
     if ([sender tag])   //User clicks OK Button
     {
-		NSMutableDictionary *clutDict		= [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] mutableCopy] autorelease];
-		NSMutableDictionary *aCLUTFilter	= [NSMutableDictionary dictionary];
-		unsigned char		red[256], green[256], blue[256];
-		long				i;
+		NSMutableDictionary *clutDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] mutableCopy] autorelease];
+		NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
+		unsigned char red[256], green[256], blue[256];
 		
 		[clutView ConvertCLUT: red: green: blue];
 		
 		NSMutableArray		*rArray = [NSMutableArray array];
 		NSMutableArray		*gArray = [NSMutableArray array];
 		NSMutableArray		*bArray = [NSMutableArray array];
-		for( i = 0; i < 256; i++) [rArray addObject: [NSNumber numberWithLong: red[ i]]];
-		for( i = 0; i < 256; i++) [gArray addObject: [NSNumber numberWithLong: green[ i]]];
-		for( i = 0; i < 256; i++) [bArray addObject: [NSNumber numberWithLong: blue[ i]]];
+		for (long i = 0; i < 256; i++) [rArray addObject: [NSNumber numberWithLong: red[ i]]];
+		for (long i = 0; i < 256; i++) [gArray addObject: [NSNumber numberWithLong: green[ i]]];
+		for (long i = 0; i < 256; i++) [bArray addObject: [NSNumber numberWithLong: blue[ i]]];
 		
 		[aCLUTFilter setObject:rArray forKey:@"Red"];
 		[aCLUTFilter setObject:gArray forKey:@"Green"];
@@ -610,9 +609,8 @@ static float oldsetww, oldsetwl;
 - (void) UpdateCLUTMenu: (NSNotification*) note
 {
     //*** Build the menu
-    short							i;
-    NSArray							*keys;
-    NSArray							*sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
 
     // Presets VIEWER Menu
 	
@@ -625,10 +623,11 @@ static float oldsetww, oldsetwl;
     [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"No CLUT", nil) action:@selector (ApplyCLUT:) keyEquivalent:@""];
 	[[clutPopup menu] addItem: [NSMenuItem separatorItem]];
 	
-    for( i = 0; i < [sortedKeys count]; i++)
+    for (short i = 0; i < [sortedKeys count]; i++)
     {
         [[clutPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyCLUT:) keyEquivalent:@""];
     }
+
     [[clutPopup menu] addItem: [NSMenuItem separatorItem]];
     [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"8-bit CLUT Editor", nil) action:@selector (AddCLUT:) keyEquivalent:@""];
 
@@ -664,10 +663,9 @@ static float oldsetww, oldsetwl;
 	}
 	else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSEventModifierFlagOption)
     {
-		NSDictionary		*aOpacity, *aCLUT;
-		NSArray				*array;
-		long				i;
-		unsigned char		red[256], green[256], blue[256];
+		NSDictionary *aOpacity, *aCLUT;
+		NSArray *array;
+		unsigned char red[256], green[256], blue[256];
 		
 		[self ApplyOpacityString: [sender title]];
 		
@@ -678,19 +676,19 @@ static float oldsetww, oldsetwl;
 			if (aCLUT)
 			{
 				array = [aCLUT objectForKey:@"Red"];
-				for( i = 0; i < 256; i++)
+				for (long i = 0; i < 256; i++)
 				{
 					red[i] = [[array objectAtIndex: i] longValue];
 				}
 				
 				array = [aCLUT objectForKey:@"Green"];
-				for( i = 0; i < 256; i++)
+				for (long i = 0; i < 256; i++)
 				{
 					green[i] = [[array objectAtIndex: i] longValue];
 				}
 				
 				array = [aCLUT objectForKey:@"Blue"];
-				for( i = 0; i < 256; i++)
+				for (long i = 0; i < 256; i++)
 				{
 					blue[i] = [[array objectAtIndex: i] longValue];
 				}

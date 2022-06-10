@@ -144,7 +144,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
     //*** Build the menu
-    NSUInteger i;
     NSArray *keys;
     NSArray *sortedKeys;
 
@@ -157,7 +156,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
     [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
 	[[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
-    for (i = 0; i < [sortedKeys count]; i++)
+    for (NSUInteger i = 0; i < [sortedKeys count]; i++)
     {
         [[OpacityPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
     }
@@ -246,9 +245,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
     //*** Build the menu
-    NSUInteger   i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
     
     keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
@@ -259,7 +257,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
 	[[convolutionMenu menu] addItemWithTitle: NSLocalizedString( @"Apply a filter", nil) action:nil keyEquivalent:@""];
 	
-    for (i = 0; i < [sortedKeys count]; i++)
+    for (NSUInteger i = 0; i < [sortedKeys count]; i++)
     {
         [[convolutionMenu menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (applyConvolution:) keyEquivalent:@""];
     }
@@ -279,12 +277,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) updateVolumeData: (NSNotification*) note
 {
-	long i;
-	
 	if ([[note userInfo] objectForKey: @"sender"] == view)
 		return;
 	
-	for (i = 0; i < maxMovieIndex; i++)
+	for (long i = 0; i < maxMovieIndex; i++)
 	{
 		if ([note object] == pixList[ i])
 		{
@@ -507,7 +503,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
                       style:(NSString*) m
                        mode:(NSString*) renderingMode
 {
-    unsigned long i;
 	BOOL testInterval = YES;
 	DCMPix *firstObject = [pix objectAtIndex: 0];
 
@@ -577,7 +572,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         style = [m retain];
         _renderingMode = [renderingMode retain];
         
-        for (i = 0; i < UNDO_DATA_SIZE; i++)
+        for (unsigned long i = 0; i < UNDO_DATA_SIZE; i++)
             undodata[ i] = nil;
         
         curMovieIndex = 0;
@@ -618,7 +613,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
         BOOL invalidSize = false;
         // CHECK IMAGE SIZE
-        for (i =0; i < [pixList[0] count]; i++)
+        for (unsigned long i =0; i < [pixList[0] count]; i++)
         {
             if ([firstObject pwidth] != [[pixList[0] objectAtIndex:i] pwidth])
                 invalidSize = true;
@@ -1624,28 +1619,26 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
 	else
 	{
-		NSDictionary		*aCLUT;
-		NSArray				*array;
-		long				i;
-		unsigned char		red[256], green[256], blue[256];
+		NSArray *array;
+		unsigned char red[256], green[256], blue[256];
 		
-		aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: str];
+        NSDictionary *aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: str];
 		if (aCLUT)
 		{
 			array = [aCLUT objectForKey:@"Red"];
-			for (i = 0; i < 256; i++)
+			for (long i = 0; i < 256; i++)
 			{
 				red[i] = [[array objectAtIndex: i] longValue];
 			}
 			
 			array = [aCLUT objectForKey:@"Green"];
-			for (i = 0; i < 256; i++)
+			for (long i = 0; i < 256; i++)
 			{
 				green[i] = [[array objectAtIndex: i] longValue];
 			}
 			
 			array = [aCLUT objectForKey:@"Blue"];
-			for (i = 0; i < 256; i++)
+			for (long i = 0; i < 256; i++)
 			{
 				blue[i] = [[array objectAtIndex: i] longValue];
 			}

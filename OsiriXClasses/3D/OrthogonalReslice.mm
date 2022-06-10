@@ -202,7 +202,6 @@
 
 - (void) subReslice:(NSNumber*) posNumber
 {
-    int x, y;
     //int stack;
     int pos = [posNumber intValue];
 	int threads = [[NSProcessInfo processInfo] processorCount];
@@ -228,7 +227,7 @@
 			{
 				float *srcP, *dstP, *curPixfImage = [curPix fImage];
 				
-				for (y = from; y < to; y++)
+				for (int y = from; y < to; y++)
 				{
 					srcP = [[originalDCMPixList objectAtIndex: y] fImage] + i * newX;
 					dstP = curPixfImage + (newY-y-1) * newX;
@@ -240,7 +239,7 @@
                 float *srcP;
                 float *curPixfImage = [curPix fImage];
 				
-				for (y = from; y < to; y++)
+				for (int y = from; y < to; y++)
 				{
 					srcP = [[originalDCMPixList objectAtIndex: y] fImage] + i * [firstPix pwidth];
 					memcpy(	curPixfImage + y * newX, srcP, newX *sizeof(float));
@@ -268,7 +267,7 @@
 					DCMPix *srcPix = [originalDCMPixList objectAtIndex: 0];
 					long w = [srcPix pheight];
 					
-					for (y = from; y < to; y++)
+					for (int y = from; y < to; y++)
 					{
 						float *srcP = Ycache + y*newTotal*newX + i * w;
 						float *dstP = curPixfImage + (newY-y-1) * newX;
@@ -279,7 +278,7 @@
 				{
                     float *curPixfImage = [curPix fImage];
 					
-					for (y = from; y < to; y++)
+					for (int y = from; y < to; y++)
 					{
 						float *srcP = Ycache + y*newTotal*newX + i * newTotal;
 						memcpy(	curPixfImage + y * newX, srcP, newX *sizeof(float));
@@ -288,7 +287,7 @@
 			}
 			else
 			{
-				for (x = from; x < to; x++)
+				for (int x = from; x < to; x++)
 				{
 					if (sign > 0)
 					{
@@ -321,7 +320,6 @@
 	firstPix = [originalDCMPixList objectAtIndex: 0];
 	
 	DCMPix *lastPix = [originalDCMPixList lastObject];
-	long i, x;
 	float orientation[ 9], newXSpace, newYSpace, origin[ 3], sliceInterval;
 	BOOL isRGB = firstPix.isRGB;
 	
@@ -400,7 +398,7 @@
 				
                 yCacheQueue = [[NSOperationQueue alloc] init];
                 
-                for ( x = 0; x < newY; x ++)
+                for (long x = 0; x < newY; x ++)
                 {
                     ResliceOperation *op = [[[ResliceOperation alloc] initWithDict: [NSDictionary dictionaryWithObjectsAndKeys:
                                                                                      [NSValue valueWithPointer: Ycache], @"Ycache",
@@ -466,7 +464,7 @@
     if (isRGB)
         bits = 8;
     
-	for (i = minI, stack = 0 ; i < maxI ; i++, stack++)
+	for (long i = minI, stack = 0 ; i < maxI ; i++, stack++)
 	{
 		if (i < 0)
             i = 0;
@@ -579,12 +577,13 @@
 		processorsLock = [[NSLock alloc] init];
 	
 	numberOfThreadsForCompute = [[NSProcessInfo processInfo] processorCount];
-	for (i = 0; i < [[NSProcessInfo processInfo] processorCount]-1; i++)
+    long ii;
+	for (ii = 0; ii < [[NSProcessInfo processInfo] processorCount]-1; ii++)
 	{
-		[NSThread detachNewThreadSelector: @selector(subReslice:) toTarget:self withObject: [NSNumber numberWithInt: i]];
+		[NSThread detachNewThreadSelector: @selector(subReslice:) toTarget:self withObject: [NSNumber numberWithInt: ii]];
 	}
 	
-	[self subReslice: [NSNumber numberWithInt: i]];
+	[self subReslice: [NSNumber numberWithInt: ii]];
 	
 	BOOL done = NO;
 	while( done == NO)

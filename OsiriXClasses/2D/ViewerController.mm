@@ -1723,7 +1723,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
     DCMPix *firstPix = [pixList[ curMovieIndex] objectAtIndex: 0];
 	DCMPix *lastPix = nil;
-	long i, newTotal;
+	long newTotal;
 	unsigned char *emptyData;
     //long imageSize, size;
     long y, newX, newY;
@@ -1811,7 +1811,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	newY /= 2;
 	newY *= 2;
 	
-	i = [pixList[ curMovieIndex] count];
+	long i = [pixList[ curMovieIndex] count];
 	i /= 2;
 	i *= 2;
 	i--;
@@ -1869,7 +1869,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         id waitWindow = [self startWaitProgressWindow: NSLocalizedString( @"Reslicing...", nil) :newTotal];
         
         NSLog(@"%s %d, newTotal: %ld", __FUNCTION__, __LINE__, newTotal);
-        for (i = 0 ; i < newTotal; i ++)
+        for (long i = 0 ; i < newTotal; i ++)
         {
             [newPixList addObject: [[[pixList[ j] objectAtIndex: 0] copy] autorelease]];
             
@@ -3991,9 +3991,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if (convolutionPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
-		short       i;
-		NSArray     *keys;
-		NSArray     *sortedKeys;
+		NSArray *keys;
+		NSArray *sortedKeys;
 		
 		keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] allKeys];
 		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
@@ -4007,7 +4006,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[convolutionPresetsMenu addItemWithTitle:NSLocalizedString(@"No Filter", nil) action:@selector (ApplyConv:) keyEquivalent:@""];
 		[convolutionPresetsMenu addItem: [NSMenuItem separatorItem]];
 		
-		for (i = 0; i < [sortedKeys count]; i++)
+		for (short i = 0; i < [sortedKeys count]; i++)
 		{
 			[convolutionPresetsMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyConv:) keyEquivalent:@""];
 		}
@@ -4132,9 +4131,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if (opacityPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
-		short       i;
-		NSArray     *keys;
-		NSArray     *sortedKeys;
+		NSArray *keys;
+		NSArray *sortedKeys;
 
 		// Presets VIEWER Menu
 		
@@ -4146,7 +4144,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[opacityPresetsMenu addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
 		[opacityPresetsMenu addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
-		for (i = 0; i < [sortedKeys count]; i++)
+		for (short i = 0; i < [sortedKeys count]; i++)
 		{
 			[opacityPresetsMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
 		}
@@ -5456,7 +5454,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
         DicomDatabase *db = [[BrowserController currentBrowser] database];
         NSPredicate *predicate = nil;
-        long i = 0;
         long index = 0;
         Dicom_Image *curImage = [fileList[0] objectAtIndex:0];
         NSPoint origin = [[previewMatrix superview] bounds].origin;
@@ -5526,7 +5523,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			NSArray *displayedSeries = [ViewerController getDisplayedSeries];
 			NSMutableArray *seriesArray = [NSMutableArray array];
 			
-			i = 0;
+			long ii = 0;
 			for (id s in studiesArray)
 			{
 #ifndef MIELE_LIGHT
@@ -5554,7 +5551,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                     [s setHidden: [[hiddenCellMatrix objectForKey: [s studyInstanceUID]] boolValue]];
                     
                     if ([s isHidden] == NO)
-                        i += [[seriesArray lastObject] count];
+                        ii += [[seriesArray lastObject] count];
                 }
 #ifndef MIELE_LIGHT
                 else if ([s isKindOfClass: [DCMTKStudyQueryNode class]]) //Distant Study DCMTKQueryStudyNode
@@ -5572,7 +5569,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                     if ([s isHidden] == NO)
                     {
                         [seriesArray addObject: [[BrowserController currentBrowser] childrenArray: s]];
-                        i += [[seriesArray lastObject] count];
+                        ii += [[seriesArray lastObject] count];
                     }
                     else
                     {
@@ -5629,8 +5626,8 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [self setMatrixVisible: globalSeriesListVisible];
             }
             
-			if ([previewMatrix numberOfRows] != i+[studiesArray count])
-				[previewMatrix renewRows: i+[studiesArray count] columns: 1];
+			if ([previewMatrix numberOfRows] != ii+[studiesArray count])
+				[previewMatrix renewRows: ii+[studiesArray count] columns: 1];
             
             [previewMatrix sizeToCells];
             
@@ -5920,7 +5917,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                 
                 if ([curStudy isHidden] == NO)
                 {
-                    for (i = 0; i < [series count]; i++)
+                    for (long i = 0; i < [series count]; i++)
                     {
                         DicomSeries* curSeries = [series objectAtIndex:i];
                         
@@ -8868,16 +8865,18 @@ static int avoidReentryRefreshDatabase = 0;
 		[self setMovieIndex: 0];
 	
 	BOOL sameSeries = NO;
-	long i, previousColumns = [imageView columns], previousRows = [imageView rows];
-	int previousFusion = [popFusion selectedTag], previousFusionActivated = [activatedFusion state];
+    long previousColumns = [imageView columns];
+    long previousRows = [imageView rows];
+    int previousFusion = [popFusion selectedTag];
+    int previousFusionActivated = [activatedFusion state];
 		
-	NSString	*previousPatientUID = [imageView.studyObj.patientUID retain];
-	NSString	*previousStudyInstanceUID = [imageView.studyObj.studyInstanceUID retain];
+	NSString *previousPatientUID = [imageView.studyObj.patientUID retain];
+	NSString *previousStudyInstanceUID = [imageView.studyObj.studyInstanceUID retain];
     Dicom_Image *previousDicomImage = [imageView imageObj];
-	float		previousOrientation[ 9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-	float		previousLocation;
-	int			previousCurImage = [imageView curImage];
-	BOOL		wasFlipped = [imageView flippedData];
+	float previousOrientation[ 9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+	float previousLocation;
+	int previousCurImage = [imageView curImage];
+	BOOL wasFlipped = [imageView flippedData];
 	
 	@synchronized( self)
 	{
@@ -8913,7 +8912,7 @@ static int avoidReentryRefreshDatabase = 0;
                 float newOrientation[ 9];
                 [[f objectAtIndex:0] orientation: newOrientation];
                 
-                for (i = 0; i < 9; i++)
+                for (long i = 0; i < 9; i++)
                 {
                     if (previousOrientation[ i] != newOrientation[ i])
                         equalVector = NO;
@@ -9021,7 +9020,7 @@ static int avoidReentryRefreshDatabase = 0;
 					pixList[ 0] = f;
 					
 					// Prepare pixList for image thick slab
-					for (i = 0; i < [pixList[0] count]; i++)
+					for (long i = 0; i < [pixList[0] count]; i++)
 						[[pixList[0] objectAtIndex: i] setArrayPix: pixList[0] :i];
 					
 					if ([d count] == 0)
@@ -9035,7 +9034,7 @@ static int avoidReentryRefreshDatabase = 0;
 						// Prepare roiList
 						roiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
 						copyRoiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
-						for (i = 0; i < [pixList[0] count]; i++)
+						for (long i = 0; i < [pixList[0] count]; i++)
 						{
 							[roiList[0] addObject:[NSMutableArray array]];
 							[copyRoiList[0] addObject:[NSData data]];
@@ -10326,10 +10325,10 @@ static int avoidReentryRefreshDatabase = 0;
 {
 	NSLog( @"resampleDataFromPixArray - factor : %f", xFactor);
 	
-	long				i, y, z;
-	unsigned long long	size, newX, newY, newZ, imageSize;
-	float				*srcImage, *dstImage, *emptyData;
-	DCMPix				*curPix;
+	long y, z;
+	unsigned long long size, newX, newY, newZ, imageSize;
+	float *srcImage, *dstImage, *emptyData;
+	DCMPix *curPix;
 	
 	int originWidth = [[originalPixlist objectAtIndex:0] pwidth];
 	int originHeight = [[originalPixlist objectAtIndex:0] pheight];
@@ -10388,7 +10387,7 @@ static int avoidReentryRefreshDatabase = 0;
             origin[ 1] -= firstObject.pixelSpacingY/2.;
             origin[ 2] -= firstObject.sliceThickness/2.;
             
-			for (i = 0; i < 9; i++)
+			for (long i = 0; i < 9; i++)
 			{
 				if (vectors[ i] != vectorsB[ i])
                     equalVector = NO;
@@ -11839,13 +11838,15 @@ static int avoidReentryRefreshDatabase = 0;
     
     if ([sender tag])   //User clicks OK Button
     {
-		long i, x;
 		float v[ 9], o[ 3];
 		
-		for (i = 0; i < 9; i++) v[ i] = [[customVectors cellWithTag: i] floatValue];
-		for (i = 0; i < 3; i++) o[ i] = [[customOrigin cellWithTag: i] floatValue];
+		for (long i = 0; i < 9; i++)
+            v[ i] = [[customVectors cellWithTag: i] floatValue];
+
+        for (long i = 0; i < 3; i++)
+            o[ i] = [[customOrigin cellWithTag: i] floatValue];
 		
-		for (i = 0 ; i < maxMovieIndex; i++)
+		for (long i = 0 ; i < maxMovieIndex; i++)
 		{
 			int dir = 2;
 			
@@ -11857,7 +11858,7 @@ static int avoidReentryRefreshDatabase = 0;
 			if (fabs( v[7]) > fabs(v[6]) && fabs( v[7]) > fabs(v[8])) dir = 1;
 			if (fabs( v[8]) > fabs(v[6]) && fabs( v[8]) > fabs(v[7])) dir = 2;
 			
-			for (x = 0; x < [pixList[ i] count]; x++)
+			for (long x = 0; x < [pixList[ i] count]; x++)
 			{
 				DCMPix	*pix = nil;
 				
@@ -12469,7 +12470,7 @@ static float oldsetww, oldsetwl;
 	{
 		NSDictionary   *aConv;
 		NSArray			*array;
-		long			size, i;
+		long			size;
 		float			nomalization;
 		float			matrix[25];
 		
@@ -12487,7 +12488,7 @@ static float oldsetww, oldsetwl;
 			size = [[aConv objectForKey:@"Size"] longValue];
 			array = [aConv objectForKey:@"Matrix"];
 			
-			for (i = 0; i < size*size; i++)
+			for (long i = 0; i < size*size; i++)
 				matrix[i] = [[array objectAtIndex: i] longValue];
 			
 			[self setConv:matrix :size: nomalization];
@@ -13088,10 +13089,9 @@ long				x, y;
 	}
 	else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSEventModifierFlagOption)
     {
-		NSDictionary		*aOpacity, *aCLUT;
-		NSArray				*array;
-		long				i;
-		unsigned char		red[256], green[256], blue[256];
+		NSDictionary *aOpacity, *aCLUT;
+		NSArray *array;
+		unsigned char red[256], green[256], blue[256];
 		
 		[self ApplyOpacityString:[sender title]];
 		
@@ -13102,19 +13102,19 @@ long				x, y;
 			if (aCLUT)
 			{
 				array = [aCLUT objectForKey:@"Red"];
-				for (i = 0; i < 256; i++)
+				for (long i = 0; i < 256; i++)
 				{
 					red[i] = [[array objectAtIndex: i] longValue];
 				}
 				
 				array = [aCLUT objectForKey:@"Green"];
-				for (i = 0; i < 256; i++)
+				for (long i = 0; i < 256; i++)
 				{
 					green[i] = [[array objectAtIndex: i] longValue];
 				}
 				
 				array = [aCLUT objectForKey:@"Blue"];
-				for (i = 0; i < 256; i++)
+				for (long i = 0; i < 256; i++)
 				{
 					blue[i] = [[array objectAtIndex: i] longValue];
 				}
@@ -13607,8 +13607,7 @@ long				x, y;
            blendingType:(BlendingType)blendingType
 {
 	_blendingType = blendingType;
-	
-	long i;
+
 	switch (blendingType)
 	{
 		case BLENDING_PLUGINS_METHOD:
@@ -13626,7 +13625,7 @@ long				x, y;
 			if ((modifierFlags & NSEventModifierFlagControl) != 0)
 			{
 				NSUInteger count = MIN([[self pixList] count], [[bc pixList] count]);
-				for (i = 0; i < count; i++)
+				for (long i = 0; i < count; i++)
 				{
 					[imageView setIndex:i];
 					[imageView sendSyncMessage: 0];
@@ -13641,7 +13640,7 @@ long				x, y;
 			}
 			else
 			{
-				for (i = 0; i < [pixList[ curMovieIndex] count]; i++)
+				for (long i = 0; i < [pixList[ curMovieIndex] count]; i++)
 				{
 					[imageView setIndex:i];
 					[imageView sendSyncMessage: 0];
@@ -13654,7 +13653,7 @@ long				x, y;
             break;
 		
 		case BLENDING_IMAGE_MULTIPLICATION:
-			for (i = 0; i < [pixList[ curMovieIndex] count]; i++)
+			for (long i = 0; i < [pixList[ curMovieIndex] count]; i++)
 			{
 				[imageView setIndex:i];
 				[imageView sendSyncMessage: 0];
@@ -13668,7 +13667,7 @@ long				x, y;
 		case BLENDING_RGB_COMPOSITION_2:
 		case BLENDING_RGB_COMPOSITION_3:
 			{
-				for (i = 0; i < [pixList[ curMovieIndex] count]; i++)   // Convert all images to RGB images if necessary
+				for (long i = 0; i < [pixList[ curMovieIndex] count]; i++)   // Convert all images to RGB images if necessary
 				{
 					float cwl, cww;						
 					[imageView getWLWW:&cwl :&cww];
@@ -14909,14 +14908,12 @@ long				x, y;
 
 - (IBAction) roiSelectDeselectAll:(id) sender
 {
-	int x, i;
-	
 	[self addToUndoQueue: @"roi"];
 	
-	for (x = 0; x < [pixList[curMovieIndex] count]; x++)
+	for (int x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
 		
-		for (i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+		for (int i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
 			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
 			
@@ -15295,9 +15292,8 @@ long				x, y;
 
 	// Find the first ROI selected
 	ROI *selectedROI = nil;
-	long i,y,x;
 	
-	for (i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
+	for (long i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
 	{
 		ROI_mode mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
 			
@@ -15325,7 +15321,7 @@ long				x, y;
 	[self roiSetPixels:selectedROI :allRois :propagateIn4D :outside :minValue :maxValue :newValue :revertToSaved];
 	
 	// Recompute!!!! Apply WL/WW
-	float   iwl, iww;
+	float iwl, iww;
 		
 	[imageView getWLWW:&iwl :&iww];
 	[imageView setWLWW:iwl :iww];
@@ -15333,9 +15329,9 @@ long				x, y;
 	// Recompute all ROIs
     [self recomputeROIs];
     
-	for (y = 0; y < maxMovieIndex; y++)
+	for (long y = 0; y < maxMovieIndex; y++)
 	{
-		for (x = 0; x < [pixList[y] count]; x++)
+		for (long x = 0; x < [pixList[y] count]; x++)
 			[[pixList[y] objectAtIndex: x] changeWLWW:iwl :iww];
 	}
 	
@@ -15572,14 +15568,14 @@ long				x, y;
     
 	if ([sender tag] == 1)
 	{
-		long i, x, y;
+		long x, y;
 		
 		switch( [[roiRenameMatrix selectedCell] tag])
 		{
 			case 0:	// All ROIs of the image
 				y = curMovieIndex;
 				x = [imageView curImage];
-				for (i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+				for (long i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
 				{
 					ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
 					
@@ -15594,7 +15590,7 @@ long				x, y;
 				{
 					for (x = 0; x < [pixList[y] count]; x++)
 					{
-						for (i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+						for (long i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
 						{
 							ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
 							
@@ -15609,7 +15605,7 @@ long				x, y;
 			case 2:	// All selected ROIs
 				y = curMovieIndex;
 				x = [imageView curImage];
-				for (i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+				for (long i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
 				{
 					ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
 					
@@ -15654,14 +15650,14 @@ long				x, y;
 	
 	if (result == NSRunStoppedResponse)
 	{
-		long i, x, y;
+		long x, y;
 		
 		switch( [[roiApplyMatrix selectedCell] tag])
 		{
 			case 0:	// All ROIs of the image
 				y = curMovieIndex;
 				x = [imageView curImage];
-				for (i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+				for (long i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
 				{
 					ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
 					
@@ -15674,7 +15670,7 @@ long				x, y;
 				{
 					for (x = 0; x < [pixList[y] count]; x++)
 					{
-						for (i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+						for (long i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
 						{
 							ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
 							
@@ -15687,7 +15683,7 @@ long				x, y;
 			case 2:	// All selected ROIs
 				y = curMovieIndex;
 				x = [imageView curImage];
-				for (i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+				for (long i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
 				{
 					ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
 					
@@ -15706,7 +15702,7 @@ long				x, y;
 				x = [imageView curImage];
 				NSString* name = nil;
 				
-				for (i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+				for (long i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
 				{
 					ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
 					
@@ -15725,7 +15721,7 @@ long				x, y;
 					{
 						for (x = 0; x < [pixList[y] count]; x++)
 						{
-							for (i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+							for (long i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
 							{
 								ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
 								
@@ -15911,9 +15907,9 @@ long				x, y;
 	if ([pixList[curMovieIndex] count] > 1)
 	{
 		[self addToUndoQueue: @"roi"];
-		long upToImage, startImage, i, x;
+		long upToImage, startImage, x;
 		
-		for (i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
+		for (long i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
 		{
 			ROI_mode mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
 			
@@ -15946,7 +15942,7 @@ long				x, y;
 			{
 				if (x != [imageView curImage])
 				{
-					for (i = 0; i < [selectedROIs count]; i++)
+					for (long i = 0; i < [selectedROIs count]; i++)
 					{
 						ROI *newROI = [[[selectedROIs objectAtIndex: i] copy] autorelease];
 						
@@ -16008,7 +16004,7 @@ long				x, y;
 
 - (IBAction) roiPropagate:(id) sender
 {
-	long			i, x;
+	long x;
     
     [NSApp endSheet:roiPropaWindow returnCode:[sender tag]];
     [roiPropaWindow orderOut:sender];
@@ -16025,7 +16021,7 @@ long				x, y;
 			{
 				long upToImage, startImage;
 				
-				for (i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
+				for (long i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
 				{
 					ROI_mode mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
 			
@@ -16075,7 +16071,7 @@ long				x, y;
 						{
 							if ([[roiPropaCopy selectedCell] tag] == 1)
 							{
-								for (i = 0; i < [selectedROIs count]; i++)
+								for (long i = 0; i < [selectedROIs count]; i++)
 								{
 									ROI *newROI = [[[selectedROIs objectAtIndex: i] copy] autorelease];
 									
@@ -16087,7 +16083,7 @@ long				x, y;
 							}
 							else
 							{
-								for (i = 0; i < [selectedROIs count]; i++)
+								for (long i = 0; i < [selectedROIs count]; i++)
 								{
 									[[roiList[curMovieIndex] objectAtIndex: x] addObject: [selectedROIs objectAtIndex: i]];
 								}
@@ -16119,7 +16115,7 @@ long				x, y;
 		case 1:		// 4D Dimension
 			{
 				
-				for (i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
+				for (long i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
 				{
 					ROI_mode mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
 			
@@ -16137,7 +16133,7 @@ long				x, y;
 						{
 							if ([[roiPropaCopy selectedCell] tag] == 1)
 							{
-								for (i = 0; i < [selectedROIs count]; i++)
+								for (long i = 0; i < [selectedROIs count]; i++)
 								{
 									ROI *newROI = [[[selectedROIs objectAtIndex: i] copy] autorelease];
                                     newROI.pix = [pixList[ x] objectAtIndex: [imageView curImage]];
@@ -16148,7 +16144,7 @@ long				x, y;
 							}
 							else
 							{
-								for (i = 0; i < [selectedROIs count]; i++)
+								for (long i = 0; i < [selectedROIs count]; i++)
 								{
 									[[roiList[ x] objectAtIndex: [imageView curImage]] addObject: [selectedROIs objectAtIndex: i]];
 								}
@@ -16200,19 +16196,16 @@ long				x, y;
 // returns the names of all the ROIs (one occurrence of each name)
 - (NSArray*) roiNames
 {
-	int x, i, j;
-	BOOL found;
-	
 	NSMutableArray *names = [NSMutableArray array];
 	
-	for (x=0; x < [pixList[curMovieIndex] count]; x++)
+	for (int x=0; x < [pixList[curMovieIndex] count]; x++)
 	{
-		for (i=0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+		for (int i=0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
-			found = NO;
+			BOOL found = NO;
 			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
 			NSString *name = [curROI name];
-			for (j=0; j<[names count] && !found; j++)
+			for (int j=0; j<[names count] && !found; j++)
 			{
 				if ([name isEqualToString:[names objectAtIndex:j]])
 				{
@@ -16226,18 +16219,17 @@ long				x, y;
 			}
 		}
 	}
-	return names;
+
+    return names;
 }
 
 - (NSArray*) roisWithComment: (NSString*) comment
 {
-	int x, i;
-	
 	NSMutableArray *rois = [NSMutableArray array];
 	
-	for (x = 0; x < [pixList[curMovieIndex] count]; x++)
+	for (int x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
-		for (i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+		for (int i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
 			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
 			if ([[curROI comments] isEqualToString: comment])
@@ -17593,7 +17585,6 @@ long				x, y;
 - (IBAction) reSyncOrigin:(id) sender
 {
 	float o[ 3];
-	int x, i;
 	
 	if (blendingController)
 	{
@@ -17601,13 +17592,13 @@ long				x, y;
 		{
 			float zDiff = [[[blendingController imageView] curDCM] sliceLocation] - [[imageView curDCM] sliceLocation];
 		
-			for (i = 0; i < maxMovieIndex; i++)
+			for (int i = 0; i < maxMovieIndex; i++)
 			{
-				for (x = 0; x < [pixList[ i] count]; x++)
+				for (int x = 0; x < [pixList[ i] count]; x++)
 				{
-					DCMPix		*curDCM = [pixList[ i] objectAtIndex:x];
-					float		vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
-					NSPoint		offset;
+					DCMPix *curDCM = [pixList[ i] objectAtIndex:x];
+					float vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
+					NSPoint offset;
 					
 					// Compute blended view offset
 					[curDCM orientation: vectorP];
@@ -17953,15 +17944,12 @@ long				x, y;
 {
 	NSMutableArray * points2D = [NSMutableArray array];
 	NSMutableArray * allROIs = [self roiList];
-	
-	ROI *curRoi;
-	int s,i;
 
-	for (s=0; s<[allROIs count]; s++)
+	for (int s=0; s<[allROIs count]; s++)
 	{
-		for (i=0; i<[[allROIs objectAtIndex:s] count]; i++)
+		for (int i=0; i<[[allROIs objectAtIndex:s] count]; i++)
 		{
-			curRoi = (ROI*)[[allROIs objectAtIndex:s] objectAtIndex:i];
+            ROI *curRoi = (ROI*)[[allROIs objectAtIndex:s] objectAtIndex:i];
 			[curRoi setPix: [[self pixList] objectAtIndex: s]];
 			if ([curRoi type] == t2DPoint)
 			{
@@ -17969,7 +17957,8 @@ long				x, y;
 			}
 		}
 	}
-	return points2D;
+
+    return points2D;
 }
 
 #ifndef MIELE_LIGHT
@@ -18454,8 +18443,6 @@ long				x, y;
 
 -(void) addMovieSerie:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
 {
-	long	i;
-	
 	volumeData[ maxMovieIndex] = v;
 	[volumeData[ maxMovieIndex] retain];
     [self sendDidAllocateVolumeDataNotificationWithVolumeData:volumeData[ maxMovieIndex] movieIndex:maxMovieIndex];
@@ -18467,7 +18454,7 @@ long				x, y;
     fileList[ maxMovieIndex] = d;
 	
 	// Prepare pixList for image thick slab
-	for (i = 0; i < [pixList[maxMovieIndex] count]; i++)
+	for (long i = 0; i < [pixList[maxMovieIndex] count]; i++)
 	{
 		[[pixList[maxMovieIndex] objectAtIndex: i] setArrayPix: pixList[maxMovieIndex] :i];
 	}
@@ -18476,12 +18463,13 @@ long				x, y;
 	copyRoiList[maxMovieIndex] = [[NSMutableArray alloc] initWithCapacity: 0];
 	roiList[maxMovieIndex] = [[NSMutableArray alloc] initWithCapacity: 0];
 	
-	for (i = 0; i < [pixList[maxMovieIndex] count]; i++)
+	for (long i = 0; i < [pixList[maxMovieIndex] count]; i++)
 	{
 		[roiList[maxMovieIndex] addObject:[NSMutableArray array]];
 		[copyRoiList[maxMovieIndex] addObject: [NSData data]];
 	}
-	[self loadROI: maxMovieIndex];
+
+    [self loadROI: maxMovieIndex];
 	
 	maxMovieIndex++;
 	
@@ -20181,7 +20169,7 @@ static BOOL viewerControllerPlaying = NO;
     long annotCopy;
     ClutBarsType clutBarsCopy;
 	BOOL modalityAsSource = NO;
-	long width, height, spp, bpp, i, x;
+	long width, height, spp, bpp;
 	float cwl, cww;
 	float o[ 9];
 	BOOL isSigned;
@@ -20243,12 +20231,12 @@ static BOOL viewerControllerPlaying = NO;
 		NSMutableArray	*cWindows = [NSMutableArray arrayWithArray: viewers];
 		NSMutableArray	*cResult = [NSMutableArray array];
 		int count = [cWindows count];
-		for (i = 0; i < count; i++)
+		for (long i = 0; i < count; i++)
 		{		
 			int index = 0;
 			float minY = [[[cWindows objectAtIndex: 0] window] frame].origin.y;
 			
-			for (x = 0; x < [cWindows count]; x++)
+			for (long x = 0; x < [cWindows count]; x++)
 			{
 				if ([[[cWindows objectAtIndex: x] window] frame].origin.y > minY)
 				{
@@ -20259,7 +20247,7 @@ static BOOL viewerControllerPlaying = NO;
 			
 			float minX = [[[cWindows objectAtIndex: index] window] frame].origin.x;
 			
-			for (x = 0; x < [cWindows count]; x++)
+			for (long x = 0; x < [cWindows count]; x++)
 			{
 				if ([[[cWindows objectAtIndex: x] window] frame].origin.x < minX &&
                     [[[cWindows objectAtIndex: x] window] frame].origin.y >= minY)
@@ -20855,11 +20843,10 @@ static BOOL viewerControllerPlaying = NO;
 
 - (IBAction) export2PACS:(id) sender
 {
-	BOOL			all = NO;
-	long			i,x;
-	NSMutableArray  *files2Send;
+	BOOL all = NO;
+	NSMutableArray *files2Send;
 	
-	for (i = 0; i < maxMovieIndex; i++)
+	for (long i = 0; i < maxMovieIndex; i++)
 		[self saveROI: i];
 	
 	if ([pixList[ curMovieIndex] count] > 1)
@@ -20883,9 +20870,9 @@ static BOOL viewerControllerPlaying = NO;
 	{
 		files2Send = [NSMutableArray array];
 		
-		for (x = 0; x < maxMovieIndex; x++)
+		for (long x = 0; x < maxMovieIndex; x++)
 		{
-			for (i = 0; i < [fileList[ x] count]; i++)
+			for (long i = 0; i < [fileList[ x] count]; i++)
 			{
 				if ([files2Send containsObject:[fileList[ x] objectAtIndex: i]] == NO)
 					[files2Send addObject: [fileList[ x] objectAtIndex: i]];

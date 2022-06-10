@@ -640,7 +640,6 @@ CGFloat N3BezierCoreLength(N3BezierCoreRef bezierCore)
 N3BezierCoreSegmentType N3BezierCoreGetSegmentAtIndex(N3BezierCoreRef bezierCore, CFIndex index, N3VectorPointer control1, N3VectorPointer control2, N3VectorPointer endpoint)
 {
     N3BezierCoreElementRef element;
-    CFIndex i;
     
     N3BezierCoreCheckDebug(bezierCore);
 
@@ -648,12 +647,13 @@ N3BezierCoreSegmentType N3BezierCoreGetSegmentAtIndex(N3BezierCoreRef bezierCore
     
     if (index < bezierCore->elementCount / 2) {
         element = bezierCore->elementList;
-        for (i = 1; i <= index; i++) {
+        for (CFIndex i = 1; i <= index; i++) {
             element = element->next;
         }
-    } else {
+    }
+    else {
         element = bezierCore->lastElement;
-        for (i = bezierCore->elementCount - 2; i + 1 > index; i--) {
+        for (CFIndex i = bezierCore->elementCount - 2; i + 1 > index; i--) {
             element = element->previous;
         }
     }
@@ -663,9 +663,11 @@ N3BezierCoreSegmentType N3BezierCoreGetSegmentAtIndex(N3BezierCoreRef bezierCore
     if (control1) {
         *control1 = element->control1;
     }
+
     if (control2) {
         *control2 = element->control2;
     }
+
     if (endpoint) {
         *endpoint = element->endpoint;
     }
@@ -814,7 +816,6 @@ CFIndex N3BezierCoreIteratorIndex(N3BezierCoreIteratorRef bezierCoreIterator)
 void N3BezierCoreIteratorSetIndex(N3BezierCoreIteratorRef bezierCoreIterator, CFIndex index)
 {
     N3BezierCoreElementRef element;
-    CFIndex i;
     
     assert (index < bezierCoreIterator->bezierCore->elementCount);
     
@@ -824,7 +825,7 @@ void N3BezierCoreIteratorSetIndex(N3BezierCoreIteratorRef bezierCoreIterator, CF
     
     element = bezierCoreIterator->bezierCore->elementList;
     
-    for (i = 1; i <= index; i++)
+    for (CFIndex i = 1; i <= index; i++)
         element = element->next;
     
     assert(element);

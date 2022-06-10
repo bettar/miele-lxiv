@@ -604,17 +604,15 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 
 - (NSString*) generateWordReportMergeDataForStudy:(NSManagedObject*) study
 {
-	long x;
-	
 	NSManagedObjectModel *model = [[[study managedObjectContext] persistentStoreCoordinator] managedObjectModel];
     
 	NSArray *properties = [[[[model entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
 	
 	NSMutableString	*file = [NSMutableString stringWithString:@""];
 	
-	for (x = 0; x < [properties count]; x++)
+	for (long x = 0; x < [properties count]; x++)
 	{
-		NSString	*name = [properties objectAtIndex: x];
+		NSString *name = [properties objectAtIndex: x];
 		[file appendString:name];
 		[file appendFormat: @"%c", NSTabCharacter];
 	}
@@ -624,10 +622,10 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 	NSDateFormatter *date = [[[NSDateFormatter alloc] init] autorelease];
 	[date setDateStyle: NSDateFormatterShortStyle];
 	
-	for (x = 0; x < [properties count]; x++)
+	for (long x = 0; x < [properties count]; x++)
 	{
-		NSString	*name = [properties objectAtIndex: x];
-		NSString	*string;
+		NSString *name = [properties objectAtIndex: x];
+		NSString *string;
 		
 		if( [[study valueForKey: name] isKindOfClass: [NSDate class]])
 			string = [date stringFromDate: [study valueForKey: name]];

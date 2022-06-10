@@ -1153,7 +1153,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int rad, char blackIndex)
 {
-	int	x,y;
+	//int x,y;
 	int	xsqr;
 	int	inw = rad*2;
 	int	radsqr = (inw*inw)/4;
@@ -1168,9 +1168,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	cy -= rad;
 	
 	// top
-	for (y = 0; y <= cy; y++)
+	for (int y = 0; y <= cy; y++)
 	{
-		for (x = 0; x < width; x++)
+		for (int x = 0; x < width; x++)
 		{
 			if (y >= 0 && y < height)
                 buf[ x + y*width] = blackIndex;
@@ -1178,9 +1178,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 	
 	// bottom
-	for (y = cy+inw; y < height; y++)
+	for (int y = cy+inw; y < height; y++)
 	{
-		for (x = 0; x < width; x++)
+		for (int x = 0; x < width; x++)
 		{
 			if (y >= 0 && y < height)
                 buf[ x + y*width] = blackIndex;
@@ -1188,25 +1188,25 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 	
 	// left + right
-	for (y = cy; y < cy+inw; y++)
+	for (int y = cy; y < cy+inw; y++)
 	{
-		for (x = 0; x <= cx; x++)
+		for (int x = 0; x <= cx; x++)
 		{
 			if (x < width && y >= 0 && y < height)
 				buf[ x + y*width] = blackIndex;
 		}
 		
-		for (x = cx+inw; x < width; x++)
+		for (int x = cx+inw; x < width; x++)
 		{
 			if (x >= 0 && y >= 0 && y < height)
 				buf[ x + y*width] = blackIndex;
 		}
 	}
 	
-	for (x = 0; x < rad; x++)
+	for (int x = 0; x < rad; x++)
 	{
 		xsqr = x*x;
-		for (y = 0 ; y < rad; y++)
+		for (int y = 0 ; y < rad; y++)
 		{
 			char draw;
 			
@@ -9934,11 +9934,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				
 				if (shutterPolygonal)
 				{
-					int		x, y;
-					
-					for (y = 0 ; y < height; y++)
+					for (int y = 0 ; y < height; y++)
 					{
-						for (x = 0 ; x < width; x++)
+						for (int x = 0 ; x < width; x++)
 						{
 							if (pnpoly( shutterPolygonal, shutterPolygonalSize, x, y) == 0)
 							{

@@ -118,21 +118,23 @@
 //																					[NSColor blackColor],NSForegroundColorAttributeName,
 //																					paragraphStyle,NSParagraphStyleAttributeName,
 //																					nil];
-	NSDictionary			*boldFont = [NSDictionary dictionaryWithObjectsAndKeys:	[NSFont labelFontOfSize:10.0],NSFontAttributeName,
-																					textColor,NSForegroundColorAttributeName,
-																					paragraphStyle,NSParagraphStyleAttributeName,
-																					nil];
+	NSDictionary *boldFont = [NSDictionary dictionaryWithObjectsAndKeys:
+                              [NSFont labelFontOfSize:10.0],NSFontAttributeName,
+                              textColor, NSForegroundColorAttributeName,
+                              paragraphStyle, NSParagraphStyleAttributeName,
+                              nil];
 //	[[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.2 alpha:1.0] set];
 	[backgroundColor set];
 	NSRectFill(boundsRect);
     
-	for(index = 0 ; index < dataSize;index++)  
+	for (index = 0 ; index < dataSize;index++)
 	{
 		float value = 0;
 		
-		for( i = 0 ; i < bin; i++)
+		for ( i = 0 ; i < bin; i++)
 		{
-			if( index+i < dataSize) value += dataArray[index+i];
+			if ( index+i < dataSize)
+                value += dataArray[index+i];
 		}
 		
 		float height = ((value*boundsRect.size.height)/maxValue)/bin;
@@ -145,7 +147,7 @@
 		long min = fullwl - fullww/2;
 		long max = fullwl + fullww/2;
 		
-		long	wl,ww;
+		long wl,ww;
 		
 		wl = [[curROI pix] wl];
 		ww = [[curROI pix] ww];

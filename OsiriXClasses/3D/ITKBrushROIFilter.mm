@@ -39,16 +39,14 @@ typedef itk::ImportImageFilter<TPixel, 2> ImportFilterType;
 
 void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 {
-	int		x,y;
-	int		xsqr;
-	int		inw = width-1;
-	int		radsqr = (inw*inw)/4;
-	int		rad = width/2;
+	int inw = width-1;
+	int radsqr = (inw*inw)/4;
+	int rad = width/2;
 	
-	for(x = 0; x < rad; x++)
+	for (int x = 0; x < rad; x++)
 	{
-		xsqr = x*x;
-		for( y = 0 ; y < rad; y++)
+		int xsqr = x*x;
+		for (int y = 0 ; y < rad; y++)
 		{
 			if((xsqr + y*y) < radsqr)
 			{

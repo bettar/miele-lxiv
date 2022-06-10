@@ -1079,7 +1079,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				dontRenderVolumeRenderingOsiriX = true;
 				
 				double	*pp;
-				long	i;
+				//long	i;
 				
 				vtkPoints *pts = Line2DData->GetPoints();
 				
@@ -1102,8 +1102,9 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 					
 					vtkCellArray *rect = vtkCellArray::New();
 					rect->InsertNextCell( pts->GetNumberOfPoints()+1);
-					for( i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
-					rect->InsertCellPoint( 0);
+					for (long i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
+
+                    rect->InsertCellPoint( 0);
 					
 					Line2DData->SetVerts( rect);
 					Line2DData->SetLines( rect);		rect->Delete();
@@ -2124,7 +2125,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 					free( tempBuf);
 				}
 				
-				//Add the small OsiriX logo at the bottom right of the image
+				// Add the small logo at the bottom right of the image
 				NSImage *logo = [NSImage imageNamed:@"SmallLogo.tif"];
 				NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
 				

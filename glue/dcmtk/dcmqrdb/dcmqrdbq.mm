@@ -211,14 +211,11 @@ static OFCondition DB_FreeElementList (DB_ElementList *lst)
 
 static int DB_TagSupported (DcmTagKey tag)
 {
-    int i;
-
-    for (i = 0; i < NbFindAttr; i++)
+    for (int i = 0; i < NbFindAttr; i++)
         if (TbFindAttr[i]. tag == tag)
             return (OFTrue);
 
     return (OFFalse);
-
 }
 
 /*******************
@@ -228,18 +225,18 @@ static int DB_TagSupported (DcmTagKey tag)
 #if 0
 static OFCondition DB_GetUIDTag (DB_LEVEL level, DcmTagKey *tag)
 {
-    int i;
-    for (i = 0; i < NbFindAttr; i++)
-    if ((TbFindAttr[i]. level == level) && (TbFindAttr[i]. keyAttr == UNIQUE_KEY))
+    int ii;
+    for (ii = 0; ii < NbFindAttr; ii++)
+    if ((TbFindAttr[ii]. level == level) && (TbFindAttr[ii]. keyAttr == UNIQUE_KEY))
         break;
 
-    if (i < NbFindAttr) {
-        *tag = TbFindAttr[i].tag;
+    if (ii < NbFindAttr)
+    {
+        *tag = TbFindAttr[ii].tag;
         return (EC_Normal);
     }
-    else
-    return (DcmQROsiriXDatabaseError);
 
+    return (DcmQROsiriXDatabaseError);
 }
 #endif
 
@@ -249,14 +246,14 @@ static OFCondition DB_GetUIDTag (DB_LEVEL level, DcmTagKey *tag)
 
 static OFCondition DB_GetTagLevel (DcmTagKey tag, DB_LEVEL *level)
 {
-    int i;
+    int ii;
 
-    for (i = 0; i < NbFindAttr; i++)
-        if (TbFindAttr[i]. tag == tag)
+    for (ii = 0; ii < NbFindAttr; ii++)
+        if (TbFindAttr[ii]. tag == tag)
             break;
 
-    if (i < NbFindAttr) {
-        *level = TbFindAttr[i]. level;
+    if (ii < NbFindAttr) {
+        *level = TbFindAttr[ii]. level;
         return (EC_Normal);
     }
     
@@ -269,17 +266,18 @@ static OFCondition DB_GetTagLevel (DcmTagKey tag, DB_LEVEL *level)
 
 static OFCondition DB_GetTagKeyAttr (DcmTagKey tag, DB_KEY_TYPE *keyAttr)
 {
-    int i;
+    int ii;
 
-    for (i = 0; i < NbFindAttr; i++)
-        if (TbFindAttr[i]. tag == tag)
+    for (ii = 0; ii < NbFindAttr; ii++)
+        if (TbFindAttr[ii]. tag == tag)
             break;
 
-    if (i < NbFindAttr) {
-        *keyAttr = TbFindAttr[i]. keyAttr;
+    if (ii < NbFindAttr)
+    {
+        *keyAttr = TbFindAttr[ii]. keyAttr;
         return (EC_Normal);
     }
-    else
+
     return (DcmQROsiriXDatabaseError);
 }
 

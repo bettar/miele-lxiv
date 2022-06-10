@@ -344,8 +344,6 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 
 -(void)dealloc
 {
-	long i;
-	
     NSLog(@"Dealloc SRView");
 	
 	[splash close];
@@ -359,7 +357,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	
 	[self setBlendingPixSource: nil];
 	
-	for ( i = 0 ; i < 2; i++)
+	for (long i = 0 ; i < 2; i++)
 	{
 		[self deleteActor:i];
 		[self BdeleteActor:i];
@@ -1154,10 +1152,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	// Added SilvanWidmer 19-08-09
 	if (self.StereoVisionOn)
 	{
-		unsigned char	*buf = nil;
-		unsigned char  *leftBuf = nil;
+		unsigned char *buf = nil;
+		unsigned char *leftBuf = nil;
 		unsigned char *rightBuf = nil;
-		long			i;
+		long i;
 		
 		//	if( screenCapture)	// Pixels displayed in current window -> only RGB 8 bits data
 		{

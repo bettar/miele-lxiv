@@ -353,7 +353,6 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 -(void) UpdateCLUTMenu: (NSNotification*) note
 {
     //*** Build the menu
-    short       i;
     NSArray     *keys;
     NSArray     *sortedKeys;
 
@@ -368,7 +367,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
     [[clutPopup menu] addItemWithTitle: NSLocalizedString(@"No CLUT", nil) action:@selector(ApplyCLUT:) keyEquivalent:@""];
 	[[clutPopup menu] addItem: [NSMenuItem separatorItem]];
 	
-    for( i = 0; i < [sortedKeys count]; i++)
+    for (short i = 0; i < [sortedKeys count]; i++)
     {
         [[clutPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector(ApplyCLUT:) keyEquivalent:@""];
     }
@@ -431,9 +430,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 -(void) UpdateWLWWMenu: (NSNotification*) note
 {
     //*** Build the menu
-    short       i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
 
     // Presets VIEWER Menu
 	
@@ -448,7 +446,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Full dynamic", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
 	[[wlwwPopup menu] addItem: [NSMenuItem separatorItem]];
     
-    for( i = 0; i < [sortedKeys count]; i++)
+    for (short i = 0; i < [sortedKeys count]; i++)
     {
         [[wlwwPopup menu] addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
     }
@@ -531,9 +529,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
     //*** Build the menu
-    short       i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
 
     // Presets VIEWER Menu
 	
@@ -544,7 +541,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	
     [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
 	[[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
-    for( i = 0; i < [sortedKeys count]; i++)
+    for (short i = 0; i < [sortedKeys count]; i++)
     {
         [[OpacityPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
     }
@@ -2390,7 +2387,6 @@ return YES;
 
 -(IBAction) endExportDICOMFileSettings:(id) sender
 {
-	long i;
 	[dcmExportWindow makeFirstResponder: nil];	// To force nstextfield validation.
     [dcmExportWindow orderOut:sender];
     
@@ -2519,11 +2515,12 @@ return YES;
 				{
 					[[splash progress] setMaxValue:(int)((to-from)/interval)];
 					
-					for( i = from; i < to; i+=interval)
+					for (long i = from; i < to; i+=interval)
 					{
 						NSDisableScreenUpdates();
 						
-						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
+						[view setCrossPosition:x+i*deltaX+0.5
+                                              :y+i*deltaY+0.5];
 						[modalitySplitView display];
 						
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -2557,11 +2554,12 @@ return YES;
 					nPET = 35300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
 					
 					[exportDCM setSeriesNumber:nCT];
-					for( i = from; i < to; i+=interval)
+					for (long i = from; i < to; i+=interval)
 					{
 						NSDisableScreenUpdates();
 						
-						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
+						[view setCrossPosition:x+i*deltaX+0.5
+                                              :y+i*deltaY+0.5];
 						[modalitySplitView display];
 						
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -2587,11 +2585,12 @@ return YES;
 					}
 					
 					[exportDCM setSeriesNumber:nPETCT];
-					for( i = from; i < to; i+=interval)
+					for (long i = from; i < to; i+=interval)
 					{
 						NSDisableScreenUpdates();
 						
-						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
+						[view setCrossPosition:x+i*deltaX+0.5
+                                              :y+i*deltaY+0.5];
 						[modalitySplitView display];
 						
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -2617,11 +2616,12 @@ return YES;
 					}
 					
 					[exportDCM setSeriesNumber:nPET];
-					for( i = from; i < to; i+=interval)
+					for (long i = from; i < to; i+=interval)
 					{
 						NSDisableScreenUpdates();
 						
-						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
+						[view setCrossPosition:x+i*deltaX+0.5
+                                              :y+i*deltaY+0.5];
 						[modalitySplitView display];
 						
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

@@ -260,9 +260,9 @@
 
 	if (image)
 	{
-		NSData				*tiffRep = [image TIFFRepresentation];
-		NSSize				imageSize;
-		long				w, h, i;
+		NSData *tiffRep = [image TIFFRepresentation];
+		NSSize imageSize;
+		long w, h;
 		
 		if (tiffRep)
 		{
@@ -277,7 +277,7 @@
 				imageData = (unsigned char*) malloc( h * w * [imageRepresentation samplesPerPixel]);
 				freeImageData = YES;
 				
-				for( i = 0; i < height; i++)
+				for (long i = 0; i < height; i++)
 				{
 					memcpy( imageData + i * width * [imageRepresentation samplesPerPixel], [imageRepresentation bitmapData] + i * [imageRepresentation bytesPerRow], width * [imageRepresentation samplesPerPixel]);
 				}

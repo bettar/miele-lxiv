@@ -7875,7 +7875,7 @@ public:
 					}
 				}
 				
-				//Add the small OsiriX logo at the bottom right of the image
+				// Add the small logo at the bottom right of the image
 				NSImage	 *logo = [NSImage imageNamed:@"SmallLogo.tif"];
 				NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
 				

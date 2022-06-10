@@ -335,12 +335,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                 maxZ	=	nmaxZ;
 			}
 		}
-
-		long i;
-		
 		
 		rPtrZ = rPtr;
-		for( i = 0; i < [pixList count]; i++)
+		for (long i = 0; i < [pixList count]; i++)
 		{
 			
 			ROI *theNewROI = [[ROI alloc]	initWithTexture:rPtrZ
@@ -352,7 +349,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 											spacingX:[[pixList objectAtIndex: i] pixelSpacingX]
 											spacingY:[[pixList objectAtIndex: i] pixelSpacingY]
 											imageOrigin:NSMakePoint([[pixList objectAtIndex: i] originX], [[pixList objectAtIndex: i] originY])];
-			if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
+			if ( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
 			{
 				[roiList2 addObject: [NSDictionary dictionaryWithObjectsAndKeys: theNewROI, @"roi", [pixList objectAtIndex: i], @"curPix", nil]];
 //				[[roiList objectAtIndex:i] addObject:theNewROI];		// roiList
@@ -884,7 +881,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
         // ROI type = tPolygon
         else
         {
-            long i, x;
             long startSlice, endSlice;
             OutputImageType::Pointer frameImage = caster->GetOutput();
             
@@ -921,12 +917,12 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
             int dataExtent[ 6];
             vtkImporter->GetDataExtent( dataExtent);
                     
-            for( i = startSlice; i < endSlice; i++)
+            for (long i = startSlice; i < endSlice; i++)
             {
-                long			imageSize = (dataExtent[ 1]+1) * (dataExtent[ 3]+1);
-                unsigned char	*image2Ddata = (unsigned char*) malloc( imageSize), *tempPtr;
-                vtkImageImport	*image2D;
-                DCMPix			*curPix = [[srcViewer pixList] objectAtIndex: i];
+                long imageSize = (dataExtent[ 1]+1) * (dataExtent[ 3]+1);
+                unsigned char *image2Ddata = (unsigned char*) malloc( imageSize), *tempPtr;
+                vtkImageImport *image2D;
+                DCMPix *curPix = [[srcViewer pixList] objectAtIndex: i];
                 
                 if ( slice == -1)
                     memcpy( image2Ddata, ((unsigned char*) vtkImporter->GetOutput()->GetScalarPointer()) + (i * imageSize), imageSize);
@@ -940,26 +936,26 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                 image2D->SetImportVoidPointer(image2Ddata);		
                 
                 tempPtr = image2Ddata;
-                for ( x = 0; x < [curPix pwidth]; x++)
+                for (long x = 0; x < [curPix pwidth]; x++)
                 {
                     tempPtr[ x] = 0;
                 }
 
                 tempPtr = image2Ddata + ([curPix pwidth]) * ([curPix pheight]-1);
-                for ( x = 0; x < [curPix pwidth]; x++)
+                for (long x = 0; x < [curPix pwidth]; x++)
                 {
                     tempPtr[ x] = 0;
                 }
 
                 tempPtr = image2Ddata;
-                for ( x = 0; x < [curPix pheight]; x++)
+                for (long x = 0; x < [curPix pheight]; x++)
                 {
                     *tempPtr = 0;
                     tempPtr += [curPix pwidth];
                 }
 
                 tempPtr = image2Ddata + [curPix pwidth]-1;
-                for ( x = 0; x < [curPix pheight]; x++)
+                for (long x = 0; x < [curPix pheight]; x++)
                 {
                     *tempPtr = 0;
                     tempPtr += [curPix pwidth];

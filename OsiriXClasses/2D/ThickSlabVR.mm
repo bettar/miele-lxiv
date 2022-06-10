@@ -410,7 +410,7 @@ extern short Altivec;
 //	if( ALTIVECVR)
 //	{
     vImage_Buffer src, srcA, destR, destG, destB, dstARGB;
-    long i, x;
+    long x;
 
 //		NSLog(@"IN");
     
@@ -428,7 +428,7 @@ extern short Altivec;
 		
     if (imageBlendingPtr)
     {
-        i = size;
+        long i = size;
         while( i-- > 0)
         {
             float opacityTot = 1.0, opacity, opacityBlending, opacityAdd, dstFloatRv = 0, dstFloatGv = 0, dstFloatBv = 0;
@@ -438,7 +438,7 @@ extern short Altivec;
             pixelsBlending = ((unsigned char*) dst8Blending.data) +i;
             
             x = count;
-            while( x-- > 0)
+            while ( x-- > 0)
             {
                 unsigned char val = *pixels;
                 unsigned char valBlending = *pixelsBlending;
@@ -476,7 +476,8 @@ extern short Altivec;
             processorsLock = [[NSLock alloc] init];
         
         numberOfThreadsForCompute = [[NSProcessInfo processInfo] processorCount];
-        for( i = 0; i < [[NSProcessInfo processInfo] processorCount]-1; i++)
+        long i;
+        for (i = 0; i < [[NSProcessInfo processInfo] processorCount]-1; i++)
         {
             [NSThread detachNewThreadSelector: @selector(subRender:)
                                      toTarget: self
@@ -492,7 +493,7 @@ extern short Altivec;
                           nil]];
         
         BOOL done = NO;
-        while( done == NO) {
+        while ( done == NO) {
             [processorsLock lock];
             if (numberOfThreadsForCompute <= 0)
                 done = YES;

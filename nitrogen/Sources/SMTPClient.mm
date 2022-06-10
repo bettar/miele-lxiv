@@ -414,10 +414,10 @@ enum {
 			
 			if (length > 0) {
 //				NSLog(@"Read %d bytes", length);
-				//				std::cerr << [[NSString stringWithFormat:@"%@ Read %d Bytes", self, length] UTF8String] << ": ";
-				//				for (int i = 0; i < length; ++i)
-				//					std::cerr << (int)buffer[i] << " ";
-				//				std::cerr << std::endl;
+//				std::cerr << [[NSString stringWithFormat:@"%@ Read %d Bytes", self, length] UTF8String] << ": ";
+//				for (int i = 0; i < length; ++i)
+//					std::cerr << (int)buffer[i] << " ";
+//				std::cerr << std::endl;
 				[_ibuffer appendBytes:buffer length:length];
                 
                 [self handleData:_ibuffer];

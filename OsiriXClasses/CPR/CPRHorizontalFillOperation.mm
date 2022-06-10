@@ -107,8 +107,6 @@
 
 - (void)_linearInterpolatingFill
 {
-    NSUInteger x;
-    NSUInteger y;
     N3AffineTransform vectorTransform;
     N3VectorArray volumeVectors;
     N3VectorArray volumeNormals;
@@ -125,12 +123,12 @@
     N3VectorApplyTransformToVectors(vectorTransform, volumeNormals, _width);
     
     [_volumeData aquireInlineBuffer:&inlineBuffer];
-    for (y = 0; y < _height; y++) {
+    for (NSUInteger y = 0; y < _height; y++) {
         if ([self isCancelled]) {
             break;
         }
         
-        for (x = 0; x < _width; x++) {
+        for (NSUInteger x = 0; x < _width; x++) {
             _floatBytes[y*_width + x] = CPRVolumeDataLinearInterpolatedFloatAtVolumeVector(&inlineBuffer, volumeVectors[x]);
         }
         
@@ -143,8 +141,6 @@
 
 - (void)_nearestNeighborFill
 {
-    NSUInteger x;
-    NSUInteger y;
     N3AffineTransform vectorTransform;
     N3VectorArray volumeVectors;
     N3VectorArray volumeNormals;
@@ -161,12 +157,12 @@
     N3VectorApplyTransformToVectors(vectorTransform, volumeNormals, _width);
     
     [_volumeData aquireInlineBuffer:&inlineBuffer];
-    for (y = 0; y < _height; y++) {
+    for (NSUInteger y = 0; y < _height; y++) {
         if ([self isCancelled]) {
             break;
         }
         
-        for (x = 0; x < _width; x++) {
+        for (NSUInteger x = 0; x < _width; x++) {
             _floatBytes[y*_width + x] = CPRVolumeDataNearestNeighborInterpolatedFloatAtVolumeVector(&inlineBuffer, volumeVectors[x]);
         }
         
@@ -179,8 +175,6 @@
 
 - (void)_cubicInterpolatingFill
 {
-    NSUInteger x;
-    NSUInteger y;
     N3AffineTransform vectorTransform;
     N3VectorArray volumeVectors;
     N3VectorArray volumeNormals;
@@ -197,12 +191,12 @@
     N3VectorApplyTransformToVectors(vectorTransform, volumeNormals, _width);
 
     [_volumeData aquireInlineBuffer:&inlineBuffer];
-    for (y = 0; y < _height; y++) {
+    for (NSUInteger y = 0; y < _height; y++) {
         if ([self isCancelled]) {
             break;
         }
 
-        for (x = 0; x < _width; x++) {
+        for (NSUInteger x = 0; x < _width; x++) {
             _floatBytes[y*_width + x] = CPRVolumeDataCubicInterpolatedFloatAtVolumeVector(&inlineBuffer, volumeVectors[x]);
         }
 

@@ -1625,7 +1625,7 @@ void info_callback(const char *msg, void *a) {
 			
 			int bits = 1, value = 2;
 			
-			while( value < amplitude && bits <= 16))
+			while (value < amplitude && bits <= 16)
 			{
 				value *= 2;
 				bits++;
@@ -1710,15 +1710,13 @@ void info_callback(const char *msg, void *a) {
 			*/
 			
 		//component data
-		int cmptno;	
-		int x,y;
 		jas_matrix_t *jasData[3];
 		//int_fast64_t v;
 		long long v;
 		jasData[0] = 0;
 		jasData[1] = 0;
 		jasData[2] = 0;	
-		for (cmptno = 0; cmptno < spp; ++cmptno)
+		for (int cmptno = 0; cmptno < spp; ++cmptno)
 		{
 			if (!(jasData[cmptno] = jas_matrix_create( 1, width)))
 			{
@@ -1728,11 +1726,11 @@ void info_callback(const char *msg, void *a) {
 		
 		unsigned char *dataPointer = (unsigned char*) [data bytes];
 		
-		for (y = 0; y < height; ++y)
+		for (int y = 0; y < height; ++y)
 		{
-			for (x = 0; x < width; ++x)
+			for (int x = 0; x < width; ++x)
 			{
-				for (cmptno = 0; cmptno < spp; ++cmptno)
+				for (int cmptno = 0; cmptno < spp; ++cmptno)
 				{
 					if (_bitsAllocated <= 8)
 					{
@@ -1760,7 +1758,7 @@ void info_callback(const char *msg, void *a) {
 				} //cmpt
 			}	// x
 			
-			for (cmptno = 0; cmptno < spp; ++cmptno)
+			for (int cmptno = 0; cmptno < spp; ++cmptno)
 			{
 				if (jas_image_writecmpt(image, cmptno, 0, y, width, 1, jasData[cmptno]))
 				{
@@ -1807,7 +1805,7 @@ void info_callback(const char *msg, void *a) {
 		
 		jpeg2000Data = [NSMutableData dataWithBytesNoCopy: outBuffer length: compressedLength freeWhenDone: YES];
 		
-		for (cmptno = 0; cmptno < spp; ++cmptno)
+		for (int cmptno = 0; cmptno < spp; ++cmptno)
 		{
 			if (jasData[cmptno])
 				jas_matrix_destroy(jasData[cmptno]);

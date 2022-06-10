@@ -27,8 +27,7 @@
 
 - (void) refresh
 {
-	long	i;
-	float	iY, aY;
+	float iY, aY;
 	
 	if (data)
         free( data);
@@ -36,7 +35,7 @@
 	data = [curROI dataValuesAsFloatPointer: &dataSize];
 	
 	iY = aY = data[ 0];
-	for( i = 0 ; i < dataSize; i++)
+	for (long i = 0 ; i < dataSize; i++)
 	{
 		if( iY > data[ i])
             iY = data[ i];

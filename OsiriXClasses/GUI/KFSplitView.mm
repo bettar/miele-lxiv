@@ -629,7 +629,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 // Could be done efficiently here, but would duplicate functionality of other methods.
 - (void)kfLayoutSubviewsUsingThicknesses:(unsigned *)subviewThicknesses
 {
-    NSInteger i, lastPositiveThicknessSubviewIndex, numSubviews;
+    NSInteger lastPositiveThicknessSubviewIndex, numSubviews;
     float minorDimOfSplitViewSize;
     float curMajAxisPos, dividerThickness;
     NSArray *subviews;
@@ -642,7 +642,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     
     // Compute lastPositiveThicknessSubviewIndex.
     lastPositiveThicknessSubviewIndex = NSNotFound;
-    for (i = numSubviews - 1; i >= 0; i--)
+    for (NSInteger i = numSubviews - 1; i >= 0; i--)
     {
         if (subviewThicknesses[i] != 0)
         {
@@ -653,7 +653,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     
     // We walk down the major axis, setting subview frames as we go.
     curMajAxisPos = 0;
-    for (i = 0; i < numSubviews; i++)
+    for (NSInteger i = 0; i < numSubviews; i++)
     {
         NSView *subview = [subviews objectAtIndex:i];
         
@@ -740,14 +740,14 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 // given coordinate, or NSNotFound if there isn't a divider there.
 - (int)kfGetDividerAtMajCoord:(float)coord
 {
-    NSInteger i, numDividers, result;
+    NSInteger numDividers, result;
     float curDividerMinimumMajorCoord, dividerThickness;
         
     numDividers = [kfDividerRects count];
     result = NSNotFound;
     dividerThickness = [self dividerThickness];
     
-    for (i = 0; i < numDividers; i++)
+    for (NSInteger i = 0; i < numDividers; i++)
     {
         curDividerMinimumMajorCoord = KFMAJORCOORDOFPOINT([[kfDividerRects objectAtIndex:i] rectValue].origin);
         if (curDividerMinimumMajorCoord <= coord && coord < curDividerMinimumMajorCoord + dividerThickness)
@@ -790,14 +790,14 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 {
     float curMajAxisPos, dividerThickness;
     id subview, subviews;
-    int numSubviews, i;
+    int numSubviews;
     
     dividerThickness = [self dividerThickness];
     subviews = [self subviews];
     numSubviews = [subviews count];
     
     curMajAxisPos = 0;
-    for (i = 0; i < numSubviews - 1; i++)
+    for (int i = 0; i < numSubviews - 1; i++)
     {
         subview = [subviews objectAtIndex:i];
         if (![self isSubviewCollapsed:subview])
@@ -1019,7 +1019,7 @@ static NSString *savedPositionIsVerticalKey		= @"isVertical";
         if ([[positionDict objectForKey:savedPositionVersionKey] intValue] == 2)
         {
             NSArray *subviews, *subviewPositionsArray;
-            int numSubviews, numSavedSubviews, numSettableSubviews, i;
+            int numSubviews, numSavedSubviews, numSettableSubviews;
             
             // set subview positions
             subviews = [self subviews];
@@ -1031,7 +1031,7 @@ static NSString *savedPositionIsVerticalKey		= @"isVertical";
             numSavedSubviews = [subviewPositionsArray count];
             numSettableSubviews = (numSubviews < numSavedSubviews) ? numSubviews : numSavedSubviews;
             
-            for (i = 0; i < numSettableSubviews; i++)
+            for (int i = 0; i < numSettableSubviews; i++)
             {
                 NSView *subview;
                 NSDictionary *subviewPositionData;
@@ -1059,16 +1059,12 @@ static NSString *savedPositionIsVerticalKey		= @"isVertical";
     // save position data format version
     [positionDict setObject:@2 forKey:savedPositionVersionKey];
     
-    // save subview positions
-    NSArray *subviews;
-    NSMutableArray *subviewPositionsArray;
-    int numSubviews, i;
+    // save subview positions    
+    NSArray *subviews = [self subviews];
+    int numSubviews = [subviews count];
+    NSMutableArray *subviewPositionsArray = [NSMutableArray array];
     
-    subviews = [self subviews];
-    numSubviews = [subviews count];
-    subviewPositionsArray = [NSMutableArray array];
-    
-    for (i = 0; i < numSubviews; i++)
+    for (int i = 0; i < numSubviews; i++)
     {
         NSView *subview;
         NSDictionary *subviewPositionData;

@@ -28,7 +28,7 @@ N3BezierCoreRef N3BezierCoreCreateCurveWithNodes(N3VectorArray vectors, CFIndex 
 
 N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vectors, CFIndex numVectors, N3BezierNodeStyle style)
 {
-	long long  i, j;
+	long long i, j;
 	double xi, yi, zi;
 	long long nb;
 	double *px, *py, *pz;
@@ -85,7 +85,6 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vec
 	px  = (double *)malloc(nb*sizeof(double));
 	py  = (double *)malloc(nb*sizeof(double));
 	pz  = (double *)malloc(nb*sizeof(double));
-    
 	
 	BOOL failed = NO;
 	

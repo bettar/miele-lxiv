@@ -408,13 +408,12 @@
 	}
 	else
 	{
-		long			i;
-		DICOMExport		*dcmSequence = [[DICOMExport alloc] init];
+		DICOMExport *dcmSequence = [[DICOMExport alloc] init];
 		long numberOfFrames = flyThru.numberOfFrames;
 		
 		NSMutableArray *producedFiles = [NSMutableArray array];
 		
-		if( [[self window3DController] movieFrames] > 1)
+		if ( [[self window3DController] movieFrames] > 1)
 		{
 			numberOfFrames /= [[self window3DController] movieFrames];
 			numberOfFrames *= [[self window3DController] movieFrames];
@@ -428,7 +427,7 @@
 		[dcmSequence setSeriesDescription: dcmSeriesName];
 		[dcmSequence setSourceFile: [[[controller3D pixList] objectAtIndex:0] sourceFile]];
 				
-		for( i = 0; i < numberOfFrames; i++)
+		for (long i = 0; i < numberOfFrames; i++)
 		{
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			
@@ -445,12 +444,12 @@
 			[FTAdapter setCurrentViewToCamera:[[flyThru pathCameras] objectAtIndex: i]];
 			[FTAdapter getCurrentCameraImage: levelOfDetailType];
 			
-			long	width, height, spp, bpp;
+			long width, height, spp, bpp;
 			
 			unsigned char *dataPtr = [[controller3D view] getRawPixels:&width :&height :&spp :&bpp :YES :YES];
-			float	o[ 9];
+			float o[ 9];
 			
-			if( dataPtr)
+			if ( dataPtr)
 			{
 				[dcmSequence setPixelData: dataPtr samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
 				
@@ -484,7 +483,7 @@
 		
 		[dcmSequence release];
 		
-		if( [producedFiles count])
+		if ( [producedFiles count])
 		{
 			NSArray *objects = [BrowserController.currentBrowser.database addFilesAtPaths: [producedFiles valueForKey: @"file"]
                                                                         postNotifications: YES

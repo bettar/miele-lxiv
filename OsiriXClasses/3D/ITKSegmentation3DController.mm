@@ -393,16 +393,15 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 						
 						if( [[pixelsSet cellWithTag:1] state] == NSOnState)	// FILL THE IMAGE WITH THE VALUE
 						{
-							long	i, x;
-							float	*dstImage, value = [[pixelsValue cellWithTag:1] floatValue];
+							float *dstImage, value = [[pixelsValue cellWithTag:1] floatValue];
 							
-							for( i = 0; i < [[resultsViewer pixList] count]; i++)
+							for (long i = 0; i < [[resultsViewer pixList] count]; i++)
 							{
 								DCMPix	*curPix = [[resultsViewer pixList] objectAtIndex: i];
 								dstImage = [curPix fImage];
 								long tot = [curPix pwidth] * [curPix pheight];
 								
-								for( x = 0; x < tot; x++) 
+								for (long x = 0; x < tot; x++)
 								{
 									*dstImage++ = value;
 								}

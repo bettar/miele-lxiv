@@ -1601,7 +1601,7 @@ return YES;
 
 -(IBAction) endExportDICOMFileSettings:(id) sender
 {
-	long i, curImage;
+	long curImage;
 	
 	[dcmExportWindow makeFirstResponder: nil];	// To force nstextfield validation.
     [dcmExportWindow orderOut:sender];
@@ -1621,7 +1621,7 @@ return YES;
 			if (exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 			[exportDCM setSeriesNumber:5600 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
 			
-			for( int i = 0; i < maxMovieIndex; i ++)
+			for (int i = 0; i < maxMovieIndex; i ++)
 			{
 				[self setMovieIndex: i];
 				
@@ -1688,10 +1688,12 @@ return YES;
 			
 			@try
 			{
-				if (exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
+				if (exportDCM == nil)
+                    exportDCM = [[DICOMExport alloc] init];
+                
 				[exportDCM setSeriesNumber:5600 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
 				
-				for( i = from; i < to; i+=interval)
+				for (long i = from; i < to; i+=interval)
 				{
                     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					@try 

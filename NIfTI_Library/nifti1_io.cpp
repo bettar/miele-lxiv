@@ -970,10 +970,10 @@ static int int_force_positive( int * list, int nel )
 *//*--------------------------------------------------------------------*/
 int nifti_disp_matrix_orient( const char * mesg, mat44 mat )
 {
+   if ( mesg )
+       fputs( mesg, stderr );  /* use stdout? */
+
    int i, j, k;
-
-   if ( mesg ) fputs( mesg, stderr );  /* use stdout? */
-
    nifti_mat44_to_orientation( mat, &i,&j,&k );
    if ( i <= 0 || j <= 0 || k <= 0 )
        return -1;
@@ -1699,9 +1699,9 @@ float nifti_mat33_colnorm( mat33 A )  /* max column norm of 3x3 matrix */
 *//*--------------------------------------------------------------------*/
 mat33 nifti_mat33_mul( mat33 A , mat33 B )  /* multiply 2 3x3 matrices */
 {
-   mat33 C ; int i,j ;
-   for( i=0 ; i < 3 ; i++ )
-    for( j=0 ; j < 3 ; j++ )
+   mat33 C ;
+   for (int i=0 ; i < 3 ; i++ )
+    for (int j=0 ; j < 3 ; j++ )
       C.m[i][j] =  A.m[i][0] * B.m[0][j]
                  + A.m[i][1] * B.m[1][j]
                  + A.m[i][2] * B.m[2][j] ;
@@ -5534,9 +5534,8 @@ char *nifti_image_to_ascii( const nifti_image *nim )
      free(ebuf) ;
    }
 
-   if( nim->qform_code > 0 ){
-     int i,j,k ;
-
+   if ( nim->qform_code > 0 )
+   {
      sprintf( buf+strlen(buf) ,
               "  qform_code = '%d'\n"
               "  qform_code_name = '%s'\n"
@@ -5573,8 +5572,9 @@ char *nifti_image_to_ascii( const nifti_image *nim )
          nim->quatern_b , nim->quatern_c , nim->quatern_d ,
          nim->qoffset_x , nim->qoffset_y , nim->qoffset_z , nim->qfac ) ;
 
+     int i,j,k;
      nifti_mat44_to_orientation( nim->qto_xyz , &i,&j,&k ) ;
-     if( i > 0 && j > 0 && k > 0 )
+     if ( i > 0 && j > 0 && k > 0 )
        sprintf( buf+strlen(buf) ,
                 "  qform_i_orientation = '%s'\n"
                 "  qform_j_orientation = '%s'\n"
@@ -5584,9 +5584,8 @@ char *nifti_image_to_ascii( const nifti_image *nim )
                 nifti_orientation_string(k)  ) ;
    }
 
-   if( nim->sform_code > 0 ){
-     int i,j,k ;
-
+   if ( nim->sform_code > 0 )
+   {
      sprintf( buf+strlen(buf) ,
               "  sform_code = '%d'\n"
               "  sform_code_name = '%s'\n"
@@ -5612,6 +5611,7 @@ char *nifti_image_to_ascii( const nifti_image *nim )
          nim->sto_ijk.m[3][0] , nim->sto_ijk.m[3][1] ,
          nim->sto_ijk.m[3][2] , nim->sto_ijk.m[3][3]  ) ;
 
+     int i,j,k ;
      nifti_mat44_to_orientation( nim->sto_xyz , &i,&j,&k ) ;
      if( i > 0 && j > 0 && k > 0 )
        sprintf( buf+strlen(buf) ,

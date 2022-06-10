@@ -10036,25 +10036,25 @@ static BOOL withReset = NO;
         {
             if ([previewPix count] && loadPreviewIndex < [previewPix count])
             {
-                long i;
-                for (i = 0; i < [previewPix count]; i++)
+                long ii;
+                for (ii = 0; ii < [previewPix count]; ii++)
                 {
                     NSInteger rows, cols;
                     [oMatrix getNumberOfRows:&rows columns:&cols];
                     if (cols < 1)
                         cols = 1;
                     
-                    NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
+                    NSButtonCell* cell = [oMatrix cellAtRow:ii/cols column:ii%cols];
                     
                     if ([cell isEnabled] == NO)
                     {
-                        if (i < [previewPix count])
+                        if (ii < [previewPix count])
                         {
-                            if ([previewPix objectAtIndex: i] != nil)
+                            if ([previewPix objectAtIndex: ii] != nil)
                             {
-                                if (i < [matrixViewArray count])
+                                if (ii < [matrixViewArray count])
                                 {
-                                    [self matrixNewIcon:i :[matrixViewArray objectAtIndex: i]];
+                                    [self matrixNewIcon:ii :[matrixViewArray objectAtIndex: ii]];
                                 }
                             }
                         }
@@ -10070,7 +10070,7 @@ static BOOL withReset = NO;
                 if (loadPreviewIndex == 0)
                     [self initAnimationSlider];
                 
-                loadPreviewIndex = i;
+                loadPreviewIndex = ii;
             }
         }
 	}
@@ -10215,8 +10215,8 @@ static BOOL withReset = NO;
 
 - (IBAction) resetWindowsState:(id)sender
 {
-	NSInteger				x, row;
-	NSManagedObjectContext	*context = self.database.managedObjectContext;
+	NSInteger row;
+	NSManagedObjectContext *context = self.database.managedObjectContext;
 	
 	[context lock];
 	
@@ -10226,7 +10226,7 @@ static BOOL withReset = NO;
 	
 		if ([databaseOutline selectedRow] >= 0)
 		{
-			for (x = 0; x < [selectedRows count] ; x++)
+			for (NSInteger x = 0; x < [selectedRows count] ; x++)
 			{
 				if (x == 0)
                     row = [selectedRows firstIndex];

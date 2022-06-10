@@ -125,14 +125,22 @@
 
 -(NSString*)stringByTrimmingStartAndEnd {
 	NSCharacterSet* whitespaceAndNewline = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-	unsigned i;
-	for (i = 0; i < [self length] && [whitespaceAndNewline characterIsMember:[self characterAtIndex:i]]; ++i);
-	if (i == [self length])
+	unsigned ii;
+	for (ii = 0; ii < [self length] && [whitespaceAndNewline characterIsMember:[self characterAtIndex:ii]]; ++ii)
+    {
+        
+    }
+
+    if (ii == [self length])
         return @"";
     
-	unsigned start = i;
-	for (i = [self length]-1; i > start && [whitespaceAndNewline characterIsMember:[self characterAtIndex:i]]; --i);
-	return [self substringWithRange:NSMakeRange(start, i-start+1)];
+	unsigned start = ii;
+	for (ii = [self length]-1; ii > start && [whitespaceAndNewline characterIsMember:[self characterAtIndex:ii]]; --ii)
+    {
+        
+    }
+    
+	return [self substringWithRange:NSMakeRange(start, ii-start+1)];
 }
 
 -(NSString*)urlEncodedString /* deprecated */ {

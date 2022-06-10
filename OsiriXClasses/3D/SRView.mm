@@ -632,9 +632,8 @@ typedef struct _xyzArray
 		}
 		else // A 3D sequence
 		{
-			long			i;
-			float			o[ 9];
-			DICOMExport		*dcmSequence = [[DICOMExport alloc] init];
+			float o[ 9];
+			DICOMExport *dcmSequence = [[DICOMExport alloc] init];
 			
 			Wait *progress = [[Wait alloc] initWithString: NSLocalizedString( @"Creating a DICOM series", nil)];
 			[progress showWindow:self];
@@ -656,9 +655,9 @@ typedef struct _xyzArray
 			
 			aRenderer->RemoveActor(textX);
 			[self display];
-			for (i = 0; i < numberOfFrames; i++)
+			for (long i = 0; i < numberOfFrames; i++)
 			{
-				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 				
 			//	[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
 				long	width, height, spp, bpp;
@@ -1677,7 +1676,6 @@ typedef struct _xyzArray
 
 -(void) setBlendingFactor:(float) a
 {
-	long i;
 	float val, ii;
 	double alpha[ 256];
 	
@@ -1687,7 +1685,7 @@ typedef struct _xyzArray
 	{
 		a += 256;
 		
-		for (i=0; i < 256; i++)
+		for (long i=0; i < 256; i++)
 		{
 			ii = i;
 			val = (a * ii) / 256.;
@@ -1702,12 +1700,12 @@ typedef struct _xyzArray
 	{
 		if (a == 256)
 		{
-			for (i=0; i < 256; i++)
+			for (long i=0; i < 256; i++)
 				alpha[ i] = 1.0;
 		}
 		else
 		{
-			for (i=0; i < 256; i++)
+			for (long i=0; i < 256; i++)
 			{
 				ii = i;
 				val = (256. * ii)/(256 - a);
@@ -2749,9 +2747,9 @@ typedef struct _xyzArray
 	
 	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
 	
-	//Add the small OsiriX logo at the bottom right of the image
-	NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];
-	NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
+	// Add the small logo at the bottom right of the image
+	NSImage *logo = [NSImage imageNamed:@"SmallLogo.tif"];
+	NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
 	
 	for (i = 0; i < [TIFFRep pixelsHigh]; i++)
 	{
@@ -3009,9 +3007,8 @@ typedef struct _xyzArray
 
 - (void) addRandomPoints: (int) n : (int) r
 {
-	long i;
 	// add some random points
-	for (i=0; i<n ; i++)
+	for (long i=0; i<n ; i++)
 	{
 		[self add3DPoint: ((double)(random()/(pow(2.,31.)-1))*2.0-1.0)*(double)r // x coordinate
 						: ((double)(random()/(pow(2.,31.)-1))*2.0-1.0)*(double)r // y

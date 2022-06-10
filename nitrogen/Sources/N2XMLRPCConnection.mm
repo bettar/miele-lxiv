@@ -203,9 +203,9 @@
         //			[NSException raise:NSGenericException format:@"request parameters inconsistent", [methodNames count]];
         NSArray* params = [methodCall nodesForXPath:@"params/param/value" error:NULL];
         
-        //		NSMutableDictionary* methodParameters = [NSMutableDictionary dictionaryWithCapacity:[methodParameterNames count]];
-        //		for (int i = 0; i < [methodParameterNames count]; ++i)
-        //			[methodParameters setObject:[[methodParameterValues objectAtIndex:i] objectValue] forKey:[[methodParameterNames objectAtIndex:i] objectValue]];
+//		NSMutableDictionary* methodParameters = [NSMutableDictionary dictionaryWithCapacity:[methodParameterNames count]];
+//		for (int i = 0; i < [methodParameterNames count]; ++i)
+//			[methodParameters setObject:[[methodParameterValues objectAtIndex:i] objectValue] forKey:[[methodParameterNames objectAtIndex:i] objectValue]];
         
         NSMutableArray* objcparams = [NSMutableArray array];
         for (NSXMLNode* param in params)

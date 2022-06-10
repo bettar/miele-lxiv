@@ -308,7 +308,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		wl = [originalPix wl];
 		ww = [originalPix ww];
 		
-		for( i = 0; i < [pixList count]; i++)
+		for ( i = 0; i < [pixList count]; i++)
 		{
 			curPix = [[[pixList objectAtIndex: i] copy] autorelease];
 			

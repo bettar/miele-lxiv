@@ -39,11 +39,10 @@
 
 - (NSUInteger)comboBox:(NSComboBox *)aComboBox indexOfItemWithStringValue:(NSString *)aString
 {
-	if (roiNames == nil) roiNames = [curController generateROINamesArray];
+	if (roiNames == nil)
+        roiNames = [curController generateROINamesArray];
 	
-	long i;
-	
-	for(i = 0; i < [roiNames count]; i++)
+	for (long i = 0; i < [roiNames count]; i++)
 	{
 		if ([[roiNames objectAtIndex: i] isEqualToString: aString])
             return i;

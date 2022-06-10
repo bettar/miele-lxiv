@@ -519,7 +519,6 @@ SInt32 osVersion()
 
 NSRect screenFrame()
 {
-	int i = 0;
 	float height = 0.0;
 	float width = 0.0;
 	float singleWidth = 0.0;
@@ -542,7 +541,7 @@ NSRect screenFrame()
 				//multiple monitors. Need to span at least two monitors for viewing if they are the same size.
 				height = [[[NSScreen screens] objectAtIndex:1] frame].size.height;
 				singleWidth = width = [[[NSScreen screens] objectAtIndex:1] frame].size.width;
-				for (i = 2; i < screenCount; i ++)
+				for (int i = 2; i < screenCount; i ++)
 				{
 					frame = [[[NSScreen screens] objectAtIndex:i] frame];
 					if (frame.size.height == height && frame.size.width == singleWidth)
@@ -555,14 +554,14 @@ NSRect screenFrame()
 			}
 			else //only one screen
 			{
-				screenRect    = [[[NSScreen screens] objectAtIndex:0] visibleFrame];
+				screenRect = [[[NSScreen screens] objectAtIndex:0] visibleFrame];
 			}
             break;
 		
 		case MULTIPLE_SCREEN_TYPE_ALL:
 			height = [[[NSScreen screens] objectAtIndex:0] frame].size.height;
 			singleWidth = width = [[[NSScreen screens] objectAtIndex:0] frame].size.width;
-			for (i = 1; i < screenCount; i ++)
+			for (int i = 1; i < screenCount; i ++)
 			{
 				frame = [[[NSScreen screens] objectAtIndex:i] frame];
 				if (frame.size.height == height && frame.size.width == singleWidth)
@@ -648,8 +647,7 @@ static void dumpLSArchitecturesForX86_64()
         return;
 
     // For each applicationID
-    NSUInteger i = 0;
-    for (i = 0 ; i < [applicationIDArray count] ; i++)
+    for (NSUInteger i = 0 ; i < [applicationIDArray count] ; i++)
     {
         NSString *applicationID = [applicationIDArray objectAtIndex:i];
         NSArray *appArray = [architectureDict objectForKey:applicationID];
@@ -658,8 +656,7 @@ static void dumpLSArchitecturesForX86_64()
         // there is a pair (Alias, architecture).
         // The alias is stored as a NSData
         // and the architecture as a NSString.
-        NSUInteger j = 0;
-        for (j = 0 ; j < [appArray count] / 2 ; j++)
+        for (NSUInteger j = 0 ; j < [appArray count] / 2 ; j++)
         {
             // Just for safety
             if (j * 2 + 1 < [appArray count])
@@ -2019,9 +2016,8 @@ static bool isGrantedNotificationAccess = false;
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
     //*** Build the menu
-    short       i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
     
 	if (mainOpacityMenu == nil)
 		mainOpacityMenu = [[self opacityMenu] retain];
@@ -2037,7 +2033,7 @@ static bool isGrantedNotificationAccess = false;
 		
 		[mainOpacityMenu addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
         
-		for (i = 0; i < [sortedKeys count]; i++)
+		for (short i = 0; i < [sortedKeys count]; i++)
 		{
 			[mainOpacityMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
 		}
@@ -2050,9 +2046,8 @@ static bool isGrantedNotificationAccess = false;
 -(void) UpdateWLWWMenu: (NSNotification*) note
 {
     //*** Build the menu
-    short       i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
     
 	if (mainMenuWLWWMenu == nil)
 		mainMenuWLWWMenu = [[self wlwwMenu] retain];
@@ -2072,7 +2067,7 @@ static bool isGrantedNotificationAccess = false;
 		
 		[mainMenuWLWWMenu addItem: [NSMenuItem separatorItem]];
 		
-		for (i = 0; i < [sortedKeys count]; i++)
+		for (short i = 0; i < [sortedKeys count]; i++)
 		{
 			[mainMenuWLWWMenu addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
 		}
@@ -2087,9 +2082,8 @@ static bool isGrantedNotificationAccess = false;
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
 	//*** Build the menu
-	short       i;
-	NSArray     *keys;
-	NSArray     *sortedKeys;
+	NSArray *keys;
+	NSArray *sortedKeys;
 	
 	if (mainMenuConvMenu == nil)
 		mainMenuConvMenu = [[self convMenu] retain];
@@ -2107,7 +2101,7 @@ static bool isGrantedNotificationAccess = false;
 		
 		[mainMenuConvMenu addItem: [NSMenuItem separatorItem]];
 		
-		for (i = 0; i < [sortedKeys count]; i++)
+		for (short i = 0; i < [sortedKeys count]; i++)
 		{
 			[mainMenuConvMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyConv:) keyEquivalent:@""];
 		}
@@ -2120,9 +2114,8 @@ static bool isGrantedNotificationAccess = false;
 -(void) UpdateCLUTMenu: (NSNotification*) note
 {
     //*** Build the menu
-    short       i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
     
 	if (mainMenuCLUTMenu == nil)
         mainMenuCLUTMenu = [[self clutMenu] retain];
@@ -2140,7 +2133,7 @@ static bool isGrantedNotificationAccess = false;
 		
 		[mainMenuCLUTMenu addItem: [NSMenuItem separatorItem]];
 		
-		for (i = 0; i < [sortedKeys count]; i++)
+		for (short i = 0; i < [sortedKeys count]; i++)
 		{
 			[mainMenuCLUTMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyCLUT:) keyEquivalent:@""];
 		}

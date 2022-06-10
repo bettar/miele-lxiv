@@ -644,9 +644,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 -(void) Update2DCLUTMenu: (NSNotification*) note
 {
     //*** Build the menu
-    short       i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
 
     // Presets VIEWER Menu
 	
@@ -659,7 +658,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
     [[clut2DPopup menu] addItemWithTitle: NSLocalizedString(@"No CLUT", nil) action:@selector(ApplyCLUT:) keyEquivalent:@""];
 	[[clut2DPopup menu] addItem: [NSMenuItem separatorItem]];
 	
-    for( i = 0; i < [sortedKeys count]; i++)
+    for (short i = 0; i < [sortedKeys count]; i++)
     {
         [[clut2DPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector(ApplyCLUT:) keyEquivalent:@""];
     }
@@ -681,9 +680,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 -(void) Update2DWLWWMenu: (NSNotification*) note
 {
     //*** Build the menu
-    short       i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
 
     // Presets VIEWER Menu
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] allKeys];
@@ -696,7 +694,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	[[wlww2DPopup menu] addItemWithTitle: NSLocalizedString(@"Full dynamic", nil) action:@selector (Apply2DWLWW:) keyEquivalent:@""];
 	[[wlww2DPopup menu] addItem: [NSMenuItem separatorItem]];
     
-    for( i = 0; i < [sortedKeys count]; i++)
+    for (short i = 0; i < [sortedKeys count]; i++)
     {
         [[wlww2DPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (Apply2DWLWW:) keyEquivalent:@""];
     }
@@ -745,9 +743,9 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 
 - (void) CloseViewerNotification: (NSNotification*) note
 {
-	ViewerController	*v = [note object];
+	ViewerController *v = [note object];
 	
-//	for( i = 0; i < maxMovieIndex; i++)
+//	for (int i = 0; i < maxMovieIndex; i++)
 	{
 		if ([v pixList] == pixList)
 		{

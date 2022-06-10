@@ -934,8 +934,7 @@ static NSMutableArray *recentNonces;
 	
 	UInt64 actualContentLength = 0;
 	
-	uint i;
-	for(i = 0; i < [ranges count]; i++)
+	for(uint i = 0; i < [ranges count]; i++)
 	{
 		DDRange range = [[ranges objectAtIndex:i] ddrangeValue];
 		
@@ -997,9 +996,8 @@ static NSMutableArray *recentNonces;
 - (uint)writeQueueSize
 {
 	uint result = 0;
-	
-	uint i;
-	for (i = 0; i < [responseDataSizes count]; i++)
+
+	for (uint i = 0; i < [responseDataSizes count]; i++)
 	{
 		result += [[responseDataSizes objectAtIndex:i] unsignedIntValue];
 	}

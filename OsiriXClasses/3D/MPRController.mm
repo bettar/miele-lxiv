@@ -1549,31 +1549,30 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	{
 		NSDictionary *aCLUT;
 		NSArray *array;
-		long i;
 		unsigned char red[256], green[256], blue[256];
 		
 		aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: str];
 		if (aCLUT)
 		{
 			array = [aCLUT objectForKey:@"Red"];
-			for( i = 0; i < 256; i++)
+			for (long i = 0; i < 256; i++)
 			{
 				red[i] = [[array objectAtIndex: i] longValue];
 			}
 			
 			array = [aCLUT objectForKey:@"Green"];
-			for( i = 0; i < 256; i++)
+			for (long i = 0; i < 256; i++)
 			{
 				green[i] = [[array objectAtIndex: i] longValue];
 			}
 			
 			array = [aCLUT objectForKey:@"Blue"];
-			for( i = 0; i < 256; i++)
+			for (long i = 0; i < 256; i++)
 			{
 				blue[i] = [[array objectAtIndex: i] longValue];
 			}
 			
-			if(clippingRangeMode==0)
+			if (clippingRangeMode==0)
 			{
 				[mprView1.vrView setCLUT:red :green: blue];
 
@@ -1618,9 +1617,8 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
     //*** Build the menu
-    NSUInteger  i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+    NSArray *keys;
+    NSArray *sortedKeys;
 	
     // Presets VIEWER Menu
 	
@@ -1631,7 +1629,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
     [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
 	[[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
-    for( i = 0; i < [sortedKeys count]; i++)
+    for (NSUInteger i = 0; i < [sortedKeys count]; i++)
     {
         [[OpacityPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
     }
