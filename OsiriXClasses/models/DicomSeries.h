@@ -22,6 +22,13 @@
 
 #define THUMBNAILSIZE 70
 
+// Used in series descriptions, series name
+#define APP_SR_ROI                  @"OsiriX ROI SR"  // series number: 5002
+#define OSIRIX_SR_REPORT            @"OsiriX Report SR" // 5003
+#define OSIRIX_SR_ANNOTATION        @"OsiriX Annotations SR" // series id: 5004
+#define OSIRIX_SR_NO_AUTODELETION   @"OsiriX No Autodeletion" // 5005
+#define OSIRIX_SR_WINDOW_STATE      @"OsiriX WindowsState SR" // 5006
+
 @class DicomStudy, Dicom_Image;
 
 /** \brief  Core Data Entity for a Series */

@@ -64,6 +64,8 @@
 #import "url.h"
 #import "tmp_locations.h"
 
+#define GENERATED_BY_APP_KEY    @"generatedByOsiriX"
+
 NSString* const CurrentDatabaseVersion = @"2.6";
 
 @interface DicomDatabase ()
@@ -473,7 +475,8 @@ static DicomDatabase* activeLocalDatabase = nil;
             [NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
             [NSFileManager.defaultManager confirmDirectoryAtPath:self.reportsDirPath];
             [NSFileManager.defaultManager confirmDirectoryAtPath:self.dumpDirPath];
-            
+            //[NSFileManager.defaultManager confirmDirectoryAtPath:self.roisDirPath]; // obsolete ?
+
             if (self.baseDirPath)
                 strncpy(baseDirPathC, self.baseDirPath.fileSystemRepresentation, sizeof(baseDirPathC));
             else
@@ -908,7 +911,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	return tempDirPathC;
 }
 
--(NSUInteger)computeDataFileIndex {
+-(NSUInteger)computeDataFileIndex
+{
 	@synchronized (_dataFileIndex) {
         DLog(@"In -[DicomDatabase computeDataFileIndex] for %@ initially %d", self.sqlFilePath, (int)_dataFileIndex.unsignedIntegerValue);
         
@@ -1022,7 +1026,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
             }
             
             unsigned long long defaultFolderSizeForDB = [BrowserController DefaultFolderSizeForDB];
-            
+
             BOOL fileExists = NO, firstExists = YES;
             do {
                 unsigned long long subFolderInt = defaultFolderSizeForDB*(index/defaultFolderSizeForDB+1);
@@ -1031,7 +1035,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 
                 path = [subFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%llu.%@", (unsigned long long)_dataFileIndex.unsignedIntegerValue, ext]];
                 fileExists = [NSFileManager.defaultManager fileExistsAtPath:path];
-                
+#ifdef DEBUG_IMPORT_FILES
+                NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, path);
+#endif
                 if (fileExists)
                 {
                     if (firstExists)
@@ -1119,7 +1125,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                             s.accessionNumber = [entry objectForKey:@"accessionNumber"];
                             [[a mutableSetValueForKey:@"studies"] addObject:s];
                             DicomSeries* se = [self newObjectForEntity:self.seriesEntity];
-                            se.name = @"OsiriX No Autodeletion";
+                            se.name = OSIRIX_SR_NO_AUTODELETION;
                             se.id = @5005;
                             [[s mutableSetValueForKey:@"series"] addObject:se];
                         }
@@ -1612,6 +1618,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
              importedFiles:(BOOL)importedFiles
                returnArray:(BOOL)returnArray
 {
+#ifndef NDEBUG
+    NSLog(@"DicomDatabase.mm:%d array %lu", __LINE__, (unsigned long)paths.count);
+#endif
 	NSThread* thread = [NSThread currentThread];
     
     //#define RANDOMFILES
@@ -1789,7 +1798,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		if (addFailed)
 		{
 			NSLog(@"adding failed....");
-			
 			return nil;
 		}
 		
@@ -1891,13 +1899,17 @@ static BOOL protectionAgainstReentry = NO;
     [self checkForCorrectContextThread];
 #endif
     
+#ifndef NDEBUG
+    NSLog(@"DicomDatabase.mm:%d array %lu", __LINE__, (unsigned long)dicomFilesArray.count);
+#endif
+    
     NSThread* thread = [NSThread currentThread];
     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
 
     NSMutableArray* newStudies = [NSMutableArray array];
     
-	NSMutableArray* addedImageObjects = nil;
-    NSMutableArray* completeAddedImageObjects = nil;
+	NSMutableArray* addedImageObjects = nil; // array of Dicom_Image
+    NSMutableArray* completeAddedImageObjects = nil; // array of Dicom_Image
     NSMutableDictionary* addedImagesPerCreatorUID = nil;
     NSMutableDictionary* completeAddedImagesPerCreatorUID = nil;
     
@@ -1942,7 +1954,9 @@ static BOOL protectionAgainstReentry = NO;
         NSString *commentField = [[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"];
         BOOL COMMENTSAUTOFILLSeriesLevel = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILLSeriesLevel"];
         BOOL COMMENTSAUTOFILLStudyLevel = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILLStudyLevel"];
-        NSLog(@"### Add files %lu", (unsigned long)dicomFilesArray.count);
+#ifndef NDEBUG
+        NSLog(@"%s %d, Add %lu files", __FUNCTION__, __LINE__, (unsigned long)dicomFilesArray.count);
+#endif
 		NSString* newFile = nil;
 		NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 		// Add the new files
@@ -1970,36 +1984,33 @@ static BOOL protectionAgainstReentry = NO;
                     if ([DCMAbstractSyntaxUID isStructuredReport: SOPClassUID])
                     {
                         // Check if it is an OsiriX Annotations SR
-                        if ([[curDict2 valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Annotations SR"])
+                        if ([[curDict2 valueForKey:@"seriesDescription"] isEqualToString: OSIRIX_SR_ANNOTATION])
                         {
-                            [curDict2 setValue: @"OsiriX Annotations SR" forKey: @"seriesID"];
+                            [curDict2 setValue: OSIRIX_SR_ANNOTATION forKey: @"seriesID"];
                             inParseExistingObject = YES;
                             DICOMSR = YES;
                         }
                         
                         // Check if it is an OsiriX ROI SR
-                        if ([[curDict2 valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX ROI SR"])
+                        if ([[curDict2 valueForKey:@"seriesDescription"] isEqualToString: APP_SR_ROI])
                         {
-                            [curDict2 setValue: @"OsiriX ROI SR" forKey: @"seriesID"];
-                            
+                            [curDict2 setValue: APP_SR_ROI forKey: @"seriesID"];
                             inParseExistingObject = YES;
                             DICOMSR = YES;
                         }
                         
                         // Check if it is an OsiriX Report SR
-                        if ([[curDict2 valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
+                        if ([[curDict2 valueForKey:@"seriesDescription"] isEqualToString: OSIRIX_SR_REPORT])
                         {
-                            [curDict2 setValue: @"OsiriX Report SR" forKey: @"seriesID"];
-                            
+                            [curDict2 setValue: OSIRIX_SR_REPORT forKey: @"seriesID"];
                             inParseExistingObject = YES;
                             DICOMSR = YES;
                         }
                         
                         // Check if it is an OsiriX WindowsState SR
-                        if ([[curDict2 valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX WindowsState SR"])
+                        if ([[curDict2 valueForKey:@"seriesDescription"] isEqualToString: OSIRIX_SR_WINDOW_STATE])
                         {
-                            [curDict2 setValue: @"OsiriX WindowsState SR" forKey: @"seriesID"];
-                            
+                            [curDict2 setValue: OSIRIX_SR_WINDOW_STATE forKey: @"seriesID"];
                             inParseExistingObject = YES;
                             DICOMSR = YES;
                         }
@@ -2070,7 +2081,7 @@ static BOOL protectionAgainstReentry = NO;
                                     NSSet* series = [tstudy series];
                                     if (series.count == 1 &&
                                         [[series.anyObject id] intValue] == 5005 &&
-                                        [[series.anyObject name] isEqualToString:@"OsiriX No Autodeletion"])
+                                        [[series.anyObject name] isEqualToString: OSIRIX_SR_NO_AUTODELETION])
                                     {
                                         newObject = YES;
                                         tstudy.dateAdded = today;
@@ -2268,6 +2279,9 @@ static BOOL protectionAgainstReentry = NO;
                                 curSerieID = curDictSeriesID;
                             }
 
+#ifdef DEBUG_IMPORT_FILES
+                            NSLog(@"%s %d, +++ (L) Find image object", __FUNCTION__, __LINE__);
+#endif
                             /* ******************************************/
                             /* ********** Find image object *************/
                             
@@ -2404,12 +2418,12 @@ static BOOL protectionAgainstReentry = NO;
                                     if (importedFiles)
                                         imageSqlRow.importedFile = @YES;
                                     else
-                                        imageSqlRow.importedFile = nil;
+                                        imageSqlRow.importedFile = @NO;
                                     
                                     if (generatedByOsiriX)
-                                        [imageSqlRow setValue: [NSNumber numberWithBool: generatedByOsiriX] forKey: @"generatedByOsiriX"];
+                                        [imageSqlRow setValue: [NSNumber numberWithBool: generatedByOsiriX] forKey: GENERATED_BY_APP_KEY];
                                     else
-                                        [imageSqlRow setValue: 0L forKey: @"generatedByOsiriX"];
+                                        [imageSqlRow setValue: 0L forKey: GENERATED_BY_APP_KEY];
                                     
                                     if (newObject) {
                                         [seriesSqlRow setValue: nil forKey: @"windowWidth"];
@@ -2495,7 +2509,7 @@ static BOOL protectionAgainstReentry = NO;
                                         }
                                     }
                                     
-                                    if (DICOMSR && [[curDict2 valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX WindowsState SR"])
+                                    if (DICOMSR && [[curDict2 valueForKey:@"seriesDescription"] isEqualToString: OSIRIX_SR_WINDOW_STATE])
                                     {
                                         Dicom_Image *reportSR = [studySqlRow windowsStateImage]; // return the most recent sr
                                         
@@ -2519,7 +2533,7 @@ static BOOL protectionAgainstReentry = NO;
                                         }
                                     }
                                     
-                                    if (DICOMSR && [[curDict2 valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
+                                    if (DICOMSR && [[curDict2 valueForKey:@"seriesDescription"] isEqualToString: OSIRIX_SR_REPORT])
                                     {
                                         BOOL reportUpToDate = NO;
                                         NSString *p = [studySqlRow reportURL];
@@ -2731,16 +2745,23 @@ static BOOL protectionAgainstReentry = NO;
                                                                                     userInfo: [NSDictionary dictionaryWithObject:newStudies forKey: OsirixAddToDBNotificationImagesArray]];
                     }
                     
-                    [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddToDBNotification
-                                                                                  object:self
-                                                                                userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+#ifdef DEBUG_MIELE_WIN
+                    NSLog(@"DicomDatabase.mm:%d array pathNumber: %@", __LINE__, [[addedImageObjects valueForKey:@"pathNumber"] componentsJoinedByString:@", "] ); // or instanceNumber
+                    NSLog(@"DicomDatabase.mm:%d dict keys %@", __LINE__, [addedImagesPerCreatorUID allKeys]);
+#endif
+                    [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName: OsirixAddToDBNotification
+                                                                                  object: self
+                                                                                userInfo: [NSDictionary dictionaryWithObjectsAndKeys: // alternating values and keys
                                                                                           addedImageObjects, OsirixAddToDBNotificationImagesArray,
                                                                                           addedImagesPerCreatorUID, OsirixAddToDBNotificationImagesPerAETDictionary,
                                                                                           nil]];
-                    
+#ifdef DEBUG_MIELE_WIN
+                    NSLog(@"DicomDatabase.mm:%d array pathNumber %@", __LINE__, [[completeAddedImageObjects valueForKey:@"pathNumber"] componentsJoinedByString:@", "]);
+                    NSLog(@"DicomDatabase.mm:%d dict keys %@", __LINE__, [completeAddedImagesPerCreatorUID allKeys]);
+#endif
                     [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName: OsirixAddToDBCompleteNotification
-                                                                                  object:self
-                                                                                userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                  object: self
+                                                                                userInfo: [NSDictionary dictionaryWithObjectsAndKeys: // alternating values and keys
                                                                                           completeAddedImageObjects, OsirixAddToDBNotificationImagesArray,
                                                                                           completeAddedImagesPerCreatorUID, OsirixAddToDBNotificationImagesPerAETDictionary,
                                                                                           nil]];
@@ -2798,7 +2819,7 @@ static BOOL protectionAgainstReentry = NO;
 
 -(void)copyFilesThread:(NSDictionary*)dict
 {
-#ifndef NDEBUG
+#ifdef DEBUG_MIELE_WIN
     NSLog(@"%s %d, dictionary:%@", __FUNCTION__, __LINE__, dict);
 #endif
     @autoreleasepool
@@ -2856,8 +2877,8 @@ static BOOL protectionAgainstReentry = NO;
                                     static NSString *oneCopyAtATime = @"oneCopyAtATime";
                                     @synchronized( oneCopyAtATime)
                                     {
-#ifndef NDEBUG
-                                        NSLog(@"Line %d, mountedVolume:%d", __LINE__, [[dict objectForKey: @"mountedVolume"] boolValue]);
+#if 0 //ndef NDEBUG
+                                        NSLog(@"DicomDatabase.mm:%d, mountedVolume:%d", __LINE__, [[dict objectForKey: @"mountedVolume"] boolValue]);
 #endif
                                         if ([[dict objectForKey: @"mountedVolume"] boolValue])
                                         {
@@ -4240,7 +4261,7 @@ static BOOL protectionAgainstReentry = NO;
     
 	if (complete) {	// Delete the database file
         
-        //First back-up albums
+        // First back-up albums
         [self saveAlbumsToPath: pathSavedAlbums];
         
         thread.status = NSLocalizedString(@"Locking database...", nil);
@@ -4249,10 +4270,26 @@ static BOOL protectionAgainstReentry = NO;
         self.managedObjectContext = nil;
         [oldContext unlock];
         [oldContext release];
-		
-        if ([NSFileManager.defaultManager fileExistsAtPath:self.sqlFilePath]) {
-			[NSFileManager.defaultManager removeItemAtPath:[self.sqlFilePath stringByAppendingString:@" - old"] error:NULL];
-			[NSFileManager.defaultManager moveItemAtPath:self.sqlFilePath toPath:[self.sqlFilePath stringByAppendingString:@" - old"] error:NULL];
+        NSString *renamedSuffix = @"-old";
+#if 1
+        // Append suffix to filename, not to extension
+        NSString *renamedPath;
+        {
+            NSString *ext = [[self.sqlFilePath lastPathComponent] pathExtension];
+            NSString *fileName = [self.sqlFilePath stringByDeletingPathExtension];
+            NSString *newFileName = [fileName stringByAppendingString:renamedSuffix];
+            renamedPath = [newFileName stringByAppendingPathExtension:ext];
+        }
+#else
+        renamedPath = [self.sqlFilePath stringByAppendingString:renamedSuffix];
+#endif
+        if ([NSFileManager.defaultManager fileExistsAtPath:self.sqlFilePath])
+        {
+			[NSFileManager.defaultManager removeItemAtPath: renamedPath
+                                                     error: NULL];
+
+            [NSFileManager.defaultManager moveItemAtPath: self.sqlFilePath
+                                                  toPath: renamedPath error:NULL];
 		}
         
         [NSFileManager.defaultManager removeItemAtPath:self.modelVersionFilePath error:NULL];
@@ -4265,7 +4302,7 @@ static BOOL protectionAgainstReentry = NO;
 	@try {
 		thread.status = NSLocalizedString(@"Scanning database directory...", nil);
 		
-		NSMutableArray *filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
+		NSMutableArray *filesArray = [[NSMutableArray alloc] initWithCapacity: 10000]; // full paths
 		
 		// SCAN THE DATABASE FOLDER, TO BE SURE WE HAVE EVERYTHING!
 		
@@ -4293,7 +4330,7 @@ static BOOL protectionAgainstReentry = NO;
             }
         }
 		
-		dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+		dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath]; // again ??
 		
 		NSLog( @"Start Rebuild");
 		
@@ -4302,7 +4339,7 @@ static BOOL protectionAgainstReentry = NO;
 			@autoreleasepool
 			{
                 NSString *curDir = [aPath stringByAppendingPathComponent: name];
-                NSArray *subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: name]];
+                NSArray *subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: name]]; // array of just the filename, no filepath
                 
                 for (NSString *subName in subDir)
                 {

@@ -2518,11 +2518,11 @@ static NSConditionLock *threadLock = nil;
         
 		switch ([rebuildType selectedTag])
         {
-			case 0:
+			case 0: // Complete
 				[self initiateRebuildDatabase:YES];
 				break;
 				
-			case 1:
+			case 1: // Re-import
 				[self initiateRebuildDatabase:NO];
 				break;
 		}
@@ -2535,7 +2535,7 @@ static NSConditionLock *threadLock = nil;
 		[NSException raise:NSGenericException format:@"Current database rebuild not allowed, this shouldn't be executed."];
 	
 	long totalFiles = 0;
-	NSString	*aPath = [_database dataDirPath];
+	NSString *aPath = [_database dataDirPath];
 	NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
 	for (NSString *name in dirContent)
 	{
@@ -4007,8 +4007,11 @@ static NSConditionLock *threadLock = nil;
                             
                             [correspondingManagedObjects addObjectsFromArray: imagesArray];
                             
-                            if ([obj.name isEqualToString:@"OsiriX No Autodeletion"] && obj.id.intValue == 5005)
+                            if ([obj.name isEqualToString:OSIRIX_SR_NO_AUTODELETION] &&
+                                obj.id.intValue == 5005)
+                            {
                                 dontDelete = obj;
+                            }
                         }
                         
                         if (totImage && dontDelete) // there are images, remove the "OsiriX No Autodeletion" series
@@ -4714,7 +4717,7 @@ static NSConditionLock *threadLock = nil;
                 }
                 @catch (NSException* e)
                 {
-                    NSLog( @"*** Comparative Studies exception: %@", e);
+                    NSLog(@"%s %d, Comparative Studies exception: %@", __FUNCTION__, __LINE__, e);
                 }
                 [idatabase unlock];
                 
@@ -9980,16 +9983,20 @@ static BOOL withReset = NO;
                                                    attributes: nil
                                                         error: nil];
 	
-	//pathToPDF = /PDF/yyyymmdd.hhmmss.pdf
+	// pathToPDF = /PDF/yyyymmdd.hhmmss.pdf
 	NSDateFormatter *datetimeFormatter = [[[NSDateFormatter alloc]initWithDateFormat:@"%Y%m%d.%H%M%S" allowNaturalLanguage:NO] autorelease];
 	pathToPDF = [pathToPDF stringByAppendingPathComponent: [datetimeFormatter stringFromDate:[NSDate date]]];
 	pathToPDF = [pathToPDF stringByAppendingPathExtension:@"pdf"];
-	NSLog( @"%@", pathToPDF);
+#ifndef NDEBUG
+	NSLog( @"%s %d, %@", __FUNCTION__, __LINE__, pathToPDF);
+#endif
 	
-	//creating file and opening it with preview
+	// Creating file and opening it with preview
 	NSManagedObject	*curObj = [matrixViewArray objectAtIndex: [[sender selectedCell] tag]];
-	NSLog( @"%@", [curObj valueForKey: @"type"]);
-	
+#ifndef NDEBUG
+	NSLog( @"%s %d, %@", __FUNCTION__, __LINE__, [curObj valueForKey: @"type"]);
+#endif
+
 //	[_database lock];
 	
 	@try 
@@ -17646,7 +17653,7 @@ static volatile int numberOfThreadsForJPEG = 0;
     
     /* See if there were any errors loading the script */
     if (!script || errorInfo)
-        NSLog(@"%@", errorInfo);
+        NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, errorInfo);
     
     /* We have to construct an AppleEvent descriptor to contain the arguments for our handler call.  Remember that this list is 1, rather than 0, based. */
     NSAppleEventDescriptor *arguments = [[NSAppleEventDescriptor alloc] initListDescriptor];
@@ -17737,7 +17744,7 @@ static volatile int numberOfThreadsForJPEG = 0;
             /* Check for errors in running the handler */
             if (errorInfo)
             {
-                NSLog(@"%@", errorInfo);
+                NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, errorInfo);
             }
             /* Check the handler's return value */
             else if (scriptResult != noScriptErr)
@@ -18550,19 +18557,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			@try
 			{
-				predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX ROI SR", @"5002"];
+				predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", APP_SR_ROI, @"5002"];
 				dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
 				
-				predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX Report SR", @"5003"];
+				predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", OSIRIX_SR_REPORT, @"5003"];
 				dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
 				
-				predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX Annotations SR", @"5004"];
+				predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", OSIRIX_SR_ANNOTATION, @"5004"];
 				dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
 				
-				predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX No Autodeletion", @"5005"];
+				predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", OSIRIX_SR_NO_AUTODELETION, @"5005"];
 				dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
                 
-                predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX WindowsState SR", @"5006"];
+                predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", OSIRIX_SR_WINDOW_STATE, @"5006"];
 				dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
 			}
 			@catch (NSException *e)
@@ -19084,7 +19091,7 @@ static volatile int numberOfThreadsForJPEG = 0;
             DCMPix *pix = nil;
             @synchronized( previewPixThumbnails)
             {
-                pix = [previewPix objectAtIndex: 0];  // Should only be one DCMPix associated w/ an RTSTRUCT
+                pix = [previewPix objectAtIndex: 0];  // There should only be one DCMPix associated with an RTSTRUCT
 			}
             
 			[pix createROIsFromRTSTRUCT: dcmObj];
@@ -19811,7 +19818,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					else if ([[item view] respondsToSelector:@selector(setRecursiveEnabled:)])
 						[[item view] setRecursiveEnabled: YES];
 					else if (item)
-						NSLog( @"%@", item);
+						NSLog( @"%s %d, %@", __FUNCTION__, __LINE__, item);
 						
 					im = [[item view] screenshotByCreatingPDF];
 				}

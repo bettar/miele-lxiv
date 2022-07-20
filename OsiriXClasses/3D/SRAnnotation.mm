@@ -38,13 +38,18 @@
 
 #define DCM_OsirixROI				DcmTagKey(0x0071, 0x0011)
 
+// See DCMTK dsrtypes.h OFFIS_CODING_SCHEME_DESIGNATOR
+// private coding scheme designator used for internal codes
+#define APP_CODING_SCHEME_DESIGNATOR        "99_BETTAR_MIELE" // was "99HUG"
+
 @implementation SRAnnotation
 
 + (NSData *)roiFromDICOM:(NSString *)path
 {
-	if( path == nil)
+	if (path == nil)
 		return nil;
-	NSData *archiveData = nil;
+
+    NSData *archiveData = nil;
 	DcmFileFormat fileformat;
 	OFCondition status = fileformat.loadFile([path UTF8String]);
 	if( status != EC_Normal)
@@ -53,11 +58,11 @@
 	OFString name;
 	const Uint8 *buffer = nil;
 	NSUInteger length;
-	
+	// (0042,0011)
 	if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())
 	{
 		archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
-	}
+	}                                                     // (0071,0011)
 	else if (fileformat.getDataset()->findAndGetUint8Array(DCM_OsirixROI, buffer, &length, OFFalse).good())
     {
 		archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
@@ -66,17 +71,22 @@
 	return archiveData;
 }
 
-//All the ROIs for an image are archived as an NSArray.  We will need to extract all the necessary ROI info to create the basic SR before adding archived data. 
-+ (NSString*) archiveROIsAsDICOM: (NSArray *) rois toPath: (NSString *) path forImage: (id) image
+// All the ROIs for an image are archived as an NSArray.  We will need to extract all the necessary ROI info to create the basic SR before adding archived data. 
++ (NSString*) archiveROIsAsDICOM: (NSArray *) rois
+                          toPath: (NSString *) path
+                        forImage: (id) image
 {
-	SRAnnotation *sr = [[[SRAnnotation alloc] initWithROIs:rois path:path forImage:image] autorelease];
+    //NSLog(@"%s %d, path = %@", __FUNCTION__, __LINE__, path);
+	SRAnnotation *sr = [[[SRAnnotation alloc] initWithROIs:rois
+                                                      path:path
+                                                  forImage:image] autorelease];
 	id study = [image valueForKeyPath:@"series.study"];
 	
 	NSManagedObject *roiSRSeries = [study roiSRSeries];
 	
 	NSString *seriesInstanceUID = [roiSRSeries valueForKey:@"seriesDICOMUID"];
 	
-	if( seriesInstanceUID)
+	if (seriesInstanceUID)
 		[sr setSeriesInstanceUID: seriesInstanceUID];
 	
 	[sr writeToFileAtPath: path];
@@ -86,7 +96,7 @@
 
 + (NSString*) getImageRefSOPInstanceUID:(NSString*) path;
 {
-	NSString	*result = nil;
+	NSString *result = nil;
 	DSRDocument	*document = new DSRDocument();
 	
 	OFCondition status = EC_Normal;
@@ -94,7 +104,7 @@
 	if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 	{			
 		DcmFileFormat fileformat;
-		status  = fileformat.loadFile([path UTF8String]);
+		status = fileformat.loadFile([path UTF8String]);
 		if (status.good())
 		{
 			status = document->read(*fileformat.getDataset());
@@ -103,8 +113,10 @@
             document->getInstanceNumber(value);
 			int instanceNumber = [[NSString stringWithFormat:@"%s", value.c_str()] intValue];
 			
-			DSRCodedEntryValue codedEntryValue = DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference");
-			if (document->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0 )
+			DSRCodedEntryValue codedEntryValue = DSRCodedEntryValue("IHE.10",
+                                                                    APP_CODING_SCHEME_DESIGNATOR,
+                                                                    "Image Reference");
+			if (document->getTree().gotoNamedNode( codedEntryValue, OFTrue, OFTrue) > 0 )
 			{
 				DSRImageReferenceValue imageRef = document->getTree().getCurrentContentItem().getImageReference();
                 OFString value = imageRef.getSOPInstanceUID();
@@ -189,7 +201,9 @@
 	document->createNewDocument(DSRTypes::DT_ComprehensiveSR);
 				
 	document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
+	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1",
+                                                                                  APP_CODING_SCHEME_DESIGNATOR,
+                                                                                  "Annotations"));
 	_seriesInstanceUID = nil;
 	_newSR = YES;
 	
@@ -201,7 +215,7 @@
 	if (self = [super init])
 	{
 		_seriesInstanceUID = nil;
-		_DICOMSRDescription =  @"OsiriX Annotations SR";
+		_DICOMSRDescription = OSIRIX_SR_ANNOTATION;
 		_DICOMSeriesNumber = @"5004";
 		
 		[_DICOMSRDescription retain];
@@ -232,7 +246,9 @@
 		}
 			
 		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
+		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1",
+                                                                                      APP_CODING_SCHEME_DESIGNATOR,
+                                                                                      "Annotations"));
 		
 		document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
 		document->getTree().getCurrentContentItem().setConceptName( DSRCodedEntryValue("CODE_01", OFFIS_CODING_SCHEME_DESIGNATOR, "Description"));
@@ -251,7 +267,7 @@
 	if (self = [super init])
 	{
 		_seriesInstanceUID = nil;
-		_DICOMSRDescription =  @"OsiriX WindowsState SR";
+		_DICOMSRDescription = OSIRIX_SR_WINDOW_STATE;
 		_DICOMSeriesNumber = @"5006";
 		
 		[_DICOMSRDescription retain];
@@ -282,7 +298,9 @@
 		}
         
 		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Windows State"));
+		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1",
+                                                                                      APP_CODING_SCHEME_DESIGNATOR,
+                                                                                      "Windows State"));
 		
 		document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
 		document->getTree().getCurrentContentItem().setConceptName( DSRCodedEntryValue("CODE_01", OFFIS_CODING_SCHEME_DESIGNATOR, "Description"));
@@ -300,7 +318,7 @@
 	if (self = [super init])
 	{
 		_seriesInstanceUID = nil;
-		_DICOMSRDescription = @"OsiriX Report SR";
+		_DICOMSRDescription =OSIRIX_SR_REPORT;
 		_DICOMSeriesNumber = @"5003";
 		
 		if( file)
@@ -337,7 +355,9 @@
 		}
 			
 		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", [[NSString stringWithFormat: @"Study Report - %@ File Format", [file pathExtension]] UTF8String]));
+		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1",
+                                                                                      APP_CODING_SCHEME_DESIGNATOR,
+                                                                                      [[NSString stringWithFormat: @"Study Report - %@ File Format", [file pathExtension]] UTF8String]));
 		
 		image = [im retain];
 	}
@@ -345,12 +365,14 @@
 	return self;
 }
 
-- (id)initWithROIs:(NSArray *)ROIs path:(NSString *) path forImage: (Dicom_Image*) im
+- (id)initWithROIs:(NSArray *)ROIs
+              path:(NSString *) path
+          forImage:(Dicom_Image*) im
 {
 	if (self = [super init])
 	{
 		_seriesInstanceUID = nil;
-		_DICOMSRDescription =  @"OsiriX ROI SR";
+		_DICOMSRDescription = APP_SR_ROI;
 		_DICOMSeriesNumber = @"5002";
 		
 		[_DICOMSRDescription retain];
@@ -364,16 +386,16 @@
 		if ([[NSFileManager defaultManager] fileExistsAtPath: path])
 		{			
 			DcmFileFormat fileformat;
-			status  = fileformat.loadFile([path UTF8String]);
+			status = fileformat.loadFile([path UTF8String]);
 			if (status.good()) 				
 				status = document->read(*fileformat.getDataset());
 			
-			//clear old content	Don't want to UIDs if already created
+			// Clear old content. Don't want to UIDs if already created
 			if (status.good()) 
 				document->getTree().clear();
 		}
 		
-		// create new Doc 
+		// Create new Doc
 		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || status.bad())
 		{
 			_newSR = YES;
@@ -381,7 +403,9 @@
 		}
 		
 		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "ROI Annotations"));
+		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1",
+                                                                                      APP_CODING_SCHEME_DESIGNATOR,
+                                                                                      "ROI Annotations"));
 		
 		image = [im retain];
 		
@@ -468,7 +492,7 @@
 	if (self = [super init])
 	{
 		_seriesInstanceUID = nil;
-		_DICOMSRDescription = @"OsiriX Report SR";
+		_DICOMSRDescription = OSIRIX_SR_REPORT;
 		_DICOMSeriesNumber = @"5003";
 		
 		[_DICOMSRDescription retain];
@@ -501,7 +525,9 @@
 		}
 			
 		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", [[NSString stringWithFormat: @"URL:%@", s] UTF8String]));
+		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1",
+                                                                                      APP_CODING_SCHEME_DESIGNATOR,
+                                                                                      [[NSString stringWithFormat: @"URL:%@", s] UTF8String]));
 		
 		image = [im retain];
 	}
@@ -568,7 +594,7 @@
 	id study = [image valueForKeyPath:@"series.study"];
 	
 	//	Don't want to UIDs if already created
-	if( _newSR)
+	if (_newSR)
 	{
 		//add to Study
 		document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
@@ -583,8 +609,12 @@
     // We want the original patient's name
     if( [[NSFileManager defaultManager] fileExistsAtPath: image.completePath])
     {
+#ifndef NDEBUG
+        NSLog(@"%s %d,     path = %@", __FUNCTION__, __LINE__, path);
+        NSLog(@"%s %d, img path = %@", __FUNCTION__, __LINE__, image.completePath);
+#endif
         DcmFileFormat fileformat;
-        OFCondition status  = fileformat.loadFile( image.completePath.fileSystemRepresentation);
+        OFCondition status = fileformat.loadFile( image.completePath.fileSystemRepresentation);
         if (status.good())
         {
             NSArray *encodingArray = nil;
@@ -595,7 +625,7 @@
                 encodingArray = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
             }
         
-            if( encodingArray == nil)
+            if (encodingArray == nil)
                 encodingArray = [NSArray arrayWithObject: @"ISO_IR 100"];
             
             NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [encodingArray objectAtIndex: 0]];
@@ -621,7 +651,7 @@
                 unsigned char zeroByte = 0;
                 [data appendBytes:&zeroByte length:1];
                 
-                if( [data bytes])
+                if ([data bytes])
                     document->setSeriesDescription( (char*) [data bytes]);
             }
             
@@ -675,23 +705,23 @@
 	
 	document->setManufacturer( [@OUR_MANUFACTURER_NAME UTF8String]);
 	
-	if( _DICOMSeriesNumber)
+	if ( _DICOMSeriesNumber)
 		document->setSeriesNumber( [_DICOMSeriesNumber UTF8String]);
 	
-	if( _contentDate)
+	if ( _contentDate)
 	{
 		document->setContentDate( [[[DCMCalendarDate dicomDateWithDate: _contentDate] dateString] UTF8String]);
 		document->setContentTime( [[[DCMCalendarDate dicomTimeWithDate: _contentDate] timeString] UTF8String]);
 	}
 	else
 	{
-		if( [_DICOMSRDescription isEqualToString: @"OsiriX Report SR"] == NO)
+		if ([_DICOMSRDescription isEqualToString: OSIRIX_SR_REPORT] == NO)
 		{
 			document->setContentDate( [[[DCMCalendarDate date] dateString] UTF8String]);
 			document->setContentTime( [[[DCMCalendarDate date] timeString] UTF8String]);
 		}
-		else if( [_dataEncapsulated length] > 0)
-			NSLog( @"********** no date for Report SR ?");
+		else if ([_dataEncapsulated length] > 0)
+			NSLog(@"%s %d, no date for Report SR ?", __FUNCTION__, __LINE__);
 	}
 	
 	// Image Reference
@@ -699,11 +729,13 @@
 	OFString refsopInstanceUID = OFString([[image valueForKey:@"sopInstanceUID"] UTF8String]);
 	
 	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image, DSRTypes::AM_belowCurrent);
-	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference"));
+	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10",
+                                                                                  APP_CODING_SCHEME_DESIGNATOR,
+                                                                                  "Image Reference"));
 
 	DSRImageReferenceValue imageRef( refsopClassUID, refsopInstanceUID);
 	
-	// add frame reference
+	// Add frame reference
 	imageRef.getFrameList().putString([[[image valueForKey: @"frameID"] stringValue] UTF8String]);
 	document->getTree().getCurrentContentItem().setImageReference( imageRef);
 	document->getTree().goUp(); // go up to the root element
@@ -717,8 +749,8 @@
 	
 	if (dataset != NULL)
 	{
-		//This adds the data to the SR
-		if( _dataEncapsulated)
+		// This adds the data to the SR
+		if (_dataEncapsulated)
 		{
 			const Uint8 *buffer = (const Uint8 *) [_dataEncapsulated bytes];
 			
@@ -729,7 +761,7 @@
 		document->getCodingSchemeIdentification().addPrivateDcmtkCodingScheme();
 		if (document->write(*dataset).good())
 		{
-			if( _seriesInstanceUID)
+			if (_seriesInstanceUID)
 				status = dataset->putAndInsertString(DCM_SeriesInstanceUID, [_seriesInstanceUID UTF8String], OFTrue);
 				
 			OFCondition cond = fileformat->saveFile( path.fileSystemRepresentation, EXS_LittleEndianExplicit);
@@ -738,7 +770,7 @@
 		}
 	}
 	
-	if( fileformat)
+	if (fileformat)
 		delete fileformat;
 	
 	return YES;

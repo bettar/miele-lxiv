@@ -4938,7 +4938,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	if (_mouseDownTimer)
 		[self deleteMouseDownTimer];
 	
-    if ([event type] == NSLeftMouseDown) { NSLog(@"%s %d Start timer", __FUNCTION__, __LINE__);
+    if ([event type] == NSLeftMouseDown) {
         _mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval: self.timeIntervalForDrag target:self selector:@selector(startDrag:) userInfo: event  repeats:NO] retain];}
 	
     if (dcmPixList)
@@ -15521,7 +15521,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			int offsetY = 0;
 			for (int y = 0; y < *tY; y++)
 			{
-				unsigned char *pBuffer;
+                unsigned char *pBuffer = NULL;
 				
 				if (isRGB || [curDCM thickSlabVRActivated])
 				{
@@ -15538,7 +15538,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 				else
 				{
 					if (intFULL32BITPIPELINE )
-					{
+                    {
+#ifdef DEBUG_RTDOSE
+                        NSLog(@"DCMView.mm:%d %@", __LINE__, curDCM.modalityString);
+#endif
 						pBuffer = (unsigned char*) baseAddr + // Normal
 								  offsetY * rowBytes * 4 +
 								  offsetX;
@@ -16161,7 +16164,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 #ifndef NDEBUG
     for (NSLayoutConstraint *c in [self constraints])
-        NSLog(@"%@", c);
+        NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, c);
 #endif
 
     return self;

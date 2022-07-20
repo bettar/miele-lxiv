@@ -6775,13 +6775,13 @@ static ViewerController *draggedController = nil;
                     else if ([[item view] respondsToSelector:@selector(setRecursiveEnabled:)])
                         [[item view] setRecursiveEnabled: YES];
                     else if (item)
-                        NSLog( @"%@", item);
+                        NSLog( @"%s %d, %@", __FUNCTION__, __LINE__, item);
                         
                     im = [[item view] screenshotByCreatingPDF];
                 }
                 @catch (NSException * e)
                 {
-                    NSLog( @"a");
+                    NSLog( @"%s %d, a", __FUNCTION__, __LINE__);
                 }
             }
             
@@ -8650,7 +8650,7 @@ static int avoidReentryRefreshDatabase = 0;
 
 - (void) dealloc
 {
-    NSLog(@"ViewerController.mm:%d %@ dealloc %p", __LINE__, NSStringFromClass([self class]), self);
+    //NSLog(@"ViewerController.mm:%d %@ dealloc %p", __LINE__, NSStringFromClass([self class]), self);
 
     if (cachedFrontMostDisplayed2DViewer == self)
         [ViewerController clearFrontMost2DViewerCache];
@@ -20961,13 +20961,13 @@ static BOOL viewerControllerPlaying = NO;
 {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	
-	//check if the folder PAGES exists in OsiriX document folder
+	//check if the folder PAGES exists in App document folder
 	NSString *pathToPAGES = [[[BrowserController currentBrowser] database] pagesDirPath];
 	if (!([fileManager fileExistsAtPath:pathToPAGES]))
-	[fileManager createDirectoryAtPath: pathToPAGES
-           withIntermediateDirectories: YES
-                            attributes: nil
-                                 error: nil];
+        [fileManager createDirectoryAtPath: pathToPAGES
+               withIntermediateDirectories: YES
+                                attributes: nil
+                                     error: nil];
 
 	//pathToPAGES = timeStamp
 	NSDateFormatter *datetimeFormatter = [[[NSDateFormatter alloc]initWithDateFormat:@"%Y%m%d.%H%M%S" allowNaturalLanguage:NO] autorelease];
@@ -21028,8 +21028,6 @@ static BOOL viewerControllerPlaying = NO;
 			if ([tagString isEqualToString: @"M"] || [tagString isEqualToString: @"F"] || [tagString isEqualToString: @"O"]) 
 				pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat:@"\r# Patient's Sex\r00100040:%@",tagString];
 
-
-
 //0020,000D (1) General Study
 			tagString = curImage.series.study.studyInstanceUID;
 			if ([tagString length] > 0) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Study Instance UID\r0020000D:%@",tagString];
@@ -21065,8 +21063,6 @@ static BOOL viewerControllerPlaying = NO;
 //0008,1030 (3) General Study	
 			tagString = curImage.series.study.studyName;
 			if (tagString) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Study Description\r00081030:%@",tagString];
-	
-
 
 //0008,0060 (1) Encapsulated Document Series Attributes
 			tagString = @"OT"; //Other (in this case, ... pdf)
@@ -21080,12 +21076,13 @@ static BOOL viewerControllerPlaying = NO;
 			tagString = @"5002";//always the first series, since Series Instance UID contains a timeStamp
 			if (tagString) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Series Number\r00200011:%@",tagString];
 
-
-
 //0008,0070 (2) General Equipment Module Attributes.... to be modified with reading from the dicom file...
 			if ([[sender title] isEqualToString: @"SCAN"])
 			{
-				tagString = @"Apple Mac OSX 10.4";
+                NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
+                tagString = [NSString stringWithFormat:@"Apple macOS %ld.%ld",
+                             (long)version.majorVersion,
+                             (long)version.minorVersion];
 				pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Manufacturer\r00080070:%@",tagString];
 			}
 			else
@@ -21097,8 +21094,6 @@ static BOOL viewerControllerPlaying = NO;
 //0008,0064 (1) SC Equipment Module Attributes
 			tagString = @"WSD";//Workstation
 			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Conversion Type\r00080064:%@",tagString];
-
-
 
 //0020,0013 (1) Encapsulated Document Module Attributes
 			tagString = @"1";
@@ -21422,7 +21417,7 @@ static BOOL viewerControllerPlaying = NO;
 				
 				/* See if there were any errors loading the script */
 				if (!script || errorInfo)
-					NSLog(@"%@", errorInfo);
+					NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, errorInfo);
 				
 				/* We have to construct an AppleEvent descriptor to contain the arguments for our handler call.  Remember that this list is 1, rather than 0, based. */
 				NSAppleEventDescriptor *arguments = [[NSAppleEventDescriptor alloc] initListDescriptor];
@@ -21465,13 +21460,13 @@ static BOOL viewerControllerPlaying = NO;
 				/* Check for errors in running the handler */
 				if (errorInfo)
 				{
-					NSLog(@"%@", errorInfo);
+					NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, errorInfo);
 				}
 				/* Check the handler's return value */
 				else if (scriptResult != noScriptErr) {
 					NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."),
                                     @"%@ %d",
-                                    NSLocalizedString(@"OK", @""),
+                                    NSLocalizedString(@"OK", nil),
                                     nil,
                                     nil,
                                         NSLocalizedString(@"The script failed:", @"Message on script failure window."),

@@ -60,8 +60,9 @@
     return self;
 }
 
-- (void)dealloc{
-	NSLog(@"studyView dealloc");
+- (void)dealloc
+{
+	//NSLog(@"studyView dealloc");
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[seriesViews release];
 	[super dealloc];

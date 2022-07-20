@@ -185,7 +185,7 @@
             @throw lastException;
         
         if (lastStdOut.length > 0)
-            NSLog(@"%@", lastStdOut);
+            NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, lastStdOut);
     }
 }
 

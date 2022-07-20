@@ -152,12 +152,12 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 // Radiotherapy ...
 
-	static NSString *RTDoseStorage = @"1.2.840.10008.5.1.4.1.1.481.2";
+	static NSString *RTDoseStorage = @(UID_RTDoseStorage);
 	static NSString *RTStructureSetStorage = @(UID_RTStructureSetStorage);
-	static NSString *RTBeamsTreatmentRecordStorage = @"1.2.840.10008.5.1.4.1.1.481.4";
-	static NSString *RTPlanStorage = @"1.2.840.10008.5.1.4.1.1.481.5";
-	static NSString *RTBrachyTreatmentRecordStorage = @"1.2.840.10008.5.1.4.1.1.481.6";
-	static NSString *RTTreatmentSummaryRecordStorage = @"1.2.840.10008.5.1.4.1.1.481.7";
+	static NSString *RTBeamsTreatmentRecordStorage = @(UID_RTBeamsTreatmentRecordStorage);
+	static NSString *RTPlanStorage = @(UID_RTPlanStorage);
+	static NSString *RTBrachyTreatmentRecordStorage = @(UID_RTBrachyTreatmentRecordStorage);
+	static NSString *RTTreatmentSummaryRecordStorage = @(UID_RTTreatmentSummaryRecordStorage);
 
 // Spectroscopy ...
 
@@ -169,8 +169,8 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 // Query-Retrieve SOP Classes ...
 
-	static NSString *StudyRootQueryRetrieveInformationModelFind = @"1.2.840.10008.5.1.4.1.2.2.1";
-	static NSString *StudyRootQueryRetrieveInformationModelMove = @"1.2.840.10008.5.1.4.1.2.2.2";
+	static NSString *StudyRootQueryRetrieveInformationModelFind = @(UID_FINDStudyRootQueryRetrieveInformationModel);
+	static NSString *StudyRootQueryRetrieveInformationModelMove = @(UID_MOVEStudyRootQueryRetrieveInformationModel);
 
 // PDF storage
 	static NSString *PDFStorageClassUID = @(UID_EncapsulatedPDFStorage);
@@ -448,7 +448,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 {
 	if (sopClassUID)
 	{
-		for( NSString *sopUID in [DCMAbstractSyntaxUID imageSyntaxes])
+		for ( NSString *sopUID in [DCMAbstractSyntaxUID imageSyntaxes])
 		{
 			if( [sopClassUID isEqualToString: sopUID])
                 return YES;
@@ -620,7 +620,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 + (BOOL) isStructuredReport:(NSString *)sopClassUID
 {
-		if( sopClassUID != nil && [[DCMAbstractSyntaxUID structuredReportSyntaxes] containsObject: sopClassUID])
+		if (sopClassUID != nil && [[DCMAbstractSyntaxUID structuredReportSyntaxes] containsObject: sopClassUID])
 			return YES;
 		
 	return NO;
@@ -768,7 +768,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 + (BOOL)isRadiotherapy: (NSString *)sopClassUID
 {
-		return sopClassUID != nil && [[DCMAbstractSyntaxUID radiotherapySyntaxes] containsObject: sopClassUID];
+    return sopClassUID != nil && [[DCMAbstractSyntaxUID radiotherapySyntaxes] containsObject: sopClassUID];
 }
 
 // Spectroscopy ...

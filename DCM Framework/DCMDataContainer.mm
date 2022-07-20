@@ -96,7 +96,7 @@ void signal_EXC(int sig_num)
             if (sigsetjmp( mark, 1) != 0)
             {
                 // signal catch
-                NSLog( @"%@", [NSThread callStackSymbols]);
+                NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, [NSThread callStackSymbols]);
             }
             else
             {        

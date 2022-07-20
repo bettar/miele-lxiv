@@ -170,7 +170,7 @@ static int validFilePathDepth = 0;
                 }
             }
             @catch (NSException *e) {
-                NSLog( @"%@", e);
+                NSLog( @"%s %d, %@", __FUNCTION__, __LINE__, e);
             }
             @finally {
                 [pool2 release];

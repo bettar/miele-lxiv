@@ -86,7 +86,7 @@
                                           data:dicomData];
 			_values = [[NSMutableArray alloc]  initWithArray:array];
 			if (DCMDEBUG)
-				NSLog( @"%@", [self description]);
+				NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, [self description]);
 		}
 		_dataPtr = nil;
 	}

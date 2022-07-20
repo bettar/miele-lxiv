@@ -662,7 +662,7 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
     {
         jpegData = nil;
         if (localException)
-            NSLog( @"%@", [localException  reason]);
+            NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, [localException  reason]);
     }
 
     jpeg_finish_compress(&cinfo);

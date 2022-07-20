@@ -950,7 +950,7 @@ static bool isGrantedNotificationAccess = false;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSLog( @"start DNSResolve");
 	for (NSString *s in [[AppDefaults currentHost] names])
-		NSLog( @"%@", s);
+		NSLog( @"%s %d, %@", __FUNCTION__, __LINE__, s);
 	
 	NSLog( @"end DNSResolve");
 	[p release];
@@ -1323,7 +1323,7 @@ static bool isGrantedNotificationAccess = false;
                 recomputePETBlending = YES;
         }
         else
-            NSLog( @"*** isKindOfClass NSString");
+            NSLog(@"%s %d, isKindOfClass NSString", __FUNCTION__, __LINE__);
         
         if ([[previousDefaults valueForKey: @"COPYSETTINGS"] intValue] != [defaults integerForKey: @"COPYSETTINGS"])
             refreshViewer = YES;
@@ -1334,7 +1334,7 @@ static bool isGrantedNotificationAccess = false;
                 refreshDatabase = YES;
         }
         else
-            NSLog( @"*** isKindOfClass NSString");
+            NSLog(@"%s %d, isKindOfClass NSString", __FUNCTION__, __LINE__);
         
         if ([[previousDefaults valueForKey: @"DBDateOfBirthFormat2"] isKindOfClass:[NSString class]])
         {
@@ -1342,7 +1342,7 @@ static bool isGrantedNotificationAccess = false;
                 refreshDatabase = YES;
         }
         else
-            NSLog( @"*** isKindOfClass NSString");
+            NSLog(@"%s %d, isKindOfClass NSString", __FUNCTION__, __LINE__);
         
         if ([[previousDefaults valueForKey: @"DICOMTimeout"] intValue] != [defaults integerForKey: @"DICOMTimeout"])
             restartListener = YES;
@@ -1392,7 +1392,7 @@ static bool isGrantedNotificationAccess = false;
                 restartListener = YES;
         }
         else
-            NSLog( @"*** isKindOfClass NSString");
+            NSLog(@"%s %d, isKindOfClass NSString", __FUNCTION__, __LINE__);
         
         if ([[previousDefaults valueForKey: @"STORESCPEXTRA"] isKindOfClass:[NSString class]])
         {
@@ -1400,7 +1400,7 @@ static bool isGrantedNotificationAccess = false;
                 restartListener = YES;
         }
         else
-            NSLog( @"*** isKindOfClass NSString");
+            NSLog(@"%s %d, isKindOfClass NSString", __FUNCTION__, __LINE__);
         
         if ([[previousDefaults valueForKey: @"AEPORT"] intValue] != [defaults integerForKey: @"AEPORT"])
             restartListener = YES;
@@ -1411,7 +1411,7 @@ static bool isGrantedNotificationAccess = false;
                 restartListener = YES;
         }
         else
-            NSLog( @"*** isKindOfClass NSString");
+            NSLog(@"%s %d, isKindOfClass NSString", __FUNCTION__, __LINE__);
         
         if ([[previousDefaults valueForKey: OsirixCanActivateDefaultDatabaseOnlyDefaultsKey] intValue] !=	[defaults integerForKey: OsirixCanActivateDefaultDatabaseOnlyDefaultsKey])
             restartListener = YES;
@@ -1558,7 +1558,7 @@ static bool isGrantedNotificationAccess = false;
         }
         @catch (NSException *e) 
         {
-            NSLog( @"%@", e);
+            NSLog( @"%s %d, %@", __FUNCTION__, __LINE__, e);
         }
         
         Use_kdu_IfAvailable = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseKDUForJPEG2000"];
@@ -2352,7 +2352,7 @@ static bool isGrantedNotificationAccess = false;
 
 -(void) displayListenerError: (NSString*) err // the DiscPublishing plugin swizzles this method, do not rename it
 {
-	NSLog( @"*** listener error (displayListenerError): %@", err);
+	NSLog( @"%s %d, %@", __FUNCTION__, __LINE__, err);
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
 	{
@@ -3364,9 +3364,9 @@ static BOOL initialized = NO;
 //                               clickContext: nil];
 
     if (@available(macOS 10.14, *)) {
-
-        NSLog(@"%s %d", __FUNCTION__, __LINE__);
-        
+#ifndef NDEBUG
+        NSLog(@"%s %d, %@, %@, %@", __FUNCTION__, __LINE__, title, description, name);
+#endif
         UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
         content.title = title;
         content.body = description;

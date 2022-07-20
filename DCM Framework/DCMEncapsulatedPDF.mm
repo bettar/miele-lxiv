@@ -53,8 +53,7 @@
 	[dcmObject setAttributeValues:[NSMutableArray array] forName:@"AccessionNumber"];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"WSD"] forName:@"ConversionType"];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@OUR_MANUFACTURER_NAME] forName:@"Manufacturer"];
-	
-	
+		
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"OT"] forName:@"Modality"];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"6000"] forName:@"SeriesNumber"];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"PDF"] forName:@"SeriesDescription"];
@@ -64,7 +63,6 @@
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"application/pdf"] forName:@"MIMETypeOfEncapsulatedDocument"];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:pdf] forName:@"EncapsulatedDocument"];
 
-	
 	[dcmObject newStudyInstanceUID];
 	[dcmObject newSeriesInstanceUID];
 	[dcmObject newSOPInstanceUID];

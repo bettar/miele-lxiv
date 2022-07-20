@@ -682,7 +682,7 @@ void info_callback(const char *msg, void *a) {
 			_values = [[NSMutableArray array] retain];
 		
 		if (DCMDEBUG) 
-			NSLog( @"%@", self.description);
+			NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, self.description);
 	}
 
 	_compression = 0;
@@ -1609,7 +1609,7 @@ void info_callback(const char *msg, void *a) {
 		else
 		{
 			if (spp != 3)
-				NSLog( @"*** RGB Photometric?, but... spp != 3 ?");
+				NSLog( @"%s %d, RGB Photometric?, but... spp != 3 ?", __FUNCTION__, __LINE__);
             
 			spp = 3;
 		}
@@ -3573,7 +3573,7 @@ void info_callback(const char *msg, void *a) {
                             NSLog(@"%s:%i %s", __FILE__, __LINE__, MALLOC_ERROR_MESSAGE);
                     }
                     @catch (NSException *exception) {
-                        NSLog( @"%@", exception);
+                        NSLog(@"%s $d, %@", __FUNCTION__, __LINE__, exception);
                     }
                     @finally {
                         [subPool release];

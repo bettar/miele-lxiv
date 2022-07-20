@@ -79,7 +79,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	if (!str)
         return nil;
     
-    NSUInteger fromLength;
+    NSUInteger fromLength = 0;
     
     if (length > 0) {
         fromLength = length;

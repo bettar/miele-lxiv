@@ -55,7 +55,7 @@ NSString* const N2ErrorDomain = @"N2";
 
 -(NSString*)printStackTrace {
 	NSString* stackTrace = [self stackTrace];
-	NSLog(@"%@", stackTrace);
+	NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, stackTrace);
 	return stackTrace;
 }
 

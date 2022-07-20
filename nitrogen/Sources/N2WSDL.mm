@@ -55,7 +55,7 @@
 		[NSException raise:NSGenericException format:@"[NSXMLDocument initWithContentsOfURL:] error: %@", [error description]];
 	
 	for (NSXMLElement* type in [wsdl objectsForXQuery:@"/wsdl:definitions/wsdl:types/*" error:&error])
-		NSLog(@"%@", [type XMLString]);
+		NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, [type XMLString]);
 	
 	[wsdl release];
 	

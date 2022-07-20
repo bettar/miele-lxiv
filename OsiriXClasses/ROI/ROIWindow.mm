@@ -307,7 +307,7 @@
 
 - (IBAction) setThickness:(NSSlider*) sender
 {
-    NSLog(@"%s %d, %f", __FUNCTION__, __LINE__, [sender floatValue]);
+    //NSLog(@"%s %d, %f", __FUNCTION__, __LINE__, [sender floatValue]);
 	[curROI setThickness: [sender floatValue]];
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 	

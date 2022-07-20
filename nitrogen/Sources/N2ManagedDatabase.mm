@@ -202,7 +202,7 @@ static int gTotalN2ManagedObjectContext = 0;
 
 -(void) checkForCorrectContextThread: (NSManagedObjectContext*) c
 {
-    if( c == _managedObjectContext && associatedThread && associatedThread != [NSThread currentThread])
+    if (c == _managedObjectContext && associatedThread && associatedThread != [NSThread currentThread])
     {
         NSLog( @"------------------------------");
         NSLog( @"SQL path: %@", _sqlFilePath);

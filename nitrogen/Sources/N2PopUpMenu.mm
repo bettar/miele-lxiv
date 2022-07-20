@@ -138,9 +138,8 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     [self autorelease];
 }
 
-- (void)startTrackingMenu:(NSMenu*)menu withEvent:(NSEvent*)event forView:(NSView*)view withFont:(NSFont*)font {
-//    NSLog(@"%@", menu.itemArray);
-    
+- (void)startTrackingMenu:(NSMenu*)menu withEvent:(NSEvent*)event forView:(NSView*)view withFont:(NSFont*)font
+{    
     _startTime = event.timestamp;
     
     _view = [view retain];

@@ -964,7 +964,6 @@ void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate)
 	for (int i = 0; i < inputFiles.count; ++i)
     {
 		NSString* imgPath = [inputFiles objectAtIndex:i];
-//		NSLog(@"%@", imgPath);
 		
 		bitmap[i] = new SWFBitmap(imgPath.UTF8String, NULL);
 		if (!bitmap[i])

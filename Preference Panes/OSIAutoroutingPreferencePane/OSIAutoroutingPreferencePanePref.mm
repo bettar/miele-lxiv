@@ -89,7 +89,7 @@
     
     for( int i = 0; i < [routesArray count]; i++)
 	{
-		NSLog( @"%@", [[routesArray objectAtIndex:i] valueForKey:@"server"]);
+		NSLog( @"%s %d, %@", __FUNCTION__, __LINE__, [[routesArray objectAtIndex:i] valueForKey:@"server"]);
 		
 		BOOL found = NO;
 		for( int x = 0; x < [serversArray count]; x++)

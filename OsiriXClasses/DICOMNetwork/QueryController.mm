@@ -149,14 +149,14 @@ extern "C"
                 }
                 @catch (NSException * e)
                 {
-                    NSLog( @"%@",  [e description]);
+                    NSLog( @"%s %d, %@", __FUNCTION__, __LINE__,  [e description]);
                 }
             }
         }
         
         date = [date dateByAddingYears: 0 months: 0 days: 1 hours: 0 minutes: 0 seconds: 0];
         
-        NSLog( @"%@", date);
+        NSLog( @"%s %d, %@", __FUNCTION__, __LINE__, date);
     }
     
     [pool release];
@@ -1558,7 +1558,7 @@ extern "C"
 		{
 			[pressedKeys appendString: [event characters]];
 			
-			NSLog(@"%@", pressedKeys);
+			NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, pressedKeys);
 			
 			NSArray *resultFilter = [resultArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name BEGINSWITH[cd] %@", pressedKeys]];
 			
@@ -4378,7 +4378,7 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 		{
 			NSPredicate	*predicate = [NSPredicate predicateWithFormat: @"(seriesDICOMUID == %@)", [item valueForKey:@"uid"]];
 			
-			NSLog( @"%@", [predicate description]);
+			NSLog( @"%s %d, %@", __FUNCTION__, __LINE__, [predicate description]);
 			
 			[request setEntity: [[BrowserController.currentBrowser.database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
 			[request setPredicate: predicate];
@@ -4386,7 +4386,7 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 			seriesArray = [context executeFetchRequest:request error:&error];
 			if ([seriesArray count] > 0)
 			{
-				NSLog( @"%@",  [seriesArray description]);
+				NSLog( @"%s %d, %@", __FUNCTION__, __LINE__,  [seriesArray description]);
 				
 				NSManagedObject	*series = [seriesArray objectAtIndex: 0];
 				
@@ -5209,8 +5209,10 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
                                     nil);
 		}
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseAddNotification:) name:OsirixAddToDBNotification object:nil];
-		
+		[[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(observeDatabaseAddNotification:)
+                                                     name:OsirixAddToDBNotification
+                                                   object:nil];		
 		queryFilters = nil;
 		currentQueryKey = nil;
 		autoQuery = autoQR;

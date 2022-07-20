@@ -80,8 +80,9 @@
 }
 
 
-- (void)dealloc{
-	NSLog(@"seriesView dealloc");
+- (void)dealloc
+{
+	//NSLog(@"seriesView dealloc");
 	[imageViews release];
 	[dcmPixList release];
 	[dcmFilesList release];

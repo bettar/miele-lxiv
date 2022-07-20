@@ -524,14 +524,14 @@
 		
 		if ([[location lastPathComponent] isEqualToString:OUR_DATA_LOCATION])
 		{
-			NSLog( @"%@", [location lastPathComponent]);
+			NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, [location lastPathComponent]);
 			location = [location stringByDeletingLastPathComponent];
 		}
 		
 		if ([[location lastPathComponent] isEqualToString:@"DATABASE"] &&
             [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:OUR_DATA_LOCATION])
 		{
-			NSLog( @"%@", [location lastPathComponent]);
+			NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, [location lastPathComponent]);
 			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
 		}
 		

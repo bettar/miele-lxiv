@@ -49,6 +49,7 @@
 #include <string>
 
 #import "DICOMFiles/dicomFile.h"
+#import "DicomSeries.h" // for APP_SR_ROI
 
 extern NSRecursiveLock *Papyrus_Lock;
 
@@ -288,7 +289,7 @@ extern NSRecursiveLock *Papyrus_Lock;
 }
 
 #define NUM_ENCODINGS     10
--(short) getDicomFileDCMTK
+- (short) getDicomFileDCMTK
 {
 	DcmFileFormat fileformat;
 	[Papyrus_Lock lock];
@@ -305,9 +306,9 @@ extern NSRecursiveLock *Papyrus_Lock;
         return -1;
     
     DcmDataset *dataset = fileformat.getDataset();
-    
-    // TransferSyntax
     const char *string = NULL;
+
+    // (0002,0010)
     if (fileformat.getMetaInfo()->findAndGetString(DCM_TransferSyntaxUID, string, OFFalse).good() &&
         string != NULL &&
         [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] isEqualToString:@(UID_MPEG2MainProfileAtMainLevelTransferSyntax)])
@@ -319,19 +320,19 @@ extern NSRecursiveLock *Papyrus_Lock;
 
     [dicomElements setObject:fileType forKey:@"fileType"];
 
-    // PrivateInformationCreatorUID
+    // (0002,0100)
     if (fileformat.getMetaInfo()->findAndGetString(DCM_PrivateInformationCreatorUID, string, OFFalse).good() && string != NULL)
     {
         [dicomElements setObject:[NSString stringWithCString:string encoding:NSISOLatin1StringEncoding] forKey:@"PrivateInformationCreatorUID"];
     }
     
-    // Character Set
+    // (0008,0005) SpecificCharacterSet
     NSStringEncoding myEncodings[NUM_ENCODINGS];  // TODO: use NSMutableArray of NSStringEncoding so we don't worry about the size
     myEncodings[0] = NSISOLatin1StringEncoding;
     for (int i = 1; i < NUM_ENCODINGS; i++)
         myEncodings[i] = NSUTF8StringEncoding;
 
-    if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
+    if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL) // (0008,0005)
     {
         NSArray	*c = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
         
@@ -343,12 +344,12 @@ extern NSRecursiveLock *Papyrus_Lock;
             for (int i = 0; i < [c count]; i++)
                 myEncodings[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
             
-            for (int i = [c count]; i < NUM_ENCODINGS; i++)
+            for (unsigned int i = [c count]; i < NUM_ENCODINGS; i++)
                 myEncodings[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
         }
     }
     
-    if ([self autoFillComments] == YES) // ||[self checkForLAVIM] == YES)
+    if ([self autoFillComments] == YES)
     {
         if ([self autoFillComments]) // again ?
         {
@@ -430,55 +431,9 @@ extern NSRecursiveLock *Papyrus_Lock;
             if (commentsField)
                 [dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
         }
-        
-//			if([self checkForLAVIM] == YES)
-//			{
-//				NSString	*album = nil;
-//				if (dataset->findAndGetString(DCM_ImageComments, string, OFFalse).good() && string != NULL)
-//				{
-//					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
-//					if ([album length] >= 2)
-//					{
-//						if ([[album substringToIndex:2] isEqualToString: @"LV"])
-//						{
-//							album = [album substringFromIndex:2];
-//							[dicomElements setObject:album forKey:@"album"];
-//						}
-//					}
-//				}
-//				
-//				DcmTagKey albumKey = DCM_CommentsOnThePerformedProcedureStep;
-//				if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL)
-//				{
-//					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
-//					if ([album length] >= 2)
-//					{
-//						if ([[album substringToIndex:2] isEqualToString: @"LV"])
-//						{
-//							album = [album substringFromIndex:2];
-//							[dicomElements setObject:album forKey:@"album"];
-//						}
-//					}
-//				} 
-//				
-//				 albumKey = DCM_RequestedProcedureComments; 
-//				 if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL)
-//				 {
-//					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
-//					if ([album length] >= 2)
-//					{
-//						if ([[album substringToIndex:2] isEqualToString: @"LV"])
-//						{
-//							album = [album substringFromIndex:2];
-//							[dicomElements setObject:album forKey:@"album"];
-//						}
-//					}
-//				} 
-//			}  //ckeck LAVIN
-
     } //check autofill and album
     
-    //SOPClass
+    // (0008,0016) SOPClass
     NSString *sopClassUID = nil;
     if (dataset->findAndGetString(DCM_SOPClassUID, string, OFFalse).good() && string != NULL)
     {
@@ -486,7 +441,7 @@ extern NSRecursiveLock *Papyrus_Lock;
         sopClassUID = [NSString stringWithCString: string encoding: NSASCIIStringEncoding] ;
     }
     
-    //Image Type
+    // (0008,0008) Image Type
     NSMutableArray *imageTypeArray = nil;
     if (dataset->findAndGetString(DCM_ImageType, string, OFFalse).good() && string != NULL)
     {
@@ -504,7 +459,7 @@ extern NSRecursiveLock *Papyrus_Lock;
     if (imageType)
         [dicomElements setObject:imageType forKey:@"imageType"];
     
-    //SOPInstanceUID
+    // (0008,0018) SOPInstanceUID
     if (dataset->findAndGetString(DCM_SOPInstanceUID, string, OFFalse).good() && string != NULL)
     {
         SOPUID = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] retain];
@@ -515,7 +470,7 @@ extern NSRecursiveLock *Papyrus_Lock;
     if (SOPUID)
         [dicomElements setObject:SOPUID forKey:@"SOPUID"];
     
-    //Study Description
+    // (0008,1030) Study Description
     if (dataset->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != NULL) {
         study = [[DicomFile stringWithBytes: (char*) string
                                   encodings: myEncodings] retain];
@@ -523,7 +478,7 @@ extern NSRecursiveLock *Papyrus_Lock;
     else
     {
         DcmItem *item = NULL;
-        if (dataset->findAndGetSequenceItem(DCM_ProcedureCodeSequence, item).good())
+        if (dataset->findAndGetSequenceItem(DCM_ProcedureCodeSequence, item).good()) // (0008,1032)
         {
             if (item->findAndGetString(DCM_CodeMeaning, string, OFFalse).good() && string != NULL) {
                 study = [[DicomFile stringWithBytes: (char*) string
@@ -537,7 +492,7 @@ extern NSRecursiveLock *Papyrus_Lock;
     
     [dicomElements setObject:study forKey: @"studyDescription"];
     
-    //Modality
+    // Modality
     if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
         Modality = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
     else
@@ -546,7 +501,7 @@ extern NSRecursiveLock *Papyrus_Lock;
     [dicomElements setObject:Modality forKey:@"modality"];
     
     
-    //Acquisition Date
+    // Acquisition Date
     NSString *studyDate = nil;
     if (dataset->findAndGetString(DCM_AcquisitionDate, string, OFFalse).good() && string != NULL && strlen( string) > 0)
         studyDate = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
@@ -598,15 +553,29 @@ extern NSRecursiveLock *Papyrus_Lock;
     if (date)
         [dicomElements setObject:date forKey:@"studyDate"];
     
-    //
+    // (0008,103e)
     if (dataset->findAndGetString(DCM_SeriesDescription, string, OFFalse).good() && string != NULL)
-        serie = [[DicomFile stringWithBytes: (char*) string encodings:myEncodings] retain];
+    {
+        if ([@(string) isEqualToString:APP_SR_ROI]) // Issue g76. Avoid losing the spaces
+            serie = [[DicomFile stringWithBytes: (char*) string
+                                      encodings: myEncodings
+                           replaceBadCharacters: NO] retain];
+        else
+            serie = [[DicomFile stringWithBytes: (char*) string
+                                      encodings: myEncodings] retain];
+    }
     else if (dataset->findAndGetString(DCM_PerformedProcedureStepDescription, string, OFFalse).good() && string != NULL)
+    {
         serie = [[DicomFile stringWithBytes: (char*) string encodings:myEncodings] retain];
+    }
     else if (dataset->findAndGetString(DCM_AcquisitionDeviceProcessingDescription, string, OFFalse).good() && string != NULL)
+    {
         serie = [[DicomFile stringWithBytes: (char*) string encodings:myEncodings] retain];
+    }
     else if (serie == nil)
+    {
         serie = [[NSString alloc] initWithString: @"unnamed"];
+    }
     
     [dicomElements setObject:serie forKey:@"seriesDescription"];
     
@@ -724,7 +693,7 @@ extern NSRecursiveLock *Papyrus_Lock;
         echoTime = [[[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding] autorelease];
     }
     
-    //Image Number
+    // (0020,0013) Image Number
     if (dataset->findAndGetString(DCM_InstanceNumber, string, OFFalse).good() && string != NULL)
     {
         int val = [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] intValue];
@@ -741,7 +710,7 @@ extern NSRecursiveLock *Papyrus_Lock;
     int count = 0;
     
     origin[0] = origin[1] = origin[2] = 0;
-    
+    // (0020,0032)
     while (count < 3 && dataset->findAndGetFloat64(DCM_ImagePositionPatient, origin[count], count, OFFalse).good())
         count++;
     
@@ -989,7 +958,7 @@ extern NSRecursiveLock *Papyrus_Lock;
     }
     
     // Is it PDF DICOM file?
-    if ([sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
+    if ([sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]]) // UID_EncapsulatedPDFStorage
     {
         const Uint8 *buffer = nil;
         NSUInteger length;
@@ -1020,14 +989,14 @@ extern NSRecursiveLock *Papyrus_Lock;
     
 #ifdef OSIRIX_VIEWER
 #ifndef MIELE_LIGHT
-    if ([sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"])
+    if ([sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // various SR: UID_BasicTextSRStorage
     {
-        if ([DicomStudy displaySeriesWithSOPClassUID: sopClassUID andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]])
+        if ([DicomStudy displaySeriesWithSOPClassUID: sopClassUID
+                                andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]])
         {
-            NSPDFImageRep *rep = [self PDFImageRep];
+            NSPDFImageRep *rep = [self PDFImageRep]; // it uses dsr2html and Decompress
         
             NoOfFrames = [rep pageCount];
-            
             NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
             [pdfImage addRepresentation: rep];
             
@@ -1046,19 +1015,19 @@ extern NSRecursiveLock *Papyrus_Lock;
         }
         
         NSString *referencedSOPInstanceUID = [SRAnnotation getImageRefSOPInstanceUID: filePath];
-        
         if (referencedSOPInstanceUID)
             [dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
         
         @try
         {
-            if ([[dicomElements objectForKey: @"seriesDescription"] hasPrefix: @"OsiriX ROI SR"])
+            if ([[dicomElements objectForKey: @"seriesDescription"] hasPrefix: APP_SR_ROI])
             {
                 NSString *referencedSOPInstanceUID = [SRAnnotation getImageRefSOPInstanceUID: filePath];
                 if (referencedSOPInstanceUID)
                     [dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
                 
-                int numberOfROIs = [[NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: filePath]] count];
+                NSData *srData = [SRAnnotation roiFromDICOM: filePath];
+                int numberOfROIs = [[NSUnarchiver unarchiveObjectWithData: srData] count];
                 [dicomElements setObject: [NSNumber numberWithInt: numberOfROIs] forKey: @"numberOfROIs"];
             }
         }
@@ -1067,8 +1036,8 @@ extern NSRecursiveLock *Papyrus_Lock;
             N2LogExceptionWithStackTrace(e);
         }
     }
-#endif
-#endif
+#endif // MIELE_LIGHT
+#endif // OSIRIX_VIEWER
     
     NoOfSeries = 1;
         
@@ -1143,12 +1112,17 @@ extern NSRecursiveLock *Papyrus_Lock;
     }
     
     [dicomElements setObject:@YES forKey:@"hasDICOM"];
-    
-    if (name != nil && studyID != nil && self.serieID != nil && imageID != nil && width != 0 && height != 0)
+
+    if (name != nil &&
+        studyID != nil &&
+        self.serieID != nil &&
+        imageID != nil &&
+        width != 0 &&
+        height != 0)
     {
         return 0;   // success
     }
 	
-	return -1;
+	return -1; // failure
 }
 @end

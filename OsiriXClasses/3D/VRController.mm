@@ -1850,7 +1850,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 					else if ([[item view] respondsToSelector:@selector(setRecursiveEnabled:)])
 						[[item view] setRecursiveEnabled: YES];
 					else if (item)
-						NSLog( @"%@", item);
+						NSLog( @"%s %d, %@", __FUNCTION__, __LINE__, item);
 						
 					im = [[item view] screenshotByCreatingPDF];
 				}

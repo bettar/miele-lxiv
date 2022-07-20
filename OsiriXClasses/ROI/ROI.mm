@@ -4210,8 +4210,8 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
 		selectedModifyPoint = -1;
         zLocation = FLT_MIN;
 		
+    @try {
 		fileVersion = [coder versionForClassName: @"ROI"];
-		
 		parentROI = nil;
 		points = [coder decodeObject];
 		rect = NSRectFromString( [coder decodeObject]);
@@ -4315,7 +4315,7 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
 			isLayerOpacityConstant = [[coder decodeObject] boolValue];
 			canColorizeLayer = [[coder decodeObject] boolValue];
 			layerColor = [coder decodeObject];
-			if (layerColor)[layerColor retain];
+			if (layerColor) [layerColor retain];
 			displayTextualData = [[coder decodeObject] boolValue];
 		}
 		else
@@ -4399,10 +4399,17 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
         
         [self setObservers];
     }
-	
+    @catch (NSException * e)
+    {
+        NSLog( @"ROI.mm:%d, exception %@", __LINE__,  e);
+    }
+    } // if (self)
+
     if ([NSThread isMainThread])
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
-    
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification
+                                                            object: self
+                                                          userInfo: nil];
+
     return self;
 }
 
@@ -4648,7 +4655,7 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
     
     // ROI_VERSION = 15
     [self computeZLocation];
-    [coder encodeObject: @(zLocation)];
+    [coder encodeObject: @(zLocation)];    
 }
 
 - (NSData*) data
@@ -5764,6 +5771,9 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
 
 - (void) setTextBoxOffset:(NSPoint) o
 {
+#ifdef DEBUG_MIELE_WIN
+    NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, NSStringFromPoint(o));
+#endif
 	offsetTextBox_x += o.x;
 	offsetTextBox_y += o.y;
 }
@@ -8305,18 +8315,24 @@ void gl_round_box(int mode,
                                     :(BOOL*) movedOut // output parameter
 {
 	NSMutableArray *rectArray = [curView rectArray];
-	
+#ifdef DEBUG_MIELE_WIN
+    NSLog(@"ROI.mm:%d, === array size: %lu", __LINE__, (unsigned long)[rectArray count]);
+#endif
 	if (rectArray == nil)
 	{
 		*movedOut = NO;
 		return dRect;
 	}
-	
+
     // 0 = still undefined
     // -1 = up, +1 = down (or viceversa, TBC)
     int vertDirection = 0;
 
     int maxRedo = [rectArray count] + 2;
+#ifdef DEBUG_MIELE_WIN
+    if (maxRedo == 3)
+        NSLog(@"ROI.mm:%d, break here", __LINE__);
+#endif
 	
 	*movedOut = NO;
 	
@@ -8348,11 +8364,15 @@ void gl_round_box(int mode,
 	for (int i = 0; i < [rectArray count]; i++)
 	{
 		NSRect curRect = [[rectArray objectAtIndex: i] rectValue];
-		
+#ifdef DEBUG_MIELE_WIN
+        NSLog(@"ROI.mm:%d, i: %d,  maxRedo: %d\n\t curRect: %@\n\t   dRect: %@", __LINE__, i, maxRedo, NSStringFromRect(curRect), NSStringFromRect(dRect));
+#endif
 		if (NSIntersectsRect( curRect, dRect))
 		{
 			NSRect interRect = NSIntersectionRect( curRect, dRect);
-			
+#ifdef DEBUG_MIELE_WIN
+            NSLog(@"ROI.mm:%d\n\t interRect: %@", __LINE__, NSStringFromRect(interRect));
+#endif
 			interRect.size.height++;
 			interRect.size.width++;
 			
@@ -9844,7 +9864,7 @@ void gl_round_box(int mode,
                 [array setObject: [NSNumber numberWithFloat:rmax] forKey:@"Max"];
                 
                 float length = 0;
-                long ii;
+                long ii = 0;
                 NSMutableArray* ptsTemp = self.points;
                 if ([self.points count] > 0)
                 {

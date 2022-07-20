@@ -37,6 +37,7 @@
 #import "NSUserDefaults+OsiriX.h"
 #import "N2Stuff.h"
 #import "AppDefaults.h"
+#import "DicomSeries.h" // for APP_SR_ROI
 
 static volatile int sendControllerObjects = 0;
 
@@ -471,19 +472,19 @@ static volatile int sendControllerObjects = 0;
         {
             NSPredicate *predicate = nil;
             
-            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX ROI SR", @"5002"];
+            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", APP_SR_ROI, @"5002"];
             [a filterUsingPredicate:predicate];
             
-            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX Report SR", @"5003"];
+            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", OSIRIX_SR_REPORT, @"5003"];
             [a filterUsingPredicate:predicate];
             
-            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX Annotations SR", @"5004"];
+            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", OSIRIX_SR_ANNOTATION, @"5004"];
             [a filterUsingPredicate:predicate];
             
-            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX No Autodeletion", @"5005"];
+            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", OSIRIX_SR_NO_AUTODELETION, @"5005"];
             [a filterUsingPredicate:predicate];
             
-            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX WindowsState SR", @"5006"];
+            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", OSIRIX_SR_WINDOW_STATE, @"5006"];
             [a filterUsingPredicate:predicate];
         }
         

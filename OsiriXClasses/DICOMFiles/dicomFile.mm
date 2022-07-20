@@ -74,7 +74,7 @@ extern NSString * convertDICOM( NSString *inputfile);
 extern NSRecursiveLock *Papyrus_Lock;
 
 static BOOL DEFAULTSSET = NO;
-static int TOOLKITPARSER = 1;
+static int TOOLKITPARSER = 1; // Papyrus
 static int PREFERPAPYRUSFORCD = 1;
 static BOOL COMMENTSAUTOFILL = NO, COMMENTSFROMDICOMFILES = NO;
 static BOOL splitMultiEchoMR = NO;
@@ -82,7 +82,7 @@ static BOOL useSeriesDescription = NO;
 static BOOL NOLOCALIZER = NO;
 static BOOL combineProjectionSeries = NO, oneFileOnSeriesForUS = NO;
 static int combineProjectionSeriesMode = NO;
-//static int CHECKFORLAVIM = -1;
+
 static int COMMENTSGROUP = NO, COMMENTSGROUP2 = NO, COMMENTSGROUP3 = NO, COMMENTSGROUP4 = NO; // Assign NO to an int ?
 static int COMMENTSELEMENT = NO, COMMENTSELEMENT2 = NO, COMMENTSELEMENT3 = NO, COMMENTSELEMENT4 = NO;
 static BOOL gUsePatientIDForUID = YES, gUsePatientBirthDateForUID = YES, gUsePatientNameForUID = YES;
@@ -341,7 +341,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
                             encodings: encoding
                  replaceBadCharacters: YES];
 }
-#
+
 + (NSString *) stringWithBytes: (char *) str
                      encodings: (NSStringEncoding*) encodings
           replaceBadCharacters: (BOOL) replace
@@ -381,7 +381,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
             TOOLKITPARSER = 2; // Always and only DCMTK. Papyrus has been removed from the project.
             
 #ifdef MIELE_LIGHT
-			TOOLKITPARSER = 2;
+			TOOLKITPARSER = 2; // DCMTK
 #endif
 			
 			COMMENTSFROMDICOMFILES = [sd boolForKey: @"CommentsFromDICOMFiles"];
@@ -422,8 +422,8 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			
 			PREFERPAPYRUSFORCD = [[dict objectForKey: @"PREFERPAPYRUSFORCD"] intValue];
 			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER4"] intValue];
-			if (TOOLKITPARSER == 0)
-                TOOLKITPARSER = 2;
+			if (TOOLKITPARSER == 0) // DCM Framework
+                TOOLKITPARSER = 2; // DCMTK
             
 			COMMENTSFROMDICOMFILES = [[dict objectForKey: @"CommentsFromDICOMFiles"] intValue];
 			COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
@@ -453,8 +453,6 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
             gUsePatientBirthDateForUID = [[dict objectForKey: @"UsePatientBirthDateForUID"] intValue];
             gUsePatientIDForUID = [[dict objectForKey: @"UsePatientIDForUID"] intValue];
             gUsePatientNameForUID = [[dict objectForKey: @"UsePatientNameForUID"] intValue];
-            
-//			CHECKFORLAVIM = NO;
 		}
 	}
 }
@@ -551,12 +549,12 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
     {
         if (image) {
             // Check if it has pixel data
-            NSString *MSSOPClassUID = [DicomFile getDicomField: @"MediaStorageSOPClassUID" forFile: file];
+            NSString *MSSOPClassUID = [DicomFile getDicomField: @"MediaStorageSOPClassUID" forFile: file]; // (0002,0002)
             *image = [DCMAbstractSyntaxUID isImageStorage: MSSOPClassUID];
         }
         
         if (compressed) {
-            NSString *transferSyntax = [DicomFile getDicomField: @"TransferSyntaxUID" forFile: file];
+            NSString *transferSyntax = [DicomFile getDicomField: @"TransferSyntaxUID" forFile: file]; // (0002,0010)
             if ([transferSyntax isEqualToString: DCM_JPEGLossless] ||
                 [transferSyntax isEqualToString: DCM_JPEGBaseline] ||
                 [transferSyntax isEqualToString: DCM_JPEG2000Lossy] ||
@@ -1918,20 +1916,21 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 }
 
 // return 0 means success
--(short) getDicomFile
+- (short) getDicomFile
 {
 	BOOL isCD = NO;
 	
 	if (PREFERPAPYRUSFORCD)
 		isCD = filesAreFromCDMedia;
 
-	if (TOOLKITPARSER == 1 || isCD == YES)
+	if (TOOLKITPARSER == 1 || // Papyrus
+        isCD == YES)
         return [self getDicomFilePapyrus: NO];
 	
-	if (TOOLKITPARSER == 0)
+	if (TOOLKITPARSER == 0) // DCM Framework
         return [self getDicomFilePapyrus: NO];
 	
-	if (TOOLKITPARSER == 2)
+	if (TOOLKITPARSER == 2)  // DCMTK
         return [self getDicomFileDCMTK];
 	
 	return [self getDicomFileDCMTK];
@@ -1977,7 +1976,6 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 - (id) init:(NSString*) f DICOMOnly:(BOOL) DICOMOnly
 {
 	id returnVal = nil;
-//  NSLog(@"%s %d, DICOMOnly:%d", __FUNCTION__, __LINE__, DICOMOnly);
 
     self = [super init];
 	if (self)
@@ -2014,7 +2012,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			{
 				returnVal = self;
 			}
-			else if ([self getImageFile] == 0)
+			else if ([self getImageFile] == 0) // TIFF, PDF, etc.
 			{
 				returnVal = self;
 			}
@@ -2026,7 +2024,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 			{
 				returnVal = self;
 			}
-			else if ([self getAnalyze] == 0)
+			else if ([self getAnalyze] == 0) // .hdr
 			{
 				returnVal = self;
 			}
@@ -2049,7 +2047,10 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 				returnVal = self;
 			}
 			else
-			{
+            {
+#ifndef NDEBUG
+                NSLog(@"%s %d, fail, modality: %@\n\t%@", __FUNCTION__, __LINE__, Modality, filePath);
+#endif
 				[self autorelease];				
 				returnVal = nil;
 			}
@@ -2478,13 +2479,6 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 {
 	return SEPARATECARDIAC4D;
 }
-
-//- (BOOL) checkForLAVIM
-//{
-//	if (CHECKFORLAVIM == YES) return YES;
-//	
-//	return NO;
-//}
 
 - (int)commentsGroup
 {

@@ -926,7 +926,7 @@ static NSRecursiveLock *dbModifyLock = nil;
         NSMutableArray* series = [[[self.series allObjects] mutableCopy] autorelease];
         for (DicomSeries* serie in series)
             if (serie.id.intValue == 5005 &&
-                [serie.name isEqualToString:@"OsiriX No Autodeletion"])
+                [serie.name isEqualToString:OSIRIX_SR_NO_AUTODELETION])
             {
                 [series removeObject:serie];
                 break;
@@ -1638,9 +1638,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 // /////////////////////////////////////////////////////////////////////////////
 // Series subselections
 
-+ (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid andSeriesDescription: (NSString*) description containingOnlyPixels: (BOOL) pixels
++ (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid
+                 andSeriesDescription: (NSString*) description
+                 containingOnlyPixels: (BOOL) pixels
 {
-    if ([description isEqualToString:@"OsiriX No Autodeletion"])
+    if ([description isEqualToString:OSIRIX_SR_NO_AUTODELETION])
         return NO;
     
     if (pixels)
@@ -1662,10 +1664,10 @@ static NSRecursiveLock *dbModifyLock = nil;
             return YES;
         
         if ([DCMAbstractSyntaxUID isStructuredReport:uid] &&
-            [description hasPrefix: @"OsiriX ROI SR"] == NO &&
-            [description hasPrefix: @"OsiriX Annotations SR"] == NO &&
-            [description hasPrefix: @"OsiriX Report SR"] == NO &&
-            [description hasPrefix: @"OsiriX WindowsState SR"] == NO)
+            [description hasPrefix: APP_SR_ROI] == NO &&
+            [description hasPrefix: OSIRIX_SR_ANNOTATION] == NO &&
+            [description hasPrefix: OSIRIX_SR_REPORT] == NO &&
+            [description hasPrefix: OSIRIX_SR_WINDOW_STATE] == NO)
             return YES;
 	}
     
@@ -1840,7 +1842,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		for (DicomSeries *series in array)
 		{
 			if([[series valueForKey:@"id"] intValue] == 5004 &&
-               [[series valueForKey:@"name"] isEqualToString: @"OsiriX Annotations SR"] &&
+               [[series valueForKey:@"name"] isEqualToString: OSIRIX_SR_ANNOTATION] &&
                [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
             {
 				[newArray addObject: series];
@@ -1939,7 +1941,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		for (DicomSeries *series in array)
 		{
 			if ([[series valueForKey:@"id"] intValue] == 5003 &&
-               [[series valueForKey:@"name"] isEqualToString: @"OsiriX Report SR"] &&
+               [[series valueForKey:@"name"] isEqualToString: OSIRIX_SR_REPORT] &&
                [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
             {
 				[newArray addObject:series];
@@ -2031,7 +2033,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		for (DicomSeries *series in array)
 		{
 			if ([[series valueForKey:@"id"] intValue] == 5006 &&
-               [[series valueForKey:@"name"] isEqualToString: @"OsiriX WindowsState SR"] &&
+               [[series valueForKey:@"name"] isEqualToString: OSIRIX_SR_WINDOW_STATE] &&
                [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
             {
 				[newArray addObject:series];
@@ -2095,7 +2097,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		for (DicomSeries *series in array)
 		{
 			if ([[series valueForKey:@"id"] intValue] == 5002 &&
-               [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] &&
+               [[series valueForKey:@"name"] isEqualToString: APP_SR_ROI] &&
                [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
             {
 				[newArray addObject:series];
@@ -2104,7 +2106,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		if ([newArray count] > 1)
 		{
-			NSLog( @"****** multiple (%d) roiSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
+			NSLog(@"Multiple (%d) roiSRSeries: Delete the extra series and merge the images...",
+                  (int) [newArray count]);
 			
 			@try
 			{
@@ -2163,7 +2166,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		if ([found count] > 1)
 		{
 			found = [[[found sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] mutableCopy] autorelease];
-			NSLog( @"--- multiple rois array for same sopInstanceUID (roiForImage) : %d", (int) [found count]);
+			NSLog( @"multiple ROIs array for same sopInstanceUID (roiForImage) : %d", (int) [found count]);
 			
 			// Merge the other ROIs with this ROI, and empty the old ones
 			NSMutableArray *r = [NSMutableArray array];
@@ -2192,7 +2195,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 							if ([o count])
 							{
 								[r addObjectsFromArray: o];
-								[SRAnnotation archiveROIsAsDICOM: [NSArray array] toPath: [i valueForKey: @"completePathResolved"] forImage: image];
+								[SRAnnotation archiveROIsAsDICOM: [NSArray array]
+                                                          toPath: [i valueForKey: @"completePathResolved"]
+                                                        forImage: image];
 							}
 						}
 					}

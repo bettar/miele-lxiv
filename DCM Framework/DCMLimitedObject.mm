@@ -341,7 +341,7 @@
                 }
             }
             @catch (NSException *e) {
-                NSLog( @"%@", e);
+                NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, e);
             }
             @finally {
                 [subPool release];

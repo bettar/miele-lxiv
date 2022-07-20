@@ -1624,7 +1624,7 @@
 /* Class = "NSWindow"; title = "Window"; ObjectID = "14365"; */
 "14365.title" = "Finestra";
 
-/* Class = "NSTextFieldCell"; title = "This function will re-import all DICOM files in the database, removing unavailable items and optimizing the SQL index file located in the OsiriX Data folder."; ObjectID = "14378"; */
+/* Class = "NSTextFieldCell"; title = "This function will re-import all DICOM files in the database, removing unavailable items and optimizing the SQL index file located in the Miele-LXIV Data folder."; ObjectID = "14378"; */
 "14378.title" = "Questa funzione reimporterà tutti i file DICOM nel database, rimuovendo gli elementi non disponibili e ottimizzando il file di indice SQL presente nella cartella Miele-LXIV Data.";
 
 /* Class = "NSButtonCell"; title = "Radio"; ObjectID = "14383"; */

@@ -374,9 +374,27 @@
                         NSImage *tnImage = nil;
                         NSString *seriesSOPClassUID = self.seriesSOPClassUID;
                         
-                        if( [[DCMAbstractSyntaxUID RTStructureSetStorage] isEqualToString: seriesSOPClassUID])
+                        if ( [[DCMAbstractSyntaxUID RTStructureSetStorage] isEqualToString: seriesSOPClassUID])
                         {
                             tnImage = [NSImage imageNamed: @"RTStructIcon.jpg"];
+                            tnData = [[tnImage TIFFRepresentation] retain]; // autoreleased when returning
+                        }
+                        else if( [[DCMAbstractSyntaxUID RTDoseStorage] isEqualToString: seriesSOPClassUID])
+                        {
+#if 0 // TODO
+                            tnImage = [NSImage imageNamed: @"RTDose.jpg"];
+#else
+                            tnImage = [NSImage imageNamed: @"FileNotFound.tif"];
+#endif
+                            tnData = [[tnImage TIFFRepresentation] retain]; // autoreleased when returning
+                        }
+                        else if( [[DCMAbstractSyntaxUID RTPlanStorage] isEqualToString: seriesSOPClassUID])
+                        {
+#if 0 // TODO
+                            tnImage = [NSImage imageNamed: @"RTPlan.jpg"];
+#else
+                            tnImage = [NSImage imageNamed: @"FileNotFound.tif"];
+#endif
                             tnData = [[tnImage TIFFRepresentation] retain]; // autoreleased when returning
                         }
                         else if( [DCMAbstractSyntaxUID isSpectroscopy: seriesSOPClassUID])
@@ -396,14 +414,24 @@
                             
                             tnData = [[tnImage TIFFRepresentation] retain]; // autoreleased when returning
                         }
-                        else if( [DCMAbstractSyntaxUID isImageStorage: seriesSOPClassUID] || [DCMAbstractSyntaxUID isRadiotherapy: seriesSOPClassUID] || [seriesSOPClassUID length] == 0)
+                        else if ([DCMAbstractSyntaxUID isImageStorage: seriesSOPClassUID] ||
+                                 [DCMAbstractSyntaxUID isRadiotherapy: seriesSOPClassUID] ||
+                                 [seriesSOPClassUID length] == 0)
                         {
-                            DCMPix *dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour: [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] imageObj:image];
+                            DCMPix *dcmPix = [[DCMPix alloc] initWithPath: image.completePath
+                                                                         : 0
+                                                                         : 1
+                                                                         : nil
+                                                                         : frame
+                                                                         : self.id.intValue
+                                                                isBonjour: [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]]
+                                                                 imageObj:image];
                             [dcmPix CheckLoad];
                             
-                            //Set the default series level window-width&level
+                            // Set the default series level window-width&level
                             
-                            if( image.series.windowWidth == nil && image.series.windowLevel == nil)
+                            if (image.series.windowWidth == nil &&
+                                image.series.windowLevel == nil)
                             {
                                 if( dcmPix.ww != 0 && dcmPix.wl != 0)
                                 {

@@ -61,31 +61,30 @@
 
 @implementation Mailer
 
-
 - (NSString *)mailScriptBody:(NSString *)body to:(NSString *)to subject:(NSString *)subject isMIME:(BOOL)isMIME name:(NSString *)clientName sendNow:(BOOL)sendWithoutUserReview image:(NSString*) imagePath
 {
-NSMutableString *s = [NSMutableString stringWithCapacity:1000];
+    NSMutableString *s = [NSMutableString stringWithCapacity:1000];
 
-[s appendString:@"tell application \"Mail\"\n"];
-	[s appendString:@"activate\n"];
+    [s appendString:@"tell application \"Mail\"\n"];
+        [s appendString:@"activate\n"];
 
-	[s appendString:@"set composeMessage to make new outgoing message with properties {visible:true}\n"];
+        [s appendString:@"set composeMessage to make new outgoing message with properties {visible:true}\n"];
 
-	[s appendString:@"tell composeMessage\n"];
-	 
-	if (isMIME && imagePath != nil && [[NSFileManager defaultManager] fileExistsAtPath:imagePath])
-	{
-		[s appendString:[NSString stringWithFormat:@"set aFile to \"%@\"\n",imagePath]];
-		[s appendString:@"tell content\n"];
-			[s appendString:@"make new attachment with properties {file name:aFile}\n"];
-		[s appendString:@"end tell\n"];
-	}
-	[s appendString:@"end tell\n"];
-[s appendString:@"end tell\n"];
+        [s appendString:@"tell composeMessage\n"];
+         
+        if (isMIME && imagePath != nil && [[NSFileManager defaultManager] fileExistsAtPath:imagePath])
+        {
+            [s appendString:[NSString stringWithFormat:@"set aFile to \"%@\"\n",imagePath]];
+            [s appendString:@"tell content\n"];
+                [s appendString:@"make new attachment with properties {file name:aFile}\n"];
+            [s appendString:@"end tell\n"];
+        }
+        [s appendString:@"end tell\n"];
+    [s appendString:@"end tell\n"];
 
-NSLog( @"%@", s);
+    NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, s);
 
-return s;
+    return s;
 }
 
 

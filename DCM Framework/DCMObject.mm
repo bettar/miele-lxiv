@@ -1144,7 +1144,7 @@ PixelRepresentation
                 }
             }
             @catch( NSException *e) {
-                NSLog( @"%@", e);
+                NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, e);
             }
             @finally {
                 [subPool release];
@@ -1240,7 +1240,9 @@ PixelRepresentation
 	[attributes removeObjectsForKeys:keysToRemove];
 }
 
-- (void)updateMetaInformationWithTransferSyntax: (DCMTransferSyntax *)ts aet:(NSString *)aet{
+- (void)updateMetaInformationWithTransferSyntax: (DCMTransferSyntax *)ts
+                                            aet: (NSString *)aet
+{
 /*
 	mandatory attributes:
 		FileMetaInformationVersion
@@ -1305,7 +1307,6 @@ PixelRepresentation
 		}
 	}
 
-
 	//TransferSyntaxUID
 	tag = [[DCMAttributeTag alloc] initWithName:@"TransferSyntaxUID"];
 	attr = [[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag];
@@ -1337,8 +1338,7 @@ PixelRepresentation
 	gl += (4+2+2);
 	[attr release];
 	[tag release];
-	
-	
+
 	//SourceApplicationEntityTitle
 	if (aet) {
 		tag = [[DCMAttributeTag alloc] initWithName:@"SourceApplicationEntityTitle"];
@@ -1835,9 +1835,11 @@ PixelRepresentation
 	}
 }
 
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts  asDICOM3:(BOOL)flag
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container
+          withTransferSyntax:(DCMTransferSyntax *)ts
+                    asDICOM3:(BOOL)flag
 {
-	return [self writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts AET:@OUR_AET  asDICOM3:(BOOL)flag];
+	return [self writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts AET:@OUR_AET asDICOM3:(BOOL)flag];
 }
 
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts AET:(NSString *)aet  asDICOM3:(BOOL)flag
@@ -1849,7 +1851,7 @@ PixelRepresentation
           withTransferSyntax:(DCMTransferSyntax *)ts
                          AET:(NSString *)aet
                     asDICOM3:(BOOL)flag
-        implicitForPixelData:(BOOL) ipd
+        implicitForPixelData:(BOOL)ipd
 {
 	if (!ts)
 		ts = transferSyntax;
@@ -1916,7 +1918,11 @@ PixelRepresentation
 	return status;
 }
 
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality asDICOM3:(BOOL)flag{
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container
+          withTransferSyntax:(DCMTransferSyntax *)ts
+                     quality:(int)quality
+                    asDICOM3:(BOOL)flag
+{
 	return [self writeToDataContainer:(DCMDataContainer *)container 
 			withTransferSyntax:(DCMTransferSyntax *)ts 
 			quality:(int)quality 
@@ -2053,12 +2059,17 @@ PixelRepresentation
 	return status;	
 }
 
-
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality{
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container
+          withTransferSyntax:(DCMTransferSyntax *)ts
+                     quality:(int)quality
+{
 	return [self writeToDataContainer:container withTransferSyntax:ts quality:quality asDICOM3:YES];
 }
 
-- (BOOL)writeToFile:(NSString *)path withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality atomically:(BOOL)flag
+- (BOOL)writeToFile:(NSString *)path
+ withTransferSyntax:(DCMTransferSyntax *)ts
+            quality:(int)quality
+         atomically:(BOOL)flag
 {
 	return [self writeToFile:(NSString *)path
           withTransferSyntax:(DCMTransferSyntax *)ts
@@ -2067,7 +2078,11 @@ PixelRepresentation
                   atomically:(BOOL)flag];
 }
 
-- (BOOL)writeToFile:(NSString *)path withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality AET:(NSString *)aet atomically:(BOOL)flag
+- (BOOL)writeToFile:(NSString *)path
+ withTransferSyntax:(DCMTransferSyntax *)ts
+            quality:(int)quality
+                AET:(NSString *)aet
+         atomically:(BOOL)flag
 {
 	BOOL status = NO;
 	@try {		
@@ -2102,7 +2117,11 @@ PixelRepresentation
                  atomically:(BOOL)flag];
 }
 
-- (BOOL)writeToURL:(NSURL *)aURL withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality AET:(NSString *)aet atomically:(BOOL)flag
+- (BOOL)writeToURL:(NSURL *)aURL
+withTransferSyntax:(DCMTransferSyntax *)ts
+           quality:(int)quality
+               AET:(NSString *)aet
+        atomically:(BOOL)flag
 {
 	BOOL status = NO;
 	@try {
