@@ -11277,21 +11277,29 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	
 	NSInteger indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Images in 4D", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Key Images", nil)];
+
+    indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Key Images", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Sub-Selection", nil)];
+	
+    indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Sub-Selection", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
+    
     indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Reparsed Series", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open ROIs Images", nil)];
+	
+    indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open ROIs Images", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open ROIs and Key Images", nil)];
+	
+    indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open ROIs and Key Images", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Export to Movie", nil)];
+	
+    indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Export to Movie", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Export to JPEG", nil)];
+	
+    indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Export to JPEG", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Export to TIFF", nil)];
+	
+    indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Export to TIFF", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
     
     // init albums contextual menu

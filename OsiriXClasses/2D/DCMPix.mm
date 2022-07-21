@@ -5649,10 +5649,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     }
     
 	[pool release];
-#endif
+#endif // OSIRIX_VIEWER
 } // end createROIsFromRTSTRUCT
 
-#endif
+#endif // MIELE_LIGHT ?
 
 - (void) setVOILUT:(int) first
             number:(unsigned int) number

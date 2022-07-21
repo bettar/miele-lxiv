@@ -140,7 +140,7 @@
 "319.title" = "Anderes:";
 
 /* Class = "NSButtonCell"; title = "Reset Preferences"; ObjectID = "342"; */
-"342.title" = "Reset-Vorlieben";
+"342.title" = "Einstellungen zurücksetzen";
 
 /* Class = "NSBox"; title = "JPEG Compression"; ObjectID = "357"; */
 "357.title" = "JPEG-Kompression";

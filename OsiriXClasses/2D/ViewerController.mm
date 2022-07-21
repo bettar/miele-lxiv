@@ -484,8 +484,8 @@ static NSMutableDictionary *cachedFrontMostDisplayed2DViewerForScreen = nil;
     if (cachedFrontMostDisplayed2DViewerForScreen == nil)
         cachedFrontMostDisplayed2DViewerForScreen = [NSMutableDictionary new];
     
-    NSString *adress = [NSString stringWithFormat: @"%ld", (unsigned long) screen];
-    id a = [cachedFrontMostDisplayed2DViewerForScreen objectForKey: adress];
+    NSString *address1 = [NSString stringWithFormat: @"%ld", (unsigned long) screen];
+    id a = [cachedFrontMostDisplayed2DViewerForScreen objectForKey: address1];
     if (a)
         return a;
     
@@ -499,7 +499,7 @@ static NSMutableDictionary *cachedFrontMostDisplayed2DViewerForScreen = nil;
                 
                 if (v.windowWillClose == NO)
                 {
-                    [cachedFrontMostDisplayed2DViewerForScreen setObject: v forKey: adress];
+                    [cachedFrontMostDisplayed2DViewerForScreen setObject: v forKey: address1];
                     return v;
                 }
             }
