@@ -15819,6 +15819,10 @@ static NSArray*	openSubSeriesArray = nil;
     [helpMenu addItemWithTitle: NSLocalizedString(@"Miele-LXIV Web Site", nil)
                         action: @selector(openMieleLXIVWebPage:)
                  keyEquivalent: @""];
+    
+    [helpMenu addItemWithTitle: NSLocalizedString(@"Donate to Miele-LXIV", nil)
+                        action: @selector(openMieleLXIVDonation:)
+                 keyEquivalent: @""];
 
     [helpMenu addItemWithTitle: NSLocalizedString(@"Source Code Repository", nil)
                         action: @selector(openMieleLXIVSourceCode:)

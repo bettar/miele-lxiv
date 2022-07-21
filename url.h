@@ -12,6 +12,7 @@
 
 #define URL_MIELE_SOURCES           @"https://github.com/bettar/miele-lxiv"
 #define URL_MIELE_HOME_PAGE         @"https://dicom.3utilities.com"
+#define URL_MIELE_DONATION          @"https://www.paypal.com/donate/?hosted_button_id=4SC3WZGR4VZLY"
 #define URL_MIELE_WEB_PAGE          @"http://bettar.github.io/miele-lxiv"
 #define URL_MIELE_MAC_APP_STORE     @"https://apps.apple.com/us/app/miele-lxiv/id988332475"
 

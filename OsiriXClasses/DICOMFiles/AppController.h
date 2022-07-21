@@ -192,6 +192,7 @@ extern AppController* OsiriX;
 
 // "Open" means open in web browser
 - (IBAction) openMieleLXIVWebPage: (id) sender;
+- (IBAction) openMieleLXIVDonation: (id) sender;
 - (IBAction) openMieleLXIVSourceCode: (id) sender;
 - (IBAction) openMieleLXIVDiscussion: (id) sender;
 

@@ -1769,6 +1769,9 @@
 "Do you want to only remove the selected images from the current album or delete them from the database? (%@)" = "是否只希望从当前相册中删除选定的图像或从数据库中删除这些图像？(%@)";
 
 /* No comment provided by engineer. */
+"Donate to Miele-LXIV" = "捐赠给 Miele-LXIV";
+
+/* No comment provided by engineer. */
 "Done." = "完成.";
 
 /* No comment provided by engineer. */

@@ -1166,6 +1166,11 @@ static bool isGrantedNotificationAccess = false;
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_HOME_PAGE]];
 }
 
+-(IBAction)openMieleLXIVDonation:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_DONATION]];
+}
+
 - (IBAction)openMieleLXIVSourceCode:(id)sender
 {
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_SOURCES]];

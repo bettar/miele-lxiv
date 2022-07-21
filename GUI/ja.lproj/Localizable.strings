@@ -1769,6 +1769,9 @@
 "Do you want to only remove the selected images from the current album or delete them from the database? (%@)" = "選択した画像を現在のアルバムから削除するか、データベースから削除するだけですか？ (%@)";
 
 /* No comment provided by engineer. */
+"Donate to Miele-LXIV" = "Miele-LXIVに寄付";
+
+/* No comment provided by engineer. */
 "Done." = "完了。";
 
 /* No comment provided by engineer. */
