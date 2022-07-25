@@ -6207,7 +6207,7 @@ static NSConditionLock *threadLock = nil;
 - (void) delObjects:(NSMutableArray*) objectsToDelete {
     [self delObjects:objectsToDelete tree:nil];
 }
-
+#
 - (IBAction)delItem: (id)sender
 {
 	if (self.database.isReadOnly)
@@ -9814,6 +9814,7 @@ static BOOL withReset = NO;
                 [cell setAction: @selector(matrixPressed:)];
                 [cell setRepresentedObject: [curFile objectID]];
                 
+                // Set the cell's contextual menu
                 if ( [modality isEqualToString: @"RTSTRUCT"])
                 {
                     [[contextualRT itemAtIndex: 0] setAction:@selector(createROIsFromRTSTRUCT:)];
@@ -11227,7 +11228,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	[contextual addItemWithTitle: NSLocalizedString(@"Open Images", nil) action:@selector(viewerDICOM:) keyEquivalent:@""];
 	[contextual addItemWithTitle: NSLocalizedString(@"Open Images in 4D", nil) action:@selector(MovieViewerDICOM:) keyEquivalent:@""];
 	[contextual addItemWithTitle: NSLocalizedString(@"Open Sub-Selection", nil) action:@selector(viewerSubSeriesDICOM:) keyEquivalent:@""];
-    [contextual addItemWithTitle: NSLocalizedString(@"Open Reparsed series", nil) action:@selector(viewerReparsedSeries:) keyEquivalent:@""];
+    [contextual addItemWithTitle: NSLocalizedString(@"Open Reparsed Series", nil) action:@selector(viewerReparsedSeries:) keyEquivalent:@""];
 	[contextual addItemWithTitle: NSLocalizedString(@"Open Key Images", nil) action:@selector(viewerDICOMKeyImages:) keyEquivalent:@""];
 	[contextual addItemWithTitle: NSLocalizedString(@"Open ROIs Images", nil) action:@selector(viewerDICOMROIsImages:) keyEquivalent:@""];
 	[contextual addItemWithTitle: NSLocalizedString(@"Open ROIs and Key Images", nil) action:@selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""];
@@ -14030,10 +14031,10 @@ constrainSplitPosition:(CGFloat)proposedPosition
 
 - (void) MovieViewerDICOM:(id) sender
 {
-	NSInteger				index;
-	NSMutableArray			*selectedItems = [NSMutableArray array];
+	NSInteger index;
+	NSMutableArray *selectedItems = [NSMutableArray array];
 	
-	NSIndexSet				*selectedRowIndexes = [databaseOutline selectedRowIndexes];
+	NSIndexSet *selectedRowIndexes = [databaseOutline selectedRowIndexes];
 	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
 	{
 		if ([selectedRowIndexes containsIndex:index])
@@ -16545,7 +16546,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			break;
 	}
 }
-
+#
 - (IBAction) compressSelectedFiles: (id)sender
 {
 	if (/*bonjourDownloading == NO &&*/ [_database isLocal])
@@ -16772,7 +16773,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[pathsForSeries setObject:path forKey:kind];
 	}
 }
-
+#
 +(void) exportQuicktime:(NSArray*)dicomFiles2Export
                        :(NSString*)path
                        :(BOOL)html
@@ -18789,8 +18790,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	[self.window makeKeyAndOrderFront:sender];
 	
-	NSMutableArray	*objects = [NSMutableArray array];
-	NSMutableArray  *files;
+	NSMutableArray *objects = [NSMutableArray array];
+	NSMutableArray *files;
 	
 	if (([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 		files = [self filesForDatabaseMatrixSelection:objects onlyImages: NO];

@@ -252,12 +252,12 @@ extern NSString * const SeriesViewer_DragType;
 	BOOL							rtstructProgressBar;
 	float							rtstructProgressPercent;
 	
-	BOOL							avoidRecursive, openSubSeriesFlag, openReparsedSeriesFlag;
+	BOOL avoidRecursive, openSubSeriesFlag, openReparsedSeriesFlag;
 	
 	IBOutlet PluginManagerController *pluginManagerController;
 	
-	WaitRendering					*waitOpeningWindow;
-	BOOL							waitCompressionAbort;
+	WaitRendering *waitOpeningWindow;
+	BOOL waitCompressionAbort;
 	
 	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionSelectedFiles;
 	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionCorrespondingObjects;

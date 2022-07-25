@@ -3230,10 +3230,7 @@
 "Open Polygon Tool" = "Strumento Apri poligono";
 
 /* No comment provided by engineer. */
-"Open Reparsed series" = "Serie Open Reparsed";
-
-/* No comment provided by engineer. */
-"Open Reparsed Series" = "Serie Riparato Aperto";
+"Open Reparsed Series" = "Apri serie rianalizzata";
 
 /* No comment provided by engineer. */
 "Open ROIs and Key Images" = "ROI aperti e immagini chiave";

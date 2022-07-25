@@ -6001,7 +6001,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     if (shutterRect.size.height == 0)
         shutterRect.size.height = height;
     
-    // window level & width
+    // window level & width (TBC: truncated to int on purpose ?)
     if ([dcmObject attributeValueWithName:@"WindowCenter"] && !isRGB)
         savedWL = (int)[[dcmObject attributeValueWithName:@"WindowCenter"] floatValue];
     

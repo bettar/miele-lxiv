@@ -195,7 +195,7 @@ PURPOSE.
 {
 	NSArray *r = nil;
 	
-	if( avoidRecursive == NO)
+	if (avoidRecursive == NO)
 	{
 		avoidRecursive = YES;
 		
