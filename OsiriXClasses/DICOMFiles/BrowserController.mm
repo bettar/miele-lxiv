@@ -2604,7 +2604,8 @@ static NSConditionLock *threadLock = nil;
 {
 	if (![_database rebuildAllowed])
 		[NSException raise:NSGenericException format:@"Current database rebuild not allowed, this shouldn't be executed."];
-	NSBeginInformationalAlertSheet(nil, nil, NSLocalizedString(@"Cancel", nil), nil, self.window, self, @selector(_rebuildSqlSheetDidEnd:returnCode:contextInfo:), nil, nil, NSLocalizedString(@"Are you sure you want to rebuild this database's SQL index? This operation can take several minutes.", nil));
+
+    NSBeginInformationalAlertSheet(nil, nil, NSLocalizedString(@"Cancel", nil), nil, self.window, self, @selector(_rebuildSqlSheetDidEnd:returnCode:contextInfo:), nil, nil, NSLocalizedString(@"Are you sure you want to rebuild this database's SQL index? This operation can take several minutes.", nil));
 }
 
 - (void) autoCleanDatabaseDate: (id)sender __deprecated
@@ -14596,6 +14597,7 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItemWithTitle: NSLocalizedString(@"Open ROIs and Key Images", nil) action: @selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""];
 	[menu addItemWithTitle: NSLocalizedString(@"Open Merged Selection", nil) action: @selector(viewerDICOMMergeSelection:) keyEquivalent:@""];
 	[menu addItemWithTitle: NSLocalizedString(@"Reveal In Finder", nil) action: @selector(revealInFinder:) keyEquivalent:@""];
+
     if ([[AppController sharedAppController] workspaceMenu]) {
         [menu addItem: [NSMenuItem separatorItem]];
         NSMenuItem *mi = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Load Workspace State DICOM SR", nil) action: nil keyEquivalent:@""] autorelease];
@@ -14603,7 +14605,8 @@ static NSArray*	openSubSeriesArray = nil;
         [menu addItem: mi];
         [menu addItemWithTitle: NSLocalizedString(@"Reset Workspace State", nil) action: @selector(resetWindowsState:) keyEquivalent:@""];
     }
-	[menu addItem: [NSMenuItem separatorItem]];
+
+    [menu addItem: [NSMenuItem separatorItem]];
 	[menu addItemWithTitle: NSLocalizedString(@"Export to DICOM Network Node", nil) action: @selector(export2PACS:) keyEquivalent:@""];
 	[menu addItemWithTitle: NSLocalizedString(@"Export to Movie", nil) action: @selector(exportQuicktime:) keyEquivalent:@""];
 	[menu addItemWithTitle: NSLocalizedString(@"Export to JPEG", nil) action: @selector(exportJPEG:) keyEquivalent:@""];

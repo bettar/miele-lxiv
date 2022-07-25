@@ -503,7 +503,8 @@ static DicomDatabase* activeLocalDatabase = nil;
             // report templates
 #ifndef MIELE_LIGHT
             NSString *templatesPath = [self.baseDirPath stringByAppendingPathComponent: TEMPLATES_PATH];
-            for (NSString* rfName in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
+            for (NSString* rfName in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil])
+            {
                 NSString *rfPath = [templatesPath stringByAppendingPathComponent:rfName];
                 if (rfPath && ![NSFileManager.defaultManager fileExistsAtPath:rfPath])
                 {
@@ -887,8 +888,26 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent: ROIS_PATH]];
 }
 
--(NSString*)htmlTemplatesDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent: TEMPLATES_PATH @"/HTML"]];
+-(NSString*)templatesDirPath
+{
+    NSString *path = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath: self.dataBaseDirPath];
+    path = [path stringByAppendingPathComponent:TEMPLATES_PATH];
+    return path;
+}
+
+-(NSString*)htmlTemplatesDirPath
+{
+	return [self.templatesDirPath stringByAppendingPathComponent:@"HTML"];
+}
+
+-(NSString*)odtTemplatesDirPath
+{
+    return self.templatesDirPath;
+}
+
+-(NSString*)rtfTemplatesDirPath
+{
+    return self.templatesDirPath;
 }
 
 -(NSString*)modelVersionFilePath {
@@ -4465,11 +4484,14 @@ static BOOL protectionAgainstReentry = NO;
     [self applyRoutingRules:nil toImages:images];
 }
 
--(void)dumpSqlFile {
+- (void) dumpSqlFile
+{
 	//WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Dumping SQL Index file...", nil)]; // TODO: status
 	//[splash showWindow:self];
 	
-	@try {
+	@try
+    {
+// Step 1) sqlite3 Database.sql .dump > Database.sql.dump
 		NSString* repairedDBFile = [self.sqlFilePath stringByAppendingPathExtension:@"dump"];
 		
 		[NSFileManager.defaultManager removeItemAtPath:repairedDBFile error:nil];
@@ -4478,7 +4500,10 @@ static BOOL protectionAgainstReentry = NO;
 		NSTask* theTask = [[NSTask alloc] init];
 		[theTask setLaunchPath: @"/usr/bin/sqlite3"];
 		[theTask setStandardOutput:[NSFileHandle fileHandleForWritingAtPath:repairedDBFile]];
-		[theTask setArguments:[NSArray arrayWithObjects: self.sqlFilePath, @".dump", nil]];
+		[theTask setArguments:[NSArray arrayWithObjects:
+                               self.sqlFilePath,
+                               @".dump", // command
+                               nil]];
 		
 		[theTask launch];
 		
@@ -4490,7 +4515,9 @@ static BOOL protectionAgainstReentry = NO;
 		int dumpStatus = [theTask terminationStatus];
 		[theTask release];
 		
-		if (dumpStatus == EXIT_SUCCESS) {
+		if (dumpStatus == EXIT_SUCCESS)
+        {
+// Step 2) sqlite3 Database.sql.dump.sql < Database.sql.dump
 			NSString* repairedDBFinalFile = [repairedDBFile stringByAppendingPathExtension: @"sql"];
 			[NSFileManager.defaultManager removeItemAtPath:repairedDBFinalFile error:nil];
 			
@@ -4505,24 +4532,34 @@ static BOOL protectionAgainstReentry = NO;
             
             //[theTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 			
-			if ([theTask terminationStatus] == EXIT_SUCCESS) {
-				NSInteger tag = 0;
+			if ([theTask terminationStatus] == EXIT_SUCCESS)
+            {
+// Step 3) rm Database.sql
+#if 0 // see issue i51
+                NSURL *url = [NSURL fileURLWithPath:self.sqlFilePath];
+                // trashItemAtURL is synchronous
+                BOOL ok = [[NSFileManager defaultManager] trashItemAtURL:url resultingItemURL:nil error:nil];
+                //NSLog(@"%s %d, %d", __FUNCTION__, __LINE__, ok);
+#else
+                NSInteger tag = 0;
+				[[NSWorkspace sharedWorkspace] performFileOperation: NSWorkspaceRecycleOperation
+                                                             source: self.sqlFilePath.stringByDeletingLastPathComponent // /Users/lxiv/Documents/Miele-LXIV Data
+                                                        destination: @""
+                                                              files: [NSArray arrayWithObject: self.sqlFilePath.lastPathComponent] // Database.sql
+                                                                tag: &tag];
+#endif
 
-                // TODO: Use -[NSWorkspace recycleURLs:completionHandler:] instead of NSWorkspaceRecycleOperation
-				[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation
-                                                             source:self.sqlFilePath.stringByDeletingLastPathComponent
-                                                        destination:@""
-                                                              files:[NSArray arrayWithObject:self.sqlFilePath.lastPathComponent]
-                                                                tag:&tag];
-
+// Step 4) mv Database.sql.dump.sql Database.sql
                 [NSFileManager.defaultManager moveItemAtPath:repairedDBFinalFile toPath:self.sqlFilePath error:nil];
 			}
 			
 			[theTask release];
 		}
 	
+// Step 5) rm Database.sql.dump
 		[[NSFileManager defaultManager] removeItemAtPath: repairedDBFile error: nil];
-	} @catch (NSException* e) {
+	}
+    @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
 	
@@ -4530,7 +4567,8 @@ static BOOL protectionAgainstReentry = NO;
 //	[splash autorelease];
 }
 
--(void)rebuildSqlFile {
+-(void)rebuildSqlFile
+{
 	[_importFilesFromIncomingDirLock lock];
 	
 	[self save:NULL];

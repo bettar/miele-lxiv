@@ -141,8 +141,9 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 
 - (NSString*) getDICOMStringValueForField: (NSString*) rawField inDICOMFile: (NSString*) path
 {
+#ifndef NDEBUG
     NSLog( @"Report: DICOM_Field: %@", rawField);
-    
+#endif
     @try {
         NSArray *dicomFields = [rawField componentsSeparatedByString: @":"];
         
@@ -187,9 +188,10 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
     @catch ( NSException *e) {
         N2LogException( e);
     }
-        
-    NSLog( @"**** Dicom field not found: %@ in %@", rawField, path);
     
+#ifndef NDEBUG
+    NSLog( @"Dicom field not found: %@ in %@", rawField, path);
+#endif
     return nil;
 }
 
@@ -212,10 +214,12 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 		{
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"rtf"];
 			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
-			
-			[[NSFileManager defaultManager] copyItemAtPath:[BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/ReportTemplate.rtf"]
-                                                    toPath:destinationFile
-                                                   error: nil];
+
+            NSString *srcPath = BrowserController.currentBrowser.database.rtfTemplatesDirPath;
+            srcPath = [srcPath stringByAppendingPathComponent:@"ReportTemplate.rtf"];
+			[[NSFileManager defaultManager] copyItemAtPath: srcPath
+                                                    toPath: destinationFile
+                                                     error: nil];
 			
 			NSDictionary *attr;
 			NSMutableAttributedString *rtf = [[NSMutableAttributedString alloc] initWithRTF: [NSData dataWithContentsOfFile:destinationFile] documentAttributes:&attr];
@@ -324,14 +328,17 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 		
 		case REPORT_TYPE_LIBRE_OFFICE:
 		{
-			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"odt"];
-			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
+			NSString *destinationFilename = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"odt"];
+			[[NSFileManager defaultManager] removeItemAtPath: destinationFilename error: nil];
 			
-            [[NSFileManager defaultManager] copyItemAtPath:[BrowserController.currentBrowser.database.baseDirPath stringByAppendingPathComponent:@"ReportTemplate.odt"]
-                                                    toPath:destinationFile
-                                                     error:NULL];
+            NSString *srcPath = BrowserController.currentBrowser.database.odtTemplatesDirPath;
+            srcPath = [srcPath stringByAppendingPathComponent:@"ReportTemplate.odt"];
+            [[NSFileManager defaultManager] copyItemAtPath: srcPath
+                                                    toPath: destinationFilename
+                                                     error: NULL];
 
-			[self createNewOpenDocumentReportForStudy:study toDestinationPath:destinationFile];
+			[self createNewOpenDocumentReportForStudy:study
+                                    toDestinationPath:destinationFilename];
 			
 		}
             break;
@@ -508,15 +515,15 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
         NSString* oldReportFilePath = [path stringByAppendingPathComponent:TEMPLATES_PATH @"/ReportTemplate.doc"];
         
         // today, we use a dir in the database folder, which contains the templates
-        NSString* templatesDirPath = [Reports databaseWordTemplatesDirPath];
-        if (templatesDirPath == nil)
+        NSString* templatesDirPath1 = [Reports databaseWordTemplatesDirPath];
+        if (templatesDirPath1 == nil)
             return;
         
         NSUInteger templatesCount = 0;
         
-        if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath])
+        if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath1])
         {
-            for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL])
+            for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath1 error:NULL])
             {
                 if( [filename.pathExtension isEqualToString: @"doc"])
                     ++templatesCount;
@@ -528,13 +535,13 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
             if ([[NSFileManager defaultManager] fileExistsAtPath: oldReportFilePath])
             {
                 [[NSFileManager defaultManager] moveItemAtPath: oldReportFilePath
-                                                        toPath: [templatesDirPath stringByAppendingPathComponent: [oldReportFilePath lastPathComponent]]
+                                                        toPath: [templatesDirPath1 stringByAppendingPathComponent: [oldReportFilePath lastPathComponent]]
                                                          error: nil];
             }
             else
             {
                 NSString *srcPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"ReportTemplate.doc"];
-                NSString *dstPath = [templatesDirPath stringByAppendingPathComponent:@"Basic Report Template.doc"];
+                NSString *dstPath = [templatesDirPath1 stringByAppendingPathComponent:@"Basic Report Template.doc"];
                 [[NSFileManager defaultManager] copyItemAtPath:srcPath
                                                         toPath:dstPath
                                                          error:NULL];
@@ -668,13 +675,13 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
     NSString* sourceData = [self generateWordReportMergeDataForStudy:study];
     NSString* templatePath = nil;
     
-    NSString* templatesDirPath = [[self class] resolvedDatabaseWordTemplatesDirPath];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath])
+    NSString* templatesDirPath2 = [[self class] resolvedDatabaseWordTemplatesDirPath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath2])
     {
-        for( NSString *filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL])
+        for( NSString *filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath2 error:NULL])
         {
             if( [filename.pathExtension hasPrefix: @"doc"] && [filename.stringByDeletingPathExtension isEqualToString: inTemplateName.stringByDeletingPathExtension])
-                templatePath = [templatesDirPath stringByAppendingPathComponent: filename];
+                templatePath = [templatesDirPath2 stringByAppendingPathComponent: filename];
         }
     }
     
@@ -821,20 +828,20 @@ static BOOL Pages5orHigher = FALSE;
 + (void)checkForPagesTemplate;
 {
 #ifndef MIELE_LIGHT
-	NSString* templatesDirPath = [Reports databasePagesTemplatesDirPath];
+	NSString* templatesDirPath3 = [Reports databasePagesTemplatesDirPath];
 
 #ifndef NDEBUG
-    NSLog(@"%s templatesDirPath:%@", __FUNCTION__, templatesDirPath);
+    NSLog(@"%s templatesDirPath:%@", __FUNCTION__, templatesDirPath3);
 #endif
 
-    if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath] == NO)
-        [[NSFileManager defaultManager] createDirectoryAtPath:templatesDirPath
+    if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath3] == NO)
+        [[NSFileManager defaultManager] createDirectoryAtPath:templatesDirPath3
                                   withIntermediateDirectories:YES
                                                    attributes:nil
                                                         error:nil];
     
 	// Pages template
-    NSString *defaultReport = [templatesDirPath stringByAppendingPathComponent:@"Basic Report.pages"];
+    NSString *defaultReport = [templatesDirPath3 stringByAppendingPathComponent:@"Basic Report.pages"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: defaultReport] == NO)
 		[[NSFileManager defaultManager] copyItemAtPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Report.pages"]
                                                 toPath: defaultReport
