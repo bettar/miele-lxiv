@@ -181,9 +181,10 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
             float scaleValue = [[userInfo valueForKey:@"scaleValue"] floatValue];
             float crossx = startingPoint.x - [[userInfo valueForKey:@"offsetx"] floatValue];
             float crossy = startingPoint.y - [[userInfo valueForKey:@"offsety"] floatValue];
-
+#ifdef WITH_OPENGL_32
             GLScene *scene = [GLScene currentScene];
             renderer_setProgram(scene.overlayLineProgram.programHandle, __LINE__);
+#endif
             renderer_setLineWidth(2.0 * self.window.backingScaleFactor);
             renderer_set_rgb(0.0f, 1.0f, 0.5f);
 

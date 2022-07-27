@@ -921,7 +921,7 @@ public:
 		
 		switch (e)
 		{
-			case 0:		// FIXED RAY CAST
+			case ENGINE_CPU:		// FIXED RAY CAST
 				[self allocateCPUMapper];
                 LOD = 2.0;
                 if ([[NSProcessInfo processInfo] processorCount] >= 4)
@@ -931,7 +931,7 @@ public:
                 
                 break;
                 
-            case 1:     // GPURenderMode
+            case ENGINE_GPU_OPEN_GL:     // GPURenderMode
 				[self allocateGPUMapper];
                 LOD = 1.0;
                 lowResLODFactor = 1.2;

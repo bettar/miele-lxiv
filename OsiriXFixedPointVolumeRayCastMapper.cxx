@@ -26,7 +26,9 @@ OsiriXFixedPointVolumeRayCastMapper::OsiriXFixedPointVolumeRayCastMapper()
 // See VTK's vtkFixedPointVolumeRayCastMapper.cxx
 void OsiriXFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *vol )
 {
+#ifndef NDEBUG
     printf("%s %d\n", __FUNCTION__, __LINE__);
+#endif
     this->Timer->StartTimer();
 
     // Since we are passing in a value of 0 for the multiRender flag

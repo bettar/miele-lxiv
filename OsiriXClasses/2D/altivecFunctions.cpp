@@ -18,6 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
+#include "TargetConditionals.h"
 #include "altivecFunctions.h"
 
 #if __ppc__ || __ppc64__
@@ -117,7 +118,8 @@ void vmin8(vector unsigned char *a, vector unsigned char *b, vector unsigned cha
 		*r++ = vec_min( *a++, *b++);
 	}
 }
-#else
+
+#elif TARGET_CPU_X86_64
 
 void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size)
 {

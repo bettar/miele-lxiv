@@ -91,10 +91,10 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 {
 	NSString *s = [study valueForKey:@"accessionNumber"];
 	
-	if( [s length] > 0)
-		return [DicomFile NSreplaceBadCharacter: [[study valueForKey:@"patientUID"] stringByAppendingFormat:@"-%@", [study valueForKey:@"accessionNumber"]]];
-	else
-		return [DicomFile NSreplaceBadCharacter: [[study valueForKey:@"patientUID"] stringByAppendingFormat:@"-%@", [study valueForKey:@"studyInstanceUID"]]];
+	if ([s length] > 0)
+		return [DicomFile NSreplaceBadCharacter: [[study valueForKey:@"patientUID"] stringByAppendingFormat:@"-%@", s]];
+
+    return [DicomFile NSreplaceBadCharacter: [[study valueForKey:@"patientUID"] stringByAppendingFormat:@"-%@", [study valueForKey:@"studyInstanceUID"]]];
 }
 
 + (NSString*) getOldUniqueFilename:(NSManagedObject*) study
@@ -111,7 +111,7 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 {
     // thanks to stone.com for the pointer to  CFURLCreateWithFileSystemPath()
 
-    CFURLRef    url;
+    CFURLRef url;
     CFStringRef hfsPath = NULL;
 
     BOOL isDirectoryPath = [p hasSuffix:@"/"];
@@ -148,40 +148,40 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
         NSArray *dicomFields = [rawField componentsSeparatedByString: @":"];
         
         DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: path decodingPixelData:NO];
-        if( dcmObject)
+        if (dcmObject)
         {
             id lastObj = nil;
             for( NSString *dicomField in dicomFields)
             {
                 dicomField = [dicomField stringByReplacingOccurrencesOfString:@" " withString:@""];
                 
-                if( lastObj == nil)
+                if (lastObj == nil)
                     lastObj = [dcmObject attributeWithName: dicomField];
                 
-                if( lastObj == nil)
+                if (lastObj == nil)
                     lastObj = [dcmObject attributeForTag: [DCMAttributeTag tagWithTagString: dicomField]];
                 
-                if( lastObj == nil)
+                if (lastObj == nil)
                     break;
                 
-                if( [lastObj isKindOfClass: [DCMSequenceAttribute class]] == NO)
+                if ([lastObj isKindOfClass: [DCMSequenceAttribute class]] == NO)
                     break;
                 else
                 {
                     dcmObject = [[lastObj sequence] objectAtIndex: 0]; // Read only first item...
                     
-                    if( [dicomFields lastObject] != dicomField)
+                    if ([dicomFields lastObject] != dicomField)
                         lastObj = 0;
                 }
             }
             
-            if( [lastObj isKindOfClass: [DCMSequenceAttribute class]])
+            if ([lastObj isKindOfClass: [DCMSequenceAttribute class]])
                 lastObj = [lastObj readableDescription];
             
-            if( [lastObj isKindOfClass: [DCMAttribute class]])
+            if ([lastObj isKindOfClass: [DCMAttribute class]])
                 lastObj = [lastObj value];
             
-            if( [lastObj isKindOfClass: [NSString class]])
+            if ([lastObj isKindOfClass: [NSString class]])
                 return lastObj;
         }
     }
@@ -239,7 +239,7 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 			{
 				NSString *string;
 				
-				if( [[study valueForKey: name] isKindOfClass: [NSDate class]])
+				if ([[study valueForKey: name] isKindOfClass: [NSDate class]])
 					string = [date stringFromDate: [study valueForKey: name]];
 				else
                     string = [[study valueForKey: name] description];
@@ -250,9 +250,9 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 				{
 					range = [rtfString rangeOfString: [NSString stringWithFormat:@"«%@»", name] options:0 range:searchRange];
 					
-					if( range.length > 0)
+					if (range.length > 0)
 					{
-						if( string)
+						if (string)
 							[rtf replaceCharactersInRange:range withString:string];
 						else
                             [rtf replaceCharactersInRange:range withString:@""];
@@ -267,21 +267,21 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 			NSRange	searchRange = rtf.range;
 			
 			range = [rtfString rangeOfString: @"«today»" options:0 range: searchRange];
-			if( range.length > 0)
+			if (range.length > 0)
 			{
 				[rtf replaceCharactersInRange:range withString:[date stringFromDate: [NSDate date]]];
 			}
 			
 			// DICOM Fields
 			NSArray	*seriesArray = [[BrowserController currentBrowser] childrenArray: study];
-			if( [seriesArray count] > 0)
+			if ([seriesArray count] > 0)
 			{
 				NSArray	*imagePathsArray = [[BrowserController currentBrowser] imagesPathArray: [seriesArray objectAtIndex: 0]];
 				BOOL moreFields = NO;
 				do
 				{
 					NSRange firstChar = [rtfString rangeOfString: @"«DICOM_FIELD:"];
-					if( firstChar.location != NSNotFound)
+					if (firstChar.location != NSNotFound)
 					{
 						NSRange secondChar = [rtfString rangeOfString: @"»"];
 						
@@ -448,20 +448,20 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 	{
 		NSRange firstChar = [aString rangeOfString: @"&#xAB;DICOM_FIELD:"];
 		
-		if( firstChar.location == NSNotFound)
+		if (firstChar.location == NSNotFound)
 			firstChar = [aString rangeOfString: @"«DICOM_FIELD:"];
 		
-		if( firstChar.location != NSNotFound)
+		if (firstChar.location != NSNotFound)
 		{
 			NSRange secondChar = [aString rangeOfString: @"&#xBB;" options: 0 range: NSMakeRange( firstChar.location+firstChar.length, aString.length - (firstChar.location+firstChar.length)) locale: nil];
-			if( secondChar.location == NSNotFound)
+			if (secondChar.location == NSNotFound)
 				secondChar = [aString rangeOfString: @"»"];
 			
-			if( secondChar.location != NSNotFound)
+			if (secondChar.location != NSNotFound)
 			{
 				NSString *dicomField = [aString substringWithRange: NSMakeRange( firstChar.location+firstChar.length, secondChar.location - (firstChar.location+firstChar.length))];
 				
-                if( dicomField.length) // delete the <blabla> strings
+                if (dicomField.length) // delete the <blabla> strings
                 {
                     dicomField = [dicomField stringByReplacingOccurrencesOfString:@" " withString:@""];
                     
@@ -469,11 +469,11 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
                     do
                     {
                         sChar = [dicomField rangeOfString: @"<"];
-                        if( sChar.location != NSNotFound)
+                        if (sChar.location != NSNotFound)
                         {
                             NSRange sChar2 = [dicomField rangeOfString: @">"];
                             
-                            if( sChar2.location != NSNotFound)
+                            if (sChar2.location != NSNotFound)
                                 dicomField = [dicomField stringByReplacingCharactersInRange:NSMakeRange( sChar.location, sChar2.location + sChar2.length - sChar.location) withString:@""];
                         }
                     }
@@ -482,7 +482,7 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
                 
                 NSString *s = [self getDICOMStringValueForField: dicomField inDICOMFile: [imagePathsArray objectAtIndex: 0]];
                 
-				if( s)
+				if (s)
                     [aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+secondChar.length) withString: s];
                 else
                     [aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+secondChar.length) withString:@""];
@@ -525,12 +525,12 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
         {
             for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath1 error:NULL])
             {
-                if( [filename.pathExtension isEqualToString: @"doc"])
+                if ([filename.pathExtension isEqualToString: @"doc"])
                     ++templatesCount;
             }
         }
         
-        if (!templatesCount) // templatesCount == 0 ?
+        if (templatesCount == 0)
         {
             if ([[NSFileManager defaultManager] fileExistsAtPath: oldReportFilePath])
             {
@@ -602,7 +602,7 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 	{
 		[directoryEnumerator skipDescendents];
         
-        if( [filename.pathExtension hasPrefix: @"doc"]) //hasPrefix: compatible with .doc and .docx
+        if ([filename.pathExtension hasPrefix: @"doc"]) //hasPrefix: compatible with .doc and .docx
             [templatesArray addObject: filename];
 	}
 	
@@ -634,12 +634,12 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 		NSString *name = [properties objectAtIndex: x];
 		NSString *string;
 		
-		if( [[study valueForKey: name] isKindOfClass: [NSDate class]])
+		if ([[study valueForKey: name] isKindOfClass: [NSDate class]])
 			string = [date stringFromDate: [study valueForKey: name]];
 		else
             string = [[study valueForKey: name] description];
 		
-		if( string)
+		if (string)
 			[file appendString: [DicomFile NSreplaceBadCharacter:string]];
 		else
 			[file appendString: @""];
@@ -669,7 +669,7 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
     
     NSString* inTemplateName = _templateName;
     
-    if( inTemplateName.length == 0 && [[Reports wordTemplatesList] count])
+    if (inTemplateName.length == 0 && [[Reports wordTemplatesList] count])
         inTemplateName = [[Reports wordTemplatesList] objectAtIndex: 0];
     
     NSString* sourceData = [self generateWordReportMergeDataForStudy:study];
@@ -680,12 +680,12 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
     {
         for( NSString *filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath2 error:NULL])
         {
-            if( [filename.pathExtension hasPrefix: @"doc"] && [filename.stringByDeletingPathExtension isEqualToString: inTemplateName.stringByDeletingPathExtension])
+            if ([filename.pathExtension hasPrefix: @"doc"] && [filename.stringByDeletingPathExtension isEqualToString: inTemplateName.stringByDeletingPathExtension])
                 templatePath = [templatesDirPath2 stringByAppendingPathComponent: filename];
         }
     }
     
-    if( templatePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:templatePath])
+    if (templatePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:templatePath])
     {
         NSRunCriticalAlertPanel(NSLocalizedString( @"Microsoft Word", nil),
                                 NSLocalizedString(@"I cannot find the OsiriX Word Template doc file.", nil),
@@ -1000,7 +1000,7 @@ static BOOL Pages5orHigher = FALSE;
         }
 
         // Retry with a template ending in "09.pages"
-        if( [[NSFileManager defaultManager] fileExistsAtPath: [templatePath stringByAppendingString: @"09.pages"]])
+        if ([[NSFileManager defaultManager] fileExistsAtPath: [templatePath stringByAppendingString: @"09.pages"]])
         {
             [[NSFileManager defaultManager] removeItemAtPath: templatePath error: nil];
 
@@ -1018,7 +1018,7 @@ static BOOL Pages5orHigher = FALSE;
             [self decompressPagesFileIfNecessary: aPath];
         }
 
-        if( [[NSFileManager defaultManager] fileExistsAtPath:indexFilePath] == NO)
+        if ([[NSFileManager defaultManager] fileExistsAtPath:indexFilePath] == NO)
         {
             NSRunCriticalAlertPanel(NSLocalizedString(@"Pages", nil),
                                     NSLocalizedString(@"OsiriX requires templates files in Pages '09 format. Open your template in Pages, select File menu and Export to Pages '09 format.", nil),
@@ -1066,9 +1066,9 @@ static BOOL Pages5orHigher = FALSE;
         while ((file = [directoryEnumerator nextObject]))
         {
             [directoryEnumerator skipDescendents];
-            if( [file.stringByDeletingPathExtension isEqualToString: templateName.stringByDeletingPathExtension])
+            if ([file.stringByDeletingPathExtension isEqualToString: templateName.stringByDeletingPathExtension])
             {
-                if( [file.pathExtension isEqualToString: @"pages"])
+                if ([file.pathExtension isEqualToString: @"pages"])
                     return [templateDirectory stringByAppendingPathComponent: file];
             }
         }
