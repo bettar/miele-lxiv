@@ -1057,7 +1057,11 @@ public:
 		case ENGINE_CPU:
 			if (blendingVolumeMapper == nil)
 			{
+#ifdef TEST_ISSUE_I31
+                blendingVolumeMapper = vtkFixedPointVolumeRayCastMapper::New();
+#else
 				blendingVolumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
+#endif
 				blendingVolumeMapper->SetInputConnection(blendingReader->GetOutputPort());
 			}
             
@@ -7564,7 +7568,7 @@ public:
 
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h isRGB:(BOOL*) rgb
 {
-	return [self imageInFullDepthWidth:  w height: h isRGB: rgb blendingView: NO];
+	return [self imageInFullDepthWidth: w height: h isRGB: rgb blendingView: NO];
 }
 
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h isRGB:(BOOL*) rgb blendingView:(BOOL) blendingView
@@ -7573,8 +7577,11 @@ public:
     
     @try
     {
-            
+#ifdef TEST_ISSUE_I31
+        vtkFixedPointVolumeRayCastMapper *mapper = nil;
+#else
         OsiriXFixedPointVolumeRayCastMapper *mapper = nil;
+#endif
         DCMPix *firstObj = nil;
         
         if (blendingView)

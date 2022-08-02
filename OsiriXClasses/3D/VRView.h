@@ -23,6 +23,8 @@
 #import "DCMPix.h"
 #import "mieleTypes.h"
 
+//#define TEST_ISSUE_I31
+
 #ifdef __cplusplus
 #import "vtkMieleView.h"
 
@@ -197,7 +199,7 @@ typedef char* VTKStereoVRView;
 	float						blendingWl, blendingWw, measureLength;
 	vtkImageImport				*blendingReader;
 	
-#if 0 // TODO
+#ifdef TEST_ISSUE_I31 // TODO
     vtkFixedPointVolumeRayCastMapper *blendingVolumeMapper;
 #else
     OsiriXFixedPointVolumeRayCastMapper *blendingVolumeMapper;

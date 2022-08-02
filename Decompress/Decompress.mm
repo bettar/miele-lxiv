@@ -21,7 +21,9 @@
 #import "AppController.h"
 #import "DCMPix.h"
 #import <WebKit/WebKit.h>
+#if TARGET_CPU_X86_64
 #include "mingpp.h"
+#endif
 #import "N2Debug.h"
 #import <Quartz/Quartz.h>
 
@@ -884,8 +886,10 @@ void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate)
 	if (path)
 		[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 	
+#if TARGET_CPU_X86_64
 	Ming_init();
 	Ming_setSWFCompression(9); // 9 = maximum compression
+#endif
 	SWFMovie* swf = new SWFMovie(7);
 	swf->setBackground(0x88, 0x88, 0x88);
     
@@ -1065,5 +1069,7 @@ void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate)
 		delete bitmap[i];
 	
 	delete swf;
-	Ming_cleanup();	
+#if TARGET_CPU_X86_64
+	Ming_cleanup();
+#endif
 }

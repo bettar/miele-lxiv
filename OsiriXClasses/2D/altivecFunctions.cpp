@@ -119,7 +119,8 @@ void vmin8(vector unsigned char *a, vector unsigned char *b, vector unsigned cha
 	}
 }
 
-#elif TARGET_CPU_X86_64
+#else
+#if TARGET_CPU_X86_64
 
 void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size)
 {
@@ -130,6 +131,7 @@ void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size)
 		*r++ = _mm_max_ps( *a++, *b++);
 	}
 }
+
 void vminIntel( vFloat *a, vFloat *b, vFloat *r, long size)
 {
 	long i = size/4;
@@ -139,6 +141,7 @@ void vminIntel( vFloat *a, vFloat *b, vFloat *r, long size)
 		*r++ = _mm_min_ps( *a++, *b++);
 	}
 }
+
 void vmax8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
 {
 	long i = size/4;
@@ -148,6 +151,7 @@ void vmax8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
 		*r++ = _mm_max_epu8( *a++, *b++);
 	}
 }
+
 void vmin8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
 {
 	long i = size/4;
@@ -157,6 +161,7 @@ void vmin8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
 		*r++ = _mm_min_epu8( *a++, *b++);
 	}
 }
+#endif // TARGET_CPU_X86_64
 #endif
 
 void vmultiplyNoAltivec( float *a,  float *b,  float *r, long size)
