@@ -86,7 +86,7 @@
 
 - (void)initializeVTKSupport
 {
-#if 1
+#ifndef NDEBUG
     NSLog(@"%s %d, self:%p", __FUNCTION__, __LINE__, self);
     checkOGLVersion();
 #endif
@@ -94,9 +94,10 @@
     // The usual VTK object creation
     vtkRenderer *ren = vtkRenderer::New();
     vtkRenderWindow *renWin = vtkRenderWindow::New();
-#if 1
+
+#ifndef NDEBUG
     //renWin->InitializeFromCurrentContext();
-    NSLog(@"%s %d, self:%p", __FUNCTION__, __LINE__, self);
+    NSLog(@"%s %d, ren:%p", __FUNCTION__, __LINE__, ren);
     checkOGLVersion();
 #endif
     vtkRenderWindowInteractor* renWinInt = vtkRenderWindowInteractor::New();

@@ -525,7 +525,7 @@
 				{
 					DCMPix *pix = [pixList4 objectAtIndex:correctedZ];
 					
-                    NSPoint texUpperLeft  = NSMakePoint(0, 0);
+                    NSPoint texUpperLeft  = NSZeroPoint;
                     NSPoint texUpperRight = NSMakePoint(pix.pwidth, 0);
                     NSPoint texLowerLeft  = NSMakePoint(0, pix.pheight); // y *= [pix pixelRatio]
                     NSPoint texLowerRight = NSMakePoint(pix.pwidth, pix.pheight); // y *= [pix pixelRatio]

@@ -1266,7 +1266,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 - (void) erase2DPointMarker
 {
-	display2DPoint = NSMakePoint(0,0);
+	display2DPoint = NSZeroPoint;
 }
 
 - (void) draw2DPointMarker
@@ -16237,7 +16237,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     curDCM = nil;
     curRoiList = nil;
     blendingMode = BLENDING_MODE_LINEAR_FUSION;
-    display2DPoint = NSMakePoint(0,0);
+    display2DPoint = NSZeroPoint;
     colorBuf = nil;
     blendingColorBuf = nil;
     stringID = nil;

@@ -23,8 +23,6 @@
 #import "DCMPix.h"
 #import "mieleTypes.h"
 
-//#define TEST_ISSUE_I31
-
 #ifdef __cplusplus
 #import "vtkMieleView.h"
 
@@ -198,12 +196,9 @@ typedef char* VTKStereoVRView;
 	vImage_Buffer				blendingSrcf, blendingDst8;
 	float						blendingWl, blendingWw, measureLength;
 	vtkImageImport				*blendingReader;
-	
-#ifdef TEST_ISSUE_I31 // TODO
-    vtkFixedPointVolumeRayCastMapper *blendingVolumeMapper;
-#else
+
     OsiriXFixedPointVolumeRayCastMapper *blendingVolumeMapper;
-#endif
+
 	vtkGPUVolumeRayCastMapper	*blendingTextureMapper;
 	
 	vtkVolume					*blendingVolume;
@@ -280,8 +275,8 @@ typedef char* VTKStereoVRView;
 	
 	// MAPPERS
 	
-	OsiriXFixedPointVolumeRayCastMapper *volumeMapper;
-	vtkGPUVolumeRayCastMapper		*textureMapper;
+	OsiriXFixedPointVolumeRayCastMapper *volumeMapper;  // CPU
+	vtkGPUVolumeRayCastMapper	        *textureMapper; // GPU
 	
 	vtkVolume					*volume;
 	vtkVolumeProperty			*volumeProperty;

@@ -705,8 +705,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	senderOrigin[ 1] = [[[sender performSelector:view] curDCM]  originX] * vectorP[ 3] + [[[sender performSelector:view] curDCM]  originY] * vectorP[ 4] + [[[sender performSelector:view] curDCM]  originZ] * vectorP[ 5];
 	senderOrigin[ 2] = [[[sender performSelector:view] curDCM]  originX] * vectorP[ 6] + [[[sender performSelector:view] curDCM]  originY] * vectorP[ 7] + [[[sender performSelector:view] curDCM]  originZ] * vectorP[ 8];
 	
-	NSPoint offset;
-	offset = NSMakePoint(0,0);
+	NSPoint offset = NSZeroPoint;
 	float destWidth, destHeight, senderPixelSpacingX, senderPixelSpacingY, destPixelSpacingX, destPixelSpacingY;
 	float newX, newY;
 	BOOL isSenderXFlipped, isSenderYFlipped, isDestXFlipped, isDestYFlipped;

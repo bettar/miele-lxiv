@@ -113,12 +113,12 @@ static NSHost *currentHost = nil;
                 if (Model)
                 {
                     _Bool ValueInBytes = TRUE;
-                    CFTypeRef VRAMSize = IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("VRAM,totalsize"), kCFAllocatorDefault, kIORegistryIterateRecursively); //As it could be in a child
+                    CFTypeRef VRAMSize = IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("VRAM,totalsize"), kCFAllocatorDefault, kIORegistryIterateRecursively); // As it could be in a child
 
                     if (!VRAMSize)
                     {
                         ValueInBytes = FALSE;
-                        VRAMSize = IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("VRAM,totalMB"), kCFAllocatorDefault, kIORegistryIterateRecursively); //As it could be in a child
+                        VRAMSize = IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("VRAM,totalMB"), kCFAllocatorDefault, kIORegistryIterateRecursively); // As it could be in a child
                     }
                     
                     if (VRAMSize)
@@ -134,9 +134,9 @@ static NSHost *currentHost = nil;
                         
                         if (ValueInBytes)
                             Size >>= 20;
-                        
+#ifndef NDEBUG
                         NSLog(@"Graphics: %s, %llu MB", CFDataGetBytePtr(Model), Size);
-                        
+#endif
                         CFRelease(Model);
                         return Size;
                     }
@@ -154,44 +154,46 @@ static NSHost *currentHost = nil;
 }
 
 // 'CGDisplayIOServicePort' is deprecated: first deprecated in macOS 10.9 - No longer supported
+#if 0 // obsolete
 + (unsigned long) vramSizeMB
 {
-//    const short MAXDISPLAYS = 8;
-//    io_service_t		dspPorts[MAXDISPLAYS];
-//    CGDirectDisplayID displays[MAXDISPLAYS];
-//    CGDisplayCount    displayCount = 0;
-//
-//    // First we're going to grab the online displays
-//    CGGetOnlineDisplayList(MAXDISPLAYS, displays, &displayCount);
-//
-//    if (displayCount <= 0)
-//        return 0L;
-//
-//    // Now we iterate through them
-//    for (int i = 0; i < displayCount; i++)
-//        dspPorts[i] = CGDisplayIOServicePort(displays[i]);
-//
-//    // Ask for the physical size of VRAM of the primary display
-//    CFTypeRef typeCode;
-//    typeCode = IORegistryEntryCreateCFProperty(dspPorts[0], CFSTR("IOFBMemorySize"), kCFAllocatorDefault, kNilOptions);
-//
-//    // Validate our data and make sure we're getting the right type
-//    if (typeCode)
-//    {
-//        SInt32 vramStorage = 0;
-//        // Convert this to a useable number
-//
-//        if (CFGetTypeID(typeCode) == CFNumberGetTypeID())
-//            CFNumberGetValue((CFNumberRef)typeCode, kCFNumberSInt32Type, &vramStorage);
-//
-//        CFRelease(typeCode);
-//
-//      vramStorage /= (1024L * 1024L);
-//        return vramStorage;
-//    }
+    const short MAXDISPLAYS = 8;
+    io_service_t dspPorts[MAXDISPLAYS];
+    CGDirectDisplayID displays[MAXDISPLAYS];
+    CGDisplayCount displayCount = 0;
+
+    // First we're going to grab the online displays
+    CGGetOnlineDisplayList(MAXDISPLAYS, displays, &displayCount);
+
+    if (displayCount <= 0)
+        return 0L;
+
+    // Now we iterate through them
+    for (int i = 0; i < displayCount; i++)
+        dspPorts[i] = CGDisplayIOServicePort(displays[i]);
+
+    // Ask for the physical size of VRAM of the primary display
+    CFTypeRef typeCode;
+    typeCode = IORegistryEntryCreateCFProperty(dspPorts[0], CFSTR("IOFBMemorySize"), kCFAllocatorDefault, kNilOptions);
+
+    // Validate our data and make sure we're getting the right type
+    if (typeCode)
+    {
+        SInt32 vramStorage = 0;
+        // Convert this to a useable number
+
+        if (CFGetTypeID(typeCode) == CFNumberGetTypeID())
+            CFNumberGetValue((CFNumberRef)typeCode, kCFNumberSInt32Type, &vramStorage);
+
+        CFRelease(typeCode);
+
+        vramStorage /= (1024L * 1024L);
+        return vramStorage;
+    }
 
 	return 0L;
 }
+#endif
 
 #pragma mark -
 
@@ -847,10 +849,14 @@ static NSHost *currentHost = nil;
     
     [defaultValuesDic setObject:@"1" forKey:@"UseFloatingThumbnailsList"];
     [defaultValuesDic setObject:@"0.2" forKey: @"MinimumTitledGantryTolerance"]; // in degrees
-//		
-	long pVRAM_MB = [self vramSizeMB];
-    if (pVRAM_MB == 0)
+
+    long pVRAM_MB = 0L;
+#if 0 // obsolete
+    pVRAM_MB = [self vramSizeMB];
+    if (pVRAM_MB == 0L)
+#endif
         pVRAM_MB = [AppDefaults GPUModelVRAMInfo];
+
 #ifndef NDEBUG
 	NSLog(@"VRAM: %li MB", pVRAM_MB);
 #endif
@@ -992,7 +998,8 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject: @"14.0" forKey: @"FONTSIZE"];
 	[defaultValuesDic setObject: @(REPORT_TYPE_PAGES) forKey: @"REPORTSMODE"];
 	[defaultValuesDic setObject: URL_MIELE_WEB_PAGE@"/internet.dcm" forKey: @"LASTURL"];
-	[defaultValuesDic setObject: @(ENGINE_CPU) forKey: @"MAPPERMODEVR"];
+    [defaultValuesDic setObject: @(ENGINE_CPU) forKey: @"MAPPERMODEVR"];
+    [defaultValuesDic setObject: @(VR_VIEW_SIZE_SQUARE_FULL_SCREEN) forKey: VRDefaultViewSize_KEY];
 	[defaultValuesDic setObject: @"1" forKey: @"STARTCOUNT"];
 	[defaultValuesDic setObject: @"1" forKey: @"editingLevel"];
 	[defaultValuesDic setObject: @"1" forKey: @"publishDICOMBonjour"];
@@ -1005,7 +1012,6 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject: @"Miele-LXIV" forKey: @"ALBUMNAME"];
 	[defaultValuesDic setObject: @"1" forKey: @"DisplayCrossReferenceLines"];
 	[defaultValuesDic setObject:@NO  forKey: @"AlwaysScaleToFit"];
-	[defaultValuesDic setObject:@(VR_VIEW_SIZE_SQUARE_FULL_SCREEN) forKey: VRDefaultViewSize_KEY];
 	[defaultValuesDic setObject:@"0" forKey: @"RunListenerOnlyIfActive"];
 	[defaultValuesDic setObject:@"0" forKey: @"UseShutter"];
 	[defaultValuesDic setObject:@"1" forKey: @"UseVOILUT"];

@@ -116,7 +116,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	switch( tool)
 	{
 		case tWL:
-			if (vrView.renderingMode == 1 || vrView.renderingMode == 3 || vrView.renderingMode == 2)
+			if (vrView.renderingMode == 1 ||
+                vrView.renderingMode == 3 ||
+                vrView.renderingMode == 2)
                 return YES; // MIP
 			else
                 return NO; // VR

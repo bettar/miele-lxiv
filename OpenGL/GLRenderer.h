@@ -11,6 +11,8 @@
 #import <AppKit/AppKit.h>
 #import "glm/glm.hpp"
 
+#import "mgl.h" // for WITH_OPENGL_32
+
 @class GLScene;
 
 void renderer_setScene(GLScene **s) __deprecated;

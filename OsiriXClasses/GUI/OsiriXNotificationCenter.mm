@@ -13,9 +13,6 @@
 
 #import "url.h"
 
-//#ifdef NDEBUG
-//#else
-
 @implementation NSNotificationCenter (AllObservers)
 
 const static void *namesKey = &namesKey;
@@ -199,5 +196,3 @@ const static void *namesKey = &namesKey;
     [pool release];
 }
 @end
-
-//#endif

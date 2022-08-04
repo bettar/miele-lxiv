@@ -897,8 +897,7 @@ PixelRepresentation
                             vr = [tag vr];
                         else
                         {
-//#ifdef NDEBUG
-//#else
+//#ifndef NDEBUG
 //                            if ([tag.vr isEqualToString: vr] == NO && [tag.vr isEqualToString: @"UN"] == NO)
 //                                NSLog( @"%@ versus %@", tag.vr, vr);
 //#endif

@@ -447,21 +447,21 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	return 0;
 }
 - (NSString *)uid{
-    if( _uid == nil)
+    if (_uid == nil)
         return @"";
     
 	return _uid;
 }
 - (NSString *)theDescription
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [_theDescription capitalizedString];
         
     return _theDescription;
 }
 - (NSString *)name
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [_name capitalizedString];
     
 	return _name;
@@ -471,21 +471,21 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 }
 - (NSString *)referringPhysician
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [_referringPhysician capitalizedString];
     
 	return _referringPhysician;
 }
 - (NSString *)performingPhysician
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [_performingPhysician capitalizedString];
     
 	return _performingPhysician;
 }
 - (NSString *)institutionName
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [_institutionName capitalizedString];
     
 	return _institutionName;
@@ -515,7 +515,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 }
 - (NSNumber*) intervalSinceBirth
 {
-    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"yearOldDatabaseDisplay"] == 0)
+    if ([[NSUserDefaults standardUserDefaults] integerForKey: @"yearOldDatabaseDisplay"] == 0)
         return [NSNumber numberWithDouble: [[NSDate date] timeIntervalSinceDate: _birthdate]];
     else
         return [NSNumber numberWithDouble: [self.date timeIntervalSinceDate: _birthdate]];
@@ -611,7 +611,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             
             BOOL localAllocatedDataset = NO;
             
-            if( dataset == nil)
+            if (dataset == nil)
             {
                 localAllocatedDataset = YES;
                 dataset = [self queryPrototype];
@@ -630,7 +630,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         //		dataset->putAndInsertString(DCM_QueryRetrieveLevel, string);
         //	}
             
-            if( values)
+            if (values)
             {
                 NSEnumerator *enumerator = [values objectEnumerator];
                 NSDictionary *dictionary;
@@ -734,7 +734,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                         DcmTag tag;
                         OFCondition result = DcmTag::findTagFromName( [key UTF8String], tag);
                         
-                        if( result.good())
+                        if (result.good())
                         {
                             string = [(NSString*)value cStringUsingEncoding:encoding];
                             dataset->putAndInsertString( tag.getXTag(), string);
@@ -859,14 +859,14 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //			NSError *error = nil;
 //			NSData *dicom = [[NSData alloc] initWithContentsOfURL: url options: 0 error: &error];
 //			
-//			if( error)
+//			if (error)
 //			{
 //				NSLog( @"****** error WADO download: %@ - url: %@", error, url);
 //				
-//				if( firstWadoErrorDisplayed == NO)
+//				if (firstWadoErrorDisplayed == NO)
 //				{
 //					firstWadoErrorDisplayed = YES;
-//                  if( showErrorMessage)
+//                  if (showErrorMessage)
 //                      [DCMTKQueryNode performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@ - %@", [error localizedDescription], url], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 //				}
 //			}
@@ -880,10 +880,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //			[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d-%d.dcm", wadoUnique, wadoUniqueThreadID] atomically: YES];
 //			[dicom release];
 //			
-//			if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
+//			if ([[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
 //				break;
 //			
-//			if( [[dict valueForKey: @"mainThread"] isCancelled])
+//			if ([[dict valueForKey: @"mainThread"] isCancelled])
 //				break;
 //		}
 //	}
@@ -907,7 +907,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 //- (void) realtimeCFindResults: (NSNotification*) notification
 //{
-//    if( [notification object] == self)
+//    if ([notification object] == self)
 //    {
 //        NSLog( @"%d", [[self children] count]);
 //    }
@@ -938,7 +938,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (NSUInteger) childrenCount
 {
-    if( _children == nil)
+    if (_children == nil)
         return 0;
     
     @synchronized( _children)
@@ -950,7 +950,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 - (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
 {
 #ifndef NDEBUG
-	if( [self isKindOfClass:[DCMTKSeriesQueryNode class]])
+	if ([self isKindOfClass:[DCMTKSeriesQueryNode class]])
 		NSLog( @"------ WADO download : starting... %@ %@", study.theDescription, study.patientID);
 	else
 		NSLog( @"------ WADO download : starting... %@ %@", self.theDescription, self.patientID);
@@ -960,7 +960,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	NSString *wadoSubUrl = [_extraParameters valueForKey: @"WADOUrl"];
 	
-	if( [wadoSubUrl hasPrefix: @"/"])
+	if ([wadoSubUrl hasPrefix: @"/"])
 		wadoSubUrl = [wadoSubUrl substringFromIndex: 1];
 	
     NSString *lpbit = @"";
@@ -1000,9 +1000,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		NSManagedObjectContext *context = [NSThread isMainThread] ? [[DicomDatabase activeLocalDatabase] managedObjectContext] : [[DicomDatabase activeLocalDatabase] independentContext];
 		
 		NSPredicate *predicate = [NSPredicate predicateWithValue: NO];
-		if( [self isKindOfClass: [DCMTKSeriesQueryNode class]])
+		if ([self isKindOfClass: [DCMTKSeriesQueryNode class]])
 			predicate = [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", [study uid]];
-		if( [self isKindOfClass: [DCMTKStudyQueryNode class]])
+		if ([self isKindOfClass: [DCMTKStudyQueryNode class]])
 			predicate = [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", [self uid]];
 			
 		[request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey: @"Study"]];
@@ -1020,7 +1020,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             N2LogExceptionWithStackTrace(e);
     }
 	
-	if( [self isKindOfClass:[DCMTKStudyQueryNode class]])
+	if ([self isKindOfClass:[DCMTKStudyQueryNode class]])
 	{
 		// We are at STUDY level, and we want to go direclty to IMAGE level
 		
@@ -1045,7 +1045,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         
         while( (WADOCFind.isExecuting || self.childrenCount) && [[NSThread currentThread] isCancelled] == NO)
         {
-            if( self.childrenCount > 50 || WADOCFind.isExecuting == NO)
+            if (self.childrenCount > 50 || WADOCFind.isExecuting == NO)
             {
                 NSArray *childrenArray = nil;
                 @synchronized( _children)
@@ -1061,13 +1061,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                     
                     for( DCMTKImageQueryNode *image in childrenArray)
                     {
-                        if( [image uid])
+                        if ([image uid])
                         {
-                            if( [localObjectUIDs containsString: [image uid]] == NO)
+                            if ([localObjectUIDs containsString: [image uid]] == NO)
                             {
                                 NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]];
                                 
-                                if( url)
+                                if (url)
                                     [urlToDownload addObject: url];
                                 else
                                     NSLog( @"****** no url : %@", [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]);
@@ -1102,7 +1102,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		[self purgeChildren];
 	}
 	
-	if( [self isKindOfClass:[DCMTKSeriesQueryNode class]])
+	if ([self isKindOfClass:[DCMTKSeriesQueryNode class]])
 	{
         NSArray *childrenArray = nil;
         @synchronized( self)
@@ -1110,7 +1110,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             childrenArray = [self children];
             
             // search the images
-            if( childrenArray == nil)
+            if (childrenArray == nil)
                 [self queryWithValues: nil];
             
             childrenArray = [self children];
@@ -1122,12 +1122,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         {
             for( DCMTKQueryNode *image in childrenArray)
             {
-                if( [image uid])
+                if ([image uid])
                 {
-                    if( [localObjectUIDs containsString: [image uid]] == NO)
+                    if ([localObjectUIDs containsString: [image uid]] == NO)
                     {
                         NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [self uid], [image uid], ts]];
-                        if( url)
+                        if (url)
                             [urlToDownload addObject: url];
                         else
                             NSLog( @"****** no url : %@", [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [self uid], [image uid], ts]);
@@ -1182,7 +1182,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         NSArray *childrenArray = [self children];
         
         // search the images
-        if( childrenArray == nil)
+        if (childrenArray == nil)
             [self queryWithValues: nil];
         
         childrenArray = [self children];
@@ -1203,7 +1203,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     
     @try
     {
-        if( [[dict valueForKey: @"retrieveMode"] intValue] == WADORetrieveMode && retrieveMode == WADORetrieveMode)
+        if ([[dict valueForKey: @"retrieveMode"] intValue] == WADORetrieveMode && retrieveMode == WADORetrieveMode)
         {
             [self WADORetrieve: [dict valueForKey: @"study"]];
         }
@@ -1213,24 +1213,24 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             
             BOOL retrievedDone = NO;
             
-            if( !_noSmartMode && [[NSUserDefaults standardUserDefaults] boolForKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"])
+            if (!_noSmartMode && [[NSUserDefaults standardUserDefaults] boolForKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"])
             {
                 NSString *studyInstanceUID = nil;
                 
-                if( [self isKindOfClass: [DCMTKSeriesQueryNode class]])
+                if ([self isKindOfClass: [DCMTKSeriesQueryNode class]])
                 {
                     id study = [dict valueForKey: @"study"];
                     studyInstanceUID = [study uid];
                 }
                 
-                if( [self isKindOfClass: [DCMTKStudyQueryNode class]])
+                if ([self isKindOfClass: [DCMTKStudyQueryNode class]])
                     studyInstanceUID = [self uid];
                 
                 // Local Study with images? -> try a C-Move/C-Get at IMAGE level to download only required images
                 
                 @try
                 {
-                    if( studyInstanceUID.length > 0)
+                    if (studyInstanceUID.length > 0)
                     {
                         @try
                         {
@@ -1261,7 +1261,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                     N2LogExceptionWithStackTrace(e);
                 }
                 
-                if( (localObjectUIDs.count || [[NSUserDefaults standardUserDefaults] boolForKey: @"MultipleAssociationsRetrieve"]) && [[NSThread currentThread] isCancelled] == NO) // We have already local images !
+                if ((localObjectUIDs.count || [[NSUserDefaults standardUserDefaults] boolForKey: @"MultipleAssociationsRetrieve"]) && [[NSThread currentThread] isCancelled] == NO) // We have already local images !
                 {
                     NSThread *WADOCFind = [[[NSThread alloc] initWithTarget: self selector: @selector( CFINDThread:) object: studyInstanceUID] autorelease];
                     
@@ -1270,7 +1270,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                     
                     while( (WADOCFind.isExecuting || self.childrenCount) && [[NSThread currentThread] isCancelled] == NO)
                     {
-                        if( self.childrenCount > 50 || WADOCFind.isExecuting == NO)
+                        if (self.childrenCount > 50 || WADOCFind.isExecuting == NO)
                         {
                             NSMutableDictionary *seriesUIDsToRetrieve = [NSMutableDictionary dictionary];
                             NSMutableArray *imagesUIDsWithoutSeriesInstanceUID = [NSMutableArray array];
@@ -1284,19 +1284,19 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                             
                             @try
                             {
-                                if( [self isKindOfClass:[DCMTKStudyQueryNode class]])
+                                if ([self isKindOfClass:[DCMTKStudyQueryNode class]])
                                 {
                                     childrenArray = [childrenArray sortedArrayUsingDescriptors: [NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey: @"seriesInstanceUID" ascending: YES], nil]];
                                     
                                     for( DCMTKImageQueryNode *image in childrenArray)
                                     {
-                                        if( [image uid])
+                                        if ([image uid])
                                         {
-                                            if( [localObjectUIDs containsString: [image uid]] == NO)
+                                            if ([localObjectUIDs containsString: [image uid]] == NO)
                                             {
-                                                if( [image seriesInstanceUID])
+                                                if ([image seriesInstanceUID])
                                                 {
-                                                    if( [seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] == nil)
+                                                    if ([seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] == nil)
                                                         [seriesUIDsToRetrieve setObject: [NSMutableArray array] forKey: [image seriesInstanceUID]];
                                                     
                                                     [[seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] addObject: [image uid]];
@@ -1308,7 +1308,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                         else
                                             NSLog( @"****** no image uid !");
                                         
-                                        if( [[NSThread currentThread] isCancelled])
+                                        if ([[NSThread currentThread] isCancelled])
                                             break;
                                     }
                                 }
@@ -1316,11 +1316,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                 {
                                     for( DCMTKImageQueryNode *image in childrenArray)
                                     {
-                                        if( [image uid])
+                                        if ([image uid])
                                         {
-                                            if( [localObjectUIDs containsString: [image uid]] == NO)
+                                            if ([localObjectUIDs containsString: [image uid]] == NO)
                                             {
-                                                if( [seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] == nil)
+                                                if ([seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] == nil)
                                                     [seriesUIDsToRetrieve setObject: [NSMutableArray array] forKey: [image seriesInstanceUID]];
                                                 
                                                 [[seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] addObject: [image uid]];
@@ -1329,7 +1329,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                         else
                                             NSLog( @"****** no image uid !");
                                         
-                                        if( [[NSThread currentThread] isCancelled])
+                                        if ([[NSThread currentThread] isCancelled])
                                             break;
                                     }
                                 }
@@ -1344,11 +1344,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                             
                             if(([seriesUIDsToRetrieve count] || [imagesUIDsWithoutSeriesInstanceUID count]) && [[NSThread currentThread] isCancelled] == NO)
                             {
-                                if( [seriesUIDsToRetrieve count])
+                                if ([seriesUIDsToRetrieve count])
                                 {
                                     int noOfAssociations = 1;
                                     
-//                                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MultipleAssociationsRetrieve"] && [[NSUserDefaults standardUserDefaults] integerForKey: @"NoOfMultipleAssociationsRetrieve"] > 1)
+//                                    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"MultipleAssociationsRetrieve"] && [[NSUserDefaults standardUserDefaults] integerForKey: @"NoOfMultipleAssociationsRetrieve"] > 1)
 //                                        noOfAssociations = [[NSUserDefaults standardUserDefaults] integerForKey: @"NoOfMultipleAssociationsRetrieve"];
                                     
                                     NSMutableArray *threads = [NSMutableArray array];
@@ -1360,7 +1360,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                                              {
                                                                  NSRange range = NSMakeRange( i * (seriesUIDsToRetrieve.count / noOfAssociations), seriesUIDsToRetrieve.count / noOfAssociations);
                                                                  
-                                                                 if( i == noOfAssociations-1)
+                                                                 if (i == noOfAssociations-1)
                                                                      range.length = seriesUIDsToRetrieve.count - range.location;
                                                                  
                                                                  //To avoid incompatible PACS, retrieve each series independently
@@ -1373,9 +1373,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                                                      dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, [seriesInstanceUID UTF8String]);
                                                                      dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, [studyInstanceUID UTF8String]);
                                                                      
-                                                                     if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
+                                                                     if ([[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
                                                                      {
-                                                                         if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
+                                                                         if ([DCMTKQueryRetrieveSCP storeSCP] == NO)
                                                                          {
                                                                              [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
                                                                          }
@@ -1393,7 +1393,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                                                      }
                                                                      else
                                                                      {
-                                                                         if( [DCMTKQueryRetrieveSCP storeSCP] == NO && [dict objectForKey: @"moveDestination"] == nil)
+                                                                         if ([DCMTKQueryRetrieveSCP storeSCP] == NO && [dict objectForKey: @"moveDestination"] == nil)
                                                                              [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
                                                                          
                                                                          else
@@ -1409,7 +1409,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                                                          }
                                                                      }
                                                                      
-                                                                     if( [mainThread isCancelled]) break;
+                                                                     if ([mainThread isCancelled]) break;
                                                                  }
                                                              }
                                                              ]];
@@ -1421,9 +1421,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                         executing = NO;
                                         
                                         for( NSThread *t in threads)
-                                            if( t.isExecuting) executing = YES;
+                                            if (t.isExecuting) executing = YES;
                                         
-                                        if( [[NSThread currentThread] isCancelled])
+                                        if ([[NSThread currentThread] isCancelled])
                                             for( NSThread *t in threads)
                                                 [t cancel];
                                         
@@ -1434,13 +1434,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                     retrievedDone = YES;
                                     
                                     for( NSThread *t in threads)
-                                        if( t.isCancelled) retrievedDone = NO;
+                                        if (t.isCancelled) retrievedDone = NO;
                                 }
                                 else
                                 {
                                     int noOfAssociations = 1;
                                     
-//                                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MultipleAssociationsRetrieve"] && [[NSUserDefaults standardUserDefaults] integerForKey: @"NoOfMultipleAssociationsRetrieve"] > 1)
+//                                    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"MultipleAssociationsRetrieve"] && [[NSUserDefaults standardUserDefaults] integerForKey: @"NoOfMultipleAssociationsRetrieve"] > 1)
 //                                        noOfAssociations = [[NSUserDefaults standardUserDefaults] integerForKey: @"NoOfMultipleAssociationsRetrieve"];
                                     
                                     NSMutableArray *threads = [NSMutableArray array];
@@ -1453,7 +1453,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                                                  
                                                                  NSRange range = NSMakeRange( i * (imagesUIDsWithoutSeriesInstanceUID.count / noOfAssociations), imagesUIDsWithoutSeriesInstanceUID.count / noOfAssociations);
                                                                  
-                                                                 if( i == noOfAssociations-1)
+                                                                 if (i == noOfAssociations-1)
                                                                      range.length = imagesUIDsWithoutSeriesInstanceUID.count - range.location;
                                                                  
                                                                  NSArray *subArray = [imagesUIDsWithoutSeriesInstanceUID subarrayWithRange: range];
@@ -1462,9 +1462,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                                                  dataset.putAndInsertOFStringArray(DCM_SOPInstanceUID, [[subArray componentsJoinedByString:@"\\"] UTF8String]);
                                                                  dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, [studyInstanceUID UTF8String]);
                                                                  
-                                                                 if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
+                                                                 if ([[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
                                                                  {
-                                                                     if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
+                                                                     if ([DCMTKQueryRetrieveSCP storeSCP] == NO)
                                                                          [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
                                                                      
                                                                      else
@@ -1481,7 +1481,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                                                  }
                                                                  else
                                                                  {
-                                                                     if( [DCMTKQueryRetrieveSCP storeSCP] == NO && [dict objectForKey: @"moveDestination"] == nil)
+                                                                     if ([DCMTKQueryRetrieveSCP storeSCP] == NO && [dict objectForKey: @"moveDestination"] == nil)
                                                                          [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
                                                                      
                                                                      else
@@ -1506,9 +1506,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                         executing = NO;
                                         
                                         for( NSThread *t in threads)
-                                            if( t.isExecuting) executing = YES;
+                                            if (t.isExecuting) executing = YES;
                                         
-                                        if( [[NSThread currentThread] isCancelled])
+                                        if ([[NSThread currentThread] isCancelled])
                                             for( NSThread *t in threads)
                                                 [t cancel];
                                         
@@ -1519,7 +1519,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                     retrievedDone = YES;
                                     
                                     for( NSThread *t in threads)
-                                        if( t.isCancelled) retrievedDone = NO;
+                                        if (t.isCancelled) retrievedDone = NO;
                                 }
                             }
                             else
@@ -1539,15 +1539,15 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 }
             }
             
-            if( retrievedDone == NO && [[NSThread currentThread] isCancelled] == NO)// STUDY / SERIES LEVEL retrieve
+            if (retrievedDone == NO && [[NSThread currentThread] isCancelled] == NO)// STUDY / SERIES LEVEL retrieve
             {
                 [self setChildren: childrenCopy];
                 
                 DcmDataset *dataset = [self moveDataset];
                 
-                if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
+                if ([[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
                 {
-                    if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
+                    if ([DCMTKQueryRetrieveSCP storeSCP] == NO)
                     {
                         [[NSException exceptionWithName: @"DICOM Network Failure"
                                                  reason: NSLocalizedString( @"DICOM Listener is not activated", nil)
@@ -1614,153 +1614,134 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     */
 
 	const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL };
-    int numTransferSyntaxes = 0;
+    int nTS = 0;
 
     switch (_networkTransferSyntax) 
 	{
 	case EXS_LittleEndianImplicit:
         /* we only support Little Endian Implicit */
-        transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 1;
+        transferSyntaxes[nTS++] = UID_LittleEndianImplicitTransferSyntax;
         break;
 		
 	  default:
       case EXS_LittleEndianExplicit:
         /* we prefer Little Endian Explicit */
-        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianImplicitTransferSyntax;
-        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-		transferSyntaxes[3] = UID_JPEG2000LosslessOnlyTransferSyntax ;			//jpeg 2000
-		transferSyntaxes[4] = UID_JPEG2000TransferSyntax;						//jpeg 2000
-		transferSyntaxes[5] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
-		transferSyntaxes[6] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
-		transferSyntaxes[7] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
-//		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
-		transferSyntaxes[8] = UID_RLELosslessTransferSyntax;					//RLE
-		transferSyntaxes[9] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-		
-        numTransferSyntaxes = 10;
+        transferSyntaxes[nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[nTS++] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[nTS++] = UID_BigEndianExplicitTransferSyntax;
+		transferSyntaxes[nTS++] = UID_JPEG2000LosslessOnlyTransferSyntax ;			//jpeg 2000
+		transferSyntaxes[nTS++] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[nTS++] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
+		transferSyntaxes[nTS++] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
+		transferSyntaxes[nTS++] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
+//		transferSyntaxes[nTS++] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[nTS++] = UID_RLELosslessTransferSyntax;					//RLE
+		transferSyntaxes[nTS++] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
         break;
 		
       case EXS_BigEndianExplicit:
         /* we prefer Big Endian Explicit */
-        transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-		transferSyntaxes[3] = UID_JPEG2000TransferSyntax;						//jpeg 2000
-		transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
-		transferSyntaxes[5] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
-		transferSyntaxes[6] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
-//		transferSyntaxes[7] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
-		transferSyntaxes[7] = UID_RLELosslessTransferSyntax;					//RLE
-        numTransferSyntaxes = 8;
+        transferSyntaxes[nTS++] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[nTS++] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[nTS++] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[nTS++] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
+		transferSyntaxes[nTS++] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
+		transferSyntaxes[nTS++] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
+//		transferSyntaxes[nTS++] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[nTS++] = UID_RLELosslessTransferSyntax;					//RLE
         break;
 		
 #ifndef DISABLE_COMPRESSION_EXTENSION
       case EXS_JPEGProcess14SV1:
         /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
-        transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
-		transferSyntaxes[1] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
-		transferSyntaxes[2] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
-        transferSyntaxes[3] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[4] = UID_LittleEndianImplicitTransferSyntax;
-        transferSyntaxes[5] = UID_BigEndianExplicitTransferSyntax;
-		
-        numTransferSyntaxes = 6;
+        transferSyntaxes[nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[nTS++] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
+		transferSyntaxes[nTS++] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
+        transferSyntaxes[nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[nTS++] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[nTS++] = UID_BigEndianExplicitTransferSyntax;
         break;
       case EXS_JPEGProcess1:
         /* we prefer JPEGBaseline (default lossy for 8 bit images) */
-        transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
-		transferSyntaxes[1] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
-		transferSyntaxes[2] = UID_JPEGProcess14SV1TransferSyntax;
-        transferSyntaxes[3] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[4] = UID_LittleEndianImplicitTransferSyntax;
-        transferSyntaxes[5] = UID_BigEndianExplicitTransferSyntax;
-		
-        numTransferSyntaxes = 6;
+        transferSyntaxes[nTS++] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[nTS++] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
+		transferSyntaxes[nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+        transferSyntaxes[nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[nTS++] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[nTS++] = UID_BigEndianExplicitTransferSyntax;
         break;
       case EXS_JPEGProcess2_4:
         /* we prefer JPEGExtended (default lossy for 12 bit images) */
-        transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
-		transferSyntaxes[1] = UID_JPEGProcess14SV1TransferSyntax;
-		transferSyntaxes[2] = UID_JPEGProcess1TransferSyntax;
-        transferSyntaxes[3] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[4] = UID_LittleEndianImplicitTransferSyntax;
-        transferSyntaxes[5] = UID_BigEndianExplicitTransferSyntax;
-		
-        numTransferSyntaxes = 6;
+        transferSyntaxes[nTS++] = UID_JPEGProcess2_4TransferSyntax;
+		transferSyntaxes[nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[nTS++] = UID_JPEGProcess1TransferSyntax;
+        transferSyntaxes[nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[nTS++] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[nTS++] = UID_BigEndianExplicitTransferSyntax;
         break;
       case EXS_JPEG2000LosslessOnly:
         /* we prefer JPEG 2000 lossless */
-        transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
-		transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-		transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-		transferSyntaxes[3] = UID_BigEndianExplicitTransferSyntax;
-		
-        numTransferSyntaxes = 4;
+        transferSyntaxes[nTS++] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		transferSyntaxes[nTS++] = UID_LittleEndianExplicitTransferSyntax;
+		transferSyntaxes[nTS++] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[nTS++] = UID_BigEndianExplicitTransferSyntax;
         break;
       case EXS_JPEG2000:
         /* we prefer JPEG 2000 lossy or lossless */
-        transferSyntaxes[0] = UID_JPEG2000TransferSyntax; //UID_JPEG2000TransferSyntax;
-		transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
-		transferSyntaxes[2] = UID_LittleEndianExplicitTransferSyntax;
-		transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-		transferSyntaxes[4] = UID_BigEndianExplicitTransferSyntax;
-		
-        numTransferSyntaxes = 5;
+        transferSyntaxes[nTS++] = UID_JPEG2000TransferSyntax; //UID_JPEG2000TransferSyntax;
+		transferSyntaxes[nTS++] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		transferSyntaxes[nTS++] = UID_LittleEndianExplicitTransferSyntax;
+		transferSyntaxes[nTS++] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[nTS++] = UID_BigEndianExplicitTransferSyntax;
         break;
         
         case EXS_JPEGLSLossless:
             /* we prefer JPEG LS lossless */
-            transferSyntaxes[0] = UID_JPEGLSLosslessTransferSyntax;
-            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-            transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-            transferSyntaxes[3] = UID_BigEndianExplicitTransferSyntax;
-            
-            numTransferSyntaxes = 4;
+            transferSyntaxes[nTS++] = UID_JPEGLSLosslessTransferSyntax;
+            transferSyntaxes[nTS++] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[nTS++] = UID_LittleEndianImplicitTransferSyntax;
+            transferSyntaxes[nTS++] = UID_BigEndianExplicitTransferSyntax;
             break;
         case EXS_JPEGLSLossy:
             /* we prefer JPEG LS lossy or lossless */
-            transferSyntaxes[0] = UID_JPEGLSLossyTransferSyntax;
-            transferSyntaxes[1] = UID_JPEGLSLosslessTransferSyntax;
-            transferSyntaxes[2] = UID_LittleEndianExplicitTransferSyntax;
-            transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-            transferSyntaxes[4] = UID_BigEndianExplicitTransferSyntax;
-            
-            numTransferSyntaxes = 5;
+            transferSyntaxes[nTS++] = UID_JPEGLSLossyTransferSyntax;
+            transferSyntaxes[nTS++] = UID_JPEGLSLosslessTransferSyntax;
+            transferSyntaxes[nTS++] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[nTS++] = UID_LittleEndianImplicitTransferSyntax;
+            transferSyntaxes[nTS++] = UID_BigEndianExplicitTransferSyntax;
             break;
             
 //#ifdef WITH_ZLIB
 //      case EXS_DeflatedLittleEndianExplicit:
 //        /* we prefer deflated transmission */
-//        transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-//        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-//        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-//        transferSyntaxes[3] = UID_BigEndianExplicitTransferSyntax;
-//		transferSyntaxes[4] = UID_JPEG2000TransferSyntax;
-//		transferSyntaxes[5] = UID_JPEGProcess14SV1TransferSyntax;
-//		transferSyntaxes[6] = UID_JPEGProcess2_4TransferSyntax;		
-//		transferSyntaxes[7] = UID_JPEGProcess1TransferSyntax;
-//		transferSyntaxes[8] = UID_RLELosslessTransferSyntax;					//RLE
-//        transferSyntaxes[9] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-//		
-//        numTransferSyntaxes = 10;
+//        transferSyntaxes[nTS++] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+//        transferSyntaxes[nTS++] = UID_LittleEndianExplicitTransferSyntax;
+//        transferSyntaxes[nTS++] = UID_LittleEndianImplicitTransferSyntax;
+//        transferSyntaxes[nTS++] = UID_BigEndianExplicitTransferSyntax;
+//		transferSyntaxes[nTS++] = UID_JPEG2000TransferSyntax;
+//		transferSyntaxes[nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+//		transferSyntaxes[nTS++] = UID_JPEGProcess2_4TransferSyntax;
+//		transferSyntaxes[nTS++] = UID_JPEGProcess1TransferSyntax;
+//		transferSyntaxes[nTS++] = UID_RLELosslessTransferSyntax;					//RLE
+//        transferSyntaxes[nTS++] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
 //        break;
 //#endif
       case EXS_RLELossless:
         /* we prefer RLE Lossless */
-        transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        transferSyntaxes[3] = UID_BigEndianExplicitTransferSyntax;
-		transferSyntaxes[4] = UID_JPEG2000TransferSyntax;
-		transferSyntaxes[5] = UID_JPEGProcess14SV1TransferSyntax;
-		transferSyntaxes[6] = UID_JPEGProcess2_4TransferSyntax;		
-		transferSyntaxes[7] = UID_JPEGProcess1TransferSyntax;
-//		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-        transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-		
-        numTransferSyntaxes = 9;
+        transferSyntaxes[nTS++] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[nTS++] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[nTS++] = UID_BigEndianExplicitTransferSyntax;
+		transferSyntaxes[nTS++] = UID_JPEG2000TransferSyntax;
+		transferSyntaxes[nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[nTS++] = UID_JPEGProcess2_4TransferSyntax;
+		transferSyntaxes[nTS++] = UID_JPEGProcess1TransferSyntax;
+#if 0
+//		transferSyntaxes[nTS++] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+#else
+        transferSyntaxes[nTS++] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+#endif
         break;
 #endif
     }
@@ -1770,7 +1751,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	ASC_addPresentationContext(
         params, 1, abstractSyntax,
-        transferSyntaxes, numTransferSyntaxes);
+        transferSyntaxes, nTS);
 		
 	// For C-GET we also need the storage presentation contexts : there is only one association
 	if (strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
@@ -1785,7 +1766,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             {
                 cond = ASC_addPresentationContext(
                                                   params, pid, dcmLongSCUStorageSOPClassUIDs[i],
-                                                  transferSyntaxes, numTransferSyntaxes);
+                                                  transferSyntaxes, nTS);
                 pid += 2;    /* only odd presentation context id's */
             }
         }
@@ -1953,7 +1934,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
                 
                 /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
                 /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
-                if( assoc)
+                if (assoc)
                 {
                     cond = ASC_destroyAssociation(&assoc);
                     if (cond.bad())
@@ -1962,7 +1943,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
                 
                 /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
                 /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
-                if( net)
+                if (net)
                 {
                     cond = ASC_dropNetwork(&net);
                     if (cond.bad())
@@ -1986,7 +1967,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
                  }
                  delete tLayer;
                  */
-                if( tLayer)
+                if (tLayer)
                     delete tLayer;
 #endif
                 @synchronized( releaseNetworkVariablesDictionaries)
@@ -2038,7 +2019,6 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 		opt_peer = [_hostname UTF8String];
 		opt_port = _port;
 		_abortAssociation = NO;
-		
 
 //	//debug code activated for now
 //	_debug = OFTrue;
@@ -2302,7 +2282,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			if (_verbose)
 				printf("Requesting Association\n");
 			
-//			if( [NSThread isMainThread] && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
+//			if ([NSThread isMainThread] && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 			{
 				NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
 				NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -2345,12 +2325,12 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 				else
 					cond = globalCondition;
                 
-                if( [dict objectForKey: @"assoc"])
+                if ([dict objectForKey: @"assoc"])
                     assoc = (T_ASC_Association *) [[dict objectForKey: @"assoc"] pointerValue];
                 else
                     cond = EC_IllegalParameter;
 				
-				if( cond != EC_Normal)
+				if (cond != EC_Normal)
 				{
 					[wait end];
 					[wait autorelease];
@@ -2417,7 +2397,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			{
 				if (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
 				{
-//					if( [NSThread isMainThread] &&
+//					if ([NSThread isMainThread] &&
 //                      [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 					{
 						NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
@@ -2438,7 +2418,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 							[wait run];
 							[NSThread sleepForTimeInterval: 0.05];
                             
-                            if( [lock tryLock])
+                            if ([lock tryLock])
                             {
                                 [lock unlock];
                                 break;
@@ -2468,7 +2448,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			}
 			else if (strcmp(abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)
 			{
-				if( destination)
+				if (destination)
                     cond = [self cmove:assoc network:net dataset:dataset destination: (char*) [destination UTF8String]];
 				else
                     cond = [self cmove:assoc network:net dataset:dataset];
@@ -2600,7 +2580,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 		//We want to give time for other threads that are maybe using assoc or net variables
         @synchronized( releaseNetworkVariablesSync)
         {
-            if( releaseNetworkVariablesDictionaries == nil)
+            if (releaseNetworkVariablesDictionaries == nil)
             {
                 releaseNetworkVariablesDictionaries = [[NSMutableArray array] retain];
                 [NSThread detachNewThreadSelector: @selector(releaseNetworkVariables) toTarget: [DCMTKQueryNode class] withObject: nil];
@@ -2624,7 +2604,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 //		
 //		/* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
 //		/* call is the counterpart of ASC_requestAssociation(...) which was called above. */
-//		if( assoc)
+//		if (assoc)
 //		{
 //			cond = ASC_destroyAssociation(&assoc);
 //			if (cond.bad())
@@ -2633,7 +2613,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 //		
 //		/* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
 //		/* is the counterpart of ASC_initializeNetwork(...) which was called above. */
-//		if( net)
+//		if (net)
 //		{
 //			cond = ASC_dropNetwork(&net);
 //			if (cond.bad())
@@ -2656,7 +2636,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 //		}
 //		delete tLayer;
 //	*/
-//		if( tLayer)
+//		if (tLayer)
 //			delete tLayer;
 	
 		
@@ -2750,7 +2730,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
     /* dump some more general information */
     if (cond == EC_Normal)
 	{
-		if( rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
+		if (rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
 		{
 			NSString *response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", _calledAET, _hostname, _port];
 			
@@ -2950,7 +2930,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
         
 		if (cond == EC_Normal)
 		{
-			if( DICOM_WARNING_STATUS(rsp.DimseStatus))
+			if (DICOM_WARNING_STATUS(rsp.DimseStatus))
 			{
 				 DIMSE_printCMoveRSP(stdout, &rsp);
 			}
@@ -2958,11 +2938,11 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			{
 				 DIMSE_printCMoveRSP(stdout, &rsp);
 			}
-			else if( rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
+			else if (rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
 			{
 				DIMSE_printCMoveRSP(stdout, &rsp);
 				
-                if( showErrorMessage)
+                if (showErrorMessage)
                     [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:)
                                                      withObject:[NSArray arrayWithObjects:
                                                                  NSLocalizedString(@"Move Failed", nil),
@@ -3054,7 +3034,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
     req.Priority = DIMSE_PRIORITY_MEDIUM;
     req.DataSetType = DIMSE_DATASET_PRESENT;
  
-//	if( destination)
+//	if (destination)
 //	{
 //		strcpy(req.MoveDestination, destination);
 //	}
@@ -3073,7 +3053,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
     
     if (cond == EC_Normal)
 	{
-		if( DICOM_WARNING_STATUS(rsp.DimseStatus))
+		if (DICOM_WARNING_STATUS(rsp.DimseStatus))
 		{
 			 DIMSE_printCGetRSP(stdout, &rsp);
 		}
@@ -3081,11 +3061,11 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 		{
 			 DIMSE_printCGetRSP(stdout, &rsp);
 		}
-		else if( rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
+		else if (rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
 		{
 			DIMSE_printCGetRSP(stdout, &rsp);
 			
-            if( showErrorMessage)
+            if (showErrorMessage)
                 [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:)
                                                  withObject:[NSArray arrayWithObjects:
                                                              NSLocalizedString(@"Get Failed", nil),
@@ -3106,7 +3086,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
     }
 	else
 	{
-        if( showErrorMessage)
+        if (showErrorMessage)
             [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:)
                                              withObject:[NSArray arrayWithObjects:
                                                          NSLocalizedString(@"Get Failed", nil),
@@ -3137,7 +3117,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 
 - (void)setLogEntry:(NSManagedObject *)logEntry
 {
-	if( logEntry == _logEntry)
+	if (logEntry == _logEntry)
         return;
 
 	[_logEntry release];

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -754,7 +754,7 @@ Gw
                         </connections>
                     </popUpButton>
                     <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="418">
-                        <rect key="frame" x="14" y="10" width="280" height="18"/>
+                        <rect key="frame" x="14" y="10" width="279" height="18"/>
                         <buttonCell key="cell" type="check" title="After export, send them to a DICOM Node" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="467">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -1588,7 +1588,7 @@ Gw
                 <constraint firstItem="698" firstAttribute="top" secondItem="697" secondAttribute="top" constant="28" id="m2a-b5-zfq"/>
                 <constraint firstAttribute="bottom" secondItem="698" secondAttribute="bottom" constant="-2" id="nA8-vQ-Cpy"/>
             </constraints>
-            <point key="canvasLocation" x="334" y="20"/>
+            <point key="canvasLocation" x="603" y="-74"/>
         </box>
         <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="731" userLabel="tb Shading">
             <rect key="frame" x="0.0" y="0.0" width="169" height="36"/>

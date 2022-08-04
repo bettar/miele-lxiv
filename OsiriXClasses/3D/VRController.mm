@@ -506,7 +506,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	BOOL testInterval = YES;
 	DCMPix *firstObject = [pix objectAtIndex: 0];
 
-#if 1
+#ifndef NDEBUG
     //CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     NSLog(@"VRController.mm: %d, initWithPix, class %@, OpenGL legacy:%i", __LINE__,
           NSStringFromClass([self class]), checkOGLVersion());
@@ -576,7 +576,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
             undodata[ i] = nil;
         
         curMovieIndex = 0;
-        maxMovieIndex = 1; // @@@
+        maxMovieIndex = 1;
         
         fileList = f;
         [fileList retain];
@@ -895,7 +895,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
             [[self window] setFrameUsingName:@"3D Panel"];
         }
         
-#if 0 // @@@
+#if 0
         [shadingsPresetsController setWindowController: self];      
 #else // Horos
 		[shadingsPresetsController addObserver:self
@@ -920,7 +920,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
                         change:(NSDictionary<NSKeyValueChangeKey,id> *)change
                        context:(void *)context
 {
-    if (context == VRController.class && object == shadingsPresetsController && [keyPath isEqualToString:@"selectedObjects"])
+    if (context == VRController.class &&
+        object == shadingsPresetsController &&
+        [keyPath isEqualToString:@"selectedObjects"])
     {
         [self applyShading:self];
         return;
@@ -1670,8 +1672,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) ApplyOpacityString:(NSString*) str
 {
-	NSDictionary		*aOpacity;
-	NSArray				*array;
+	NSDictionary *aOpacity;
+	NSArray *array;
 	
 	if (str == nil)
         return;
@@ -1806,7 +1808,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void) setupToolbar
 {
+#ifndef NDEBUG
     NSLog(@"%s style:%@", __FUNCTION__, style);
+#endif
 
     // Create a new toolbar instance, and attach it to our document window
 	
@@ -1825,7 +1829,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     
     // Attach the toolbar to the document window 
     [[self window] setToolbar: toolbar];
-	//[[self window] setShowsToolbarButton: [style isEqualToString:@"panel"]];
+#if 0 // TBC: why did it become commented out?
+	[[self window] setShowsToolbarButton: [style isEqualToString:@"panel"]];
+#endif
 	[[[self window] toolbar] setVisible: [style isEqualToString:@"standard"]];
     
 //    [window makeKeyAndOrderFront:nil];
@@ -3863,7 +3869,9 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 
 - (void)showPresetsPanel;
 {
+#ifndef NDEBUG
     NSLog(@"%s %d, view class: %@", __FUNCTION__, __LINE__, NSStringFromClass([view class]));
+#endif
 
     if (panelInstantiated == NO)
     {

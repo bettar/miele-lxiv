@@ -99,7 +99,9 @@ enum HotKeyActions {DefaultWWWLHotKeyAction = 0, FullDynamicWWWLHotKeyAction,
 + (NSHost*) currentHost;
 
 + (mach_vm_size_t) GPUModelVRAMInfo;
+#if 0 // obsolete
 + (unsigned long) vramSizeMB;
+#endif
 
 + (NSURL *) resolveStoredBookmark:(NSString *) key;
 + (void) createAndStoreBookmark:(NSURL *) url

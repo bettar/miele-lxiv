@@ -212,7 +212,16 @@
 	
 	for (int i = minI, stack = 0 ; i < maxI ; i++, stack++)
 	{
-		if (i < 0)
+        if (newPixListX.count <= stack) { // Check added 20220804
+            static int n=5; // number of times this warning is displayed
+            if (n > 0) {
+                NSLog(@"%s %d %d, FIXME: preventing newPixListX[%d] because newPixListX has %lu elements", __FUNCTION__, __LINE__, n, stack, (unsigned long)newPixListX.count);
+                n--;
+            }
+            continue;
+        }
+
+        if (i < 0)
             i = 0;
 
         if (i >= newTotal)
@@ -246,7 +255,7 @@
 				}
 			}
 		}
-		else									// Y - RESLICE
+		else						// Y - RESLICE
 		{
 			float *srcPtr;
 			float *dstPtr;

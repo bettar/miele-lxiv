@@ -161,7 +161,7 @@
 }
 
 @property (nonatomic) float clippingRangeThickness, dcmIntervalMin, dcmIntervalMax, blendingPercentage;
-@property (nonatomic) CPRProjectionMode clippingRangeMode; // TODO: CPRProjectionMode
+@property (nonatomic) CPRProjectionMode clippingRangeMode;
 @property (nonatomic) int mouseViewID;
 @property (nonatomic) int curMovieIndex, maxMovieIndex;
 @property (nonatomic) BlendingMode2DType blendingMode;

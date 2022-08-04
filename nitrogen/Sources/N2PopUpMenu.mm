@@ -919,7 +919,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 }
 
 - (void)scrollToBeginningOfDocument:(id)sender {
-    [self.containingScrollView.contentView scrollToPoint:NSMakePoint(0,0)];
+    [self.containingScrollView.contentView scrollToPoint:NSZeroPoint];
     [self.containingScrollView reflectScrolledClipView:self.containingScrollView.contentView]; // TODO: grow window to max height, then scroll
 //    [self.window.windowController refresh];
 }

@@ -973,7 +973,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		{
 			[mprView1 restoreCamera];
 			
-			if (_clippingRangeMode == (CPRProjectionMode)0) // VR mode  // TODO: CPRProjectionMode
+			if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
 			{
 				[mprView1.vrView setOpacity: [sender.vrView currentOpacityArray]];
 				[mprView1.vrView setWLWW: l : w];
@@ -986,7 +986,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		{
 			[mprView2 restoreCamera];
 			
-			if (_clippingRangeMode == (CPRProjectionMode)0) // VR mode // TODO: CPRProjectionMode
+			if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
 			{
 				[mprView2.vrView setOpacity: [sender.vrView currentOpacityArray]];
 				[mprView2.vrView setWLWW: l : w];
@@ -999,7 +999,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		{
 			[mprView3 restoreCamera];
 			
-			if (_clippingRangeMode == (CPRProjectionMode)0) // VR mode
+			if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
 			{
 				[mprView3.vrView setOpacity: [sender.vrView currentOpacityArray]];
 				[mprView3.vrView setWLWW: l : w];
@@ -1823,7 +1823,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	mprView2.camera.forceUpdate = YES;
 	mprView3.camera.forceUpdate = YES;
 	
-	if (_clippingRangeMode == (CPRProjectionMode)0) // VR // TODO: CPRProjectionMode
+	if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
 	{
 		[mprView1 setCLUT: nil :nil :nil];
 		[mprView2 setCLUT: nil :nil :nil];
@@ -1846,7 +1846,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	if ([str isEqualToString:NSLocalizedString(@"No CLUT", nil)])
 	{
-		if (_clippingRangeMode == (CPRProjectionMode)0) // TODO: CPRProjectionMode
+		if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
 		{
 			[mprView1.vrView setCLUT: nil :nil :nil];
 			
@@ -1920,7 +1920,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 				blue[i] = [[array objectAtIndex: i] longValue];
 			}
 			
-			if (_clippingRangeMode == (CPRProjectionMode)0) // TODO: CPRProjectionMode
+			if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
 			{
 				[mprView1.vrView setCLUT:red :green: blue];
                 
@@ -2015,9 +2015,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 
 - (void)ApplyOpacityString:(NSString*)str
 {
-	if (_clippingRangeMode == (CPRProjectionMode)1 ||
-        _clippingRangeMode == (CPRProjectionMode)3 ||
-        _clippingRangeMode == (CPRProjectionMode)2) // TODO: CPRProjectionMode
+	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
 	{
 		[self Apply2DOpacityString:str];
 	}
@@ -2242,9 +2242,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	float pWL, pWW;
 	float bpWL, bpWW;
 	
-	if (_clippingRangeMode == (CPRProjectionMode)1 ||
-        _clippingRangeMode == (CPRProjectionMode)3 ||
-        _clippingRangeMode == (CPRProjectionMode)2)		// MIP
+	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
 	{
 		[mprView1 getWLWW: &pWL :&pWW];
 		[blendedMprView1 getWLWW: &bpWL :&bpWW];
@@ -2260,11 +2260,11 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[mprView1.vrView setMode: _clippingRangeMode];
 	[mprView1.vrView setBlendingMode: _clippingRangeMode];
     
-	if (_clippingRangeMode == (CPRProjectionMode)1 ||   // MIP
-        _clippingRangeMode == (CPRProjectionMode)3 ||   // Mean
-        _clippingRangeMode == (CPRProjectionMode)2)	    // minIP
+	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
 	{
-		if (_clippingRangeMode == (CPRProjectionMode)3) //mean
+		if (_clippingRangeMode == CPR_PROJECTION_MODE_MEAN)
 			setvtkMeanIPMode( 1);
 		else
 			setvtkMeanIPMode( 0);
@@ -2305,9 +2305,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	[mprView1 restoreCamera];
 	mprView1.camera.forceUpdate = YES;
-	if (_clippingRangeMode == (CPRProjectionMode)1 ||  // TODO: CPRProjectionMode
-        _clippingRangeMode == (CPRProjectionMode)3 ||
-        _clippingRangeMode == (CPRProjectionMode)2)
+	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
 	{
 		[mprView1 setWLWW: pWL :pWW];
 		[blendedMprView1 setWLWW: bpWL :bpWW];
@@ -2321,9 +2321,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	[mprView2 restoreCamera];
 	mprView2.camera.forceUpdate = YES;
-	if (_clippingRangeMode == (CPRProjectionMode)1 ||
-        _clippingRangeMode == (CPRProjectionMode)3 ||
-        _clippingRangeMode == (CPRProjectionMode)2)
+	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
 	{
 		[mprView2 setWLWW: pWL :pWW];
 		[blendedMprView2 setWLWW: bpWL :bpWW];
@@ -2337,9 +2337,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	[mprView3 restoreCamera];
 	mprView3.camera.forceUpdate = YES;
-	if (_clippingRangeMode == (CPRProjectionMode)1 ||
-        _clippingRangeMode == (CPRProjectionMode)3 ||
-        _clippingRangeMode == (CPRProjectionMode)2)
+	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
 	{
 		[mprView3 setWLWW: pWL :pWW];
 		[blendedMprView3 setWLWW: bpWL :bpWW];
@@ -4210,7 +4210,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		
 		if (iww != [blendedMprView1 curWW] || iwl != [blendedMprView1 curWL])
 		{
-			if (_clippingRangeMode == (CPRProjectionMode)0)  // TODO: CPRProjectionMode
+			if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
 			{
 				[blendedMprView1 setWLWW:128 :256];
 				[blendedMprView2 setWLWW:128 :256];
@@ -4287,8 +4287,12 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	[hiddenVRController addMoviePixList: pix :vData];	
     
-	if (_clippingRangeMode == (CPRProjectionMode)1 || _clippingRangeMode == (CPRProjectionMode)3 || _clippingRangeMode == (CPRProjectionMode)2)
+	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
+    {
 		[mprView1.vrView prepareFullDepthCapture];
+    }
 	else
 		[mprView1.vrView restoreFullDepthCapture];
 	
@@ -4308,8 +4312,12 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	[hiddenVRController setMovieFrame: m];
 	
-	if (_clippingRangeMode == (CPRProjectionMode)1 || _clippingRangeMode == (CPRProjectionMode)3 || _clippingRangeMode == (CPRProjectionMode)2)
+	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
+        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
+    {
 		[mprView1.vrView prepareFullDepthCapture];
+    }
 	else
 		[mprView1.vrView restoreFullDepthCapture];
 	

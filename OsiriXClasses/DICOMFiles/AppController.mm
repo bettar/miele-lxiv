@@ -734,6 +734,7 @@ static bool isGrantedNotificationAccess = false;
 #endif
 }
 
+// MACOSX_DEPLOYMENT_TARGET
 +(BOOL) hasAtLeastMacOS_Mavericks
 {
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
@@ -2278,7 +2279,7 @@ static bool isGrantedNotificationAccess = false;
 				aTask = nil;
 			}
 			
-			//make sure that there exist a receiver folder at @"folder" path
+			// Make sure that there exists a receiver folder at @"folder" path
 			NSString* path = [[DicomDatabase activeLocalDatabase] incomingDirPath];
 			[[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath:path];
 			
@@ -2372,7 +2373,7 @@ static bool isGrantedNotificationAccess = false;
 
 -(void) startSTORESCP:(id) sender
 {
-	// this method is always executed as a new thread detached from the NSThread command of RestartSTORESCP method
+	// This method is always executed as a new thread detached from the NSThread command of RestartSTORESCP method
 #ifndef MIELE_LIGHT
 	[STORESCP_Lock lock];
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

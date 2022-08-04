@@ -173,7 +173,8 @@
 		43DB7C1A23C83FE700B3C9EA /* overlayLine.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 43DB7C1923C83FE700B3C9EA /* overlayLine.vsh */; };
 		43DB7C1C23C8402600B3C9EA /* overlayLine.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43DB7C1B23C8402600B3C9EA /* overlayLine.fsh */; };
 		43E27D2B1AF338FA007B92CA /* ROI3DSettingsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */; };
-		43EC9E0E2897E87400F0533F /* libpng16.16.37.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E0D2897E87300F0533F /* libpng16.16.37.0.dylib */; };
+		43E3D93D289BB1A5006B0E9C /* libpng16.16.37.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */; };
+		43E3D93E289BB1D1006B0E9C /* libpng16.16.37.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		43EC9E102897E8E700F0533F /* libpng16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E0F2897E8E700F0533F /* libpng16.a */; };
 		43EC9E122897E9E500F0533F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E112897E9E400F0533F /* libxml2.a */; };
 		43EC9E132897E9E500F0533F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E112897E9E400F0533F /* libxml2.a */; };
@@ -1137,6 +1138,7 @@
 			files = (
 				43110BEB21679E5B00B0405B /* DCM.framework in Embed Frameworks */,
 				59F1A515104BA8AE009E3215 /* MieleAPI.framework in Embed Frameworks */,
+				43E3D93E289BB1D1006B0E9C /* libpng16.16.37.0.dylib in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1554,7 +1556,6 @@
 		4365FC341B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DcmQueryRetrieveGetOurContext.mm; sourceTree = "<group>"; };
 		4365FC371B01C4F100380C25 /* DcmQueryRetrieveOsiriSCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DcmQueryRetrieveOsiriSCP.h; sourceTree = "<group>"; };
 		43748A9E21B0212E00A1446C /* Photos.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Photos.icns; sourceTree = "<group>"; };
-		438718A22067BDA9009575DB /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = ../../../../../../System/Library/Frameworks/AddressBook.framework; sourceTree = "<group>"; };
 		438718A42067BDE1009575DB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = ../../../../../../System/Library/Frameworks/AVFoundation.framework; sourceTree = "<group>"; };
 		438718A72067BDF4009575DB /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = ../../../../../../System/Library/Frameworks/Carbon.framework; sourceTree = "<group>"; };
 		438718A92067BE0D009575DB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = ../../../../../../System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<group>"; };
@@ -1563,8 +1564,6 @@
 		438718B02067BE3A009575DB /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = ../../../../../../System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<group>"; };
 		438718B22067BE4B009575DB /* InstantMessage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InstantMessage.framework; path = ../../../../../../System/Library/Frameworks/InstantMessage.framework; sourceTree = "<group>"; };
 		438718B42067BF6C009575DB /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = ../../../../../../System/Library/Frameworks/Quartz.framework; sourceTree = "<group>"; };
-		438718BD2067C09E009575DB /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = ../../../../../../usr/local/Cellar/openssl/1.0.2/lib/libcrypto.dylib; sourceTree = "<group>"; };
-		438718BF2067C0B3009575DB /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = ../../../../../../usr/local/Cellar/openssl/1.0.2/lib/libssl.dylib; sourceTree = "<group>"; };
 		43879B7621D64C7600DEF6A9 /* AYDcmPrintSCU.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AYDcmPrintSCU.cpp; path = DICOMPrint/AYDcmPrintSCU.cpp; sourceTree = "<group>"; };
 		43879B7821D64CB500DEF6A9 /* AYPrintManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AYPrintManager.cpp; path = DICOMPrint/AYPrintManager.cpp; sourceTree = "<group>"; };
 		438AE1A921B5177700C5E98F /* miele-lxiv-Deployment.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "miele-lxiv-Deployment.entitlements"; sourceTree = "<group>"; };
@@ -1750,8 +1749,8 @@
 		43E27D261AF32929007B92CA /* tmp_locations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tmp_locations.h; sourceTree = "<group>"; };
 		43E27D281AF338FA007B92CA /* ROI3DSettingsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROI3DSettingsWindow.h; sourceTree = "<group>"; };
 		43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ROI3DSettingsWindow.mm; sourceTree = "<group>"; };
+		43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.37.0.dylib; path = "../../../install/project68/20220729_UB/libpng-1.6.37/lib/libpng16.16.37.0.dylib"; sourceTree = "<group>"; };
 		43E6A512216CC297005A031A /* odt2pdf.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = odt2pdf.zip; path = Binaries/ReportsToPDF/odt2pdf/build/odt2pdf.zip; sourceTree = "<group>"; };
-		43EC9E0D2897E87300F0533F /* libpng16.16.37.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.37.0.dylib; path = "../../../install/project68/20220729_UB/libpng-1.6.37/lib/libpng16.16.37.0.dylib"; sourceTree = "<group>"; };
 		43EC9E0F2897E8E700F0533F /* libpng16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng16.a; path = "../../../install/project68/20220729_UB/libpng-1.6.37/lib/libpng16.a"; sourceTree = "<group>"; };
 		43EC9E112897E9E400F0533F /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../../install/project68/20220729_UB/libxml2-v2.9.13/lib/libxml2.a"; sourceTree = "<group>"; };
 		43EC9E152897EA4100F0533F /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = "../../../install/project68/20220729_UB/zlib-1.2.12/lib/libz.a"; sourceTree = "<group>"; };
@@ -2547,7 +2546,6 @@
 		AB58260314BAF5EE00FACC12 /* WebPortalDB 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 6.xcdatamodel"; sourceTree = "<group>"; };
 		AB59B18205697FD400B77AFC /* DCMView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = DCMView.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AB59B18405697FD700B77AFC /* DCMView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMView.h; sourceTree = "<group>"; };
-		AB5E1A300595697700C48BEB /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = ../../../../../../System/Library/Frameworks/Accelerate.framework; sourceTree = "<group>"; };
 		AB64A2D60C4E0F61000E0981 /* HornRegistration.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = HornRegistration.mm; sourceTree = "<group>"; };
 		AB64A2D70C4E0F61000E0981 /* HornRegistration.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = HornRegistration.h; sourceTree = "<group>"; };
 		AB695A1D063D8261002BDF78 /* Analyze.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analyze.h; sourceTree = "<group>"; };
@@ -3118,9 +3116,9 @@
 				43A5D42A2407D68E0063416A /* UserNotifications.framework in Frameworks */,
 				430D9F102199FB37006EA1B1 /* OpenGL.framework in Frameworks */,
 				439CCA1D255FCE7F00C48B93 /* libopenjp2.a in Frameworks */,
-				43EC9E0E2897E87400F0533F /* libpng16.16.37.0.dylib in Frameworks */,
 				43EC9E162897EA4100F0533F /* libz.a in Frameworks */,
 				43EC9E102897E8E700F0533F /* libpng16.a in Frameworks */,
+				43E3D93D289BB1A5006B0E9C /* libpng16.16.37.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3161,8 +3159,6 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				AB5E1A300595697700C48BEB /* Accelerate.framework */,
-				438718A22067BDA9009575DB /* AddressBook.framework */,
 				AB38FC99057A9B050041FEBB /* AGL.framework */,
 				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
 				ABFF0A95056D97800066794C /* ApplicationServices.framework */,
@@ -3179,8 +3175,6 @@
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
 				438718B22067BE4B009575DB /* InstantMessage.framework */,
 				AB6D320C05B3159D0002F793 /* IOKit.framework */,
-				438718BD2067C09E009575DB /* libcrypto.dylib */,
-				438718BF2067C0B3009575DB /* libssl.dylib */,
 				43A4038B1DFA32F300ADA719 /* XCTest.framework */,
 				AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */,
 				7E3E38650715FFDC0049E72E /* PreferencePanes.framework */,
@@ -3211,7 +3205,6 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
-				43EC9E0D2897E87300F0533F /* libpng16.16.37.0.dylib */,
 				43BF4BB02387069200CE2294 /* OpenGL */,
 				438AE1AA21B51E1400C5E98F /* miele-lxiv-Development.entitlements */,
 				438AE1A921B5177700C5E98F /* miele-lxiv-Deployment.entitlements */,
@@ -3298,6 +3291,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */,
 				43EC9E112897E9E400F0533F /* libxml2.a */,
 				43EC9E152897EA4100F0533F /* libz.a */,
 				43EC9E0F2897E8E700F0533F /* libpng16.a */,
@@ -8121,6 +8115,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				IBC_FLATTEN_NIBS = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = "";

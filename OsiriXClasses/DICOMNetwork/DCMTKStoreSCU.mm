@@ -1182,7 +1182,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	opt_showPresentationContexts = [[NSUserDefaults standardUserDefaults] boolForKey: @"verbose_dcmtkStoreScu"];
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"verbose_dcmtkStoreScu"])
+    if (opt_showPresentationContexts)
     {
 #ifndef NDEBUG
         OFLog::configure(OFLogger::DEBUG_LOG_LEVEL);
@@ -1376,7 +1376,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 			{
 			  if (opt_proposeOnlyRequiredPresentationContexts)
 			  {
-                  if (DU_findSOPClassAndInstanceInFile(currentFilename,
+                  if (!DU_findSOPClassAndInstanceInFile(currentFilename,
                                                        sopClassUID, sizeof(sopClassUID),
                                                        sopInstanceUID, sizeof(sopInstanceUID)))
                   {

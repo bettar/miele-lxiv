@@ -98,7 +98,7 @@ extern unsigned int minimumStep;
 
 static NSRecursiveLock *drawLock = nil;
 static unsigned short *linearOpacity = nil;
-static VRView	*snVRView = nil;
+static VRView *snVRView = nil;
 
 typedef struct _xyzArray
 {
@@ -806,7 +806,7 @@ public:
 	
 	switch (modeID)
 	{
-		case 0:
+		case 0: // CPR_PROJECTION_MODE_VR
 			if (volumeMapper)
 				volumeMapper->SetBlendModeToComposite();
 				
@@ -814,7 +814,7 @@ public:
 				textureMapper->SetBlendModeToComposite();
 		break;
 		
-		case 1:
+		case 1: // CPR_PROJECTION_MODE_MIP
 			if (volumeMapper)
 				volumeMapper->SetBlendModeToMaximumIntensity();
 				
@@ -822,8 +822,8 @@ public:
 				textureMapper->SetBlendModeToMaximumIntensity();
 		break;
 		
-		case 2:
-        case 3: // Mean
+		case 2: // CPR_PROJECTION_MODE_MIN_IP
+        case 3: // CPR_PROJECTION_MODE_MEAN
 			if (volumeMapper)
 				volumeMapper->SetBlendModeToMinimumIntensity();
 			
@@ -831,7 +831,7 @@ public:
 				textureMapper->SetBlendModeToMinimumIntensity();
 		break;
             
-//        case 4: // Additive mode
+//        case 4: // CPR_PROJECTION_MODE_ADDITIVE
 //            if (volumeMapper)
 //				volumeMapper->SetBlendModeToAdditive();
 //			
@@ -858,11 +858,15 @@ public:
 
 + (void) testGraphicBoard
 {    
-    int vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[NSScreen mainScreen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
+    unsigned long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[NSScreen mainScreen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
         
+#if 0 //ndef NDEBUG
+    NSLog(@"%s %d, VRAM %ld MB", __FUNCTION__, __LINE__, (long)[[NSUserDefaults standardUserDefaults] integerForKey: @"VRAMAmount"]);
+#endif
+
     if ([[NSUserDefaults standardUserDefaults] integerForKey: @"VRAMAmount"] != vramMB)
     {
-        if (vramMB >= 2000)
+        if (vramMB >= 2000) // about 2 GB VRAM
         {
             [[NSUserDefaults standardUserDefaults] setInteger: VR_VIEW_SIZE_FULL_SCREEN forKey: VRDefaultViewSize_KEY];
             [[NSUserDefaults standardUserDefaults] setInteger: ENGINE_GPU_OPEN_GL forKey: @"MAPPERMODEVR"];
@@ -887,13 +891,11 @@ public:
         textureMapper->SetInputConnection(reader->GetOutputPort());
         textureMapper->Update();
         
-        unsigned
-        long memoryMB = [vtkMieleView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
-        
-        textureMapper->SetMaxMemoryInBytes( memoryMB*1024*1024);
-        
-        NSLog( @"Graphic Board memory: %d MiB", (int)memoryMB);
-        
+        unsigned long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
+#ifndef NDEBUG
+        NSLog(@"Graphic board memory: %d MiB", (int)vramMB);
+#endif
+        textureMapper->SetMaxMemoryInBytes( vramMB*1024*1024);
         textureMapper->SetMaxMemoryFraction( 0.9);
     }
     
@@ -912,7 +914,7 @@ public:
     volume->SetMapper( volumeMapper);
 }
 
-- (void) instantiateEngine: (int) e
+- (void) instantiateEngine: (EngineType) e
 {
     @try
 	{
@@ -938,7 +940,7 @@ public:
                 break;
                 
             default:
-                NSLog( @"Unknown Engine");
+                NSLog(@"Unknown Engine");
                 break;
 		}
 		
@@ -975,7 +977,7 @@ public:
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"setEngine exception: %@", e);
+		NSLog(@"setEngine exception: %@", e);
 	}
 }
 
@@ -984,15 +986,14 @@ public:
 {
     if (newEngine == ENGINE_GPU_OPEN_GL)
     {
-        unsigned
-        long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
+        unsigned long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
         
         //vramMB /= 1024*1024;
         
         if (vramMB <= 512)
         {
             NSRunCriticalAlertPanel(NSLocalizedString(@"GPU Rendering", nil), // title
-                                    NSLocalizedString(@"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil), // msg format
+                                    NSLocalizedString(@"Your graphic board has only %lu MB of VRAM. Performances will be very limited with large dataset.", nil), // msg format
                                     NSLocalizedString(@"OK", nil), // default button
                                     nil,
                                     nil,
@@ -1015,7 +1016,7 @@ public:
 	
     switch (engine)
     {
-        default:
+        //default:
         case ENGINE_CPU:
             volume->SetMapper( volumeMapper);
             break;
@@ -1057,11 +1058,7 @@ public:
 		case ENGINE_CPU:
 			if (blendingVolumeMapper == nil)
 			{
-#ifdef TEST_ISSUE_I31
-                blendingVolumeMapper = vtkFixedPointVolumeRayCastMapper::New();
-#else
 				blendingVolumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
-#endif
 				blendingVolumeMapper->SetInputConnection(blendingReader->GetOutputPort());
 			}
             
@@ -1070,17 +1067,17 @@ public:
             break;
 		
         case ENGINE_GPU_OPEN_GL:
-            
             if (blendingTextureMapper == nil)
             {
                 blendingTextureMapper = vtkGPUVolumeRayCastMapper::New();
                 blendingTextureMapper->SetInputConnection(blendingReader->GetOutputPort());
                 
-                unsigned long memoryMB = [vtkMieleView VRAMSizeForDisplayID:
+                unsigned long vramMB = [vtkMieleView VRAMSizeForDisplayID:
                                           [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
-                
-                blendingTextureMapper->SetMaxMemoryInBytes( memoryMB*1024*1024);
-                NSLog( @"Graphic Board memory: %ld MiB", memoryMB);
+#ifndef NDEBUG
+                NSLog( @"Graphic board memory: %ld MiB", vramMB);
+#endif
+                blendingTextureMapper->SetMaxMemoryInBytes( vramMB*1024*1024);
                 blendingTextureMapper->SetMaxMemoryFraction( 0.9);
             }
             
@@ -1440,7 +1437,9 @@ public:
 		
 		if ([dcmExportDepth selectedTag] == 1 &&
             [dcmExportDepth isEnabled] &&
-            (renderingMode == 1 || renderingMode == 2 || renderingMode == 3))
+            (renderingMode == 1 || // CPR_PROJECTION_MODE_MIP
+             renderingMode == 2 || // CPR_PROJECTION_MODE_MIN_IP
+             renderingMode == 3))  // CPR_PROJECTION_MODE_MEAN
         {
 			fullDepthCapture = YES;
         }
@@ -1652,8 +1651,12 @@ public:
 	else
         [[dcmExportMode cellWithTag:2] setEnabled: NO];
 	
-	if (renderingMode == 1 || renderingMode == 2 || renderingMode == 3)
+	if (renderingMode == 1 || // CPR_PROJECTION_MODE_MIP
+        renderingMode == 2 || // CPR_PROJECTION_MODE_MIN_IP
+        renderingMode == 3)   // CPR_PROJECTION_MODE_MEAN
+    {
 		[dcmExportDepth setEnabled: YES];
+    }
 	else
 		[dcmExportDepth setEnabled: NO];
 
@@ -2005,8 +2008,6 @@ public:
 
 -(instancetype)initWithFrame:(NSRect)frame
 {
-    NSLog(@"%s %d, self:%p", __FUNCTION__, __LINE__, self);
-
     self = [super initWithFrame:frame];
     if (self)
     {
@@ -2029,7 +2030,7 @@ public:
 		blendingValueFactor = 1.0;
 		blendingOFFSET16 = -[controller blendingMinimumValue];
 		
-		renderingMode = 0;	// VR, MIP = 1
+		renderingMode = 0;	// CPR_PROJECTION_MODE_VR
 		blendingController = nil;
 		blendingFactor = 128.;
 		blendingVolume = nil;
@@ -2200,8 +2201,11 @@ public:
                                   :[[tempArray objectAtIndex:3] floatValue]];
 		}
 		
-		if (renderingMode == 0 && volumeProperty)
+		if (renderingMode == 0 && // CPR_PROJECTION_MODE_VR
+            volumeProperty)
+        {
 			volumeProperty->SetShade( [[dict objectForKey:@"ShadingFlag"] longValue]);
+        }
 		
 		float savedSupersampling = [[dict objectForKey:@"superSampling"] floatValue];
 		float ratio = 1;
@@ -2252,8 +2256,11 @@ public:
 	}
 	else
 	{
-		if (renderingMode == 0 && volumeProperty) // volume rendering
+		if (renderingMode == 0 && // CPR_PROJECTION_MODE_VR
+            volumeProperty)
+        {
 			volumeProperty->SetShade( [[NSUserDefaults standardUserDefaults] boolForKey: @"defaultShading"]);
+        }
 	}
     
     if (volume && volume->GetMapper() == nil)
@@ -2331,7 +2338,7 @@ public:
     if (!volumeMapper)
         return;
 
-    //NSLog(@"%s %d", __FUNCTION__, __LINE__); // debug issue i28. Not called for 3D VR ?!
+    //NSLog(@"%s %d", __FUNCTION__, __LINE__); // debug issue #i18. Not called for 3D VR ?!
 
     aRenderer->SetDraw( 0);
     
@@ -2696,8 +2703,10 @@ public:
         zbufferSize[1] = static_cast<int>( static_cast<double>(imageInUseSize[1]) * sampleDistance);
 
         // Use the size to compute (x2,y2) in window coordinates
-//        int x2 = x1 + zbufferSize[0] - 1;
-//        int y2 = y1 + zbufferSize[1] - 1;
+#if 1
+        int x2 = x1 + zbufferSize[0] - 1;
+        int y2 = y1 + zbufferSize[1] - 1;
+#endif
         
         // cameraPosition is in the center of the screen
         double x = ((double) x1 - (double) renWinSize[ 0]/2.);
@@ -2902,8 +2911,11 @@ public:
     {
         if (Oval2DPix == nil)
         {
-            if (renderingMode == 1 || renderingMode == 2 || renderingMode == 3) // MIP modes - full depth
+            if (renderingMode == 1 || // CPR_PROJECTION_MODE_MIP
+                renderingMode == 2 || // CPR_PROJECTION_MODE_MIN_IP
+                renderingMode == 3)   // CPR_PROJECTION_MODE_MEAN
             {
+                // MIP modes - full depth
                 dontRenderVolumeRenderingOsiriX = true;
                 aRenderer->SetDraw( 0);
                 [self prepareFullDepthCapture];
@@ -2943,7 +2955,7 @@ public:
             ROI *circle = [[ROI alloc] initWithType: tOval
                                                    : 1
                                                    : 1
-                                                   : NSMakePoint(0,0)];
+                                                   : NSZeroPoint];
             
             NSPoint center = Oval2DCenter;
             float radius = Oval2DRadius;
@@ -2964,8 +2976,7 @@ public:
             
             [Oval2DPix computeROI: circle :&rmean :&rtotal :&rdev :&rmin :&rmax];
             
-//#ifdef NDEBUG
-//#else
+//#ifndef NDEBUG
 //             [Oval2DPix fillROI: circle : 1000 :-2000 :2000 :NO];
 //            [[NSFileManager defaultManager] removeItemAtPath: @"/tmp/VR.tiff" error: nil];
 //            [[[Oval2DPix image] TIFFRepresentation] writeToFile: @"/tmp/VR.tiff" atomically: YES];   
@@ -5275,7 +5286,8 @@ public:
 		[[[controller curPixList] objectAtIndex: 0] freeRestore];
 	}
     
-    // Update everything..
+    // Update everything:
+
     ROIUPDATE = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification
                                                         object: pixList
@@ -5923,7 +5935,7 @@ public:
 	float start, end;
 	float opacityAdapter = 1;
 	
-	if (renderingMode == 0) // VR
+	if (renderingMode == 0) // CPR_PROJECTION_MODE_VR
 		opacityAdapter = superSampling;
 		
 	if (isRGB)
@@ -6415,7 +6427,7 @@ public:
     
     LOD = f;
     
-    if (textureMapper)
+    if (textureMapper) // GPU
     {
         textureMapper->SetAutoAdjustSampleDistances( 1);
         textureMapper->SetMinimumImageSampleDistance( LOD);
@@ -6423,7 +6435,7 @@ public:
         textureMapper->SetMaximumImageSampleDistance( LOD*lowResLODFactor);
     }
     
-    if (blendingTextureMapper)
+    if (blendingTextureMapper) // GPU
     {
         blendingTextureMapper->SetAutoAdjustSampleDistances( 1);
         blendingTextureMapper->SetMinimumImageSampleDistance( LOD);
@@ -6748,8 +6760,8 @@ public:
         
         if (engine == ENGINE_GPU_OPEN_GL)
         {
-            unsigned long memory = [vtkMieleView VRAMSizeForDisplayID: [[[[NSScreen mainScreen] deviceDescription] objectForKey: @"NSScreenNumber"] unsignedLongValue]] * 1024 * 1024;
-            if (0.9 * memory < dst8.rowBytes * dst8.height)
+            unsigned long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[NSScreen mainScreen] deviceDescription] objectForKey: @"NSScreenNumber"] unsignedLongValue]] * 1024 * 1024;
+            if (0.9 * vramMB < dst8.rowBytes * dst8.height)
             {
                 [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Warning!", nil)
                                                     description: NSLocalizedString( @"3D Dataset volume is larger than the amount of graphic board VRAM: GPU Rendering could be slower than CPU Rendering.", nil)
@@ -6794,7 +6806,7 @@ public:
             volumeMapper->Delete();
             volumeMapper = nil;
             
-            [self instantiateEngine: 0];
+            [self instantiateEngine: ENGINE_CPU];
         }
         
         if (textureMapper)
@@ -6803,7 +6815,7 @@ public:
             textureMapper->Delete();
             textureMapper = nil;
             
-            [self instantiateEngine: 1];
+            [self instantiateEngine: ENGINE_GPU_OPEN_GL];
         }
 		
         if (engine == ENGINE_CPU)
@@ -6954,7 +6966,7 @@ public:
 - (BOOL) setPixSource:(NSMutableArray*) pix
                      :(float*) volumeData
 {
-#if 1 //ndef NDEBUG // CRASH with 3D MIP
+#ifndef NDEBUG // CRASH with 3D MIP
     // VRView is not a subclass of NSOpenGLContext
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     NSLog(@"%s %d, class:%@, OpenGL context:%p, version<%s>", __FUNCTION__, __LINE__,
@@ -7028,7 +7040,9 @@ public:
 	
 	try
 	{
+#ifndef NDEBUG
         NSLog(@"%s %d vtkImageImport, isRGB:%d", __FUNCTION__, __LINE__, isRGB);
+#endif
 		reader = vtkImageImport::New();
 		
 		if (isRGB)
@@ -7078,12 +7092,14 @@ public:
 		
 		float opacityAdapter = 1;
 		
-		if (renderingMode == 0) // VR
+		if (renderingMode == 0) // CPR_PROJECTION_MODE_VR
 			opacityAdapter = superSampling;
 		
 		opacityTransferFunction->AddPoint(255., 1. / opacityAdapter);
 		
+#ifndef NDEBUG
         NSLog(@"%s %d vtkColorTransferFunction", __FUNCTION__, __LINE__);
+#endif
 		colorTransferFunction = vtkColorTransferFunction::New();
 		
         if ([[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
@@ -7114,8 +7130,10 @@ public:
             blue->AddRGBPoint(   0, 0, 0, 0 );
             blue->AddRGBPoint( 255, 0, 0, 1 );
 		}
-        
+
+#ifndef NDEBUG        
         NSLog(@"%s %d vtkVolumeProperty", __FUNCTION__, __LINE__);
+#endif
 		volumeProperty = vtkVolumeProperty::New();
 		if (isRGB)
 		{
@@ -7145,8 +7163,10 @@ public:
 		else            volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();	//SetInterpolationTypeToLinear
 			
 		LOD = 2.0;
-		
+
+#ifndef NDEBUG
         NSLog(@"%s %d vtkVolume", __FUNCTION__, __LINE__);
+#endif
 		volume = vtkVolume::New();
 		volume->SetProperty( volumeProperty);
 		
@@ -7187,18 +7207,23 @@ public:
 		matrice->Delete();
 		
 		volume->PickableOff();
-		
+#ifndef NDEBUG
         NSLog(@"%s %d vtkOutlineFilter", __FUNCTION__, __LINE__);
+#endif
 		outlineData = vtkOutlineFilter::New();
 		outlineData->SetInputConnection(reader->GetOutputPort());
 		outlineData->Update();
 		
+#ifndef NDEBUG
         NSLog(@"%s %d vtkPolyDataMapper", __FUNCTION__, __LINE__);
+#endif
 		mapOutline = vtkPolyDataMapper::New();
 		mapOutline->SetInputConnection(outlineData->GetOutputPort());
 		mapOutline->Update();
-		
+
+#ifndef NDEBUG
         NSLog(@"%s %d vtkActor", __FUNCTION__, __LINE__);
+#endif
 		outlineRect = vtkActor::New();
 		outlineRect->SetMapper(mapOutline);
 		outlineRect->GetProperty()->SetColor(0,1,0);
@@ -7241,7 +7266,9 @@ public:
 			croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
 		}
 		
+#ifndef NDEBUG
         NSLog(@"%s %d vtkTextActor", __FUNCTION__, __LINE__);
+#endif
 		textWLWW = vtkTextActor::New();
 		if (ww < 50)
             sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
@@ -7314,7 +7341,9 @@ public:
 		aRenderer->ResetCamera();
 		
 		// 3D Cut ROI
+#ifndef NDEBUG
         NSLog(@"%s %d vtkPoints", __FUNCTION__, __LINE__);
+#endif
 		vtkPoints *pts = vtkPoints::New();
 		vtkCellArray *rect = vtkCellArray::New();
 		
@@ -7326,11 +7355,15 @@ public:
 		ROI3DData->SetLines( rect);
 		rect->Delete();
 		
+#ifndef NDEBUG
         NSLog(@"%s %d vtkPolyDataMapper2D", __FUNCTION__, __LINE__);
+#endif
 		ROI3D = vtkPolyDataMapper2D::New();
 		ROI3D->SetInputData( ROI3DData);
 		
+#ifndef NDEBUG
         NSLog(@"%s %d vtkActor2D", __FUNCTION__, __LINE__);
+#endif
 		ROI3DActor = vtkActor2D::New();
 		ROI3DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
 		ROI3DActor->SetMapper( ROI3D);
@@ -7410,9 +7443,13 @@ public:
 		[self getVTKRenderWindow]->MakeCurrent();
 		[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
 		
-#if 0 // @@@ TBC
+#ifndef NDEBUG
         CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-        printf("VRView.mm:%d OpenGL context:%p, version %s\n", __LINE__, cgl_ctx, glGetString(GL_VERSION)); // version 2.1 APPLE-12.1.0
+        printf("VRView.mm:%d OpenGL context:%p, version %s\n", __LINE__, cgl_ctx, glGetString(GL_VERSION));
+        // if WITH_OPENGL_32
+        //      version 4.1 APPLE-19.5.1
+        // else
+        //      version 2.1 APPLE-19.5.1
 #endif
 		[self setNeedsDisplay:YES];
 		
@@ -7431,6 +7468,24 @@ public:
 	
     return false; // No error
 }
+
+#if 0
+// reinstated from old code, still commented out. see issue i55
+-(IBAction) SwitchStereoMode :(id) sender
+{
+    if ([self renderWindow]->GetStereoRender() == false)
+    {
+        [self renderWindow]->StereoRenderOn();
+        [self renderWindow]->SetStereoTypeToRedBlue();
+    }
+    else
+    {
+        [self renderWindow]->StereoRenderOff();
+    }
+    
+    [self setNeedsDisplay:YES];
+}
+#endif
 
 - (NSImage*) resizeMatrix:(NSImage*) currentImage size: (int) matrixsize
 {
@@ -7577,11 +7632,7 @@ public:
     
     @try
     {
-#ifdef TEST_ISSUE_I31
-        vtkFixedPointVolumeRayCastMapper *mapper = nil;
-#else
         OsiriXFixedPointVolumeRayCastMapper *mapper = nil;
-#endif
         DCMPix *firstObj = nil;
         
         if (blendingView)
@@ -7611,7 +7662,9 @@ public:
             *h = size[1];
             
             if (firstObject.isRGB == NO &&
-                (renderingMode == 1 || renderingMode == 2 || renderingMode == 3)) // MIP
+                (renderingMode == 1 || // CPR_PROJECTION_MODE_MIP
+                 renderingMode == 2 || // CPR_PROJECTION_MODE_MIN_IP
+                 renderingMode == 3))  // CPR_PROJECTION_MODE_MEAN
             {
                 unsigned short *destPtr, *destFixedPtr;
                 
@@ -9590,7 +9643,7 @@ public:
 				
 				float opacityAdapter = 1;
 				
-				if (renderingMode == 0) // VR
+				if (renderingMode == 0) // CPR_PROJECTION_MODE_VR
 					opacityAdapter = superSampling;
 				
 				float o = [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y / opacityAdapter;

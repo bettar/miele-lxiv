@@ -157,7 +157,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		blendingValueFactor = 1.0;
 		blendingOFFSET16 = -[controller blendingMinimumValue];
 		
-		renderingMode = 0;	// VR, MIP = 1
+		renderingMode = 0;	// CPR_PROJECTION_MODE_VR
 		blendingController = nil;
 		blendingFactor = 128.;
 		blendingVolume = nil;
@@ -274,6 +274,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 }
 #endif // _STEREO_VISION_
 
+// FIXME: Warning: Category is implementing a method which will also be implemented by its primary class
 -(IBAction) SwitchStereoMode :(id) sender
 {	
 #ifdef _STEREO_VISION_
@@ -2192,7 +2193,9 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		*w = size[0];
 		*h = size[1];
 		
-		if( renderingMode == 1 || renderingMode == 3 || renderingMode == 2)		// MIP
+		if (renderingMode == 1 || // CPR_PROJECTION_MODE_MIP
+            renderingMode == 3 || // CPR_PROJECTION_MODE_MEAN
+            renderingMode == 2)   // CPR_PROJECTION_MODE_MIN_IP
 		{
 			unsigned short *destPtr, *destFixedPtr;
 			
