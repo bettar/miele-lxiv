@@ -11,7 +11,6 @@ unzip -uo Growl.framework.zip
 unzip -uo 3DconnexionClient.framework.zip
 unzip -uo dciodvfy.zip
 unzip -uo libPapyrusToolkit.a.zip
-unzip -uo Ming.zip
 unzip -uo -d weasis weasis-portable.zip
 #chmod -R 755 weasis
 #cd "$SRCROOT/Binaries/weasis"

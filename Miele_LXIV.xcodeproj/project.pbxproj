@@ -175,6 +175,7 @@
 		43E27D2B1AF338FA007B92CA /* ROI3DSettingsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */; };
 		43E3D93D289BB1A5006B0E9C /* libpng16.16.37.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */; };
 		43E3D93E289BB1D1006B0E9C /* libpng16.16.37.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		43E71199289D01750065374E /* libming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E71197289CFEF70065374E /* libming.a */; };
 		43EC9E102897E8E700F0533F /* libpng16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E0F2897E8E700F0533F /* libpng16.a */; };
 		43EC9E122897E9E500F0533F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E112897E9E400F0533F /* libxml2.a */; };
 		43EC9E132897E9E500F0533F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E112897E9E400F0533F /* libxml2.a */; };
@@ -1556,14 +1557,6 @@
 		4365FC341B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DcmQueryRetrieveGetOurContext.mm; sourceTree = "<group>"; };
 		4365FC371B01C4F100380C25 /* DcmQueryRetrieveOsiriSCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DcmQueryRetrieveOsiriSCP.h; sourceTree = "<group>"; };
 		43748A9E21B0212E00A1446C /* Photos.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Photos.icns; sourceTree = "<group>"; };
-		438718A42067BDE1009575DB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = ../../../../../../System/Library/Frameworks/AVFoundation.framework; sourceTree = "<group>"; };
-		438718A72067BDF4009575DB /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = ../../../../../../System/Library/Frameworks/Carbon.framework; sourceTree = "<group>"; };
-		438718A92067BE0D009575DB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = ../../../../../../System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<group>"; };
-		438718AB2067BE1F009575DB /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = ../../../../../../System/Library/Frameworks/CoreMedia.framework; sourceTree = "<group>"; };
-		438718AE2067BE2B009575DB /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = ../../../../../../System/Library/Frameworks/CoreServices.framework; sourceTree = "<group>"; };
-		438718B02067BE3A009575DB /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = ../../../../../../System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<group>"; };
-		438718B22067BE4B009575DB /* InstantMessage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InstantMessage.framework; path = ../../../../../../System/Library/Frameworks/InstantMessage.framework; sourceTree = "<group>"; };
-		438718B42067BF6C009575DB /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = ../../../../../../System/Library/Frameworks/Quartz.framework; sourceTree = "<group>"; };
 		43879B7621D64C7600DEF6A9 /* AYDcmPrintSCU.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AYDcmPrintSCU.cpp; path = DICOMPrint/AYDcmPrintSCU.cpp; sourceTree = "<group>"; };
 		43879B7821D64CB500DEF6A9 /* AYPrintManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AYPrintManager.cpp; path = DICOMPrint/AYPrintManager.cpp; sourceTree = "<group>"; };
 		438AE1A921B5177700C5E98F /* miele-lxiv-Deployment.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "miele-lxiv-Deployment.entitlements"; sourceTree = "<group>"; };
@@ -1751,6 +1744,7 @@
 		43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ROI3DSettingsWindow.mm; sourceTree = "<group>"; };
 		43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.37.0.dylib; path = "../../../install/project68/20220729_UB/libpng-1.6.37/lib/libpng16.16.37.0.dylib"; sourceTree = "<group>"; };
 		43E6A512216CC297005A031A /* odt2pdf.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = odt2pdf.zip; path = Binaries/ReportsToPDF/odt2pdf/build/odt2pdf.zip; sourceTree = "<group>"; };
+		43E71197289CFEF70065374E /* libming.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libming.a; path = "../../../install/project68/20220729_UB/ming-0_4_8/lib/libming.a"; sourceTree = "<group>"; };
 		43EC9E0F2897E8E700F0533F /* libpng16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng16.a; path = "../../../install/project68/20220729_UB/libpng-1.6.37/lib/libpng16.a"; sourceTree = "<group>"; };
 		43EC9E112897E9E400F0533F /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../../install/project68/20220729_UB/libxml2-v2.9.13/lib/libxml2.a"; sourceTree = "<group>"; };
 		43EC9E152897EA4100F0533F /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = "../../../install/project68/20220729_UB/zlib-1.2.12/lib/libz.a"; sourceTree = "<group>"; };
@@ -1987,12 +1981,6 @@
 		59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageButtonCell.mm; path = nitrogen/Sources/N2ImageButtonCell.mm; sourceTree = "<group>"; };
 		59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BrowserController+Activity.h"; sourceTree = "<group>"; };
 		59F5F4EB11F485CC0047A90D /* BrowserController+Activity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "BrowserController+Activity.mm"; sourceTree = "<group>"; };
-		59FB64341230EE4100EBA136 /* libfreetypeOsiriX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetypeOsiriX.a; path = Binaries/Ming/libfreetypeOsiriX.a; sourceTree = "<group>"; };
-		59FB64351230EE4100EBA136 /* libgifOsiriX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgifOsiriX.a; path = Binaries/Ming/libgifOsiriX.a; sourceTree = "<group>"; };
-		59FB64361230EE4100EBA136 /* libmingOsiriX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmingOsiriX.a; path = Binaries/Ming/libmingOsiriX.a; sourceTree = "<group>"; };
-		59FB64371230EE4100EBA136 /* libpng12OsiriX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng12OsiriX.a; path = Binaries/Ming/libpng12OsiriX.a; sourceTree = "<group>"; };
-		59FB64771231101B00EBA136 /* mingpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mingpp.h; path = Binaries/Ming/mingpp.h; sourceTree = "<group>"; };
-		59FB647D1231106000EBA136 /* ming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ming.h; path = Binaries/Ming/ming.h; sourceTree = "<group>"; };
 		59FB652912312D8900EBA136 /* weasis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = weasis; path = Binaries/weasis; sourceTree = "<group>"; };
 		711849751590A377006AB447 /* SMTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SMTPClient.h; path = nitrogen/Sources/SMTPClient.h; sourceTree = "<group>"; };
 		711849761590A377006AB447 /* SMTPClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = SMTPClient.mm; path = nitrogen/Sources/SMTPClient.mm; sourceTree = "<group>"; };
@@ -3090,6 +3078,7 @@
 				43EC9E182897EA4100F0533F /* libz.a in Frameworks */,
 				43B516412372FB7000106783 /* OpenGL.framework in Frameworks */,
 				43EC9E132897E9E500F0533F /* libxml2.a in Frameworks */,
+				43E71199289D01750065374E /* libming.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3162,23 +3151,15 @@
 				AB38FC99057A9B050041FEBB /* AGL.framework */,
 				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
 				ABFF0A95056D97800066794C /* ApplicationServices.framework */,
-				438718A42067BDE1009575DB /* AVFoundation.framework */,
-				438718A72067BDF4009575DB /* Carbon.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
-				438718A92067BE0D009575DB /* CoreFoundation.framework */,
-				438718AB2067BE1F009575DB /* CoreMedia.framework */,
-				438718AE2067BE2B009575DB /* CoreServices.framework */,
 				BF5F14C20B14E12700B309B9 /* CoreVideo.framework */,
 				7E54303B07A05E7100500ABB /* DiscRecording.framework */,
 				7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */,
-				438718B02067BE3A009575DB /* DiskArbitration.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
-				438718B22067BE4B009575DB /* InstantMessage.framework */,
 				AB6D320C05B3159D0002F793 /* IOKit.framework */,
 				43A4038B1DFA32F300ADA719 /* XCTest.framework */,
 				AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */,
 				7E3E38650715FFDC0049E72E /* PreferencePanes.framework */,
-				438718B42067BF6C009575DB /* Quartz.framework */,
 				841524C4113D6BDB008250E6 /* QuartzCore.framework */,
 				CE790A18105D4DE200CE6AAF /* Security.framework */,
 				A997B15610E0C412004C5BB1 /* SecurityInterface.framework */,
@@ -3291,12 +3272,12 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				43E71197289CFEF70065374E /* libming.a */,
 				43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */,
 				43EC9E112897E9E400F0533F /* libxml2.a */,
 				43EC9E152897EA4100F0533F /* libz.a */,
 				43EC9E0F2897E8E700F0533F /* libpng16.a */,
 				43A5D4292407D68E0063416A /* UserNotifications.framework */,
-				59FB64331230EE2F00EBA136 /* Ming */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 			);
 			name = Frameworks;
@@ -4288,19 +4269,6 @@
 				59526F301281ACA90016F6C0 /* WebPortalDB.xcdatamodeld */,
 			);
 			name = "Web Portal";
-			sourceTree = "<group>";
-		};
-		59FB64331230EE2F00EBA136 /* Ming */ = {
-			isa = PBXGroup;
-			children = (
-				59FB64341230EE4100EBA136 /* libfreetypeOsiriX.a */,
-				59FB64351230EE4100EBA136 /* libgifOsiriX.a */,
-				59FB64361230EE4100EBA136 /* libmingOsiriX.a */,
-				59FB64371230EE4100EBA136 /* libpng12OsiriX.a */,
-				59FB647D1231106000EBA136 /* ming.h */,
-				59FB64771231101B00EBA136 /* mingpp.h */,
-			);
-			name = Ming;
 			sourceTree = "<group>";
 		};
 		71AA5A201611F1EB006A6A5F /* JSON */ = {
@@ -8443,7 +8411,7 @@
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/GLEW/include",
 					"$(SRCROOT)",
-					"$(SRCROOT)/Binaries/Ming",
+					"$(SRCROOT)/Binaries/libming/include",
 					"$(SRCROOT)/cocoahttpserver",
 					"$(SRCROOT)/glue/**",
 					"$(SRCROOT)/NIfTI_Library",
@@ -8457,8 +8425,8 @@
 					"$(SRCROOT)/Binaries/libtiff/lib",
 					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"$(SRCROOT)/Binaries/libpng/lib",
+					"$(SRCROOT)/Binaries/libming/lib",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8468,10 +8436,6 @@
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
 					"-Wl,-headerpad_max_install_names",
-					"$(SRCROOT)/Binaries/Ming/libfreetypeOsiriX.a",
-					"$(SRCROOT)/Binaries/Ming/libgifOsiriX.a",
-					"$(SRCROOT)/Binaries/Ming/libmingOsiriX.a",
-					"$(SRCROOT)/Binaries/Ming/libpng12OsiriX.a",
 					"-framework",
 					Accelerate,
 					"-framework",
@@ -8494,6 +8458,7 @@
 					WebKit,
 					"-framework",
 					DCM,
+					"$(SRCROOT)/Binaries/libming/lib/libming.a",
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
@@ -8984,7 +8949,7 @@
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/GLEW/include",
 					"$(SRCROOT)",
-					"$(SRCROOT)/Binaries/Ming",
+					"$(SRCROOT)/Binaries/libming/include",
 					"$(SRCROOT)/cocoahttpserver",
 					"$(SRCROOT)/glue/**",
 					"$(SRCROOT)/NIfTI_Library",
@@ -8998,8 +8963,8 @@
 					"$(SRCROOT)/Binaries/libtiff/lib",
 					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"$(SRCROOT)/Binaries/libpng/lib",
+					"$(SRCROOT)/Binaries/libming/lib",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9009,10 +8974,6 @@
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
 					"-Wl,-headerpad_max_install_names",
-					"$(SRCROOT)/Binaries/Ming/libfreetypeOsiriX.a",
-					"$(SRCROOT)/Binaries/Ming/libgifOsiriX.a",
-					"$(SRCROOT)/Binaries/Ming/libmingOsiriX.a",
-					"$(SRCROOT)/Binaries/Ming/libpng12OsiriX.a",
 					"-framework",
 					Accelerate,
 					"-framework",
@@ -9035,6 +8996,7 @@
 					WebKit,
 					"-framework",
 					DCM,
+					"$(SRCROOT)/Binaries/libming/lib/libming.a",
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
@@ -9573,7 +9535,7 @@
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/GLEW/include",
 					"$(SRCROOT)",
-					"$(SRCROOT)/Binaries/Ming",
+					"$(SRCROOT)/Binaries/libming/include",
 					"$(SRCROOT)/cocoahttpserver",
 					"$(SRCROOT)/glue/**",
 					"$(SRCROOT)/NIfTI_Library",
@@ -9587,8 +9549,8 @@
 					"$(SRCROOT)/Binaries/libtiff/lib",
 					"$(SRCROOT)/Binaries/libjpeg/lib",
 					"$(SRCROOT)/Binaries/libpng/lib",
+					"$(SRCROOT)/Binaries/libming/lib",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9597,10 +9559,6 @@
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
 					"-Wl,-headerpad_max_install_names",
-					"$(SRCROOT)/Binaries/Ming/libfreetypeOsiriX.a",
-					"$(SRCROOT)/Binaries/Ming/libgifOsiriX.a",
-					"$(SRCROOT)/Binaries/Ming/libmingOsiriX.a",
-					"$(SRCROOT)/Binaries/Ming/libpng12OsiriX.a",
 					"-framework",
 					Accelerate,
 					"-framework",
@@ -9623,6 +9581,7 @@
 					WebKit,
 					"-framework",
 					DCM,
+					"$(SRCROOT)/Binaries/libming/lib/libming.a",
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",

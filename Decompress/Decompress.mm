@@ -21,9 +21,7 @@
 #import "AppController.h"
 #import "DCMPix.h"
 #import <WebKit/WebKit.h>
-#if TARGET_CPU_X86_64
 #include "mingpp.h"
-#endif
 #import "N2Debug.h"
 #import <Quartz/Quartz.h>
 
@@ -49,7 +47,7 @@
 #import <DCM/DCMObject.h>
 #import <DCM/DCMAbstractSyntaxUID.h>
 
-// We don`t care: we are just a small app, our memory will be killed by the system. Don't waste time here !
+// We don't care: we are just a small app, our memory will be killed by the system. Don't waste time here !
 //#define WASTE_TIME_CLEANING_UP
 
 extern "C"
@@ -708,9 +706,9 @@ int main(int argc, const char *argv[])
 #pragma mark - testDICOMDIR
     else if( [what isEqualToString: @"testDICOMDIR"])
     {
-        NSLog( @"-- Testing DICOMDIR: %@", @(argv[ 1]));
+        NSLog( @"-- Testing DICOMDIR: %@", @(argv[1]));
         
-        DcmDicomDir dcmdir( [[NSString stringWithUTF8String: argv[ 1]] fileSystemRepresentation]);
+        DcmDicomDir dcmdir( [[NSString stringWithUTF8String: argv[1]] fileSystemRepresentation]);
         DcmDirectoryRecord& record = dcmdir.getRootRecord();
         
         for (unsigned int i = 0; i < record.card();)
@@ -886,10 +884,8 @@ void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate)
 	if (path)
 		[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 	
-#if TARGET_CPU_X86_64
 	Ming_init();
 	Ming_setSWFCompression(9); // 9 = maximum compression
-#endif
 	SWFMovie* swf = new SWFMovie(7);
 	swf->setBackground(0x88, 0x88, 0x88);
     
@@ -1069,7 +1065,5 @@ void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate)
 		delete bitmap[i];
 	
 	delete swf;
-#if TARGET_CPU_X86_64
 	Ming_cleanup();
-#endif
 }
