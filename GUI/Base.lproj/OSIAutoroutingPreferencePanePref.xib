@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -48,7 +48,7 @@
                         <rect key="frame" x="20" y="51" width="642" height="222"/>
                         <clipView key="contentView" id="Grv-ny-dQR">
                             <rect key="frame" x="1" y="1" width="640" height="220"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="reverseSequential" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveName="RoutingTableView" headerView="315" id="124" customClass="RoutesTableView">
                                     <rect key="frame" x="0.0" y="0.0" width="640" height="203"/>
@@ -68,7 +68,7 @@
                                             </buttonCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         </tableColumn>
-                                        <tableColumn identifier="name" editable="NO" width="181" minWidth="110" maxWidth="500" id="125">
+                                        <tableColumn identifier="name" editable="NO" width="152" minWidth="110" maxWidth="500" id="125">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Routes">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -418,16 +418,10 @@ Gw
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="287">
                         <rect key="frame" x="17" y="260" width="152" height="11"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="309">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Empty filter will route ALL images" id="309" userLabel="Empty filter will route ALL images">
                             <font key="font" metaFont="miniSystem"/>
-                            <string key="title" base64-UTF8="YES">
-RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUDIEFMTCBpbWFnZXM
-</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            <string key="userLabel" base64-UTF8="YES">
-RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUDIEFMTCBpbWFnZXM
-</string>
                         </textFieldCell>
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="322">
@@ -485,7 +479,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUDIEFMTCBpbWFnZXM
                         </connections>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="341">
-                        <rect key="frame" x="177" y="105" width="213" height="25"/>
+                        <rect key="frame" x="177" y="105" width="214" height="25"/>
                         <popUpButtonCell key="cell" type="push" title="Try 5 times each 30 secs" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="5" imageScaling="proportionallyDown" inset="2" selectedItem="344" id="342">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -592,6 +586,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUDIEFMTCBpbWFnZXM
                     <constraint firstItem="357" firstAttribute="top" secondItem="249" secondAttribute="bottom" constant="52" id="zQQ-An-aIo"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="140" y="128"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="318"/>
     </objects>

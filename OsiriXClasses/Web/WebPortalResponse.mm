@@ -533,25 +533,37 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 	return [[[self alloc] init] autorelease];
 }
 
--(id)valueForKey:(NSString*)key object:(WebPortalConnection*)wpc context:(WebPortalConnection*)wpcagain {
+-(id)valueForKey:(NSString*)key
+          object:(WebPortalConnection*)wpc
+         context:(WebPortalConnection*)wpcagain
+{
 	if ([key isEqualToString:@"isIOS"])
 		return [NSNumber numberWithBool: wpc.requestIsIOS];
-	if ([key isEqualToString:@"isMacOS"])
+
+    if ([key isEqualToString:@"isMacOS"])
 		return [NSNumber numberWithBool: wpc.requestIsMacOS];
-	if ([key isEqualToString:@"proposeWeasis"])
+
+    if ([key isEqualToString:@"proposeWeasis"])
 		return [NSNumber numberWithBool: wpc.portal.weasisEnabled && !wpc.requestIsIOS];
-	if ([key isEqualToString:@"proposeFlash"])
+
+    if ([key isEqualToString:@"proposeFlash"])
 		return [NSNumber numberWithBool: wpc.portal.flashEnabled && !wpc.requestIsIOS];
-	if ([key isEqualToString:@"authenticationRequired"])
+
+    if ([key isEqualToString:@"authenticationRequired"])
 		return [NSNumber numberWithBool: wpc.portal.authenticationRequired && !wpc.user];
-	if ([key isEqualToString:@"newToken"])
+
+    if ([key isEqualToString:@"newToken"])
 		return [wpc.session createToken];
-	if ([key isEqualToString:@"passwordRestoreAllowed"])
+
+    if ([key isEqualToString:@"passwordRestoreAllowed"])
 		return [NSNumber numberWithBool: wpc.portal.passwordRestoreAllowed];
-	if ([key isEqualToString:@"baseUrl"])
+
+    if ([key isEqualToString:@"baseUrl"])
 		return wpc.portalURL;
+
     if ([key isEqualToString:@"clientAddress"])
 		return wpc.asyncSocket.connectedHost;
+
     if ([key isEqualToString:@"isLAN"])
 	{
         if( [wpc.asyncSocket.connectedHost hasPrefix: @"10."]) return @YES;

@@ -133,8 +133,14 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 +(void)initialize
 {
     NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+#if 1
+    NSString *s = NSSearchPathForDirectoriesInDomains( NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
+    s = [s stringByAppendingPathComponent:bundleName];
+    DefaultWebPortalDatabasePath = [s stringByAppendingPathComponent:@"WebUsers.sql"];
+#else
     NSString *s = [NSString stringWithFormat:@"~/Library/Application Support/%@/WebUsers.sql", bundleName];
     DefaultWebPortalDatabasePath = [[NSString alloc] initWithString: [s stringByExpandingTildeInPath]];
+#endif
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self // FIXME: self for a class function ?
                                                           forValuesKey:OsirixWadoServiceEnabledDefaultsKey
                                                                options:NSKeyValueObservingOptionInitial
@@ -221,19 +227,21 @@ static NSString* DefaultWebPortalDatabasePath = nil;
         NSMutableArray* dirsToScanForFiles = [NSMutableArray arrayWithCapacity:2];
         NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
 
+        if (NSUserDefaults.webPortalPrefersCustomWebPages)
+        {
+            NSString *asDir = NSSearchPathForDirectoriesInDomains( NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
+            NSString *s = [NSString stringWithFormat:
 #if 0 //def MACAPPSTORE
-        if (NSUserDefaults.webPortalPrefersCustomWebPages) {
-            NSString *s = [NSString stringWithFormat:@"~/Library/Application Support/%@ App/WebServicesHTML", bundleName];
-            [dirsToScanForFiles addObject: [s stringByExpandingTildeInPath]];
-            //NSLog(@"%s line %i, dirsToScanForFiles:%@", __FUNCTION__ , __LINE__, dirsToScanForFiles);
-        }
+                           @"%@/%@ App/WebServicesHTML",
 #else
-        if (NSUserDefaults.webPortalPrefersCustomWebPages) {
-            NSString *s = [NSString stringWithFormat:@"~/Library/Application Support/%@/WebServicesHTML", bundleName];
+                           @"%@/%@/WebServicesHTML",
+#endif
+                           asDir, bundleName];
+
             [dirsToScanForFiles addObject: [s stringByExpandingTildeInPath]];
             //NSLog(@"%s line %i, dirsToScanForFiles:%@", __FUNCTION__ , __LINE__, dirsToScanForFiles);
         }
-#endif
+
         [dirsToScanForFiles addObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"WebServicesHTML"]];
         webPortal.dirsToScanForFiles = dirsToScanForFiles;
         //NSLog(@"%s line %i, dirsToScanForFiles:%@", __FUNCTION__ , __LINE__, dirsToScanForFiles);

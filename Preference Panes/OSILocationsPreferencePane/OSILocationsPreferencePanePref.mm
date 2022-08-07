@@ -897,12 +897,12 @@
 #endif
 		NSString *location = [oPanel filename];
         /*
-         /Users/lxiv/Documents/projects/p68_lxiv/temp/20201119/Miele-LXIV Data
-         /Users/lxiv/Documents/projects/p68_lxiv/temp/20201119/Miele-LXIV Data/DATABASE.noindex*/
+         ~/Documents/projects/p68_lxiv/temp/20201119/Miele-LXIV Data
+         ~/Documents/projects/p68_lxiv/temp/20201119/Miele-LXIV Data/DATABASE.noindex*/
 		if ([[location lastPathComponent] isEqualToString:OUR_DATA_LOCATION])
 		{
 			location = [location stringByDeletingLastPathComponent];
-            // /Users/lxiv/Documents/projects/p68_lxiv/temp/20201119
+            // ~/Documents/projects/p68_lxiv/temp/20201119
 		}
 
         // If the selected path ends with 'OUR_DATA_LOCATION/DATABASE' strip off both
@@ -925,7 +925,7 @@
                 
                 /*
                  Description = "20190916 DB";
-                 Path = "/Users/lxiv/Documents/projects/p68_lxiv/temp/20190916";
+                 Path = "~/Documents/projects/p68_lxiv/temp/20190916";
                  */
 				
 				[localPaths addObject: dict];

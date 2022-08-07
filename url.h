@@ -85,9 +85,13 @@
 #define OUR_AET                 "Miele-LXIV"
 #define OUR_MANUFACTURER_NAME   "Miele-LXIV"
 
-#define OUR_HTTP_ACCOUNT        @"OsiriX"
-#define OUR_HTTP_SERVICE        @"OsiriX HTTP Server"
-#define OUR_HTTP_SERVER_LABEL   @"com.osirixviewer.osirixwebserver"
+#define OUR_HTTP_ACCOUNT        @"Miele-LXIV"
+#define OUR_HTTP_SERVICE        @"Miele-LXIV HTTP Server"
+#define OUR_HTTP_PASSWORD       @"Miele-LXIV password"
+
+//#define OUR_HTTP_SERVER_LABEL   @"com.osirixviewer.osirixwebserver"
+#define OUR_HTTP_SERVER_LABEL   @"com.mielelxivviewer.mielelxivwebserver"
+
 #define OUR_CERTIFICATE_EMAIL   @"miele-lxiv@gmx.com" // @"osirix@osirix-viewer.com"
 #define CRASH_EMAIL             @"miele-lxiv@gmx.com" // @"crash@osirix-viewer.com"
 

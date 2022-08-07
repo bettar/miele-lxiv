@@ -343,7 +343,7 @@
 	NSString *name = [DDKeychain certificateNameForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER];
 	NSImage *icon = [DDKeychain certificateIconForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER];
 	
-	if(!name)
+	if (!name)
 	{
 		name = NSLocalizedString(@"No certificate selected.", nil);	
 		[TLSCertificateButton setHidden:YES];
@@ -362,7 +362,7 @@
 - (IBAction)useSameAETitleForTLSListener:(id)sender;
 {
 	NSString *aet;
-	if([sender state] == NSOnState)
+	if ([sender state] == NSOnState)
 	{
 		aet = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
 		self.TLSStoreSCPAETITLE = aet;

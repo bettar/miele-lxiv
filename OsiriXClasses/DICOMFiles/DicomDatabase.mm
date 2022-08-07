@@ -4543,7 +4543,7 @@ static BOOL protectionAgainstReentry = NO;
 #else
                 NSInteger tag = 0;
 				[[NSWorkspace sharedWorkspace] performFileOperation: NSWorkspaceRecycleOperation
-                                                             source: self.sqlFilePath.stringByDeletingLastPathComponent // /Users/lxiv/Documents/Miele-LXIV Data
+                                                             source: self.sqlFilePath.stringByDeletingLastPathComponent // ~/Documents/Miele-LXIV Data
                                                         destination: @""
                                                               files: [NSArray arrayWithObject: self.sqlFilePath.lastPathComponent] // Database.sql
                                                                 tag: &tag];

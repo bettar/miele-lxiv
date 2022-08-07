@@ -881,6 +881,9 @@ int main(int argc, const char *argv[])
 
 void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate)
 {
+#ifndef NDEBUG
+    NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, path);
+#endif
 	if (path)
 		[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 	
@@ -901,7 +904,7 @@ void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate)
                                                 error:NULL];
 	//NSLog(@"AS:\n%@", as);
 	SWFAction* action = new SWFAction([as cStringUsingEncoding:NSISOLatin1StringEncoding]);
-	//		int len, res = action->compile(7, &len);
+//		int len, res = action->compile(7, &len);
 	//	NSLog(@"compile ret:%d len:%d", res, len);
 	swf->add(action);
 	

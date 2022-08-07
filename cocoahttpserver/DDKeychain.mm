@@ -94,7 +94,7 @@ SecPolicySearchCreate:
 {
 	const char *service = [OUR_HTTP_SERVICE UTF8String];
 	const char *account = [OUR_HTTP_ACCOUNT UTF8String];
-	const char *kind    = [@"OsiriX password" UTF8String];
+	const char *kind    = [OUR_HTTP_PASSWORD UTF8String];
 	const char *passwd  = [password UTF8String];
 	
 	SecKeychainItemRef itemRef = NULL;

@@ -433,7 +433,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
     [self.portal.dicomDatabase.managedObjectContext unlock];
 }
 
-- (NSObject<HTTPResponse>*)httpResponseForMethod:(NSString*)method URI:(NSString*)path
+- (NSObject<HTTPResponse>*)httpResponseForMethod:(NSString*)method
+                                             URI:(NSString*)path
 {
 	NSString* url = [[(id)CFHTTPMessageCopyRequestURL(request) autorelease] relativeString];
 	
@@ -446,20 +447,25 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
         self.GETParams = nil;
 	
 	NSMutableDictionary* params = [NSMutableDictionary dictionary];
-	// GET params
+
+    // GET params
 	[params addEntriesFromDictionary:[WebPortalConnection ExtractParams: self.GETParams]];
-	// POST params
+
+    // POST params
 	if ([method isEqualToString: @"POST"] && multipartData.count == 1) {
 		NSString* POSTParams = [[[NSString alloc] initWithBytes: [[multipartData lastObject] bytes] length: [(NSData*) [multipartData lastObject] length] encoding: NSUTF8StringEncoding] autorelease];
 		[params addEntriesFromDictionary:[WebPortalConnection ExtractParams:POSTParams]];
 	}
-	self.parameters = params;
+
+    self.parameters = params;
 	[response.tokens setObject:parameters forKey:@"Request"];
 	
 	// find the name of the requested file
 	// SECURITY: we cannot allow the client to read any file on the hard disk (outside the shared dir), so no ".." 
 	requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"../" withString:@""];
-	
+#ifndef NDEBUG
+    NSLog(@"%s %d, requestedPath: %@", __FUNCTION__, __LINE__, requestedPath);
+#endif
 //	NSString* userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
 //	BOOL isIOS [userAgent contains:@"iPhone"] || [userAgent contains:@"iPad"];	
 //	BOOL isMacOS [userAgent contains:@"Mac OS"];	
@@ -481,11 +487,11 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
     
 	if ([requestedPath hasPrefix:@"/weasis/"])
 	{
-		#ifndef MIELE_LIGHT
+#ifndef MIELE_LIGHT
 		response.data = [NSData dataWithContentsOfFile:[[[AppController sharedAppController] weasisBasePath] stringByAppendingPathComponent:requestedPath]];
-		#else
+#else
 		response.statusCode = 404;
-		#endif
+#endif
 	}
 	else if ([requestedPath rangeOfString:@".pvt."].length > 0)
     {
@@ -497,7 +503,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
         @try
         {
             // Maybe a plugin has an answer ?
-            if (pluginWithHTTPResponses == nil)
+            if (pluginWithHTTPResponses == nil) // empty array
             {
                 pluginWithHTTPResponses = [[NSMutableArray alloc] init];
                 for( id key in [PluginManager installedPlugins])
@@ -575,10 +581,19 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                     [self processImage];
                 else
                 if ([requestedPath hasPrefix:@"/imageAsScreenCapture."])
+                {
                     [self processImageAsScreenCapture: YES];
-                else
-                if ([requestedPath isEqualToString:@"/movie.mov"] || [requestedPath isEqualToString:@"/movie.m4v"] || [requestedPath isEqualToString:@"/movie.mp4"] || [requestedPath isEqualToString:@"/movie.swf"])
+                }
+                else if ([requestedPath isEqualToString:@"/movie.mov"] ||
+                         [requestedPath isEqualToString:@"/movie.m4v"] ||
+                         [requestedPath isEqualToString:@"/movie.mp4"] ||
+                         [requestedPath isEqualToString:@"/movie.swf"])
+                {
+#ifndef NDEBUG
+                    NSLog(@"%s %d, requestedPath: %@", __FUNCTION__, __LINE__, requestedPath);
+#endif
                     [self processMovie];
+                }
                 else
                 if ([requestedPath isEqualToString:@"/password_forgotten"])
                     [self processPasswordForgottenHtml];
@@ -644,8 +659,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	if (response.data && !response.statusCode)
 		return [[response retain] autorelease]; // [[[WebPortalResponse alloc] initWithData:data mime:dataMime sessionId:session.sid] autorelease];*/
-	else
-        return NULL;
+
+    return NULL;
 }
 
 -(BOOL)supportsMethod:(NSString *)method atPath:(NSString *)relativePath {
@@ -1209,7 +1224,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
         self.user = nil;
 }
 
--(void)replyToHTTPRequest {
+-(void)replyToHTTPRequest
+{
 	self.response = [[[WebPortalResponse alloc] initWithWebPortalConnection:self] autorelease];
 	
 	[self fillSessionAndUserVariables];
@@ -1221,11 +1237,14 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	[response.tokens setObject: webPortalDefaultTitle forKey:@"PageTitle"]; // the default title
 	[response.tokens setObject:[WebPortalProxy createWithObject:self transformer:[InfoTransformer create]] forKey:@"Info"];
-	if (user)
+
+    if (user)
         [response.tokens setObject:[WebPortalProxy createWithObject:user transformer:[WebPortalUserTransformer create]] forKey:@"User"];
-	if (session)
+
+    if (session)
         [response.tokens setObject:session forKey:@"Session"];
-	[response.tokens setObject:NSUserDefaults.standardUserDefaults forKey:@"Defaults"];
+
+    [response.tokens setObject:NSUserDefaults.standardUserDefaults forKey:@"Defaults"];
 	
 	[super replyToHTTPRequest];
 

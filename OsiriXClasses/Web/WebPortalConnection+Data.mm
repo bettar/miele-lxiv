@@ -748,7 +748,6 @@ ss
     }
 }
 
-
 const NSString* const GenerateMovieOutFileParamKey = @"outFile";
 const NSString* const GenerateMovieFileNameParamKey = @"fileName";
 const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
@@ -765,7 +764,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
     int MaxNumberOfFramesForWebPortalMovies = [[NSUserDefaults standardUserDefaults] integerForKey: @"MaxNumberOfFramesForWebPortalMovies"];
     
-    if (MaxNumberOfFramesForWebPortalMovies > 2 && dicomImageArray.count >= MaxNumberOfFramesForWebPortalMovies)
+    if (MaxNumberOfFramesForWebPortalMovies > 2 &&
+        dicomImageArray.count >= MaxNumberOfFramesForWebPortalMovies)
     {
         do
         {
@@ -789,7 +789,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	@try
 	{
-		if (![[NSFileManager defaultManager] fileExistsAtPath: outFile] || ([[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0))
+		if (![[NSFileManager defaultManager] fileExistsAtPath: outFile] ||
+            ([[dict objectForKey: @"rows"] intValue] > 0 &&
+             [[dict objectForKey: @"columns"] intValue] > 0))
 		{
 			int noOfThreads = [[NSProcessInfo processInfo] processorCount];
 			
@@ -803,9 +805,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			[DCMPixLoadingLock lock];
 			
-            //			[self.portal.dicomDatabase lock];
+//			[self.portal.dicomDatabase lock];
 			
-			NSLog( @"generateMovie: start dcmpix reading");
+            NSLog(@"%s: start dcmpix reading", __FUNCTION__);
 			
 			CGFloat width, height;
 			
@@ -863,7 +865,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 N2LogExceptionWithStackTrace(e);
 			}
 			
-            //			[self.portal.dicomDatabase unlock];
+//			[self.portal.dicomDatabase unlock];
 			
 			[DCMPixLoadingLock unlock];
             
@@ -872,9 +874,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             if (fps <= 0)
                 fps = 10;
             
-			NSLog( @"generateMovie: start writeMovie process");
-            
-            if ([outFile hasSuffix:@".swf"]) // FLASH
+            NSLog(@"=== generateMovie: start writeMovie process");
+#ifndef NDEBUG
+            NSLog(@"%s %d, fps %ld, outFile: %@", __FUNCTION__, __LINE__, (long)fps, outFile );
+#endif
+
+            if ([outFile hasSuffix:@".swf"]) // Flash
             {
                 @try
                 {
@@ -1002,12 +1007,13 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                     NSLog( @"***** writeMovie exception : %@", e);
                 }
             }
-			NSLog( @"generateMovie: end");
+
+            NSLog(@"%s end" , __FUNCTION__);
 		}
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"***** generate movie exception : %@", e);
+		NSLog(@"***** generate movie exception : %@", e);
 	}
 	
 	[[self.portal.locks objectForKey:outFile] unlock];
@@ -1024,9 +1030,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	[pool release];
 }
 
-
-
--(NSData*)produceMovieForSeries:(DicomSeries*)series fileURL:(NSString*)fileURL
+-(NSData*)produceMovieForSeries:(DicomSeries*)series
+                        fileURL:(NSString*)fileURL
 {
 	NSString* path = [WebPortalConnection tmpDirPath];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:path];
@@ -1040,6 +1045,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	[BrowserController replaceNotAdmitted:fileName];
 	fileName = [NSMutableString stringWithString:[path stringByAppendingPathComponent: fileName]];
 	[fileName appendFormat:@".%@", fileURL.pathExtension];
+#ifndef NDEBUG
+    NSLog(@"%s %d, fileName: %@", __FUNCTION__, __LINE__, fileName);
+#endif
 	
 	NSString *outFile;
 	
@@ -1047,6 +1055,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		outFile = [NSString stringWithFormat:@"%@2.mp4", [fileName stringByDeletingPathExtension]];
 	else
 		outFile = fileName;
+    
+#ifndef NDEBUG
+    NSLog(@"%s %d, outFile: %@", __FUNCTION__, __LINE__, outFile);
+#endif
 	
 	NSData* data = [NSData dataWithContentsOfFile: outFile];
 	
@@ -1067,6 +1079,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			{
 				NSLog( @"%@", [e description]);
 			}
+#ifndef NDEBUG
+            NSLog(@"%s %d, outFile: %@", __FUNCTION__, __LINE__, outFile );
+#endif
 			
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                          /*[NSNumber numberWithBool: isiPhone], @"isiPhone", */
@@ -1365,7 +1380,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     if (study)
     {
         [response.tokens setObject:[WebPortalProxy createWithObject:study transformer:DicomStudyTransformer.create] forKey:@"Study"];
-        [response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"%@ - %@ - %@", @"Web Portal, study, title format (1st %@ is study.name, 2nd is study.studyName, 3rd date)"), study.name, study.studyName, [NSUserDefaults.dateTimeFormatter stringFromDate:study.date]] forKey:@"PageTitle"];
+        [response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"%@ - %@ - %@", @"Web Portal, study, title format (1st %@ is study.name, 2nd is study.studyName, 3rd date)"),
+                                    study.name,
+                                    study.studyName,
+                                    [NSUserDefaults.dateTimeFormatter stringFromDate:study.date]]
+                            forKey:@"PageTitle"];
     }
     else
         [response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"Study Deleted", nil)] forKey:@"PageTitle"];
@@ -2857,7 +2876,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		
 		NSString* pdfpath = [htmlpath stringByAppendingPathExtension:@"pdf"];
 		
-		if ([[NSFileManager defaultManager] fileExistsAtPath:pdfpath] == NO) {
+		if ([[NSFileManager defaultManager] fileExistsAtPath:pdfpath] == NO)
+        {
 			NSTask* aTask = [[[NSTask alloc] init] autorelease];
             NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"Decompress"] path];
 			[aTask setLaunchPath:launchPath];
@@ -3071,8 +3091,13 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	if (!series)
 		return;
+    
+#ifndef NDEBUG
+    NSLog(@"%s %d, requestedPath: %@", __FUNCTION__, __LINE__, requestedPath);
+#endif
 	
-	response.data = [self produceMovieForSeries:series fileURL:requestedPath];
+	response.data = [self produceMovieForSeries:series
+                                        fileURL:requestedPath];
 	
 	//if (data == nil || [data length] == 0)
 	//	NSLog( @"****** movie data == nil");
