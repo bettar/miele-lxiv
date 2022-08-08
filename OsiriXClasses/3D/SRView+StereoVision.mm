@@ -1476,10 +1476,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		aCamera->SetEyeAngle(newViewAngle);
 		std::cout<< "Eye Angle: " << aCamera->GetEyeAngle() << std::endl;
 		
-		[self setNeedsDisplay:YES];
-		
-		
-		
+		[self setNeedsDisplay:YES];		
 	}
 	
 	else if (c == 'd')

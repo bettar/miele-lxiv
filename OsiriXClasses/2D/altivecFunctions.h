@@ -31,22 +31,23 @@ extern "C"
 	extern void vmultiply(vector float *a, vector float *b, vector float *r, long size);
 	extern void vsubtract(vector float *a, vector float *b, vector float *r, long size);
 	extern void vsubtractAbs(vector float *a, vector float *b, vector float *r, long size);
-	extern void vmax8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size);
 	extern void vmax(vector float *a, vector float *b, vector float *r, long size);
 	extern void vmin(vector float *a, vector float *b, vector float *r, long size);
+    extern void vmax8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size);
 	extern void vmin8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size);
-	#else
-    #if TARGET_CPU_X86_64
-	extern void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size);
-	extern void vminIntel( vFloat *a, vFloat *b, vFloat *r, long size);
-	extern void vmax8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
-	extern void vmin8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
-    #endif // TARGET_CPU_X86_64
+	#elif TARGET_CPU_X86_64
+	extern void vmax( vFloat *a, vFloat *b, vFloat *r, long size); // Unused ?
+	extern void vmin( vFloat *a, vFloat *b, vFloat *r, long size); // Unused ?
+	extern void vmax8( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
+	extern void vmin8( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
+    #elif TARGET_CPU_ARM64
+    extern void vmax8( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
+    extern void vmin8( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
     #endif
 	
 	extern void vmultiplyNoAltivec( float *a,  float *b,  float *r, long size);
 	extern void vminNoAltivec( float *a,  float *b,  float *r, long size);
-	extern void vmaxNoAltivec(float *a, float *b, float *r, long size);
+	extern void vmaxNoAltivec( float *a, float *b, float *r, long size);
 	extern void vsubtractNoAltivec( float *a,  float *b,  float *r, long size);
 	extern void vsubtractNoAltivecAbs( float *a,  float *b,  float *r, long size);
 	

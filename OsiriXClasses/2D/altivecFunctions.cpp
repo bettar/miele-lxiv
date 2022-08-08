@@ -119,69 +119,75 @@ void vmin8(vector unsigned char *a, vector unsigned char *b, vector unsigned cha
 	}
 }
 
-#else
-#if TARGET_CPU_X86_64
+#elif TARGET_CPU_X86_64
 
-void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size)
+// Unused ?
+void vmax( vFloat *a, vFloat *b, vFloat *r, long size)
 {
 	long i = size/4;
-	
-	while(i-- > 0)
-	{
+	while (i-- > 0)
 		*r++ = _mm_max_ps( *a++, *b++);
-	}
 }
 
-void vminIntel( vFloat *a, vFloat *b, vFloat *r, long size)
+// Unused ?
+void vmin( vFloat *a, vFloat *b, vFloat *r, long size)
 {
 	long i = size/4;
-	
-	while(i-- > 0)
-	{
+	while (i-- > 0)
 		*r++ = _mm_min_ps( *a++, *b++);
-	}
 }
 
-void vmax8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
+void vmax8( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
 {
 	long i = size/4;
-	
-	while(i-- > 0)
-	{
+	while (i-- > 0)
 		*r++ = _mm_max_epu8( *a++, *b++);
-	}
 }
 
-void vmin8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
+void vmin8( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
 {
 	long i = size/4;
-	
-	while(i-- > 0)
-	{
+	while (i-- > 0)
 		*r++ = _mm_min_epu8( *a++, *b++);
-	}
 }
-#endif // TARGET_CPU_X86_64
+
+#elif TARGET_CPU_ARM64
+
+void vmax8( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
+{
+    long i = size/4;
+    while (i-- > 0)
+    {
+        *r++ = vreinterpretq_s32_u8( vmaxq_u8(vreinterpretq_u8_s32( *a++ ),
+                                              vreinterpretq_u8_s32( *b++ )));
+    }
+}
+
+void vmin8( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
+{
+    long i = size/4;
+    while (i-- > 0)
+    {
+        *r++ = vreinterpretq_s32_u8( vminq_u8(vreinterpretq_u8_s32( *a++ ),
+                                              vreinterpretq_u8_s32( *b++ )));
+    }
+}
 #endif
 
 void vmultiplyNoAltivec( float *a,  float *b,  float *r, long size)
 {
 	long i = size;
 	
-	while(i-- > 0)
-	{
+	while (i-- > 0)
 		*r++ = *a++ * *b++;
-	}
 }
 
 void vsubtractNoAltivec( float *a,  float *b,  float *r, long size)
 {
 	long i = size;
 	
-	while(i-- > 0)
-	{
+	while (i-- > 0)
 		*r++ = *a++ - *b++;
-	}
 }
 
 void vsubtractNoAltivecAbs( float *a,  float *b,  float *r, long size)
@@ -189,18 +195,16 @@ void vsubtractNoAltivecAbs( float *a,  float *b,  float *r, long size)
 	long i = size;
 	
 	while (i-- > 0)
-	{
 		*r++ = fabsf(*a++ - *b++);
-	}
 }
 
 void vmaxNoAltivec(float *a, float *b, float *r, long size)
 {
 	long i = size;
 	
-	while(i-- > 0)
+	while (i-- > 0)
 	{
-		if( *a > *b) { *r++ = *a++; b++; }
+		if ( *a > *b) { *r++ = *a++; b++; }
 		else { *r++ = *b++; a++; }
 	}
 }
@@ -211,7 +215,7 @@ void vminNoAltivec( float *a,  float *b,  float *r, long size)
 	
 	while(i-- > 0)
 	{
-		if( *a < *b) { *r++ = *a++; b++; }
+		if ( *a < *b) { *r++ = *a++; b++; }
 		else { *r++ = *b++; a++; }
 	}
 }

@@ -784,19 +784,19 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 
 - (void) keyDown:(NSEvent *)event
 {
-    if( [[event characters] length] == 0)
+    if ([[event characters] length] == 0)
         return;
     
     unichar c = [[event characters] characterAtIndex:0];
-	if( c == ' ')
+	if (c == ' ')
 	{
-		if( aRenderer->GetActors()->IsItemPresent( outlineRect))
+		if (aRenderer->GetActors()->IsItemPresent( outlineRect))
 		{
 			aRenderer->RemoveActor( outlineRect);
 			if (self.StereoVisionOn)
 				[rightView renderer]->RemoveActor(outlineRect);
 		}
-		else{
+		else {
 			aRenderer->AddActor( outlineRect);
 			if (self.StereoVisionOn)
 				[rightView renderer]->AddActor(outlineRect);
@@ -804,7 +804,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		
 		[self setNeedsDisplay: YES];
 	}
-	else if( c == 27)
+	else if (c == 27)
 	{
 		if (self.StereoVisionOn &&
             LeftFullScreenWindow != nil &&
@@ -815,7 +815,6 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		else
 			[[[self window] windowController] offFullScreen];
 	}
-	
 	else if (c == 's')
 	{
 		float distance = aCamera->GetDistance();
@@ -840,7 +839,6 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		
 		[self setNeedsDisplay:YES];
 	}
-	
 	else if ( c== 'c')
 	{
 		static BOOL cHidden = true;
@@ -856,7 +854,6 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			cHidden = true;
 		}
 	}
-	
 	else if (c == 'a')
 	{
 		double focalDist = aCamera->GetDistance();
@@ -881,9 +878,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		std::cout<< "Eye Angle: " << aCamera->GetEyeAngle() << std::endl;
 		
 		[self setNeedsDisplay:YES];
-		
 	}
-	
 	else if (c == 'd')
 	{
 		double focalDist = aCamera->GetDistance();
@@ -910,10 +905,11 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		
 		[self setNeedsDisplay:YES];
 	}
-	
-	else if(c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter)
+	else if (c == NSDeleteFunctionKey ||
+             c == NSDeleteCharacter ||
+             c == NSBackspaceCharacter)
 	{
-		if([self isAny3DPointSelected])
+		if ([self isAny3DPointSelected])
 			[self removeSelected3DPoint];
 		else
             [self yaw:-90.0];

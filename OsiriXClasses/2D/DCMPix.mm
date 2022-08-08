@@ -10104,14 +10104,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				fNext = [[pixArray objectAtIndex: next] fImage];
 				if (fNext)
 				{
-#if TARGET_CPU_X86_64
 					if (stackMode == STACK_MODE_MAXIMUM_IP)
-                        vmax8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
+                        vmax8( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
 					else
-                        vmin8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
-#elif TARGET_CPU_ARM64
-                    NSLog(@"%s %d, find equivalent of vmin8Intel() for arm64", __FUNCTION__, __LINE__);
-#endif
+                        vmin8( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
 				}
 				
 				for (long i = 2; i < stack; i++)
@@ -10135,14 +10131,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							fNext = [[pixArray objectAtIndex: res] fImage];
 							if (fNext)
 							{
-#if TARGET_CPU_X86_64
 								if (stackMode == STACK_MODE_MAXIMUM_IP)
-                                    vmax8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width);
+                                    vmax8( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width);
 								else
-                                    vmin8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width);
-#elif TARGET_CPU_ARM64
-                                NSLog(@"%s %d, find equivalent of vmin8Intel() for arm64", __FUNCTION__, __LINE__);
-#endif
+                                    vmin8( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width);
 							}
 						}
 					}
