@@ -473,10 +473,13 @@
     if (isRGB)
         bits = 8;
     
-	for (long i = minI, stack = 0 ; i < maxI ; i++, stack++)
+	long ii;
+    // Important: for some reason 'ii' must be declared outside of the for loop
+    // (maybe some threading issue ?)
+	for (ii = minI, stack = 0 ; ii < maxI ; ii++, stack++)
 	{
-		if (i < 0)
-            i = 0;
+		if (ii < 0)
+            ii = 0;
 		
 		if (axe == 0)		// X - RESLICE
 		{
@@ -524,15 +527,15 @@
 			
 			if (sign > 0)
 			{
-				origin[ 0] = [lastPix originX] + (i * [firstPix pixelSpacingY]) * orientation[ 6] * sign;
-				origin[ 1] = [lastPix originY] + (i * [firstPix pixelSpacingY]) * orientation[ 7] * sign;
-				origin[ 2] = [lastPix originZ] + (i * [firstPix pixelSpacingY]) * orientation[ 8] * sign;
+				origin[ 0] = [lastPix originX] + (ii * [firstPix pixelSpacingY]) * orientation[ 6] * sign;
+				origin[ 1] = [lastPix originY] + (ii * [firstPix pixelSpacingY]) * orientation[ 7] * sign;
+				origin[ 2] = [lastPix originZ] + (ii * [firstPix pixelSpacingY]) * orientation[ 8] * sign;
 			}
 			else
 			{
-				origin[ 0] = [firstPix originX] + (i * [firstPix pixelSpacingY]) * orientation[ 6] * -sign;
-				origin[ 1] = [firstPix originY] + (i * [firstPix pixelSpacingY]) * orientation[ 7] * -sign;
-				origin[ 2] = [firstPix originZ] + (i * [firstPix pixelSpacingY]) * orientation[ 8] * -sign;
+				origin[ 0] = [firstPix originX] + (ii * [firstPix pixelSpacingY]) * orientation[ 6] * -sign;
+				origin[ 1] = [firstPix originY] + (ii * [firstPix pixelSpacingY]) * orientation[ 7] * -sign;
+				origin[ 2] = [firstPix originZ] + (ii * [firstPix pixelSpacingY]) * orientation[ 8] * -sign;
 			}
 			
             [curPix setOrigin: origin];
@@ -553,15 +556,15 @@
 			[curPix orientation: orientation];
 			if (sign > 0)
 			{
-				origin[ 0] = [lastPix originX] + (i * [firstPix pixelSpacingX]) * orientation[ 6] * -sign;
-				origin[ 1] = [lastPix originY] + (i * [firstPix pixelSpacingX]) * orientation[ 7] * -sign;
-				origin[ 2] = [lastPix originZ] + (i * [firstPix pixelSpacingX]) * orientation[ 8] * -sign;
+				origin[ 0] = [lastPix originX] + (ii * [firstPix pixelSpacingX]) * orientation[ 6] * -sign;
+				origin[ 1] = [lastPix originY] + (ii * [firstPix pixelSpacingX]) * orientation[ 7] * -sign;
+				origin[ 2] = [lastPix originZ] + (ii * [firstPix pixelSpacingX]) * orientation[ 8] * -sign;
 			}
 			else
 			{
-				origin[ 0] = [firstPix originX] + (i * [firstPix pixelSpacingX]) * orientation[ 6] * sign;
-				origin[ 1] = [firstPix originY] + (i * [firstPix pixelSpacingX]) * orientation[ 7] * sign;
-				origin[ 2] = [firstPix originZ] + (i * [firstPix pixelSpacingX]) * orientation[ 8] * sign;
+				origin[ 0] = [firstPix originX] + (ii * [firstPix pixelSpacingX]) * orientation[ 6] * sign;
+				origin[ 1] = [firstPix originY] + (ii * [firstPix pixelSpacingX]) * orientation[ 7] * sign;
+				origin[ 2] = [firstPix originZ] + (ii * [firstPix pixelSpacingX]) * orientation[ 8] * sign;
 			}
 			[curPix setOrigin: origin];
 			[curPix computeSliceLocation];
@@ -586,10 +589,13 @@
 		processorsLock = [[NSLock alloc] init];
 	
 	numberOfThreadsForCompute = [[NSProcessInfo processInfo] processorCount];
-    long ii;
-	for (ii = 0; ii < [[NSProcessInfo processInfo] processorCount]-1; ii++)
+    // Important: for some reason 'ii' must be declared outside of the for loop
+    // (maybe some threading issue ?)
+	for (ii = 0; ii < (numberOfThreadsForCompute - 1); ii++)
 	{
-		[NSThread detachNewThreadSelector: @selector(subReslice:) toTarget:self withObject: [NSNumber numberWithInt: ii]];
+		[NSThread detachNewThreadSelector: @selector(subReslice:)
+                                 toTarget: self
+                               withObject: [NSNumber numberWithInt: ii]];
 	}
 	
 	[self subReslice: [NSNumber numberWithInt: ii]];
