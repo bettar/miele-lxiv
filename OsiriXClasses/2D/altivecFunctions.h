@@ -24,7 +24,8 @@
 extern "C"
 {
 #endif /*cplusplus*/
-	#if __ppc__ || __ppc64__
+
+#if __ppc__ || __ppc64__
 	// ALTIVEC FUNCTIONS
 	extern void InverseLongs(vector unsigned int *unaligned_input, long size);
 	extern void InverseShorts(vector unsigned short *unaligned_input, long size);
@@ -35,15 +36,15 @@ extern "C"
 	extern void vmin(vector float *a, vector float *b, vector float *r, long size);
     extern void vmax8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size);
 	extern void vmin8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size);
-	#elif TARGET_CPU_X86_64
-	extern void vmax( vFloat *a, vFloat *b, vFloat *r, long size); // Unused ?
-	extern void vmin( vFloat *a, vFloat *b, vFloat *r, long size); // Unused ?
+#elif TARGET_CPU_X86_64
+	extern void vmax( vFloat *a, vFloat *b, vFloat *r, long size); // Unused
+	extern void vmin( vFloat *a, vFloat *b, vFloat *r, long size); // Unused
 	extern void vmax8( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
 	extern void vmin8( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
-    #elif TARGET_CPU_ARM64
+#elif TARGET_CPU_ARM64
     extern void vmax8( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
     extern void vmin8( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
-    #endif
+#endif
 	
 	extern void vmultiplyNoAltivec( float *a,  float *b,  float *r, long size);
 	extern void vminNoAltivec( float *a,  float *b,  float *r, long size);

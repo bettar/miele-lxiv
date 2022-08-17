@@ -1695,7 +1695,8 @@ void info_callback(const char *msg, void *a) {
 		}
 		else if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"] ||
                  [photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"] ||
-                 [photometricInterpretation isEqualToString:@"YBR_FULL"]) {
+                 [photometricInterpretation isEqualToString:@"YBR_FULL"])
+        {
 			jas_image_setclrspc(image, JAS_CLRSPC_FAM_YCBCR);
 			jas_image_setcmpttype(image, 0,
 			  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_YCBCR_Y));

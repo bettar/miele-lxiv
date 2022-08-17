@@ -2104,8 +2104,8 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
                                            userInfo:nil] raise];
 				}
 				
-				if (certVerification==VerifyPeerCertificate ||
-                    certVerification==RequirePeerCertificate)
+				if (certVerification == VerifyPeerCertificate ||
+                    certVerification == RequirePeerCertificate)
 				{
 					NSString *trustedCertificatesDir = [NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID];
 					[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:trustedCertificatesDir];

@@ -281,7 +281,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
 
         if (!parameters.nb_tile_to_decode)
         {
-            int user_changed_area=0;
+            bool user_changed_area=false;
 
             if (user_changed_area)
             {

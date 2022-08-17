@@ -121,7 +121,7 @@ void vmin8(vector unsigned char *a, vector unsigned char *b, vector unsigned cha
 
 #elif TARGET_CPU_X86_64
 
-// Unused ?
+// Unused
 void vmax( vFloat *a, vFloat *b, vFloat *r, long size)
 {
 	long i = size/4;
@@ -129,7 +129,7 @@ void vmax( vFloat *a, vFloat *b, vFloat *r, long size)
 		*r++ = _mm_max_ps( *a++, *b++);
 }
 
-// Unused ?
+// Unused
 void vmin( vFloat *a, vFloat *b, vFloat *r, long size)
 {
 	long i = size/4;

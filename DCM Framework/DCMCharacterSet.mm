@@ -210,11 +210,13 @@ char* DCMreplaceInvalidCharacter( char* str ) {
                     currentEncoding = [DCMCharacterSet encodingForDICOMCharacterSet: key];
 #ifndef NDEBUG
                     BOOL found = NO;
-                    for (int j = 0; j < NUM_ENCODINGS; j++)
+                    for (int j = 0; j < NUM_ENCODINGS; j++) {
+                        //NSLog(@"encoding %d %lu", j, (unsigned long)encodings[j]);
                         if (currentEncoding == encodings[j]) {
                             found = YES;
                             break;
                         }
+                    }
                     
                     if (found == NO)
                         NSLog(@"*** encoding <%@> not found in declared SpecificCharacterSet (0008,0005)", key);
@@ -250,7 +252,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
                 
                 pos += escLength;
                 
-                if( checkPNDelimiters)
+                if (checkPNDelimiters)
                     escLength = 0;
             }
             
@@ -282,7 +284,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
         }
 #endif
         ++pos;
-    }
+    } // while
     
     // convert any remaining characters from the input string
     {
@@ -371,6 +373,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 		
 		for (int z = 0; z < [e count] ; z++)
 		{
+            //NSLog(@"%d <%@>", z,[e objectAtIndex: z]);
 			if (z < NUM_ENCODINGS)
 				encodings[ z] = [DCMCharacterSet encodingForDICOMCharacterSet: [e objectAtIndex: z]];
 			else

@@ -390,7 +390,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	if (orientationWidget)
 		orientationWidget->Delete();
 
-    for( i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
         oText[ i]->Delete();
 
     //aRenderer->Delete();

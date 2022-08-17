@@ -121,7 +121,6 @@ typedef data12_dst_mgr * data12_dst_ptr;
 #define INPUT_BUF_SIZE  4096	/* choose an efficiently fread'able size */
 #define OUTPUT_BUF_SIZE  4096	/* choose an efficiently fwrite'able size */
 
-
 /*
  * Initialize source --- called by jpeg_read_header
  * before any data is actually read.
@@ -138,7 +137,6 @@ init_source (j_decompress_ptr cinfo)
    */
   src->start_of_data = YES;
 }
-
 
 /*
  * Fill the input buffer --- called whenever buffer is emptied.
@@ -233,7 +231,6 @@ skip_input_data (j_decompress_ptr cinfo, long num_bytes)
   }
 }
 
-
 /*
  * An additional method that can be provided by data source modules is the
  * resync_to_restart method for error recovery in the presence of RST markers.
@@ -257,7 +254,6 @@ term_source (j_decompress_ptr cinfo)
 {
   /* no work necessary here */
 }
-
 
 /*
  * Prepare for input from a stdio stream.
@@ -404,12 +400,10 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
   dest->data = aData;
 }
 
-
-
 @implementation DCMPixelDataAttribute (DCMPixelDataAttributeJPEG12)
 
-- (NSData *)convertJPEG12ToHost:(NSData *)jpegData{
-
+- (NSData *)convertJPEG12ToHost:(NSData *)jpegData
+{
 	struct jpeg_error_mgr			theJErr;		 /* the JPEG error manager var */
 	struct jpeg_decompress_struct	theCInfo;
 	unsigned long				 theLimit;
@@ -439,7 +433,7 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 	/* JSAMPLEs per row in output buffer */
 	theRowStride = theCInfo.output_width * theCInfo.output_components * 2;
 	/*
-		multiply be number of bytes
+		multiply by number of bytes
 		should be 2 if we are here
 	*/
 

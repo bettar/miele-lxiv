@@ -1038,7 +1038,7 @@ PixelRepresentation
                     
 #pragma mark DCM_SpecificCharacterSet
 
-                    //0008,0005 == SpecificCharacterSet
+                    // 0008,0005 == SpecificCharacterSet
                     else if (strcmp(tagUTF8, "0008,0005") == 0)
                     {
                         [specificCharacterSet release];
@@ -1467,7 +1467,8 @@ PixelRepresentation
 }
 
 
-- (void)anonymizeAttributeForTag:(DCMAttributeTag *)tag replacingWith:(id)aValue{
+- (void)anonymizeAttributeForTag:(DCMAttributeTag *)tag replacingWith:(id)aValue
+{
 	DCMAttribute *attr = [attributes objectForKey: tag.stringValue];
 	//Add attr is aValue exists create attr if absent and add new value
 	if (aValue && !attr) {
@@ -1539,21 +1540,25 @@ PixelRepresentation
 				case DCM_OW:	//other word 16bit word
 					newValue = [NSMutableData dataWithLength:[(NSData *)value length]];
 				break;
-					//NUmber strings	
+
+                    //NUmber strings	
 				case DCM_SH:	//short string	
 				case DCM_DS:	//Decimal String  representing floating point number 16 byte max
 				case DCM_IS:	//Integer String 12 bytes max
 					newValue =  @"0";
 				break;
-					//Age string					
+
+                    //Age string
 				case DCM_AS:	//Age String Format mmmM,dddD,nnnY ie 018Y
 					newValue = @"000Y";
 				break;
-					//code string
+
+                    //code string
 				case DCM_CS:	//Code String   16 byte max
 					newValue = @"0000";
 				break;
-				case DCM_AE:	//Application Entity  String 16bytes max
+
+                case DCM_AE:	//Application Entity  String 16bytes max
 				case DCM_LO:	//Character String 64 char max
 				case DCM_LT:	//Long Text 10240 char Max
 				case DCM_PN:	//Person Name string

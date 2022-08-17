@@ -6916,7 +6916,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             }
             else
             {
-                if (fIsSigned && bitsAllocated != bitsStored) //We have to move the signing bit
+                if (fIsSigned && bitsAllocated != bitsStored) // We have to move the sign bit
                 {
                     if (bitsAllocated == 16)
                     {
@@ -11258,7 +11258,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                         value = [NSString stringWithFormat:@"%.6g", [repetitiontime floatValue]];
                                     }
                                     else if ([[field objectForKey:@"group"] intValue] == 0x0018 &&
-                                            [[field objectForKey:@"element"] intValue] == 0x0081 && echotime != 0L)	// Echotime
+                                             [[field objectForKey:@"element"] intValue] == 0x0081 &&
+                                             echotime != 0L)	// Echotime
                                     {
                                         value = [NSString stringWithFormat:@"%.6g", [echotime floatValue]];
                                     }

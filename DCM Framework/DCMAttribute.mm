@@ -74,17 +74,17 @@
 		
 		characterSet = [specificCharacterSet retain];
 		
-		if( characterSet == nil)
+		if (characterSet == nil)
 			characterSet = [[DCMCharacterSet alloc] initWithCode: @"ISO_IR 100"];
 		
 		_tag = [tag retain];
 		_valueLength = vl;
 		_values =  nil;
 		if (dicomData) {
-			NSArray *array = [self valuesForVR:_vr
-                                        length:(int)_valueLength
-                                          data:dicomData];
-			_values = [[NSMutableArray alloc]  initWithArray:array];
+			NSArray *array = [self valuesForVR: _vr
+                                        length: (int)_valueLength
+                                          data: dicomData];
+			_values = [[NSMutableArray alloc] initWithArray:array];
 			if (DCMDEBUG)
 				NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, [self description]);
 		}

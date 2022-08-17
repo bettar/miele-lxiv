@@ -105,7 +105,6 @@ typedef data16_source_mgr * data16_src_ptr;
 
 #define INPUT_BUF_SIZE  4096	/* choose an efficiently fread'able size */
 
-
 /*
  * Initialize source --- called by jpeg_read_header
  * before any data is actually read.
@@ -122,7 +121,6 @@ init_source (j_decompress_ptr cinfo)
    */
   src->start_of_data = YES;
 }
-
 
 /*
  * Fill the input buffer --- called whenever buffer is emptied.
@@ -219,7 +217,6 @@ skip_input_data (j_decompress_ptr cinfo, long num_bytes)
   }
 }
 
-
 /*
  * An additional method that can be provided by data source modules is the
  * resync_to_restart method for error recovery in the presence of RST markers.
@@ -227,7 +224,6 @@ skip_input_data (j_decompress_ptr cinfo, long num_bytes)
  * provided by the JPEG library.  That method assumes that no backtracking
  * is possible.
  */
-
 
 /*
  * Terminate source --- called by jpeg_finish_decompress
@@ -243,7 +239,6 @@ term_source (j_decompress_ptr cinfo)
 {
   /* no work necessary here */
 }
-
 
 /*
  * Prepare for input from a stdio stream.
@@ -286,11 +281,10 @@ jpeg16_nsdata_src (j_decompress_ptr cinfo, NSData *aData)
   src->pub.next_input_byte = NULL; /* until buffer loaded */
 }
 
-
 @implementation DCMPixelDataAttribute (DCMPixelDataAttributeJPEG16)
 
-- (NSData *)convertJPEG16ToHost:(NSData *)jpegData{
-
+- (NSData *)convertJPEG16ToHost:(NSData *)jpegData
+{
 	//struct SErrorMgr				theJErr;		 /* the JPEG error manager var */
 	struct jpeg_error_mgr			theJErr;		 /* the JPEG error manager var */
 	struct jpeg_decompress_struct	theCInfo;
@@ -305,7 +299,8 @@ jpeg16_nsdata_src (j_decompress_ptr cinfo, NSData *aData)
 	unsigned short					*theWrkCh16P; 		/* ptr to the image 16 bits */
 	unsigned short					*theBuffer16P;
 	NSMutableData					*rawData = nil ;
-	//initialize jpeg dcecompressor
+
+    // Initialize jpeg decompressor
 
 //	NSLog(@"decompress JPEG 16 frame length: %d", [jpegData length]);
 	
@@ -331,7 +326,7 @@ jpeg16_nsdata_src (j_decompress_ptr cinfo, NSData *aData)
 	/* JSAMPLEs per row in output buffer */
 	theRowStride = theCInfo.output_width * theCInfo.output_components * 2;
 	/*
-		multiply be number of bytes
+		multiply by number of bytes
 		should be 2 if we are here
 	*/	
 
@@ -367,7 +362,7 @@ jpeg16_nsdata_src (j_decompress_ptr cinfo, NSData *aData)
 
   /* This is an important step since it will release a good deal of memory. */
 	jpeg_destroy_decompress(&theCInfo);
-	//NSLog(@"finISH decompression");
+	//NSLog(@"finish decompression");
 	return rawData;
 }
 

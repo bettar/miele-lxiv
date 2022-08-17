@@ -181,37 +181,37 @@ static NSMutableString *TLS_PRIVATE_KEY_PASSWORD = nil;
 	return [NSString stringWithString:label];
 }
 
-+ (NSString*)keyPathForLabel:(NSString*)label withStringID:(NSString*)stringID;
++ (NSString*)keyPathForLabel:(NSString*)label withStringID:(NSString*)stringID
 {
 	return [NSString stringWithFormat:@"%@.%@.%@", TLS_PRIVATE_KEY_FILE, label, stringID];
 }
 
-+ (NSString*)keyPathForLabel:(NSString*)label;
++ (NSString*)keyPathForLabel:(NSString*)label
 {
 	return [DICOMTLS keyPathForLabel:label withStringID:@""];
 }
 
-+ (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
++ (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID
 {
 	return [DICOMTLS keyPathForLabel:[DICOMTLS uniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle] withStringID:stringID];
 }
 
-+ (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
++ (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle
 {
 	return [DICOMTLS keyPathForServerAddress:address port:port AETitle:aetitle withStringID:@""];
 }
 
-+ (NSString*)certificatePathForLabel:(NSString*)label withStringID:(NSString*)stringID;
++ (NSString*)certificatePathForLabel:(NSString*)label withStringID:(NSString*)stringID
 {
 	return [NSString stringWithFormat:@"%@.%@.%@", TLS_CERTIFICATE_FILE, label, stringID];
 }
 
-+ (NSString*)certificatePathForLabel:(NSString*)label;
++ (NSString*)certificatePathForLabel:(NSString*)label
 {
 	return [DICOMTLS certificatePathForLabel:label withStringID:@""];
 }
 
-+ (NSString*)certificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
++ (NSString*)certificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID
 {
 	return [DICOMTLS certificatePathForLabel:[DICOMTLS uniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle] withStringID:stringID];
 }
