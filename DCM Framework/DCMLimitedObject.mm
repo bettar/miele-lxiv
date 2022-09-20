@@ -191,7 +191,7 @@
                         if ([vr isEqualToString:@"US/SS/OW"])
                             vr = @"OW";
                         
-                        // set VR for Pixel Description depenedent tags. Can be either  US or SS depending on Pixel Description
+                        // set VR for Pixel Description dependent tags. Can be either  US or SS depending on Pixel Description
                         if ([vr isEqualToString:@"US/SS"]) {
                             if (pixelRepresentationIsSigned)
                                 vr = @"SS";

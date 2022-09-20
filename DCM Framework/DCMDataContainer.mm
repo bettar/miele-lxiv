@@ -1144,6 +1144,7 @@ void signal_EXC(int sig_num)
 	[transferSyntaxInUse release];
 	transferSyntaxInUse = [transferSyntaxForMetaheader retain];
 }
+
 - (void)startReadingDataSet{
 	[transferSyntaxInUse release];
 	transferSyntaxInUse = [transferSyntaxForDataset retain];

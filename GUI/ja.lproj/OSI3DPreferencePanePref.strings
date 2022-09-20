@@ -71,7 +71,7 @@
 "396.title" = "エンジン:";
 
 /* Class = "NSButtonCell"; title = "GPU - Rendering on the graphic processor"; ObjectID = "397"; */
-"397.title" = "GPU  - グラフィックプロセッサでのレンダリング";
+"397.title" = "GPU - グラフィックプロセッサでのレンダリング";
 
 /* Class = "NSButtonCell"; title = "CPU - Raycasting on the main processor"; ObjectID = "399"; */
 "399.title" = "CPU - メインプロセッサ上のレイキャスティング";

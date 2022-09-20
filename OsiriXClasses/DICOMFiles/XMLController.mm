@@ -1308,7 +1308,6 @@ extern int delayedTileWindows;
 	}
 	
 	NSTask *theTask = [[NSTask alloc] init];
-
 	NSPipe *thePipe = [NSPipe pipe];
 
     NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"dciodvfy"] path];
@@ -1327,7 +1326,7 @@ extern int delayedTileWindows;
 	
 	NSData *resData = [[thePipe fileHandleForReading] readDataToEndOfFile];
 	
-    while( [theTask isRunning])
+    while ([theTask isRunning])
         [NSThread sleepForTimeInterval: 0.1];
 
 #if 1

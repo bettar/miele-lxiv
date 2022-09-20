@@ -104,81 +104,79 @@
     if (DCMDEBUG)
         NSLog (@"date time string: %@", string);
     
-    if (string.length > 0) {
-        NSArray *timeComponents = [string componentsSeparatedByString:@"."];
-        NSString *format = nil;
-        //NSUInteger length = [string length];
-        
-        if (timeComponents.count > 2)
-            NSLog( @"****** DICOM DateTime invalid format: %@", string);
-        
-        switch ([(NSString *)[timeComponents objectAtIndex:0] length]) {
-            case 19:format = @"%Y%m%d%H%M%S%z";
-                break;
-            case 14:format = @"%Y%m%d%H%M%S";
-                break;
-            case 12:format = @"%Y%m%d%H%M";
-                break;
-            case 10:format = @"%Y%m%d%H";
-                break;
-            case 8:format = @"%Y%m%d";
-                break;
-            case 6:format = @"%Y%m";
-                break;
-            case 4:format = @"%Y";
-                break;
-                
-            default: format = @"%Y%m%d%H%M%S";
-                NSLog( @"****** DICOM DateTime invalid format ? %@", string);
-                break;
-        }
-        
-        NSTimeZone *tz = nil;
-        int useconds = 0;
-        if ([timeComponents count] > 1) {
-            NSString *timeZone = nil;
-            NSString *usecondsString = nil;
-            
-            if ([[timeComponents objectAtIndex:1] rangeOfString: @"+"].location != NSNotFound)
-            {
-                usecondsString = [[timeComponents objectAtIndex:1] substringToIndex: [[timeComponents objectAtIndex:1] rangeOfString: @"+"].location];
-                timeZone = [[timeComponents objectAtIndex:1] substringFromIndex: [[timeComponents objectAtIndex:1] rangeOfString: @"+"].location];
-            }
-            else if ([[timeComponents objectAtIndex:1] rangeOfString: @"-"].location != NSNotFound)
-            {
-                usecondsString = [[timeComponents objectAtIndex:1] substringToIndex: [[timeComponents objectAtIndex:1] rangeOfString: @"-"].location];
-                timeZone = [[timeComponents objectAtIndex:1] substringFromIndex: [[timeComponents objectAtIndex:1] rangeOfString: @"-"].location];
-            }
-            else
-            {
-                usecondsString = [timeComponents objectAtIndex:1];
-                timeZone = nil;
-            }
-            
-            if (timeZone.length > 0) {
-                int tzHours = [[timeZone substringToIndex:3] intValue];
-                int tzMinutes = [[timeZone substringFromIndex:3] intValue];
-                if (tzHours < 0)
-                    tzMinutes = -tzMinutes;
-
-                tz = [NSTimeZone timeZoneForSecondsFromGMT:(tzHours * 3600) + (tzMinutes * 60)];
-            }
-            
-            useconds = [usecondsString intValue] * pow(10, 6 - usecondsString.length);
-        }
-        
-        DCMCalendarDate *date = [[[DCMCalendarDate alloc] initWithString:[timeComponents objectAtIndex:0] calendarFormat:format microseconds: useconds] autorelease];
-        if (tz)
-            [date setTimeZone: tz];
-        
-        [date setIsQuery:NO];
-        [date setQueryString:nil];
-        
-        return date;
-    }
-    else
+    if (string.length == 0)
         return nil;
-		
+
+    NSArray *timeComponents = [string componentsSeparatedByString:@"."];
+    NSString *format = nil;
+    //NSUInteger length = [string length];
+    
+    if (timeComponents.count > 2)
+        NSLog( @"****** DICOM DateTime invalid format: %@", string);
+    
+    switch ([(NSString *)[timeComponents objectAtIndex:0] length]) {
+        case 19:format = @"%Y%m%d%H%M%S%z";
+            break;
+        case 14:format = @"%Y%m%d%H%M%S";
+            break;
+        case 12:format = @"%Y%m%d%H%M";
+            break;
+        case 10:format = @"%Y%m%d%H";
+            break;
+        case 8:format = @"%Y%m%d";
+            break;
+        case 6:format = @"%Y%m";
+            break;
+        case 4:format = @"%Y";
+            break;
+            
+        default: format = @"%Y%m%d%H%M%S";
+            NSLog( @"****** DICOM DateTime invalid format ? %@", string);
+            break;
+    }
+    
+    NSTimeZone *tz = nil;
+    int useconds = 0;
+    if ([timeComponents count] > 1) {
+        NSString *timeZone = nil;
+        NSString *usecondsString = nil;
+        
+        if ([[timeComponents objectAtIndex:1] rangeOfString: @"+"].location != NSNotFound)
+        {
+            usecondsString = [[timeComponents objectAtIndex:1] substringToIndex: [[timeComponents objectAtIndex:1] rangeOfString: @"+"].location];
+            timeZone = [[timeComponents objectAtIndex:1] substringFromIndex: [[timeComponents objectAtIndex:1] rangeOfString: @"+"].location];
+        }
+        else if ([[timeComponents objectAtIndex:1] rangeOfString: @"-"].location != NSNotFound)
+        {
+            usecondsString = [[timeComponents objectAtIndex:1] substringToIndex: [[timeComponents objectAtIndex:1] rangeOfString: @"-"].location];
+            timeZone = [[timeComponents objectAtIndex:1] substringFromIndex: [[timeComponents objectAtIndex:1] rangeOfString: @"-"].location];
+        }
+        else
+        {
+            usecondsString = [timeComponents objectAtIndex:1];
+            timeZone = nil;
+        }
+        
+        if (timeZone.length > 0) {
+            int tzHours = [[timeZone substringToIndex:3] intValue];
+            int tzMinutes = [[timeZone substringFromIndex:3] intValue];
+            if (tzHours < 0)
+                tzMinutes = -tzMinutes;
+
+            tz = [NSTimeZone timeZoneForSecondsFromGMT:(tzHours * 3600) + (tzMinutes * 60)];
+        }
+        
+        useconds = [usecondsString intValue] * pow(10, 6 - usecondsString.length);
+    }
+    
+    DCMCalendarDate *date = [[[DCMCalendarDate alloc] initWithString:[timeComponents objectAtIndex:0] calendarFormat:format microseconds: useconds] autorelease];
+    if (tz)
+        [date setTimeZone: tz];
+    
+    [date setIsQuery:NO];
+    [date setQueryString:nil];
+    
+    return date;
 }
 
 + (id)dicomDateWithDate:(NSDate *)date

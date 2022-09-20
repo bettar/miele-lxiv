@@ -75,18 +75,18 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 
 + (int) windowsColumnsForHangingProtocol:(NSDictionary*) protocol
 {
-    if( [protocol objectForKey: @"WindowsTiling"])
+    if ([protocol objectForKey: @"WindowsTiling"])
     {
         int tag = [[protocol objectForKey: @"WindowsTiling"] intValue];
         
-        if( tag == 1000)
+        if (tag == 1000)
             return 1000;  // All windows
         
         if (tag < MAX_TILING_TAG)
             return (tag %  TILING_DIMENSION) + 1; // See SetImageTiling ViewerController.m
     }
     
-	if( [[protocol objectForKey: @"Columns"] intValue] > 0)
+	if ([[protocol objectForKey: @"Columns"] intValue] > 0)
         return [[protocol objectForKey: @"Columns"] intValue];
     
 	return 1;

@@ -54,16 +54,22 @@ static void sigchld(int signum) {
 	[super dealloc];
 }
 
-static int getfd(id object, BOOL read, int def) { // http://www.quantum-step.com/download/sources/mySTEP/Foundation/Sources/NSTask.m
+// http://www.quantum-step.com/download/sources/mySTEP/Foundation/Sources/NSTask.m
+static int getfd(id object, BOOL read, int def)
+{
 	if (!object)
 		return def; // default value
-	if ([object isKindOfClass:[NSFileHandle class]])
+
+    if ([object isKindOfClass:[NSFileHandle class]])
 		return [object fileDescriptor];
-	if ([object isKindOfClass:[NSPipe class]])
+
+    if ([object isKindOfClass:[NSPipe class]])
 		return [(read?[object fileHandleForReading]:[object fileHandleForWriting]) fileDescriptor];
-	if ([object isKindOfClass:[NSNumber class]])
+
+    if ([object isKindOfClass:[NSNumber class]])
 		return [object intValue];
-	[NSException raise: NSInvalidArgumentException format: @"N2Task has invalid file descriptor %@", object];
+
+    [NSException raise: NSInvalidArgumentException format: @"N2Task has invalid file descriptor %@", object];
 	return -1;
 }
 

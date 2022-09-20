@@ -915,10 +915,10 @@ PixelRepresentation
                         if ([vr isEqualToString:@"US/SS/OW"])
                             vr = @"OW";
 
-                        // set VR for Pixel Description depenedent tags. Can be either  US or SS depending on Pixel Description
+                        // set VR for Pixel Description dependent tags. Can be either  US or SS depending on Pixel Description
                         if ([vr isEqualToString:@"US/SS"])
                         {
-                            if ( pixelRepresentationIsSigned)
+                            if (pixelRepresentationIsSigned)
                                 vr = @"SS";
                             else 
                                 vr = @"US";
@@ -959,7 +959,7 @@ PixelRepresentation
                     // generate Attributes
                     DCMAttribute *attr = nil;
                     
-                    //sequence attribute
+                    // Sequence attribute
                     if ([DCMValueRepresentation isSequenceVR:vr] || ([DCMValueRepresentation isUnknownVR:vr] && vl == 0xFFFFFFFFL))
                     {
                         attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
@@ -1001,12 +1001,10 @@ PixelRepresentation
                         }
 
                         *byteOffset += vl;
-                        if (DCMDEBUG)
-                            NSLog(@"byteOffset %d attr %@", *byteOffset, [attr description]);
                     }
                     
                     if (DCMDEBUG)
-                        NSLog(@"Attr: %@", [attr description]);
+                        NSLog(@"byteOffset %d attr %@", *byteOffset, [attr description]);
                     
                     // Add attr to attributes
                     if (attr)
@@ -1110,7 +1108,7 @@ PixelRepresentation
                 DCMAttributeTag *tag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
                 *byteOffset += 4; // We are not incrementing the pointer, but the dereferenced value
                 
-                long vl = [dicomData nextUnsignedLong];		// always implicit VR form for items and delimiters
+                long vl = [dicomData nextUnsignedLong]; // always implicit VR form for items and delimiters
                 *byteOffset += 4;
     //System.err.println(byteOffset+" "+tag+" VL=<0x"+Long.toHexString(vl)+">");
                 if ([tag.stringValue isEqualToString:[sharedTagForNameDictionary objectForKey:@"SequenceDelimitationItem"]])
@@ -1150,14 +1148,12 @@ PixelRepresentation
             }
 		}
 		
-		
-	} @catch( NSException *localException) {
+	} @catch (NSException *localException) {
 		NSLog(@"Error");
 		*byteOffset = -1;
 	}
-		return *byteOffset;
-	
-	
+		
+    return *byteOffset;
 }
 
 - (DCMAttribute *) newAttributeForAttributeTag:(DCMAttributeTag *)tag

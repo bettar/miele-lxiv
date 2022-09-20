@@ -687,8 +687,8 @@ void info_callback(const char *msg, void *a) {
 
 	_compression = 0;
 	_numberOfFrames = 1;
-	_rows = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"Rows"]] value] intValue];
-	_columns = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"Columns"]] value] intValue];
+	_rows = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"Rows"]] value] intValue]; // 0028,0010
+	_columns = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"Columns"]] value] intValue]; // 0028,0011
 	_samplesPerPixel = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"SamplesperPixel"]] value] intValue];
 
     if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"NumberofFrames"]])
@@ -2345,7 +2345,7 @@ void info_callback(const char *msg, void *a) {
 	DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
 	DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
 	BOOL isSigned = [[signedAttr value] boolValue];
-	float max,  min;
+	float max, min;
 	
 	if (_bitsAllocated <= 8) 
 		length = [data length];
@@ -3397,7 +3397,7 @@ void info_callback(const char *msg, void *a) {
             int depth = 1;
 			if (_bitsAllocated <= 8) 
 				depth = 1;
-			else if (_bitsAllocated  <= 16)
+			else if (_bitsAllocated <= 16)
 				depth = 2;
 			else
 				depth = 4;
@@ -3723,7 +3723,7 @@ void info_callback(const char *msg, void *a) {
 			[singleThread lock];
 		}
 		
-		//non encapsulated
+		// Non encapsulated
 		if (transferSyntax.isEncapsulated == NO && _bitsAllocated > 8)
 		{
 			if ([[_framesDecoded objectAtIndex: index] boolValue] == NO)

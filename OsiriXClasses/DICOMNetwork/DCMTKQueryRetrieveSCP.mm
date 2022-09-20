@@ -387,7 +387,7 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 		
 		TLSCertificateVerificationType certVerification = (TLSCertificateVerificationType)[[[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPCertificateVerification"] intValue];
 		
-		if(certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
+		if (certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
 		{
 			NSString *trustedCertificatesDir = [NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, @"StoreSCPTLS"];
 			[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:trustedCertificatesDir];
@@ -428,7 +428,7 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 //		}
 		
 //		if (_doAuthenticate)
-		{			
+		{
 			tLayer->setPrivateKeyPasswd([[DICOMTLS TLS_PRIVATE_KEY_PASSWORD] cStringUsingEncoding:NSUTF8StringEncoding]);
 			
 			[DICOMTLS generateCertificateAndKeyForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"]; // export certificate/key from the Keychain to the disk
@@ -467,13 +467,13 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 				[selectedCipherSuites addObject:[suite objectForKey:@"Cipher"]];
 		}
 		
-		NSArray *_cipherSuites = [NSArray arrayWithArray:selectedCipherSuites];
+		NSArray *_cipherSuites1 = [NSArray arrayWithArray:selectedCipherSuites];
 		
-		if (_cipherSuites)
+		if (_cipherSuites1)
 		{
 			const char *current = NULL;
 
-            for (NSString *suite in _cipherSuites)
+            for (NSString *suite in _cipherSuites1)
             {
                 current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
 
@@ -487,9 +487,9 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 
 		DcmCertificateVerification _certVerification;
 		
-		if(certVerification==RequirePeerCertificate)
+		if (certVerification==RequirePeerCertificate)
 			_certVerification = DCV_requireCertificate;
-		else if(certVerification==VerifyPeerCertificate)
+		else if (certVerification==VerifyPeerCertificate)
 			_certVerification = DCV_checkCertificate;
 		else
 			_certVerification = DCV_ignoreCertificate;
@@ -539,9 +539,9 @@ DcmQueryRetrieveConfig config;
 	// Even a simple NSLog() will cause many many problems......
 	
     /* loop waiting for associations */
-	if(cond.good())
+	if (cond.good())
 	{
-		while(!_abort)
+		while (!_abort)
 		{
 			@try
 			{

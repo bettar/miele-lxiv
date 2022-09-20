@@ -88,6 +88,46 @@ static NSHost *currentHost = nil;
 
 + (mach_vm_size_t) GPUModelVRAMInfo
 {
+#if 0 //TARGET_CPU_ARM64 // Issue i61
+    {
+        NSTask *theTask = [[NSTask alloc] init];
+        NSPipe *thePipe = [NSPipe pipe];
+        [theTask setLaunchPath:@"/usr/sbin/system_profiler"];
+        [theTask setArguments: [NSArray arrayWithObjects:
+                                @"SPDisplaysDataType",
+                                nil]];
+        //[theTask setStandardError: thePipe];
+        [theTask setStandardOutput: thePipe];
+        [theTask launch];
+    
+        NSData *resData = [[thePipe fileHandleForReading] readDataToEndOfFile];
+    
+//        while ([theTask isRunning])
+//            [NSThread sleepForTimeInterval: 0.1];
+
+        NSString *resString = [[NSString alloc] initWithData:resData encoding: NSUTF8StringEncoding];
+            
+        //NSLog(@"%@", resString);
+
+        // Use this instead of piping to grep
+        NSArray *lines = [resString componentsSeparatedByString:@"\n"];
+        NSArray *filteredLines = [lines filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"SELF contains[c] 'VRAM'"]];
+
+        //NSLog(@"%@", filteredLines); // "      VRAM (Dynamic, Max): 1536 MB"
+        
+        // parse the first line to extract only the integer value
+        NSCharacterSet *numberCharset = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
+        NSScanner *theScanner = [NSScanner scannerWithString:[filteredLines firstObject]];
+        [theScanner scanUpToCharactersFromSet:numberCharset intoString:NULL]; // Throw away characters before the first number
+        int vramSizeMB = 0;
+        if ([theScanner scanInt:&vramSizeMB])
+            NSLog(@"VRAM <%d> MB", vramSizeMB);
+        
+        return vramSizeMB;
+    }
+#endif
+
+#if TARGET_CPU_X86_64
     io_iterator_t Iterator;
     kern_return_t err = IOServiceGetMatchingServices(kIOMasterPortDefault, IOServiceMatching("IOPCIDevice"), &Iterator);
     if (err != KERN_SUCCESS)
@@ -149,7 +189,8 @@ static NSHost *currentHost = nil;
             CFRelease(Name);
         } // if Name
     } // for
-    
+#endif // TARGET_CPU_X86_64
+
     return 0;
 }
 
@@ -943,7 +984,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject: @"1" forKey: @"ReserveScreenForDB"];
 	[defaultValuesDic setObject: @"1" forKey: @"notificationsEmailsInterval"];
     [defaultValuesDic setObject: @"1" forKey: @"automaticallyRetrievePartialStudies"];
-	NSDateFormatter	*dateFormat = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter	*dateFormat = [[NSDateFormatter alloc] init];
 	[dateFormat setDateStyle: NSDateFormatterShortStyle];
 	[defaultValuesDic setObject: [dateFormat dateFormat] forKey:@"DBDateOfBirthFormat2"];
 	[dateFormat setDateStyle: NSDateFormatterShortStyle];

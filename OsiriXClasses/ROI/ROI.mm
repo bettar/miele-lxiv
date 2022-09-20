@@ -1361,7 +1361,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                            offset:(NSPoint)offset
               highlightIfSelected:(BOOL)highlightIfSelected
 {
-    NSLog(@"ROI.mm line %d, draw tText", __LINE__);
+    //NSLog(@"ROI.mm line %d, draw tText", __LINE__);
 
     CGSize scaleFactor = [curView drawingFrameRect].size;
     CGPoint translationOffset;
@@ -6157,12 +6157,13 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
                         // The inside of the oval also selects the ROI
                         float distance = [self Magnitude: pt
                                                         : rect.origin];
-                        
+#ifndef NDEBUG
                         NSLog(@"ROI.m:%i %@ %p distance:%.1f, %.1f", __LINE__,
                               NSStringFromSelector(_cmd),
                               self,
                               distance,
                               scale/backingScaleFactor);
+#endif
                         
 //                        if ( [[MyPoint point:pt] isNearToPoint:rect.origin
 //                                                              :scale/backingScaleFactor
@@ -7456,7 +7457,7 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 		}
 		else if (type == tPlain)
 		{
-			switch( mode)
+			switch (mode)
 			{
 				case ROI_selectedModify:
 				case ROI_drawing:
@@ -9214,7 +9215,7 @@ void gl_round_box(int mode,
 
                     NSMutableArray *pArray = [NSMutableArray array];
 
-                    for (MyPoint *p in splinePoints3) {  // same as defined above. TODO reuse
+                    for (MyPoint *p in splinePoints3) {  // same as defined above. TODO: reuse
                         glm::vec2 pp(((double) [p x]-(double) offset.x)*(double) scaleValue,
                                      ((double) [p y]-(double) offset.y)*(double) scaleValue);
 

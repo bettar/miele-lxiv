@@ -856,6 +856,7 @@ public:
     [self setLOD: newValue];
 }
 
+// See also AppDefaults.mm GPUModelVRAMInfo
 + (void) testGraphicBoard
 {    
     unsigned long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[NSScreen mainScreen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
@@ -6969,10 +6970,14 @@ public:
 #ifndef NDEBUG // CRASH with 3D MIP
     // VRView is not a subclass of NSOpenGLContext
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    NSLog(@"%s %d, class:%@, OpenGL context:%p, version<%s>", __FUNCTION__, __LINE__,
+    NSLog(@"%s %d, class:%@, OpenGL context:%p, version <%s>", __FUNCTION__, __LINE__,
           NSStringFromClass([self class]),
           cgl_ctx,
-          glGetString(GL_VERSION)); // version 2.1 APPLE-12.1.0
+          glGetString(GL_VERSION));
+    // Legacy: 2.1 APPLE-12.1.0
+    //   Core: 4.1 APPLE-19.5.1
+
+    //NSLog(@"OpenGL renderer <%s>", glGetString(GL_RENDERER)); // Apple Software Renderer
 #endif
     
 	if ([[[self window] windowController] isKindOfClass:[VRController class]])

@@ -361,8 +361,8 @@
                 type = GL_SHORT;  // This is fixing issue #47.3
             }
 
-            texSize.width = [bitmap size].width * backingScaleFactor; // retina
-            texSize.height = [bitmap size].height * backingScaleFactor; // retina
+            texSize.width = [bitmap size].width * backingScaleFactor; // Retina
+            texSize.height = [bitmap size].height * backingScaleFactor; // Retina
             
             glActiveTexture(GL_TEXTURE0);
             glGenTextures(1, &textureID);

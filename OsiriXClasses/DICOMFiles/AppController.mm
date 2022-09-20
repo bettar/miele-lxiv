@@ -725,7 +725,7 @@ static bool isGrantedNotificationAccess = false;
         return NO;
     
     if (version.majorVersion == 12 &&
-        version.minorVersion > 5)
+        version.minorVersion > 6)
     {
         return NO;
     }
@@ -735,6 +735,7 @@ static bool isGrantedNotificationAccess = false;
 }
 
 // MACOSX_DEPLOYMENT_TARGET
+// MAC_OS_X_VERSION_MIN_REQUIRED
 +(BOOL) hasAtLeastMacOS_Mavericks
 {
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
@@ -5499,7 +5500,8 @@ displayThumbnailsList: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseF
 	
 	if ([sender isKindOfClass: [NSDictionary class]])
 	{
-        if ([[sender objectForKey: @"rows"] intValue] && [[sender objectForKey: @"columns"] intValue])
+        if ([[sender objectForKey: @"rows"] intValue] &&
+            [[sender objectForKey: @"columns"] intValue])
         {
             rows = [[sender objectForKey: @"rows"] intValue];
             columns = [[sender objectForKey: @"columns"] intValue];
@@ -5515,7 +5517,8 @@ displayThumbnailsList: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseF
 			rows = floor( (float) viewerCount / (float) columns);
 		}
         
-        if ([[sender objectForKey: @"Rows"] intValue] && [[sender objectForKey: @"Columns"] intValue])
+        if ([[sender objectForKey: @"Rows"] intValue] &&
+            [[sender objectForKey: @"Columns"] intValue])
         {
             rows = [[sender objectForKey: @"Rows"] intValue];
             columns = [[sender objectForKey: @"Columns"] intValue];

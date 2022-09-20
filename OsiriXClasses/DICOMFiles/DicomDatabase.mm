@@ -2166,6 +2166,10 @@ static BOOL protectionAgainstReentry = NO;
                                 curSerieID = nil;
                             }
                             
+                            NSString *unnamedAdjusted = @"unnamed";
+                            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+                                unnamedAdjusted = [unnamedAdjusted capitalizedString];
+                            
                             if (newObject || inParseExistingObject)
                             {
                                 studySqlRow.studyInstanceUID = [curDict2 objectForKey: @"studyID"];
@@ -2199,9 +2203,14 @@ static BOOL protectionAgainstReentry = NO;
                                     studySqlRow.performingPhysician = [curDict2 objectForKey: @"performingPhysiciansName"];
                                     studySqlRow.institutionName = [curDict2 objectForKey: @"institutionName"];
                                 }
-                                
-                                if (studySqlRow.studyName.length == 0 || [studySqlRow.studyName isEqualToString: @"unnamed"])
+
+                                //NSLog(@"%s %d, <%@>", __FUNCTION__, __LINE__, studySqlRow.studyName);
+;
+                                if (studySqlRow.studyName.length == 0 ||
+                                    [studySqlRow.studyName isEqualToString: unnamedAdjusted])
+                                {
                                     studySqlRow.studyName = [curDict2 objectForKey: @"seriesDescription"];
+                                }
                                 
                                 //need to know if is DICOM so only DICOM is queried for Q/R
                                 if ([curDict2 objectForKey: @"hasDICOM"])
@@ -2213,15 +2222,22 @@ static BOOL protectionAgainstReentry = NO;
                             else
                             {
                                 if ([[studySqlRow valueForKey: @"modality"] isEqualToString: @"SR"] || [[studySqlRow valueForKey: @"modality"] isEqualToString: @"OT"])
+                                {
                                     studySqlRow.modality = [curDict2 objectForKey: @"modality"];
+                                }
                                 
                                 if ([studySqlRow valueForKey: @"studyName"] == nil ||
                                     [[studySqlRow valueForKey: @"studyName"] isEqualToString: @"unnamed"] ||
                                     [[studySqlRow valueForKey: @"studyName"] isEqualToString: @""])
+                                {
                                     studySqlRow.studyName = [curDict2 objectForKey: @"studyDescription"];
+                                }
 
-                                if (studySqlRow.studyName.length == 0 || [studySqlRow.studyName isEqualToString: @"unnamed"])
+                                if (studySqlRow.studyName.length == 0 ||
+                                    [studySqlRow.studyName isEqualToString: unnamedAdjusted])
+                                {
                                     studySqlRow.studyName = [curDict2 objectForKey: @"seriesDescription"];
+                                }
                             }
                             
                             if ([curDict2 objectForKey: @"studyDate"] &&

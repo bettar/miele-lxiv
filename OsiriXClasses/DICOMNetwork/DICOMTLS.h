@@ -61,18 +61,25 @@ typedef enum
 + (void) eraseKeys;
 
 #pragma mark - Keychain Access
-+ (void)generateCertificateAndKeyForLabel:(NSString*)label withStringID:(NSString*)stringID;
+
 + (void)generateCertificateAndKeyForLabel:(NSString*)label;
-+ (void)generateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
++ (void)generateCertificateAndKeyForLabel:(NSString*)label withStringID:(NSString*)stringID;
+
 + (void)generateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
++ (void)generateCertificateAndKeyForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
+
 + (NSString*)uniqueLabelForServerAddress:(NSString*)address port:(NSString*)port AETitle:(NSString*)aetitle;
-+ (NSString*)keyPathForLabel:(NSString*)label withStringID:(NSString*)stringID;
+
 + (NSString*)keyPathForLabel:(NSString*)label;
-+ (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
++ (NSString*)keyPathForLabel:(NSString*)label withStringID:(NSString*)stringID;
+
 + (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
-+ (NSString*)certificatePathForLabel:(NSString*)label withStringID:(NSString*)stringID;
++ (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
+
 + (NSString*)certificatePathForLabel:(NSString*)label;
-+ (NSString*)certificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
++ (NSString*)certificatePathForLabel:(NSString*)label withStringID:(NSString*)stringID;
+
 + (NSString*)certificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle;
++ (NSString*)certificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID;
 	
 @end

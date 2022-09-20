@@ -400,7 +400,7 @@
 
 - (void)drawRect:(NSRect)a
 {
-    NSLog(@"%s", __FUNCTION__);
+    //NSLog(@"%s", __FUNCTION__);
 
 	[[self openGLContext] makeCurrentContext];
 

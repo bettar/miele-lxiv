@@ -2433,8 +2433,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	
 	if (sizeView.size.width / w < sizeView.size.height / h / d.pixelRatio )
 		return sizeView.size.width / w;
-	else
-		return sizeView.size.height / h / d.pixelRatio;
+
+    return sizeView.size.height / h / d.pixelRatio;
 }
 
 - (void) scaleToFit
@@ -6334,7 +6334,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	[self setOriginX: originStart.x + xx Y: originStart.y + yy];
 	
 	//set value for Series Object Presentation State
-	if ([self is2DViewer] == YES && [[self windowController] isPostprocessed] == NO)
+	if ([self is2DViewer] == YES &&
+        [[self windowController] isPostprocessed] == NO)
 	{
         @try {
             [self.seriesObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
@@ -8514,7 +8515,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	a.y -= [self drawingFrameRect].size.height/2.;		// Our viewing zero is centered in the view, NSView has the zero in left/bottom
 	a.x += [self drawingFrameRect].size.width/2.;					
 	
-    a = [self convertPointFromBacking: a]; //retina
+    a = [self convertPointFromBacking: a]; // Retina
     
     return a;
 }
@@ -8530,7 +8531,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 -(NSPoint) ConvertFromNSView2GL:(NSPoint) a
 {
-    a = [self convertPointToBacking: a]; //retina
+    a = [self convertPointToBacking: a]; // Retina
 
 	//inverse Y scaling system
 	a.y = [self drawingFrameRect].size.height - a.y ;	// inverse Y scaling system
@@ -9466,7 +9467,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                 fullText: (BOOL) fullText
          onlyOrientation: (BOOL) onlyOrientation
 {
-    float sf = [self.window backingScaleFactor]; //retina
+    float sf = [self.window backingScaleFactor]; // Retina
 
 #ifdef WITH_OPENGL_32
     [self setShaderProgramOverlay];
@@ -9722,9 +9723,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		for (NSString *key in [annotationsDictionary allKeys])
 		{
 			NSArray *annotations = [annotationsDictionary objectForKey:key];
-			xRaster = [[xRasterInitDic objectForKey:key] intValue]; //* [self.window backingScaleFactor]; //Retina
-			yRaster = [[yRasterInitDic objectForKey:key] intValue]; //* [self.window backingScaleFactor]; //Retina
-			increment = [[yRasterIncrementDic objectForKey:key] intValue]; // * [self.window backingScaleFactor]; //retina
+			xRaster = [[xRasterInitDic objectForKey:key] intValue]; //* [self.window backingScaleFactor]; // Retina
+			yRaster = [[yRasterInitDic objectForKey:key] intValue]; //* [self.window backingScaleFactor]; // Retina
+			increment = [[yRasterIncrementDic objectForKey:key] intValue]; // * [self.window backingScaleFactor]; // Retina
 			
 			NSEnumerator *enumerator;
 			if ([key hasPrefix:@"Lower"])
@@ -10242,7 +10243,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 						exceptionDisplayed = YES;
 					}
 				}
-			}// while
+			}// while annot
 		} // for k
 		
 #pragma mark Made in...
@@ -14401,7 +14402,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		{
 			[[v seriesView] selectFirstTilingView];
 			
-			NSRect	bounds = [[v imageView] bounds];
+			NSRect bounds = [[v imageView] bounds];
 			
 			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"])
 			{
@@ -14423,7 +14424,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			[viewsRect addObject: [NSValue valueWithRect: bounds]];
 		}
 		
-		data = [self getRawPixelsWidth:  &width
+		data = [self getRawPixelsWidth: &width
 								 height: &height
 									spp: &spp
 									bpp: &bpp
@@ -16273,11 +16274,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                                options:NSKeyValueObservingOptionNew
                                                context:nil];
 
-#ifndef WITH_OPENGL_32
+#if 1  //ndef WITH_OPENGL_32 issue #g67 ?
     [self setWantsBestResolutionOpenGLSurface:YES]; // Retina https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
 #endif // WITH_OPENGL_32
     
-    drawingFrameRect = [self convertRectToBacking: [self frame]]; //retina
+    drawingFrameRect = [self convertRectToBacking: [self frame]]; // Retina
     
     NSTrackingAreaOptions _options = NSTrackingCursorUpdate |
                                      NSTrackingActiveInActiveApp |

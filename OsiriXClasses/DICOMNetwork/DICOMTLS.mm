@@ -125,7 +125,7 @@ static NSMutableString *TLS_PRIVATE_KEY_PASSWORD = nil;
 
 + (NSString*) TLS_PRIVATE_KEY_PASSWORD
 {
-    if( TLS_PRIVATE_KEY_PASSWORD == nil)
+    if ( TLS_PRIVATE_KEY_PASSWORD == nil)
     {
         NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         
@@ -139,7 +139,7 @@ static NSMutableString *TLS_PRIVATE_KEY_PASSWORD = nil;
     return TLS_PRIVATE_KEY_PASSWORD;
 }
 
-+ (void)generateCertificateAndKeyForLabel:(NSString*)label withStringID:(NSString*)stringID;
++ (void)generateCertificateAndKeyForLabel:(NSString*)label withStringID:(NSString*)stringID
 {	
 	SecIdentityRef identity = [DDKeychain identityForLabel:label];
 	if( identity)
@@ -167,7 +167,7 @@ static NSMutableString *TLS_PRIVATE_KEY_PASSWORD = nil;
 	[DICOMTLS generateCertificateAndKeyForServerAddress:address port:port AETitle:aetitle withStringID:@""];
 }
 
-+ (NSString*)uniqueLabelForServerAddress:(NSString*)address port:(NSString*)port AETitle:(NSString*)aetitle;
++ (NSString*)uniqueLabelForServerAddress:(NSString*)address port:(NSString*)port AETitle:(NSString*)aetitle
 {
 	NSMutableString *label = [NSMutableString string];
 	[label appendString:TLS_KEYCHAIN_IDENTITY_NAME_CLIENT];
@@ -191,9 +191,15 @@ static NSMutableString *TLS_PRIVATE_KEY_PASSWORD = nil;
 	return [DICOMTLS keyPathForLabel:label withStringID:@""];
 }
 
-+ (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID
++ (NSString*)keyPathForServerAddress:(NSString*)address
+                                port:(int)port
+                             AETitle:(NSString*)aetitle
+                        withStringID:(NSString*)stringID
 {
-	return [DICOMTLS keyPathForLabel:[DICOMTLS uniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle] withStringID:stringID];
+	return [DICOMTLS keyPathForLabel:[DICOMTLS uniqueLabelForServerAddress:address
+                                                                      port:[NSString stringWithFormat:@"%d",port]
+                                                                   AETitle:aetitle]
+                        withStringID:stringID];
 }
 
 + (NSString*)keyPathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle
@@ -211,7 +217,10 @@ static NSMutableString *TLS_PRIVATE_KEY_PASSWORD = nil;
 	return [DICOMTLS certificatePathForLabel:label withStringID:@""];
 }
 
-+ (NSString*)certificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle withStringID:(NSString*)stringID
++ (NSString*)certificatePathForServerAddress:(NSString*)address
+                                        port:(int)port
+                                     AETitle:(NSString*)aetitle
+                                withStringID:(NSString*)stringID
 {
 	return [DICOMTLS certificatePathForLabel:[DICOMTLS uniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle] withStringID:stringID];
 }

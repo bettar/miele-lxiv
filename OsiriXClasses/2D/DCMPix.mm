@@ -812,7 +812,7 @@ static inline void DrawRuns(struct edge *active,
 			}
 			else		// INSIDE
 			{
-				float	*restorePtr = nil;
+				float *restorePtr = nil;
 				
 				start = xCoords[i];		if (start < 0) start = 0;		if (start >= w) start = w;
 				end = xCoords[i + 1];	if (end < 0) end = 0;			if (end >= w) end = w;
@@ -3016,9 +3016,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			{
 				switch (orientationStack)
 				{
-					case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
-					case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
-					case 2:		fTempImage = fImage + width*y;							break;
+					case 1: fTempImage = fImage + (y * ims) + stackNo*width;	break;
+					case 0: fTempImage = fImage + (y * ims) + stackNo;			break;
+					case 2: fTempImage = fImage + width*y;						break;
 				}
 				
 				for (long x = 0; x < width ; x++)
@@ -3042,9 +3042,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			{
 				switch (orientationStack)
 				{
-					case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
-					case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
-					case 2:		fTempImage = fImage + width*y;							break;
+					case 1: fTempImage = fImage + (y * ims) + stackNo*width;	break;
+					case 0: fTempImage = fImage + (y * ims) + stackNo;			break;
+					case 2: fTempImage = fImage + width*y;						break;
 				}
 				
 				for (long x = 0; x < width ; x++)
@@ -3063,9 +3063,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			{
 				switch (orientationStack)
 				{
-					case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
-					case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
-					case 2:		fTempImage = fImage + width*y;							break;
+					case 1: fTempImage = fImage + (y * ims) + stackNo*width;	break;
+					case 0: fTempImage = fImage + (y * ims) + stackNo;			break;
+					case 2: fTempImage = fImage + width*y;						break;
 				}
 				
 				for (long x = 0; x < width ; x++)
@@ -3131,9 +3131,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				{
 					switch (orientationStack)
 					{
-						case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
-						case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
-						case 2:		fTempImage = fImage + width*y;							break;
+						case 1: fTempImage = fImage + (y * ims) + stackNo*width;	break;
+						case 0: fTempImage = fImage + (y * ims) + stackNo;			break;
+						case 2: fTempImage = fImage + width*y;						break;
 					}
 					
 					for (long x = 0; x < xIm ; x++)
@@ -4976,7 +4976,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #endif
 				break;
 				
-					// GJ: don't need to parse these tags as things are wriiten now
+					// GJ: don't need to parse these tags as things are written now
 					/*
 					 case 258:
 					 LENGTH1 = ((TAG1[7] & MASK2) << 24) | ((TAG1[6] & MASK2) << 16) | ((TAG1[5] & MASK2) << 8) | (TAG1[4] & MASK2);
@@ -6472,14 +6472,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 DCMObject *pixelTransformationSequenceObject = [[pixelTransformationSequence sequence] objectAtIndex:0];
                 if (pixelTransformationSequenceObject)
                     [self dcmFrameworkLoad0x0028: pixelTransformationSequenceObject];
-            }
+            } // for
         }
         
 #pragma mark - per frame
         
-        // ****** ****** ****** ************************************************************************
+        // ****** ****** ****** ************************************************
         // PER FRAME
-        // ****** ****** ****** ************************************************************************
+        // ****** ****** ****** ************************************************
         
         //long frameCount = 0;
         DCMSequenceAttribute *perFrameFunctionalGroupsSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"Per-frameFunctionalGroupsSequence"];
@@ -6494,11 +6494,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 {
                     DCMSequenceAttribute* seq;
                     DCMObject* object;
-                    
+#if 1 // FIXME: "ImageType" is not a sequence ! DCM_ImageType
                     if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"ImageType"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
                     {
                         self.imageType = [[seq sequence] componentsJoinedByString:@"\\"];
                     }
+#endif
                     
                     if ((seq = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"MREchoSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
                     {
@@ -6854,7 +6855,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             else if ([colorspace hasPrefix:@"PALETTE"])	{
                 bitsAllocated = 8;
                 isRGB = YES;
-                NSLog(@"Palette depth converted to 8 bit");
+                //NSLog(@"Palette depth converted to 8 bit");
             }
             
             if ([colorspace rangeOfString:@"RGB"].location != NSNotFound)
@@ -7570,8 +7571,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			NSString *extension = [[srcFile pathExtension] lowercaseString];
             
 #ifdef OSIRIX_VIEWER
-			id fileFormatBundle;
-            fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[srcFile pathExtension]];
+			id fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[srcFile pathExtension]];
 			if (fileFormatBundle)
 			{
 				PluginFileFormatDecoder *decoder = [[[fileFormatBundle principalClass] alloc] init];
@@ -7648,9 +7648,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					[self LoadFVTiff];
 				}
 #ifndef DECOMPRESS_APP
-				else if ((( [extension isEqualToString:@"hdr"]) &&
-						  ([[NSFileManager defaultManager] fileExistsAtPath:[[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)) ||
-						( [extension isEqualToString:@"nii"]))
+				else if (([extension isEqualToString:@"hdr"] &&
+						  [[NSFileManager defaultManager] fileExistsAtPath:[[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]]) ||
+						 [extension isEqualToString:@"nii"])
 				{
 					// NIfTI support developed by Zack Mahdavi at the Center for Neurological Imaging, a division of Harvard Medical School
 					// For more information: http://cni.bwh.harvard.edu/
@@ -8406,15 +8406,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             }
                             
                             curFrame++;
-                        }				
-                    }
-                }
-            }
+                        } // while
+                    } // if (video_tracks.count)
+                } // mov mpg mpeg avi
+            } // movie
             
 #ifdef OSIRIX_VIEWER
             [self loadCustomImageAnnotationsPapyLink:-1 DCMLink:nil];
 #endif
-		}
+		} // ! success
 		
 		if (fImage == nil)
 		{
@@ -9292,7 +9292,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	return nearestSliceIndx;
 }
-
 
 - (void)computePixMinPixMax
 {
@@ -10669,7 +10668,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				ww = fullww;
 				wl = fullwl;
 			}
-			newWW = ww;
+
+            newWW = ww;
 			newWL = wl;
 		}
 		
@@ -11106,7 +11106,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
     return result;
 }
-
+// (1) similar to 'loadCustomImageAnnotationsPapyLink:DCMLink:' below
 - (void)loadCustomImageAnnotationsDBFields: (Dicom_Image*) imageObj
 {
 #ifdef OSIRIX_VIEWER
@@ -11139,22 +11139,22 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         if (![key isEqualToString:@"sameAsDefault"])
         {
             NSArray *annotations = [annotationsForModality objectForKey: key];
-            NSMutableArray *annotationsOUT = [NSMutableArray array]; // unused ?
+            //NSMutableArray *annotationsOUT1 = [NSMutableArray array]; // unused ?
             
             @try
             {
-                for ( NSDictionary *annot in annotations)
+                for (NSDictionary *annot in annotations)
                 {
-                    NSArray *content = [annot objectForKey:@"fullContent"];
-                    NSMutableArray *contentOUT = [NSMutableArray array];
+                    NSArray *fullContent1 = [annot objectForKey:@"fullContent"];
+                    //NSMutableArray *contentOUT1 = [NSMutableArray array];
                     
                     //BOOL contentForLine = NO;
                     
-                    for (int f=0; f<[content count]; f++)
+                    for (int f=0; f<[fullContent1 count]; f++)
                     {
                         @try
                         {
-                            NSDictionary *field = [content objectAtIndex:f];
+                            NSDictionary *field = [fullContent1 objectAtIndex:f];
                             NSString *type = [field objectForKey:@"type"];
                             NSString *value = nil;
                             
@@ -11205,8 +11205,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     [imageObj.managedObjectContext unlock];
 #endif // OSIRIX_VIEWER
 }
-
-- (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject
+// (2) similar to 'loadCustomImageAnnotationsDBFields:' above
+- (void)loadCustomImageAnnotationsPapyLink:(int)fileNb
+                                   DCMLink:(DCMObject*)dcmObject
 {
 	@try
 	{
@@ -11232,14 +11233,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			if (![key isEqualToString:@"sameAsDefault"])
 			{
 				NSArray *annotations = [annotationsForModality objectForKey: key];
-				NSMutableArray *annotationsOUT = [NSMutableArray array];
+				NSMutableArray *annotationsOUT2 = [NSMutableArray array];
 				
                 @try
                 {
                     for ( NSDictionary *annot in annotations)
                     {
                         NSArray *content = [annot objectForKey:@"fullContent"];
-                        NSMutableArray *contentOUT = [NSMutableArray array];
+                        NSMutableArray *contentOUT2 = [NSMutableArray array];
                         
                         BOOL contentForLine = NO;
                         for ( int f=0; f<[content count]; f++)
@@ -11356,7 +11357,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                 }
                                 
                                 if (value)
-                                    [contentOUT addObject:value];
+                                    [contentOUT2 addObject:value];
                             }
                             
                             @catch (NSException *e)
@@ -11367,8 +11368,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         
                         if (contentForLine)
                         {
-                            if (contentOUT)
-                                [annotationsOUT addObject:contentOUT];
+                            if (contentOUT2)
+                                [annotationsOUT2 addObject:contentOUT2];
                         }
                     }
                 }
@@ -11376,11 +11377,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     NSLog(@"CustomImageAnnotations Exception: %@", e);
                 }
                 
-				if (annotationsOUT)
+				if (annotationsOUT2)
 				{
 					@synchronized( annotationsDictionary)
 					{
-						[annotationsDictionary setObject:annotationsOUT forKey: key];
+						[annotationsDictionary setObject:annotationsOUT2 forKey: key];
 					}
 				}
 			}

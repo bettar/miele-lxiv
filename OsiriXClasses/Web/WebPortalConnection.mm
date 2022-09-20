@@ -542,7 +542,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                     [self processMainHtml];
                 else
                 if ([requestedPath isEqualToString:@"/logs"])
-                    [self processLogsListHtml];
+                    [self processLogsListHtml]; // only administrators
                 else
                 if ([requestedPath isEqualToString:@"/studyList"])
                     [self processStudyListHtml];

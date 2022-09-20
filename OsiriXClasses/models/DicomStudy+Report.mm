@@ -56,7 +56,7 @@
             [task setArguments: [NSArray arrayWithObjects: @"--headless", @"--convert-to", @"pdf", odtPath, nil]];
             [task setStandardOutput:[NSPipe pipe]];
             [task launch];
-            while( [task isRunning])
+            while ([task isRunning])
                 [NSThread sleepForTimeInterval: 0.1];
             
             //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
@@ -66,7 +66,7 @@
             if ([task terminationStatus] == EXIT_SUCCESS)
                 succeeded = YES;
             
-            if( succeeded) {
+            if (succeeded) {
                 [[NSFileManager defaultManager] moveItemAtPath: [[odtPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"pdf"] toPath: pdfPath error: nil];
             }
             else

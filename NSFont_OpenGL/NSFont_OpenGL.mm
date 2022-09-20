@@ -340,8 +340,11 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
 			
 			if (bitmap)
 			{
-                if (scaling == 1 && bitmap.pixelsWide / charRect.size.width == 2) // We don't want a Retina image, on a Retina OS...
+                if (scaling == 1 &&
+                    bitmap.pixelsWide / charRect.size.width == 2) // We don't want a Retina image, on a Retina OS...
+                {
                     curSizeArray[currentUnichar] = bitmap.pixelsWide/2;
+                }
                 else
                     curSizeArray[currentUnichar] = bitmap.pixelsWide;
                 

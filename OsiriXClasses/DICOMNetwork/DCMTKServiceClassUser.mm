@@ -88,7 +88,7 @@
 			
 			_cipherSuites = [[NSArray arrayWithArray:selectedCipherSuites] retain];
 			
-			if([[extraParameters objectForKey:@"TLSUseDHParameterFileURL"] boolValue])
+			if ([[extraParameters objectForKey:@"TLSUseDHParameterFileURL"] boolValue])
 				_dhparam = [[extraParameters objectForKey:@"TLSDHParameterFileURL"] cStringUsingEncoding:NSUTF8StringEncoding];
 			
 			[DDKeychain generatePseudoRandomFileToPath:TLS_SEED_FILE];
@@ -97,13 +97,14 @@
 		}
 #endif
         
-        if( numberOfDcmLongSCUStorageSOPClassUIDs > 120)
+        if (numberOfDcmLongSCUStorageSOPClassUIDs > 120)
             NSLog( @"******** numberOfDcmLongSCUStorageSOPClassUIDs > 120");
         
-        if( numberOfDcmShortSCUStorageSOPClassUIDs > 64)
+        if (numberOfDcmShortSCUStorageSOPClassUIDs > 64)
              NSLog( @"******** numberOfDcmShortSCUStorageSOPClassUIDs > 64");
 	}
-	return self;
+
+    return self;
 }
 
 - (void)dealloc{
