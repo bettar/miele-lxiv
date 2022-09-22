@@ -106,7 +106,7 @@ typedef NS_ENUM(NSInteger, BlendingMode2DType) {
 
 /** \brief Image/Frame View for ViewerController */
 
-@interface DCMView: NSOpenGLView
+@interface DCMView: NSOpenGLView <NSColorChanging, NSFontChanging>
 {
 	NSInteger		_imageRows;
 	NSInteger		_imageColumns;
@@ -193,14 +193,20 @@ typedef NS_ENUM(NSInteger, BlendingMode2DType) {
 	
     BOOL            xFlipped, yFlipped;
 
-	long			fontListGLSize[256];
-	long			labelFontListGLSize[ 256];
-	NSSize			stringSize;
-	NSFont			*labelFont;
-	NSFont			*fontGL;
-	NSColor			*fontColor;
-    GLuint          fontListGL;
-	GLuint          labelFontListGL;
+    // FONT_TYPE_2D_VIEW
+    // 2DView (and Preview?) text annotations
+    NSColor         *fontColor;
+    NSSize			stringSize;
+    NSFont          *fontGL;
+    GLuint          fontListGL;  // OpenGL legacy
+    long            fontListGLSize[256];
+
+    // FONT_TYPE_ROI
+    // ROI text annotations
+    NSFont			*labelFont;
+    GLuint          labelFontListGL;  // OpenGL legacy
+    long            labelFontListGLSize[ 256];
+
 	float			fontRasterY;
 		
     NSPoint         measureA, measureB;

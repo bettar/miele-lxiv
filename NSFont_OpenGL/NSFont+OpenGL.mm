@@ -34,54 +34,53 @@
  * Initial version, 27 October, 2002
  */
 
-/* NSFont_OpenGL.m */
-
 #import "mgl.h" // include first
 #import "mieleTypes.h"
 
-#import "NSFont_OpenGL.h"
+#import "NSFont+OpenGL.h"
 #import "N2Debug.h"
 
-#define MAXCOUNT                    256
-#define NUM_DISPLAY_LISTS           150  // starting from ' ' = 32
-
-@interface NSFont (withay_OpenGL_InternalMethods)
+// private methods
+@interface NSFont (with_OpenGL_InternalMethods)
 + (unsigned char*) createCharacterWithImage:(NSBitmapImageRep *)bitmap;
 + (void) doOpenGLLog:(NSString *)format, ...;
 @end
 
-#pragma mark -
+#pragma mark - NSFont category (with_OpenGL)
 
-@implementation NSFont (withay_OpenGL)
+#define MAXCOUNT                    256
+#define NUM_DISPLAY_LISTS           150  // starting from ' ' = 32
+
+@implementation NSFont (with_OpenGL)
 
 static BOOL openGLLoggingEnabled = YES;
 static BOOL fontOpenGLInitialized = NO;
 
 // Scale 1
-static NSMutableArray *imageArray = nil;                // FONT_TYPE_0
-static NSMutableArray *imageArrayPreview = nil;         // FONT_TYPE_1
-static NSMutableArray *imageArrayROI = nil;             // FONT_TYPE_2
+static NSMutableArray *imageArray = nil;                // FONT_TYPE_2D_VIEW
+static NSMutableArray *imageArrayPreview = nil;         // FONT_TYPE_PREVIEW
+static NSMutableArray *imageArrayROI = nil;             // FONT_TYPE_ROI
 
-static long charSizeArray[ MAXCOUNT];                   // FONT_TYPE_0
-static long charSizeArrayPreview[ MAXCOUNT];            // FONT_TYPE_1
-static long charSizeArrayROI[ MAXCOUNT];                // FONT_TYPE_2
+static long charSizeArray[ MAXCOUNT];                   // FONT_TYPE_2D_VIEW
+static long charSizeArrayPreview[ MAXCOUNT];            // FONT_TYPE_PREVIEW
+static long charSizeArrayROI[ MAXCOUNT];                // FONT_TYPE_ROI
 
-static unsigned char *charPtrArray[ MAXCOUNT];          // FONT_TYPE_0
-static unsigned char *charPtrArrayPreview[ MAXCOUNT];   // FONT_TYPE_1
-static unsigned char *charPtrArrayROI[ MAXCOUNT];       // FONT_TYPE_2
+static unsigned char *charPtrArray[ MAXCOUNT];          // FONT_TYPE_2D_VIEW
+static unsigned char *charPtrArrayPreview[ MAXCOUNT];   // FONT_TYPE_PREVIEW
+static unsigned char *charPtrArrayROI[ MAXCOUNT];       // FONT_TYPE_ROI
 
 // Scale 2
-static NSMutableArray *imageArrayScale2 = nil;          // FONT_TYPE_0
-static NSMutableArray *imageArrayPreviewScale2 = nil;   // FONT_TYPE_1
-static NSMutableArray *imageArrayROIScale2 = nil;       // FONT_TYPE_2
+static NSMutableArray *imageArrayScale2 = nil;          // FONT_TYPE_2D_VIEW
+static NSMutableArray *imageArrayPreviewScale2 = nil;   // FONT_TYPE_PREVIEW
+static NSMutableArray *imageArrayROIScale2 = nil;       // FONT_TYPE_ROI
 
-static long charSizeArrayScale2[ MAXCOUNT];             // FONT_TYPE_0
-static long charSizeArrayPreviewScale2[ MAXCOUNT];      // FONT_TYPE_1
-static long charSizeArrayROIScale2[ MAXCOUNT];          // FONT_TYPE_2
+static long charSizeArrayScale2[ MAXCOUNT];             // FONT_TYPE_2D_VIEW
+static long charSizeArrayPreviewScale2[ MAXCOUNT];      // FONT_TYPE_PREVIEW
+static long charSizeArrayROIScale2[ MAXCOUNT];          // FONT_TYPE_ROI
 
-static unsigned char *charPtrArrayScale2[ MAXCOUNT];        // FONT_TYPE_0
-static unsigned char *charPtrArrayPreviewScale2[ MAXCOUNT]; // FONT_TYPE_1
-static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
+static unsigned char *charPtrArrayScale2[ MAXCOUNT];        // FONT_TYPE_2D_VIEW
+static unsigned char *charPtrArrayPreviewScale2[ MAXCOUNT]; // FONT_TYPE_PREVIEW
+static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_ROI
 
 // Enable/disable logging, class-wide, not object-wide
 
@@ -92,12 +91,13 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
 
 + (void) resetFont: (int) fontType
 {
+    //NSLog(@"%s %d, type: %d", __FUNCTION__, __LINE__, fontType);
 	if (fontOpenGLInitialized == NO)
 	{
         for (int i = 0; i < MAXCOUNT; i++) {
-            charPtrArrayPreview[ i] = 0;
-            charPtrArray[ i] = 0;
-            charPtrArrayROI[ i] = 0;
+            charPtrArrayPreview[ i] = 0;    // FONT_TYPE_PREVIEW
+            charPtrArray[ i] = 0;           // FONT_TYPE_2D_VIEW
+            charPtrArrayROI[ i] = 0;        // FONT_TYPE_ROI
         
             charPtrArrayPreviewScale2[ i] = 0;
             charPtrArrayScale2[ i] = 0;
@@ -109,7 +109,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
 	
 	switch (fontType)
 	{
-		case FONT_TYPE_0:
+		case FONT_TYPE_2D_VIEW:
 			if (imageArray)
 			{
 				for (int i = 0; i < MAXCOUNT; i++)
@@ -128,7 +128,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
 			{
 				for (int i = 0; i < MAXCOUNT; i++)
 				{
-                    if ( charPtrArrayScale2[ i]) {
+                    if (charPtrArrayScale2[ i]) {
                         free( charPtrArrayScale2[ i]);
                         charPtrArrayScale2[ i] = NULL;
                     }
@@ -243,7 +243,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
                 curPtrArray = charPtrArrayPreviewScale2;
                 break;
                 
-            case FONT_TYPE_0:
+            case FONT_TYPE_2D_VIEW:
                 curArray_A = imageArrayScale2;
                 curSizeArray = charSizeArrayScale2;
                 curPtrArray = charPtrArrayScale2;
@@ -266,7 +266,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
                 curPtrArray = charPtrArrayPreview;
                 break;
             
-            case FONT_TYPE_0:
+            case FONT_TYPE_2D_VIEW:
                 curArray_A = imageArray;
                 curSizeArray = charSizeArray;
                 curPtrArray = charPtrArray;
@@ -293,12 +293,12 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
 	else
         [curArray_A removeAllObjects];
     
-    NSColor *blackColor = [ NSColor blackColor ];
-    NSDictionary *attribDict = [ NSDictionary dictionaryWithObjectsAndKeys:
+    NSColor *blackColor = [NSColor blackColor];
+    NSDictionary *attribDict = [NSDictionary dictionaryWithObjectsAndKeys:
                   font, NSFontAttributeName,
-                  [ NSColor whiteColor ], NSForegroundColorAttributeName,
+                  [NSColor whiteColor], NSForegroundColorAttributeName,
                   blackColor, NSBackgroundColorAttributeName,
-                  nil ];
+                  nil];
     NSRect charRect = NSZeroRect;
 	for (unichar currentUnichar = first; currentUnichar < first + count; currentUnichar++)
 	{
@@ -365,7 +365,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
         switch (fontType)
         {
             case FONT_TYPE_PREVIEW: imageArrayPreviewScale2 = curArray_A; break;
-            case FONT_TYPE_0: imageArrayScale2 = curArray_A; break;
+            case FONT_TYPE_2D_VIEW: imageArrayScale2 = curArray_A; break;
             case FONT_TYPE_ROI: imageArrayROIScale2 = curArray_A; break;
         }
     }
@@ -374,7 +374,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
         switch (fontType)
         {
             case FONT_TYPE_PREVIEW: imageArrayPreview = curArray_A; break;
-            case FONT_TYPE_0: imageArray = curArray_A; break;
+            case FONT_TYPE_2D_VIEW: imageArray = curArray_A; break;
             case FONT_TYPE_ROI: imageArrayROI = curArray_A; break;
         }
     }
@@ -390,7 +390,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
                                :(FontType) fontType
                                :(float) scaling
 {
-    //NSLog(@"makeGLDisplayListFirst %d, font list: %i, type: %d", __LINE__, base, fontType);
+    //NSLog(@"makeGLDisplayListFirst %d, font list: %i, type: %ld", __LINE__, base, fontType);
 
     GLint dListNum;
 	//unichar currentUnichar;
@@ -404,7 +404,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
     {
         switch (fontType)
         {
-            case FONT_TYPE_0:
+            case FONT_TYPE_2D_VIEW:
                 if (imageArrayScale2 == nil)
                     [NSFont initFontImage:' ' count:NUM_DISPLAY_LISTS font:self fontType: fontType scaling: scaling];
                 
@@ -436,7 +436,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
     {
         switch (fontType)
         {
-            case FONT_TYPE_0:
+            case FONT_TYPE_2D_VIEW:
                 if (imageArray == nil)
                     [NSFont initFontImage:' ' count:NUM_DISPLAY_LISTS font:self fontType: fontType scaling: scaling];
                 
@@ -481,7 +481,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
     // Save pixel unpacking state
 #ifdef WITH_OPENGL_32
     #ifndef NDEBUG
-    NSLog(@"NSFont_OpenGL.mm %d makeGLDisplayListFirst, TODO: GL_CLIENT_PIXEL_STORE_BIT", __LINE__);
+    //NSLog(@"NSFont+OpenGL.mm %d makeGLDisplayListFirst, TODO: GL_CLIENT_PIXEL_STORE_BIT", __LINE__);
     #endif
 #else
     glPushClientAttrib( GL_CLIENT_PIXEL_STORE_BIT );
@@ -537,9 +537,13 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
 
    return retval;
 }
+@end
 
-/*
- * Create one display list based on the given image.
+#pragma mark - NSFont category (private)
+
+@implementation NSFont (with_OpenGL_InternalMethods)
+
+/* Create one display list based on the given image.
  * This assumes the image uses 8-bit chunks to represent a sample.
  */
 + (unsigned char *) createCharacterWithImage:(NSBitmapImageRep *)bitmap
@@ -559,10 +563,9 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
 
    unsigned char *movingBuffer = newBuffer;
 
-   /*
-    * Convert the color bitmap into a true bitmap, ie, one bit per pixel.  We
-    * read at last row, write to first row as Cocoa and OpenGL have opposite
-    * y origins
+   /* Convert the color bitmap into a true bitmap, ie, one bit per pixel.
+    * We read at last row, write to first row as Cocoa and OpenGL have
+    * opposite Y origins
     */
    for (int rowIndex = pixelsHigh - 1; rowIndex >= 0; rowIndex --)
    {
@@ -589,9 +592,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
 	return newBuffer;
 }
 
-/*
- * Log the warning/error, if logging is enabled
- */
+// Log the warning/error, if logging is enabled
 + (void) doOpenGLLog:(NSString *)format, ...
 {
    va_list args;
@@ -599,7 +600,7 @@ static unsigned char *charPtrArrayROIScale2[ MAXCOUNT];     // FONT_TYPE_2
    if (openGLLoggingEnabled)
    {
       va_start( args, format );
-      NSLogv( [ NSString stringWithFormat:@"NSFont_OpenGL: %@\n", format ],
+      NSLogv( [NSString stringWithFormat:@"NSFont+OpenGL: %@\n", format],
               args );
       va_end( args );
    }

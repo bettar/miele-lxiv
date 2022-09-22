@@ -36,7 +36,7 @@
 #import "ViewerController.h"
 #import "XMLController.h"
 #import "SplashScreen.h"
-#import "NSFont_OpenGL/NSFont_OpenGL.h"
+#import "NSFont_OpenGL/NSFont+OpenGL.h"
 #import "DICOMFiles/dicomFile.h"
 #import <DCM/DCM.h>
 #import "PluginManager.h"

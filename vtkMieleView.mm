@@ -179,7 +179,7 @@
 
     unichar c = [[event characters] characterAtIndex:0];
 
-	if (c != 'q' && c!= 'e')						// Don't forward to super if Q or E key pressed: DDP (051112,051128)
+	if (c != 'q' && c!= 'e') // Don't forward to super if Q or E key pressed: DDP (051112,051128)
 		[super keyDown: event];
 }
 

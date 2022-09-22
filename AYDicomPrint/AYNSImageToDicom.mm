@@ -18,7 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import "NSFont_OpenGL/NSFont_OpenGL.h"
+#import "NSFont_OpenGL/NSFont+OpenGL.h"
 
 #import "AYNSImageToDicom.h"
 #import "OSIWindow.h"
@@ -207,9 +207,9 @@ extern BOOL FULL32BITPIPELINE;
                         withAnnotations: annotations];
 }
 
-//********************************************************************************************
+//******************************************************************************
 // returnValue must be retained and released by caller
-//********************************************************************************************
+//******************************************************************************
 - (NSArray *) dicomFileListForViewer: (ViewerController *) currentViewer
                      destinationPath: (NSString *) destPath
                              options: (NSDictionary*) options
@@ -219,8 +219,6 @@ extern BOOL FULL32BITPIPELINE;
 {
     NSMutableArray *dicomFilePathList = [NSMutableArray array];
 	int currentImageIndex = [[currentViewer imageView] curImage];
-	
-	///
 	
 	float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
 	float scaleFactor = 1.0;
@@ -244,7 +242,7 @@ extern BOOL FULL32BITPIPELINE;
 	NSPoint o = [[[currentViewer window] screen] visibleFrame].origin;
 	o.y += [[[currentViewer window] screen] visibleFrame].size.height;
 	
-	///
+	//
 	
 	[OSIWindowController setDontEnterMagneticFunctions: YES];
 	[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
@@ -265,7 +263,7 @@ extern BOOL FULL32BITPIPELINE;
 		[currentViewer setImageIndex: [imageIndex intValue]];
 		
 		BOOL windowSizeChanged = NO;
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"] && [[currentViewer imageView] scaleValue] < 1.0)
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"printAt100%Minimum"] && [[currentViewer imageView] scaleValue] < 1.0)
 		{
 			scaleFactor = 1. / [[currentViewer imageView] scaleValue];
 			
@@ -297,7 +295,7 @@ extern BOOL FULL32BITPIPELINE;
 		if (fontSizeCopy * inc * scaleFactor * 1.2 != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
 		{
 			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor * 1.2 forKey: @"FONTSIZE"];
-			[NSFont resetFont: FONT_TYPE_0];
+			[NSFont resetFont: FONT_TYPE_2D_VIEW];
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixGLFontChangeNotification object: currentViewer];
 		}
 		
@@ -318,7 +316,7 @@ extern BOOL FULL32BITPIPELINE;
 	
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"allowSmartCropping"];
 	
-	if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
+	if (fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
 	{
 		[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
 		[NSFont resetFont: 0];

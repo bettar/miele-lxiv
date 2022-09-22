@@ -1491,11 +1491,12 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     [s.overlayProgram setMode: SHADER_MODE_TEXTURE_RGBA];
     //[curView setShaderProgramOverlay_withMode:SHADER_MODE_TEXTURE_RGBA];
 #endif
-    // Draw text shadow (black)
+
+    // First draw text shadow (black)
     renderer_setTextColor(0.0f, 0.0f, 0.0f, opacity);
     [stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+ 1.0) ratio: 1];
                     
-    // Draw text (ROI color, default yellow)
+    // Then draw text (ROI color, default yellow)
     renderer_setTextColor(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
     [stringTex drawAtPoint:tPt ratio: 1];
         
@@ -5290,10 +5291,11 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
     {
         NSMutableDictionary *attrib = [NSMutableDictionary dictionary];
         
-        NSFont *fontGL = [NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"LabelFONTNAME"]
-                                         size: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"]];
+        NSFont *tempLabelFont =
+            [NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey: @"LabelFONTNAME"]
+                            size: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"]];
         
-        [attrib setObject: fontGL forKey:NSFontAttributeName];
+        [attrib setObject: tempLabelFont forKey:NSFontAttributeName];
         [attrib setObject: [NSColor whiteColor] forKey:NSForegroundColorAttributeName];
         
         sT = [[[StringTexture alloc] initWithString: str withAttributes: attrib] autorelease];
@@ -10623,7 +10625,9 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
                                      alpha:opacity];
 }
 
--(void)setNSColor:(NSColor*)nsColor globally:(BOOL)g {
+-(void)setNSColor:(NSColor*)nsColor
+         globally:(BOOL)g
+{
 	[self setOpacity:[nsColor alphaComponent] globally:g];
     unsigned short rd = [nsColor redComponent]  *0xffff;
     unsigned short gr = [nsColor greenComponent]*0xffff;

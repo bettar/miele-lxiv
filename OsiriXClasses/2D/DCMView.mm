@@ -38,7 +38,7 @@
 #import "StringTexture.h"
 #import "DCMPix.h"
 #import "ROI.h"
-#import "NSFont_OpenGL/NSFont_OpenGL.h"
+#import "NSFont_OpenGL/NSFont+OpenGL.h"
 #import "DCMCursor.h"
 #import "GLString.h"
 #import "DICOMExport.h"
@@ -72,7 +72,7 @@
 #import "DCMUSRegion.h"
 
 #ifndef NDEBUG
-#import "PreviewView.h"  // @@@
+#import "PreviewView.h"
 //static bool OglVersionChecked41 = true;
 //static int seq = 0;
 const char *stringCRSpaces = "\n                                                ";
@@ -2106,23 +2106,38 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #endif
             checkOpenGLErrors(__LINE__);
 
-            if (self.whiteBackground)
-                renderer_setTextColor(1.0, 1.0, 1.0, 1.0); // white
-            else
-                renderer_setTextColor(0.0, 0.0, 0.0, 1.0); // black
-            
-            //NSLog(@"DrawNSStringGL %d, ========== str:<%@> background", __LINE__, str);
-            [stringTex drawWithBounds: NSMakeRect( xc+1, yc+1, [stringTex texSize].width, [stringTex texSize].height)];
-           
-            checkOpenGLErrors(__LINE__);
-            if (self.whiteBackground)
-                renderer_setTextColor(0.0, 0.0, 0.0, 1.0); // black
-            else
-                renderer_setTextColor(1.0, 1.0, 1.0, 1.0); // white
-            
-            checkOpenGLErrors(__LINE__);
-            //NSLog(@"DrawNSStringGL %d, ---------- str:<%@> foreground", __LINE__, str);
-            [stringTex drawWithBounds: NSMakeRect( xc, yc, [stringTex texSize].width, [stringTex texSize].height)];
+            // First draw text as a displaced shadow
+            {
+                if (self.whiteBackground)
+                    renderer_setTextColor(1.0, 1.0, 1.0, 1.0); // white
+                else
+                    renderer_setTextColor(0.0, 0.0, 0.0, 1.0); // black
+                
+                [stringTex drawWithBounds: NSMakeRect( xc+1, yc+1, [stringTex texSize].width, [stringTex texSize].height)];
+                
+                checkOpenGLErrors(__LINE__);
+            }
+
+            // Then draw same text (over the shadow)
+            {
+                if (fontColor)
+                {
+                    renderer_setTextColor([fontColor redComponent],
+                                          [fontColor greenComponent],
+                                          [fontColor blueComponent],
+                                          [fontColor alphaComponent]);
+                }
+                else
+                {
+                    if (self.whiteBackground)
+                        renderer_setTextColor(0.0, 0.0, 0.0, 1.0); // black
+                    else
+                        renderer_setTextColor(1.0, 1.0, 1.0, 1.0); // white
+                }
+                
+                checkOpenGLErrors(__LINE__);
+                [stringTex drawWithBounds: NSMakeRect( xc, yc, [stringTex texSize].width, [stringTex texSize].height)];
+            }
             
             glDisable(GL_BLEND);
             
@@ -2167,6 +2182,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		if (cgl_ctx)
 #endif
         {
+            // Text color
             if (fontColor)
             {
                 renderer_setTextColor([fontColor redComponent],
@@ -2204,10 +2220,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                 }
             }
             
-            if (self.whiteBackground)
-                renderer_setTextColor(0.0, 0.0, 0.0, 1.0); // black
+            if (fontColor)
+            {
+                renderer_setTextColor([fontColor redComponent],
+                                      [fontColor greenComponent],
+                                      [fontColor blueComponent],
+                                      [fontColor alphaComponent]);
+            }
             else
-                renderer_setTextColor(1.0, 1.0, 1.0, 1.0); // white
+            {
+                if (self.whiteBackground)
+                    renderer_setTextColor(0.0, 0.0, 0.0, 1.0); // black
+                else
+                    renderer_setTextColor(1.0, 1.0, 1.0, 1.0); // white
+            }
             
 #ifdef WITH_OPENGL_32
             // TODO:
@@ -2730,6 +2756,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #ifdef WITH_OPENGL_32
             //NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
             renderer_setProgram(0, __LINE__);
+            fontListGL = FONT_TYPE_INVALID; // issue #g79
+            labelFontListGL = FONT_TYPE_INVALID; // issue #g79
 #else
             if (fontListGL)
                 glDeleteLists(fontListGL, NUM_DISPLAY_LISTS);
@@ -2778,6 +2806,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         [fontColor autorelease]; fontColor = nil;
         [fontGL autorelease]; fontGL = nil;
         [labelFont autorelease]; labelFont = nil;
+
         [yearOld autorelease]; yearOld = nil;
         
         [cursor autorelease]; cursor = nil;
@@ -3271,7 +3300,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		{
 			[[self windowController] PlayStop:[[self windowController] findPlayStopButton]];
 		}
-		else if (c == 27)			// Escape
+		else if (c == 27) // Escape
 		{
 			if ([self is2DViewer] == YES)
 				[[self windowController] offFullScreen];
@@ -3384,7 +3413,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			curImage = 0;
 		else if (c == NSEndFunctionKey)
 			curImage = (long)[dcmPixList count]-1;
-		else if (c == 9)	// Tab key
+		else if (c == 9) // Tab key
 		{
 			int a = annotationType + 1;
 			if (a > ANNOTATIONS_FULL)
@@ -3525,7 +3554,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             else
                 [self setIndexWithReset:curImage :YES];
             
-            if (matrix ) {
+            if (matrix) {
                 NSInteger rows, cols;
                 [matrix getNumberOfRows:&rows columns:&cols];
                 if (cols < 1)
@@ -8251,7 +8280,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         }
     }
     
-    if ([keyPath isEqualToString:@"LabelFONTNAME"] || [keyPath isEqualToString:@"LabelFONTSIZE"])
+    if ([keyPath isEqualToString:@"LabelFONTNAME"] ||
+        [keyPath isEqualToString:@"LabelFONTSIZE"])
     {
         for (NSArray *rois in dcmRoiList)
         {
@@ -8289,6 +8319,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 {
 	[self setSyncro: (SynchroType)[sender tag]];
 }
+
+#pragma mark - NSColorChanging
+
+// orderFrontColorPanel:
+- (void) changeColor:(id) sender
+{
+    fontColor = [sender color];
+    [self setNeedsDisplay:YES]; // Apply it immediately
+
+    // TODO: maybe make it persistent to defaults or add it to sql table ZSERIES
+}
+
+#pragma mark -
 
 - (SynchroType)syncro { return syncro; }
 + (SynchroType)syncro { return syncro; }
@@ -15850,24 +15893,28 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	}
 }
 
+// menu ROI, "Increase Font Size, ^+"
 - (void) increaseFontSize:(id) sender
 {
-	if ([[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] < 60)
-	{
-		[[NSUserDefaults standardUserDefaults] setFloat: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] + 1 forKey: @"LabelFONTSIZE"];
-		[NSFont resetFont: FONT_TYPE_ROI];
-		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: sender];
-	}
+    float labelFontSize = [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"];
+	if (labelFontSize >= 60.0) // Check for maximum font size
+        return;
+
+    [[NSUserDefaults standardUserDefaults] setFloat: labelFontSize + 1 forKey: @"LabelFONTSIZE"];
+    [NSFont resetFont: FONT_TYPE_ROI];
+    [[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: sender];
 }
 
+// menu ROI, "Decrease Font Size, ^-"
 - (void) decreaseFontSize:(id) sender
 {
-	if ([[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] > 6)
-	{
-		[[NSUserDefaults standardUserDefaults] setFloat: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"] - 1 forKey: @"LabelFONTSIZE"];
-		[NSFont resetFont: FONT_TYPE_ROI];
-		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: sender];
-	}
+    float labelFontSize = [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"];
+	if (labelFontSize <= 6.0) // Check for minimum font size
+        return;
+
+    [[NSUserDefaults standardUserDefaults] setFloat: labelFontSize - 1 forKey: @"LabelFONTSIZE"];
+    [NSFont resetFont: FONT_TYPE_ROI];
+    [[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: sender];
 }
 
 - (void) changeLabelGLFontNotification:(NSNotification*) note
@@ -15876,7 +15923,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         return;
 
     [[self openGLContext] makeCurrentContext];
-#ifndef WITH_OPENGL_32
+
+#ifdef WITH_OPENGL_32
+    labelFontListGL = FONT_TYPE_ROI; // Issue #g79
+#else
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
         return;
@@ -15890,10 +15940,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     
     [labelFont release];
     
-    NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:@"LabelFONTNAME"];
-    CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"];
-    labelFont = [[NSFont fontWithName:fontName
-                                 size:fontSize] retain];
+    NSString *labelFontName = [[NSUserDefaults standardUserDefaults] stringForKey:@"LabelFONTNAME"];
+    CGFloat labelFontSize = [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"];
+
+    labelFont = [[NSFont fontWithName:labelFontName
+                                 size:labelFontSize] retain];
     if (labelFont == nil)
         labelFont = [[NSFont fontWithName:@"Monaco" size:12] retain];
     
@@ -15908,13 +15959,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     [self setNeedsDisplay:YES];
 }
 
+// parameter 'note' unused
 - (void) changeGLFontNotification:(NSNotification*) note
 {
     if (self.window.backingScaleFactor != 0)
     {
         [[self openGLContext] makeCurrentContext];
 
-#ifndef WITH_OPENGL_32
+#ifdef WITH_OPENGL_32
+        fontListGL = FONT_TYPE_2D_VIEW; // issue #g79
+#else
         CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         if (cgl_ctx == nil)
             return;
@@ -15927,9 +15981,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #endif
         
         [fontGL release];
+        
+        NSString *fontName = [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"];
+        CGFloat fontSize = [[NSUserDefaults standardUserDefaults] floatForKey:@"FONTSIZE"];
 
-        fontGL = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"]
-                                  size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]] retain];
+        fontGL = [[NSFont fontWithName: fontName
+                                  size: fontSize] retain];
         if (fontGL == nil)
             fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
         
@@ -15937,7 +15994,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                  count:NUM_DISPLAY_LISTS
                                   base:fontListGL
                                       :fontListGLSize
-                                      :FONT_TYPE_0
+                                      :FONT_TYPE_2D_VIEW
                                       :self.window.backingScaleFactor];
         stringSize = [self convertSizeToBacking: [DCMView sizeOfString:@"B" forFont:fontGL]];
         
@@ -15952,17 +16009,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     }
 }
 
-- (void)changeFont:(id)sender
+ #pragma mark - NSFontChanging
+
+// menu Format, Font, "Bigger, ⌘+"
+// menu Format, Font, "Smaller, ⌘-"
+- (void)changeFont:(id)sender    // sender is a NSFontManager
 {
     NSFont *oldFont = fontGL;
     NSFont *newFont = [sender convertFont:oldFont];
 	
 	[[NSUserDefaults standardUserDefaults] setObject: [newFont fontName] forKey: @"FONTNAME"];
 	[[NSUserDefaults standardUserDefaults] setFloat: [newFont pointSize] forKey: @"FONTSIZE"];
-	[NSFont resetFont: FONT_TYPE_0];
+	[NSFont resetFont: FONT_TYPE_2D_VIEW];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: sender];
 }
+
+#pragma mark -
 
 - (void)loadTexturesCompute
 {

@@ -9234,7 +9234,7 @@ static BOOL withReset = NO;
 		{
 //            id item = [matrixViewArray objectAtIndex: [cell tag]];
             
-			NSArray *images = matrixViewArray.count? [self imagesArray: [matrixViewArray objectAtIndex: [cell tag]]] : nil;
+			NSArray *images = matrixViewArray.count ? [self imagesArray: [matrixViewArray objectAtIndex: [cell tag]]] : nil;
 			
 			if ([images count])
 			{
@@ -9442,7 +9442,7 @@ static BOOL withReset = NO;
 				}
 					
 				if ([images count])
-				{ 
+				{
 					if ([images count] > 1)
                         noOfImages = [images count];
 					else
@@ -9457,7 +9457,7 @@ static BOOL withReset = NO;
 						
 						Dicom_Image *imageObj = [images objectAtIndex: [animationSlider intValue]];
 						
-						if ([[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO ||
+						if ([[[imageView curDCM] sourceFile] isEqualToString: [imageObj valueForKey:@"completePath"]] == NO ||
                            [[imageObj valueForKey: @"frameID"] intValue] != [[imageView curDCM] frameNo])
 						{
 							DCMPix *dcmPix3 = nil;
@@ -9555,10 +9555,10 @@ static BOOL withReset = NO;
 							}
 						}
 					}
-				}
+				} // if ([images count])
 			}
-		}
-    }
+		} // if ([cell isEnabled])
+    } // if (cell && dontUpdatePreviewPane == NO)
 }
 
 //- (void) test:(id) s

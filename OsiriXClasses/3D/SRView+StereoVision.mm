@@ -1323,9 +1323,9 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 
 - (IBAction)changeColor:(id)sender
 {	
-	if( [backgroundColor isActive])
+	if ([backgroundColor isActive])
 	{
-		NSColor *color=  [[(NSColorPanel*)sender color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
+		NSColor *color = [[(NSColorPanel*)sender color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
 		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
 		
 		//Added SilvanWidmer 20-08-09
@@ -1341,14 +1341,14 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 
 - (void) keyDown:(NSEvent *)event
 {
-    if ( [[event characters] length] == 0)
+    if ([[event characters] length] == 0)
         return;
     
     unichar c = [[event characters] characterAtIndex:0];
 	
-	if ( c == ' ')
+	if (c == ' ')
 	{
-		if( aRenderer->GetActors()->IsItemPresent( outlineRect))
+		if (aRenderer->GetActors()->IsItemPresent( outlineRect))
 		{
 			aRenderer->RemoveActor( outlineRect);
 			if (self.StereoVisionOn)

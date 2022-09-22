@@ -21,7 +21,7 @@
 #include "options.h"
 #import "mgl.h" // include first
 
-#import "NSFont_OpenGL/NSFont_OpenGL.h"
+#import "NSFont_OpenGL/NSFont+OpenGL.h"
 #import "PreviewView.h"
 
 @implementation PreviewView
@@ -41,7 +41,7 @@
     if (fontListGL)
         glDeleteLists (fontListGL, NUM_DISPLAY_LISTS);
     
-    fontListGL = glGenLists (NUM_DISPLAY_LISTS);
+    fontListGL = glGenLists(NUM_DISPLAY_LISTS);
     assert(fontListGL != 0);
 #endif
 

@@ -25,10 +25,10 @@
 
 - (void) keyDown:(NSEvent *)theEvent
 {
-    if( [[theEvent characters] length] == 0)
+    if ([[theEvent characters] length] == 0)
         return;
     
-	unichar		c = [[theEvent characters] characterAtIndex:0];
+	unichar c = [[theEvent characters] characterAtIndex:0];
 	
 	if (c == NSUpArrowFunctionKey ||
         c == NSDownArrowFunctionKey ||

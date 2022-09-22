@@ -630,7 +630,7 @@
 		AB1CB35D0618A37E00CD966B /* MyPoint.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB1CB35B0618A37E00CD966B /* MyPoint.mm */; };
 		AB28B8D605B79D1500A9906C /* XMLController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB4A6DF4056EC14E009E6C6E /* XMLController.mm */; };
 		AB28B8D805B79D1600A9906C /* NSFullScreenWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABAA284C058A4F7F00F0601D /* NSFullScreenWindow.mm */; };
-		AB28B8DA05B79D1800A9906C /* NSFont_OpenGL.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB3C6A8F057ADCA60001052D /* NSFont_OpenGL.mm */; };
+		AB28B8DA05B79D1800A9906C /* NSFont+OpenGL.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB3C6A8F057ADCA60001052D /* NSFont+OpenGL.mm */; };
 		AB28B8E205B79D1F00A9906C /* Wait.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6F34FC0574081F00CDCA47 /* Wait.mm */; };
 		AB28B8E505B79D2100A9906C /* QueryController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB425D73058FC58E00224020 /* QueryController.mm */; };
 		AB28B8ED05B79D2600A9906C /* dicomData.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABFA7CD2056056F300963FF8 /* dicomData.mm */; };
@@ -2516,8 +2516,8 @@
 		AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackLeft.tif; sourceTree = "<group>"; };
 		AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackRight.tif; sourceTree = "<group>"; };
 		AB38FC99057A9B050041FEBB /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
-		AB3C6A8E057ADCA60001052D /* NSFont_OpenGL.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NSFont_OpenGL.h; path = NSFont_OpenGL/NSFont_OpenGL.h; sourceTree = "<group>"; };
-		AB3C6A8F057ADCA60001052D /* NSFont_OpenGL.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = NSFont_OpenGL.mm; path = NSFont_OpenGL/NSFont_OpenGL.mm; sourceTree = "<group>"; };
+		AB3C6A8E057ADCA60001052D /* NSFont+OpenGL.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "NSFont+OpenGL.h"; path = "NSFont_OpenGL/NSFont+OpenGL.h"; sourceTree = "<group>"; };
+		AB3C6A8F057ADCA60001052D /* NSFont+OpenGL.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSFont+OpenGL.mm"; path = "NSFont_OpenGL/NSFont+OpenGL.mm"; sourceTree = "<group>"; };
 		AB3F4A1D0672674000E61A6C /* Window3DController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Window3DController.h; sourceTree = "<group>"; };
 		AB3F4A1E0672674000E61A6C /* Window3DController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = Window3DController.mm; sourceTree = "<group>"; };
 		AB425D72058FC58E00224020 /* QueryController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = QueryController.h; sourceTree = "<group>"; };
@@ -4754,8 +4754,8 @@
 			children = (
 				CE594401155E382B007BDF5B /* LetsMove and Dock */,
 				AB36742F0BE0CEB0003634E6 /* iLifeControls */,
-				AB3C6A8E057ADCA60001052D /* NSFont_OpenGL.h */,
-				AB3C6A8F057ADCA60001052D /* NSFont_OpenGL.mm */,
+				AB3C6A8E057ADCA60001052D /* NSFont+OpenGL.h */,
+				AB3C6A8F057ADCA60001052D /* NSFont+OpenGL.mm */,
 			);
 			name = Utilities;
 			sourceTree = SOURCE_ROOT;
@@ -6297,7 +6297,7 @@
 			files = (
 				AB28B8D605B79D1500A9906C /* XMLController.mm in Sources */,
 				AB28B8D805B79D1600A9906C /* NSFullScreenWindow.mm in Sources */,
-				AB28B8DA05B79D1800A9906C /* NSFont_OpenGL.mm in Sources */,
+				AB28B8DA05B79D1800A9906C /* NSFont+OpenGL.mm in Sources */,
 				AB28B8E205B79D1F00A9906C /* Wait.mm in Sources */,
 				AB28B8E505B79D2100A9906C /* QueryController.mm in Sources */,
 				AB28B8ED05B79D2600A9906C /* dicomData.mm in Sources */,

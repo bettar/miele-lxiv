@@ -1006,8 +1006,8 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
             [self writeData:content];
             
             const char* string = [[dstPaths objectAtIndex:i] UTF8String];
-            int stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
-            [self writeData:[NSData dataWithBytesNoCopy:&stringSize length:4 freeWhenDone:NO]];
+            int stringSize1 = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+            [self writeData:[NSData dataWithBytesNoCopy:&stringSize1 length:4 freeWhenDone:NO]];
             [self writeData:[NSData dataWithBytesNoCopy:(void*)string length:strlen(string)+1 freeWhenDone:NO]];
         }
         

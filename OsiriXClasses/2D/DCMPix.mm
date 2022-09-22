@@ -6494,19 +6494,24 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 {
                     DCMSequenceAttribute* seq;
                     DCMObject* object;
-#if 1 // FIXME: "ImageType" is not a sequence ! DCM_ImageType
-                    if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"ImageType"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
-                    {
-                        self.imageType = [[seq sequence] componentsJoinedByString:@"\\"];
-                    }
-#endif
                     
+                    // (0008,0008) DCM_ImageType
+                    // "ImageType" is not a sequence !
+                    {
+                        NSArray *tempA = [sequenceItem attributeArrayWithName:@"ImageType"];
+                        if (tempA && !imageType)
+                            self.imageType = [tempA componentsJoinedByString:@"\\"];
+                    }
+
+                    
+                    // (0018,9114) DCM_MREchoSequence
                     if ((seq = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"MREchoSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
                     {
                         if ((object = [[seq sequence] objectAtIndex:0]))
                             [self dcmFrameworkLoad0x0018:object];
                     }
                     
+                    // (0028,9113) DCM_PixelMeasuresSequence
                     if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"PixelMeasuresSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
                     {
                         if ((object = [[seq sequence] objectAtIndex:0])) {

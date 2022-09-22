@@ -80,7 +80,7 @@
 #import "NSManagedObject+N2.h"
 #import "DicomStudy.h"
 #import "JPEGExif.h"
-#import "NSFont_OpenGL/NSFont_OpenGL.h"
+#import "NSFont_OpenGL/NSFont+OpenGL.h"
 #import "Reports.h"
 #import "SRAnnotation.h"
 #import "MenuDictionary.h"
@@ -19479,7 +19479,7 @@ static BOOL viewerControllerPlaying = NO;
 		
 		int currentImageIndex = [self imageIndex];
 		
-		///
+		//
 		
 		float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
 		float scaleFactor = 1.0;
@@ -19584,7 +19584,7 @@ static BOOL viewerControllerPlaying = NO;
 				{
 					[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc * scaleFactor * 1.2
                                                              forKey: @"FONTSIZE"];
-					[NSFont resetFont: FONT_TYPE_0];
+					[NSFont resetFont: FONT_TYPE_2D_VIEW];
 					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 				}
 				
@@ -19594,7 +19594,7 @@ static BOOL viewerControllerPlaying = NO;
 				{
 					[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy
                                                              forKey: @"FONTSIZE"];
-					[NSFont resetFont: FONT_TYPE_0];
+					[NSFont resetFont: FONT_TYPE_2D_VIEW];
 					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 					[[self window] setFrame: NSMakeRect( o.x, o.y, rf.size.width, rf.size.height) display: YES];
 				}
@@ -19627,7 +19627,7 @@ static BOOL viewerControllerPlaying = NO;
 		{
 			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy
                                                      forKey: @"FONTSIZE"];
-			[NSFont resetFont: FONT_TYPE_0];
+			[NSFont resetFont: FONT_TYPE_2D_VIEW];
 			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 		}
 		

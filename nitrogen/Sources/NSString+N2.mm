@@ -389,7 +389,8 @@
 //	return resolvedPath;
 //}
 
--(NSString*)stringByComposingPathWithString:(NSString*)rel {
+-(NSString*)stringByComposingPathWithString:(NSString*)rel
+{
 	NSURL* baseurl = [NSURL URLWithString: [self characterAtIndex:0] == '/' ? self : [NSString stringWithFormat:@"/%@", self] ];
 	NSURL* url = [NSURL URLWithString:rel relativeToURL:baseurl];
 	return [self characterAtIndex:0] == '/' ? url.path : [url.path substringFromIndex:1];

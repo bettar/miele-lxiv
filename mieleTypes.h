@@ -142,9 +142,11 @@ typedef NS_ENUM(NSInteger, Intersection3DType) {
 };
 
 typedef NS_ENUM(NSInteger, FontType) {
-    FONT_TYPE_0 = 0,
+    FONT_TYPE_2D_VIEW = 0,
     FONT_TYPE_PREVIEW = 1,
-    FONT_TYPE_ROI = 2
+    FONT_TYPE_ROI = 2,
+
+    FONT_TYPE_INVALID
 };
 
 #endif /* mieleTypes_h */
