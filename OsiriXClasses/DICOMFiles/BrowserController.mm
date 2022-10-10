@@ -242,9 +242,36 @@ static NSString* BrowserControllerClassHelperContext = @"BrowserControllerClassH
 }
 
 @end
+
+#pragma mark - private methods
+
+@interface BrowserController ()
+
+- (void)enableAnimationSlider:(long) noi;
+- (void)disableAnimationSlider;
+@end
+
 #pragma mark -
 
 @implementation BrowserController
+
+// private method
+- (void)disableAnimationSlider
+{
+    [animationSlider setEnabled:NO];
+    [animationSlider setMaxValue:0];
+    [animationSlider setNumberOfTickMarks:1];
+    [animationSlider setIntValue:0];
+}
+
+// private method
+- (void)enableAnimationSlider:(long) noi
+{
+    [animationSlider setEnabled:YES];
+    [animationSlider setMaxValue: noi-1];
+    [animationSlider setNumberOfTickMarks: noi];
+    [animationSlider setIntValue:0]; // noi/2
+}
 
 +(void)initializeBrowserControllerClass
 {
@@ -2892,10 +2919,10 @@ static NSConditionLock *threadLock = nil;
 	
 	NSMutableString *pred = [NSMutableString stringWithString: string];
 	
-    NSCalendarDate	*now = [NSCalendarDate calendarDate];
-	NSDate	*start = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]] timeIntervalSinceReferenceDate]];
+    NSCalendarDate *now = [NSCalendarDate calendarDate];
+	NSDate *start = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]] timeIntervalSinceReferenceDate]];
 	
-	NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:	[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
+	NSDictionary *sub = [NSDictionary dictionaryWithObjectsAndKeys:	[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
 							[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
 							[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
 							[NSString stringWithFormat:@"%lf", [start timeIntervalSinceReferenceDate]],										@"$TODAY",
@@ -5192,10 +5219,7 @@ static NSConditionLock *threadLock = nil;
                 
 				[[self managedObjectContext] lock];
 				@try {
-                    [animationSlider setEnabled:NO];
-                    [animationSlider setMaxValue:0];
-                    [animationSlider setNumberOfTickMarks:1];
-                    [animationSlider setIntValue:0];
+                    [self disableAnimationSlider];
                     
                     [matrixViewArray release];
                     
@@ -7043,9 +7067,9 @@ static NSConditionLock *threadLock = nil;
 				
 				if ([[item valueForKey:@"date"] timeIntervalSinceNow] > -24*60*60)	// 24 hours
 				{
-					NSCalendarDate	*now = [NSCalendarDate calendarDate];
-					NSCalendarDate	*start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
-					NSDate			*today = [NSDate dateWithTimeIntervalSinceNow: [start timeIntervalSinceDate: now]];
+					NSCalendarDate *now = [NSCalendarDate calendarDate];
+					NSCalendarDate *start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
+					NSDate *today = [NSDate dateWithTimeIntervalSinceNow: [start timeIntervalSinceDate: now]];
 					
 					icon = YES;
 					if ([[item valueForKey:@"date"] timeIntervalSinceNow] > -60*10)
@@ -9261,26 +9285,13 @@ static BOOL withReset = NO;
 		}
 		
 		if (animate == NO)
-		{
-			[animationSlider setEnabled:NO];
-			[animationSlider setMaxValue:0];
-			[animationSlider setNumberOfTickMarks:1];
-			[animationSlider setIntValue:0];
-		}
+            [self disableAnimationSlider];
 		else if ([animationSlider isEnabled] == NO)
-		{
-			[animationSlider setEnabled:YES];
-			[animationSlider setMaxValue: noOfImages-1];
-			[animationSlider setNumberOfTickMarks: noOfImages];
-			[animationSlider setIntValue:0];	//noOfImages/2
-		}
+            [self enableAnimationSlider:noOfImages];
 	}
 	else
 	{
-		[animationSlider setEnabled:NO];
-		[animationSlider setMaxValue:0];
-		[animationSlider setNumberOfTickMarks:1];
-		[animationSlider setIntValue:0];
+        [self disableAnimationSlider];
 	}
 	
 	withReset = YES;
@@ -9671,10 +9682,7 @@ static BOOL withReset = NO;
 		}
 	}
 	
-	[animationSlider setEnabled:NO];
-	[animationSlider setMaxValue:0];
-	[animationSlider setNumberOfTickMarks:1];
-	[animationSlider setIntValue:0];
+    [self disableAnimationSlider];
 	
     if ([theCell tag] >= 0)
 	{

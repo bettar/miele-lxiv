@@ -82,6 +82,8 @@ extern NSString * const SeriesViewer_DragType;
 -(NSMutableString*)filenameString;
 @end
 
+#pragma mark -
+
 /** \brief Window controller for Browser
 *
 *   This is a large class with a lot of functions.

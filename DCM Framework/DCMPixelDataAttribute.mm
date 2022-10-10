@@ -1030,8 +1030,10 @@ void info_callback(const char *msg, void *a) {
     
 	return data;
 }
+
 - (void)convertBigEndianToHost{
 }
+
 - (void)convertHostToBigEndian{
 	if (NSHostByteOrder() == NS_LittleEndian){
 		for ( NSMutableData *data in _values ) {
@@ -3733,7 +3735,7 @@ void info_callback(const char *msg, void *a) {
 					data = [self convertDataFromLittleEndianToHost: subData];
 				}
 				//Big Endian Data and little Endian host
-				else  if ((NSHostByteOrder() == NS_LittleEndian) && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]])
+				else if ((NSHostByteOrder() == NS_LittleEndian) && [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]])
 				{
 					data = [self convertDataFromBigEndianToHost: subData];
 				}

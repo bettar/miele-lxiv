@@ -135,7 +135,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
         {
 			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow: 1]];
             
-            if( lastTimeInterval < [NSDate timeIntervalSinceReferenceDate])
+            if (lastTimeInterval < [NSDate timeIntervalSinceReferenceDate])
             {
                 lastTimeInterval = [NSDate timeIntervalSinceReferenceDate] + 1;
                 

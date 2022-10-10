@@ -8128,7 +8128,7 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.1",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.2",
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
@@ -8236,7 +8236,7 @@
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.2",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.1",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.2",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -8665,7 +8665,7 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.1",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.2",
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
@@ -8773,7 +8773,7 @@
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.2",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.1",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.2",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -9286,7 +9286,7 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.1",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.2",
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
@@ -9391,7 +9391,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.2",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.1",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.2",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
