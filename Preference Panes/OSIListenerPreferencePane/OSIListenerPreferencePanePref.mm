@@ -246,9 +246,9 @@
 	[NSApp endSheet: TLSSettingsWindow];
 	[TLSSettingsWindow orderOut: self];
 	
-	if( result == NSRunStoppedResponse)
+	if (result == NSModalResponseStop)
 	{
-		if( [self.TLSStoreSCPAETITLE length] <= 0)
+		if ([self.TLSStoreSCPAETITLE length] <= 0)
 		{
 			self.TLSUseSameAETITLE = YES;
 			self.TLSStoreSCPAETITLE = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];

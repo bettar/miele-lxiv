@@ -168,7 +168,7 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 -(void)addCustomTagPanelDidEnd:(NSPanel*)panel returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {
 	AnonymizationCustomTagPanelController* panelController = (id)contextInfo;
 	
-	if (returnCode == NSRunStoppedResponse) {
+	if (returnCode == NSModalResponseStop) {
 		[self setSelectedTag:[panelController attributeTag]];
 	}
 	

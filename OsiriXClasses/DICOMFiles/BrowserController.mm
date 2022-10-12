@@ -2376,11 +2376,14 @@ static NSConditionLock *threadLock = nil;
 			[dict addEntriesFromDictionary: options];
 			
             NSThread *t = nil;
+            DicomDatabase* target;
             if ([NSThread isMainThread] == NO)
-                t = [[[NSThread alloc] initWithTarget:_database.independentDatabase selector:@selector(copyFilesThread:) object: dict] autorelease];
+                target = _database.independentDatabase;
             else
-                t = [[[NSThread alloc] initWithTarget:_database selector:@selector(copyFilesThread:) object: dict] autorelease];
-            
+                target = _database;
+
+            t = [[[NSThread alloc] initWithTarget:target selector:@selector(copyFilesThread:) object: dict] autorelease];
+
 			if ([[options objectForKey: @"mountedVolume"] boolValue])
                 t.name = NSLocalizedString( @"Copying and indexing files from CD/DVD...", nil);
 			else
@@ -11347,7 +11350,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	[smartWindowController close];
 	
 	NSMutableArray *criteria = [smartWindowController criteria];
-	if ([criteria count] > 0 && result == NSRunStoppedResponse)
+	if ([criteria count] > 0 && result == NSModalResponseStop)
 	{
 		NSError *error = nil;
 		NSString *name;
@@ -11422,7 +11425,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 - (void)smartAlbumSheetDidEnd:(NSWindow*)sheet returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {
     [sheet orderOut:self];
     
-    if (returnCode == NSRunStoppedResponse) {
+    if (returnCode == NSModalResponseStop) {
         DicomAlbum* album = nil;
         if ([(id)contextInfo isKindOfClass:[DicomAlbum class]])
             album = [(id)contextInfo autorelease];
@@ -11473,7 +11476,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
     [NSApp endSheet: newAlbum];
     [newAlbum orderOut: self];
     
-    if (result == NSRunStoppedResponse)
+    if (result == NSModalResponseStop)
     {
         NSString *name;
         int i = 2;
@@ -11612,7 +11615,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 			[NSApp endSheet: newAlbum];
 			[newAlbum orderOut: self];
 			
-			if (result == NSRunStoppedResponse)
+			if (result == NSModalResponseStop)
 			{
 				int i = 2;
 				
@@ -14236,7 +14239,7 @@ static NSArray*	openSubSeriesArray = nil;
         
         NSArray *returnedArray = nil;
         
-        if (result == NSRunStoppedResponse)
+        if (result == NSModalResponseStop)
             returnedArray = [self produceNewArray: toOpenArray];
         
         [openSubSeriesArray release];
@@ -16258,10 +16261,10 @@ static NSArray*	openSubSeriesArray = nil;
 			[NSApp endSheet: CDpasswordWindow];
 			[CDpasswordWindow orderOut: self];
 		}
-		while (result == NSRunStoppedResponse && [BrowserController unzipFile: file withPassword: self.CDpassword destination: destination] == NO);
+		while (result == NSModalResponseStop && [BrowserController unzipFile: file withPassword: self.CDpassword destination: destination] == NO);
 	}
 	else
-		result = NSRunStoppedResponse;
+		result = NSModalResponseStop;
 	
 	return result;
 }
@@ -17458,7 +17461,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	int result = [NSApp runModalForWindow: addStudiesToUserWindow];
 	[addStudiesToUserWindow makeFirstResponder: nil];
 	
-	if (result == NSRunStoppedResponse)
+	if (result == NSModalResponseStop)
 	{
 		if ([[notificationEmailArrayController selectedObjects] count] == 0)
 		{
@@ -17544,7 +17547,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[notificationEmailWindow makeFirstResponder: nil];
 	
-	if (result == NSRunStoppedResponse)
+	if (result == NSModalResponseStop)
 	{
 		if ([[notificationEmailArrayController selectedObjects] count] == 0 && [temporaryNotificationEmail length] <= 3)
 		{
@@ -17661,10 +17664,101 @@ static volatile int numberOfThreadsForJPEG = 0;
 -(IBAction)sendMail:(id)sender
 {
 #ifndef MIELE_LIGHT
-    #define kScriptName (@"Mail")
-    #define kScriptType (@"scpt")
-    #define kHandlerName (@"mail_images")
-    #define noScriptErr 0
+    // First thing we do, we get the ZIP password from the user
+    [[NSUserDefaults standardUserDefaults] setValue: @"" forKey:@"defaultZIPPasswordForEmail"];
+
+redoZIPpassword:
+    
+    [NSApp beginSheet: ZIPpasswordWindow
+       modalForWindow: self.window
+        modalDelegate: nil
+       didEndSelector: nil
+          contextInfo: nil];
+    
+    int result1 = [NSApp runModalForWindow: ZIPpasswordWindow];
+    [ZIPpasswordWindow makeFirstResponder: nil];
+    
+    [NSApp endSheet: ZIPpasswordWindow];
+    [ZIPpasswordWindow orderOut: self];
+    
+    if (result1 != NSModalResponseStop) // cancel
+        return;
+
+    if ([(NSString*) [[NSUserDefaults standardUserDefaults] valueForKey: @"defaultZIPPasswordForEmail"] length] < 8)
+    {
+        NSBeep();
+        goto redoZIPpassword;
+    }
+    
+    // Here we have a valid password
+    
+    // Let's zip the files
+
+    NSAppleEventDescriptor *listFiles = [NSAppleEventDescriptor listDescriptor];
+    NSAppleEventDescriptor *listCaptions = [NSAppleEventDescriptor listDescriptor];
+    NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
+    
+    NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+    NSMutableArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export
+                                                                onlyImages: NO];
+    
+    NSString *pathZipFiles = [NSTemporaryDirectory() stringByAppendingPathComponent:@"zipFilesForMail"];
+    [[NSFileManager defaultManager] removeItemAtPath: pathZipFiles error: nil];
+    [[NSFileManager defaultManager] createDirectoryAtPath: pathZipFiles
+                              withIntermediateDirectories: YES
+                                               attributes: nil
+                                                    error: nil];
+    
+    BOOL encrypt = [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"]; // save
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"encryptForExport"]; // force
+    
+    self.passwordForExportEncryption = [[NSUserDefaults standardUserDefaults] valueForKey: @"defaultZIPPasswordForEmail"];
+    
+    NSString *pathZipFilesSlash = [NSTemporaryDirectory() stringByAppendingPathComponent: @"zipFilesForMail/"];
+    NSArray *r = [self exportDICOMFileInt: pathZipFilesSlash
+                                    files: filesToExport
+                                  objects: dicomFiles2Export];
+    
+    [[NSUserDefaults standardUserDefaults] setBool: encrypt forKey: @"encryptForExport"]; // restore
+    
+    if ([r count] <= 0)
+        return;
+
+    int f = 0;
+    NSString *root = pathZipFiles;
+    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
+    for (int x = 0; x < [files count] ; x++)
+    {
+        if ([[[files objectAtIndex: x] pathExtension] isEqualToString: @"zip"])
+        {
+            [listFiles insertDescriptor: [NSAppleEventDescriptor descriptorWithString: [root stringByAppendingPathComponent: [files objectAtIndex: x]]] atIndex:1+f];
+            [listCaptions insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
+            [listComments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
+            f++;
+        }
+    }
+
+#ifdef MACAPPSTORE
+    // Sending email with NSSharingService
+    NSString *msg = [NSString stringWithFormat:@"Message has %ld attachment", (long)[listFiles numberOfItems]];
+    NSAttributedString* msgBody = [[NSAttributedString alloc] initWithString: msg];
+    NSMutableArray* shareItems = [[NSMutableArray alloc] init];
+    [shareItems addObject: msgBody];
+    for (int i=1; i<=[listFiles numberOfItems]; i++) { // indexing starts at 1, see above
+        NSURL* msgAttachment = [NSURL fileURLWithPath: [[listFiles descriptorAtIndex:i] stringValue]];
+        [shareItems addObject: msgAttachment];
+    }
+
+    NSSharingService* mailShare = [NSSharingService sharingServiceNamed: NSSharingServiceNameComposeEmail];
+    //mailShare.subject = @"Subject";
+    [mailShare performWithItems:[shareItems copy]];
+
+#else
+    // Sending email with AppleScript
+    #define kScriptName     (@"Mail")
+    #define kScriptType     (@"scpt")
+    #define kHandlerName    (@"mail_images")
+    #define noScriptErr     0
     
     /* Locate the script within the bundle */
     NSString *scriptPath = [[NSBundle mainBundle] pathForResource: kScriptName ofType: kScriptType];
@@ -17683,111 +17777,42 @@ static volatile int numberOfThreadsForJPEG = 0;
     NSAppleEventDescriptor *arguments = [[NSAppleEventDescriptor alloc] initListDescriptor];
     [arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"subject"] atIndex: 1];
     [arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"defaultaddress@mac.com"] atIndex: 2];
+    [arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithInt32: f] atIndex: 3];
+    [arguments insertDescriptor: listFiles atIndex: 4];
+    [arguments insertDescriptor: listCaptions atIndex: 5];
+    [arguments insertDescriptor: listComments atIndex: 6];
+    [arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"Cancel"] atIndex: 7];
+
+    errorInfo = nil;
+
+    /* Call the handler using the method in our special category */
+    NSAppleEventDescriptor *result2 = [script callHandler: kHandlerName withArguments: arguments errorInfo: &errorInfo];
     
-    NSAppleEventDescriptor *listFiles = [NSAppleEventDescriptor listDescriptor];
-    NSAppleEventDescriptor *listCaptions = [NSAppleEventDescriptor listDescriptor];
-    NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
-    
-    [[NSUserDefaults standardUserDefaults] setValue: @"" forKey:@"defaultZIPPasswordForEmail"];
-    
-    redoZIPpassword:
-    
-    [NSApp beginSheet: ZIPpasswordWindow
-       modalForWindow: self.window
-        modalDelegate: nil
-       didEndSelector: nil
-          contextInfo: nil];
-    
-    int result = [NSApp runModalForWindow: ZIPpasswordWindow];
-    [ZIPpasswordWindow makeFirstResponder: nil];
-    
-    [NSApp endSheet: ZIPpasswordWindow];
-    [ZIPpasswordWindow orderOut: self];
-    
-    if (result == NSRunStoppedResponse)
+    int scriptResult = [result2 int32Value];
+
+    /* Check for errors in running the handler */
+    if (errorInfo)
     {
-        if ([(NSString*) [[NSUserDefaults standardUserDefaults] valueForKey: @"defaultZIPPasswordForEmail"] length] < 8)
-        {
-            NSBeep();
-            goto redoZIPpassword;
-        }
-        
-        NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-        NSMutableArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
-        
-        NSString *pathZipFiles = [NSTemporaryDirectory() stringByAppendingPathComponent:@"zipFilesForMail"];
-        [[NSFileManager defaultManager] removeItemAtPath: pathZipFiles error: nil];
-        [[NSFileManager defaultManager] createDirectoryAtPath: pathZipFiles
-                                  withIntermediateDirectories: YES
-                                                   attributes: nil
-                                                        error: nil];
-        
-        BOOL encrypt = [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"];
-        
-        [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"encryptForExport"];
-        
-        self.passwordForExportEncryption = [[NSUserDefaults standardUserDefaults] valueForKey: @"defaultZIPPasswordForEmail"];
-        
-        NSString *pathZipFilesSlash = [NSTemporaryDirectory() stringByAppendingPathComponent:@"zipFilesForMail/"];
-        NSArray *r = [self exportDICOMFileInt: pathZipFilesSlash
-                                        files: filesToExport
-                                      objects: dicomFiles2Export];
-        
-        [[NSUserDefaults standardUserDefaults] setBool: encrypt forKey: @"encryptForExport"];
-        
-        if ([r count] > 0)
-        {
-            int f = 0;
-            NSString *root = pathZipFiles;
-            NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
-            for (int x = 0; x < [files count] ; x++)
-            {
-                if ([[[files objectAtIndex: x] pathExtension] isEqualToString: @"zip"])
-                {
-                    [listFiles insertDescriptor: [NSAppleEventDescriptor descriptorWithString: [root stringByAppendingPathComponent: [files objectAtIndex: x]]] atIndex:1+f];
-                    [listCaptions insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
-                    [listComments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
-                    f++;
-                }
-            }
-            
-            [arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithInt32: f] atIndex: 3];
-            [arguments insertDescriptor: listFiles atIndex: 4];
-            [arguments insertDescriptor: listCaptions atIndex: 5];
-            [arguments insertDescriptor: listComments atIndex: 6];
-            
-            [arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"Cancel"] atIndex: 7];
-
-            errorInfo = nil;
-
-            /* Call the handler using the method in our special category */
-            NSAppleEventDescriptor *result = [script callHandler: kHandlerName withArguments: arguments errorInfo: &errorInfo];
-            
-            int scriptResult = [result int32Value];
-
-            /* Check for errors in running the handler */
-            if (errorInfo)
-            {
-                NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, errorInfo);
-            }
-            /* Check the handler's return value */
-            else if (scriptResult != noScriptErr)
-            {
-                NSString *msgFormat = [NSString stringWithFormat:@"%@ %d",
-                                       NSLocalizedString(@"The script failed:", @"Message on script failure window."),
-                                       scriptResult];
-                NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."),
-                                msgFormat,
-                                NSLocalizedString(@"OK", @""),
-                                nil,
-                                nil);
-            }
-        }
+        NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, errorInfo);
     }
-    
+    /* Check the handler's return value */
+    else if (scriptResult != noScriptErr)
+    {
+        NSString *msgFormat = [NSString stringWithFormat:@"%@ %d",
+                               NSLocalizedString(@"The script failed:", @"Message on script failure window."),
+                               scriptResult];
+        NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."),
+                        msgFormat,
+                        NSLocalizedString(@"OK", @""),
+                        nil,
+                        nil);
+    }
+
     [script release];
     [arguments release];
-#endif
+#endif // MACAPPSTORE
+    
+#endif // MIELE_LIGHT
 }
 
 #endif
@@ -17864,7 +17889,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 #endif
 
-- (NSArray*) exportDICOMFileInt: (NSString*) location files: (NSMutableArray*) filesToExport objects: (NSMutableArray*) dicomFiles2Export
+- (NSArray*) exportDICOMFileInt: (NSString*) location
+                          files: (NSMutableArray*) filesToExport
+                        objects: (NSMutableArray*) dicomFiles2Export
 {
 	return [self exportDICOMFileInt: [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                       location, @"location",
@@ -17908,18 +17935,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
 
-		NSString			*dest = nil, *path = location;
-		Wait                *splash = nil;
-		BOOL				addDICOMDIR = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddDICOMDIRForExport"];
-		long				previousSeries = -1, serieCount = 0;
+        NSString *dest = nil;
+        NSString *path = location;
+		Wait *splash = nil;
+		BOOL addDICOMDIR = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddDICOMDIRForExport"];
+		long previousSeries = -1, serieCount = 0;
 		
 		if ([NSThread isMainThread])
 			splash = [[Wait alloc] initWithString:NSLocalizedString( @"Exporting...", nil) :YES];
 		
-		NSMutableArray		*files2Compress = [NSMutableArray array];
-		DicomStudy			*previousStudy = nil;
-		BOOL				exportAborted = NO;
-		NSMutableArray		*renameArray = [NSMutableArray array];
+		NSMutableArray *files2Compress = [NSMutableArray array];
+		DicomStudy *previousStudy = nil;
+		BOOL exportAborted = NO;
+		NSMutableArray *renameArray = [NSMutableArray array];
 		
 		[splash setCancel:YES];
 		[splash showWindow:self];
@@ -18354,8 +18382,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if ([NSThread isMainThread])
 		return result;
-	else
-		return nil;
+
+    return nil;
 }
 
 + (void) encryptFiles: (NSArray*) srcFiles inZIPFile: (NSString*) destFile password: (NSString*) password
@@ -20749,7 +20777,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[NSApp endSheet: bonjourPasswordWindow];
 	[bonjourPasswordWindow orderOut: self];
 	
-	if (result == NSRunStoppedResponse)
+	if (result == NSModalResponseStop)
 	{
 		return [password stringValue];
 	}

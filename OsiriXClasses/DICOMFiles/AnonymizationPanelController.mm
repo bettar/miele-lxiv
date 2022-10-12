@@ -67,7 +67,7 @@
 
 -(IBAction)actionCancel:(NSView*)sender {
 	end = AnonymizationPanelCancel;
-	[NSApp endSheet:self.window returnCode:NSRunAbortedResponse];
+	[NSApp endSheet:self.window returnCode:NSModalResponseAbort];
 }
 
 @end

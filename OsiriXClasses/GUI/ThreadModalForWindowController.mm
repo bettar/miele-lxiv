@@ -209,11 +209,12 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
         [self.window setFrame:frame display:YES];
 }
 
--(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
+-(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args
+{
     if (_isValid)
-        [self observeValueForKeyPath:[args objectAtIndex:0]
-                            ofObject:[args objectAtIndex:1]
-                              change:[args objectAtIndex:2]
+        [self observeValueForKeyPath: [args objectAtIndex:0]
+                            ofObject: [args objectAtIndex:1]
+                              change: [args objectAtIndex:2]
                              context:[[args objectAtIndex:3] pointerValue]];
 }
 

@@ -364,7 +364,7 @@ NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void
 {
 	AnonymizationTemplateNamePanelController* panelController = (id)contextInfo;
 	
-	if (returnCode == NSRunStoppedResponse) {
+	if (returnCode == NSModalResponseStop) {
 		[self saveTemplate:[self tagsValues] withName:panelController.value];
 	}
 	

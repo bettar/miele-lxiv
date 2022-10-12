@@ -524,7 +524,7 @@
 	[NSApp endSheet: WADOSettings];
 	[WADOSettings orderOut: self];
 	
-	if (result == NSRunStoppedResponse)
+	if (result == NSModalResponseStop)
 	{
 		[aServer setObject: @2 forKey: @"retrieveMode"]; // WADORetrieveMode
 		[aServer setObject: [NSNumber numberWithInt: WADOPort] forKey: @"WADOPort"];
@@ -979,7 +979,7 @@
 	[NSApp endSheet: TLSSettings];
 	[TLSSettings orderOut: self];
 	
-	if (result == NSRunStoppedResponse)
+	if (result == NSModalResponseStop)
 	{
 		[aServer setObject:[NSNumber numberWithBool:self.TLSEnabled] forKey:@"TLSEnabled"];
 		

@@ -111,7 +111,7 @@
 #pragma mark - Actions
 
 - (IBAction)cancelAction:(id)sender {
-    [NSApp endSheet:self.window returnCode:NSRunAbortedResponse];
+    [NSApp endSheet:self.window returnCode:NSModalResponseAbort];
     
     [BrowserController currentBrowser].testPredicate = nil;
     [[BrowserController currentBrowser] outlineViewRefresh];

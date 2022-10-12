@@ -555,8 +555,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[super dealloc];
 }
 
--(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
-    [self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
+-(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args
+{
+    [self observeValueForKeyPath: [args objectAtIndex:0]
+                        ofObject: [args objectAtIndex:1]
+                          change: [args objectAtIndex:2]
+                         context:[[args objectAtIndex:3] pointerValue]];
 }
 
 + (BOOL)host:(NSHost*)h1 isEqualToHost:(NSHost*)h2 {

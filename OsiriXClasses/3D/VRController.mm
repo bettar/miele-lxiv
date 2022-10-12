@@ -1408,7 +1408,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			[NSApp endSheet: editDeleteValue];
 			[editDeleteValue orderOut: self];
 			
-			if (result == NSRunStoppedResponse)
+			if (result == NSModalResponseStop)
 				NSLog( @"deleteValue for 3DCut changed : %f", self.deleteValue);
 			else
                 self.deleteValue = copyValue;

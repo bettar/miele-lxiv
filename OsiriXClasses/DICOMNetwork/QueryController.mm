@@ -818,7 +818,7 @@ extern "C"
 	
 	[NSApp endSheet: autoRetrieveWindow];
 	
-	if (result != NSRunStoppedResponse) // Cancel
+	if (result != NSModalResponseStop) // Cancel
 	{
         if (NumberOfPreviousStudyToRetrieve)
             [[NSUserDefaults standardUserDefaults] setObject: NumberOfPreviousStudyToRetrieve forKey: @"NumberOfPreviousStudyToRetrieve"];

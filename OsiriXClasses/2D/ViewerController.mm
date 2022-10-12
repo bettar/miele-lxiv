@@ -15648,7 +15648,7 @@ long				x, y;
     
 	NSMutableArray	*applyToROIs = [NSMutableArray array];
 	
-	if (result == NSRunStoppedResponse)
+	if (result == NSModalResponseStop)
 	{
 		long x, y;
 		

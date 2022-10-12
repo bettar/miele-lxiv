@@ -32,7 +32,7 @@
 
 -(IBAction)cancelButtonAction:(id)sender
 {
-	[NSApp endSheet:self.window returnCode:NSRunAbortedResponse];
+	[NSApp endSheet:self.window returnCode:NSModalResponseAbort];
 }
 
 -(IBAction)okButtonAction:(id)sender

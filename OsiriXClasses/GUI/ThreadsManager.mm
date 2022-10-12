@@ -99,6 +99,9 @@
 		if (![NSThread isMainThread])
 			NSLog( @"***** NSThread we should NOT be here");
         
+#ifndef NDEBUG
+        NSLog( @"%s %d %@", __FUNCTION__, __LINE__, thread);
+#endif
 		if ([_threadsController.arrangedObjects containsObject:thread] || [thread isFinished])
 		{
             // Do nothing
@@ -116,6 +119,7 @@
                         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
                         [_threadsController addObject:thread];
                     }
+
                     if (!isExe && !isDone) { // not executing, not done executing... execute now
                         [thread start];
                     }
@@ -133,12 +137,15 @@
                 }
             }
         }
-	}
-    }
+	} // @synchronized
+    } // @synchronized
 }
 
 -(void)addThreadAndStart:(NSThread*)thread
 {
+#ifndef NDEBUG
+    NSLog( @"%s %d %@", __FUNCTION__, __LINE__, thread);
+#endif
     if (![NSThread isMainThread])
     {
         if( [thread isExecuting] == NO && [thread isFinished] == NO)

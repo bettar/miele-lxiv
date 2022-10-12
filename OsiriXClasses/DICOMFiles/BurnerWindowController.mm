@@ -377,9 +377,9 @@
                         [NSApp endSheet: passwordWindow];
                         [passwordWindow orderOut: self];
                     }
-                    while( [self.password length] < 8 && result == NSRunStoppedResponse);
+                    while( [self.password length] < 8 && result == NSModalResponseStop);
                     
-                    if (result == NSRunStoppedResponse)
+                    if (result == NSModalResponseStop)
                     {
                         
                     }

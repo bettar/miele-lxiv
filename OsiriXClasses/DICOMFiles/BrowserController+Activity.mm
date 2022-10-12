@@ -97,7 +97,10 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
 		_cells = [[NSMutableArray alloc] init];
 
 		// we observe the threads array so we can release cells when they're not needed anymore
-		[ThreadsManager.defaultManager.threadsController addObserver:self forKeyPath:@"arrangedObjects" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld|NSKeyValueObservingOptionInitial context:BrowserActivityHelperContext];
+		[ThreadsManager.defaultManager.threadsController addObserver:self
+                                                          forKeyPath:@"arrangedObjects"
+                                                             options: NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionInitial
+                                                             context:BrowserActivityHelperContext];
 	}
 	
 	return self;
@@ -119,8 +122,12 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
 	return nil;
 }
 
--(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
-    [self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
+-(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args
+{
+    [self observeValueForKeyPath: [args objectAtIndex:0]
+                        ofObject: [args objectAtIndex:1]
+                          change: [args objectAtIndex:2]
+                         context:[[args objectAtIndex:3] pointerValue]];
 }
 
 -(void)observeValueForKeyPath:(NSString*)keyPath
@@ -128,6 +135,9 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
                        change:(NSDictionary*)change
                       context:(void*)context
 {
+#ifndef NDEBUG
+    NSLog( @"%s %d %@", __FUNCTION__, __LINE__, keyPath);
+#endif
 	if (![NSThread isMainThread]) {
         [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:)
                                withObject:[NSArray arrayWithObjects: keyPath, object, change, [NSValue valueWithPointer:context], nil]
