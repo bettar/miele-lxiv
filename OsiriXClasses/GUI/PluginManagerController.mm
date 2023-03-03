@@ -441,7 +441,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
                                     NSTemporaryDirectory(),
                                     lastComponent];
 
-#if 1 //ndef NDEBUG
+#ifndef NDEBUG
     NSLog(@"%s %d, downloadedFilePath:<%@>", __FUNCTION__, __LINE__, downloadedFilePath);
 #endif
 

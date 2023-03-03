@@ -135,8 +135,8 @@ extern AppController* OsiriX;
 + (BOOL) willExecutePlugin;
 + (BOOL) willExecutePlugin:(id) filter;
 
-+ (BOOL) hasAtLeastMacOS_Mavericks;     // 10.9
-+ (BOOL) validatedWithThisMacOS;        // <= 11.4
++ (BOOL) meetMacOsVersionMinRequired;     // 10.13
++ (BOOL) validatedWithThisMacOS;        // <= 12.6.3
 
 +(NSString*)UID;
 

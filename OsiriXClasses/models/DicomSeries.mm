@@ -173,14 +173,17 @@
 	#ifndef MIELE_LIGHT
 	@try 
 	{
-		if( [self.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"]  && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
+		if ([self.study.hasDICOM boolValue] &&
+            [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] &&
+            [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
 		{
-			if( c == nil)
+			if (c == nil)
 				c = @"";
 			
-			if( [(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0)
+			if ([(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 ||
+                [c length] != 0)
 			{
-				if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
+				if ([c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
 				{
 					NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
                                           [[self paths] allObjects], @"files",
@@ -332,7 +335,7 @@
     {
         tnData = [[self primitiveValueForKey:@"thumbnail"] retain]; // autoreleased when returning
         
-        if( !tnData)
+        if (!tnData)
         {
             NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
             
@@ -382,7 +385,7 @@
                         else if( [[DCMAbstractSyntaxUID RTDoseStorage] isEqualToString: seriesSOPClassUID])
                         {
 #if 0 // TODO
-                            tnImage = [NSImage imageNamed: @"RTDose.jpg"];
+                            tnImage = [NSImage imageNamed: @"RTDose.png"];
 #else
                             tnImage = [NSImage imageNamed: @"FileNotFound.tif"];
 #endif
@@ -391,7 +394,7 @@
                         else if( [[DCMAbstractSyntaxUID RTPlanStorage] isEqualToString: seriesSOPClassUID])
                         {
 #if 0 // TODO
-                            tnImage = [NSImage imageNamed: @"RTPlan.jpg"];
+                            tnImage = [NSImage imageNamed: @"RTPlan.png"];
 #else
                             tnImage = [NSImage imageNamed: @"FileNotFound.tif"];
 #endif

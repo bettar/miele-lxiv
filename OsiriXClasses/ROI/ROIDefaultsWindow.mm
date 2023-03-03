@@ -96,7 +96,6 @@
 - (id) initWithController: (ViewerController*) c
 {
 	self = [super initWithWindowNibName:@"ROIDefaults"];
-	
 	return self;
 }
 
@@ -109,9 +108,7 @@
 - (void)windowWillClose:(NSNotification *)notification
 {
 	[[self window] setAcceptsMouseMovedEvents: NO];
-	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
-	
 	[self autorelease];
 }
 

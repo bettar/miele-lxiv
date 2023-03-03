@@ -29,7 +29,8 @@
 @synthesize label = _label;
 @synthesize choice = _choice;
 
-- (id)initWithMountedPath:(NSString*)path dicomFilesCount:(NSInteger)count {
+- (id)initWithMountedPath:(NSString*)path dicomFilesCount:(NSInteger)count
+{
     if ((self = [super initWithWindowNibName:@"DiscMountedAskTheUserDialog"])) {
         _mountedPath = [path retain];
         _filesCount = count;

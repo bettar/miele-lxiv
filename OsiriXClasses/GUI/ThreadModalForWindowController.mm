@@ -233,7 +233,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
         else if( obj == self.thread) {
             @synchronized (obj) {
                 
-                if( obj.threadDictionary == _retainedThreadDictionary)
+                if ( obj.threadDictionary == _retainedThreadDictionary)
                 {
                     if ([keyPath isEqualToString:NSThreadProgressKey])
                     {

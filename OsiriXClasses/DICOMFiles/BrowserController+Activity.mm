@@ -96,7 +96,13 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
 		_browser = browser; // no retaining here
 		_cells = [[NSMutableArray alloc] init];
 
-		// we observe the threads array so we can release cells when they're not needed anymore
+#ifndef NDEBUG
+        {
+            ThreadsManager* dm = ThreadsManager.defaultManager;
+            NSLog(@"%s %d %d", __FUNCTION__, __LINE__, [[dm.threadsController arrangedObjects] count]);
+        }
+#endif
+		// We observe the threads array so we can release cells when they're not needed anymore
 		[ThreadsManager.defaultManager.threadsController addObserver:self
                                                           forKeyPath:@"arrangedObjects"
                                                              options: NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionInitial
@@ -112,9 +118,10 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
 	[super dealloc];
 }
 
--(NSCell*)cellForThread:(NSThread*)thread {
-    
-    @synchronized (ThreadsManager.defaultManager.threadsController) {
+-(NSCell*)cellForThread:(NSThread*)thread
+{
+    @synchronized (ThreadsManager.defaultManager.threadsController)
+    {
         for (ThreadCell* cell in _cells)
             if (cell.thread == thread)
                 return cell;
@@ -145,8 +152,10 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
         return;
     }
 
-	if (context == BrowserActivityHelperContext) {
-        @synchronized (ThreadsManager.defaultManager.threadsController) {
+	if (context == BrowserActivityHelperContext)
+    {
+        @synchronized (ThreadsManager.defaultManager.threadsController)
+        {
             // we are looking for removed threads
             NSMutableArray* threadsThatHaveCellsToRemove = [[[_cells valueForKey:@"thread"] mutableCopy] autorelease];
             [threadsThatHaveCellsToRemove removeObjectsInArray:object.arrangedObjects];
@@ -168,7 +177,7 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
             
             BOOL needToReloadData = NO;
             
-            if( cellsToRemove.count)
+            if (cellsToRemove.count)
             {
                 [_cells removeObjectsInArray: cellsToRemove];
                 needToReloadData = YES;
@@ -187,7 +196,7 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
                 }
             }
             
-            if( needToReloadData)
+            if (needToReloadData)
                 [_browser._activityTableView reloadData];
             
             return;

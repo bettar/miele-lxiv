@@ -101,7 +101,7 @@
 		NSLog(@"Add sequence Item %@ at Offset:%ld", [item description], offset);
     
 	NSArray *objects = [NSArray arrayWithObjects:item,
-                        [NSNumber numberWithInt:offset],
+                        [NSNumber numberWithLong:offset],
                         nil];
 	NSArray *keys =	[NSArray arrayWithObjects:@"item", @"offset", nil];
 	NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects forKeys:keys];

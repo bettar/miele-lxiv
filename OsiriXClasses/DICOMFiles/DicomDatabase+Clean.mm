@@ -72,24 +72,31 @@
     return _cleanLock;
 }
 
-+(void)_syncCleanTimer {
++(void)_syncCleanTimer
+{
 	static NSTimer* cleanTimer = nil;
 	
 	if (cleanTimer)
 		return;
 	
-	cleanTimer = [[NSTimer timerWithTimeInterval:15*60+2.5 target:self selector:@selector(_cleanTimerCallback:) userInfo:nil repeats:YES] retain];
+	cleanTimer = [[NSTimer timerWithTimeInterval:15*60+2.5
+                                          target:self
+                                        selector:@selector(_cleanTimerCallback:)
+                                        userInfo:nil
+                                         repeats:YES] retain];
 	[[NSRunLoop mainRunLoop] addTimer:cleanTimer forMode:NSModalPanelRunLoopMode];
 	[[NSRunLoop mainRunLoop] addTimer:cleanTimer forMode:NSDefaultRunLoopMode];
 }
 
-+(void)_cleanTimerCallback:(NSTimer*)timer {
++(void)_cleanTimerCallback:(NSTimer*)timer
+{
 	for (DicomDatabase* dbi in [self allDatabases])
 		if (dbi.isLocal)
 			[dbi initiateCleanUnlessAlreadyCleaning];
 }
 
--(void)initiateCleanUnlessAlreadyCleaning {
+-(void)initiateCleanUnlessAlreadyCleaning
+{
 	if ([_cleanLock tryLock])
 		@try {
 			[self performSelectorInBackground:@selector(_cleanThread) withObject:nil];
@@ -366,8 +373,8 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
     [thread enterOperationIgnoringLowerLevels];
     thread.status = NSLocalizedString(@"Cleaning database...", nil);
     
-	@try {
-        
+	@try
+    {
         if( [NSUserDefaults.standardUserDefaults boolForKey:@"AUTOCLEANINGSPACE"])
 		{
             NSDictionary* fsattrs = [[NSFileManager defaultManager] attributesOfFileSystemForPath:self.dataBaseDirPath error:nil];

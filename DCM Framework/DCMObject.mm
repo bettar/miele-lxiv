@@ -628,7 +628,8 @@ PixelRepresentation
 	return scObject;
 }
 
-+ (id)objectWithData:(NSData *)data decodingPixelData:(BOOL)decodePixelData{
++ (id)objectWithData:(NSData *)data decodingPixelData:(BOOL)decodePixelData
+{
 	return [[[DCMObject alloc] initWithData:data decodingPixelData:decodePixelData] autorelease];
 }
 

@@ -261,7 +261,8 @@ static int validFilePathDepth = 0;
         [aTask setStandardOutput:newPipe];
         
         NSString *dicPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"dicom.dic"];
-        [aTask setEnvironment:[NSDictionary dictionaryWithObject:dicPath forKey:@"DCMDICTPATH"]];
+        [aTask setEnvironment:[NSDictionary dictionaryWithObject:dicPath
+                                                          forKey:@"DCMDICTPATH"]];
 
         NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"dcmdump"] path];
         [aTask setLaunchPath:launchPath];

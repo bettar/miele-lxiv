@@ -299,7 +299,7 @@
 		59E8352812F9ABAC006B930A /* N2ManagedDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E8352612F9ABAC006B930A /* N2ManagedDatabase.mm */; };
 		59E83A1412FC6556006B930A /* NSManagedObject+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */; };
 		59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */; };
-		59F1A4C8104BA5BE009E3215 /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */; };
+		59F1A4C8104BA5BE009E3215 /* MieleAPIHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* MieleAPIHeaders.mm */; };
 		59F1A515104BA8AE009E3215 /* MieleAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* MieleAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		59F5F3FA11F476030047A90D /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */; };
 		59F5F4ED11F485CC0047A90D /* BrowserController+Activity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F4EB11F485CC0047A90D /* BrowserController+Activity.mm */; };
@@ -1116,7 +1116,7 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		437002F821CD3C5400C91D62 /* Copy Executables */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
@@ -1974,7 +1974,7 @@
 		59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSManagedObject+N2.mm"; path = "nitrogen/Sources/NSManagedObject+N2.mm"; sourceTree = "<group>"; };
 		59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebPortal+Email+Log.h"; sourceTree = "<group>"; };
 		59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortal+Email+Log.mm"; sourceTree = "<group>"; };
-		59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXHeaders.mm; sourceTree = "<group>"; };
+		59F1A4C7104BA5BE009E3215 /* MieleAPIHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MieleAPIHeaders.mm; sourceTree = "<group>"; };
 		59F5F3F711F476030047A90D /* N2ImageButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ImageButtonCell.h; path = nitrogen/Sources/N2ImageButtonCell.h; sourceTree = "<group>"; };
 		59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageButtonCell.mm; path = nitrogen/Sources/N2ImageButtonCell.mm; sourceTree = "<group>"; };
 		59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BrowserController+Activity.h"; sourceTree = "<group>"; };
@@ -2635,7 +2635,7 @@
 		ABBB64A8063587B200D9531F /* VolumeRendering.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = VolumeRendering.tif; sourceTree = "<group>"; };
 		ABBB64AA063587B200D9531F /* XML.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = XML.icns; sourceTree = "<group>"; };
 		ABBB64AC063587B200D9531F /* ZoomToFit.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomToFit.tif; sourceTree = "<group>"; };
-		ABBFDA3F063480490011BD0A /* Deployment-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "Deployment-Info.plist"; sourceTree = "<group>"; };
+		ABBFDA3F063480490011BD0A /* Miele-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "Miele-Info.plist"; sourceTree = "<group>"; };
 		ABC3E5500B330A58006704E3 /* DNDArrayController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DNDArrayController.mm; sourceTree = "<group>"; };
 		ABC3E5510B330A58006704E3 /* DNDArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DNDArrayController.h; sourceTree = "<group>"; };
 		ABC3E5580B330A68006704E3 /* sourcesTableView.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = sourcesTableView.mm; sourceTree = "<group>"; };
@@ -3188,7 +3188,7 @@
 				438AE1A921B5177700C5E98F /* miele-lxiv-Deployment.entitlements */,
 				43A36C26219B1E4A00C506D3 /* GUI */,
 				434B69402168BEBC00C35AB6 /* miele-lxiv-Distribution.entitlements */,
-				43E9D2B82167865800CFBD0B /* API framework */,
+				43E9D2B82167865800CFBD0B /* MieleAPI framework */,
 				434B461A1A19F4E4008CF8CF /* OpenJPEG */,
 				84A9D44712F7F8BE00DA1F99 /* KDU SDK */,
 				59BDEC17117C927D007F1F2C /* LXIV Launcher */,
@@ -3256,7 +3256,7 @@
 				848A6BE514C5BB9500C936C3 /* Tiling */,
 				AB9723880C684B4E00DC727C /* DB_Previous_Models */,
 				ABBB647A063587B200D9531F /* Icons */,
-				ABBFDA3F063480490011BD0A /* Deployment-Info.plist */,
+				ABBFDA3F063480490011BD0A /* Miele-Info.plist */,
 				43D7471B21A6C4C80055FA87 /* AsyncSocket.strings */,
 				ABFDE81610A8003100E33E0F /* Lite-Info.plist */,
 				CE9E11CF13DBB5DD008B2848 /* OsiriX.sdef */,
@@ -4130,14 +4130,14 @@
 			path = Shaders;
 			sourceTree = "<group>";
 		};
-		43E9D2B82167865800CFBD0B /* API framework */ = {
+		43E9D2B82167865800CFBD0B /* MieleAPI framework */ = {
 			isa = PBXGroup;
 			children = (
 				43FED024216E5A63008337D3 /* MieleAPI-Info.plist */,
 				43D7471E21A6C4C80055FA87 /* InfoPlist.strings */,
-				59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */,
+				59F1A4C7104BA5BE009E3215 /* MieleAPIHeaders.mm */,
 			);
-			path = "API framework";
+			path = "MieleAPI framework";
 			sourceTree = "<group>";
 		};
 		4F8A1A791302C6E100A022D9 /* 3DGeometry */ = {
@@ -5430,7 +5430,6 @@
 				AB0F3A291046BD2B004129DD /* Sources */,
 				AB0F3A2A1046BD2B004129DD /* Frameworks */,
 				AB0F3A3F1046BE51004129DD /* Copy Headers and Create Miele.h */,
-				CED7488F158F07B500120143 /* Code Signing */,
 				43D7472121A6C4C80055FA87 /* Resources */,
 			);
 			buildRules = (
@@ -5534,10 +5533,6 @@
 						};
 					};
 					7E0B3A3E067526CD00908593 = {
-						DevelopmentTeam = 57BXF7EQEM;
-						ProvisioningStyle = Automatic;
-					};
-					AB0F3A2B1046BD2B004129DD = {
 						DevelopmentTeam = 57BXF7EQEM;
 						ProvisioningStyle = Automatic;
 					};
@@ -6201,20 +6196,6 @@
 			shellPath = /usr/bin/perl;
 			shellScript = "use strict;\nuse warnings;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\nmy $FH;\nmy $output;\n\n# SHA hash :\n\nopen $FH, \"xcrun git rev-parse HEAD|\" or die;\n$output = <$FH>;\nclose($FH);\n\nchomp( $output );\nmy $GitHash = $output;\n\n# clean state :\n\n$output = `xcrun git status`;\n\nmy $GitState;\nif ( index( $output, \"nothing to commit (working directory clean)\" ) != -1 ) {\n    $GitState = \"clean\";\n} else {\n    $GitState = \"dirty\";\n}\n\nprint \"GitHash : $GitHash\\n\";\nprint \"GitState : $GitState\";\n\n# Update Info.plist in build product. Use defaults command\n\n#my $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Info\"; #iOS\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/Info\"; #OSX\n\nmy @defaults = ( 'defaults', 'write', $INFO, 'GitHash', \"$GitHash\" );\nsystem( @defaults );\n\n@defaults = ( 'defaults', 'write', $INFO, 'GitState', \"$GitState\" );\nsystem( @defaults );\n";
 		};
-		CED7488F158F07B500120143 /* Code Signing */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Code Signing";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "##IDENTITY=\"Mac Developer: Alex Bettarini (L74MX98MKG)\"\n#IDENTITY=\"Developer ID Application: Alex Bettarini (57BXF7EQEM)\"\n\n#if [[ ${CONFIGURATION} == \"Distribution\" ]]\n#then\n#codesign -f -s \"$IDENTITY\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\n#echo \"code signed\"\n#fi\n";
-		};
 		CED88262125064F70085A861 /* CodeSigning */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -6287,7 +6268,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59F1A4C8104BA5BE009E3215 /* OsiriXHeaders.mm in Sources */,
+				59F1A4C8104BA5BE009E3215 /* MieleAPIHeaders.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7860,7 +7841,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -7889,7 +7870,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -7960,7 +7940,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "bettar.miele-lxivTests";
@@ -8025,7 +8004,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "bettar.miele-lxivTests";
@@ -8057,8 +8035,9 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20220922;
+				CURRENT_PROJECT_VERSION = 20221012;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8078,11 +8057,12 @@
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				IBC_FLATTEN_NIBS = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				SDKROOT = macosx;
 				USE_HEADERMAP = NO;
 			};
@@ -8095,7 +8075,6 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CODE_SIGN_ENTITLEMENTS = "miele-lxiv-$(CONFIGURATION).entitlements";
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -8145,7 +8124,7 @@
 					"$(SRCROOT)/Binaries/GLM/include",
 				);
 				IBC_FLATTEN_NIBS = YES;
-				INFOPLIST_FILE = "Deployment-Info.plist";
+				INFOPLIST_FILE = "Miele-Info.plist";
 				KEEP_PRIVATE_EXTERNS = YES;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -8157,7 +8136,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 8.24.110;
+				MARKETING_VERSION = 8.25.112;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8249,11 +8228,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = "LXIV Launcher/LXIV Launcher-$(CONFIGURATION).entitlements";
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -8261,7 +8238,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 8.24.110;
+				MARKETING_VERSION = 8.25.112;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8289,7 +8266,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
@@ -8387,7 +8363,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CODE_SIGN_STYLE = Automatic;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
@@ -8474,13 +8449,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CODE_SIGN_STYLE = Automatic;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
-				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(FRAMEWORK_SEARCH_PATHS)",
@@ -8527,7 +8500,6 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -8545,7 +8517,7 @@
 					"$(SRCROOT)/Binaries/openjpeg/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 				);
-				INFOPLIST_FILE = "API framework/MieleAPI-Info.plist";
+				INFOPLIST_FILE = "MieleAPI framework/MieleAPI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/libjpeg/lib",
@@ -8565,7 +8537,6 @@
 					"-lpthread",
 					"-lm",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = MieleAPI;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -8595,9 +8566,9 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20220922;
+				CURRENT_PROJECT_VERSION = 20221012;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8616,10 +8587,11 @@
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				IBC_FLATTEN_NIBS = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				SDKROOT = macosx;
 				USE_HEADERMAP = NO;
 			};
@@ -8632,7 +8604,6 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CODE_SIGN_ENTITLEMENTS = "miele-lxiv-$(CONFIGURATION).entitlements";
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -8682,7 +8653,7 @@
 					"$(SRCROOT)/Binaries/GLM/include",
 				);
 				IBC_FLATTEN_NIBS = YES;
-				INFOPLIST_FILE = "Deployment-Info.plist";
+				INFOPLIST_FILE = "Miele-Info.plist";
 				KEEP_PRIVATE_EXTERNS = YES;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -8694,7 +8665,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 8.24.110;
+				MARKETING_VERSION = 8.25.112;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8786,11 +8757,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = "LXIV Launcher/LXIV Launcher-$(CONFIGURATION).entitlements";
-				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -8798,7 +8767,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 8.24.110;
+				MARKETING_VERSION = 8.25.112;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8826,7 +8795,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
@@ -8925,7 +8893,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CODE_SIGN_STYLE = Automatic;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
@@ -9012,13 +8979,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CODE_SIGN_STYLE = Automatic;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
-				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(FRAMEWORK_SEARCH_PATHS)",
@@ -9065,7 +9030,6 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -9083,7 +9047,7 @@
 					"$(SRCROOT)/Binaries/openjpeg/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 				);
-				INFOPLIST_FILE = "API framework/MieleAPI-Info.plist";
+				INFOPLIST_FILE = "MieleAPI framework/MieleAPI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/libjpeg/lib",
@@ -9104,7 +9068,6 @@
 					"-lpthread",
 					"-lm",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.github-bettar.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = MieleAPI;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -9118,11 +9081,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = "LXIV Launcher/LXIV Launcher-$(CONFIGURATION).entitlements";
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -9130,7 +9091,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 8.24.110;
+				MARKETING_VERSION = 8.25.112;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9156,7 +9117,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -9254,7 +9214,6 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CODE_SIGN_ENTITLEMENTS = "miele-lxiv-$(CONFIGURATION).entitlements";
-				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -9303,7 +9262,7 @@
 					"$(SRCROOT)/Binaries/GLM/include",
 				);
 				IBC_FLATTEN_NIBS = NO;
-				INFOPLIST_FILE = "Deployment-Info.plist";
+				INFOPLIST_FILE = "Miele-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/libjpeg/lib",
@@ -9314,7 +9273,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 8.24.110;
+				MARKETING_VERSION = 8.25.112;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -9420,8 +9379,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				CURRENT_PROJECT_VERSION = 20220922;
+				CODE_SIGN_IDENTITY = "-";
+				CURRENT_PROJECT_VERSION = 20221012;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -9444,11 +9403,12 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IBC_FLATTEN_NIBS = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				SDKROOT = macosx;
 				USE_HEADERMAP = NO;
 			};
@@ -9460,7 +9420,6 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -9478,7 +9437,7 @@
 					"$(SRCROOT)/Binaries/openjpeg/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 				);
-				INFOPLIST_FILE = "API framework/MieleAPI-Info.plist";
+				INFOPLIST_FILE = "MieleAPI framework/MieleAPI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/libjpeg/lib",
@@ -9498,7 +9457,6 @@
 					"-lpthread",
 					"-lm",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = MieleAPI;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -9510,7 +9468,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CODE_SIGN_STYLE = Automatic;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
@@ -9600,13 +9557,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CODE_SIGN_STYLE = Automatic;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
-				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(FRAMEWORK_SEARCH_PATHS)",

@@ -736,22 +736,16 @@ static bool isGrantedNotificationAccess = false;
 
 // MACOSX_DEPLOYMENT_TARGET
 // MAC_OS_X_VERSION_MIN_REQUIRED
-+(BOOL) hasAtLeastMacOS_Mavericks
++(BOOL) meetMacOsVersionMinRequired
 {
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
-#if 0
-    int ver = version.majorVersion*100 + version.minorVersion;
-    bool ok = (ver >= MAC_OS_X_VERSION_10_9); // careful: 1090 not 1009
-#else
-    if (version.majorVersion > 10)
-        return YES;
-
-    if (version.majorVersion == 10 &&
-        version.minorVersion >= 9)
-        return YES;
-    
-    return NO;
-#endif
+    int ver = version.majorVersion;
+    ver *= 100;
+    ver += version.minorVersion;
+    ver *= 100;
+    ver += version.patchVersion;
+    //assert(MAC_OS_X_VERSION_MIN_REQUIRED == MAC_OS_X_VERSION_10_13);
+    return (ver >= MAC_OS_X_VERSION_MIN_REQUIRED); // 101300
 }
 
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // __deprecated
@@ -4006,16 +4000,17 @@ API_AVAILABLE(macos(10.14))
 #endif // NDEBUG
 #endif // MIELE_LIGHT
     
-    if (![AppController hasAtLeastMacOS_Mavericks])
+    if (![AppController meetMacOsVersionMinRequired])
     {
-//        int verMajor = MAC_OS_X_VERSION_MIN_REQUIRED / 100;
-//        int verMinor = MAC_OS_X_VERSION_MIN_REQUIRED % 100;
-        NSString *msgFormat = [NSString stringWithFormat:NSLocalizedString(@"This app requires macOS %d.%d or higher. Please update your OS: Apple Menu - Software Update...", nil), 10, 9];
+        int verMajor = MAC_OS_X_VERSION_MIN_REQUIRED / 10000;
+        int verMinor = (MAC_OS_X_VERSION_MIN_REQUIRED/100) % 100;
+        NSString *msgFormat = [NSString stringWithFormat:NSLocalizedString(@"This app requires macOS %d.%d or higher. Please update your OS: Apple Menu - Software Update...", nil), verMajor, verMinor];
         NSRunCriticalAlertPanel(NSLocalizedString(@"macOS version", nil),
-                                msgFormat,
+                                @"%@", // msgFormat
                                 NSLocalizedString(@"Quit", nil),
                                 nil,
-                                nil);
+                                nil,
+                                    msgFormat);
         exit( 0);
     }
     

@@ -523,7 +523,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	[[BrowserController currentBrowser] askForZIPPassword:[args objectAtIndex:0] destination:[args objectAtIndex:1]];
 }
 
--(void)_askUserDiscDataCopyOrBrowse:(NSArray*)a {
+-(void)_askUserDiscDataCopyOrBrowse:(NSArray*)a
+{
     NSString* path = [a objectAtIndex:0];
     NSInteger count = [[a objectAtIndex:1] integerValue];
     NSInteger* mode = (NSInteger*)[[a objectAtIndex:2] pointerValue];
@@ -533,10 +534,13 @@ static NSString* _dcmElementKey(DcmElement* element) {
     
     [NSApp runModalForWindow:dialog.window];
     
+    // return the user's choice as third item in the input array
     *mode = dialog.choice;
     
-    [dialog release];
-    
+    // issue i68
+    [dialog.window makeFirstResponder: nil];
+    [NSApp endSheet: dialog.window];
+    [dialog.window orderOut: self];
 }
 
 -(BOOL)scanAtPath:(NSString*)path isVolume:(BOOL)isVolume
@@ -707,7 +711,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
             
             thread.supportsCancel = YES;
             
-            NSThread* copyFilesThread = [NSThread performBlockInBackground:^{
+            NSThread* copyFilesTh1 = [NSThread performBlockInBackground:^{
                 NSThread* cft = [NSThread currentThread];
                 cft.name = NSLocalizedString(@"Importing images from media...", nil);
                 
@@ -721,20 +725,20 @@ static NSString* _dcmElementKey(DcmElement* element) {
                                                                                         NULL]];
             }];
             
-            while (copyFilesThread.isExecuting)
+            while (copyFilesTh1.isExecuting)
             {
-                if (thread.isCancelled && !copyFilesThread.isCancelled)
-                    [copyFilesThread cancel];
+                if (thread.isCancelled && !copyFilesTh1.isCancelled)
+                    [copyFilesTh1 cancel];
                 else
                 {
-                    if( [thread.status isEqualToString: copyFilesThread.status] == NO)
-                        thread.status = copyFilesThread.status;
+                    if( [thread.status isEqualToString: copyFilesTh1.status] == NO)
+                        thread.status = copyFilesTh1.status;
                     
-                    if( [thread.name isEqualToString: copyFilesThread.name] == NO)
-                        thread.name = copyFilesThread.name;
+                    if( [thread.name isEqualToString: copyFilesTh1.name] == NO)
+                        thread.name = copyFilesTh1.name;
                     
-                    if( thread.progress != copyFilesThread.progress)
-                        thread.progress = copyFilesThread.progress;
+                    if( thread.progress != copyFilesTh1.progress)
+                        thread.progress = copyFilesTh1.progress;
                 }
                 
                 [NSThread sleepForTimeInterval:0.1];
@@ -742,10 +746,10 @@ static NSString* _dcmElementKey(DcmElement* element) {
             
             thread.supportsCancel = NO;
             
-            while (copyFilesThread.isExecuting)
+            while (copyFilesTh1.isExecuting)
                 [NSThread sleepForTimeInterval:0.1];
             
-            if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"] && ![copyFilesThread isCancelled]) {
+            if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"] && ![copyFilesTh1 isCancelled]) {
                 thread.status = NSLocalizedString(@"Ejecting...", nil);
                 thread.progress = -1;
                 

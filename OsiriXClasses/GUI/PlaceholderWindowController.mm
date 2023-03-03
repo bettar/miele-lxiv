@@ -28,29 +28,28 @@
 	}
 	return self;
 }
-- (void)windowDidLoad{
+- (void)windowDidLoad {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name:NSWindowWillCloseNotification object:[self window]];
 }
 
-- (NSManagedObject *)currentStudy{
+- (NSManagedObject *)currentStudy {
 	return nil;
 }
-- (NSManagedObject *)currentSeries{
-	return nil;
-}
-
-- (NSManagedObject *)currentImage{
+- (NSManagedObject *)currentSeries {
 	return nil;
 }
 
--(float)curWW{
+- (NSManagedObject *)currentImage {
+	return nil;
+}
+
+-(float)curWW {
 	return 0.0;
 }
 
--(float)curWL{
+-(float)curWL {
 	return 0.0;
 }
-
 
 - (void)windowWillClose:(NSNotification *)notification{
 	[[NSNotificationCenter defaultCenter] removeObserver: self];

@@ -71,7 +71,8 @@ static int gTotalN2ManagedObjectContext = 0;
     _database = nil;
 }
 
--(void)dealloc {
+-(void)dealloc
+{
 #ifndef NDEBUG
     [_database checkForCorrectContextThread: self];
     
@@ -82,7 +83,8 @@ static int gTotalN2ManagedObjectContext = 0;
 	[super dealloc]; //test if db is deallocated
 }
 
--(BOOL)save:(NSError**)error {
+-(BOOL)save:(NSError**)error
+{
     [self lock];
 #ifndef NDEBUG
     [_database checkForCorrectContextThread: self];
@@ -101,7 +103,9 @@ static int gTotalN2ManagedObjectContext = 0;
     return NO;
 }
 
--(NSManagedObject*)existingObjectWithID:(NSManagedObjectID*)objectID error:(NSError**)error {
+// member of class N2ManagedObjectContext
+-(NSManagedObject*)existingObjectWithID:(NSManagedObjectID*)objectID error:(NSError**)error
+{
     [self lock];
 #ifndef NDEBUG
     [_database checkForCorrectContextThread: self];
@@ -123,7 +127,8 @@ static int gTotalN2ManagedObjectContext = 0;
  you invoke unlock. If you don’t properly retain a context in a multi-threaded environment, you may cause a deadlock."
  */
 
--(void)lock {
+-(void)lock
+{
     [self retain];
 //    [self.persistentStoreCoordinator lock];
     [super lock];
@@ -144,7 +149,8 @@ static int gTotalN2ManagedObjectContext = 0;
         [lockhist addObject:stack];*/
 }
 
--(void)unlock {
+-(void)unlock
+{
   //  [lockhist removeLastObject];
     [super unlock];
 //    [self.persistentStoreCoordinator unlock];
@@ -164,6 +170,7 @@ static int gTotalN2ManagedObjectContext = 0;
 	return [super deleteObject: object];
 }
 
+// member of class N2ManagedObjectContext
 - (NSUInteger)countForFetchRequest:(NSFetchRequest *)request error:(NSError **)error
 {
     [_database checkForCorrectContextThread: self];
@@ -202,7 +209,9 @@ static int gTotalN2ManagedObjectContext = 0;
 
 -(void) checkForCorrectContextThread: (NSManagedObjectContext*) c
 {
-    if (c == _managedObjectContext && associatedThread && associatedThread != [NSThread currentThread])
+    if (c == _managedObjectContext &&
+        associatedThread &&
+        associatedThread != [NSThread currentThread])
     {
         NSLog( @"------------------------------");
         NSLog( @"SQL path: %@", _sqlFilePath);
@@ -533,7 +542,7 @@ static int gTotalN2ManagedObjectContext = 0;
 -(id)independentDatabase
 {
 #ifndef NDEBUG
-    if( [NSThread isMainThread])
+    if ([NSThread isMainThread])
         N2LogStackTrace( @"independentDatabase not required on main thread.");
 #endif
     
@@ -668,7 +677,8 @@ static int gTotalN2ManagedObjectContext = 0;
 	return [self countObjectsForEntity:e predicate:p error:NULL];
 }
 
--(NSUInteger)countObjectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)error {
+-(NSUInteger)countObjectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)error
+{
 	[self _entity:&e];
 
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
@@ -678,9 +688,12 @@ static int gTotalN2ManagedObjectContext = 0;
     [self.managedObjectContext lock];
     @try {
         return [self.managedObjectContext countForFetchRequest:req error:error];
-    } @catch (NSException* e) {
+    }
+    @catch (NSException* e) {
         if (error && !*error)
-            *error = [NSError errorWithDomain:N2ErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObject:e.reason forKey:NSLocalizedDescriptionKey]];
+            *error = [NSError errorWithDomain:N2ErrorDomain
+                                         code:1
+                                     userInfo:[NSDictionary dictionaryWithObject:e.reason forKey:NSLocalizedDescriptionKey]];
         else
             N2LogException(e);
     } @finally {

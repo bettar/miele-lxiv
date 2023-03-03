@@ -81,7 +81,8 @@
 
 -(void)setObject:(id)obj forKey:(NSString*)key {
 	[_dictionary setObject:obj forKey:key];
-	if (_autosave) [self save];
+	if (_autosave)
+        [self save];
 	else _needsAutosave = YES;
 }
 

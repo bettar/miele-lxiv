@@ -161,7 +161,8 @@ static WindowLayoutManager *sharedLayoutManager = nil;
     return nil;
 }
 
-+ (NSDictionary*) hangingProtocolForModality: (NSString*) modalities description: (NSString *) description
++ (NSDictionary*) hangingProtocolForModality: (NSString*) modalities
+                                 description: (NSString *) description
 {
 	// if no modalities set to 1 row and 1 column
 	if ( !modalities)
@@ -171,7 +172,7 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 	{
 		//Search for a hanging Protocol for the study description in the modality array
         NSArray *hangingProtocolArray = [NSArray array];
-        for( NSString *hangingModality in [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] allKeys])
+        for (NSString *hangingModality in [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] allKeys])
         {
             if( [modalities rangeOfString: hangingModality].location != NSNotFound)
             {
@@ -180,7 +181,7 @@ static WindowLayoutManager *sharedLayoutManager = nil;
             }
         }
         
-		if( [hangingProtocolArray count] > 0)
+		if ([hangingProtocolArray count] > 0)
 		{
 			@try
 			{
@@ -191,12 +192,12 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 				{
 					if( [[protocol objectForKey: @"Study Description"] isKindOfClass: [NSString class]])
 					{
-						NSRange searchRange = [description rangeOfString:[protocol objectForKey: @"Study Description"] options: NSCaseInsensitiveSearch | NSLiteralSearch];
+						NSRange searchRange = [description rangeOfString: [protocol objectForKey: @"Study Description"]
+                                                                 options: NSCaseInsensitiveSearch | NSLiteralSearch];
 						if (searchRange.location != NSNotFound)
                         {
 							foundProtocol = [NSMutableDictionary dictionaryWithDictionary: protocol];
                             [foundProtocol setValue: @NO forKey: @"isDefaultProtocolForModality"];
-                            
                             break;
                         }
 					}
@@ -213,9 +214,10 @@ static WindowLayoutManager *sharedLayoutManager = nil;
     return nil;
 }
 
-- (void) setCurrentHangingProtocolForModality: (NSString *) modalities description: (NSString *) description
+- (void) setCurrentHangingProtocolForModality: (NSString *) modalities
+                                  description: (NSString *) description
 {
-    if( modalities == nil)
+    if (modalities == nil)
         self.currentHangingProtocol = nil;
     else
         self.currentHangingProtocol = [WindowLayoutManager hangingProtocolForModality: modalities description: description];

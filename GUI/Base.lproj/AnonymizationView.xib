@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -40,7 +40,7 @@
                     </popUpButtonCell>
                 </popUpButton>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="105">
-                    <rect key="frame" x="280" y="245" width="102" height="27"/>
+                    <rect key="frame" x="280" y="244" width="102" height="27"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="90" id="7gh-2b-B9p"/>
                     </constraints>
@@ -53,7 +53,7 @@
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="106">
-                    <rect key="frame" x="182" y="245" width="102" height="27"/>
+                    <rect key="frame" x="182" y="244" width="102" height="27"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="90" id="HeQ-d2-9mE"/>
                     </constraints>

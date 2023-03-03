@@ -1536,7 +1536,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	NSArray	*shadings = [shadingsPresetsController arrangedObjects];
 	for (int i = 0; i < [shadings count]; i++)
 	{
-		NSDictionary	*dict = [shadings objectAtIndex: i];
+		NSDictionary *dict = [shadings objectAtIndex: i];
 		if (ambient == [[dict valueForKey:@"ambient"] floatValue] &&
             diffuse == [[dict valueForKey:@"diffuse"] floatValue] &&
             specular == [[dict valueForKey:@"specular"] floatValue] &&

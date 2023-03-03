@@ -210,8 +210,13 @@ static NSString *templateDicomFile = nil;
 	return templateDicomFile;
 }
 
-+(id)showPanelClass:(Class)c forDefaultsKey:(NSString*)defaultsKey modalForWindow:(NSWindow*)window modalDelegate:(id)delegate didEndSelector:(SEL)sel representedObject:(id)representedObject  {
-	
++(id)showPanelClass:(Class)c
+     forDefaultsKey:(NSString*)defaultsKey
+     modalForWindow:(NSWindow*)window
+      modalDelegate:(id)delegate
+     didEndSelector:(SEL)sel
+  representedObject:(id)representedObject
+{
 	@try
 	{
 		[templateDicomFile release];
@@ -236,7 +241,11 @@ static NSString *templateDicomFile = nil;
 	ro.action = sel;
 	panelController.representedObject = ro;
 	
-	[NSApp beginSheet:panelController.window modalForWindow:window modalDelegate:self didEndSelector:@selector(panelDidEnd:returnCode:contextInfo:) contextInfo:panelController];
+	[NSApp beginSheet:panelController.window
+       modalForWindow:window
+        modalDelegate:self
+       didEndSelector:@selector(panelDidEnd:returnCode:contextInfo:)
+          contextInfo:panelController];
 	[panelController.window orderFront:self];
 	
 	if (!delegate)
@@ -245,12 +254,23 @@ static NSString *templateDicomFile = nil;
 	return panelController;
 }
 
-+(AnonymizationPanelController*)showPanelForDefaultsKey:(NSString*)defaultsKey modalForWindow:(NSWindow*)window modalDelegate:(id)delegate didEndSelector:(SEL)sel representedObject:(id)representedObject  {
++(AnonymizationPanelController*)showPanelForDefaultsKey:(NSString*)defaultsKey modalForWindow:(NSWindow*)window modalDelegate:(id)delegate didEndSelector:(SEL)sel representedObject:(id)representedObject
+{
 	return [self showPanelClass:[AnonymizationPanelController class] forDefaultsKey:defaultsKey modalForWindow:window modalDelegate:delegate didEndSelector:sel representedObject:representedObject];
 }
 
-+(AnonymizationSavePanelController*)showSavePanelForDefaultsKey:(NSString*)defaultsKey modalForWindow:(NSWindow*)window modalDelegate:(id)delegate didEndSelector:(SEL)sel representedObject:(id)representedObject  {
-	return [self showPanelClass:[AnonymizationSavePanelController class] forDefaultsKey:defaultsKey modalForWindow:window modalDelegate:delegate didEndSelector:sel representedObject:representedObject];
++(AnonymizationSavePanelController*)showSavePanelForDefaultsKey:(NSString*)defaultsKey
+                                                 modalForWindow:(NSWindow*)window
+                                                  modalDelegate:(id)delegate
+                                                 didEndSelector:(SEL)sel
+                                              representedObject:(id)representedObject
+{
+	return [self showPanelClass:[AnonymizationSavePanelController class]
+                 forDefaultsKey:defaultsKey
+                 modalForWindow:window
+                  modalDelegate:delegate
+                 didEndSelector:sel
+              representedObject:representedObject];
 }
 
 +(void)panelDidEnd:(NSPanel*)panel returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {

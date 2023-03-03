@@ -106,13 +106,13 @@
 	[super dealloc];
 }
 
--(void)setThread:(NSThread*)thread {
-    
+-(void)setThread:(NSThread*)thread
+{
     @synchronized( _thread)
     {
         @try
         {
-            if( KVOObserving)
+            if (KVOObserving)
             {
                 [_thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
                 [_thread removeObserver:self forKeyPath:NSThreadProgressKey];
@@ -135,7 +135,7 @@
         {
             _retainedThreadDictionary = [_thread.threadDictionary retain];
             
-            if( _retainedThreadDictionary)
+            if (_retainedThreadDictionary)
             {
                 [_thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
                 [_thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
@@ -148,6 +148,7 @@
     }
 }
 
+// reposted on main thread
 -(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args
 {
 	[self observeValueForKeyPath: [args objectAtIndex:0]
@@ -165,10 +166,10 @@
     {
         @synchronized( _thread)
         {
-            if( _thread.isFinished)
+            if ( _thread.isFinished)
                 return;
             
-            if( _retainedThreadDictionary != _thread.threadDictionary)
+            if ( _retainedThreadDictionary != _thread.threadDictionary)
                 return;
         }
         

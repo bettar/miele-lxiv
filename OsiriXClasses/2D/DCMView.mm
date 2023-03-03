@@ -3066,7 +3066,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			
 			BOOL done = NO;
 			
-			if ([self is2DViewer] == YES)
+			if ([self is2DViewer])
 			{
 				if (curImage >= 0 && COPYSETTINGSINSERIES == NO)
 				{
@@ -3094,7 +3094,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			
 			if (done == NO)
 			{
-				if (curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES)
+				if (curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply])
 				{
 					[self reapplyWindowLevel];
 				}

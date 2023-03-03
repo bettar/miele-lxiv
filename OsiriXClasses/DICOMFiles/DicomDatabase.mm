@@ -1395,7 +1395,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(BOOL)isFileSystemFreeSizeLimitReached
 {
 	NSTimeInterval currentTime = NSDate.timeIntervalSinceReferenceDate;
-	if (currentTime-_timeOfLastIsFileSystemFreeSizeLimitReachedVerification > 20) {
+	if (currentTime - _timeOfLastIsFileSystemFreeSizeLimitReachedVerification > 20) {
 		// refresh _isFileSystemFreeSizeLimitReached
         NSDictionary* dataBasePathAttrs = [[NSFileManager defaultManager] attributesOfFileSystemForPath:self.dataBaseDirPath error:nil];
 		NSNumber* dataBasePathSize = [dataBasePathAttrs objectForKey:NSFileSystemSize];
@@ -2406,7 +2406,7 @@ static BOOL protectionAgainstReentry = NO;
                                         NSString *Modality = [studySqlRow valueForKey: @"modality"];
                                         if (combineProjectionSeries && combineProjectionSeriesMode == 0 && ([Modality isEqualToString:@"MG"] || [Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
                                         {
-                                            // *******Combine all CR and DR Modality series in a study into one series
+                                            // Combine all CR and DR Modality series in a study into one series
                                             long imageInstance = [[curDict2 objectForKey: [ @"imageID" stringByAppendingString: SeriesNum]] intValue];
                                             imageInstance *= 10000;
                                             imageInstance += f;
@@ -3073,7 +3073,7 @@ static BOOL protectionAgainstReentry = NO;
                         }
                         
                         [[ThreadsManager defaultManager] removeThread:thread]; // NSOperationQueue threads don't finish after ablock execution, they're recycled
-                    }];
+                    }]; // end of block
                     
                     if ([NSThread currentThread].isCancelled)
                         break;

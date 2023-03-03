@@ -222,7 +222,10 @@ static NSMutableString *TLS_PRIVATE_KEY_PASSWORD = nil;
                                      AETitle:(NSString*)aetitle
                                 withStringID:(NSString*)stringID
 {
-	return [DICOMTLS certificatePathForLabel:[DICOMTLS uniqueLabelForServerAddress:address port:[NSString stringWithFormat:@"%d",port] AETitle:aetitle] withStringID:stringID];
+	return [DICOMTLS certificatePathForLabel:[DICOMTLS uniqueLabelForServerAddress:address
+                                                                              port:[NSString stringWithFormat:@"%d",port]
+                                                                           AETitle:aetitle]
+                                withStringID:stringID];
 }
 
 + (NSString*)certificatePathForServerAddress:(NSString*)address port:(int)port AETitle:(NSString*)aetitle

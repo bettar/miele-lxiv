@@ -100,21 +100,25 @@
 			NSLog( @"***** NSThread we should NOT be here");
         
 #ifndef NDEBUG
-        NSLog( @"%s %d %@", __FUNCTION__, __LINE__, thread);
+        //NSLog( @"%s %d %@ \n\t arranged size: %d \n\t contained:%d \n\t finished:%d", __FUNCTION__, __LINE__, thread, [_threadsController.arrangedObjects count], [_threadsController.arrangedObjects containsObject:thread], [thread isFinished]);
 #endif
-		if ([_threadsController.arrangedObjects containsObject:thread] || [thread isFinished])
+		if ([_threadsController.arrangedObjects containsObject:thread] ||
+            [thread isFinished])
 		{
             // Do nothing
+#ifndef NDEBUG
+            NSLog(@"%s %d Do nothing", __FUNCTION__, __LINE__);
+#endif
         }
 		else
         {
             if (![thread isMainThread]/* && ![thread isExecuting]*/)
             {
-                BOOL isExe = [thread isExecuting], isDone = [thread isFinished];
+                BOOL isExe = [thread isExecuting];
+                BOOL isDone = [thread isFinished];
                 
                 @try
                 {
-
                     if (!isDone) {
                         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
                         [_threadsController addObject:thread];

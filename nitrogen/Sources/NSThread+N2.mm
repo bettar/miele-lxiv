@@ -162,8 +162,8 @@ static NSString* const NSThreadStackArrayKey = @"NSThreadStackArrayKey";
 
 static NSString* const NSThreadSubRangeKey = @"subRange";
 
--(NSMutableDictionary*)currentOperationDictionary {
-    
+-(NSMutableDictionary*)currentOperationDictionary
+{
     @synchronized (self) {
         return [[[self.stackArray lastObject] retain] autorelease];
     }
@@ -292,7 +292,6 @@ NSString* const NSThreadSupportsBackgroundingKey = @"supportsBackgrounding";
 	}
 }
 
-
 NSString* const NSThreadStatusKey = @"status";
 
 -(NSString*)status {
@@ -315,7 +314,7 @@ NSString* const NSThreadStatusKey = @"status";
 	return nil;
 }
 
--(void)setStatus:(NSString*)status {
+-(void)setStatus:(NSString*)statusParameter {
 //    if (self.isFinished)
 //    	return nil;
 //    if (self.isCancelled)
@@ -323,18 +322,20 @@ NSString* const NSThreadStatusKey = @"status";
     
 	@synchronized (self) {
 		NSString* previousStatus = self.status;
-		if (previousStatus == status || [status isEqualToString:previousStatus])
-			return;
+		if (previousStatus == statusParameter ||
+            [statusParameter isEqualToString:previousStatus])
+        {
+            return;
+        }
 		
 		[self willChangeValueForKey:NSThreadStatusKey];
-		if (status)
-			[self.currentOperationDictionary setObject:[[status copy] autorelease] forKey:NSThreadStatusKey];
+		if (statusParameter)
+			[self.currentOperationDictionary setObject:[[statusParameter copy] autorelease] forKey:NSThreadStatusKey];
 		else
             [self.currentOperationDictionary removeObjectForKey:NSThreadStatusKey];
         
 		[self didChangeValueForKey:NSThreadStatusKey];
 	}
-	
 }
 
 NSString* const NSThreadProgressKey = @"progress";
@@ -356,9 +357,9 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 
 -(void)setProgress:(CGFloat)progress {
 //    if (self.isFinished)
-//    	return nil;
+//    	return;
 //    if (self.isCancelled)
-//    	return nil;
+//    	return;
     
 	@synchronized (self) {
         if (self.progress == progress)

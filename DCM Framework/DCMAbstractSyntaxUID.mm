@@ -36,7 +36,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *DigitalMammographyXRayImageStorageForProcessing = @"1.2.840.10008.5.1.4.1.1.1.2.1";
 	static NSString *DigitalIntraoralXRayImageStorageForPresentation = @"1.2.840.10008.5.1.4.1.1.1.3";
 	static NSString *DigitalIntraoralXRayImageStorageForProcessing = @"1.2.840.10008.5.1.4.1.1.1.3.1";
-	static NSString *CTImageStorage = @"1.2.840.10008.5.1.4.1.1.2";
+	static NSString *CTImageStorage = @(UID_CTImageStorage);
 	static NSString *EnhancedCTImageStorage = @(UID_EnhancedCTImageStorage);
 	static NSString *EnhancedPETImageStorage = @"1.2.840.10008.5.1.4.1.1.130";
 	static NSString *UltrasoundMultiframeImageStorageRetired = @(UID_RETIRED_UltrasoundMultiframeImageStorage);
@@ -98,7 +98,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
     static NSString *SiemensCSAPrivateNonImageStorage = @"1.3.12.2.1107.5.9.1";
 	static NSString *XrayAngiographicBiplaneImageStorage = @(UID_RETIRED_XRayAngiographicBiPlaneImageStorage);
-	static NSString *NuclearMedicineImageStorage = @"1.2.840.10008.5.1.4.1.1.20";
+	static NSString *NuclearMedicineImageStorage = @(UID_NuclearMedicineImageStorage);
 	static NSString *VisibleLightDraftImageStorage = @(UID_RETIRED_VLImageStorage);
 	static NSString *VisibleLightMultiFrameDraftImageStorage = @(UID_RETIRED_VLMultiframeImageStorage);
 	static NSString *VisibleLightEndoscopicImageStorage = @(UID_VLEndoscopicImageStorage);

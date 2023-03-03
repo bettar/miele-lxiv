@@ -895,10 +895,9 @@ static NSConditionLock *threadLock = nil;
 - (void) addFilesAndFolderToDatabase:(NSArray*) filenames
 {
     NSFileManager *defaultManager = [NSFileManager defaultManager];
-	NSMutableArray *filesArray;
 	BOOL isDirectory = NO;
 	
-	filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+    NSMutableArray *filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	
 	for (NSString *filename in filenames)
 	{
@@ -908,9 +907,9 @@ static NSConditionLock *threadLock = nil;
 		{
 			if ([[filename lastPathComponent] characterAtIndex: 0] != '.')
 			{
-				if ([defaultManager fileExistsAtPath: filename isDirectory:&isDirectory])     // A directory
+				if ([defaultManager fileExistsAtPath: filename isDirectory:&isDirectory])
 				{
-					if (isDirectory &&
+					if (isDirectory && // A directory
                         [[filename pathExtension] isEqualToString: @"pages"] == NO &&
                         [[filename pathExtension] isEqualToString: @"app"] == NO)
 					{
@@ -967,9 +966,11 @@ static NSConditionLock *threadLock = nil;
                                                                                         toPath: [[self INCOMINGPATH] stringByAppendingPathComponent: uniqueFolder]
                                                                                          error: nil];
 											}
-											else if ([[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] || [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."])
-												[self addDICOMDIR: itemPath : filesArray];
-											
+											else if ([[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] ||
+                                                     [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."])
+                                            {
+                                                [self addDICOMDIR: itemPath : filesArray];
+                                            }
 											else
                                                 [filesArray addObject:itemPath];
 										}
@@ -1573,6 +1574,7 @@ static NSConditionLock *threadLock = nil;
 }
 
 - (void) subSelectFilesAndFoldersToAdd: (NSArray*) filenames
+
 {
 	if ([filenames count] == 1 &&
         [[[filenames objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file!
@@ -1611,7 +1613,7 @@ static NSConditionLock *threadLock = nil;
     [oPanel setCanChooseDirectories:YES];
     if ([oPanel runModal] == NSOKButton)
 	{
-		[self subSelectFilesAndFoldersToAdd: [oPanel filenames]];
+		[self subSelectFilesAndFoldersToAdd: [oPanel filenames]]; // TODO: deprecated, Use URLs instead.
 	}
 }
 
@@ -3183,7 +3185,9 @@ static NSConditionLock *threadLock = nil;
                 }
             }
             else
+            {
                 outlineViewArray = [[_database objectsForEntity:_database.studyEntity predicate:nil error:&error] filteredArrayUsingPredicate:predicate];
+            }
 		}
         @catch( NSException *ne)
         {
@@ -3205,12 +3209,18 @@ static NSConditionLock *threadLock = nil;
             {
                 if (timeIntervalStart != nil || timeIntervalEnd != nil) // Search for the time interval, then apply the search field, if necessary
                 {
-                    if ([self.distantTimeIntervalStart isEqualToDate: timeIntervalStart] && (timeIntervalEnd == nil || [self.distantTimeIntervalEnd isEqualToDate: timeIntervalEnd]))
+                    if ([self.distantTimeIntervalStart isEqualToDate: timeIntervalStart] &&
+                        (timeIntervalEnd == nil || [self.distantTimeIntervalEnd isEqualToDate: timeIntervalEnd]))
+                    {
                         useDistantArray = YES;
+                    }
                 }
                 
-                if (self.distantSearchType == searchType && [self.distantSearchString isEqualToString: _searchString])
+                if (self.distantSearchType == searchType &&
+                    [self.distantSearchString isEqualToString: _searchString])
+                {
                     useDistantArray = YES;
+                }
             }
             
             if (useDistantArray)
@@ -3224,7 +3234,7 @@ static NSConditionLock *threadLock = nil;
                 }
                 
                 // Merge local and distant studies
-                #ifndef MIELE_LIGHT
+#ifndef MIELE_LIGHT
                 
                 // Autoretrieve?
                 NSMutableArray *studyToAutoretrieve = [NSMutableArray array];
@@ -3292,8 +3302,7 @@ static NSConditionLock *threadLock = nil;
                     t.supportsCancel = YES;
                     [[ThreadsManager defaultManager] addThreadAndStart: t];
                 }
-                
-                #endif
+#endif
                 
                 if ([distantStudies count])
                     outlineViewArray = [outlineViewArray arrayByAddingObjectsFromArray: distantStudies];
@@ -3362,8 +3371,10 @@ static NSConditionLock *threadLock = nil;
                             if ([oulineViewArrayStudyInstanceUIDs containsObject: [patientStudy valueForKey: @"studyInstanceUID"]] == NO && patientStudy != nil)
                             {
                                 studyIndex++;
-                                [copyOutlineViewArray insertObject: patientStudy atIndex: studyIndex];
-                                [oulineViewArrayStudyInstanceUIDs insertObject: [patientStudy valueForKey: @"studyInstanceUID"] atIndex: studyIndex];
+                                [copyOutlineViewArray insertObject: patientStudy
+                                                           atIndex: studyIndex];
+                                [oulineViewArrayStudyInstanceUIDs insertObject: [patientStudy valueForKey: @"studyInstanceUID"]
+                                                                       atIndex: studyIndex];
                             }
                         }
                     } @catch (NSException* e) { // object has become unavailable, who cares, we just won't be showing it anymore
@@ -3518,7 +3529,10 @@ static NSConditionLock *threadLock = nil;
     {
         if (_computingNumberOfStudiesForAlbums)
         {
-            [self performSelectorOnMainThread:@selector(delayedRefreshAlbums) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+            [self performSelectorOnMainThread:@selector(delayedRefreshAlbums)
+                                   withObject:nil
+                                waitUntilDone:NO
+                                        modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
             return;
         }
         
@@ -3562,7 +3576,6 @@ static NSConditionLock *threadLock = nil;
             }
             
             NSTimeInterval lastTime = [NSDate timeIntervalSinceReferenceDate];
-            
             
             BOOL recomputeDistantStudies = NO;
             
@@ -3694,7 +3707,8 @@ static NSConditionLock *threadLock = nil;
         {
             _computingNumberOfStudiesForAlbums = NO;
         }
-    } @catch (NSException* e) {
+    }
+    @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     } @finally {
         [pool release];
@@ -3716,7 +3730,9 @@ static NSConditionLock *threadLock = nil;
         else
         {
             if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO || [self.window isVisible]) // Server Mode: don't refresh albums
-                [NSThread detachNewThreadSelector:@selector(_computeNumberOfStudiesForAlbumsThread) toTarget:self withObject: nil];
+                [NSThread detachNewThreadSelector: @selector( _computeNumberOfStudiesForAlbumsThread)
+                                         toTarget: self
+                                       withObject: nil];
         }
     }
 }
@@ -6372,7 +6388,8 @@ static NSConditionLock *threadLock = nil;
 			if (![_database isLocal]) // notify the remote database about the removal of the selected studies from the current album
 				[(RemoteDicomDatabase*)_database removeStudies:studiesToRemove fromAlbum:album];
 			
-			[databaseOutline selectRowIndexes:[NSIndexSet indexSetWithIndex:[selectedRows firstIndex]] byExtendingSelection:NO];
+			[databaseOutline selectRowIndexes:[NSIndexSet indexSetWithIndex:[selectedRows firstIndex]]
+                         byExtendingSelection:NO];
 		}
 		
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
@@ -6432,7 +6449,8 @@ static NSConditionLock *threadLock = nil;
             
 			[self delObjects:objectsToDelete tree:objectsToDeleteTree];
             
-            [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [selectedRows firstIndex]] byExtendingSelection:NO];
+            [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [selectedRows firstIndex]]
+                         byExtendingSelection: NO];
 		}
 	}
 	
@@ -7450,7 +7468,8 @@ static NSConditionLock *threadLock = nil;
 	return r;
 }
 
-- (void) databaseOpenStudy:(DicomStudy*) currentStudy withProtocol:(NSDictionary*) currentHangingProtocol
+- (void) databaseOpenStudy:(DicomStudy*) currentStudy
+              withProtocol:(NSDictionary*) currentHangingProtocol
 {
     BOOL restoreNOAutotiling = NO;
     WindowSizeViewerType WINDOWSIZEVIEWERCopy = WINDOW_SIZE_FULL_SCREEN;
@@ -7489,12 +7508,12 @@ static NSConditionLock *threadLock = nil;
             [[NSUserDefaults standardUserDefaults] setBool: [[currentHangingProtocol valueForKey: @"Propagate"] boolValue] forKey:@"COPYSETTINGS"];
         }
         
-        NSMutableArray *seriesArray = nil;
+        NSMutableArray *seriesArray5 = nil;
         
         if ([[currentStudy imageSeriesContainingPixels: YES] count])
-            seriesArray = [NSMutableArray arrayWithArray: [currentStudy imageSeriesContainingPixels: YES]];
+            seriesArray5 = [NSMutableArray arrayWithArray: [currentStudy imageSeriesContainingPixels: YES]];
         else
-            seriesArray = [NSMutableArray arrayWithArray: [currentStudy imageSeries]];
+            seriesArray5 = [NSMutableArray arrayWithArray: [currentStudy imageSeries]];
         
         // Sort series according to SeriesOrder, if available
         if ([currentHangingProtocol valueForKey: @"SeriesOrder"])
@@ -7506,9 +7525,9 @@ static NSConditionLock *threadLock = nil;
                 term = [term stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 
                 int index = -1;
-                for (int i = 0; i < seriesArray.count; i++)
+                for (int i = 0; i < seriesArray5.count; i++)
                 {
-                    DicomSeries *s = [seriesArray objectAtIndex: i];
+                    DicomSeries *s = [seriesArray5 objectAtIndex: i];
                     
                     if ([s.description contains: term])
                         index = i;
@@ -7516,13 +7535,13 @@ static NSConditionLock *threadLock = nil;
                 
                 if (index != -1)
                 {
-                    [newSeriesArray addObject: [seriesArray objectAtIndex: index]];
-                    [seriesArray removeObjectAtIndex: index];
+                    [newSeriesArray addObject: [seriesArray5 objectAtIndex: index]];
+                    [seriesArray5 removeObjectAtIndex: index];
                 }
             }
-            [newSeriesArray addObjectsFromArray: seriesArray];
+            [newSeriesArray addObjectsFromArray: seriesArray5];
             
-            seriesArray = newSeriesArray;
+            seriesArray5 = newSeriesArray;
         }
         
         // Prepare the series to be displayed
@@ -7597,7 +7616,8 @@ static NSConditionLock *threadLock = nil;
                             }
                             else
                             {
-                                NSRange searchRange = [[study studyName] rangeOfString: [currentHangingProtocol objectForKey: @"Study Description"] options: NSCaseInsensitiveSearch | NSLiteralSearch];
+                                NSRange searchRange = [[study studyName] rangeOfString: [currentHangingProtocol objectForKey: @"Study Description"]
+                                                                               options: NSCaseInsensitiveSearch | NSLiteralSearch];
                                 if (searchRange.location == NSNotFound)
                                     comparativeStudy = nil;
                             }
@@ -7729,45 +7749,45 @@ static NSConditionLock *threadLock = nil;
         // Prepare the series
         int total = [WindowLayoutManager windowsRowsForHangingProtocol: currentHangingProtocol] * [WindowLayoutManager windowsColumnsForHangingProtocol: currentHangingProtocol] * [[[AppController sharedAppController] viewerScreens] count];
         
-        if (seriesArray.count > total)
-            [seriesArray removeObjectsInRange: NSMakeRange( total, seriesArray.count-total)];
+        if (seriesArray5.count > total)
+            [seriesArray5 removeObjectsInRange: NSMakeRange( total, seriesArray5.count-total)];
         
-        if (seriesArray.count + comparatives.count > total)
+        if (seriesArray5.count + comparatives.count > total)
         {
-            while (seriesArray.count + comparatives.count > total && seriesArray.count > 1)
-                [seriesArray removeLastObject];
+            while (seriesArray5.count + comparatives.count > total && seriesArray5.count > 1)
+                [seriesArray5 removeLastObject];
             
-            while (seriesArray.count + comparatives.count > total && comparatives.count > 0)
+            while (seriesArray5.count + comparatives.count > total && comparatives.count > 0)
                 [comparatives removeLastObject];
         }
         
         if ([[currentHangingProtocol objectForKey: @"RepeatSeriesIfNotEnoughSeries"] boolValue])
         {
-            if (seriesArray.count + comparatives.count < total)
+            if (seriesArray5.count + comparatives.count < total)
             {
                 int i = 0;
-                while (seriesArray.count + comparatives.count < total && seriesArray.count)
-                    [seriesArray addObject: [seriesArray objectAtIndex: i++]];
+                while (seriesArray5.count + comparatives.count < total && seriesArray5.count)
+                    [seriesArray5 addObject: [seriesArray5 objectAtIndex: i++]];
             }
         }
         
-        [seriesArray addObjectsFromArray: comparatives];
+        [seriesArray5 addObjectsFromArray: comparatives];
         
         
         // Go to the series level, if we are at study level (comparatives)
-        for (int i = 0; i < seriesArray.count; i++)
+        for (int i = 0; i < seriesArray5.count; i++)
         {
-            if ([[seriesArray objectAtIndex: i] isKindOfClass: [DicomStudy class]])
+            if ([[seriesArray5 objectAtIndex: i] isKindOfClass: [DicomStudy class]])
             {
-                DicomStudy *s = [seriesArray objectAtIndex: i];
+                DicomStudy *s = [seriesArray5 objectAtIndex: i];
                 
                 if ([[s imageSeriesContainingPixels: YES] count])
                 {
-                    [seriesArray replaceObjectAtIndex: i withObject: [[s imageSeriesContainingPixels: YES] objectAtIndex: 0]];
+                    [seriesArray5 replaceObjectAtIndex: i withObject: [[s imageSeriesContainingPixels: YES] objectAtIndex: 0]];
                 }
                 else if ([[s imageSeries] count])
                 {
-                    [seriesArray replaceObjectAtIndex: i withObject: [[s imageSeries] objectAtIndex: 0]];
+                    [seriesArray5 replaceObjectAtIndex: i withObject: [[s imageSeries] objectAtIndex: 0]];
                 }
                 else
                 {
@@ -7776,7 +7796,7 @@ static NSConditionLock *threadLock = nil;
             }
         }
         
-        [self viewerDICOMInt: NO  dcmFile: seriesArray viewer: nil tileWindows: YES protocol: currentHangingProtocol];
+        [self viewerDICOMInt: NO  dcmFile: seriesArray5 viewer: nil tileWindows: YES protocol: currentHangingProtocol];
     }
     else
     {
@@ -7911,7 +7931,9 @@ static NSConditionLock *threadLock = nil;
 #ifndef MIELE_LIGHT
                             NSArray *servers = [BrowserController comparativeServers];
                             
-                            DCMTKStudyQueryNode *distantStudy = [[QueryController queryStudiesForFilters: [NSDictionary dictionaryWithObject: studyUID forKey: @"StudyInstanceUID"] servers: servers showErrors: NO] lastObject];
+                            DCMTKStudyQueryNode *distantStudy = [[QueryController queryStudiesForFilters: [NSDictionary dictionaryWithObject: studyUID forKey: @"StudyInstanceUID"]
+                                                                                                 servers: servers
+                                                                                              showErrors: NO] lastObject];
                             
                             if (distantStudy)
                             {
@@ -8227,9 +8249,9 @@ static NSConditionLock *threadLock = nil;
 		{
 			[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[currentStudy valueForKey:@"modality"] description:[currentStudy valueForKey:@"studyName"]];
 			
-			NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
+			NSDictionary *currentHangingProtocol2 = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
 			
-            [self databaseOpenStudy: currentStudy withProtocol: currentHangingProtocol];
+            [self databaseOpenStudy: currentStudy withProtocol: currentHangingProtocol2];
 		}
 	}
 }
@@ -9419,7 +9441,7 @@ static BOOL withReset = NO;
 				
 				DCMPix *dcmPix2 = nil;
 				
-				//Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
+				// Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
 				dcmPix2 = [[self getDCMPixFromViewerIfAvailable: [image valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
 				
 				if (dcmPix2 == nil)
@@ -9458,7 +9480,7 @@ static BOOL withReset = NO;
 				if ([images count])
 				{
 					if ([images count] > 1)
-                        noOfImages = [images count];
+                        noOfImages = [images count]; // multiframe
 					else
                         noOfImages = [[[images objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue];
 					
@@ -9490,7 +9512,7 @@ static BOOL withReset = NO;
                                 @synchronized( previewPixThumbnails)
                                 {
                                     DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
-                                    
+NSLog(@"%s %d, %ld, %lu", __FUNCTION__, __LINE__, (long)[cell tag], (unsigned long)[previewPix count]);
                                     [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix3];
                                     
                                     [dcmPix3 release];
@@ -10140,9 +10162,9 @@ static BOOL withReset = NO;
 		
 		@try
 		{
-			studyObject = [context existingObjectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]] error: nil];
+			studyObject = [context existingObjectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]
+                                                  error: nil];
 		}
-		
 		@catch( NSException *ne)
 		{
             N2LogExceptionWithStackTrace(ne);
@@ -10171,8 +10193,7 @@ static BOOL withReset = NO;
 				{
 					[context deleteObject: studyObject];
 					[_database save:NULL];
-				}
-					
+				}					
 				@catch( NSException *ne)
 				{
                     N2LogExceptionWithStackTrace(ne);
@@ -10427,7 +10448,10 @@ static BOOL withReset = NO;
                         if ([NSThread isMainThread] == NO &&
                             [[NSThread currentThread] isCancelled] == NO)
                         {
-                            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+                            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:)
+                                                   withObject:nil
+                                                waitUntilDone:NO
+                                                        modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
                         }
                     }
                 }
@@ -10735,6 +10759,8 @@ constrainSplitPosition:(CGFloat)proposedPosition
 
 #pragma mark - NSSplitViewDelegate
 
+#define MINIMUMSIZEFORCOMPARATIVEDRAWER_HORZ    50
+#define MINIMUMSIZEFORCOMPARATIVEDRAWER         180
 -(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize
 {
 //    if (starting)
@@ -10771,7 +10797,6 @@ constrainSplitPosition:(CGFloat)proposedPosition
     {
         //NSLog(@"%s line %d, splitComparative", __FUNCTION__, __LINE__);
 
-        #define MINIMUMSIZEFORCOMPARATIVEDRAWER_HORZ 50
         if (gHorizontalHistory)
         {
             NSView* top = [[sender subviews] objectAtIndex:0];
@@ -10812,7 +10837,6 @@ constrainSplitPosition:(CGFloat)proposedPosition
         }
         else
         {
-            #define MINIMUMSIZEFORCOMPARATIVEDRAWER 180
             NSView* left = [[sender subviews] objectAtIndex:0];
             NSView* right = [[sender subviews] objectAtIndex:1];
             
@@ -11081,8 +11105,8 @@ constrainSplitPosition:(CGFloat)proposedPosition
 
 - (Dicom_Image *)firstObjectForDatabaseMatrixSelection
 {
-	NSArray				*cells = [oMatrix selectedCells];
-	NSManagedObject		*aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+	NSArray *cells = [oMatrix selectedCells];
+	NSManagedObject *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 	
 	if (cells != nil && aFile != nil)
 	{
@@ -11111,9 +11135,9 @@ constrainSplitPosition:(CGFloat)proposedPosition
 
 - (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages
 {
-	NSMutableArray		*selectedFiles = [NSMutableArray array];
-	NSArray				*cells = [oMatrix selectedCells];
-	NSManagedObject		*aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+	NSMutableArray *selectedFiles = [NSMutableArray array];
+	NSArray *cells = [oMatrix selectedCells];
+	NSManagedObject *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 	
 	if (correspondingManagedObjects == nil)
         correspondingManagedObjects = [NSMutableArray array];
@@ -13733,7 +13757,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 		
 		if ([cells count] > 1 && [[selectedLine valueForKey:@"type"] isEqualToString: @"Series"])
 		{
-			NSArray  *curList = [self childrenArray: selectedLine];
+			NSArray *curList = [self childrenArray: selectedLine];
 			
 			selectedFilesList = [[NSMutableArray alloc] initWithCapacity:0];
 			
@@ -13915,7 +13939,8 @@ constrainSplitPosition:(CGFloat)proposedPosition
 			
 			for (id obj in array)
 			{
-				[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: obj]] byExtendingSelection: NO];
+				[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: obj]]
+                             byExtendingSelection: NO];
 				[self databaseOpenStudy: obj];
 			}
 			
@@ -14432,13 +14457,18 @@ static NSArray*	openSubSeriesArray = nil;
         
 		if ([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] < 1)
 			[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"LISTENERCHECKINTERVAL"];
-		
+	
+#ifdef NDEBUG
+#define TIMEOUT_SEC     5*60
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
-			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 5*60 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
+        {
+            refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: TIMEOUT_SEC target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
+        }
 		
         [NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES]; // 10
         [NSTimer scheduledTimerWithTimeInterval: 1 target:self selector:@selector(refreshComparativeStudiesIfNeeded:) userInfo:self repeats:YES];
-        
+#endif
+
 		loadPreviewIndex = 0;
 		[[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(updateReportToolbarIcon:)
@@ -14878,7 +14908,10 @@ static NSArray*	openSubSeriesArray = nil;
                     {
                         NSSortDescriptor *prototype = [[databaseOutline tableColumnWithIdentifier: [sort objectForKey:@"key"]] sortDescriptorPrototype];
                         
-                        [databaseOutline setSortDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:[sort objectForKey:@"key"] ascending:[[sort objectForKey:@"order"] boolValue]  selector: [prototype selector]] autorelease]]];
+                        [databaseOutline setSortDescriptors: [NSArray arrayWithObject:
+                                [[[NSSortDescriptor alloc] initWithKey:[sort objectForKey:@"key"]
+                                                             ascending:[[sort objectForKey:@"order"] boolValue]
+                                                              selector:[prototype selector]] autorelease]]];
                     }
                     else
                         [databaseOutline setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
@@ -15113,7 +15146,10 @@ static NSArray*	openSubSeriesArray = nil;
 	[super dealloc];
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+-(void)observeValueForKeyPath:(NSString*)keyPath
+                     ofObject:(id)object
+                       change:(NSDictionary*)change
+                      context:(void*)context
 {
 	if (object == [NSUserDefaultsController sharedUserDefaultsController])
     {
@@ -15389,7 +15425,8 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		if ([result count])
 		{
-			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: [result objectAtIndex: 0]]] byExtendingSelection: NO];
+			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: [result objectAtIndex: 0]]]
+                         byExtendingSelection: NO];
 			[databaseOutline scrollRowToVisible: databaseOutline.selectedRow];
 		}
 		else
@@ -16261,7 +16298,8 @@ static NSArray*	openSubSeriesArray = nil;
 			[NSApp endSheet: CDpasswordWindow];
 			[CDpasswordWindow orderOut: self];
 		}
-		while (result == NSModalResponseStop && [BrowserController unzipFile: file withPassword: self.CDpassword destination: destination] == NO);
+		while (result == NSModalResponseStop &&
+               [BrowserController unzipFile: file withPassword: self.CDpassword destination: destination] == NO);
 	}
 	else
 		result = NSModalResponseStop;
@@ -18673,7 +18711,10 @@ redoZIPpassword:
 	NSMutableArray *filesToBurn;
 	//Burn additional Files. Not just images. Add SRs
     
-	if (([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
+	if (([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
+    {
+        filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
+    }
 	else
         filesToBurn = [self filesForDatabaseOutlineSelection: managedObjects onlyImages:NO];
 	
@@ -18689,7 +18730,8 @@ redoZIPpassword:
 	NSMutableArray *dicomFiles2Anonymize = [NSMutableArray array];
 	NSMutableArray *filesToAnonymize;
 	
-	if (([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
+	if (([sender isKindOfClass:[NSMenuItem class]] &&
+         [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 		filesToAnonymize = [self filesForDatabaseMatrixSelection: dicomFiles2Anonymize];
 	else
 		filesToAnonymize = [self filesForDatabaseOutlineSelection: dicomFiles2Anonymize];
@@ -18709,7 +18751,7 @@ redoZIPpassword:
 	
 	if (dicomFiles2Anonymize.count == 0)
 	{
-		NSRunAlertPanel( NSLocalizedString(@"Anonymize Error", nil),
+		NSRunAlertPanel(NSLocalizedString(@"Anonymize Error", nil),
                         NSLocalizedString(@"No DICOM files in this selection.", nil),
                         nil,
                         nil,
@@ -18718,7 +18760,11 @@ redoZIPpassword:
 	else
 	{
 		NSArray* ref = [NSArray arrayWithObjects: filesToAnonymize, dicomFiles2Anonymize, NULL];
-		[Anonymization showSavePanelForDefaultsKey:@"AnonymizationFields" modalForWindow:self.window modalDelegate:self didEndSelector:@selector(anonymizationSavePanelDidEnd:) representedObject:ref];
+		[Anonymization showSavePanelForDefaultsKey:@"AnonymizationFields"
+                                    modalForWindow:self.window
+                                     modalDelegate:self
+                                    didEndSelector:@selector(anonymizationSavePanelDidEnd:)
+                                 representedObject:ref];
 	}
 }
 

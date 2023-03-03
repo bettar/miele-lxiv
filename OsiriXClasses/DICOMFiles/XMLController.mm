@@ -321,7 +321,8 @@ extern int delayedTileWindows;
             {
                 if ([[[[table itemAtRow: i] attributeForName:@"attributeTag"] stringValue] isEqualToString: searchGpEl])
                 {
-                    [table selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
+                    [table selectRowIndexes: [NSIndexSet indexSetWithIndex: i]
+                       byExtendingSelection: NO];
                     
                     if ([modifiedFields containsObject: [self getPath: [table itemAtRow: i]]])
                     {
@@ -491,7 +492,7 @@ extern int delayedTileWindows;
 	
 	NSArray *winList = [NSApp windows];
 	
-	for( NSWindow *w in winList)
+	for (NSWindow *w in winList)
 	{
 		if ([[w windowController] isKindOfClass:[XMLController class]])
 		{
@@ -524,7 +525,7 @@ extern int delayedTileWindows;
     [dcmDocument release];
     dcmDocument = nil;
 	
-	if([DicomFile isDICOMFile:srcFile])
+	if ([DicomFile isDICOMFile:srcFile])
 	{
 //        NSTask *theTask = [[[NSTask alloc] init] autorelease];
 //        
@@ -552,7 +553,7 @@ extern int delayedTileWindows;
         
 		isDICOM = YES;
 	}
-	#ifndef MIELE_LIGHT
+#ifndef MIELE_LIGHT
 	else if([DicomFile isFVTiffFile:srcFile])
 	{
 		xmlDocument = XML_from_FVTiff(srcFile);
@@ -561,7 +562,7 @@ extern int delayedTileWindows;
 	{
 		xmlDocument = [[DicomFile getNIfTIXML:srcFile] retain];
 	}
-	#endif
+#endif
 	else
 	{
 		dcmDocument = [[DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO] retain];
@@ -774,6 +775,8 @@ extern int delayedTileWindows;
 	}
 }
 
+#pragma mark - NSOutlineViewDelegate
+
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
 {
     return YES;
@@ -792,13 +795,13 @@ extern int delayedTileWindows;
 	if ([[item valueForKey: @"name"] isEqualToString: @"value"])
 		return NO;
 
-    if([item childCount] == 1 && [[[[item children] objectAtIndex:0] valueForKey:@"name"] isEqualToString:@"value"])
+    if ([item childCount] == 1 && [[[[item children] objectAtIndex:0] valueForKey:@"name"] isEqualToString:@"value"])
         return NO;
 
-    if([item childCount] == 1 && [[[item children] objectAtIndex:0] kind] == NSXMLTextKind)
+    if ([item childCount] == 1 && [[[item children] objectAtIndex:0] kind] == NSXMLTextKind)
         return NO;
 
-    if([item childCount] == 0)
+    if ([item childCount] == 0)
         return NO;
 
     return YES;
@@ -884,7 +887,10 @@ extern int delayedTileWindows;
 	return found;
 }
 
-- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
+- (void)outlineView:(NSOutlineView *)outlineView
+    willDisplayCell:(id)cell
+     forTableColumn:(NSTableColumn *)tableColumn
+               item:(id)item
 {
 	BOOL found = NO;
 	
@@ -944,16 +950,20 @@ extern int delayedTileWindows;
 	return string;
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+- (id)outlineView:(NSOutlineView *)outlineView
+objectValueForTableColumn:(NSTableColumn *)tableColumn
+           byItem:(id)item
 {
     NSString *identifier = [tableColumn identifier];
     
-	if ([identifier isEqualToString:@"attributeTag"])
+	if ([identifier isEqualToString:@"attributeTag"]) // second column
 	{
 		if ([item attributeForName:@"group"] && [item attributeForName:@"element"])
-			return [NSString stringWithFormat:@"%@,%@", [[item attributeForName:@"group"] stringValue], [[item attributeForName:@"element"] stringValue]];
+			return [NSString stringWithFormat:@"%@,%@",
+                    [[item attributeForName:@"group"] stringValue],
+                    [[item attributeForName:@"element"] stringValue]];
 	}
-	else if ([identifier isEqualToString:@"stringValue"])
+	else if ([identifier isEqualToString:@"stringValue"]) // third column
 	{
 		if ([outlineView rowForItem: item] != 0)
         {
@@ -963,7 +973,7 @@ extern int delayedTileWindows;
             return [self stringsSeparatedForNode: item];
         }
 	}
-    else
+    else // first column
     {
         if ([modifiedFields containsObject: [self getPath: item]])
         {
@@ -1183,8 +1193,8 @@ extern int delayedTileWindows;
 {
     if (modificationsToApplyArray.count)
         return YES;
-    else
-        return NO;
+
+    return NO;
 }
 
 - (IBAction) applyModifications:(id)sender
@@ -1418,7 +1428,11 @@ extern int delayedTileWindows;
     
 	unichar c = [[event characters] characterAtIndex:0];
 	
-	if (self.editingActivated && [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey))
+	if (self.editingActivated &&
+        [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] &&
+        [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] &&
+        isDICOM &&
+        (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey))
 	{
 		if (NSRunInformationalAlertPanel(NSLocalizedString(@"DICOM Editing", nil),
                                          NSLocalizedString(@"Are you sure you want to delete selected field(s)?", nil),
@@ -1427,9 +1441,8 @@ extern int delayedTileWindows;
                                          nil
                                          ) == NSAlertDefaultReturn)
 		{
-			NSIndexSet*			selectedRowIndexes = [table selectedRowIndexes];
-			NSInteger			index;
-			
+			NSIndexSet* selectedRowIndexes = [table selectedRowIndexes];
+			NSInteger index;
 			
 			for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
 			{
@@ -1561,7 +1574,8 @@ extern int delayedTileWindows;
 
 #pragma mark - NSToolbar Related Methods
 
-- (void) setupToolbar {
+- (void) setupToolbar
+{
     // Create a new toolbar instance, and attach it to our document window 
     toolbar = [[NSToolbar alloc] initWithIdentifier: XML_ToolbarIdentifier];
     
@@ -1801,9 +1815,10 @@ extern int delayedTileWindows;
 
 - (IBAction) setTagName:(id) sender
 {
-	if ([dictionaryArray count] == 0) [self prepareDictionaryArray];
+	if ([dictionaryArray count] == 0)
+        [self prepareDictionaryArray];
 	
-	NSString	*string = [sender stringValue];
+	NSString *string = [sender stringValue];
 	
 	if ([string length] > 0)
 	{
@@ -1828,6 +1843,8 @@ extern int delayedTileWindows;
 		}
 	}
 }
+
+#pragma mark -
 
 - (NSString *)comboBox:(NSComboBox *)aComboBox completedString:(NSString *)uncompletedString
 {
