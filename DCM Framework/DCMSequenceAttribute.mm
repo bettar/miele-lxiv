@@ -98,7 +98,7 @@
 - (void)addItem:(id)item offset:(long)offset
 {
 	if (DCMDEBUG)
-		NSLog(@"Add sequence Item %@ at Offset:%ld", [item description], offset);
+		NSLog(@"DCMSequenceAttribute.mm:%d, Add sequence item at offset: 0x%lx=%ld, description:\n%@", __LINE__, offset, offset, [item description]);
     
 	NSArray *objects = [NSArray arrayWithObjects:item,
                         [NSNumber numberWithLong:offset],
@@ -134,7 +134,7 @@
 
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts
 {
-	if( [_vr isEqualToString: @"SQ"] == NO)
+	if ([_vr isEqualToString: @"SQ"] == NO)
 	{
 		// We don't write UN sequences
 //		[_vr release];

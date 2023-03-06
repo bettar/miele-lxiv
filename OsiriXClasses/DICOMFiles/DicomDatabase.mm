@@ -3317,7 +3317,7 @@ static BOOL protectionAgainstReentry = NO;
                                     {
                                         NSData *boundaryData = [data subdataWithRange:NSMakeRange(lastBoundaryLocation, firstBoundaryCRLFRange.location - lastBoundaryLocation)];
                                         NSUInteger boundaryLength=[boundaryData length];
-                                        NSData *DICMData = [@"DICM" dataUsingEncoding:NSASCIIStringEncoding];
+                                        NSData *DICMData = [@"DICM" dataUsingEncoding:NSASCIIStringEncoding]; // DCM_Magic
                                         NSRange DICMRange;
                                         NSRange dataRange;
                                         NSUInteger datasetOffset;

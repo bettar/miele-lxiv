@@ -24,15 +24,43 @@ static DCMTagDictionary *sharedTagDictionary;
 
 @implementation DCMTagDictionary
 
-+(id)sharedTagDictionary{		
-	if (!sharedTagDictionary) {
-		//NSDate *date = [NSDate date];
++(id)sharedTagDictionary
+{
+	if (!sharedTagDictionary)
+    {
+        //NSDate *date = [NSDate date];
 		NSBundle *bundle = [NSBundle bundleForClass:NSClassFromString(@"DCMTagDictionary")];
-		NSString *path = [bundle pathForResource:@"tagDictionary" ofType:@"plist"];
-		if (path == nil)
-            NSLog(@"Cannot find tagDictionary");
 
-        sharedTagDictionary = [[DCMTagDictionary alloc] initWithContentsOfFile:path];
+#if 1
+        NSMutableDictionary *combinedDict = [[NSMutableDictionary alloc] init];
+        NSArray *array = @[ @"tagDictionary", @"privateTagDictionary" ];
+        for (id aa in array)
+        {
+            NSString *path = [bundle pathForResource:aa ofType:@"plist"];
+            if (path == nil) {
+                NSLog(@"Cannot find dictionary %@", aa);
+                continue;
+            }
+
+            // dictionaryWithContentsOfFile is deprecated
+            NSURL *url = [NSURL fileURLWithPath:path]; // ng with URLWithString
+            if (url == nil) {
+                NSLog(@"Cannot find url %@", path);
+                continue;
+            }
+            NSError *err;
+            NSDictionary *dd = [NSDictionary dictionaryWithContentsOfURL:url error:&err];
+            //NSLog(@"dd count %lu, %@", (unsigned long)dd.count, err);
+
+            [combinedDict addEntriesFromDictionary: dd];
+        }
+        
+        //NSLog(@"combinedDict count %lu", (unsigned long)combinedDict.count);
+
+        sharedTagDictionary = [combinedDict copy];
+#else
+        sharedTagDictionary = [[DCMTagDictionary alloc] initWithContentsOfFile:path]; // deprecated, use initWithContentsOfURL
+#endif
 		
 //		NSLog( @"%@", sharedTagDictionary);
 		

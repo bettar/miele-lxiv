@@ -211,7 +211,8 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     O2UT = DCM_UT
 };
 
-+ (O2ValueRepresentation)valueRepresentationFromVR:(NSString*)vr {
++ (O2ValueRepresentation)valueRepresentationFromVR:(NSString*)vr
+{
     if (!vr)
         return 0;
     
@@ -639,7 +640,8 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     NSLog( @"We should not be here");
 }
 
-- (NSArray*)tags {
+- (NSArray*)tags
+{
     if (!tagsCache) {
         tagsCache = [[NSMutableArray alloc] init];
         

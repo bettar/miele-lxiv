@@ -7545,8 +7545,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
                     }
                 }
-#endif
-#endif
+#endif // MIELE_LIGHT
+#endif // OSIRIX_VIEWER
             }
 #ifndef MIELE_LIGHT  // Also Decompress ?
             else

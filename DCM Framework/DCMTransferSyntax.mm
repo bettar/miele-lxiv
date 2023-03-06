@@ -119,7 +119,7 @@ static NSMutableDictionary *gTransferSyntaxes = nil;
     self = [super init];
 	if (self)
     {
-        if( !gTransferSyntaxes)
+        if (!gTransferSyntaxes)
         {
             NSArray *tsSyntaxes = [NSArray arrayWithObjects:
                                DCM_ExplicitVRBigEndian,
@@ -235,7 +235,12 @@ static NSMutableDictionary *gTransferSyntaxes = nil;
 }
 
 
-- (id)initWithTS:(NSString *)ts isEncapsulated:(BOOL)encapsulated  isLittleEndian:(BOOL)endian  isExplicit:(BOOL)explicitValue name:(NSString *)aName{
+- (id)initWithTS:(NSString *)ts
+  isEncapsulated:(BOOL)encapsulated
+  isLittleEndian:(BOOL)endian
+      isExplicit:(BOOL)explicitValue
+            name:(NSString *)aName
+{
 	return self;
 }
 

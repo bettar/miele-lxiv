@@ -171,6 +171,8 @@
 		43D7F84523C72B0E0022372F /* overlayLine.gsh in Resources */ = {isa = PBXBuildFile; fileRef = 43D7F84423C72B0E0022372F /* overlayLine.gsh */; };
 		43DB7C1A23C83FE700B3C9EA /* overlayLine.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 43DB7C1923C83FE700B3C9EA /* overlayLine.vsh */; };
 		43DB7C1C23C8402600B3C9EA /* overlayLine.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43DB7C1B23C8402600B3C9EA /* overlayLine.fsh */; };
+		43DDDCAE29B24121000A9C1A /* privateTagDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 43DDDCAD29B24121000A9C1A /* privateTagDictionary.plist */; };
+		43DDDCAF29B24121000A9C1A /* privateTagDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 43DDDCAD29B24121000A9C1A /* privateTagDictionary.plist */; };
 		43E27D2B1AF338FA007B92CA /* ROI3DSettingsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */; };
 		43E3D93D289BB1A5006B0E9C /* libpng16.16.37.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */; };
 		43E3D93E289BB1D1006B0E9C /* libpng16.16.37.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -1737,6 +1739,7 @@
 		43D7F84423C72B0E0022372F /* overlayLine.gsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = overlayLine.gsh; sourceTree = "<group>"; };
 		43DB7C1923C83FE700B3C9EA /* overlayLine.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = overlayLine.vsh; sourceTree = "<group>"; };
 		43DB7C1B23C8402600B3C9EA /* overlayLine.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = overlayLine.fsh; sourceTree = "<group>"; };
+		43DDDCAD29B24121000A9C1A /* privateTagDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = privateTagDictionary.plist; sourceTree = "<group>"; };
 		43E27D261AF32929007B92CA /* tmp_locations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tmp_locations.h; sourceTree = "<group>"; };
 		43E27D281AF338FA007B92CA /* ROI3DSettingsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROI3DSettingsWindow.h; sourceTree = "<group>"; };
 		43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ROI3DSettingsWindow.mm; sourceTree = "<group>"; };
@@ -4340,6 +4343,7 @@
 				7E0B3A40067526CD00908593 /* DCM-Info.plist */,
 				43D7471821A6C4C80055FA87 /* InfoPlist.strings */,
 				BFEB763B0677FDA700F242F3 /* nameDictionary.plist */,
+				43DDDCAD29B24121000A9C1A /* privateTagDictionary.plist */,
 				BFEB763C0677FDA700F242F3 /* tagDictionary.plist */,
 			);
 			path = "DCM Framework";
@@ -5619,6 +5623,7 @@
 			files = (
 				7E0B3AA00675274500908593 /* version.plist in Resources */,
 				43D7471A21A6C4C80055FA87 /* InfoPlist.strings in Resources */,
+				43DDDCAF29B24121000A9C1A /* privateTagDictionary.plist in Resources */,
 				BFEB76410677FDA700F242F3 /* nameDictionary.plist in Resources */,
 				BFEB76420677FDA700F242F3 /* tagDictionary.plist in Resources */,
 			);
@@ -6023,6 +6028,7 @@
 				4356C82F1AC2A0D600653B32 /* CircleAngle.pdf in Resources */,
 				A9B23D0315CFDF62000E47C3 /* Move.pdf in Resources */,
 				A9B23D0715CFDF76000E47C3 /* Stack.pdf in Resources */,
+				43DDDCAE29B24121000A9C1A /* privateTagDictionary.plist in Resources */,
 				A9B23D0A15CFDF81000E47C3 /* Zoom.pdf in Resources */,
 				A9B23D0D15CFDF8E000E47C3 /* Rotate.pdf in Resources */,
 				A9B23D1015CFE3EB000E47C3 /* Rectangle.pdf in Resources */,

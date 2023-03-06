@@ -88,7 +88,7 @@
 		}
         
 		if (DCMDEBUG)
-			NSLog(@"end readDataSet byteOffset: %d", *byteOffset);
+			NSLog(@"end readDataSet byteOffset: 0x%x=%d", *byteOffset, *byteOffset);
         
 		[dicomData release];
 			//NSLog(@"DCMObject end init: %f", -[timestamp  timeIntervalSinceNow]); 
@@ -106,7 +106,7 @@
 	int endMetaHeaderPosition = 0;					
 
 	int endByteOffset =  0xFFFFFFFF;
-	BOOL isExplicit = [[dicomData transferSyntaxInUse] isExplicit];
+	BOOL isExplicit3 = [[dicomData transferSyntaxInUse] isExplicit];
 	BOOL forImplicitUseOW = NO;
 	
 	// Keep track of pixel data size in case need VL for encapsulated data ...
@@ -133,7 +133,7 @@
                     [dicomData startReadingDataSet];
                 }
                 
-                isExplicit = [[dicomData transferSyntaxInUse] isExplicit];
+                isExplicit3 = [[dicomData transferSyntaxInUse] isExplicit];
                 //NSLog(@"DCMObject readTag: %f", -[timestamp  timeIntervalSinceNow]);
                 DCMAttributeTag *tag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
                 *byteOffset+=4;
@@ -169,12 +169,13 @@
 
                     NSString *vr;
                     long vl = 0;
-                    if (isExplicit) {
+                    if (isExplicit3) {
                         vr = [dicomData nextStringWithLength:2];
-                        if (DCMDEBUG)
-                            NSLog(@"Explicit VR %@", vr);
-                        
                         *byteOffset+=2;
+
+                        if (DCMDEBUG)
+                            NSLog(@"DCMLimitedObject.mm:%d, Explicit VR %@", __LINE__, vr);
+                        
                         if (!vr)
                             vr = [tag vr];
                     }
@@ -206,7 +207,7 @@
                     //if (DCMDEBUG)
                     //	NSLog(@"byteoffset after vr %d, VR:%@",*byteOffset,  vr, vl);
                 //  ****** get length *********
-                    if (isExplicit) {
+                    if (isExplicit3) {
                         if ([DCMValueRepresentation isShortValueLengthVR:vr]) {
                             vl = [dicomData nextUnsignedShort];
                             *byteOffset+=2;
@@ -282,7 +283,7 @@
                     if (attr)
                         [attributes setObject:attr forKey:[tag stringValue]];
                     
-                    if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"MetaElementGroupLength"]])
+                    if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"MetaElementGroupLength"]]) // DCM_FileMetaInformationGroupLength
                     {
                         readingMetaHeader = YES;
                         if (DCMDEBUG)

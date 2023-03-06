@@ -536,8 +536,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
     
     // return the user's choice as third item in the input array
     *mode = dialog.choice;
-    
-    // issue i68
+
     [dialog.window makeFirstResponder: nil];
     [NSApp endSheet: dialog.window];
     [dialog.window orderOut: self];

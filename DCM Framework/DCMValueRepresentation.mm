@@ -426,34 +426,26 @@ const char *vr = [vrString UTF8String];
 		return vr[0]=='U' &&  vr[1]=='T';
 	}
 
-+ (BOOL) isShortValueLengthVR:(NSString *)vrString{
-const char *vr = [vrString UTF8String];
-		return (vr[0]=='A' && ( vr[1]=='E'
-				    || vr[1]=='S'
-				    || vr[1]=='T' ))
-		    || (vr[0]=='C' &&   vr[1]=='S')
-		    || (vr[0]=='D' && ( vr[1]=='A'
-				    || vr[1]=='S'
-				    || vr[1]=='T' ))
-		    || (vr[0]=='F' && ( vr[1]=='D'
-				    || vr[1]=='L' ))
-		    || (vr[0]=='I' &&   vr[1]=='S')
-		    || (vr[0]=='L' && ( vr[1]=='O'
-				    || vr[1]=='T' ))
-		    || (vr[0]=='P' &&   vr[1]=='N')
-		    || (vr[0]=='S' && ( vr[1]=='H'
-				    || vr[1]=='L'
-				    || vr[1]=='S'
-				    || vr[1]=='T' ))
-		    || (vr[0]=='T' &&   vr[1]=='M')
-		    || (vr[0]=='U' && ( vr[1]=='I'
-				    || vr[1]=='L'
-				    || vr[1]=='S' ));
-	}
++ (BOOL) isShortValueLengthVR:(NSString *)vrString
+{
+    const char *vr = [vrString UTF8String];
+    bool isValidVR =
+       (vr[0]=='A' && ( vr[1]=='E' || vr[1]=='S' || vr[1]=='T' ))
+    || (vr[0]=='C' &&   vr[1]=='S')
+    || (vr[0]=='D' && ( vr[1]=='A' || vr[1]=='S' || vr[1]=='T' ))
+    || (vr[0]=='F' && ( vr[1]=='D' || vr[1]=='L' ))
+    || (vr[0]=='I' &&   vr[1]=='S')
+    || (vr[0]=='L' && ( vr[1]=='O' || vr[1]=='T' ))
+    || (vr[0]=='P' &&   vr[1]=='N')
+    || (vr[0]=='S' && ( vr[1]=='H' || vr[1]=='L' || vr[1]=='S'|| vr[1]=='T' ))
+    || (vr[0]=='T' &&   vr[1]=='M')
+    || (vr[0]=='U' && ( vr[1]=='I' || vr[1]=='L' || vr[1]=='S' ));
 
+    return isValidVR;
+}
 
-
-+ (BOOL)isAffectedBySpecificCharacterSet:(NSString *)vrString{
++ (BOOL)isAffectedBySpecificCharacterSet:(NSString *)vrString
+{
 	//const char *vr = [vrString UTF8String];
 		return ([DCMValueRepresentation isLongStringVR:vrString]
 		    || [DCMValueRepresentation isLongTextVR:vrString]

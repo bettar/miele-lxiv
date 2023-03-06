@@ -549,12 +549,17 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
     {
         if (image) {
             // Check if it has pixel data
-            NSString *MSSOPClassUID = [DicomFile getDicomField: @"MediaStorageSOPClassUID" forFile: file]; // (0002,0002)
+            // (0002,0002) DCM_MediaStorageSOPClassUID
+            NSString *MSSOPClassUID = [DicomFile getDicomField: @"MediaStorageSOPClassUID"
+                                                       forFile: file];
             *image = [DCMAbstractSyntaxUID isImageStorage: MSSOPClassUID];
         }
         
         if (compressed) {
-            NSString *transferSyntax = [DicomFile getDicomField: @"TransferSyntaxUID" forFile: file]; // (0002,0010)
+            // (0002,0010) DCM_TransferSyntaxUID
+            NSString *transferSyntax = [DicomFile getDicomField: @"TransferSyntaxUID"
+                                                        forFile: file];
+
             if ([transferSyntax isEqualToString: DCM_JPEGLossless] ||
                 [transferSyntax isEqualToString: DCM_JPEGBaseline] ||
                 [transferSyntax isEqualToString: DCM_JPEG2000Lossy] ||

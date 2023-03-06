@@ -86,9 +86,10 @@
                                           data: dicomData];
 			_values = [[NSMutableArray alloc] initWithArray:array];
 			if (DCMDEBUG)
-				NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, [self description]);
+				NSLog(@"DCMAttribute.mm:%d initWithAttributeTag, %@", __LINE__, [self description]);
 		}
-		_dataPtr = nil;
+
+        _dataPtr = nil;
 	}
 
 	return self;
@@ -522,7 +523,9 @@
 - (NSString *)description
 {
 	if (self.valueLength < 100)
-		return  [NSString stringWithFormat:@"%@\t %@\t vl:%d\t vm:%d\t %@", _tag.description, _tag.vr, (int)self.valueLength, self.valueMultiplicity, [self valuesAsString]];
+    {
+        return [NSString stringWithFormat:@"%@\t %@\t vl:%d\t vm:%d\t <%@>", _tag.description, _tag.vr, (int)self.valueLength, self.valueMultiplicity, [self valuesAsString]];
+    }
     
 	return [NSString stringWithFormat:@"%@\t vl:%d\t vm:%d", _tag.description, (int) self.valueLength, self.valueMultiplicity];
 }

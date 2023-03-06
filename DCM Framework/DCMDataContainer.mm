@@ -19,6 +19,10 @@
 =========================================================================*/
 
 #include "options.h"
+
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dcmetinf.h" // for DCM_PreambleLen
+
 #import <DCM/DCMDataContainer.h>
 #import "DCM.h"
 
@@ -257,9 +261,13 @@ void signal_EXC(int sig_num)
 	//stringEncoding  = NSUTF8StringEncoding;
 	if ([dicomData length] >= 132) {
 		unsigned char buffer[4];
-		NSRange range = {128,4};
+		NSRange range = {128,4}; // DCM_PreambleLen,DCM_MagicLen
 		[dicomData getBytes:buffer range:range];
-		if (buffer[0] == 'D' && buffer[1] == 'I' && buffer[2] == 'C' && buffer[3] == 'D') {
+		if (buffer[0] == 'D' &&
+            buffer[1] == 'I' &&
+            buffer[2] == 'C' &&
+            buffer[3] == 'M') // was 'D')
+        {
 			offset = 132;
 			position = offset;
 		}
@@ -976,27 +984,27 @@ void signal_EXC(int sig_num)
 {
     [transferSyntaxInUse release];
 	transferSyntaxInUse = [[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] retain];
-	position = 128;
+	position = DCM_PreambleLen;
 	int group;
 	int element;
 	NSString *vr;
-	NSString *dicm = [self nextStringWithLength:4];
+	NSString *dicm = [self nextStringWithLength:DCM_MagicLen];
 	
-	if ([dicm isEqualToString:@"DICM"])
-	{ //DICOM.10 file
+	if ([dicm isEqualToString:@"DICM"]) // DCM_Magic
+	{
 		if (DCMDEBUG)
-			NSLog(@"Dicom part 10 file");
+			NSLog(@"Dicom part 10 file"); //DICOM.10 file
 		
-		/*
-		transferSyntaxForMetaheader should be  explicit VR LE
-		check for valid VR, just in case
-		*/
+		// transferSyntaxForMetaheader should be  "explicit VR LE"
+        // Check for valid VR, just in case
 		group = [self nextUnsignedShort];
 		element = [self nextUnsignedShort];
 		vr = [self nextStringWithLength:2];
 		
 		if (DCMDEBUG)
-			NSLog(@"group: %0004d element: %0004d vr: %@" , group, element, vr);
+			NSLog(@"(%04x,%04x) VR: %@\n\tpos:0x%x, off:0x%x",
+                  group, element, vr,
+                  position, offset);
 
 		if ([DCMValueRepresentation isValidVR:vr]) {
 			[transferSyntaxForMetaheader release];

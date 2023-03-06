@@ -154,6 +154,7 @@ extern NSRecursiveLock *Papyrus_Lock;
         
         DcmFileFormat fileformat;
         
+        // Load a file with DCMTK
         OFCondition status = fileformat.loadFile( [path UTF8String], EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
         
         [Papyrus_Lock unlock];
