@@ -841,7 +841,7 @@ PixelRepresentation
 //                    if (DCMDEBUG)
 //                        NSLog(@"Start reading dataset");
 
-                    [dicomData startReadingDataSet];// FIXME: it gets called over and over
+                    [dicomData startReadingDataSet]; // FIXME: it gets called over and over
                 }
                 else if (transferSyntax != nil &&
                          group == 0x0002 && element == 0x0010) // DCM_TransferSyntaxUID
@@ -884,7 +884,7 @@ PixelRepresentation
                     // this is bad ... there shouldn't be Items here since they should
                     // only be found during readNewSequenceAttribute()
                     // however, try to work around Philips bug ...
-                    long vl = [dicomData nextUnsignedLong];		// always implicit VR form for items and delimiters
+                    long vl = [dicomData nextUnsignedLong]; // always implicit VR form for items and delimiters
                     *byteOffset+=4;
                     if (DCMDEBUG)
                         NSLog(@"Ignoring bad Item at %d  %@ VL=<0x%x", *byteOffset, tag.stringValue, (unsigned int) vl);
@@ -972,7 +972,7 @@ PixelRepresentation
                         NSLog(@"DCMObject.mm:%d, Tag: %@, length: 0x%lx=%ld", __LINE__, [tag description], vl, vl);
 
                     //if (DCMDEBUG)
-                    //	NSLog(@"byteoffset after length %d, VR:%@  length:%d",*byteOffset,  vr, vl);
+                    //  NSLog(@"byteoffset after length %d, VR:%@, length:%ld",*byteOffset, vr, vl);
                     
                     // generate Attributes
                     DCMAttribute *attr = nil;
@@ -986,7 +986,9 @@ PixelRepresentation
                         auto saveTS4DS = dicomData.transferSyntaxForDataset;
                         auto saveExplicit = dicomData.isExplicitTS;
 
-                        bool forceImplicitSq = (group == 0x2001 || group == 0x2005); // Philips private sequences
+                        // Philips private sequences of undefined length
+                        bool forceImplicitSq = (vl == 0xFFFFFFFFL) &&
+                                               (group == 0x2001 || group == 0x2005);
                         if (forceImplicitSq)
                         {
 #if 0 // TBC: is this a good idea ?
@@ -996,7 +998,7 @@ PixelRepresentation
 #endif
 
                             //NSLog(@"DCMObject.mm:%d, (%04x,%04x), ts4ds: %@, explicit: %d", __LINE__, group,element, saveTS4DS, saveExplicit);
-
+                            
                             [dicomData setExplicitTS:false];
                             [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]]; //UID_LittleEndianImplicitTransferSyntax];
                         }

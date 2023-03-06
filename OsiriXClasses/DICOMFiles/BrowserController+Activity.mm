@@ -143,7 +143,7 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
                       context:(void*)context
 {
 #ifndef NDEBUG
-    NSLog( @"%s %d %@", __FUNCTION__, __LINE__, keyPath);
+    //NSLog( @"%s %d %@", __FUNCTION__, __LINE__, keyPath);
 #endif
 	if (![NSThread isMainThread]) {
         [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:)

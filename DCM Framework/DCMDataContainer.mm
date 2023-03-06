@@ -266,7 +266,7 @@ void signal_EXC(int sig_num)
 		if (buffer[0] == 'D' &&
             buffer[1] == 'I' &&
             buffer[2] == 'C' &&
-            buffer[3] == 'M') // was 'D')
+            buffer[3] == 'M')
         {
 			offset = 132;
 			position = offset;
@@ -342,7 +342,6 @@ void signal_EXC(int sig_num)
 		[exception raise];
 	return 0;
 }
-
 
 - (short)nextSignedShort{
 	NSException *exception = [self testForLength:2];

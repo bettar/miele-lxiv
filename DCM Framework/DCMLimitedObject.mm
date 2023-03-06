@@ -105,7 +105,7 @@
 	BOOL readingMetaHeader = NO;
 	int endMetaHeaderPosition = 0;					
 
-	int endByteOffset =  0xFFFFFFFF;
+	int endByteOffset = 0xFFFFFFFF;
 	BOOL isExplicit3 = [[dicomData transferSyntaxInUse] isExplicit];
 	BOOL forImplicitUseOW = NO;
 	

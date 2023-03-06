@@ -31,7 +31,6 @@ static DCMTagDictionary *sharedTagDictionary;
         //NSDate *date = [NSDate date];
 		NSBundle *bundle = [NSBundle bundleForClass:NSClassFromString(@"DCMTagDictionary")];
 
-#if 1
         NSMutableDictionary *combinedDict = [[NSMutableDictionary alloc] init];
         NSArray *array = @[ @"tagDictionary", @"privateTagDictionary" ];
         for (id aa in array)
@@ -58,9 +57,6 @@ static DCMTagDictionary *sharedTagDictionary;
         //NSLog(@"combinedDict count %lu", (unsigned long)combinedDict.count);
 
         sharedTagDictionary = [combinedDict copy];
-#else
-        sharedTagDictionary = [[DCMTagDictionary alloc] initWithContentsOfFile:path]; // deprecated, use initWithContentsOfURL
-#endif
 		
 //		NSLog( @"%@", sharedTagDictionary);
 		
