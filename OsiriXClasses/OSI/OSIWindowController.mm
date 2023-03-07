@@ -507,7 +507,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 - (void) dealloc
 {
 #ifndef NDEBUG
-    NSLog(@"OSIWindowController.mm:%d %@ dealloc %p", __LINE__, NSStringFromClass([self class]), self);
+    //NSLog(@"OSIWindowController.mm:%d %@ dealloc %p", __LINE__, NSStringFromClass([self class]), self);
 #endif
     
     self.database = nil;

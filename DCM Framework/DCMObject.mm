@@ -25,8 +25,6 @@
 #import <DCM/DCMAbstractSyntaxUID.h>
 #import <Accelerate/Accelerate.h>
 
-#define FIX_ISSUE_i66
-
 static NSString *DCM_SecondaryCaptureImageStorage = @"1.2.840.10008.5.1.4.1.1.7";
 static NSString *rootUID = @"1.3.6.1.4.1.19291.2.1";
 static NSString *uidQualifier = @"99";
@@ -37,7 +35,8 @@ static NSString *macAddress = nil;
 
 void exitOsiriX(void)
 {
-	[NSException raise: @"JPEG error exception raised" format: @"JPEG error exception raised - See Console.app for error message"];
+	[NSException raise: @"JPEG error exception raised"
+                format: @"JPEG error exception raised - See Console.app for error message"];
 }
 
 #include <IOKit/IOKitLib.h>
@@ -981,7 +980,7 @@ PixelRepresentation
                     if ([DCMValueRepresentation isSequenceVR:vr] ||
                         ([DCMValueRepresentation isUnknownVR:vr] && vl == 0xFFFFFFFFL))
                     {
-#ifdef FIX_ISSUE_i66
+#if 1 //def FIX_ISSUE_i66
                         //auto saveTS = dicomData.transferSyntaxInUse;
                         auto saveTS4DS = dicomData.transferSyntaxForDataset;
                         auto saveExplicit = dicomData.isExplicitTS;
@@ -1009,7 +1008,7 @@ PixelRepresentation
                                                           byteOffset:byteOffset
                                                         lengthToRead:(int)vl // 0xffffffff=4294967295
                                                 specificCharacterSet:specificCharacterSet];
-#ifdef FIX_ISSUE_i66
+#if 1 //def FIX_ISSUE_i66
                         if (forceImplicitSq)
                         {
                             // restore TS

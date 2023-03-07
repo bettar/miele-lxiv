@@ -250,8 +250,8 @@
 /* Class = "NSButtonCell"; title = "Protect it with a password:"; ObjectID = "967"; */
 "967.title" = "パスワードで保護する:";
 
-/* Class = "NSButtonCell"; title = "Activate OsiriX database sharing, and publish it using the name:"; ObjectID = "968"; */
-"968.title" = "Miele-LXIVデータベース共有を有効にし、名前を使用して公開します。";
+/* Class = "NSButtonCell"; title = "Activate Miele database sharing, and publish it using the name:"; ObjectID = "968"; */
+"968.title" = "Mieleデータベース共有を有効にし、名前を使用して公開します。";
 
 /* Class = "NSTextFieldCell"; placeholderString = "Hostname"; ObjectID = "975"; */
 "975.placeholderString" = "ホスト名";

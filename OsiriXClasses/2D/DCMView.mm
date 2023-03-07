@@ -8367,8 +8367,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #ifdef WITH_GLEW // 20191122 added
     if (checkExtension("GL_EXT_texture_rectangle")) {
         glGetIntegerv(GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT, &NPOTDMaxTextureSize);
-        if (NPOTDMaxTextureSize < maxNOPTDTextureSize)
-            maxNOPTDTextureSize = NPOTDMaxTextureSize;
+        if (NPOTDMaxTextureSize < _minMaxNOPTDTextureSize)
+            _minMaxNOPTDTextureSize = NPOTDMaxTextureSize;
     }
 #endif
     

@@ -54,7 +54,8 @@ extern "C"
 {
     void exitOsiriX(void)
     {
-        [NSException raise: @"JPEG error exception raised" format: @"JPEG error exception raised - See Console.app for error message"];
+        [NSException raise: @"JPEG error exception raised"
+                    format: @"JPEG error exception raised - See Console.app for error message"];
     }
 }
 

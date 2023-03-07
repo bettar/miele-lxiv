@@ -119,14 +119,16 @@ void OsiriXFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *v
     ren->PrintSelf(std::cerr, *indent);
 #endif
 
-#if 0 //ndef NDEBUG
+#ifndef NDEBUG
     std::cerr << __FILE__ << ":" << __LINE__
     << ", ren:" << ren->GetClassName() // vtkOpenGLRenderer
     << ", win:" << ren->GetRenderWindow()->GetClassName() // vtkCocoaRenderWindow
     << std::endl;
 #endif
 
+#ifdef WITH_OPENGL_32
     this->DisplayRenderedImage( ren, vol ); // Issue #i18
+#endif
 
     this->Timer->StopTimer();
     this->TimeToDraw = this->Timer->GetElapsedTime();

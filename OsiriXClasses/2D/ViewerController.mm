@@ -21,6 +21,9 @@
 #include "options.h"
 #import "mieleTypes.h"
 
+#import <Accelerate/Accelerate.h>
+#import <ScreenSaver/ScreenSaverView.h>
+
 #import "NSImage+N2.h"
 #import "AppDefaults.h"
 #import "NSAppleScript+HandlerCalls.h"
@@ -38,12 +41,10 @@
 #import "BrowserController.h"
 #import "Wait.h"
 #import "XMLController.h"
-#include <Accelerate/Accelerate.h>
 #import "WaitRendering.h"
 #import "HistogramWindow.h"
 #import "ROIWindow.h"
 #import "ROIDefaultsWindow.h"
-#import <ScreenSaver/ScreenSaverView.h>
 #import "AppController.h"
 #import "ToolbarPanel.h"
 #import "ThumbnailsListPanel.h"
