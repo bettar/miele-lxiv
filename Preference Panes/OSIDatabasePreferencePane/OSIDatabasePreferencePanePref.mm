@@ -427,7 +427,8 @@
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
-	if ([[olderType cellWithTag:0] state] == NSOffState && [[olderType cellWithTag:1] state] == NSOffState)
+	if ([[olderType cellWithTag:0] state] == NSOffState &&
+        [[olderType cellWithTag:1] state] == NSOffState)
 	{
 		[older setState: NSOffState];
 	}

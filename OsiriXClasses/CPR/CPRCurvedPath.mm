@@ -360,7 +360,9 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     _transverseSectionSpacing = 2;
 }
 
-- (void)moveControlToken:(CPRCurvedPathControlToken)token toPoint:(NSPoint)point transform:(N3AffineTransform)transform // resets Z by default
+- (void)moveControlToken:(CPRCurvedPathControlToken)token
+                 toPoint:(NSPoint)point
+               transform:(N3AffineTransform)transform // resets Z by default
 {
     N3Vector node;
     NSUInteger element;
@@ -402,7 +404,9 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 - (void)moveNodeAtIndex:(NSInteger)index toVector:(N3Vector)vector // for this exceptional method, the vector is given in patient space
 {
     // hacky implementation, but why not....
-    [self moveControlToken:[[self class] controlTokenForNodeIndex:index] toPoint:NSPointFromN3Vector(vector) transform:N3AffineTransformMakeTranslation(0, 0, vector.z)];
+    [self moveControlToken:[[self class] controlTokenForNodeIndex:index]
+                   toPoint:NSPointFromN3Vector(vector)
+                 transform:N3AffineTransformMakeTranslation(0, 0, vector.z)];
 }
 
 - (CPRCurvedPathControlToken)controlTokenNearPoint:(NSPoint)point transform:(N3AffineTransform)transform;

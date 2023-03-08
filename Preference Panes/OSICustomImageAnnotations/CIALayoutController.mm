@@ -1320,7 +1320,7 @@
 {
 	[self removeAllAnnotations];
 	
-	[[prefPane orientationWidgetButton] setState:NSOffState];
+	[[prefPane orientationWidgetButton] setState:NSControlStateValueOff];
 	
 	NSDictionary *palceHoldersForModality = [annotationsLayoutDictionary objectForKey:modality];
 	NSArray *keys = [NSArray arrayWithObjects:@"LowerLeft", @"LowerMiddle", @"LowerRight", @"MiddleLeft", @"MiddleRight", @"TopLeft", @"TopMiddle", @"TopRight", nil];
@@ -1366,7 +1366,7 @@
 		[placeHolder updateFrameAroundAnnotationsWithAnimation:NO];
 	}
 	
-	[[prefPane sameAsDefaultButton] setState:NSOffState];
+	[[prefPane sameAsDefaultButton] setState:NSControlStateValueOff];
 	
 	if (n==0 && ![modality isEqualTo:@"Default"])
 	{

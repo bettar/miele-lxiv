@@ -41,7 +41,7 @@ NSString* N2DisclosureBoxDidCollapseNotification = @"N2DisclosureBoxDidCollapseN
 //	if (self.titleCell) [self.titleCell release]; // [NSBox dealloc] will later release the object we will now create
 //	self.titleCell = [[N2DisclosureButtonCell alloc] init];
 	[self.titleCell setTitle:title];
-	[self.titleCell setState:NSOffState];
+	[self.titleCell setState:NSControlStateValueOff];
 	[self.titleCell setTarget:self];
 	[self.titleCell setAction:@selector(toggle:)];
 	
@@ -74,7 +74,7 @@ NSString* N2DisclosureBoxDidCollapseNotification = @"N2DisclosureBoxDidCollapseN
 }
 
 -(BOOL)isExpanded {
-	return [self.titleCell state] == NSOnState;
+	return [self.titleCell state] == NSControlStateValueOn;
 }
 
 -(void)toggle:(id)sender {
@@ -96,7 +96,7 @@ NSString* N2DisclosureBoxDidCollapseNotification = @"N2DisclosureBoxDidCollapseN
 	[self setFrameFromContentFrame:[_content frame]];
 	[self addSubview:_content];
 	
-	[self.titleCell setState:NSOnState];
+	[self.titleCell setState:NSControlStateValueOn];
 	[[NSNotificationCenter defaultCenter] postNotificationName:N2DisclosureBoxDidExpandNotification object:self];
 }
 
@@ -109,7 +109,7 @@ NSString* N2DisclosureBoxDidCollapseNotification = @"N2DisclosureBoxDidCollapseN
 	[_content removeFromSuperview];
 	[self setFrameFromContentFrame:NSZeroRect];
 	
-	[self.titleCell setState:NSOffState];
+	[self.titleCell setState:NSControlStateValueOff];
 	[[NSNotificationCenter defaultCenter] postNotificationName:N2DisclosureBoxDidCollapseNotification object:self];
 }
 

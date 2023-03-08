@@ -174,6 +174,8 @@
 		43DDDCAE29B24121000A9C1A /* privateTagDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 43DDDCAD29B24121000A9C1A /* privateTagDictionary.plist */; };
 		43DDDCAF29B24121000A9C1A /* privateTagDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 43DDDCAD29B24121000A9C1A /* privateTagDictionary.plist */; };
 		43E27D2B1AF338FA007B92CA /* ROI3DSettingsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */; };
+		43E35C0329B775BA0068526F /* JPEGtoDICOM.mieleplugin in Resources */ = {isa = PBXBuildFile; fileRef = 43E35C0229B775BA0068526F /* JPEGtoDICOM.mieleplugin */; };
+		43E35C0529B7761D0068526F /* JPEGtoDICOM.mieleplugin in Copy Builtin Plugins */ = {isa = PBXBuildFile; fileRef = 43E35C0229B775BA0068526F /* JPEGtoDICOM.mieleplugin */; };
 		43E3D93D289BB1A5006B0E9C /* libpng16.16.37.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */; };
 		43E3D93E289BB1D1006B0E9C /* libpng16.16.37.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		43E71199289D01750065374E /* libming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E71197289CFEF70065374E /* libming.a */; };
@@ -1132,6 +1134,17 @@
 			name = "Copy Executables";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		43E35C0429B775F70068526F /* Copy Builtin Plugins */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				43E35C0529B7761D0068526F /* JPEGtoDICOM.mieleplugin in Copy Builtin Plugins */,
+			);
+			name = "Copy Builtin Plugins";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CECA66E306CD8C1500D8750E /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1743,6 +1756,7 @@
 		43E27D261AF32929007B92CA /* tmp_locations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tmp_locations.h; sourceTree = "<group>"; };
 		43E27D281AF338FA007B92CA /* ROI3DSettingsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROI3DSettingsWindow.h; sourceTree = "<group>"; };
 		43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ROI3DSettingsWindow.mm; sourceTree = "<group>"; };
+		43E35C0229B775BA0068526F /* JPEGtoDICOM.mieleplugin */ = {isa = PBXFileReference; lastKnownFileType = folder; name = JPEGtoDICOM.mieleplugin; path = "../../../../p95_lxiv-plugins/dev/ported/JPEGtoDICOM/src/Build/Products/Development/JPEGtoDICOM.mieleplugin"; sourceTree = "<group>"; };
 		43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.37.0.dylib; path = "../../../install/project68/20220729_UB/libpng-1.6.37/lib/libpng16.16.37.0.dylib"; sourceTree = "<group>"; };
 		43E6A512216CC297005A031A /* odt2pdf.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = odt2pdf.zip; path = Binaries/ReportsToPDF/odt2pdf/build/odt2pdf.zip; sourceTree = "<group>"; };
 		43E71197289CFEF70065374E /* libming.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libming.a; path = "../../../install/project68/20220729_UB/ming-0_4_8/lib/libming.a"; sourceTree = "<group>"; };
@@ -3205,6 +3219,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				43E35C0129B775520068526F /* Plugins Builtin */,
 				434930ED225512EC00C30B21 /* Unit Tests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
@@ -4131,6 +4146,14 @@
 				43977C2F23D340AF0044054B /* loupe.fsh */,
 			);
 			path = Shaders;
+			sourceTree = "<group>";
+		};
+		43E35C0129B775520068526F /* Plugins Builtin */ = {
+			isa = PBXGroup;
+			children = (
+				43E35C0229B775BA0068526F /* JPEGtoDICOM.mieleplugin */,
+			);
+			path = "Plugins Builtin";
 			sourceTree = "<group>";
 		};
 		43E9D2B82167865800CFBD0B /* MieleAPI framework */ = {
@@ -5451,6 +5474,7 @@
 			buildPhases = (
 				AB28B42B05B7921E00A9906C /* Resources */,
 				437002F821CD3C5400C91D62 /* Copy Executables */,
+				43E35C0429B775F70068526F /* Copy Builtin Plugins */,
 				7183153F161065BE0098576F /* Replace Weasis ext-config.properties */,
 				59BDEE70117CB3A6007F1F2C /* Zip Launcher into Resources */,
 				AB28B42C05B7921E00A9906C /* Sources */,
@@ -5930,6 +5954,7 @@
 				43A02C96219D889700E788B6 /* AnonymizationCustomTagPanel.xib in Resources */,
 				CED1FD1B1035E9BB0076AB33 /* SetPixelValue.pdf in Resources */,
 				CED1FD1C1035E9BB0076AB33 /* GrowingRegion.png in Resources */,
+				43E35C0329B775BA0068526F /* JPEGtoDICOM.mieleplugin in Resources */,
 				CEFB8A9910C19902000DCCB0 /* ReportTemplate.odt in Resources */,
 				CE4B5CFC10E5F9DE00C11948 /* Safari.tif in Resources */,
 				CE06475210F12DA500551AD9 /* PlayTemplate.png in Resources */,

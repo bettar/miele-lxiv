@@ -1536,7 +1536,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	if (draggedToken != CPRCurvedPathControlTokenNone) {
 		mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];
 		[self sendWillEditCurvedPath];
-        [curvedPath moveControlToken:draggedToken toPoint:mouseLocation transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])];
+        [curvedPath moveControlToken:draggedToken
+                             toPoint:mouseLocation
+                           transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])];
 		[self sendDidEditCurvedPath];
 		
 		if ([CPRCurvedPath controlTokenIsNode:draggedToken]) {
@@ -2153,7 +2155,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			{
 				NSPoint mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];
 				
-				[curvedPath moveControlToken:draggedToken toPoint:mouseLocation transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])];
+				[curvedPath moveControlToken:draggedToken
+                                     toPoint:mouseLocation
+                                   transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])];
 				[self sendDidUpdateCurvedPath];
 				
 				if ([CPRCurvedPath controlTokenIsNode:draggedToken])
@@ -2164,7 +2168,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				}
 				
 				[super mouseDragged: theEvent];
-				
 				[self setNeedsDisplay:YES];
 			}
 			else

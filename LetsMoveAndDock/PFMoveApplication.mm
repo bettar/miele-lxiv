@@ -198,7 +198,7 @@ void PFMoveToApplicationsFolderIfNecessary() {
 		if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4) {
 			// Save the alert suppress preference if checked
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
-			if ([[alert suppressionButton] state] == NSOnState) {
+			if ([[alert suppressionButton] state] == NSControlStateValueOn) {
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:AlertSuppressKey];
 			}
 #endif

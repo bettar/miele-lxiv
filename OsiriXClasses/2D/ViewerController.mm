@@ -7675,13 +7675,15 @@ return YES;
 	
 	NSRect shutterRect = NSZeroRect;
 
-	if ([shutterOnOff state] == NSOnState)
+	if ([shutterOnOff state] == NSOnState) // NSControlStateValueOn
 	{
 		// Find the first ROI selected for the current frame and copy the rectangle in shutterRect
         ROI *selectedROI = nil;
 		for (ROI *r in [roiList[curMovieIndex] objectAtIndex: [imageView curImage]])
 		{
-			if (r.ROImode == ROI_selected || r.ROImode == ROI_selectedModify || r.ROImode == ROI_drawing)
+			if (r.ROImode == ROI_selected ||
+                r.ROImode == ROI_selectedModify ||
+                r.ROImode == ROI_drawing)
 			{
 				shutterRect = [r rect];
                 selectedROI = r;
@@ -7740,9 +7742,11 @@ return YES;
 	}
 	else
 	{
-		for (DCMPix *p in [imageView dcmPixList]) p.shutterEnabled = NSOffState;
+		for (DCMPix *p in [imageView dcmPixList])
+            p.shutterEnabled = NSOffState;
 	}
-	[imageView setIndex: imageView.curImage]; //refresh viewer only
+
+    [imageView setIndex: imageView.curImage]; //refresh viewer only
 }
 
 - (IBAction) resetCLUT:(id) sender
