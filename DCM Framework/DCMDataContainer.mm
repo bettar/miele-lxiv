@@ -278,46 +278,54 @@ void signal_EXC(int sig_num)
 {
 	if (transferSyntaxInUse)
 		return [transferSyntaxInUse isLittleEndian];
-	return YES;
+
+    return YES;
 }
 
-- (BOOL)isExplicitTS{
+- (BOOL)isExplicitTS
+{
 	if (transferSyntaxInUse)
 		return [transferSyntaxInUse isExplicit];
 	return YES;
 }
 
-- (BOOL)isEncapsulated{
+- (BOOL)isEncapsulated
+{
 	if (transferSyntaxInUse)
 		return [transferSyntaxInUse isEncapsulated];
 	return NO;
 }
 
-- (BOOL)dataRemaining{
+- (BOOL)dataRemaining
+{
 	if (position < [dicomData length])
 		return YES;
 	return NO;
 }
 
-- (NSStringEncoding) stringEncoding{
+- (NSStringEncoding) stringEncoding
+{
 	return stringEncoding;
 }
 
-- (void)setLittleEndian:(BOOL)value{
+- (void)setLittleEndian:(BOOL)value
+{
 	isLittleEndian = value;
 }
 
-- (void)setExplicitTS:(BOOL)value{
+- (void)setExplicitTS:(BOOL)value
+{
 	isExplicitTS = value;
 }
 
-- (void)setStringEncoding:(NSStringEncoding)encoding{
+- (void)setStringEncoding:(NSStringEncoding)encoding
+{
 	stringEncoding = encoding;
 }
 
-
 //Retrieving data
-- (unsigned char)nextUnsignedChar{
+- (unsigned char)nextUnsignedChar
+{
 	NSException *exception = [self testForLength:1];
 	if (!exception) {
 		unsigned char *x = _ptr + position++;
@@ -325,11 +333,12 @@ void signal_EXC(int sig_num)
 	}
 	else 
 		[exception raise];
-	return 0;
-	
+
+    return 0;
 }
 
-- (unsigned short)nextUnsignedShort{
+- (unsigned short)nextUnsignedShort
+{
 	NSException *exception = [self testForLength:2];
 	if (!exception) {
 		unsigned short *x;
@@ -337,13 +346,14 @@ void signal_EXC(int sig_num)
 		position += 2;
 		return ([self isLittleEndian]) ? NSSwapLittleShortToHost(*x) : NSSwapBigShortToHost(*x);
 	}
-	
 	else 
 		[exception raise];
-	return 0;
+
+    return 0;
 }
 
-- (short)nextSignedShort{
+- (short)nextSignedShort
+{
 	NSException *exception = [self testForLength:2];
 	if (!exception) {
 		signed short *x;
@@ -353,10 +363,12 @@ void signal_EXC(int sig_num)
 	}
 	else 
 		[exception raise];
+
 	return 0;
 }
 
-- (unsigned int)nextUnsignedLong{
+- (unsigned int)nextUnsignedLong
+{
 	NSException *exception = [self testForLength:4];
 	if (!exception) {
 		int size = 4;
@@ -365,12 +377,14 @@ void signal_EXC(int sig_num)
 		position += size;
 		return (unsigned int)([self isLittleEndian]) ? NSSwapLittleIntToHost(*x) : NSSwapBigIntToHost(*x);
 	}
-	else 
+	else
 		[exception raise];
-	return 0;
+
+    return 0;
 }
 
-- (int)nextSignedLong{
+- (int)nextSignedLong
+{
 	NSException *exception = [self testForLength:4];
 	if (!exception) {
 		int size = 4;
@@ -381,10 +395,12 @@ void signal_EXC(int sig_num)
 	}
 	else 
 		[exception raise];
-	return 0;
+
+    return 0;
 }
 
-- (unsigned long long)nextUnsignedLongLong{
+- (unsigned long long)nextUnsignedLongLong
+{
 	NSException *exception = [self testForLength:8];
 	if (!exception) {
 		int size = 8;
@@ -393,12 +409,14 @@ void signal_EXC(int sig_num)
 		position += size;
 		return (unsigned  long long)([self isLittleEndian]) ? NSSwapLittleLongLongToHost(*x) : NSSwapBigLongLongToHost(*x);
 	}
-	else 
+	else
 		[exception raise];
-	return 0;
+
+    return 0;
 }
 
-- (long long)nextSignedLongLong{
+- (long long)nextSignedLongLong
+{
 	NSException *exception = [self testForLength:8];
 	if (!exception) {
 		const int size = 8;
@@ -407,7 +425,8 @@ void signal_EXC(int sig_num)
 			long long sll;
 			unsigned char buffer[size];
 		} u;
-		NSRange range = {static_cast<NSUInteger>(position), size};
+
+        NSRange range = {static_cast<NSUInteger>(position), size};
 		[dicomData getBytes:u.buffer range:range];
 		position += size;
 		if ([self isLittleEndian])
@@ -421,7 +440,8 @@ void signal_EXC(int sig_num)
 	return 0;
 }
 
-- (float)nextFloat{
+- (float)nextFloat
+{
 	NSException *exception = [self testForLength:4];
 	if (!exception) {
 		//int size = 4;
@@ -438,7 +458,8 @@ void signal_EXC(int sig_num)
 	return 0;
 }
 
-- (double)nextDouble{
+- (double)nextDouble
+{
 	NSException *exception = [self testForLength:8];
 	if (!exception) {
 		//int size = 8;
@@ -494,7 +515,8 @@ void signal_EXC(int sig_num)
 	return nil;
 }
 
-- (NSString *)nextStringWithLength:(int)length encoding:(NSStringEncoding)encoding{
+- (NSString *)nextStringWithLength:(int)length encoding:(NSStringEncoding)encoding
+{
 	NSException *exception = [self testForLength:length];
 	if (!exception) {
 		NSString *string;
@@ -509,7 +531,8 @@ void signal_EXC(int sig_num)
 	return nil;
 }
 
-- (NSCalendarDate *)nextDate{	
+- (NSCalendarDate *)nextDate
+{
 	NSException *exception = [self testForLength:8];
 	if (!exception) {
 		NSString *format = @"%Y%m%d";
@@ -525,7 +548,8 @@ void signal_EXC(int sig_num)
 	return nil;
 }
 
-- (NSMutableArray *)nextDatesWithLength:(int)length {
+- (NSMutableArray *)nextDatesWithLength:(int)length
+{
 	NSException *exception = [self testForLength:length];
 	NSMutableArray *dates = [NSMutableArray array];
 	if (!exception) {
@@ -551,7 +575,8 @@ void signal_EXC(int sig_num)
 	return nil;
 }
 
-- (NSCalendarDate *)nextTimeWithLength:(int)length{
+- (NSCalendarDate *)nextTimeWithLength:(int)length
+{
 	NSException *exception = [self testForLength:length];
 	if (!exception) {
 		NSString *format;
@@ -606,7 +631,8 @@ void signal_EXC(int sig_num)
 	return nil;
 }
 
-- (NSCalendarDate *)nextDateTimeWithLength:(int)length{
+- (NSCalendarDate *)nextDateTimeWithLength:(int)length
+{
 	NSException *exception = [self testForLength:length];
 	if (!exception) {
 		NSString *format;
@@ -702,7 +728,8 @@ void signal_EXC(int sig_num)
 	return nil;
 }
 
-- (BOOL)skipLength:(int)length{
+- (BOOL)skipLength:(int)length
+{
 	NSException *exception = [self testForLength:length];
 	if (!exception) {
 		position += length;
@@ -715,7 +742,8 @@ void signal_EXC(int sig_num)
 }
 
 //Appending Data
-- (void)addUnsignedChar:(unsigned char)uChar{
+- (void)addUnsignedChar:(unsigned char)uChar
+{
 	unsigned char *buffer;
 	buffer = &uChar;
 	[dicomData appendBytes:buffer length:1];
@@ -728,7 +756,8 @@ void signal_EXC(int sig_num)
 
 }
 
-- (void)addUnsignedShort:(unsigned short)uShort{
+- (void)addUnsignedShort:(unsigned short)uShort
+{
 	const int size = 2;
 	union {
 			unsigned short us;
@@ -743,7 +772,8 @@ void signal_EXC(int sig_num)
 	[dicomData appendBytes:u.buffer length:size];
 }
 
-- (void)addSignedShort:(signed short)sShort{
+- (void)addSignedShort:(signed short)sShort
+{
 	const int size = 2;
 	union {
 		unsigned short us;
@@ -757,7 +787,8 @@ void signal_EXC(int sig_num)
 	[dicomData appendBytes:u.buffer length:size];
 }
 
-- (void)addUnsignedLong:(unsigned long)uLong{
+- (void)addUnsignedLong:(unsigned long)uLong
+{
 	const int size = 4;
 	union {
 		unsigned long ul;
@@ -770,7 +801,8 @@ void signal_EXC(int sig_num)
 	[dicomData appendBytes:u.buffer length:size];
 }
 
-- (void)addSignedLong:(signed long)sLong{
+- (void)addSignedLong:(signed long)sLong
+{
 	const int size = 4;
 	union {
 		unsigned long ul;
@@ -784,7 +816,8 @@ void signal_EXC(int sig_num)
 	[dicomData appendBytes:u.buffer length:size];
 }
 
-- (void)addUnsignedLongLong:(unsigned long long)uLongLong{
+- (void)addUnsignedLongLong:(unsigned long long)uLongLong
+{
 	const int size = 8;
 	union {
 		unsigned long ull;
@@ -798,7 +831,8 @@ void signal_EXC(int sig_num)
 	[dicomData appendBytes:u.buffer length:size];
 }
 
-- (void)addSignedLongLong:(signed long long)sLongLong{
+- (void)addSignedLongLong:(signed long long)sLongLong
+{
 	const int size = 8;
 	union {
 		unsigned long ull;
@@ -814,7 +848,8 @@ void signal_EXC(int sig_num)
 
 }
 
-- (void)addFloat:(float)f{
+- (void)addFloat:(float)f
+{
 	const int size = 4;
 	union {
 		float f;
@@ -829,7 +864,8 @@ void signal_EXC(int sig_num)
 }
 
 
-- (void)addDouble:(double)d{
+- (void)addDouble:(double)d
+{
 	const int size = 8;
 	union {
 		double d;
@@ -923,37 +959,46 @@ void signal_EXC(int sig_num)
 	[dicomData appendData:data];
 }
 
-- (void)addDate:(DCMCalendarDate *)date{
+- (void)addDate:(DCMCalendarDate *)date
+{
 	NSString *string = [date dateString];
 	NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
 	[dicomData appendData:data];	
 }
-- (void)addTime:(DCMCalendarDate *)time{
+
+- (void)addTime:(DCMCalendarDate *)time
+{
 	NSString *string = [time timeString];
 	NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
 	[dicomData appendData:data];	
 }
 
-- (void)addDateTime:(DCMCalendarDate *)dateTime{
+- (void)addDateTime:(DCMCalendarDate *)dateTime
+{
 	NSString *string = [dateTime dateTimeString:NO];
 	NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
 	[dicomData appendData:data];	
 }
 
-- (void)addData:(NSData *)data{
+- (void)addData:(NSData *)data
+{
 	NSMutableData *newData = [NSMutableData dataWithData:data];
 	if ([data length] %2 != 0)
 		[newData increaseLengthBy:1];
-	[dicomData appendData:newData];
+
+    [dicomData appendData:newData];
 }
 
-- (DCMTransferSyntax *) transferSyntaxForDataset{
+- (DCMTransferSyntax *) transferSyntaxForDataset
+{
 	return transferSyntaxForDataset;
 }
-- (DCMTransferSyntax *)  transferSyntaxForMetaheader{
+- (DCMTransferSyntax *)  transferSyntaxForMetaheader
+{
 	return transferSyntaxForMetaheader;
 }
-- (DCMTransferSyntax *)   transferSyntaxInUse{
+- (DCMTransferSyntax *)   transferSyntaxInUse
+{
 	return transferSyntaxInUse;
 }
 
@@ -966,12 +1011,14 @@ void signal_EXC(int sig_num)
 	transferSyntaxForDataset = [ts retain];
 }
 
-- (void)setTransferSyntaxForMetaheader:(DCMTransferSyntax *)ts{
+- (void)setTransferSyntaxForMetaheader:(DCMTransferSyntax *)ts
+{
 	[transferSyntaxForMetaheader release];
 	transferSyntaxForMetaheader = [ts retain];
 }
 
-- (void)setUseMetaheaderTS:(BOOL)flag{
+- (void)setUseMetaheaderTS:(BOOL)flag
+{
 	[transferSyntaxInUse release];
 	if (flag)
 		transferSyntaxInUse = [transferSyntaxForMetaheader retain];
@@ -1029,7 +1076,8 @@ void signal_EXC(int sig_num)
 		group = [self nextUnsignedShort];
 		element = [self nextUnsignedShort];
 		vr = [self nextStringWithLength:2];
-		if ([DCMValueRepresentation isValidVR:vr])
+
+        if ([DCMValueRepresentation isValidVR:vr])
 		{  //have valid VR assume explicit Little Endian
 			[transferSyntaxForDataset release];
 			transferSyntaxForDataset =  [[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] retain];
@@ -1038,8 +1086,9 @@ void signal_EXC(int sig_num)
 			
 			return YES;
 		}
-		// implicit is the default. Could still be Big Endian
-		else{
+		else
+        {
+            // implicit is the default. Could still be Big Endian
 			const char *vrChars = [vr UTF8String];
 			char flipVR[3];
 			flipVR[0] = vrChars[1];
@@ -1047,7 +1096,8 @@ void signal_EXC(int sig_num)
 			flipVR[2] = 0;
 			
 			NSString *newVR = [NSString stringWithCString:flipVR encoding: NSASCIIStringEncoding];
-			if ([DCMValueRepresentation isValidVR:newVR])
+
+            if ([DCMValueRepresentation isValidVR:newVR])
 			{
 				[transferSyntaxForDataset release];
 				transferSyntaxForDataset = [[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax] retain];
@@ -1058,8 +1108,9 @@ void signal_EXC(int sig_num)
 				offset = 0;
 				return YES;
 			}
-			else {
-			//test the first tag or two to see if it is implicit or not a valid file.
+			else
+            {
+                //test the first tag or two to see if it is implicit or not a valid file.
 				group = [self nextUnsignedShort];
 				element = [self nextUnsignedShort]; 	
 				if (group == 0  && element == 0) {
@@ -1069,11 +1120,11 @@ void signal_EXC(int sig_num)
 					group = [self nextUnsignedShort];
 					element = [self nextUnsignedShort];
 				}
-				DCMAttributeTag *tag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
+
+                DCMAttributeTag *tag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
 				//NSDictionary *tagValues = [[DCMTagDictionary sharedTagDictionary] objectForKey:[tag stringValue]];
 				// Have valid tag. Should be DICOM
 				if (tag) {
-					
 					[transferSyntaxForMetaheader release];
 					transferSyntaxForMetaheader = [[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] retain];
 					
@@ -1088,7 +1139,8 @@ void signal_EXC(int sig_num)
 			}
 		}
 	}
-	NSLog(@"Not a valid DICOM file");
+
+    NSLog(@"Not a valid DICOM file");
     NSException* exception;
 	@try {
         exception = [NSException exceptionWithName:@"DCMNotDicomError"
@@ -1142,7 +1194,8 @@ void signal_EXC(int sig_num)
 	return nil;
 }
 
-- (unsigned)length {
+- (unsigned)length
+{
 	return [dicomData length];
 }
 
@@ -1152,12 +1205,14 @@ void signal_EXC(int sig_num)
 	transferSyntaxInUse = [transferSyntaxForMetaheader retain];
 }
 
-- (void)startReadingDataSet{
+- (void)startReadingDataSet
+{
 	[transferSyntaxInUse release];
 	transferSyntaxInUse = [transferSyntaxForDataset retain];
 }
 
-- (void)addPremable{
+- (void)addPremable
+{
 	NSMutableData *emptyData = [NSMutableData dataWithLength:128];
 	[dicomData appendData:emptyData];
 	[self addString:@"DICM"];

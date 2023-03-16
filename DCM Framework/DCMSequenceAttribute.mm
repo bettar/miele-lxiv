@@ -97,7 +97,7 @@
 
 - (void)addItem:(id)item offset:(long)offset
 {
-	if (DCMDEBUG)
+	if (DCMDEBUG4)
 		NSLog(@"DCMSequenceAttribute.mm:%d, Add sequence item at offset: 0x%lx=%ld, description:\n%@", __LINE__, offset, offset, [item description]);
     
 	NSArray *objects = [NSArray arrayWithObjects:item,
@@ -182,7 +182,7 @@
 // for the benefit of writeBaseToData
 
 - (long)valueLength {
-	return 0xFFFFFFFFL;	
+	return 0xFFFFFFFFL; // DCM_UndefinedLength
 }
 
 - (NSString *)readableDescription {

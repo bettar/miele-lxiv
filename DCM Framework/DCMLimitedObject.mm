@@ -257,7 +257,7 @@
                         
                         *byteOffset = endByteOffset;
                     }
-                    else if (vl != 0xFFFFFFFFL &&
+                    else if (vl != 0xFFFFFFFFL &&  // DCM_UndefinedLength
                              vl != 0)
                     {
                         //[self newAttr];

@@ -6709,7 +6709,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 isOriginDefined = YES;
             }
             
-            if (spacingBetweenSlices)
+            if (spacingBetweenSlices) // != 0 ?
                 originZ += frameNo * spacingBetweenSlices;
             else
                 originZ += frameNo * sliceThickness;
@@ -6776,11 +6776,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         maxFrame = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
         if (maxFrame == 0) maxFrame = 1;
         if (pixArray == nil) maxFrame = 1;
-        //pixelAttr contains the whole PixelData attribute of every frame. Hence needs to be before the loop
+        // pixelAttr contains the whole PixelData attribute of every frame. Hence needs to be before the loop
+
         if ([dcmObject attributeValueWithName:@"PixelData"])
         {
             DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
-            
             //============================================================
             
 #pragma mark - loading a frame
@@ -8441,7 +8441,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         notAbleToLoadImage = YES;
         
         for (int i = 0; i < 128*128; i++)
-            fImage[ i ] = i;
+            fImage[i] = i;
     }
     
     if (isRGB)	// COMPUTE ALPHA MASK = ALPHA = R+G+B/3
@@ -8895,7 +8895,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			dst = src;
 			dst.data = malloc( dst.height * dst.rowBytes);
 			if (dst.data && src.data)
-				vImageVerticalReflect_PlanarF ( &src, &dst, 0);
+				vImageVerticalReflect_PlanarF ( &src, &dst, kvImageNoFlags);
 			
 			if (src.data != [self fImage])
                 free( src.data);

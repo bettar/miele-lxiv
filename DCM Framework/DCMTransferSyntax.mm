@@ -56,54 +56,54 @@ static NSString *DCM_MPEG2Main = @(UID_MPEG2MainProfileAtMainLevelTransferSyntax
 @synthesize isEncapsulated, isLittleEndian, isExplicit;
 
 +(id)ExplicitVRLittleEndianTransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_ExplicitVRLittleEndian] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_ExplicitVRLittleEndian] autorelease];
 }
 
 +(id)ImplicitVRLittleEndianTransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_ImplicitVRLittleEndian] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_ImplicitVRLittleEndian] autorelease];
 }
 
 +(id)ExplicitVRBigEndianTransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_ExplicitVRBigEndian] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_ExplicitVRBigEndian] autorelease];
 }
 +(id)JPEG2000LosslessTransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_JPEG2000Lossless] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_JPEG2000Lossless] autorelease];
 }
 
 +(id)JPEG2000LossyTransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_JPEG2000Lossy] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_JPEG2000Lossy] autorelease];
 }
 
 +(id)JPEGBaselineTransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_JPEGBaseline] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_JPEGBaseline] autorelease];
 }
 
 +(id)JPEGExtendedTransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_JPEGExtended] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_JPEGExtended] autorelease];
 }
 
 +(id)JPEGLosslessTransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_JPEGLossless] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_JPEGLossless] autorelease];
 }
 
 +(id)JPEGLossless14TransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_JPEGLossless14] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_JPEGLossless14] autorelease];
 }
 
 +(id)JPEGLSLosslessTransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_JPEGLSLossless] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_JPEGLSLossless] autorelease];
 }
 
 +(id)JPEGLSLossyTransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_JPEGLSLossy] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_JPEGLSLossy] autorelease];
 }
 
 +(id)RLETransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_RLELossless] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_RLELossless] autorelease];
 }
 
 +(id)MPEG2TransferSyntax{
-	return [[[DCMTransferSyntax alloc] initWithTS:DCM_MPEG2Main] autorelease];
+	return [[[DCMTransferSyntax alloc] initWithTS: DCM_MPEG2Main] autorelease];
 }
 
 static NSMutableDictionary *gTransferSyntaxes = nil;
@@ -227,11 +227,9 @@ static NSMutableDictionary *gTransferSyntaxes = nil;
 
 	if (ts)
 		return self;
-	else
-    {
-        [self autorelease];
-		return nil;
-    }
+
+    [self autorelease];
+    return nil;
 }
 
 

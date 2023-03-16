@@ -393,7 +393,7 @@ enum
 @synthesize speedSlider, speedText, toolbarPanel, previewMatrix, previewMatrixScrollView;
 @synthesize timer, keyImageCheck, injectionDateTime, blendedWindow, slider;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
-@synthesize flagListPODComparatives, windowsStateName, titledGantry;
+@synthesize flagListPODComparatives, windowsStateName, tiltedGantry;
 
 // WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
 static int hotKeyToolCrossTable[] =
@@ -1641,7 +1641,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	int newX = [[dict valueForKey:@"newX"] intValue];
     int newY = [[dict valueForKey:@"newY"] intValue];
     BOOL square = [[dict valueForKey:@"square"] boolValue];
-    DCMPix *curPix = [dict valueForKey:@"curPix"];
+    DCMPix *curPix1 = [dict valueForKey:@"curPix"];
 	float *curPixFImage = [[dict valueForKey:@"curPix"] fImage];
 	int rowBytes = [[dict valueForKey:@"rowBytes"] intValue] / 4;
 	int j = [[dict valueForKey:@"curMovieIndex"] intValue];
@@ -1698,12 +1698,12 @@ static volatile int numberOfThreadsForRelisce = 0;
     {
         vImage_Buffer	srcVimage, dstVimage;
         
-        srcVimage.data = [curPix fImage];
+        srcVimage.data = [curPix1 fImage];
         srcVimage.height = [pixList[ j] count];
         srcVimage.width = newX;
         srcVimage.rowBytes = newX*4;
         
-        dstVimage.data = [curPix fImage];
+        dstVimage.data = [curPix1 fImage];
         dstVimage.height = newY;
         dstVimage.width = newX;
         dstVimage.rowBytes = newX*4;
@@ -1901,7 +1901,7 @@ static volatile int numberOfThreadsForRelisce = 0;
             
             if (directionXY == RESLICE_X)
             {
-                DCMPix *curPix = [newPixList lastObject];
+                DCMPix *curPix3 = [newPixList lastObject];
                 
                 int count = [pixList[ j] count];
                 int pwidth = [[pixList[ j] objectAtIndex: 0] pwidth];
@@ -1913,7 +1913,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                 for (y = 0; y < count; y++)
                 {
                     long positionX = (sign > 0) ? (count-y-1) : y;
-                    memcpy( [curPix fImage] + positionX * newX,
+                    memcpy( [curPix3 fImage] + positionX * newX,
                             [[pixList[ j] objectAtIndex: y] fImage] + i * pwidth,
                             newX * sizeof( float));
                 }
@@ -1922,12 +1922,12 @@ static volatile int numberOfThreadsForRelisce = 0;
                 {
                     vImage_Buffer srcVimage, dstVimage;
                     
-                    srcVimage.data = [curPix fImage];
+                    srcVimage.data = [curPix3 fImage];
                     srcVimage.height = count;
                     srcVimage.width = newX;
                     srcVimage.rowBytes = newX*4;
                     
-                    dstVimage.data = [curPix fImage];
+                    dstVimage.data = [curPix3 fImage];
                     dstVimage.height = newY;
                     dstVimage.width = newX;
                     dstVimage.rowBytes = newX*4;
@@ -1941,24 +1941,24 @@ static volatile int numberOfThreadsForRelisce = 0;
                 orientation[ 4] = orientation[ 7] * -sign;
                 orientation[ 5] = orientation[ 8] * -sign;
                 
-                [curPix setOrientationDouble: orientation];	// Normal vector is recomputed in this procedure
-                [curPix setPixelSpacingX: newXSpace];
-                [curPix setPixelSpacingY: newYSpace];
-                [curPix setPixelRatio:  newYSpace / newXSpace];
-                [curPix orientationDouble: orientation];
+                [curPix3 setOrientationDouble: orientation];	// Normal vector is recomputed in this procedure
+                [curPix3 setPixelSpacingX: newXSpace];
+                [curPix3 setPixelSpacingY: newYSpace];
+                [curPix3 setPixelRatio:  newYSpace / newXSpace];
+                [curPix3 orientationDouble: orientation];
                 
                 [lastPix convertPixDoubleX:0 pixY: i toDICOMCoords: origin pixelCenter: NO];
                 
-                [curPix setOriginDouble: origin];
-                [curPix computeSliceLocation];
-                [curPix setSliceThickness: [firstPix pixelSpacingY]];
-                [curPix setSliceInterval: 0];
+                [curPix3 setOriginDouble: origin];
+                [curPix3 computeSliceLocation];
+                [curPix3 setSliceThickness: [firstPix pixelSpacingY]];
+                [curPix3 setSliceInterval: 0];
             }
             else // RESLICE_Y
             {
                 NSLog(@"%s %d, RESLICE_Y, i:%li", __FUNCTION__, __LINE__, i);
 
-                DCMPix *curPix = [newPixList lastObject];
+                DCMPix *curPix4 = [newPixList lastObject];
                 long rowBytes = [firstPix pwidth]*4;
                 
 #ifndef VIMAGEYRESLICE
@@ -1971,7 +1971,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                                    @(newY), @"newY",
                                    @(square), @"square",
                                    [NSNumber numberWithInt: rowBytes], @"rowBytes",
-                                   curPix, @"curPix",
+                                   curPix4, @"curPix",
                                    @(j), @"curMovieIndex",
                                    nil];
                 
@@ -1988,18 +1988,18 @@ static volatile int numberOfThreadsForRelisce = 0;
                 orientation[ 4] = orientation[ 7] * -sign;
                 orientation[ 5] = orientation[ 8] * -sign;
                 
-                [curPix setOrientationDouble: orientation];	// Normal vector is recomputed in this procedure
-                [curPix setPixelSpacingX: newXSpace];
-                [curPix setPixelSpacingY: newYSpace];
-                [curPix setPixelRatio:  newYSpace / newXSpace];
-                [curPix orientationDouble: orientation];
+                [curPix4 setOrientationDouble: orientation];	// Normal vector is recomputed in this procedure
+                [curPix4 setPixelSpacingX: newXSpace];
+                [curPix4 setPixelSpacingY: newYSpace];
+                [curPix4 setPixelRatio:  newYSpace / newXSpace];
+                [curPix4 orientationDouble: orientation];
                 
                 [lastPix convertPixDoubleX:i pixY:0 toDICOMCoords: origin pixelCenter: NO];
                 
-                [curPix setOriginDouble: origin];
-                [curPix computeSliceLocation];
-                [curPix setSliceThickness: [firstPix pixelSpacingX]];
-                [curPix setSliceInterval: 0];
+                [curPix4 setOriginDouble: origin];
+                [curPix4 computeSliceLocation];
+                [curPix4 setSliceThickness: [firstPix pixelSpacingX]];
+                [curPix4 setSliceInterval: 0];
             }
             
             [self waitIncrementBy:waitWindow :1];
@@ -2124,7 +2124,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				dest.rowBytes = dest.width*4;
 				src.data = volumeDataPtr;
 				
-				vImageVerticalReflect_PlanarF ( &src, &dest, 0);
+				vImageVerticalReflect_PlanarF ( &src, &dest, kvImageNoFlags);
 				
 				memcpy( src.data, dest.data, [firstObject pheight] * [firstObject pwidth] * 4);
 				volumeDataPtr += [firstObject pheight]*[firstObject pwidth];
@@ -2581,9 +2581,15 @@ static volatile int numberOfThreadsForRelisce = 0;
     OrientationToolType n = (OrientationToolType)[[sender selectedCell] tag];
     NSLog(@"%s %d, type %ld", __FUNCTION__, __LINE__, (long)n);
 
-    if ([self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: YES] == NO)
+    if ([self isDataVolumicIn4D: YES
+          checkEverythingLoaded: YES
+                   tryToCorrect: YES
+          checkForSliceInterval: YES] == NO)
     {
-        if ([self isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: YES checkForSliceInterval: NO])
+        if ([self isDataVolumicIn4D: YES
+              checkEverythingLoaded: YES
+                       tryToCorrect: YES
+              checkForSliceInterval: NO])
         {
             if (NSRunAlertPanel(NSLocalizedString(@"Data Error", nil),
                                 NSLocalizedString(@"Warning! Slice interval/thickness is varying, it can create distortion in 3D.", nil),
@@ -7646,7 +7652,7 @@ return YES;
 }
 
 - (IBAction) shutterOnOff:(id) sender
-{	
+{
 //	{
 //	NSArray	*rois = [self selectedROIs];
 //	
@@ -7671,7 +7677,7 @@ return YES;
 	if ([[sender title] isEqualToString:@"Shutter"])
         [shutterOnOff setState: (![shutterOnOff state])]; //from menu
 	
-	DCMPix *curPix = [[imageView dcmPixList] objectAtIndex:[imageView curImage]];
+	DCMPix *curPix5 = [[imageView dcmPixList] objectAtIndex:[imageView curImage]];
 	
 	NSRect shutterRect = NSZeroRect;
 
@@ -7724,7 +7730,7 @@ return YES;
 		else
 		{
 			//using stored shutterRect?
-			if ((curPix.shutterRect.size.width == 0 || (curPix.shutterRect.size.width == [curPix pwidth] && curPix.shutterRect.size.height == [curPix pheight])) && curPix.shutterPolygonal == nil)
+			if ((curPix5.shutterRect.size.width == 0 || (curPix5.shutterRect.size.width == [curPix5 pwidth] && curPix5.shutterRect.size.height == [curPix5 pheight])) && curPix5.shutterPolygonal == nil)
 			{
 				[shutterOnOff setState:NSOffState];
 				
@@ -7736,7 +7742,8 @@ return YES;
 			}
 			else //reuse preconfigured shutterRect
 			{
-				for (DCMPix *p in [imageView dcmPixList]) p.shutterEnabled = NSOnState;
+				for (DCMPix *p in [imageView dcmPixList])
+                    p.shutterEnabled = NSOnState;
 			}
 		}
 	}
@@ -8032,12 +8039,14 @@ return YES;
 					}
 				}
 				else
+                {
                     volumicData = NO;
+                }
 			}
 		}
 		
 		if (volumicData == NO &&
-            (firstImage == YES || lastImage == YES))
+            (firstImage || lastImage))
 		{
 			if (firstImage)
 			{
@@ -10333,7 +10342,7 @@ static int avoidReentryRefreshDatabase = 0;
 	long y, z;
 	unsigned long long size, newX, newY, newZ, imageSize;
 	float *srcImage, *dstImage, *emptyData;
-	DCMPix *curPix;
+	DCMPix *curPix6;
 	
 	int originWidth = [[originalPixlist objectAtIndex:0] pwidth];
 	int originHeight = [[originalPixlist objectAtIndex:0] pheight];
@@ -10430,9 +10439,9 @@ static int avoidReentryRefreshDatabase = 0;
 		
 		for (z = 0 ; z < newZ; z++)
 		{
-			curPix = [originalPixlist objectAtIndex: (z * originZ) / newZ];
+			curPix6 = [originalPixlist objectAtIndex: (z * originZ) / newZ];
 			
-			DCMPix	*copyPix = [curPix copy];
+			DCMPix	*copyPix = [curPix6 copy];
 			
 			[newPixList addObject: copyPix];
 			
@@ -10444,10 +10453,10 @@ static int avoidReentryRefreshDatabase = 0;
 			[copyPix setFrameNo: z];
 			[copyPix setID: z];
 			
-			[copyPix setPixelSpacingX: [curPix pixelSpacingX] * xFactor];
-			[copyPix setPixelSpacingY: [curPix pixelSpacingY] * yFactor];
-			[copyPix setSliceThickness: [curPix sliceThickness] * zFactor];
-			[copyPix setPixelRatio: [curPix pixelRatio] / xFactor * yFactor];
+			[copyPix setPixelSpacingX: [curPix6 pixelSpacingX] * xFactor];
+			[copyPix setPixelSpacingY: [curPix6 pixelSpacingY] * yFactor];
+			[copyPix setSliceThickness: [curPix6 sliceThickness] * zFactor];
+			[copyPix setPixelRatio: [curPix6 pixelRatio] / xFactor * yFactor];
 			
 			newOrigin[ 0] = origin[ 0];
             newOrigin[ 1] = origin[ 1];
@@ -10486,9 +10495,9 @@ static int avoidReentryRefreshDatabase = 0;
 			{
 				vImage_Buffer	srcVimage, dstVimage;
 				
-				curPix = [originalPixlist objectAtIndex: z];
+				curPix6 = [originalPixlist objectAtIndex: z];
 				
-				srcImage = [curPix fImage];
+				srcImage = [curPix6 fImage];
 				dstImage = emptyData + imageSize * z;
 				
 				srcVimage.data = srcImage;
@@ -10501,7 +10510,7 @@ static int avoidReentryRefreshDatabase = 0;
 				dstVimage.width = newX;
 				dstVimage.rowBytes = newX*4;
 				
-				if ([curPix isRGB])
+				if ([curPix6 isRGB])
 					vImageScale_ARGB8888( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
 				else
 					vImageScale_PlanarF( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
@@ -10518,13 +10527,13 @@ static int avoidReentryRefreshDatabase = 0;
 		{
 			if (originZ != newZ)
 			{
-				curPix = [newPixList objectAtIndex: 0];
+				curPix6 = [newPixList objectAtIndex: 0];
 				
 				for (y = 0; y < newY; y++)
 				{
 					vImage_Buffer	srcVimage, dstVimage;
 					
-					srcImage = [curPix  fImage] + y * newX;
+					srcImage = [curPix6  fImage] + y * newX;
 					dstImage = emptyData + y * newX;
 					
 					srcVimage.data = srcImage;
@@ -10537,7 +10546,7 @@ static int avoidReentryRefreshDatabase = 0;
 					dstVimage.width = newX;
 					dstVimage.rowBytes = newY*newX*4;
 					
-					if ([curPix isRGB])
+					if ([curPix6 isRGB])
 						vImageScale_ARGB8888( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
 					else
 						vImageScale_PlanarF( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
@@ -11096,9 +11105,8 @@ static int avoidReentryRefreshDatabase = 0;
 
 - (void) flipData:(char*) ptr :(long) no :(long) x :(long) y
 {
-	NSLog(@"flip data");
-//	NSLog(@"flip data-A");
-	
+	//NSLog(@"flip data");
+
 //	long size = x*y;
 //	
 //	size *= 4;
@@ -11146,7 +11154,6 @@ static int avoidReentryRefreshDatabase = 0;
 		[flipDataThread lockWhenCondition: 0];
 		[flipDataThread unlock];
 	}
-//	NSLog(@"flip data-B");
 	else
 	{
 		vImage_Buffer src, dest;
@@ -11154,9 +11161,8 @@ static int avoidReentryRefreshDatabase = 0;
 		src.width = dest.width = x*y;
 		src.rowBytes = dest.rowBytes = x*y*4;
 		src.data = dest.data = ptr;
-		vImageVerticalReflect_PlanarF ( &src, &dest, 0);		
+		vImageVerticalReflect_PlanarF ( &src, &dest, kvImageNoFlags);		
 	}
-//	NSLog(@"flip data-C");
 }
 
 - (IBAction) flipDataSeries: (id) sender
@@ -11254,7 +11260,7 @@ static int avoidReentryRefreshDatabase = 0;
 
 -(void) displayWarningIfGantryTitled
 {
-	if (titledGantry)
+	if (tiltedGantry)
     {
         NSString *message = nil;
 #ifdef MIELE_LIGHT
@@ -11266,7 +11272,7 @@ static int avoidReentryRefreshDatabase = 0;
                                      nil,
                                         message);
 #else
-        message = [NSString stringWithFormat: NSLocalizedString(@"These images were acquired with a gantry tilt: %0.2f\u00B0. This gantry tilt will produce a distortion in 3D post-processing. Should I convert these images to a real 3D dataset.", nil), titledGantryDegrees];
+        message = [NSString stringWithFormat: NSLocalizedString(@"These images were acquired with a gantry tilt: %0.2f\u00B0. This gantry tilt will produce a distortion in 3D post-processing. Should I convert these images to a real 3D dataset.", nil), tiltedGantryDegrees];
 		NSInteger r = NSRunInformationalAlertPanel(NSLocalizedString(@"Warning!", nil),
                                                    @"%@",
                                                    NSLocalizedString(@"Yes", nil),
@@ -11358,7 +11364,7 @@ static int avoidReentryRefreshDatabase = 0;
 	return interval;
 }
 
-- (BOOL) isGantryTitled
+- (BOOL) isGantryTilted
 {
     BOOL v = NO;
     
@@ -11383,7 +11389,7 @@ static int avoidReentryRefreshDatabase = 0;
             else if (angleDeg > 0.001)
                 NSLog( @"---- titledGantry (tolerated) - Not a real 3D data set: %f degrees", angleDeg);
             
-            titledGantryDegrees = angleDeg;
+            tiltedGantryDegrees = angleDeg;
         }
     }
     
@@ -11519,7 +11525,7 @@ static int avoidReentryRefreshDatabase = 0;
         
         if (interval == 0 && [pixList[ z] count] > 2)
         {
-            titledGantry = NO;
+            tiltedGantry = NO;
             
             interval = [self computeOriginalOrientation];
             
@@ -11599,7 +11605,10 @@ static int avoidReentryRefreshDatabase = 0;
                             
                             float *volumeDataPtr = [firstObject fImage];
                             
-                            [self flipData: (char*) volumeDataPtr :[pixList[ x] count] :[firstObject pwidth] :[firstObject pheight]];
+                            [self flipData: (char*) volumeDataPtr
+                                          : [pixList[ x] count]
+                                          : [firstObject pwidth]
+                                          : [firstObject pheight]];
                             
                             for (int i = 0 ; i < [pixList[ x] count]; i++)
                             {
@@ -11669,7 +11678,7 @@ static int avoidReentryRefreshDatabase = 0;
                 }
                 
                 if (flipNow == YES)
-                    titledGantry = [self isGantryTitled];
+                    tiltedGantry = [self isGantryTilted];
             }
         }
         
@@ -13373,8 +13382,8 @@ long				x, y;
 							
 							if ([DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])
 							{
-                                if ([a isGantryTitled] == NO &&
-                                    [b isGantryTitled] == NO)
+                                if ([a isGantryTilted] == NO &&
+                                    [b isGantryTilted] == NO)
                                 {
                                     [[a imageView] sendSyncMessage: 0];
                                     [a ActivateBlending: b];
@@ -14322,9 +14331,9 @@ long				x, y;
                                   withName:(NSString*)name
 {
 	ROI	*theNewROI;
-	DCMPix *curPix = [[self pixList] objectAtIndex: [imageView curImage]];
-	long height = [curPix pheight];
-    long width = [curPix pwidth];
+	DCMPix *curPix7 = [[self pixList] objectAtIndex: [imageView curImage]];
+	long height = [curPix7 pheight];
+    long width = [curPix7 pwidth];
 	int upLeftX,upLeftY,dRightX,dRightY;
 	int tWidth,tHeight;
 	unsigned char* textureBuffer;
@@ -14379,9 +14388,9 @@ long				x, y;
                                          textName:name
                                         positionX:upLeftX
                                         positionY:upLeftY
-                                         spacingX:[curPix pixelSpacingX]
-                                         spacingY:[curPix pixelSpacingY]
-                                      imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
+                                         spacingX:[curPix7 pixelSpacingX]
+                                         spacingY:[curPix7 pixelSpacingY]
+                                      imageOrigin:NSMakePoint( [curPix7 originX], [curPix7 originY])] autorelease];
         free(textureBuffer);
         [theNewROI setColor:aColor];
         //	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
@@ -14482,9 +14491,9 @@ long				x, y;
 	 NSLog(@"color r=%d, g=%d, b=%d", aColor.red, aColor.green, aColor.blue);
 	 */
 	NSMutableArray* nbRegion=[NSMutableArray array];
-	DCMPix *curPix = [[self pixList] objectAtIndex: [imageView curImage]];
-	long height=[curPix pheight];
-	long width=[curPix pwidth];
+	DCMPix *curPix8 = [[self pixList] objectAtIndex: [imageView curImage]];
+	long height=[curPix8 pheight];
+	long width=[curPix8 pwidth];
 	long depth=[[self pixList] count];	
 	for (int k=0; k<depth; k++)
 	{
@@ -14525,9 +14534,9 @@ long				x, y;
                         withName:(NSString*)name
 {
 	ROI *theNewROI;
-	DCMPix *curPix = [[self pixList] objectAtIndex: [imageView curImage]];
-	long height=[curPix pheight];
-    long width=[curPix pwidth];
+	DCMPix *curPix9 = [[self pixList] objectAtIndex: [imageView curImage]];
+	long height=[curPix9 pheight];
+    long width=[curPix9 pwidth];
 	long depth=[[self pixList] count];
 	int upLeftX,upLeftY,dRightX,dRightY;
 	int tWidth,tHeight;
@@ -14579,8 +14588,8 @@ long				x, y;
             name = (name.length == 0) ? [NSString stringWithFormat:@"area %d",value] : name;
             theNewROI = [[[ROI alloc] initWithTexture:textureBuffer  textWidth:tWidth textHeight:tHeight textName:name
                                             positionX:upLeftX positionY:upLeftY
-                                             spacingX:[curPix pixelSpacingX]  spacingY:[curPix pixelSpacingY]
-                                          imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
+                                             spacingX:[curPix9 pixelSpacingX]  spacingY:[curPix9 pixelSpacingY]
+                                          imageOrigin:NSMakePoint( [curPix9 originX], [curPix9 originY])] autorelease];
             free(textureBuffer);
             [theNewROI setColor:aColor];
             //	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
@@ -14596,12 +14605,12 @@ long				x, y;
                         layerPixelSpacingX:(float)layerPixelSpacingX
                         layerPixelSpacingY:(float)layerPixelSpacingY;
 {
-	DCMPix *curPix = [[self pixList] objectAtIndex:[imageView curImage]];
+	DCMPix *curPix10 = [[self pixList] objectAtIndex:[imageView curImage]];
 
 	ROI *theNewROI = [[[ROI alloc] initWithType: tLayerROI
-                                               : [curPix pixelSpacingX]
-                                               : [curPix pixelSpacingY]
-                                               : [DCMPix originCorrectedAccordingToOrientation: curPix]] autorelease];
+                                               : [curPix10 pixelSpacingX]
+                                               : [curPix10 pixelSpacingY]
+                                               : [DCMPix originCorrectedAccordingToOrientation: curPix10]] autorelease];
 	[theNewROI setLayerPixelSpacingX:layerPixelSpacingX];
 	[theNewROI setLayerPixelSpacingY:layerPixelSpacingY];
 	[theNewROI setLayerReferenceFilePath:path];
@@ -15117,13 +15126,13 @@ long				x, y;
 	preLocation = 0;
 	interval = 0;
 	
-	for (DCMPix *curPix in pixList[ curMovieIndex])
+	for (DCMPix *curPix11 in pixList[ curMovieIndex])
 	{
 		if (preLocation != 0)
 		{
 			if (interval)
 			{
-				if (fabs( [curPix sliceLocation] - preLocation - interval) > 1.0)
+				if (fabs( [curPix11 sliceLocation] - preLocation - interval) > 1.0)
 				{
 					NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil),
                                             NSLocalizedString(@"Slice Interval is not constant!", nil),
@@ -15133,9 +15142,9 @@ long				x, y;
 					return;
 				}
 			}
-			interval = [curPix sliceLocation] - preLocation;
+			interval = [curPix11 sliceLocation] - preLocation;
 		}
-		preLocation = [curPix sliceLocation];
+		preLocation = [curPix11 sliceLocation];
 	}
 	
 	NSLog(@"Slice Interval : %f", interval);
@@ -15430,9 +15439,9 @@ long				x, y;
 			{
 				if (allRois == 2)
 				{
-					DCMPix *curPix = [pixList[ y] objectAtIndex: x];
+					DCMPix *curPix12 = [pixList[ y] objectAtIndex: x];
 					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:
-                                              curPix, @"curPix",
+                                              curPix12, @"curPix",
                                               @"setPixel", @"action",
                                               nsnewValue, @"newValue",
                                               nsminValue, @"minValue",
@@ -15454,10 +15463,10 @@ long				x, y;
 								{
                                     if ([addedROIs containsObject: r] == NO)
                                     {
-                                        DCMPix *curPix = [pixList[ z] objectAtIndex: x];
+                                        DCMPix *curPix13 = [pixList[ z] objectAtIndex: x];
                                         [roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:
                                                                   r, @"roi",
-                                                                  curPix, @"curPix",
+                                                                  curPix13, @"curPix",
                                                                   @"setPixelRoi", @"action",
                                                                   nsnewValue, @"newValue",
                                                                   nsminValue, @"minValue",
@@ -15474,10 +15483,10 @@ long				x, y;
 							{
                                 if ([addedROIs containsObject: r] == NO)
                                 {
-                                    DCMPix *curPix = [pixList[ y] objectAtIndex: x];
+                                    DCMPix *curPix14 = [pixList[ y] objectAtIndex: x];
                                     [roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:
                                                               r, @"roi",
-                                                              curPix, @"curPix",
+                                                              curPix14, @"curPix",
                                                               @"setPixelRoi", @"action",
                                                               nsnewValue, @"newValue",
                                                               nsminValue, @"minValue",
@@ -15498,12 +15507,12 @@ long				x, y;
             {
                 for (int x = 0; x < [pixList[y] count]; x++)
                 {
-                    DCMPix *curPix = [pixList[ y] objectAtIndex: x];
+                    DCMPix *curPix15 = [pixList[ y] objectAtIndex: x];
                     BOOL emptyPix = YES;
                     
                     for (ROI * r in addedROIs)
                     {
-                        if (r.pix == curPix)
+                        if (r.pix == curPix15)
                             emptyPix = NO;
                     }
                     
@@ -15513,9 +15522,9 @@ long				x, y;
                         {
                             for (int z = 0; z < maxMovieIndex; z++)
                             {
-                                DCMPix *curPix = [pixList[ z] objectAtIndex: x];
+                                DCMPix *curPix16 = [pixList[ z] objectAtIndex: x];
                                 [roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:
-                                                          curPix, @"curPix",
+                                                          curPix16, @"curPix",
                                                           @"setPixel", @"action",
                                                           nsnewValue, @"newValue",
                                                           nsminValue, @"minValue",
@@ -15529,7 +15538,7 @@ long				x, y;
                         else
                         {
                             [roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:
-                                                      curPix, @"curPix",
+                                                      curPix15, @"curPix",
                                                       @"setPixel", @"action",
                                                       nsnewValue, @"newValue",
                                                       nsminValue, @"minValue",
@@ -21849,10 +21858,10 @@ static BOOL viewerControllerPlaying = NO;
 				globalCount++;
 				imageCount++;
 				
-				DCMPix *curPix = [pixList[ curMovieIndex] objectAtIndex: x];
+				DCMPix *curPix17 = [pixList[ curMovieIndex] objectAtIndex: x];
 				float curArea = [curROI roiArea];
 				
-				[curROI setPix: curPix];
+				[curROI setPix: curPix17];
 				
 				if (curArea == 0)
 				{
@@ -21909,7 +21918,7 @@ static BOOL viewerControllerPlaying = NO;
 				
 				[theSlices addObject: [NSDictionary dictionaryWithObjectsAndKeys:
                                        curROI, @"roi",
-                                       curPix, @"dcmPix",
+                                       curPix17, @"dcmPix",
                                        nil]];
 				
 				lastImageIndex = x;

@@ -342,8 +342,8 @@ enum
 	
 	NSMutableArray			*undoQueue, *redoQueue;
 	
-	BOOL					titledGantry, updateTilingViews;
-    float                   titledGantryDegrees;
+	BOOL					tiltedGantry, updateTilingViews;
+    float                   tiltedGantryDegrees;
 	
 	volatile BOOL			checkEverythingLoaded;
 	
@@ -395,7 +395,7 @@ enum
 @property(readonly) NSSegmentedControl *blendingTypeRGB;
 @property(readonly) NSPopUpButton *blendingPlugins;
 @property(readonly) NSButton *blendingResample;
-@property(readonly) BOOL titledGantry;
+@property(readonly) BOOL tiltedGantry;
 @property(readonly) ToolbarPanelController *toolbarPanel;
 @property(readonly) NSMatrix *previewMatrix;
 @property(readonly) NSScrollView *previewMatrixScrollView;
@@ -501,9 +501,9 @@ enum
 
 /** Are the data volumic: same height same width same orientation */
 - (BOOL) isDataVolumic;
-- (BOOL) isDataVolumicIn4D:(BOOL) check4D checkEverythingLoaded:(BOOL) c;
 - (BOOL) isDataVolumicIn4D:(BOOL) check4D;
-- (BOOL) isDataVolumicIn4D: (BOOL) check4D checkEverythingLoaded:(BOOL) c tryToCorrect: (BOOL) tryToCorrect;
+- (BOOL) isDataVolumicIn4D:(BOOL) check4D checkEverythingLoaded:(BOOL) c;
+- (BOOL) isDataVolumicIn4D:(BOOL) check4D checkEverythingLoaded:(BOOL) c tryToCorrect: (BOOL) tryToCorrect;
 - (void) displayAWarningIfNonTrueVolumicData;
 
 /** Delete ALL ROI objects for  current series */

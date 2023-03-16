@@ -629,6 +629,7 @@ void info_callback(const char *msg, void *a) {
 	[super dealloc];
 }
 
+// For parsing pixel data
 - (id) initWithAttributeTag:(DCMAttributeTag *)tag 
 			vr:(NSString *)vr 
 			length:(long) vl 
@@ -657,11 +658,12 @@ void info_callback(const char *msg, void *a) {
 	else
 		theVR = @"OW";
 	
-	if (DCMDEBUG)
+	if (DCMDEBUG3)
 		NSLog(@"init Pixel Data");
 		
-	// maybe an ImageIconSequence in an encapsualted file. The icon is not encapsulated so don't de-encapsulate
-	if ( dicomData.isEncapsulated && vl == 0xFFFFFFFFL)
+	// maybe an IconImageSequence in an encapsualted file. The icon is not encapsulated so don't de-encapsulate
+	if (dicomData.isEncapsulated &&
+        vl == 0xFFFFFFFFL) // DCM_UndefinedLength
 	{
 		self = [super initWithAttributeTag:tag vr:theVR];
 		[self deencapsulateData:dicomData];
@@ -681,7 +683,7 @@ void info_callback(const char *msg, void *a) {
 		else
 			_values = [[NSMutableArray array] retain];
 		
-		if (DCMDEBUG) 
+		if (DCMDEBUG3)
 			NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, self.description);
 	}
 
@@ -726,23 +728,34 @@ void info_callback(const char *msg, void *a) {
 		int group = [dicomData nextUnsignedShort];
 		int element = [dicomData nextUnsignedShort];
 		
-		int  vl = [dicomData nextUnsignedLong];
+		int vl = [dicomData nextUnsignedLong];
 		DCMAttributeTag *attrTag = [[[DCMAttributeTag alloc] initWithGroup:group element:element] autorelease];
 		
-		if (DCMDEBUG)
-			NSLog(@"Attr tag: %@", attrTag.description );
-			
-		if ([ attrTag.stringValue isEqualToString:[(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:@"Item"]])
+        if (DCMDEBUG3)
+            NSLog(@"%s %d, Attr tag: <%@>, vl: 0x%x=%d", __FUNCTION__, __LINE__, attrTag.description, vl, vl);
+
+		if ([attrTag.stringValue isEqualToString:[(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:@"Item"]]) // FFFE,E000 DCM_Item
 		{
-			[_values addObject:[dicomData nextDataWithLength:vl]];
+            if (DCMDEBUG3)
+                NSLog(@"%s %d, dicomData pos: 0x%x", __FUNCTION__, __LINE__, [dicomData position]);
+
+            [_values addObject:[dicomData nextDataWithLength:vl]];
+            
+            if (DCMDEBUG3)
+                NSLog(@"%s %d, dicomData pos: 0x%x", __FUNCTION__, __LINE__, [dicomData position]);
 			
-			if (DCMDEBUG)
-				NSLog(@"add Frame %u with length: %d", (unsigned int) [_values count],  vl);
+			if (DCMDEBUG3)
+				NSLog(@"%s %d, add Frame #%u with length: 0x%x=%d", __FUNCTION__, __LINE__,
+                      (unsigned int) [_values count], vl, vl);
 		}
-		else if ([[attrTag stringValue]  isEqualToString:[(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:@"SequenceDelimitationItem"]])  
-				break;
+		else if ([[attrTag stringValue] isEqualToString:[(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:@"SequenceDelimitationItem"]]) // FFFE,E0DD DCM_SequenceDelimitationItem
+        {
+            break; // End of the whole sequence. Exit while loop and return
+        }
 		else
 		{
+            if (DCMDEBUG3)
+                NSLog(@"%s %d, dicomData pos: 0x%x", __FUNCTION__, __LINE__, [dicomData position]);
 			[dicomData nextDataWithLength:vl];
 		}
 	}
@@ -761,23 +774,23 @@ void info_callback(const char *msg, void *a) {
 	//base class cannot convert encapsulted syntaxes yet.
 	NSException *exception;
     
-	if (DCMDEBUG)
+	if (DCMDEBUG3)
 		NSLog(@"Write Pixel Data %@", transferSyntax.description );
 
 	if ( ts.isEncapsulated ) {		
 		[dcmData addUnsignedShort:[self group]];
 		[dcmData addUnsignedShort:[self element]];
 
-        if (DCMDEBUG)
+        if (DCMDEBUG3)
 			NSLog(@"Write Sequence Base Length:%d", 0xFFFFFFFF);
 
         if ( ts.isExplicit ) {
 			[dcmData addString:_vr];
 			[dcmData addUnsignedShort:0];		// reserved bytes
-			[dcmData addUnsignedLong:(0xFFFFFFFFL)];
+			[dcmData addUnsignedLong:(0xFFFFFFFFL)];  // DCM_UndefinedLength
 		}
 		else {			
-			[dcmData addUnsignedLong:(0xFFFFFFFFL)];
+			[dcmData addUnsignedLong:(0xFFFFFFFFL)];  // DCM_UndefinedLength
 		}
 	}
 	//can do unencapsualated Syntaxes
@@ -794,7 +807,7 @@ void info_callback(const char *msg, void *a) {
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts {
 	// valueLength should be 0xFFFFFFFF from constructor
 	BOOL status = NO;
-	if (DCMDEBUG) 
+	if (DCMDEBUG3)
 		NSLog(@"Write PixelData with TS:%@  vr: %@ encapsulated: %d", ts.description, _vr, ts.isEncapsulated );
     
 	if ( ts.isEncapsulated && [transferSyntax isEqualToTransferSyntax:ts])
@@ -802,7 +815,7 @@ void info_callback(const char *msg, void *a) {
 		[self writeBaseToData:container transferSyntax:ts];
 		for ( id object in _values)
 		{
-			if (DCMDEBUG)
+			if (DCMDEBUG3)
 				NSLog(@"Write Item with length:%u", (unsigned int) [(NSData *)object length]);
 			
 			[container addUnsignedShort:(0xfffe)];		// Item
@@ -813,7 +826,7 @@ void info_callback(const char *msg, void *a) {
 			
 		}
 
-        if (DCMDEBUG)
+        if (DCMDEBUG3)
 			NSLog(@"Write end sequence");
 
         [container addUnsignedShort:(0xfffe)];	// Sequence Delimiter
@@ -839,7 +852,7 @@ void info_callback(const char *msg, void *a) {
 {
 	BOOL status = NO;
 	@try {
-	if (DCMDEBUG)
+	if (DCMDEBUG3)
 		NSLog(@"Convert Syntax %@ to %@", transferSyntax.description, ts.description);
 		
 		//already there do nothing
@@ -944,7 +957,7 @@ void info_callback(const char *msg, void *a) {
 		
         [self createOffsetTable];
 		self.transferSyntax = ts;
-		if (DCMDEBUG)
+		if (DCMDEBUG3)
 			NSLog(@"Converted to Syntax %@", transferSyntax.description );
 
         status = YES;
@@ -957,7 +970,7 @@ void info_callback(const char *msg, void *a) {
     @catch( NSException *localException) {
 		status = NO;
 	}
-	if (DCMDEBUG)
+	if (DCMDEBUG3)
 		NSLog(@"Converted to Syntax %@ status:%d", transferSyntax.description, status);
 
     return status;
@@ -1839,7 +1852,8 @@ void info_callback(const char *msg, void *a) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (!_framesCreated)
 		[self createFrames];
-	if (!_isDecoded)
+
+    if (!_isDecoded)
 	{
 		for (int i = 0; i < [_values count]; i++)
 			[self replaceFrameAtIndex:i withFrame:[self decodeFrameAtIndex:i]];
@@ -2164,7 +2178,7 @@ void info_callback(const char *msg, void *a) {
 //		[_dcmObject  setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:rescaleSlope]] forName:@"RescaleSlope"];
 //	}
 //		
-//	if (DCMDEBUG) {
+//	if (DCMDEBUG3) {
 //		NSLog(@"rescales Intercept: %d slope: %f", rescaleIntercept, rescaleSlope);
 //		NSLog(@"max: %d min %d", _max, _min);
 //	}
@@ -2181,7 +2195,7 @@ void info_callback(const char *msg, void *a) {
 	/*
 		offset should be item tag 4 bytes length 4 bytes last item length
 	*/
-	if (DCMDEBUG)
+	if (DCMDEBUG3)
 		NSLog(@"create Offset table");
 
     NSMutableData *offsetTable = [NSMutableData data];
@@ -3292,7 +3306,7 @@ void info_callback(const char *msg, void *a) {
 
 - (NSMutableData *)createFrameAtIndex:(int)index
 {
-    if (DCMDEBUG)
+    if (DCMDEBUG3)
         NSLog(@"%s %d, index:%d", __FUNCTION__, __LINE__, index);
 
     //NSDate *timestamp = [NSDate date];
@@ -3302,7 +3316,7 @@ void info_callback(const char *msg, void *a) {
 		//NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		if ( transferSyntax.isEncapsulated )
 		{
-            if (DCMDEBUG)
+            if (DCMDEBUG3)
                 NSLog(@"Data is encapsulated"); // (A)
 
 			NSMutableArray *offsetTable = [NSMutableArray array];
@@ -3341,7 +3355,7 @@ void info_callback(const char *msg, void *a) {
 			// Remove offset table
 			[values removeObjectAtIndex:0];
 
-            if (DCMDEBUG)
+            if (DCMDEBUG3)
                 NSLog(@"%s %d, values count:%lu, _numberOfFrames:%d", __FUNCTION__, __LINE__, (unsigned long)[values count], _numberOfFrames);
 
 			if ([values count] == _numberOfFrames)
@@ -3438,13 +3452,13 @@ void info_callback(const char *msg, void *a) {
 	if (!_framesCreated)
     {
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		if (DCMDEBUG)
+		if (DCMDEBUG3)
 			NSLog(@"Decode Data");
 
         // If encapsulated we need to use offset table to create frames
 		if ( transferSyntax.isEncapsulated )
         {
-			if (DCMDEBUG)
+			if (DCMDEBUG3)
 				NSLog(@"Data is encapsulated"); // (B)
 
             NSMutableArray *offsetTable = [NSMutableArray array];
@@ -3483,11 +3497,12 @@ void info_callback(const char *msg, void *a) {
 			
 			[_values removeAllObjects];
 			NSMutableData *subData;
-			if (DCMDEBUG)
+			if (DCMDEBUG3)
 				NSLog(@"number of Frames: %d", _numberOfFrames);
 
-            for (int i = 0; i < _numberOfFrames; i++) {
-				if (DCMDEBUG)
+            for (int i = 0; i < _numberOfFrames; i++)
+            {
+				if (DCMDEBUG3)
 					NSLog(@"Frame %d", i);
 
                 // One-to-one match between frames and items
@@ -3628,7 +3643,7 @@ void info_callback(const char *msg, void *a) {
 				[_framesDecoded addObject: @NO];
 		}
 		
-		if (DCMDEBUG)
+		if (DCMDEBUG3)
 			NSLog(@"to decoders:%@", transferSyntax.description);
 		
 		// data to decoders

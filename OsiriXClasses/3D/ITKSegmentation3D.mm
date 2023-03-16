@@ -704,8 +704,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
             for (long i = startSlice; i < endSlice; i++)
             {
                 ImageType::IndexType pixelIndex; 
-                DCMPix *curPix = [[destViewer pixList] objectAtIndex: i];
-                dstImage = [curPix fImage];
+                DCMPix *curPix2 = [[destViewer pixList] objectAtIndex: i];
+                dstImage = [curPix2 fImage];
                 srcImage = [[[srcViewer pixList] objectAtIndex: i] fImage];
                 
                 if (slice == -1)
@@ -713,10 +713,10 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                 else
                     pixelIndex[2] = 0; // z position
                 
-                for (long y = 0; y < [curPix pheight]; y++)
+                for (long y = 0; y < [curPix2 pheight]; y++)
                 {
                     pixelIndex[1] = y; // y position
-                    for (long x = 0; x < [curPix pwidth]; x++)
+                    for (long x = 0; x < [curPix2 pwidth]; x++)
                     {
                         pixelIndex[0] = x; // x position
                         
@@ -922,7 +922,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                 long imageSize = (dataExtent[ 1]+1) * (dataExtent[ 3]+1);
                 unsigned char *image2Ddata = (unsigned char*) malloc( imageSize), *tempPtr;
                 vtkImageImport *image2D;
-                DCMPix *curPix = [[srcViewer pixList] objectAtIndex: i];
+                DCMPix *curPix3 = [[srcViewer pixList] objectAtIndex: i];
                 
                 if ( slice == -1)
                     memcpy( image2Ddata, ((unsigned char*) vtkImporter->GetOutput()->GetScalarPointer()) + (i * imageSize), imageSize);
@@ -936,29 +936,29 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                 image2D->SetImportVoidPointer(image2Ddata);		
                 
                 tempPtr = image2Ddata;
-                for (long x = 0; x < [curPix pwidth]; x++)
+                for (long x = 0; x < [curPix3 pwidth]; x++)
                 {
                     tempPtr[ x] = 0;
                 }
 
-                tempPtr = image2Ddata + ([curPix pwidth]) * ([curPix pheight]-1);
-                for (long x = 0; x < [curPix pwidth]; x++)
+                tempPtr = image2Ddata + ([curPix3 pwidth]) * ([curPix3 pheight]-1);
+                for (long x = 0; x < [curPix3 pwidth]; x++)
                 {
                     tempPtr[ x] = 0;
                 }
 
                 tempPtr = image2Ddata;
-                for (long x = 0; x < [curPix pheight]; x++)
+                for (long x = 0; x < [curPix3 pheight]; x++)
                 {
                     *tempPtr = 0;
-                    tempPtr += [curPix pwidth];
+                    tempPtr += [curPix3 pwidth];
                 }
 
-                tempPtr = image2Ddata + [curPix pwidth]-1;
-                for (long x = 0; x < [curPix pheight]; x++)
+                tempPtr = image2Ddata + [curPix3 pwidth]-1;
+                for (long x = 0; x < [curPix3 pheight]; x++)
                 {
                     *tempPtr = 0;
-                    tempPtr += [curPix pwidth];
+                    tempPtr += [curPix3 pwidth];
                 }
                 
                 {

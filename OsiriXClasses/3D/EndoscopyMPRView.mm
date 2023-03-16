@@ -626,7 +626,7 @@
 {
 	if ([sender isEqual:[[self window] windowController]])
 	{
-		DCMPix *curPix = [self curDCM];
+		DCMPix *curPix1 = [self curDCM];
 
         long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY];
         ClutBarsType clutBarsCopy = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey: CLUTBARS_KEY];
@@ -652,17 +652,17 @@
 			[self getWLWW:&cwl :&cww];
 			[exportDCM setDefaultWWWL: cww :cwl];
 			
-			[exportDCM setPixelSpacing: [curPix pixelSpacingX] / [self scaleValue] :[curPix pixelSpacingX] / [self scaleValue]];
+			[exportDCM setPixelSpacing: [curPix1 pixelSpacingX] / [self scaleValue] :[curPix1 pixelSpacingX] / [self scaleValue]];
 				
-			[exportDCM setSliceThickness: [curPix sliceThickness]];
-			[exportDCM setSlicePosition: [curPix sliceLocation]];
+			[exportDCM setSliceThickness: [curPix1 sliceThickness]];
+			[exportDCM setSlicePosition: [curPix1 sliceLocation]];
 			
 			[self orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
 			
 			[exportDCM setOrientation: o];
 			
 			NSPoint tempPt = [self ConvertFromUpLeftView2GL: NSZeroPoint]; // <- Because we do screen capture !!!!!
-			[curPix convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
+			[curPix1 convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 			[exportDCM setPosition: o];
 			
 			[exportDCM setPixelData: data samplesPerPixel:spp bitsPerSample:bpp width: width height: height];

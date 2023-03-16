@@ -62,7 +62,6 @@
 	DCMCharacterSet *characterSet;
 	NSString *name;
 	unsigned char *_dataPtr;
-
 }
 
 @property(readonly) int group, element;

@@ -230,11 +230,11 @@
 		if (currentAxe == 0)		// X - RESLICE
 		{
 			
-			DCMPix *curPix = [newPixListX objectAtIndex: stack];
+			DCMPix *curPix6 = [newPixListX objectAtIndex: stack];
 			
 			if (sign > 0)
 			{
-				float *srcP, *dstP, *curPixfImage = [curPix fImage];
+				float *srcP, *dstP, *curPixfImage = [curPix6 fImage];
 				
 				for (int y = from; y < to; y++)
 				{
@@ -246,7 +246,7 @@
 			else
 			{
                 float *srcP;
-                float *curPixfImage = [curPix fImage];
+                float *curPixfImage = [curPix6 fImage];
 				
 				for (int y = from; y < to; y++)
 				{
@@ -261,7 +261,7 @@
 			float *dstPtr;
 			long rowBytes = [firstPix pwidth];
 			
-			DCMPix *curPix = [newPixListY objectAtIndex: stack];
+			DCMPix *curPix7 = [newPixListY objectAtIndex: stack];
 			
 			if (Ycache && yCacheQueue.operationCount == 0)
 			{
@@ -272,7 +272,7 @@
 
 				if (sign > 0)
 				{
-                    float *curPixfImage = [curPix fImage];
+                    float *curPixfImage = [curPix7 fImage];
 					DCMPix *srcPix = [originalDCMPixList objectAtIndex: 0];
 					long w = [srcPix pheight];
 					
@@ -285,7 +285,7 @@
 				}
 				else
 				{
-                    float *curPixfImage = [curPix fImage];
+                    float *curPixfImage = [curPix7 fImage];
 					
 					for (int y = from; y < to; y++)
 					{
@@ -306,7 +306,7 @@
 					{
 						srcPtr = [[originalDCMPixList objectAtIndex: x] fImage] + i;
 					}
-					dstPtr = [curPix fImage] + x * newX;
+					dstPtr = [curPix7 fImage] + x * newX;
 					
 					long yy = newX;
 					while (yy-->0)
@@ -365,7 +365,7 @@
 	
 	// CREATE A NEW SERIES WITH *ONE* IMAGE !
 	
-	DCMPix *curPix;
+	DCMPix *curPix8;
 	long stack = 0;
 	
 	if (thickSlab <= 1)
@@ -485,45 +485,45 @@
 		{
 			if (stack >= [newPixListX count])
 			{
-				curPix = [[DCMPix alloc] initWithData: nil :bits :newX :newY :1 :1 :0 :0 :0 :NO];
-				[curPix copySUVfrom: firstPix];
-				curPix.frameofReferenceUID = firstPix.frameofReferenceUID;
-				[newPixListX addObject: curPix];
-				[curPix release];
+				curPix8 = [[DCMPix alloc] initWithData: nil :bits :newX :newY :1 :1 :0 :0 :0 :NO];
+				[curPix8 copySUVfrom: firstPix];
+				curPix8.frameofReferenceUID = firstPix.frameofReferenceUID;
+				[newPixListX addObject: curPix8];
+				[curPix8 release];
 			}
 			else
-                curPix = [newPixListX objectAtIndex: stack];
+                curPix8 = [newPixListX objectAtIndex: stack];
 		}
 		else
 		{
 			if (stack  >= [newPixListY count])
 			{
-				curPix = [[DCMPix alloc] initWithData: nil :bits :newX :newY :1 :1 :0 :0 :0 :NO];
-				[curPix copySUVfrom: firstPix];
-				curPix.frameofReferenceUID = firstPix.frameofReferenceUID;
-				[newPixListY addObject: curPix];
-				[curPix release];
+				curPix8 = [[DCMPix alloc] initWithData: nil :bits :newX :newY :1 :1 :0 :0 :0 :NO];
+				[curPix8 copySUVfrom: firstPix];
+				curPix8.frameofReferenceUID = firstPix.frameofReferenceUID;
+				[newPixListY addObject: curPix8];
+				[curPix8 release];
 			}
 			else
-                curPix = [newPixListY objectAtIndex: stack];
+                curPix8 = [newPixListY objectAtIndex: stack];
 		}
 		
-		[curPix fImage];	// <- Force CheckLoad
+		[curPix8 fImage];	// <- Force CheckLoad
 		
-		[curPix setTot: 0];
-		[curPix setFrameNo: 0];
-		[curPix setID: 0];
+		[curPix8 setTot: 0];
+		[curPix8 setFrameNo: 0];
+		[curPix8 setID: 0];
 		
 		if (axe == 0)		// X - RESLICE
 		{
-			[curPix setOrientation: orientation];	// Normal vector is recomputed in this procedure
+			[curPix8 setOrientation: orientation];	// Normal vector is recomputed in this procedure
 			
-			[curPix setPixelSpacingX: newXSpace];
-			[curPix setPixelSpacingY: newYSpace];
+			[curPix8 setPixelSpacingX: newXSpace];
+			[curPix8 setPixelSpacingY: newYSpace];
 			
-			[curPix setPixelRatio:  newYSpace / newXSpace];
+			[curPix8 setPixelRatio:  newYSpace / newXSpace];
 			
-			[curPix orientation: orientation];
+			[curPix8 orientation: orientation];
 			
 			if (sign > 0)
 			{
@@ -538,22 +538,22 @@
 				origin[ 2] = [firstPix originZ] + (ii * [firstPix pixelSpacingY]) * orientation[ 8] * -sign;
 			}
 			
-            [curPix setOrigin: origin];
-            [curPix computeSliceLocation];
+            [curPix8 setOrigin: origin];
+            [curPix8 computeSliceLocation];
             
-			[curPix setSliceThickness: [firstPix pixelSpacingY]];
-			[curPix setSliceInterval: [firstPix pixelSpacingY]];
+			[curPix8 setSliceThickness: [firstPix pixelSpacingY]];
+			[curPix8 setSliceInterval: [firstPix pixelSpacingY]];
 		}
 		else
 		{
-			[curPix setOrientation: orientation];	// Normal vector is recomputed in this procedure
+			[curPix8 setOrientation: orientation];	// Normal vector is recomputed in this procedure
 			
-			[curPix setPixelSpacingX: newXSpace];
-			[curPix setPixelSpacingY: newYSpace];
+			[curPix8 setPixelSpacingX: newXSpace];
+			[curPix8 setPixelSpacingY: newYSpace];
 			
-			[curPix setPixelRatio:  newYSpace / newXSpace];
+			[curPix8 setPixelRatio:  newYSpace / newXSpace];
 			
-			[curPix orientation: orientation];
+			[curPix8 orientation: orientation];
 			if (sign > 0)
 			{
 				origin[ 0] = [lastPix originX] + (ii * [firstPix pixelSpacingX]) * orientation[ 6] * -sign;
@@ -566,11 +566,11 @@
 				origin[ 1] = [firstPix originY] + (ii * [firstPix pixelSpacingX]) * orientation[ 7] * sign;
 				origin[ 2] = [firstPix originZ] + (ii * [firstPix pixelSpacingX]) * orientation[ 8] * sign;
 			}
-			[curPix setOrigin: origin];
-			[curPix computeSliceLocation];
+			[curPix8 setOrigin: origin];
+			[curPix8 computeSliceLocation];
             
-			[curPix setSliceThickness: [firstPix pixelSpacingX]];
-			[curPix setSliceInterval: [firstPix pixelSpacingY]];
+			[curPix8 setSliceThickness: [firstPix pixelSpacingX]];
+			[curPix8 setSliceInterval: [firstPix pixelSpacingY]];
 		}
 	}
 	

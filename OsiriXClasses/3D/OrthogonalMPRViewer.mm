@@ -1458,7 +1458,7 @@ return YES;
 #ifndef MIELE_LIGHT
 - (NSDictionary*) exportDICOMFileInt :(BOOL) screenCapture
 {
-	DCMPix *curPix = [[self keyView] curDCM];
+	DCMPix *curPix5 = [[self keyView] curDCM];
 
     int annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY];
     ClutBarsType clutBarsCopy = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey: CLUTBARS_KEY];
@@ -1559,8 +1559,8 @@ return YES;
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"] == NO)
 		{
-			[exportDCM setSliceThickness: [curPix sliceThickness]];
-			[exportDCM setSlicePosition: [curPix sliceLocation]];
+			[exportDCM setSliceThickness: [curPix5 sliceThickness]];
+			[exportDCM setSlicePosition: [curPix5 sliceLocation]];
 			
 			[[self keyView] orientationCorrectedToView: o];
 			

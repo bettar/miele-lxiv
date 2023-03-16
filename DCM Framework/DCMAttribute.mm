@@ -85,7 +85,8 @@
                                         length: (int)_valueLength
                                           data: dicomData];
 			_values = [[NSMutableArray alloc] initWithArray:array];
-			if (DCMDEBUG)
+
+            if (DCMDEBUG2)
 				NSLog(@"DCMAttribute.mm:%d initWithAttributeTag, %@", __LINE__, [self description]);
 		}
 
@@ -349,7 +350,7 @@
     if ([ts isExplicit])
     {
         // Write VR is explicit
-        if (DCMDEBUG)
+        if (DCMDEBUG2)
             NSLog(@"Write VR: %@", _vr);
         
         [dcmData addString:_vr];
@@ -383,7 +384,7 @@
 	
 	[self writeBaseToData:container transferSyntax:ts];
 
-	if (DCMDEBUG)
+	if (DCMDEBUG2)
 		NSLog(@"Write Attr: %@", [self description]);
 		
 	if ([DCMValueRepresentation isAffectedBySpecificCharacterSet:_vr])
@@ -512,12 +513,13 @@
 	return nil;
 }
 
-- (NSString *)valuesAsString{
+- (NSString *)valuesAsString
+{
 	if ([_values count] > 0)
 		//return [_values componentsJoinedByString:@"\\"];
 		return [_values description];
-	else
-		return @"";
+
+    return @"";
 }
 
 - (NSString *)description
@@ -556,7 +558,7 @@
 		values = [NSMutableArray arrayWithArray: [string componentsSeparatedByString:@"\\"]];
 	}
 	else  {
-		if (DCMDEBUG && vr == DCM_DT)
+		if (DCMDEBUG2 && vr == DCM_DT)
 			NSLog(@"valuesForVR: length %d", length);
         
 		switch (vr)

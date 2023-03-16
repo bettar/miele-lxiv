@@ -2240,7 +2240,7 @@ return YES;
 
 - (NSDictionary*) exportDICOMFileInt :(BOOL) screenCapture view:(DCMView*) curView
 {
-	DCMPix *curPix = [curView curDCM];
+	DCMPix *curPix4 = [curView curDCM];
     long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY];
     ClutBarsType clutBarsCopy = (ClutBarsType)[[NSUserDefaults standardUserDefaults] integerForKey: CLUTBARS_KEY];
 	long width, height, spp, bpp;
@@ -2346,8 +2346,8 @@ return YES;
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"] == NO)
 		{
-			[exportDCM setSliceThickness: [curPix sliceThickness]];
-			[exportDCM setSlicePosition: [curPix sliceLocation]];
+			[exportDCM setSliceThickness: [curPix4 sliceThickness]];
+			[exportDCM setSlicePosition: [curPix4 sliceLocation]];
 			
 			[curView orientationCorrectedToView: o];
 			

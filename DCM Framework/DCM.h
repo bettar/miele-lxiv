@@ -34,7 +34,11 @@
 #import <DCM/DCMNetServiceDelegate.h>
 #import <DCM/DCMEncapsulatedPDF.h>
 
-#define DCMDEBUG                NO
+#define DCMDEBUG                 NO // DCMObject.mm
+#define DCMDEBUG2                NO // DCMAttribute.mm
+#define DCMDEBUG3                NO // DCMPixelDataAttribute.mm (deencapsulateData)
+#define DCMDEBUG4                NO // DCMSequenceAttribute.mm
+
 #define DCMFramework_compile    YES
 
 #import <Accelerate/Accelerate.h>
