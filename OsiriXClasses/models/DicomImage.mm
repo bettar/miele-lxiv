@@ -250,7 +250,6 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return nil;
 }
 
-
 - (NSString*) SRFilenameForFrame: (int) frameNo
 {
 	return [NSString stringWithFormat: @"%@-%d.dcm", [self uniqueFilename], frameNo];
@@ -258,7 +257,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (NSString*) SRPathForFrame: (int) frameNo
 {
-	#ifdef OSIRIX_VIEWER
+#ifdef OSIRIX_VIEWER
 	NSString *d;
 	
     DicomDatabase* db = [DicomDatabase databaseForContext:[self managedObjectContext]];
@@ -268,9 +267,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		d = [[db dataBaseDirPath] stringByAppendingPathComponent:ROIDATABASE];
 	
 	return [d stringByAppendingPathComponent: [self SRFilenameForFrame: frameNo]];
-	#else
+#else
 	return nil;
-	#endif
+#endif
 }
 
 - (NSString*) sopInstanceUID

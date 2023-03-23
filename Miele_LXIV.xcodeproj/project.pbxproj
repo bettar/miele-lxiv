@@ -58,6 +58,18 @@
 		433DA138215A5B2600D5A70B /* BrowserController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 433DA136215A5B2500D5A70B /* BrowserController.mm */; };
 		433F9A801A1B18A500E52C6C /* vtkMieleView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A7E1A1B18A500E52C6C /* vtkMieleView.mm */; };
 		433F9A891A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */; };
+		4341DF7D29C9BD87003E0332 /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = 4341DF7C29C9BD87003E0332 /* echoscu */; };
+		4341DF7E29C9BDD5003E0332 /* echoscu in Copy Executables */ = {isa = PBXBuildFile; fileRef = 4341DF7C29C9BD87003E0332 /* echoscu */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		4341DF8029C9BFF3003E0332 /* libpng16.16.37.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF7F29C9BFF3003E0332 /* libpng16.16.37.0.dylib */; };
+		4341DF8229C9C022003E0332 /* libpng16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8129C9C022003E0332 /* libpng16.a */; };
+		4341DF8529C9C04C003E0332 /* libming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8329C9C045003E0332 /* libming.a */; };
+		4341DF8729C9C075003E0332 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8629C9C075003E0332 /* libxml2.a */; };
+		4341DF8829C9C075003E0332 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8629C9C075003E0332 /* libxml2.a */; };
+		4341DF8929C9C075003E0332 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8629C9C075003E0332 /* libxml2.a */; };
+		4341DF8B29C9C095003E0332 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8A29C9C094003E0332 /* libz.a */; };
+		4341DF8C29C9C095003E0332 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8A29C9C094003E0332 /* libz.a */; };
+		4341DF8D29C9C095003E0332 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8A29C9C094003E0332 /* libz.a */; };
+		4341DF8E29C9C57E003E0332 /* libpng16.16.37.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF7F29C9BFF3003E0332 /* libpng16.16.37.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		434499B21A1D70840047F0F2 /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
 		434B46191A19F322008CF8CF /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
 		434B461D1A19F631008CF8CF /* OPJSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 434B461B1A19F631008CF8CF /* OPJSupport.cpp */; };
@@ -176,17 +188,6 @@
 		43E27D2B1AF338FA007B92CA /* ROI3DSettingsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */; };
 		43E35C0329B775BA0068526F /* JPEGtoDICOM.mieleplugin in Resources */ = {isa = PBXBuildFile; fileRef = 43E35C0229B775BA0068526F /* JPEGtoDICOM.mieleplugin */; };
 		43E35C0529B7761D0068526F /* JPEGtoDICOM.mieleplugin in Copy Builtin Plugins */ = {isa = PBXBuildFile; fileRef = 43E35C0229B775BA0068526F /* JPEGtoDICOM.mieleplugin */; };
-		43E3D93D289BB1A5006B0E9C /* libpng16.16.37.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */; };
-		43E3D93E289BB1D1006B0E9C /* libpng16.16.37.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		43E71199289D01750065374E /* libming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E71197289CFEF70065374E /* libming.a */; };
-		43EC9E102897E8E700F0533F /* libpng16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E0F2897E8E700F0533F /* libpng16.a */; };
-		43EC9E122897E9E500F0533F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E112897E9E400F0533F /* libxml2.a */; };
-		43EC9E132897E9E500F0533F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E112897E9E400F0533F /* libxml2.a */; };
-		43EC9E142897E9E500F0533F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E112897E9E400F0533F /* libxml2.a */; };
-		43EC9E162897EA4100F0533F /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E152897EA4100F0533F /* libz.a */; };
-		43EC9E172897EA4100F0533F /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E152897EA4100F0533F /* libz.a */; };
-		43EC9E182897EA4100F0533F /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EC9E152897EA4100F0533F /* libz.a */; };
-		43EC9E1E2897FC6300F0533F /* echoscu in Copy Executables */ = {isa = PBXBuildFile; fileRef = 43EC9E1D2897FC3A00F0533F /* echoscu */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		43F3D28E239D3EEB004CAD67 /* font.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43F3D28D239D3EEB004CAD67 /* font.fsh */; };
 		43F8F9AB1AA7DAA6008F318C /* LoupeController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43F8F9A51AA7DAA6008F318C /* LoupeController.mm */; };
 		43F8F9AD1AA7DAA6008F318C /* LoupeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43F8F9A71AA7DAA6008F318C /* LoupeView.mm */; };
@@ -1124,12 +1125,12 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
+				4341DF7E29C9BDD5003E0332 /* echoscu in Copy Executables */,
 				437B656621ED0F4F00A9A548 /* dcmdump in Copy Executables */,
 				437002FA21CD47CA00C91D62 /* Decompress in Copy Executables */,
 				437002F921CD3CD700C91D62 /* DICOMPrint in Copy Executables */,
 				437B656521ED042D00A9A548 /* dciodvfy in Copy Executables */,
 				437B656821ED119400A9A548 /* dsr2html in Copy Executables */,
-				43EC9E1E2897FC6300F0533F /* echoscu in Copy Executables */,
 			);
 			name = "Copy Executables";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1151,9 +1152,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				4341DF8E29C9C57E003E0332 /* libpng16.16.37.0.dylib in Embed Frameworks */,
 				43110BEB21679E5B00B0405B /* DCM.framework in Embed Frameworks */,
 				59F1A515104BA8AE009E3215 /* MieleAPI.framework in Embed Frameworks */,
-				43E3D93E289BB1D1006B0E9C /* libpng16.16.37.0.dylib in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1550,6 +1551,12 @@
 		433F9A7F1A1B18A500E52C6C /* vtkMieleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkMieleView.h; sourceTree = "<group>"; };
 		433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OsiriXFixedPointVolumeRayCastMapper.cxx; sourceTree = "<group>"; };
 		433F9A881A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OsiriXFixedPointVolumeRayCastMapper.h; sourceTree = "<group>"; };
+		4341DF7C29C9BD87003E0332 /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = "../../../../../../install/project68/20230320_UB/DCMTK-3.6.7/bin/echoscu"; sourceTree = "<group>"; };
+		4341DF7F29C9BFF3003E0332 /* libpng16.16.37.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.37.0.dylib; path = "../../../install/project68/20230320_UB/libpng-1.6.37/lib/libpng16.16.37.0.dylib"; sourceTree = "<group>"; };
+		4341DF8129C9C022003E0332 /* libpng16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng16.a; path = "../../../install/project68/20230320_UB/libpng-1.6.37/lib/libpng16.a"; sourceTree = "<group>"; };
+		4341DF8329C9C045003E0332 /* libming.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libming.a; path = "../../../install/project68/20230320_UB/ming-0_4_8/lib/libming.a"; sourceTree = "<group>"; };
+		4341DF8629C9C075003E0332 /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../../install/project68/20230320_UB/libxml2-v2.9.13/lib/libxml2.a"; sourceTree = "<group>"; };
+		4341DF8A29C9C094003E0332 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = "../../../install/project68/20230320_UB/zlib-1.2.12/lib/libz.a"; sourceTree = "<group>"; };
 		43475BF02344C55300BEE02C /* mieleTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mieleTypes.h; sourceTree = "<group>"; };
 		434930EC225512EC00C30B21 /* Unit Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Unit Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		434930EE225512EC00C30B21 /* miele_lxivTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = miele_lxivTests.mm; sourceTree = "<group>"; };
@@ -1757,13 +1764,7 @@
 		43E27D281AF338FA007B92CA /* ROI3DSettingsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROI3DSettingsWindow.h; sourceTree = "<group>"; };
 		43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ROI3DSettingsWindow.mm; sourceTree = "<group>"; };
 		43E35C0229B775BA0068526F /* JPEGtoDICOM.mieleplugin */ = {isa = PBXFileReference; lastKnownFileType = folder; name = JPEGtoDICOM.mieleplugin; path = "../../../../p95_lxiv-plugins/dev/ported/JPEGtoDICOM/src/Build/Products/Development/JPEGtoDICOM.mieleplugin"; sourceTree = "<group>"; };
-		43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.37.0.dylib; path = "../../../install/project68/20220729_UB/libpng-1.6.37/lib/libpng16.16.37.0.dylib"; sourceTree = "<group>"; };
 		43E6A512216CC297005A031A /* odt2pdf.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = odt2pdf.zip; path = Binaries/ReportsToPDF/odt2pdf/build/odt2pdf.zip; sourceTree = "<group>"; };
-		43E71197289CFEF70065374E /* libming.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libming.a; path = "../../../install/project68/20220729_UB/ming-0_4_8/lib/libming.a"; sourceTree = "<group>"; };
-		43EC9E0F2897E8E700F0533F /* libpng16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng16.a; path = "../../../install/project68/20220729_UB/libpng-1.6.37/lib/libpng16.a"; sourceTree = "<group>"; };
-		43EC9E112897E9E400F0533F /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../../install/project68/20220729_UB/libxml2-v2.9.13/lib/libxml2.a"; sourceTree = "<group>"; };
-		43EC9E152897EA4100F0533F /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = "../../../install/project68/20220729_UB/zlib-1.2.12/lib/libz.a"; sourceTree = "<group>"; };
-		43EC9E1D2897FC3A00F0533F /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = "../../../../../../install/project68/20220729_UB/DCMTK-3.6.7/bin/echoscu"; sourceTree = "<group>"; };
 		43F3D28D239D3EEB004CAD67 /* font.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = font.fsh; sourceTree = "<group>"; };
 		43F8F9A41AA7DAA6008F318C /* LoupeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoupeController.h; sourceTree = "<group>"; };
 		43F8F9A51AA7DAA6008F318C /* LoupeController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LoupeController.mm; sourceTree = "<group>"; };
@@ -3090,10 +3091,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43EC9E182897EA4100F0533F /* libz.a in Frameworks */,
+				4341DF8D29C9C095003E0332 /* libz.a in Frameworks */,
+				4341DF8829C9C075003E0332 /* libxml2.a in Frameworks */,
 				43B516412372FB7000106783 /* OpenGL.framework in Frameworks */,
-				43EC9E132897E9E500F0533F /* libxml2.a in Frameworks */,
-				43E71199289D01750065374E /* libming.a in Frameworks */,
+				4341DF8529C9C04C003E0332 /* libming.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3108,7 +3109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43EC9E172897EA4100F0533F /* libz.a in Frameworks */,
+				4341DF8C29C9C095003E0332 /* libz.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3116,12 +3117,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43EC9E122897E9E500F0533F /* libxml2.a in Frameworks */,
+				4341DF8729C9C075003E0332 /* libxml2.a in Frameworks */,
 				43A5D42A2407D68E0063416A /* UserNotifications.framework in Frameworks */,
 				430D9F102199FB37006EA1B1 /* OpenGL.framework in Frameworks */,
-				43EC9E162897EA4100F0533F /* libz.a in Frameworks */,
-				43EC9E102897E8E700F0533F /* libpng16.a in Frameworks */,
-				43E3D93D289BB1A5006B0E9C /* libpng16.16.37.0.dylib in Frameworks */,
+				4341DF8229C9C022003E0332 /* libpng16.a in Frameworks */,
+				4341DF8B29C9C095003E0332 /* libz.a in Frameworks */,
+				4341DF8029C9BFF3003E0332 /* libpng16.16.37.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3130,8 +3131,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEDF6DC60B46FE99008B45B8 /* Foundation.framework in Frameworks */,
+				4341DF8929C9C075003E0332 /* libxml2.a in Frameworks */,
 				CEDF6DC90B46FE99008B45B8 /* Cocoa.framework in Frameworks */,
-				43EC9E142897E9E500F0533F /* libxml2.a in Frameworks */,
 				CEDF6DCB0B46FE99008B45B8 /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3287,11 +3288,11 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				43E71197289CFEF70065374E /* libming.a */,
-				43E3D93C289BB1A5006B0E9C /* libpng16.16.37.0.dylib */,
-				43EC9E112897E9E400F0533F /* libxml2.a */,
-				43EC9E152897EA4100F0533F /* libz.a */,
-				43EC9E0F2897E8E700F0533F /* libpng16.a */,
+				4341DF8A29C9C094003E0332 /* libz.a */,
+				4341DF8629C9C075003E0332 /* libxml2.a */,
+				4341DF8329C9C045003E0332 /* libming.a */,
+				4341DF8129C9C022003E0332 /* libpng16.a */,
+				4341DF7F29C9BFF3003E0332 /* libpng16.16.37.0.dylib */,
 				43A5D4292407D68E0063416A /* UserNotifications.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 			);
@@ -4790,7 +4791,7 @@
 		ABBB639A0635874D00D9531F /* DCMTK */ = {
 			isa = PBXGroup;
 			children = (
-				43EC9E1D2897FC3A00F0533F /* echoscu */,
+				4341DF7C29C9BD87003E0332 /* echoscu */,
 				84B5EA4211A2BC0900193FDB /* dsr2html */,
 				ABBB639D0635874D00D9531F /* dcmdump */,
 				ABBB639E0635874D00D9531F /* dicom.dic */,
@@ -5918,6 +5919,7 @@
 				43A02C52219D883100E788B6 /* ROIManager.xib in Resources */,
 				43977C3023D340AF0044054B /* loupe.fsh in Resources */,
 				A9897D9B0D4A142200BAC447 /* displayRGB.tif in Resources */,
+				4341DF7D29C9BD87003E0332 /* echoscu in Resources */,
 				CE91370618B51E9C00BDF7F8 /* ExportROIAndKeyImages.tif in Resources */,
 				43A02C4B219D883100E788B6 /* ROIVolume.xib in Resources */,
 				A9897D9C0D4A142200BAC447 /* displayTotoku.tif in Resources */,
@@ -8068,7 +8070,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20221012;
+				CURRENT_PROJECT_VERSION = 20230323;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8167,7 +8169,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 8.25.112;
+				MARKETING_VERSION = 9.26.114;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8238,7 +8240,6 @@
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
 					"$(SRCROOT)/Binaries/zlib/lib/libz.a",
-					/usr/local/lib/libwebp.a,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "miele-lxiv";
@@ -8269,7 +8270,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 8.25.112;
+				MARKETING_VERSION = 9.26.114;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8599,7 +8600,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20221012;
+				CURRENT_PROJECT_VERSION = 20230323;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8696,7 +8697,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 8.25.112;
+				MARKETING_VERSION = 9.26.114;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8767,7 +8768,6 @@
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
 					"$(SRCROOT)/Binaries/zlib/lib/libz.a",
-					/usr/local/lib/libwebp.a,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "miele-lxiv";
@@ -8798,7 +8798,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 8.25.112;
+				MARKETING_VERSION = 9.26.114;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -9122,7 +9122,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 8.25.112;
+				MARKETING_VERSION = 9.26.114;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9304,7 +9304,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 8.25.112;
+				MARKETING_VERSION = 9.26.114;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -9374,7 +9374,6 @@
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
 					"$(SRCROOT)/Binaries/zlib/lib/libz.a",
-					/usr/local/lib/libwebp.a,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "miele-lxiv";
@@ -9411,7 +9410,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
-				CURRENT_PROJECT_VERSION = 20221012;
+				CURRENT_PROJECT_VERSION = 20230323;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

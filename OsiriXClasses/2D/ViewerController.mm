@@ -1337,7 +1337,7 @@ return YES;
                 NSMutableArray *array = [NSMutableArray array];
                 for (NSArray *ar in roiList[ i])
                 {
-                    NSMutableArray	*a = [NSMutableArray array];
+                    NSMutableArray *a = [NSMutableArray array];
                     
                     for (ROI *r in ar)
                     {
@@ -20391,8 +20391,7 @@ static BOOL viewerControllerPlaying = NO;
 //        else
         {
             [exportDCM setPixelData: data samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
-            
-            
+
             [exportDCM setSigned: isSigned];
             [exportDCM setOffset: offset];
             [exportDCM setModalityAsSource: modalityAsSource];

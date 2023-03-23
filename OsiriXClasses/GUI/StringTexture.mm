@@ -309,18 +309,21 @@
 		[[NSGraphicsContext currentContext] setShouldAntialias: YES]; // #i43 antialiasing
 #endif
 		
-		if ([boxColor alphaComponent])
-		{ // this should be == 0.0f but need to make sure
+        // Fill box
+		if ([boxColor alphaComponent]) // this should be == 0.0f but need to make sure
+		{
 			[boxColor set]; 
 			NSRectFill( NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height));
 		}
 
+        // Stroke border
         if ([borderColor alphaComponent])
 		{
 			[borderColor set]; 
 			NSFrameRect( NSMakeRect(0.0f, 0.0f, frameSize.width, frameSize.height));
 		}
 
+        // Text
         [textColor set];
 		[attrString drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)];
 		
@@ -329,11 +332,13 @@
             bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect: NSMakeRect(0.0f, 0.0f, frameSize.width, frameSize.height)];
         }
 		else
-            NSLog( @"StringTexture: frameSize.width > 0 && frameSize.height > 0");
+            NSLog(@"StringTexture: frameSize.width > 0 && frameSize.height > 0");
 
-#ifdef DEBUG_TEXTURE_BITMAP
-//#include "../../snippets/1.mm"
-#include "../../snippets/2.mm"
+#if 0 //def DEBUG_TEXTURE_BITMAP
+//#include "../../../priv/snippets/1.mm"
+        NSLog(@"%s %s:%d <%@>", __FUNCTION__, __FILE__, __LINE__, attrString.string);
+        NSString *debugString = @"R";
+#include "../../../priv/snippets/2.mm"
 #endif
         
 		[image unlockFocus];
@@ -344,6 +349,8 @@
             GLenum target = GL_TEXTURE_RECTANGLE;
             // With internalFormat, you tell the GL driver how you want the texture to be stored on the GPU.
             GLint internalFormat = GL_RGBA8;
+            if (bitmap.bitsPerSample==16)  // issue i69
+                internalFormat = GL_RGBA16;
             
             // externalFormat is defined by format and type.
             GLenum format = GL_RGBA; // format of the pixel data
@@ -358,10 +365,22 @@
             if (bitmap.bitsPerSample == 16 &&
                 bitmap.bitsPerPixel == 64)  // bitsPerSample * samplesPerPixel
             {
-                type = GL_SHORT;  // This is fixing issue #47.3
+                type = GL_SHORT;  // Signed short. This is fixing issue #47.3
             }
 
-            texSize.width = [bitmap size].width * backingScaleFactor; // Retina
+#if 1 // FIX_ISSUE_i69
+            if (bitmap.bitsPerSample==16 && sf == 2.0)
+            {
+                int w = self->bitmap.size.width * sf;
+                int h = self->bitmap.size.height * sf;
+                int spp = bitmap.samplesPerPixel;
+                unsigned short *sample = (unsigned short *)self->bitmap.bitmapData;
+                for (int i=0; i<(w*h*spp); ++i)
+                    sample[i] <<= 1;
+            }
+#endif
+
+            texSize.width = [bitmap size].width * backingScaleFactor;   // Retina
             texSize.height = [bitmap size].height * backingScaleFactor; // Retina
             
             glActiveTexture(GL_TEXTURE0);
@@ -397,10 +416,10 @@
 	}
 
 #ifdef DEBUG_TEXTURE_BITMAP
-    //NSString *path = [NSString stringWithFormat:@"/tmp/stringtexture_%@.tiff", attrString.string];
-    //[[image TIFFRepresentation] writeToFile: path atomically: YES];
+#include "../../../priv/snippets/3.mm"
 #endif
-	[image release];
+
+    [image release];
 	
 	return textureID;
 }

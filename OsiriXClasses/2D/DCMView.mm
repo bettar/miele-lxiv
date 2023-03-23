@@ -2066,8 +2066,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			else
                 [stanStringAttrib setObject:fontGL forKey:NSFontAttributeName];
             
-			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
-            
+            [stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 			stringTex = [[StringTexture alloc] initWithString:str withAttributes:stanStringAttrib];
 //            [stringTex setAntiAliasing: YES]; // One possible fix for issue #i43
 			[stringTex genTextureWithBackingScaleFactor:self.window.backingScaleFactor];
@@ -2084,7 +2083,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             x -= 5 * self.window.backingScaleFactor;
 		
 #ifdef WITH_OPENGL_32
-        // This would break the CLUT legend which is drawn here but it assumes the fone program
+        // This would break the CLUT legend which is drawn here but it assumes the font program
         //[self setShaderProgramOverlay_withMode_TextureRgba];
 #else
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -8352,8 +8351,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     [[self openGLContext] makeCurrentContext];
 
     GLint deviceMaxTextureSize = 0;
+#ifdef GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT
 	GLint NPOTDMaxTextureSize = 0;
-
+#endif
     // init desired caps to max values
     _minMaxTextureSize = 0x7FFFFFFF;
     _minMaxNOPTDTextureSize = 0x7FFFFFFF;
@@ -8365,11 +8365,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #endif
 
 #ifdef WITH_GLEW // 20191122 added
+#ifdef GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT
     if (checkExtension("GL_EXT_texture_rectangle")) {
         glGetIntegerv(GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT, &NPOTDMaxTextureSize);
         if (NPOTDMaxTextureSize < _minMaxNOPTDTextureSize)
             _minMaxNOPTDTextureSize = NPOTDMaxTextureSize;
     }
+#endif
 #endif
     
     // Compare capabilities based on extension string and GL version

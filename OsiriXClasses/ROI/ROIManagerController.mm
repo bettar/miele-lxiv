@@ -69,8 +69,8 @@ PURPOSE.
    forTableColumn:(NSTableColumn *)aTableColumn
 			  row:(NSInteger)rowIndex
 {
-	NSMutableArray *curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
-	ROI *editedROI = [curRoiList objectAtIndex: rowIndex];
+	NSMutableArray *curRoiList2 = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
+	ROI *editedROI = [curRoiList2 objectAtIndex: rowIndex];
 	
 
 //	[editedROI setName:anObject];
@@ -103,16 +103,16 @@ PURPOSE.
 	if ((index == NSNotFound) || index < 0)
         return;
 	
-	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
+	NSMutableArray *curRoiList3 = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
 	
 	while ( index != NSNotFound) 
 	{
-		ROI	*selectedRoi = [curRoiList objectAtIndex:index];
+		ROI	*selectedRoi = [curRoiList3 objectAtIndex:index];
 	
 		[viewer deleteSeriesROIwithName: [selectedRoi name]];
 	
 //		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:selectedRoi userInfo: nil];
-//		[curRoiList removeObject:selectedRoi];
+//		[curRoiList3 removeObject:selectedRoi];
 		
 		index = [indexSet indexLessThanIndex:index];
 	}
@@ -122,13 +122,13 @@ PURPOSE.
 
 //- (void)tableViewSelectionDidChange:(NSNotification *)aNotification
 //{
-//	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
+//	NSMutableArray	*curRoiList4 = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
 //	
 //	long i;
 //	
-//	for( i = 0; i < [curRoiList count]; i++)
+//	for( i = 0; i < [curRoiList4 count]; i++)
 //	{
-//		ROI	*curROI = [curRoiList objectAtIndex: i];
+//		ROI	*curROI = [curRoiList4 objectAtIndex: i];
 //		
 //		if( [tableView isRowSelected: i])
 //		{
@@ -155,9 +155,9 @@ PURPOSE.
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
-	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
+	NSMutableArray *curRoiList5 = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
 	
-    return [curRoiList count];
+    return [curRoiList5 count];
 }
 
 - (id)tableView:(NSTableView *)tableView
@@ -167,9 +167,9 @@ PURPOSE.
 	if( viewer == nil)
         return nil;
 	
-	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
+	NSMutableArray *curRoiList6 = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
 	
-	if( [curRoiList count] <= row)
+	if( [curRoiList6 count] <= row)
 		return nil;
 
 	if( [[tableColumn identifier] isEqualToString:@"Index"])
@@ -179,18 +179,18 @@ PURPOSE.
 	
 	if( [[tableColumn identifier] isEqualToString:@"Name"])
 	{
-		return [[curRoiList objectAtIndex:row] name];
+		return [[curRoiList6 objectAtIndex:row] name];
 	}
 	
 	if( [[tableColumn identifier] isEqualToString:@"area"])
 	{
-		return [NSNumber numberWithFloat:[[curRoiList objectAtIndex:row] roiArea]];
+		return [NSNumber numberWithFloat:[[curRoiList6 objectAtIndex:row] roiArea]];
 	}
 	
 	if( [[tableColumn identifier] isEqualToString:@"volume"])
 	{
 #ifndef MIELE_LIGHT
-		float volume = [viewer computeVolume:[curRoiList objectAtIndex:row] points:nil error: nil];
+		float volume = [viewer computeVolume:[curRoiList6 objectAtIndex:row] points:nil error: nil];
 		
 		if( volume)
 		{

@@ -126,7 +126,7 @@
 	[textColor release];
 	[boxColor release];
 	[borderColor release];
-	[_attrString release];
+	[attrString release];
 	[bitmap release];
 	[super dealloc];
 }
@@ -143,7 +143,7 @@
 	textureID = 0;
 	texSize = NSZeroSize;
 	[attributedString retain];
-	_attrString = attributedString;
+	attrString = attributedString;
 	[box retain];
 	[border retain];
 	boxColor = box;
@@ -197,7 +197,7 @@
         (0.0f == frameSize.width) &&
         (0.0f == frameSize.height)) // find frame size if we have not already found it
     {
-		frameSize = [_attrString size]; // current string size
+		frameSize = [attrString size]; // current string size
         
         frameSize.width = (int) frameSize.width;
         frameSize.height = (int) frameSize.height;
@@ -213,6 +213,7 @@
 		[image lockFocus];
 		[[NSGraphicsContext currentContext] setShouldAntialias:antialias];
 		
+        // Fill box
 		if ([boxColor alphaComponent]) // this should be == 0.0f but need to make sure
 		{ 
 			[boxColor set]; 
@@ -220,6 +221,7 @@
 			[path fill];
 		}
 
+        // Stroke border
 		if ([borderColor alphaComponent])
 		{
 			[borderColor set]; 
@@ -228,44 +230,29 @@
 			[path stroke];
 		}
 		
-		[textColor set]; 
-		[_attrString drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)]; // draw at offset position
+        // Text
+		[textColor set];
+		[attrString drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)]; // draw at offset position
 
 		[bitmap release];
 		bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
 		
 		[image unlockFocus];
 		
-		texSize.width = [bitmap pixelsWide];
-		texSize.height = [bitmap pixelsHigh];
+		texSize.width = [bitmap pixelsWide];    // TBC: * sf (Retina)
+		texSize.height = [bitmap pixelsHigh];   // TBC: * sf (Retina)
         
-//#ifdef DEBUG_TEXTURE_BITMAP
-//        if ([_attrString.string isEqualToString:@" 1 "])
-//        {
-//            NSLog(@"%s %d <%@> %@, SPP:%ld, BPS:%ld, PPR:%ld", __FUNCTION__, __LINE__,
-//                  _attrString.string,
-//                  NSStringFromSize(bitmap.size),
-//                  (long)bitmap.samplesPerPixel, // 4
-//                  (long)bitmap.bitsPerSample, // 8
-//                  (long)[bitmap pixelsWide]); // pixels per row
-//
-//            unsigned int *bmp = (unsigned int *)self->bitmap.bitmapData;
-//            int n = self->bitmap.size.width;
-//            int j=0;
-//            for (int i=0; i<(n * self->bitmap.size.height); i++) {
-//                if ((i%n) == 0) {
-//                    printf("\n%d-%2d)\t", j, i);
-//                    j++;
-//                }
-//                printf("%8x ", bmp[i]);
-//            }
-//            printf("\n\n");
-//        }
-//#endif
+#if 0 //def DEBUG_TEXTURE_BITMAP
+        float sf = [[NSScreen mainScreen] backingScaleFactor];//backingScaleFactor;
+        NSLog(@"%s %s:%d\n<%@>", __FUNCTION__, __FILE__, __LINE__, attrString.string);
+        NSString *debugString = @" 1 ";
+//#include "../../../priv/snippets/1.mm"
+#include "../../../priv/snippets/2.mm"
+#endif
 		
         cgl_ctx = CGLGetCurrentContext();
 		if (!cgl_ctx)
-            NSLog(@"%s StringTexture: Failure to get current OpenGL context\n", __FUNCTION__);
+            NSLog(@"%s GLString: Failure to get current OpenGL context\n", __FUNCTION__);
         else
 		{
 #ifdef WITH_OPENGL_32
@@ -297,12 +284,35 @@
 			
 #ifdef WITH_OPENGL_32
             GLint internalFormat = GL_RGBA8;
+            if (bitmap.bitsPerSample==16)  // issue i69
+                internalFormat = GL_RGBA16;
+
             GLenum format = GL_RGBA;
 #else
             GLint internalFormat = GL_RGBA;
             GLenum format = [bitmap hasAlpha] ? GL_RGBA : GL_RGB;
 #endif
 
+            GLenum type = GL_UNSIGNED_BYTE;
+#if 1 // FIX_ISSUE_i69
+            if (bitmap.bitsPerSample == 16 &&
+                bitmap.bitsPerPixel == 64)  // bitsPerSample * samplesPerPixel
+            {
+                type = GL_SHORT;  // Signed short.
+            }
+
+            if (bitmap.bitsPerSample==16)// && sf == 2.0)
+            {
+                const float sf2 = 2.0; // bitmap.bitsPerSample / 8
+                int w = self->bitmap.size.width * sf2;
+                int h = self->bitmap.size.height * sf2;
+                int spp = bitmap.samplesPerPixel;
+                unsigned short *sample = (unsigned short *)self->bitmap.bitmapData;
+                for (int i=0; i<(w*h*spp); ++i)
+                    sample[i] <<= 1;
+            }
+#endif
+            
             glBindTexture (target, textureID);
 			
             glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -312,7 +322,7 @@
                          texSize.width, texSize.height, 0,
 
                          format,
-                         GL_UNSIGNED_BYTE,
+                         type,
                          [bitmap bitmapData]);
 
 #ifndef WITH_OPENGL_32
@@ -322,7 +332,7 @@
 	}
         
 #ifdef DEBUG_TEXTURE_BITMAP
-//    if ([_attrString.string isEqualToString:@" 1 "])
+//    if ([attrString.string isEqualToString:@" 1 "])
 //        [[image TIFFRepresentation] writeToFile: @"/tmp/glstring.tiff" atomically: YES];
 #endif
 
@@ -417,7 +427,7 @@
         (0.0f == frameSize.width) &&
         (0.0f == frameSize.height)) // find frame size if we have not already found it
     {
-		frameSize = [_attrString size]; // current string size
+		frameSize = [attrString size]; // current string size
         
         frameSize.width = (int) frameSize.width;
         frameSize.height = (int) frameSize.height;
@@ -439,8 +449,8 @@
 - (void) setString:(NSAttributedString *)attributedString
 {
 	[attributedString retain];
-	[_attrString release];
-	_attrString = attributedString;
+	[attrString release];
+	attrString = attributedString;
 	if (NO == staticFrame) // ensure dynamic frame sizes will be recalculated
 		frameSize = NSZeroSize;
 
@@ -477,7 +487,7 @@
 	if (textureID == 0)
         return;
 
-    //NSLog(@"%s %d, bounds:%@ <%@>", __FUNCTION__, __LINE__, NSStringFromRect(bounds), _attrString);
+    //NSLog(@"%s %d, bounds:%@ <%@>", __FUNCTION__, __LINE__, NSStringFromRect(bounds), attrString);
 #ifdef WITH_OPENGL_32
     GLenum target = GL_TEXTURE_RECTANGLE;
 #else

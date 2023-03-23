@@ -69,7 +69,7 @@
 	GLuint textureID;
 	NSSize texSize;
 	
-	NSAttributedString * _attrString;
+	NSAttributedString * attrString;
 	NSColor * textColor; // default is opaque white
 	NSColor * boxColor; // default transparent or none
 	NSColor * borderColor; // default transparent or none

@@ -861,6 +861,7 @@ static BOOL Pages5orHigher = FALSE;
     {
         // Example: 0700 for version 5.6.2
         // Example: 1110 for version 8.2
+        // Example: 1410 for version 12.2.1
         NSString *version = [[[NSBundle bundleWithPath: appPath] infoDictionary] objectForKey:@"DTXcode"];
         if (version.integerValue >= 500)
             Pages5orHigher = YES;

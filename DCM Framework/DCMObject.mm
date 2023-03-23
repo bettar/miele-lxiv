@@ -1066,14 +1066,12 @@ PixelRepresentation
                         NSLog(@"Line %d, PixelData after\n\t byteOffset: 0x%x=%d, dicomData pos: 0x%x, parsed %d bytes", __LINE__, *byteOffset, *byteOffset, posAfter, posAfter-posBefore);
 #endif
 
-#if 1 //def FIX_ISSUE_i67
                         if (vl == 0xFFFFFFFFL)  // DCM_UndefinedLength
                         {
                             // Update the offset with the actual amount of data parsed
                             *byteOffset += posAfter-posBefore;
                         }
                         else
-#endif
                         {
                             *byteOffset += vl;
                         }

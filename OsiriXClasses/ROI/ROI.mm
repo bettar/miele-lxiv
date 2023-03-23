@@ -5821,9 +5821,11 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
 							// Add a point here, if distant from existing points.
 
                             if (correspondingSegments)
-								[points insertObject: [MyPoint point: pt] atIndex: [[correspondingSegments objectAtIndex: i] intValue] +1];
+								[points insertObject: [MyPoint point: pt]
+                                             atIndex: [[correspondingSegments objectAtIndex: i] intValue] +1];
                             else
-								[points insertObject: [MyPoint point: pt] atIndex: i +1];
+								[points insertObject: [MyPoint point: pt]
+                                             atIndex: i +1];
 							break;
 						}
 					}
@@ -6526,16 +6528,14 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 //                      (unsigned long)[points count],
 //                      NSStringFromPoint(pt));
 
+                float scale3 = scale/backingScaleFactor;
+                float ratio3 = [[curView curDCM] pixelRatio];
+
                 for (int i = 0; i < [points count]; i++)
                 {
-                    if ([[points objectAtIndex: i] isNearToPoint:pt
-                                                                :scale/backingScaleFactor
-                                                                :[[curView curDCM] pixelRatio]])
+                    if ([[points objectAtIndex: i] isNearToPoint:pt :scale3 :ratio3])
                     {
                         PointUnderMouse = i;
-#if 0 //ndef NDEBUG
-                        NSLog(@"%s %d, PointUnderMouse index %d", __FUNCTION__, __LINE__, i);
-#endif
                         break;
                     }
                 }

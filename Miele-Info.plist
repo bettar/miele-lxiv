@@ -256,7 +256,7 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2014-2023 bettar. All rights reserved.</string>
+	<string>Copyright © 2023 bettar. All rights reserved.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
