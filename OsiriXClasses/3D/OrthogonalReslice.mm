@@ -574,7 +574,7 @@
 		}
 	}
 	
-	if (axe == 0)		// X - RESLICE
+	if (axe == 0) // X - RESLICE
 	{
 		if ([newPixListX count] > stack)
 			[newPixListX removeObjectsInRange: NSMakeRange( stack, [newPixListX count]-stack)];

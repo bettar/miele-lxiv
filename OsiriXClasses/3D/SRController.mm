@@ -741,10 +741,14 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
     }
 	else if ([itemIdent isEqualToString: Export3DFileFormat])
     {
-	[toolbarItem setLabel: NSLocalizedString(@"Export 3D-SR",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"Export 3D-SR",nil)];
-    [toolbarItem setToolTip: NSLocalizedString(@"Export this series in a 3D file format",nil)];
-	[toolbarItem setView: export3DView];
+        [toolbarItem setLabel: NSLocalizedString(@"Export 3D-SR",nil)];
+        [toolbarItem setPaletteLabel:NSLocalizedString( @"Export 3D-SR",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Export this series in a 3D file format",nil)];
+        [toolbarItem setView: export3DView];
+
+        NSSize size = export3DView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: SRSettingsToolbarItemIdentifier])
     {
@@ -775,9 +779,13 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
     }
     else if ([itemIdent isEqualToString: ToolsToolbarItemIdentifier])
     {
-	[toolbarItem setLabel:NSLocalizedString( @"Mouse button function",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"Mouse button function",nil)];
-	[toolbarItem setView: toolsView];
+        [toolbarItem setLabel:NSLocalizedString( @"Mouse button function",nil)];
+        [toolbarItem setPaletteLabel:NSLocalizedString( @"Mouse button function",nil)];
+        [toolbarItem setView: toolsView];
+        
+        NSSize size = toolsView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: FlyThruToolbarItemIdentifier])
     {
@@ -801,10 +809,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
     }
 	else if ([itemIdent isEqualToString: PerspectiveToolbarItemIdentifier])
     {
-	[toolbarItem setLabel: NSLocalizedString(@"Perspective",nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Perspective",nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Perspective Properties",nil)];
-	[toolbarItem setView: perspectiveView];
+        [toolbarItem setLabel: NSLocalizedString(@"Perspective",nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Perspective",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Perspective Properties",nil)];
+        [toolbarItem setView: perspectiveView];
+        [toolbarItem setMinSize: perspectiveView.frame.size];
     }
 	else if ([itemIdent isEqualToString: ROIManagerToolbarItemIdentifier])
     {
@@ -830,6 +839,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Color", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Background Color", nil)];
         [toolbarItem setView: BackgroundColorView];
+        
+        NSSize size = BackgroundColorView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: OrientationsViewToolbarItemIdentifier])
     {
@@ -837,6 +850,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Orientations", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Orientations", nil)];        
         [toolbarItem setView: OrientationsView];
+        
+        NSSize size = OrientationsView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier])
     {
