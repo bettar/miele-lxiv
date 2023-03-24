@@ -426,7 +426,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
     flippedDocumentView.translatesAutoresizingMaskIntoConstraints = NO;
     panesListView.translatesAutoresizingMaskIntoConstraints = NO;
-#if 0
+#if 1
 	[flippedDocumentView setFrameSize:panesListView.frame.size];
 	//[panesListView setFrameSize:flippedDocumentView.frame.size];  // ???
     

@@ -7068,21 +7068,20 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Modify WL/WW & CLUT", nil)];
         [toolbarItem setView: WLWWView];
-#if 1 // issue i68
         {
             NSSize size = WLWWView.frame.size;
             [toolbarItem setMaxSize: size];
         }
-#endif
-            // Pulldown that doesn't change item
-    //        [[wlwwPopup cell] setBezelStyle:NSSmallIconButtonBezelStyle];
-    //        [[wlwwPopup cell] setArrowPosition:NSPopUpArrowAtBottom];
+
+        // Pulldown that doesn't change item
+//        [[wlwwPopup cell] setBezelStyle:NSSmallIconButtonBezelStyle];
+//        [[wlwwPopup cell] setArrowPosition:NSPopUpArrowAtBottom];
         
             [[wlwwPopup cell] setUsesItemFromMenu:YES];
 
-    //        [wlwwPopup setMenu: presetsViewMenu];
-    //        [wlwwPopup setPreferredEdge:NSMinXEdge];
-    //        [[[wlwwPopup menu] menuRepresentation] setHorizontalEdgePadding:0.0];
+//        [wlwwPopup setMenu: presetsViewMenu];
+//        [wlwwPopup setPreferredEdge:NSMinXEdge];
+//        [[[wlwwPopup menu] menuRepresentation] setHorizontalEdgePadding:0.0];
     }
     else if ([itemIdent isEqualToString: FilterToolbarItemIdentifier])
     {
