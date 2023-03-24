@@ -914,12 +914,20 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setLabel: NSLocalizedString(@"3D Mouse button function",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Mouse button function",nil)];
 		[toolbarItem setView: tools3DView];
+        
+        NSSize size = tools3DView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: endoMPRToolsToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"MPR Mouse button function",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"MPR Mouse button function",nil)];
 		[toolbarItem setView: tools2DView];
+        
+        NSSize size = tools2DView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: FlyThruToolbarItemIdentifier])
 	{
@@ -937,6 +945,10 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Engine",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Engine",nil)];
 		[toolbarItem setView: engineView];
+        
+        NSSize size = engineView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: CroppingToolbarItemIdentifier])
 	{
@@ -953,6 +965,10 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"3D WL/WW & CLUT & Opacity",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Change the WL/WW & CLUT & Opacity in the 3D view",nil)];
 		[toolbarItem setView: WLWW3DView];
+        
+        NSSize size = WLWW3DView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
 		
         [[[vrController wlwwPopup] cell] setUsesItemFromMenu:YES];
     }
@@ -963,6 +979,10 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setToolTip: NSLocalizedString(@"Change the WL/WW & CLUT & Opacity in the MPR views",nil)];
 		[toolbarItem setView: WLWW2DView];
 		
+        NSSize size = WLWW2DView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
+        
         [[[vrController wlwwPopup] cell] setUsesItemFromMenu:YES];
     }
 	else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier]) {
@@ -981,6 +1001,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Shading",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Shading Properties",nil)];
 		[toolbarItem setView: shadingView];
+        [toolbarItem setMinSize: shadingView.frame.size];
     }
 //	else if ([itemIdent isEqualToString: CenterlineToolbarItemIdentifier])
 //	{
@@ -998,6 +1019,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Level of Detail",nil)];
 		[toolbarItem setToolTip:NSLocalizedString( @"Change Level of Detail",nil)];		
 		[toolbarItem setView: LODView];
+        [toolbarItem setMinSize: LODView.frame.size];
 			
 		//[[wlwwPopup cell] setUsesItemFromMenu:YES];
     }

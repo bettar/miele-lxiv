@@ -1045,6 +1045,9 @@ return YES;
 //	[toolbarItem setPaletteLabel: NSLocalizedString(@"Photos",nil)];
 //	[toolbarItem setToolTip: NSLocalizedString(@"Export this series to Photos",nil)];
 //	[toolbarItem setView: iPhotoView];
+//    NSSize size = iPhotoView.frame.size;
+//    [toolbarItem setMinSize:size];
+//    [toolbarItem setMaxSize:size];
 //    }
     if ([itemIdent isEqualToString: MailToolbarItemIdentifier])
     {
@@ -1066,16 +1069,22 @@ return YES;
     }
 	else if ([itemIdent isEqualToString: ToolsToolbarItemIdentifier])
     {
-	[toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
-	[toolbarItem setView: toolsView];
+        [toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
+        [toolbarItem setView: toolsView];
+        
+        NSSize size = toolsView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
     else if ([itemIdent isEqualToString: ThickSlabToolbarItemIdentifier])
     {
-	[toolbarItem setLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
-	[toolbarItem setView: ThickSlabView];
-	[toolbarItem setMaxSize:NSMakeSize(NSWidth([ThickSlabView frame]) + 200, NSHeight([ThickSlabView frame]))];
+        [toolbarItem setLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
+        [toolbarItem setView: ThickSlabView];
+        // +200 wider to make the slider easier to use
+        [toolbarItem setMaxSize:NSMakeSize(NSWidth([ThickSlabView frame]) + 200,
+                                           NSHeight([ThickSlabView frame]))];
     }
 //	 else if ([itemIdent isEqualToString: BlendingToolbarItemIdentifier]) {
 //	[toolbarItem setLabel: NSLocalizedString(@"Fusion",nil)];
@@ -1157,6 +1166,10 @@ return YES;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Modify WL/WW & CLUT", nil)];
 		[toolbarItem setView: WLWWView];
+        
+        NSSize size = WLWWView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
 
 		[[wlwwPopup cell] setUsesItemFromMenu:YES];
 	}
@@ -1166,6 +1179,10 @@ return YES;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"4D Player", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"4D Series Controller", nil)];        
         [toolbarItem setView: movieView];
+        
+        NSSize size = movieView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
     else if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier])
     {

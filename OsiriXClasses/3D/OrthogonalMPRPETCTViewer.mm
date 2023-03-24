@@ -1063,6 +1063,10 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
         [toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
         [toolbarItem setView: toolsView];
+        
+        NSSize size = toolsView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 /*	 else if ([itemIdent isEqualToString: ThickSlabToolbarItemIdentifier])
 	{
@@ -1082,6 +1086,10 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
         [toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Fusion Mode and Percentage",nil)];
         [toolbarItem setView: blendingToolView];
+        
+        NSSize size = blendingToolView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: VRPanelToolbarItemIdentifier])
 	{
@@ -1165,6 +1173,10 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Modify WL/WW & CLUT", nil)];		
 		[toolbarItem setView: WLWWView];
+        
+        NSSize size = WLWWView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
 
 		[[wlwwPopup cell] setUsesItemFromMenu:YES];
 	}
@@ -1174,6 +1186,10 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
         [toolbarItem setPaletteLabel: NSLocalizedString(@"4D Player", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"4D Series Controller", nil)];
         [toolbarItem setView: movieView];
+        
+        NSSize size = movieView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
     else if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier])
     {
