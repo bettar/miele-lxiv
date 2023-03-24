@@ -3175,8 +3175,8 @@ public:
 	long	pix[ 3];
 	float	pos[ 3], value;
 	
-	NSPoint mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
-	
+    NSPoint mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow] ];
+
 	if (isViewportResizable)
 	{
 		if (mouseLocStart.x < 20 &&
@@ -3406,8 +3406,8 @@ public:
 	}
 	else 
 	{
-		NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-		float WWAdapter, endlevel, startlevel;
+        NSPoint mouseLoc = [self convertPointToBacking: [theEvent locationInWindow]];
+        float WWAdapter, endlevel, startlevel;
 		int shiftDown;
 		int controlDown;
 		switch (_tool)
@@ -3768,7 +3768,7 @@ public:
     
 	_hasChanged = YES;
 	[drawLock lock];
-	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+    NSPoint mouseLoc = [self convertPointToBacking: [theEvent locationInWindow]];
 	float distance ;
 	
 	if (([theEvent deltaX] != 0 ||
@@ -4046,8 +4046,8 @@ public:
 			_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(startDrag:) userInfo:theEvent  repeats:NO] retain];
 	}
 	
-	mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
-	
+    mouseLocPre = _mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow]];
+
 	int clickCount = 1;
 	
 	@try
@@ -4162,8 +4162,8 @@ public:
 			
 			// Click point 3D to 2D
 			
-			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
-			
+            _mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow]];
+
 			aRenderer->SetDisplayPoint( _mouseLocStart.x, _mouseLocStart.y, 0);
 			aRenderer->DisplayToWorld();
 			double *pp = aRenderer->GetWorldPoint();
@@ -4227,8 +4227,8 @@ public:
 			dontRenderVolumeRenderingOsiriX = true;
 			
 			// Click point 3D to 2D
-			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
-			
+            _mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow]];
+
 			aRenderer->SetDisplayPoint( _mouseLocStart.x, _mouseLocStart.y, 0);
 			aRenderer->DisplayToWorld();
 			double *pp = aRenderer->GetWorldPoint();
@@ -4260,8 +4260,8 @@ public:
 			
 			// Click point 3D to 2D
 			
-			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
-			
+            _mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow]];
+
 			aRenderer->SetDisplayPoint( _mouseLocStart.x, _mouseLocStart.y, 0);
 			aRenderer->DisplayToWorld();
 			double *pp = aRenderer->GetWorldPoint();
@@ -4293,8 +4293,8 @@ public:
 			_startMin = wl - ww/2;
 			_startMax = wl + ww/2;
 			
-			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-			
+            _mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow]];
+
             if (volumeMapper)
                 volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 			
@@ -4308,8 +4308,8 @@ public:
 			_startMin = blendingWl - blendingWw/2;
 			_startMax = blendingWl + blendingWw/2;
 			
-			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-            
+            _mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow]];
+
             if (volumeMapper)
                 volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 			
@@ -4327,7 +4327,7 @@ public:
 			if (blendingVolumeMapper)
 				blendingVolumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 			
-			mouseLoc = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+            mouseLoc = _mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow]];
 			[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 		}
@@ -4335,8 +4335,8 @@ public:
 		{
 			if (_tool == tCamera3D || clipRangeActivated == YES)
 			{
-				mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-				
+                mouseLocPre = _mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow]];
+
 				if (volumeMapper)
                     volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
                 
@@ -4375,8 +4375,8 @@ public:
 				if (blendingVolumeMapper)
 					blendingVolumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 				
-				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-				
+                mouseLoc = [self convertPointToBacking: [theEvent locationInWindow]];
+
 				[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 				
@@ -4397,7 +4397,7 @@ public:
 			if (blendingVolumeMapper)
 				blendingVolumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 			
-			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+            mouseLoc = [self convertPointToBacking: [theEvent locationInWindow]];
 			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 		}
@@ -4414,15 +4414,15 @@ public:
 				int shiftDown = 0;
 				int controlDown = 1;
 
-				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+                mouseLoc = [self convertPointToBacking: [theEvent locationInWindow]];
 				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[self getInteractor]->InvokeEvent(vtkCommand::RightButtonPressEvent,NULL);
 			}
 			else
 			{
 				// vtkCamera
-				mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-				
+                mouseLocPre = _mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow]];
+
 				if (volumeMapper)
                     volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
                 
@@ -4495,11 +4495,11 @@ public:
 			NSLog( @"**** Bone Removal Start");
 			// enable Undo
 			[controller prepareUndo];
-			NSLog( @"**** Undo");
+			//NSLog( @"**** Undo");
 						
 			// clicked point (2D coordinate)
-			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
-			
+            _mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow]];
+
 			long pix[ 3];
 			float pos[ 3], value;
 			float minValue = [[NSUserDefaults standardUserDefaults] floatForKey: @"VRGrowingRegionValue"] -
@@ -5446,9 +5446,9 @@ public:
 	{
 		if (aCamera->GetParallelProjection() == NO && flyto == NO)
 		{
-			NSPoint mousePoint = [self convertPoint: [[self window] mouseLocationOutsideOfEventStream] fromView: nil];
-			long	pix[ 3];
-			float	value;
+            NSPoint mousePoint = [self convertPointToBacking: [[self window] mouseLocationOutsideOfEventStream]];
+			long pix[ 3];
+			float value;
 			
 			if ([self get3DPixelUnder2DPositionX:mousePoint.x Y:mousePoint.y pixel:pix position:flyToDestination value:&value])
 			{
@@ -9387,7 +9387,7 @@ public:
 		
 	// Thumbnail image and position
 	NSPoint event_location = [event locationInWindow];
-	NSPoint local_point = [self convertPoint:event_location fromView:nil];
+    NSPoint local_point = [self convertPointToBacking:event_location];
 	local_point.x -= 35;
 	local_point.y -= 35;
 
@@ -9417,7 +9417,7 @@ public:
 	if ([event modifierFlags] & NSEventModifierFlagOption)
 	{
 		NSRect imageLocation;
-		local_point = [self convertPoint:event_location fromView:nil];
+        local_point = [self convertPointToBacking:event_location];
 		imageLocation.origin = local_point;
 		imageLocation.size = NSMakeSize(32,32);
 		[pboard setData:nil

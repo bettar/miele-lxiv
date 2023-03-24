@@ -8568,7 +8568,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 -(NSPoint) ConvertFromGL2Screen:(NSPoint) a
 {
 	a = [self ConvertFromGL2NSView: a];
-	a = [self convertPointToBase: a];   // TODO: update deprecated method
+    a = [self convertPointToBacking: a];
 	a = [[self window] convertBaseToScreen: a];
 	
     return a;
