@@ -64,7 +64,7 @@
         float *basedstPtr = Ycache + z*maxY*maxX;
         float *basesrcPtr = [[originalDCMPixList objectAtIndex: z] fImage];
         int x = maxX;
-        while (x-->0)
+        while (x-- > 0)
         {
             float *dstPtr = basedstPtr;
             float *srcPtr = basesrcPtr;
@@ -205,119 +205,123 @@
     //int stack;
     int pos = [posNumber intValue];
 	int threads = [[NSProcessInfo processInfo] processorCount];
-	int from, to;
-	
-	from = (pos * newY) / threads;
-	to = ((pos+1) * newY) / threads;
-	
-	for (int i = minI, stack = 0 ; i < maxI ; i++, stack++)
-	{
-        if (newPixListX.count <= stack) { // Check added 20220804
-            static int n=5; // number of times this warning is displayed
-            if (n > 0) {
-                NSLog(@"%s %d %d, FIXME: preventing newPixListX[%d] because newPixListX has %lu elements", __FUNCTION__, __LINE__, n, stack, (unsigned long)newPixListX.count);
-                n--;
-            }
-            continue;
-        }
+	int from = (pos * newY) / threads;
+	int to = ((pos+1) * newY) / threads;
 
+    @try {
+    for (int i = minI, stack = 0 ; i < maxI ; i++, stack++)
+    {
         if (i < 0)
             i = 0;
-
+        
         if (i >= newTotal)
             i = newTotal-1;
-		
-		if (currentAxe == 0)		// X - RESLICE
-		{
-			
-			DCMPix *curPix6 = [newPixListX objectAtIndex: stack];
-			
-			if (sign > 0)
-			{
-				float *srcP, *dstP, *curPixfImage = [curPix6 fImage];
-				
-				for (int y = from; y < to; y++)
-				{
-					srcP = [[originalDCMPixList objectAtIndex: y] fImage] + i * newX;
-					dstP = curPixfImage + (newY-y-1) * newX;
-					memcpy(	dstP, srcP, newX *sizeof(float));
-				}
-			}
-			else
-			{
+
+        if (newPixListX.count <= stack) // Check added 20220804
+        {
+            static int n=5; // number of times this warning is displayed
+            if (n > 0) {
+                NSLog(@"%s L%d, n:%d, pos:%d, FIXME: preventing newPixListX[%d] because newPixListX has %lu elements", __FUNCTION__, __LINE__,
+                        n, pos, stack, (unsigned long)newPixListX.count);
+                n--;
+            }
+#if 0 // Issue g82
+            continue;
+#endif
+        }
+        
+        if (currentAxe == 0) // X - RESLICE
+        {
+            DCMPix *curPix6 = [newPixListX objectAtIndex: stack];
+            
+            if (sign > 0)
+            {
+                float *srcP, *dstP, *curPixfImage = [curPix6 fImage];
+                
+                for (int y = from; y < to; ++y)
+                {
+                    srcP = [[originalDCMPixList objectAtIndex: y] fImage] + i * newX;
+                    dstP = curPixfImage + (newY-y-1) * newX;
+                    memcpy(	dstP, srcP, newX *sizeof(float));
+                }
+            }
+            else
+            {
                 float *srcP;
                 float *curPixfImage = [curPix6 fImage];
-				
-				for (int y = from; y < to; y++)
-				{
-					srcP = [[originalDCMPixList objectAtIndex: y] fImage] + i * [firstPix pwidth];
-					memcpy(	curPixfImage + y * newX, srcP, newX *sizeof(float));
-				}
-			}
-		}
-		else						// Y - RESLICE
-		{
-			float *srcPtr;
-			float *dstPtr;
-			long rowBytes = [firstPix pwidth];
-			
-			DCMPix *curPix7 = [newPixListY objectAtIndex: stack];
-			
-			if (Ycache && yCacheQueue.operationCount == 0)
-			{
-//				BlockMoveData(	Ycache + newY*newX*i,
-//								[curPix fImage],
-//								newX * newY *sizeof(float));
+                
+                for (int y = from; y < to; ++y)
+                {
+                    srcP = [[originalDCMPixList objectAtIndex: y] fImage] + i * [firstPix pwidth];
+                    memcpy(	curPixfImage + y * newX, srcP, newX *sizeof(float));
+                }
+            }
+        }
+        else // Y - RESLICE
+        {
+            float *srcPtr;
+            float *dstPtr;
+            long rowBytes = [firstPix pwidth];
+            
+            DCMPix *curPix7 = [newPixListY objectAtIndex: stack];
+            
+            if (Ycache && yCacheQueue.operationCount == 0)
+            {
+//    				BlockMoveData(	Ycache + newY*newX*i,
+//    								[curPix fImage],
+//    								newX * newY *sizeof(float));
 
+                if (sign > 0)
+                {
+                    float *srcP, *dstP;
+                    float *curPixfImage = [curPix7 fImage];
+                    DCMPix *srcPix = [originalDCMPixList objectAtIndex: 0];
+                    long w = [srcPix pheight];
+                    
+                    for (int y = from; y < to; ++y)
+                    {
+                        srcP = Ycache + y*newTotal*newX + i * w;
+                        dstP = curPixfImage + (newY-y-1) * newX;
+                        memcpy(	dstP, srcP, newX *sizeof(float));
+                    }
+                }
+                else
+                {
+                    float *srcP;
+                    float *curPixfImage = [curPix7 fImage];
+                    
+                    for (int y = from; y < to; ++y)
+                    {
+                        srcP = Ycache + y*newTotal*newX + i * newTotal;
+                        memcpy(	curPixfImage + y * newX, srcP, newX *sizeof(float));
+                    }
+                }
+            }
+            else
+            {
+                for (int x = from; x < to; ++x)
+                {
+                    if (sign > 0)
+                        srcPtr = [[originalDCMPixList objectAtIndex: newY-x-1] fImage] + i;
+                    else
+                        srcPtr = [[originalDCMPixList objectAtIndex: x] fImage] + i;
 
-				if (sign > 0)
-				{
-                    float *curPixfImage = [curPix7 fImage];
-					DCMPix *srcPix = [originalDCMPixList objectAtIndex: 0];
-					long w = [srcPix pheight];
-					
-					for (int y = from; y < to; y++)
-					{
-						float *srcP = Ycache + y*newTotal*newX + i * w;
-						float *dstP = curPixfImage + (newY-y-1) * newX;
-						memcpy(	dstP, srcP, newX *sizeof(float));
-					}
-				}
-				else
-				{
-                    float *curPixfImage = [curPix7 fImage];
-					
-					for (int y = from; y < to; y++)
-					{
-						float *srcP = Ycache + y*newTotal*newX + i * newTotal;
-						memcpy(	curPixfImage + y * newX, srcP, newX *sizeof(float));
-					}
-				}
-			}
-			else
-			{
-				for (int x = from; x < to; x++)
-				{
-					if (sign > 0)
-					{
-						srcPtr = [[originalDCMPixList objectAtIndex: newY-x-1] fImage] + i;
-					}
-					else
-					{
-						srcPtr = [[originalDCMPixList objectAtIndex: x] fImage] + i;
-					}
-					dstPtr = [curPix7 fImage] + x * newX;
-					
-					long yy = newX;
-					while (yy-->0)
-					{
-						*dstPtr++ = *srcPtr;
-						srcPtr += rowBytes;
-					}
-				}
-			}
-		}
-	} // for i
+                    dstPtr = [curPix7 fImage] + x * newX;
+                    
+                    long yy = newX;
+                    while (yy-- > 0)
+                    {
+                        *dstPtr++ = *srcPtr;
+                        srcPtr += rowBytes;
+                    }
+                }
+            }
+        }
+    } // for i
+    } // try
+    @catch (NSException *e) {
+        NSLog(@"Exception L%d, pos:%d, mainthread:%d, %@", __LINE__, pos, [NSThread isMainThread], [e reason]);
+    }
 	
 	[processorsLock lock];
 	numberOfThreadsForCompute--;
@@ -329,6 +333,7 @@
 	firstPix = [originalDCMPixList objectAtIndex: 0];
 	
 	DCMPix *lastPix = [originalDCMPixList lastObject];
+    long ii; // Important ! Issue g82, for some reason it must be declared here
 	float orientation[ 9], newXSpace, newYSpace, origin[ 3], sliceInterval;
 	BOOL isRGB = firstPix.isRGB;
 	
@@ -336,7 +341,7 @@
 
 	if ([firstPix sliceInterval]==0)
 	{
-		sliceInterval = [[originalDCMPixList objectAtIndex: 1] sliceLocation]-[firstPix sliceLocation];
+		sliceInterval = [[originalDCMPixList objectAtIndex: 1] sliceLocation] - [firstPix sliceLocation];
 	}
 	else
 	{
@@ -344,7 +349,7 @@
 	}
     
 	// Get Values
-	if (axe == 0)		// X - RESLICE
+	if (axe == 0) // X - RESLICE
 	{
 		newTotal = [firstPix pheight];
 		newX = [firstPix pwidth];
@@ -352,7 +357,7 @@
 		newYSpace = fabs(sliceInterval);
 		newY = [originalDCMPixList count];
 	}
-	else				// Y - RESLICE
+	else // Y - RESLICE
 	{
 		newTotal = [firstPix pwidth];
 		newX = [firstPix pheight];
@@ -407,13 +412,14 @@
 				
                 yCacheQueue = [[NSOperationQueue alloc] init];
                 
-                for (long x = 0; x < newY; x ++)
+                for (long x = 0; x < newY; ++x)
                 {
-                    ResliceOperation *op = [[[ResliceOperation alloc] initWithDict: [NSDictionary dictionaryWithObjectsAndKeys:
-                                                                                     [NSValue valueWithPointer: Ycache], @"Ycache",
-                                                                                     [NSNumber numberWithInt:x], @"zValue",
-                                                                                     originalDCMPixList, @"DCMPixArray",
-                                                                                     nil]] autorelease];
+                    ResliceOperation *op = [[[ResliceOperation alloc] initWithDict:
+                                             [NSDictionary dictionaryWithObjectsAndKeys:
+                                              [NSValue valueWithPointer: Ycache], @"Ycache",
+                                              [NSNumber numberWithInt:x], @"zValue",
+                                              originalDCMPixList, @"DCMPixArray",
+                                              nil]] autorelease];
                     
                     [yCacheQueue addOperation: op];
                 }
@@ -421,7 +427,7 @@
 		}
 	}
 	
-	if (axe == 0)		// X - RESLICE
+	if (axe == 0) // X - RESLICE
 	{
 		if (sign > 0)
             [lastPix orientation: orientation];
@@ -473,21 +479,20 @@
     if (isRGB)
         bits = 8;
     
-	long ii;
-    // Important: for some reason 'ii' must be declared outside of the for loop
-    // (maybe some threading issue ?)
+    // Issue g82
 	for (ii = minI, stack = 0 ; ii < maxI ; ii++, stack++)
 	{
 		if (ii < 0)
             ii = 0;
 		
-		if (axe == 0)		// X - RESLICE
+		if (axe == 0) // X - RESLICE
 		{
 			if (stack >= [newPixListX count])
 			{
 				curPix8 = [[DCMPix alloc] initWithData: nil :bits :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix8 copySUVfrom: firstPix];
 				curPix8.frameofReferenceUID = firstPix.frameofReferenceUID;
+                curPix8.modalityString = firstPix.modalityString; // Horos
 				[newPixListX addObject: curPix8];
 				[curPix8 release];
 			}
@@ -496,11 +501,12 @@
 		}
 		else
 		{
-			if (stack  >= [newPixListY count])
+			if (stack >= [newPixListY count])
 			{
 				curPix8 = [[DCMPix alloc] initWithData: nil :bits :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix8 copySUVfrom: firstPix];
 				curPix8.frameofReferenceUID = firstPix.frameofReferenceUID;
+                curPix8.modalityString = firstPix.modalityString; // Horos
 				[newPixListY addObject: curPix8];
 				[curPix8 release];
 			}
@@ -514,7 +520,7 @@
 		[curPix8 setFrameNo: 0];
 		[curPix8 setID: 0];
 		
-		if (axe == 0)		// X - RESLICE
+		if (axe == 0) // X - RESLICE
 		{
 			[curPix8 setOrientation: orientation];	// Normal vector is recomputed in this procedure
 			
@@ -566,7 +572,8 @@
 				origin[ 1] = [firstPix originY] + (ii * [firstPix pixelSpacingX]) * orientation[ 7] * sign;
 				origin[ 2] = [firstPix originZ] + (ii * [firstPix pixelSpacingX]) * orientation[ 8] * sign;
 			}
-			[curPix8 setOrigin: origin];
+
+            [curPix8 setOrigin: origin];
 			[curPix8 computeSliceLocation];
             
 			[curPix8 setSliceThickness: [firstPix pixelSpacingX]];
@@ -589,9 +596,8 @@
 		processorsLock = [[NSLock alloc] init];
 	
 	numberOfThreadsForCompute = [[NSProcessInfo processInfo] processorCount];
-    // Important: for some reason 'ii' must be declared outside of the for loop
-    // (maybe some threading issue ?)
-	for (ii = 0; ii < (numberOfThreadsForCompute - 1); ii++)
+    // Issue g82
+	for (ii = 0; ii < [[NSProcessInfo processInfo] processorCount]-1; ii++)
 	{
 		[NSThread detachNewThreadSelector: @selector(subReslice:)
                                  toTarget: self
@@ -601,24 +607,19 @@
 	[self subReslice: [NSNumber numberWithInt: ii]];
 	
 	BOOL done = NO;
-	while( done == NO)
+	while (done == NO)
 	{
 		[processorsLock lock];
 		if (numberOfThreadsForCompute <= 0)
             done = YES;
-        
-		[processorsLock unlock];
+
+        [processorsLock unlock];
 	}
 				
 	if (axe == 0)
-	{
 		[xReslicedDCMPixList setArray:newPixListX];
-	}
 	else
-	{
 		[yReslicedDCMPixList setArray:newPixListY];
-	}
-
 }
 
 // accessors
