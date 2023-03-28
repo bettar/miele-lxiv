@@ -5500,7 +5500,7 @@ alfa : %2$.3f";
 "Your computer doesn't have enough RAM to load this series" = "El equipo no tiene suficiente RAM para cargar esta serie";
 
 /* No comment provided by engineer. */
-"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset." = "Su tarjeta gráfica sólo tiene %d MB de VRAM. Los resultados serán muy limitados con un gran conjunto de datos.";
+"Your graphic board has only %ld MB of VRAM. Performances will be very limited with large dataset." = "Su tarjeta gráfica sólo tiene %ld MB de VRAM. Los resultados serán muy limitados con un gran conjunto de datos.";
 
 /* No comment provided by engineer. */
 "Your hard disk is FULL! Major risks of failure! Clean your database!!" = "Su disco duro está lleno! Principales riesgos de fracaso! Limpie su base de datos!";

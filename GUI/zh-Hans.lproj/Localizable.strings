@@ -5500,7 +5500,7 @@ alpha:%2$.3f";
 "Your computer doesn't have enough RAM to load this series" = "您的计算机没有足够的 RAM 来加载此系列";
 
 /* No comment provided by engineer. */
-"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset." = "您的图形板只有%d MB 的 VRAM。对于大型数据集, 性能将非常有限。";
+"Your graphic board has only %ld MB of VRAM. Performances will be very limited with large dataset." = "您的图形板只有%ld MB 的 VRAM。对于大型数据集, 性能将非常有限。";
 
 /* No comment provided by engineer. */
 "Your hard disk is FULL! Major risks of failure! Clean your database!!" = "您的硬盘是完整的!失败的主要风险!清理您的数据库!!";

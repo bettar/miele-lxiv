@@ -2779,7 +2779,7 @@ static bool isGrantedNotificationAccess = false;
         
         [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
         
-#ifndef MIELE_LIGHT
+#if TARGET_CPU_X86_64
         [VRView testGraphicBoard];
 #endif
     }

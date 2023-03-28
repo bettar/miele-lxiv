@@ -5501,7 +5501,7 @@ alpha: %2$.3f";
 "Your computer doesn't have enough RAM to load this series" = "Votre ordinateur n'a pas assez de RAM pour charger cette série.";
 
 /* No comment provided by engineer. */
-"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset." = "Votre carte graphique n'a que %d MB de VRAM. Les performances seront très limitées avec un grand ensemble de données.";
+"Your graphic board has only %lld MB of VRAM. Performances will be very limited with large dataset." = "Votre carte graphique n'a que %ld MB de VRAM. Les performances seront très limitées avec un grand ensemble de données.";
 
 /* No comment provided by engineer. */
 "Your hard disk is FULL! Major risks of failure! Clean your database!!" = "Votre disque dur est PLEIN ! Risques majeurs d'échec ! Nettoyez votre base de données !";

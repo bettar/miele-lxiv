@@ -62,7 +62,7 @@
     if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == ENGINE_CPU)
         return;
 
-#ifndef MIELE_LIGHT
+#if TARGET_CPU_X86_64
     long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[mainWindow screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
     
     //vram /= 1024*1024;
@@ -70,7 +70,7 @@
     if (vramMB <= 512)
     {
         NSRunCriticalAlertPanel(NSLocalizedString(@"GPU Rendering", nil),
-                                NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil),
+                                NSLocalizedString( @"Your graphic board has only %ld MB of VRAM. Performances will be very limited with large dataset.", nil),
                                 NSLocalizedString( @"OK", nil),
                                 nil,
                                 nil,

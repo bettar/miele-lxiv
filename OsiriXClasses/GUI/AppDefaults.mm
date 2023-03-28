@@ -35,6 +35,9 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <IOKit/IOKitLib.h>
 
+//#include "vtkGPUInfo.h"
+//#include "vtkGPUInfoList.h"
+
 #import "Reports.h"     // for ReportType
 #import "mieleTypes.h"  // for ENGINE_CPU
 #import "url.h"
@@ -86,8 +89,32 @@ static NSHost *currentHost = nil;
 	[convValues setObject:aConvFilter forKey:name];
 }
 
+// Return result in MB
 + (mach_vm_size_t) GPUModelVRAMInfo
 {
+#if 0 //TARGET_CPU_ARM64
+    vtkIdType MaxMemoryInBytes = 0;
+    vtkGPUInfoList* l = vtkGPUInfoList::New();
+    l->Probe();
+    int ngpu = l->GetNumberOfGPUs(); // FIXME: always 0 ?
+    NSLog(@"# GPU: %d", ngpu);
+    if (ngpu > 0)
+    {
+        vtkGPUInfo* info = l->GetGPUInfo(0);
+        MaxMemoryInBytes = info->GetDedicatedVideoMemory();
+        if (MaxMemoryInBytes == 0)
+        {
+            MaxMemoryInBytes = info->GetDedicatedSystemMemory();
+        }
+    }
+    l->Delete();
+
+    mach_vm_size_t Size = MaxMemoryInBytes;
+    Size >>= 20;
+    NSLog(@"Graphics: %llu MB", Size);
+    return Size;
+#endif
+
 #if 0 //TARGET_CPU_ARM64 // Issue i61
     {
         NSTask *theTask = [[NSTask alloc] init];
