@@ -1954,26 +1954,33 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Shading",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Shading Properties",nil)];
         [toolbarItem setView: shadingView];
+        
+        [toolbarItem setMinSize: shadingView.frame.size];
     }
 	else if ([itemIdent isEqualToString: EngineToolbarItemIdentifier])
     {
-	[toolbarItem setLabel: NSLocalizedString(@"Engine",nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Engine",nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Engine",nil)];
-	[toolbarItem setView: engineView];
+        [toolbarItem setLabel: NSLocalizedString(@"Engine",nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Engine",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Engine",nil)];
+        [toolbarItem setView: engineView];
+        
+        NSSize size = engineView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: PerspectiveToolbarItemIdentifier])
     {
-	[toolbarItem setLabel: NSLocalizedString(@"Perspective",nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Perspective",nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Perspective Properties",nil)];	
-	[toolbarItem setView: perspectiveView];
+        [toolbarItem setLabel: NSLocalizedString(@"Perspective",nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Perspective",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Perspective Properties",nil)];
+        [toolbarItem setView: perspectiveView];
+        [toolbarItem setMinSize: perspectiveView.frame.size];
     }
 	else if ([itemIdent isEqualToString: QTExportToolbarItemIdentifier])
     {
 	[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString(@"Movie Export",nil)];
-        [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a Movie file",nil)];
+    [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a Movie file",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: QTExportToolbarItemIdentifier]];
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(exportQuicktime:)];
@@ -1991,7 +1998,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         
 	[toolbarItem setLabel:NSLocalizedString(@"DICOM File",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString(@"DICOM",nil)];
-        [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
+    [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(exportDICOMFile:)];
@@ -2027,33 +2034,45 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
 	[toolbarItem setLabel: NSLocalizedString(@"Best",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Best Rendering",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Render this image at the best resolution",nil)];
+    [toolbarItem setToolTip: NSLocalizedString(@"Render this image at the best resolution",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: CaptureToolbarItemIdentifier]];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(bestRendering:)];
     }
     else if ([itemIdent isEqualToString: WLWWToolbarItemIdentifier])
     {
-	[toolbarItem setLabel: NSLocalizedString(@"WL/WW & CLUT & Opacity",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString(@"WL/WW & CLUT & Opacity",nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Change the WL/WW & CLUT & Opacity",nil)];
-	[toolbarItem setView: WLWWView];
+        [toolbarItem setLabel: NSLocalizedString(@"WL/WW & CLUT & Opacity",nil)];
+        [toolbarItem setPaletteLabel:NSLocalizedString(@"WL/WW & CLUT & Opacity",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Change the WL/WW & CLUT & Opacity",nil)];
+        [toolbarItem setView: WLWWView];
         
-	[[wlwwPopup cell] setUsesItemFromMenu:YES];
+        NSSize size = WLWWView.frame.size;
+        [toolbarItem setMinSize:size];
+        //[toolbarItem setMaxSize:size];
+        
+        [[wlwwPopup cell] setUsesItemFromMenu:YES];
     }
 	else if ([itemIdent isEqualToString: MovieToolbarItemIdentifier])
     {
-	[toolbarItem setLabel: NSLocalizedString(@"4D Player",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString(@"4D Player",nil)];
-	[toolbarItem setToolTip:NSLocalizedString(@"4D Player",nil)];
-	[toolbarItem setView: movieView];
+        [toolbarItem setLabel: NSLocalizedString(@"4D Player",nil)];
+        [toolbarItem setPaletteLabel:NSLocalizedString(@"4D Player",nil)];
+        [toolbarItem setToolTip:NSLocalizedString(@"4D Player",nil)];
+        [toolbarItem setView: movieView];
+        
+        NSSize size = movieView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: OrientationsViewToolbarItemIdentifier])
     {
-	[toolbarItem setLabel: NSLocalizedString(@"Orientations", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientations", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Orientations", nil)];
-	[toolbarItem setView: OrientationsView];
+        [toolbarItem setLabel: NSLocalizedString(@"Orientations", nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Orientations", nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Orientations", nil)];
+        [toolbarItem setView: OrientationsView];
+        
+        NSSize size = OrientationsView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: ConvolutionViewToolbarItemIdentifier])
     {
@@ -2061,6 +2080,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Filters", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Filters", nil)];
         [toolbarItem setView: convolutionView];
+        
+        NSSize size = convolutionView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: BackgroundColorViewToolbarItemIdentifier])
     {
@@ -2068,12 +2091,20 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Background", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Background Color", nil)];
         [toolbarItem setView: BackgroundColorView];
+        
+        NSSize size = BackgroundColorView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: ScissorStateToolbarItemIdentifier])
     {
         [toolbarItem setLabel: NSLocalizedString(@"Scissor State", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Scissor State", nil)];
         [toolbarItem setView: scissorStateView];
+        
+        NSSize size = scissorStateView.frame.size;
+        [toolbarItem setMinSize:size];
+        [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: BlendingToolbarItemIdentifier])
     {
@@ -2081,13 +2112,17 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         [toolbarItem setPaletteLabel:NSLocalizedString(@"Fusion",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Fusion Mode and Percentage",nil)];
         [toolbarItem setView: BlendingView];
+        
+        [toolbarItem setMinSize: BlendingView.frame.size];
     }
     else if ([itemIdent isEqualToString: ModeToolbarItemIdentifier])
     {
-		 [toolbarItem setLabel:NSLocalizedString(@"Mode",nil)];
-		 [toolbarItem setPaletteLabel:NSLocalizedString(@"Mode",nil)];
-		 [toolbarItem setToolTip: NSLocalizedString(@"Mode",nil)];
-		 [toolbarItem setView: modeView];
+        [toolbarItem setLabel:NSLocalizedString(@"Mode",nil)];
+        [toolbarItem setPaletteLabel:NSLocalizedString(@"Mode",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Mode",nil)];
+        [toolbarItem setView: modeView];
+
+        [toolbarItem setMinSize: modeView.frame.size];
     }
 	else if ([itemIdent isEqualToString: LODToolbarItemIdentifier])
     {
@@ -2096,6 +2131,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         [toolbarItem setToolTip:NSLocalizedString(@"Change Level of Detail",nil)];
         [toolbarItem setView: LODView];
         
+        [toolbarItem setMinSize: LODView.frame.size];
+        
         [[wlwwPopup cell] setUsesItemFromMenu:YES];
     }
      else if ([itemIdent isEqualToString: ToolsToolbarItemIdentifier])
@@ -2103,6 +2140,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		 [toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
 		 [toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
 		 [toolbarItem setView: toolsView];
+         
+         NSSize size = toolsView.frame.size;
+         [toolbarItem setMinSize:size];
+         [toolbarItem setMaxSize:size];
     }
 	else if ([itemIdent isEqualToString: FlyThruToolbarItemIdentifier])
 	{
@@ -2138,6 +2179,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Clipping",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Clipping",nil)];
 		[toolbarItem setView: ClippingRangeView];
+
+        [toolbarItem setMinSize: ClippingRangeView.frame.size];
 	}
 	else if ([itemIdent isEqualToString: CLUTEditorsViewToolbarItemIdentifier])
 	{
@@ -2145,6 +2188,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"CLUT Editor",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"CLUT Editor",nil)];		
 		[toolbarItem setView: CLUTEditorsView];
+        
+        [toolbarItem setMinSize: CLUTEditorsView.frame.size];
 	}
 	else
 		toolbarItem = nil;
