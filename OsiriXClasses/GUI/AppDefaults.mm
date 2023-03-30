@@ -35,9 +35,6 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <IOKit/IOKitLib.h>
 
-//#include "vtkGPUInfo.h"
-//#include "vtkGPUInfoList.h"
-
 #import "Reports.h"     // for ReportType
 #import "mieleTypes.h"  // for ENGINE_CPU
 #import "url.h"

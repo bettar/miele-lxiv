@@ -894,30 +894,8 @@ public:
         textureMapper->SetInputConnection(reader->GetOutputPort());
         textureMapper->Update();
         
-        unsigned long vramMB = 0L;
-#if TARGET_CPU_X86_64
-        vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
+        unsigned long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
         textureMapper->SetMaxMemoryInBytes( vramMB*1024*1024);
-#endif
-
-#if 0 // TARGET_CPU_ARM64
-        vtkIdType MaxMemoryInBytes = 0;
-        vtkGPUInfoList* l = vtkGPUInfoList::New();
-        l->Probe();
-        if (l->GetNumberOfGPUs() > 0) // FIXME: always 0 ?
-        {
-            vtkGPUInfo* info = l->GetGPUInfo(0);
-            MaxMemoryInBytes = info->GetDedicatedVideoMemory();
-            if (MaxMemoryInBytes == 0)
-            {
-                MaxMemoryInBytes = info->GetDedicatedSystemMemory();
-            }
-            
-            vramMB = MaxMemoryInBytes;
-            vramMB >>= 20;
-        }
-        l->Delete();
-#endif
 
 #ifndef NDEBUG
         NSLog(@"Graphic board memory: %d MiB", (int)vramMB);
@@ -1010,7 +988,6 @@ public:
 - (void) setEngine: (EngineType) newEngine
           showWait: (BOOL) showWait
 {
-#if TARGET_CPU_X86_64
     if (newEngine == ENGINE_GPU_OPEN_GL)
     {
         unsigned long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
@@ -1027,7 +1004,6 @@ public:
                                         vramMB);
         }
     }
-#endif
     
     [self willChangeValueForKey: @"engine"];
     engine = newEngine;
@@ -1102,14 +1078,12 @@ public:
                 blendingTextureMapper = vtkGPUVolumeRayCastMapper::New();
                 blendingTextureMapper->SetInputConnection(blendingReader->GetOutputPort());
                 
-#if TARGET_CPU_X86_64
                 unsigned long vramMB = [vtkMieleView VRAMSizeForDisplayID:
                                           [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
-    #ifndef NDEBUG
+#ifndef NDEBUG
                 NSLog( @"Graphic board memory: %ld MiB", vramMB);
-    #endif
-                blendingTextureMapper->SetMaxMemoryInBytes( vramMB*1024*1024);
 #endif
+                blendingTextureMapper->SetMaxMemoryInBytes( vramMB*1024*1024);
                 blendingTextureMapper->SetMaxMemoryFraction( 0.9);
             }
             

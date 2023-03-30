@@ -62,7 +62,6 @@
     if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == ENGINE_CPU)
         return;
 
-#if TARGET_CPU_X86_64
     long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[mainWindow screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
     
     //vram /= 1024*1024;
@@ -76,7 +75,6 @@
                                 nil,
                                 vramMB);
     }
-#endif
 }
 
 - (void) dealloc
