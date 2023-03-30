@@ -60,8 +60,6 @@
 		433F9A891A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */; };
 		4341DF7D29C9BD87003E0332 /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = 4341DF7C29C9BD87003E0332 /* echoscu */; };
 		4341DF7E29C9BDD5003E0332 /* echoscu in Copy Executables */ = {isa = PBXBuildFile; fileRef = 4341DF7C29C9BD87003E0332 /* echoscu */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		4341DF8029C9BFF3003E0332 /* libpng16.16.37.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF7F29C9BFF3003E0332 /* libpng16.16.37.0.dylib */; };
-		4341DF8229C9C022003E0332 /* libpng16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8129C9C022003E0332 /* libpng16.a */; };
 		4341DF8529C9C04C003E0332 /* libming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8329C9C045003E0332 /* libming.a */; };
 		4341DF8729C9C075003E0332 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8629C9C075003E0332 /* libxml2.a */; };
 		4341DF8829C9C075003E0332 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8629C9C075003E0332 /* libxml2.a */; };
@@ -69,7 +67,6 @@
 		4341DF8B29C9C095003E0332 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8A29C9C094003E0332 /* libz.a */; };
 		4341DF8C29C9C095003E0332 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8A29C9C094003E0332 /* libz.a */; };
 		4341DF8D29C9C095003E0332 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8A29C9C094003E0332 /* libz.a */; };
-		4341DF8E29C9C57E003E0332 /* libpng16.16.37.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF7F29C9BFF3003E0332 /* libpng16.16.37.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		434499B21A1D70840047F0F2 /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
 		434B46191A19F322008CF8CF /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
 		434B461D1A19F631008CF8CF /* OPJSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 434B461B1A19F631008CF8CF /* OPJSupport.cpp */; };
@@ -83,6 +80,7 @@
 		4356C82F1AC2A0D600653B32 /* CircleAngle.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 4356C82E1AC2A0D600653B32 /* CircleAngle.pdf */; };
 		4356C8311AC2A13300653B32 /* Ball.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 4356C8301AC2A13300653B32 /* Ball.pdf */; };
 		4365FC361B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4365FC341B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm */; };
+		4366150029D43BC200FF50F9 /* libpng16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436614FF29D43BC200FF50F9 /* libpng16.a */; };
 		437002F921CD3CD700C91D62 /* DICOMPrint in Copy Executables */ = {isa = PBXBuildFile; fileRef = CEDF6DD00B46FE99008B45B8 /* DICOMPrint */; };
 		437002FA21CD47CA00C91D62 /* Decompress in Copy Executables */ = {isa = PBXBuildFile; fileRef = AB724FF60ADE6ECB00A212A0 /* Decompress */; };
 		4373D61E2174A369000F4BE1 /* OPJSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 434B461B1A19F631008CF8CF /* OPJSupport.cpp */; };
@@ -1152,7 +1150,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				4341DF8E29C9C57E003E0332 /* libpng16.16.37.0.dylib in Embed Frameworks */,
 				43110BEB21679E5B00B0405B /* DCM.framework in Embed Frameworks */,
 				59F1A515104BA8AE009E3215 /* MieleAPI.framework in Embed Frameworks */,
 			);
@@ -1552,8 +1549,6 @@
 		433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OsiriXFixedPointVolumeRayCastMapper.cxx; sourceTree = "<group>"; };
 		433F9A881A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OsiriXFixedPointVolumeRayCastMapper.h; sourceTree = "<group>"; };
 		4341DF7C29C9BD87003E0332 /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = "../../../../../../install/project68/20230320_UB/DCMTK-3.6.7/bin/echoscu"; sourceTree = "<group>"; };
-		4341DF7F29C9BFF3003E0332 /* libpng16.16.37.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.37.0.dylib; path = "../../../install/project68/20230320_UB/libpng-1.6.37/lib/libpng16.16.37.0.dylib"; sourceTree = "<group>"; };
-		4341DF8129C9C022003E0332 /* libpng16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng16.a; path = "../../../install/project68/20230320_UB/libpng-1.6.37/lib/libpng16.a"; sourceTree = "<group>"; };
 		4341DF8329C9C045003E0332 /* libming.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libming.a; path = "../../../install/project68/20230320_UB/ming-0_4_8/lib/libming.a"; sourceTree = "<group>"; };
 		4341DF8629C9C075003E0332 /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../../install/project68/20230320_UB/libxml2-v2.9.13/lib/libxml2.a"; sourceTree = "<group>"; };
 		4341DF8A29C9C094003E0332 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = "../../../install/project68/20230320_UB/zlib-1.2.12/lib/libz.a"; sourceTree = "<group>"; };
@@ -1577,6 +1572,7 @@
 		4365FC331B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DcmQueryRetrieveGetOurContext.h; sourceTree = "<group>"; };
 		4365FC341B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DcmQueryRetrieveGetOurContext.mm; sourceTree = "<group>"; };
 		4365FC371B01C4F100380C25 /* DcmQueryRetrieveOsiriSCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DcmQueryRetrieveOsiriSCP.h; sourceTree = "<group>"; };
+		436614FF29D43BC200FF50F9 /* libpng16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng16.a; path = "../../../install/project68/20230320_UB/libpng-1.6.39/lib/libpng16.a"; sourceTree = "<group>"; };
 		43748A9E21B0212E00A1446C /* Photos.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Photos.icns; sourceTree = "<group>"; };
 		43879B7621D64C7600DEF6A9 /* AYDcmPrintSCU.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AYDcmPrintSCU.cpp; path = DICOMPrint/AYDcmPrintSCU.cpp; sourceTree = "<group>"; };
 		43879B7821D64CB500DEF6A9 /* AYPrintManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AYPrintManager.cpp; path = DICOMPrint/AYPrintManager.cpp; sourceTree = "<group>"; };
@@ -3118,11 +3114,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				4341DF8729C9C075003E0332 /* libxml2.a in Frameworks */,
+				4366150029D43BC200FF50F9 /* libpng16.a in Frameworks */,
 				43A5D42A2407D68E0063416A /* UserNotifications.framework in Frameworks */,
 				430D9F102199FB37006EA1B1 /* OpenGL.framework in Frameworks */,
-				4341DF8229C9C022003E0332 /* libpng16.a in Frameworks */,
 				4341DF8B29C9C095003E0332 /* libz.a in Frameworks */,
-				4341DF8029C9BFF3003E0332 /* libpng16.16.37.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3288,11 +3283,10 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				436614FF29D43BC200FF50F9 /* libpng16.a */,
 				4341DF8A29C9C094003E0332 /* libz.a */,
 				4341DF8629C9C075003E0332 /* libxml2.a */,
 				4341DF8329C9C045003E0332 /* libming.a */,
-				4341DF8129C9C022003E0332 /* libpng16.a */,
-				4341DF7F29C9BFF3003E0332 /* libpng16.16.37.0.dylib */,
 				43A5D4292407D68E0063416A /* UserNotifications.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 			);

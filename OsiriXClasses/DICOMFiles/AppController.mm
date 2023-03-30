@@ -106,6 +106,7 @@
 #import "dcmtk/config/osconfig.h"   // for WITH_ZLIB, WITH_OPENSSL
 #import "dcmtk/dcmdata/dcuid.h"     // for DCMTK version
 #import "dcmtk/dcmjpls/djdecode.h"  // for JPEG-LS version
+#import "png.h"                     // for PNG version
 #import "opj_config.h"
 //#include "openjpeg-2.2/opj_config.h"
 
@@ -725,7 +726,7 @@ static bool isGrantedNotificationAccess = false;
         return NO;
     
     if (version.majorVersion == 13 &&
-        version.minorVersion > 2)
+        version.minorVersion > 3)
     {
         return NO;
     }
@@ -2889,6 +2890,8 @@ static BOOL initialized = NO;
 #ifdef WITH_ZLIB
                 NSLog(@"ZLIB %s", zlibVersion());
 #endif
+                NSLog(@"libpng %s", PNG_LIBPNG_VER_STRING);
+
                 NSString *tiffVersion = [NSString stringWithFormat:@"%s", TIFFGetVersion()];
                 NSArray *tiffLines = [tiffVersion componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
                 NSLog(@"%@", tiffLines[0]);

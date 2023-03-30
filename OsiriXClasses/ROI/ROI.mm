@@ -3335,7 +3335,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 #if 1
                     float v = M_PI * powf(r,3) * 4. / 3.;
 #else
-                    float v = [self ballVolume]*pixelSpacingX*pixelSpacingY*self.pix.sliceInterval/1000.; // @@@ TBC
+                    float v = [self ballVolume] * pixelSpacingX * pixelSpacingY * self.pix.sliceInterval / 1000.; // @@@ TBC
 #endif
                     self.textualBoxLine2 = [NSString stringWithFormat:@"Volume: %0.3f cm\u00B3 (\u2300: %0.3f cm)", v, 2.0*r];
                 }
