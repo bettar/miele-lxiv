@@ -92,133 +92,173 @@ static NSHost *currentHost = nil;
 // Return result in MB
 + (mach_vm_size_t) GPUModelVRAMInfo
 {
-#if 0 //TARGET_CPU_ARM64
-    vtkIdType MaxMemoryInBytes = 0;
-    vtkGPUInfoList* l = vtkGPUInfoList::New();
-    l->Probe();
-    int ngpu = l->GetNumberOfGPUs(); // FIXME: always 0 ?
-    NSLog(@"# GPU: %d", ngpu);
-    if (ngpu > 0)
+    static GLint videoMemory = 0;
+
+    if (videoMemory > 0)
+        return videoMemory;
+
+    NSUInteger MAX_DISPLAYS = [[NSScreen screens] count];
+    //NSLog(@"# displays %lu", MAX_DISPLAYS);
+
+    struct cglPixFormat
     {
-        vtkGPUInfo* info = l->GetGPUInfo(0);
-        MaxMemoryInBytes = info->GetDedicatedVideoMemory();
-        if (MaxMemoryInBytes == 0)
+        GLint rendererID;
+        GLint videoMemory;
+        GLint textureMemory;
+        GLint videoMemoryMB; // we only need this one
+        GLint textureMemoryMB;
+
+//        GLint fullScreen;
+//        GLint robust;
+//        GLint mpSafe;
+//        GLint multiScreen;
+//        GLint displayMask;
+//        GLint offScreen;
+//        GLint accelerated;
+//        GLint backingStore;
+    };
+    
+    cglPixFormat m_lPixFormats[MAX_DISPLAYS];
+    GLint m_lRenderers[32];     // IDs
+    GLint m_lRenderersCore[32]; // bool
+    NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
+
+    {
+        memset(m_lPixFormats, 0, sizeof(cglPixFormat) * MAX_DISPLAYS);
+        int renIdx = 0;
+        // Create a dummy pixel format here, *without* requesting kCGLPFASupportsAutomaticGraphicsSwitching.
+        // On mux-capable laptops, this has the effect of forcing the display to mux to the discrete GPU.
+        // The integrated GPU can still be detected after this, but the side-effect is that the GPU owning
+        // the framebuffer will be "fast" and the integrated GPU will be "slow" (copying to the other GPU.)
+        // This at least is deterministic, instead of depending on the current mux state of the user's display.
         {
-            MaxMemoryInBytes = info->GetDedicatedSystemMemory();
+            CGLPixelFormatAttribute attribs[32] = { (CGLPixelFormatAttribute)0 };
+            CGLPixelFormatObj pixelFormatObj;
+            GLint numPixelFormats;
+            CGLChoosePixelFormat(attribs, &pixelFormatObj, &numPixelFormats);
+            CGLDestroyPixelFormat(pixelFormatObj);
+        }
+
+        // Find all renderers across all displays
+        {
+            CGLRendererInfoObj rend;
+            GLint nrend;
+#if 1 // original
+            CGLQueryRendererInfo(0xFFFFFFFF, &rend, &nrend);  // all renderers on all displays.  In 10.9, this includes mux displays.
+#else // ok but no difference, still 2 renderers
+            CGLQueryRendererInfo(CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay), &rend, &nrend);
+#endif
+            NSLog(@"# renderers = %d", nrend);
+            for (GLint i = 0; i < nrend; i++)
+            {
+                GLint value;
+                CGLDescribeRenderer(rend, i, kCGLRPRendererID, &value);
+                {
+                    m_lRenderers[renIdx] = value; // renderer ID
+                    //NSLog(@"i: %d, renderer ID: 0x%x", i, m_lRenderers[renIdx]);
+
+#if 1
+                    // determine if this rendererID supports Core Profile.  There's no CGLRendererProperty for this, so just see if the pixel format works.
+                    GLint numPixelFormats = 0;
+                    if (version.majorVersion > 10 ||
+                        (version.majorVersion == 10 && version.minorVersion >= 7))//(GetOSVersion() >= 0x1070) // MAC_OS_X_VERSION_10_7 ?
+                    {
+                        CGLPixelFormatAttribute attribs[32] = { (CGLPixelFormatAttribute)0 };
+                        int a = 0;
+                        attribs[a++] = kCGLPFARendererID;
+                        attribs[a++] = (CGLPixelFormatAttribute)value;
+                        
+                        attribs[a++] = kCGLPFAAllowOfflineRenderers;
+                        
+                        if (version.majorVersion > 10 ||
+                            (version.majorVersion == 10 && version.minorVersion >= 8))//(GetOSVersion() >= 0x1080) // MAC_OS_X_VERSION_10_8 ?
+                        {
+                            attribs[a++] = kCGLPFASupportsAutomaticGraphicsSwitching;
+                        }
+                        
+                        attribs[a++] = kCGLPFAOpenGLProfile;
+                        attribs[a++] = (CGLPixelFormatAttribute)kCGLOGLPVersion_3_2_Core;
+                        
+                        attribs[a++] = kCGLPFANoRecovery;
+                        
+                        CGLPixelFormatObj pixelFormatObj;
+                        CGLChoosePixelFormat(attribs, &pixelFormatObj, &numPixelFormats);
+                        CGLDestroyPixelFormat(pixelFormatObj);
+                    }
+
+                    m_lRenderersCore[renIdx] = numPixelFormats > 0;
+                    //NSLog(@"core: %d", m_lRenderersCore[renIdx]);
+#endif
+
+                    // Deprecated
+//                    CGLDescribeRenderer(rend, i, kCGLRPFullScreen,          &m_lPixFormats[renIdx].fullScreen);
+//                    CGLDescribeRenderer(rend, i, kCGLRPRobust,              &m_lPixFormats[renIdx].robust);
+//                    CGLDescribeRenderer(rend, i, kCGLRPMPSafe,              &m_lPixFormats[renIdx].mpSafe);
+//                    CGLDescribeRenderer(rend, i, kCGLRPMultiScreen,         &m_lPixFormats[renIdx].multiScreen);
+                    CGLDescribeRenderer(rend, i, kCGLRPVideoMemory,         &m_lPixFormats[renIdx].videoMemory);
+                    CGLDescribeRenderer(rend, i, kCGLRPTextureMemory,       &m_lPixFormats[renIdx].textureMemory);
+
+                    // Query the renderer for supported pixel formats and other window centric info
+//                    CGLDescribeRenderer(rend, i, kCGLRPDisplayMask,         &m_lPixFormats[renIdx].displayMask);
+                    CGLDescribeRenderer(rend, i, kCGLRPRendererID,          &m_lPixFormats[renIdx].rendererID);
+
+//                    CGLDescribeRenderer(rend, i, kCGLRPOffScreen,           &m_lPixFormats[renIdx].offScreen);
+//                    CGLDescribeRenderer(rend, i, kCGLRPAccelerated,         &m_lPixFormats[renIdx].accelerated);
+//                    CGLDescribeRenderer(rend, i, kCGLRPBackingStore,        &m_lPixFormats[renIdx].backingStore);
+
+//                    CGLDescribeRenderer(rend, i, kCGLRPWindow,              &m_lPixFormats[renIdx].window);
+//                    CGLDescribeRenderer(rend, i, kCGLRPCompliant,           &m_lPixFormats[renIdx].compliant);
+//                    CGLDescribeRenderer(rend, i, kCGLRPBufferModes,         &m_lPixFormats[renIdx].bufferModes);
+//                    CGLDescribeRenderer(rend, i, kCGLRPColorModes,          &m_lPixFormats[renIdx].colorModes);
+//                    CGLDescribeRenderer(rend, i, kCGLRPAccumModes,          &m_lPixFormats[renIdx].accumModes);
+//                    CGLDescribeRenderer(rend, i, kCGLRPDepthModes,          &m_lPixFormats[renIdx].depthModes);
+//                    CGLDescribeRenderer(rend, i, kCGLRPStencilModes,        &m_lPixFormats[renIdx].stencilModes);
+//                    CGLDescribeRenderer(rend, i, kCGLRPMaxAuxBuffers,       &m_lPixFormats[renIdx].maxAuxBuffers);
+//                    CGLDescribeRenderer(rend, i, kCGLRPMaxSampleBuffers,    &m_lPixFormats[renIdx].maxSampleBuffers);
+//                    CGLDescribeRenderer(rend, i, kCGLRPMaxSamples,          &m_lPixFormats[renIdx].maxSamples);
+
+//                    // The next two queries will err on 10.2,
+//                    CGLDescribeRenderer(rend, i, kCGLRPSampleModes,         &m_lPixFormats[renIdx].sampleModes);
+//                    CGLDescribeRenderer(rend, i, kCGLRPSampleAlpha,         &m_lPixFormats[renIdx].sampleAlpha);
+
+//                    // The next two queries added in 10.4.3,
+//                    CGLDescribeRenderer(rend, i, kCGLRPGPUVertProcCapable,  &m_lPixFormats[renIdx].GPUVertCapable);
+//                    CGLDescribeRenderer(rend, i, kCGLRPGPUFragProcCapable,  &m_lPixFormats[renIdx].GPUFragCapable);
+
+//                    // The next two queries added in 10.6
+//                    CGLDescribeRenderer(rend, i, kCGLRPOnline,              &m_lPixFormats[renIdx].Online);
+//                    CGLDescribeRenderer(rend, i, kCGLRPAcceleratedCompute,  &m_lPixFormats[renIdx].AcceleratedCompute);
+
+                    // The next two queries added in 10.7
+                    if (version.majorVersion > 10 ||
+                        (version.majorVersion == 10 && version.minorVersion >= 7))//(GetOSVersion() >= 0x1070) // MAC_OS_X_VERSION_10_7 ?
+                    {
+                        CGLDescribeRenderer(rend, i, kCGLRPVideoMemoryMegabytes,    &m_lPixFormats[renIdx].videoMemoryMB);
+                        CGLDescribeRenderer(rend, i, kCGLRPTextureMemoryMegabytes,  &m_lPixFormats[renIdx].textureMemoryMB);
+
+                        if (videoMemory < m_lPixFormats[renIdx].videoMemoryMB)
+                            videoMemory = m_lPixFormats[renIdx].videoMemoryMB;
+
+#ifndef NDEBUG
+                        NSLog(@"Renderer <%s>, ID: 0x%x\n\t videoMemory: %d (=%d MB)\n\t videoMemoryMB: %d\n\t textureMemoryMB: %d",
+                              glGetString(GL_RENDERER),
+                              m_lPixFormats[renIdx].rendererID,
+                              m_lPixFormats[renIdx].videoMemory,
+                              m_lPixFormats[renIdx].videoMemory/(1024*1024),
+                              m_lPixFormats[renIdx].videoMemoryMB,
+                              m_lPixFormats[renIdx].textureMemoryMB);
+#endif
+                    }
+
+                    renIdx++;
+                } // CGLDescribeRenderer
+            } // for
+
+            CGLDestroyRendererInfo(rend);
         }
     }
-    l->Delete();
 
-    mach_vm_size_t Size = MaxMemoryInBytes;
-    Size >>= 20;
-    NSLog(@"Graphics: %llu MB", Size);
-    return Size;
-#endif
-
-#if 0 //TARGET_CPU_ARM64 // Issue i61
-    {
-        NSTask *theTask = [[NSTask alloc] init];
-        NSPipe *thePipe = [NSPipe pipe];
-        [theTask setLaunchPath:@"/usr/sbin/system_profiler"];
-        [theTask setArguments: [NSArray arrayWithObjects:
-                                @"SPDisplaysDataType",
-                                nil]];
-        //[theTask setStandardError: thePipe];
-        [theTask setStandardOutput: thePipe];
-        [theTask launch];
-    
-        NSData *resData = [[thePipe fileHandleForReading] readDataToEndOfFile];
-    
-//        while ([theTask isRunning])
-//            [NSThread sleepForTimeInterval: 0.1];
-
-        NSString *resString = [[NSString alloc] initWithData:resData encoding: NSUTF8StringEncoding];
-            
-        //NSLog(@"%@", resString);
-
-        // Use this instead of piping to grep
-        NSArray *lines = [resString componentsSeparatedByString:@"\n"];
-        NSArray *filteredLines = [lines filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"SELF contains[c] 'VRAM'"]];
-
-        //NSLog(@"%@", filteredLines); // "      VRAM (Dynamic, Max): 1536 MB"
-        
-        // parse the first line to extract only the integer value
-        NSCharacterSet *numberCharset = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
-        NSScanner *theScanner = [NSScanner scannerWithString:[filteredLines firstObject]];
-        [theScanner scanUpToCharactersFromSet:numberCharset intoString:NULL]; // Throw away characters before the first number
-        int vramSizeMB = 0;
-        if ([theScanner scanInt:&vramSizeMB])
-            NSLog(@"VRAM <%d> MB", vramSizeMB);
-        
-        return vramSizeMB;
-    }
-#endif
-
-#if TARGET_CPU_X86_64
-    io_iterator_t Iterator;
-    kern_return_t err = IOServiceGetMatchingServices(kIOMasterPortDefault, IOServiceMatching("IOPCIDevice"), &Iterator);
-    if (err != KERN_SUCCESS)
-    {
-        NSLog(@"IOServiceGetMatchingServices failed: %u\n", err);
-        return 0;
-    }
-    
-    for (io_service_t Device;
-         IOIteratorIsValid(Iterator) && (Device = IOIteratorNext(Iterator));
-         IOObjectRelease(Device))
-    {
-        CFStringRef Name = (CFStringRef)IORegistryEntrySearchCFProperty(Device,
-                                                                        kIOServicePlane,
-                                                                        CFSTR("IOName"),
-                                                                        kCFAllocatorDefault,
-                                                                        kNilOptions);
-        if (Name)
-        {
-            if (CFStringCompare(Name, CFSTR("display"), 0) == kCFCompareEqualTo)
-            {
-                CFDataRef Model = (CFDataRef)IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("model"), kCFAllocatorDefault, kNilOptions);
-                if (Model)
-                {
-                    _Bool ValueInBytes = TRUE;
-                    CFTypeRef VRAMSize = IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("VRAM,totalsize"), kCFAllocatorDefault, kIORegistryIterateRecursively); // As it could be in a child
-
-                    if (!VRAMSize)
-                    {
-                        ValueInBytes = FALSE;
-                        VRAMSize = IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("VRAM,totalMB"), kCFAllocatorDefault, kIORegistryIterateRecursively); // As it could be in a child
-                    }
-                    
-                    if (VRAMSize)
-                    {
-                        mach_vm_size_t Size = 0;
-                        CFTypeID Type = CFGetTypeID(VRAMSize);
-                        if (Type == CFDataGetTypeID())
-                            Size = (CFDataGetLength((CFDataRef)VRAMSize) == sizeof(uint32_t) ?
-                                    (mach_vm_size_t)*(const uint32_t*)CFDataGetBytePtr((CFDataRef)VRAMSize) :
-                                    *(const uint64_t*)CFDataGetBytePtr((CFDataRef)VRAMSize));
-                        else if (Type == CFNumberGetTypeID())
-                            CFNumberGetValue((CFNumberRef)VRAMSize, kCFNumberSInt64Type, &Size);
-                        
-                        if (ValueInBytes)
-                            Size >>= 20;
-#ifndef NDEBUG
-                        NSLog(@"Graphics: %s, %llu MB", CFDataGetBytePtr(Model), Size);
-#endif
-                        CFRelease(Model);
-                        return Size;
-                    }
-
-                    NSLog(@"%s : Unknown VRAM Size\n", CFDataGetBytePtr(Model));
-                    CFRelease(Model);
-                } // if Model
-            }
-            
-            CFRelease(Name);
-        } // if Name
-    } // for
-#endif // TARGET_CPU_X86_64
-
-    return 0;
+    return videoMemory;
 }
 
 // 'CGDisplayIOServicePort' is deprecated: first deprecated in macOS 10.9 - No longer supported
