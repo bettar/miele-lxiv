@@ -184,7 +184,7 @@
 		43DDDCAF29B24121000A9C1A /* privateTagDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 43DDDCAD29B24121000A9C1A /* privateTagDictionary.plist */; };
 		43E27D2B1AF338FA007B92CA /* ROI3DSettingsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43E27D291AF338FA007B92CA /* ROI3DSettingsWindow.mm */; };
 		43E35C0329B775BA0068526F /* JPEGtoDICOM.mieleplugin in Resources */ = {isa = PBXBuildFile; fileRef = 43E35C0229B775BA0068526F /* JPEGtoDICOM.mieleplugin */; };
-		43E35C0529B7761D0068526F /* JPEGtoDICOM.mieleplugin in Copy Builtin Plugins */ = {isa = PBXBuildFile; fileRef = 43E35C0229B775BA0068526F /* JPEGtoDICOM.mieleplugin */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		43E35C0529B7761D0068526F /* JPEGtoDICOM.mieleplugin in Copy Builtin Plugins */ = {isa = PBXBuildFile; fileRef = 43E35C0229B775BA0068526F /* JPEGtoDICOM.mieleplugin */; };
 		43F3D28E239D3EEB004CAD67 /* font.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43F3D28D239D3EEB004CAD67 /* font.fsh */; };
 		43F8F9AB1AA7DAA6008F318C /* LoupeController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43F8F9A51AA7DAA6008F318C /* LoupeController.mm */; };
 		43F8F9AD1AA7DAA6008F318C /* LoupeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43F8F9A71AA7DAA6008F318C /* LoupeView.mm */; };
@@ -8062,7 +8062,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20230404;
+				CURRENT_PROJECT_VERSION = 20230411;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8590,7 +8590,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20230404;
+				CURRENT_PROJECT_VERSION = 20230411;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -9398,7 +9398,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
-				CURRENT_PROJECT_VERSION = 20230404;
+				CURRENT_PROJECT_VERSION = 20230411;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

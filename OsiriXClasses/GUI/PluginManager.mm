@@ -592,7 +592,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     {
         if ([pluginsNames valueForKey: [[name lastPathComponent] stringByDeletingPathExtension]])
         {
-            NSLog( @"***** Multiple plugins: %@", [name lastPathComponent]);
+            NSLog(@"***** Multiple plugins: %@", [name lastPathComponent]);
             
             if ([name.lastPathComponent isEqualToString: @"UserManual.mieleplugin"] == NO)
             {
@@ -622,12 +622,19 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                 NSBundle *plugin = [NSBundle bundleWithPath: pathResolved];
                 
                 if (plugin == nil)
+                {
                     NSLog( @"**** Bundle opening failed for plugin: %@", [path stringByAppendingPathComponent:name]);
+                }
                 else
                 {
                     if (![plugin load])
                     {
                         NSLog( @"******* Bundle code loading failed for plugin %@", [path stringByAppendingPathComponent:name]);
+#if 0
+                        NSError *err = nil;
+                        [plugin loadAndReturnError:&err];
+                        NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, [err description]);
+#endif
                     }
                     else
                     {
@@ -871,7 +878,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
             }
         }
         
-        // some plugins require other plugins to be loaded before them
+        // Some plugins require other plugins to be loaded before them
         for (__block NSInteger i = pathsOfPluginsToLoad.count-1; i >= 0; --i)
         {
             NSBundle* bundle = [NSBundle bundleWithPath:[pathsOfPluginsToLoad objectAtIndex:i]];
@@ -880,10 +887,10 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                 name = [[[pathsOfPluginsToLoad objectAtIndex:i] lastPathComponent] stringByDeletingPathExtension];
 //            
             
-            // list of requirements
+            // List of requirements
             for (NSString* req in [bundle.infoDictionary objectForKey:PINFO_REQUIREMENTS])
             {
-                // make sure they're loaded before this plugin
+                // Make sure they're loaded before this plugin
                 NSIndexSet* is = [pathsOfPluginsToLoad indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
                     NSBundle* bundle = [NSBundle bundleWithPath:obj];
                     NSString* name = [bundle.infoDictionary objectForKey:PINFO_CF_BUNDLE_NAME];

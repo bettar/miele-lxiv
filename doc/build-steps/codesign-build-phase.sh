@@ -42,6 +42,9 @@ cse "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/echoscu"
 cse "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/Decompress"
 cse "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/DICOMPrint"
 
+# TBC: maybe the Plugins directory doesn't require to contain signed files 
+#cse "$TARGET_BUILD_DIR/$BUNDLE_PLUGINS_FOLDER_PATH/JPEGtoDICOM.mieleplugin/Contents/MacOS/JPEGtoDICOM"
+
 #cse "$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/miele-lxiv-lite.zip"
 #cse "$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/LXIV Launcher.zip"
 
