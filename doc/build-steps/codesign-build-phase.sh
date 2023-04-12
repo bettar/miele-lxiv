@@ -21,6 +21,9 @@ function cse {
     "$1"
 }
 
+# TODO: Clear extended attributes, which can cause codesign to fail
+#/usr/bin/xattr -cr "$TARGET_BUILD_DIR"
+
 #if [[ ${CONFIGURATION} != "Development" ]] ; then
 #cs  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/MieleAPI.framework"
 #cs  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/libpng16.16.37.0.dylib"

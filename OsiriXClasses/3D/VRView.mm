@@ -355,7 +355,7 @@ public:
     {
         // This will also affect the minimum value of the slab thickness edit box
         // because there is a binding with the variable clippingRangeThicknessInMm
-        if (clippingRangeThickness<1.22)
+        if (clippingRangeThickness < 1.22)
             clippingRangeThickness = 1.22;
         
 		aCamera->SetClippingRange( 0, clippingRangeThickness);
@@ -404,9 +404,9 @@ public:
 {
 	if (linearOpacity == nil)
 	{
-		linearOpacity = (unsigned short*) malloc( 32767 * sizeof(unsigned short));
+		linearOpacity = (unsigned short*) malloc( 0x7FFF * sizeof(unsigned short));
 		
-		for (int i = 0; i < 32767; i++)
+		for (int i = 0; i < 0x7FFF; i++)
 			linearOpacity[ i] = i;
 	}
 	
@@ -2401,10 +2401,9 @@ public:
 
 - (void) drawRect:(NSRect)aRect
 {
-#ifndef NDEBUG
-    NSLog(@"%s %d, self:%p, class:%@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]));
-#endif
-	if (drawLock == nil)
+    //NSLog(@"%s %d, self:%p, class:%@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]));
+
+    if (drawLock == nil)
         drawLock = [[NSRecursiveLock alloc] init];
 	
 //	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
@@ -3364,8 +3363,11 @@ public:
 	{
 		NSRect	newFrame = [self frame];
 		NSRect	beforeFrame;
+#if 1 // TBCissue g84
+        NSPoint mouseLoc = [self convertPointToBacking: [theEvent locationInWindow]];
+#else
 		NSPoint mouseLoc = [theEvent locationInWindow];
-		
+#endif
 		if (volumeMapper)
             volumeMapper->SetMinimumImageSampleDistance( LOD * lowResLODFactor);
         
@@ -3726,7 +3728,6 @@ public:
 						
 						[self computeOrientationText];
 						[self setNeedsDisplay:YES];
-						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 					}
 					else
 					{
@@ -3735,8 +3736,11 @@ public:
 						[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 						[self computeOrientationText];
 						[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 					}
+
+                    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification
+                                                                        object: self
+                                                                      userInfo: nil];
 				}
                 break;
                 
@@ -3848,20 +3852,27 @@ public:
 				{
 					if (keep3DRotateCentered == NO)
 					{
+                        NSPoint center = NSMakePoint([self frame].size.width/2.,
+                                                     [self frame].size.height/2.);
+#if 1
+                        center = [self convertPointToBacking: center]; // issue g84
+#endif
 						// Reset window center
-						double xx = 0;
-						double yy = 0;
+						const double xx = 0.;
+						const double yy = 0.;
 						
 						double pWC[ 2];
 						aCamera->GetWindowCenter( pWC);
-						pWC[ 0] *= ([self frame].size.width/2.);
-						pWC[ 1] *= ([self frame].size.height/2.);
+						pWC[ 0] *= center.x;
+						pWC[ 1] *= center.y;
 						
-						if (pWC[ 0] != xx || pWC[ 1] != yy)
+						if (pWC[ 0] != xx ||
+                            pWC[ 1] != yy)
 						{
 							aCamera->SetWindowCenter( 0, 0);
-							[self panX: ([self frame].size.width/2.)  - (pWC[ 0] - xx)*10000.
-                                     Y: ([self frame].size.height/2.) - (pWC[ 1] - yy)*10000.];
+
+							[self panX: center.x - (pWC[ 0] - xx)*10000.
+                                     Y: center.y - (pWC[ 1] - yy)*10000.];
 						}
 					}
 					[self setNeedsDisplay:YES];
@@ -4002,22 +4013,31 @@ public:
 	return NSMakePoint( -pWC[ 0], pWC[ 1]);
 }
 
+// TBC: not used directly in 3D VR. Used in other 3D views making use of VR
 - (void) setWindowCenter: (NSPoint) loc
 {
-	double xx = -(loc.x - [self frame].size.width/2.);
-	double yy = -(loc.y - [self frame].size.height/2.);
-	
+    NSPoint center = NSMakePoint([self frame].size.width/2.,
+                                 [self frame].size.height/2.);
+#if 0 // issue g84 TBC
+    center = [self convertPointToBacking: center];
+#endif
+    
+	double xx = -(loc.x - center.x);
+	double yy = -(loc.y - center.y);
+
 	double pWC[ 2];
 	aCamera->GetWindowCenter( pWC);
-	pWC[ 0] *= ([self frame].size.width/2.);
-	pWC[ 1] *= ([self frame].size.height/2.);
+	pWC[ 0] *= center.x;
+	pWC[ 1] *= center.y;
 	
-	if (pWC[ 0] != xx || pWC[ 1] != yy)
+	if (pWC[ 0] != xx ||
+        pWC[ 1] != yy)
 	{
-		aCamera->SetWindowCenter( xx / ([self frame].size.width/2.), yy / ([self frame].size.height/2.));
+		aCamera->SetWindowCenter(xx / center.x,
+                                 yy / center.y);
         
-		[self panX: ([self frame].size.width/2.)  - (pWC[ 0] - xx)*10000.
-                 Y: ([self frame].size.height/2.) - (pWC[ 1] - yy)*10000.];
+		[self panX: center.x - (pWC[ 0] - xx)*10000.
+                 Y: center.y - (pWC[ 1] - yy)*10000.];
 	}
 }
 
@@ -4352,19 +4372,26 @@ public:
 				{
 					if (keep3DRotateCentered == NO)
 					{
-						double xx = -(mouseLocPre.x - [self frame].size.width/2.);
-						double yy = -(mouseLocPre.y - [self frame].size.height/2.);
+                        NSPoint center = NSMakePoint([self frame].size.width/2.,
+                                                     [self frame].size.height/2.);
+#if 1
+                        center = [self convertPointToBacking: center]; // issue g84
+#endif
+						double xx = -(mouseLocPre.x - center.x);
+						double yy = -(mouseLocPre.y - center.y);
 						
 						double pWC[ 2];
 						aCamera->GetWindowCenter( pWC);
-						pWC[ 0] *= ([self frame].size.width/2.);
-						pWC[ 1] *= ([self frame].size.height/2.);
+						pWC[ 0] *= center.x;
+						pWC[ 1] *= center.y;
 						
-						if (pWC[ 0] != xx || pWC[ 1] != yy)
+						if (pWC[ 0] != xx ||
+                            pWC[ 1] != yy)
 						{
-							aCamera->SetWindowCenter( xx / ([self frame].size.width/2.), yy / ([self frame].size.height/2.));
-							[self panX: ([self frame].size.width/2.)  - (pWC[ 0] - xx)*10000.
-                                     Y: ([self frame].size.height/2.) - (pWC[ 1] - yy)*10000.];
+                            aCamera->SetWindowCenter(xx / center.x,
+                                                     yy / center.y);
+							[self panX: center.x - (pWC[ 0] - xx)*10000.
+                                     Y: center.y - (pWC[ 1] - yy)*10000.];
 						}
 					}
 				}
@@ -7574,7 +7601,7 @@ public:
 		volumeMapper->PerVolumeInitialization( aRenderer, volume);
 		
 		unsigned short *o = volumeMapper->GetScalarOpacityTable( 0);	// Fake the opacity table to have full '16-bit' image
-		memcpy( o, [VRView linearOpacity], 32767 * sizeof( unsigned short));
+		memcpy( o, [VRView linearOpacity], 0x7FFF * sizeof( unsigned short));
 		
 		tempOpacity->Delete();
 		
@@ -7597,7 +7624,7 @@ public:
 		blendingVolumeMapper->PerVolumeInitialization( aRenderer, blendingVolume);
 		
 		unsigned short *o = blendingVolumeMapper->GetScalarOpacityTable( 0);	// Fake the opacity table to have full '16-bit' image
-		memcpy( o, [VRView linearOpacity], 32767 * sizeof( unsigned short));
+		memcpy( o, [VRView linearOpacity], 0x7FFF * sizeof( unsigned short));
 		
 		tempOpacity->Delete();
 	}
@@ -8502,7 +8529,9 @@ public:
 	else
 		aRenderer->ResetCameraClippingRange();
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification
+                                                        object: self
+                                                      userInfo: nil];
 }
 
 - (void) setLowResolutionCamera: (Camera*) cam

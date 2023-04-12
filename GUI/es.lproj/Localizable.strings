@@ -4826,7 +4826,7 @@
 "These values CANNOT be equal to ZERO!" = "Estos valores NO PUEDEN ser iguales a CERO!";
 
 /* Thick Slab */
-"Thick Slab" = "Losa gruesa";
+"Thick Slab" = "Grosor de corte";
 
 /* No comment provided by engineer. */
 "Thickness / Location / Position" = "Espesor / Localización / Posición";

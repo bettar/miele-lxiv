@@ -1441,23 +1441,31 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			case t3DRotate:
 			case tCamera3D:
 			{
-				if( _tool == tCamera3D || clipRangeActivated == YES)
+				if ( _tool == tCamera3D || clipRangeActivated == YES)
 				{
-					if( keep3DRotateCentered == NO)
+					if (keep3DRotateCentered == NO)
 					{
+                        NSPoint center = NSMakePoint([self frame].size.width/2.,
+                                                     [self frame].size.height/2.);
+#if 1
+                        center = [self convertPointToBacking: center]; // TBC issue g84
+#endif
 						// Reset window center
-						double xx = 0;
-						double yy = 0;
+						const double xx = 0;
+						const double yy = 0;
 						
 						double pWC[ 2];
 						aCamera->GetWindowCenter( pWC);
-						pWC[ 0] *= ([self frame].size.width/2.);
-						pWC[ 1] *= ([self frame].size.height/2.);
+						pWC[ 0] *= center.x;
+						pWC[ 1] *= center.y;
 						
-						if( pWC[ 0] != xx || pWC[ 1] != yy)
+						if (pWC[ 0] != xx ||
+                            pWC[ 1] != yy)
 						{
 							aCamera->SetWindowCenter( 0, 0);
-							[self panX: ([self frame].size.width/2.) -(pWC[ 0] - xx)*10000. Y: ([self frame].size.height/2.) -(pWC[ 1] - yy) *10000.];
+
+                            [self panX: center.x - (pWC[ 0] - xx) * 10000.
+                                     Y: center.y - (pWC[ 1] - yy) * 10000.];
 						}
 					}
 					[self setNeedsDisplay:YES];

@@ -2152,7 +2152,7 @@ void info_callback(const char *msg, void *a) {
 //				//rescaleIntercept = 16383;
 //				//break;
 //			case 16:
-//				//rescaleIntercept = 32767;
+//				//rescaleIntercept = 0x7FFF; //32767;
 //				[self findMinAndMax:data];
 //				if (_min < 0)
 //					rescaleIntercept = _min;

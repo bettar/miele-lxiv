@@ -2072,7 +2072,7 @@ unsigned int minimumStep;
 	{
 		windowController.lowLOD = YES;
         
-        NSPoint point = [self convertPoint: [theEvent locationInWindow] fromView: nil];
+        NSPoint point = [self convertPoint: [theEvent locationInWindow] fromView: nil]; // TODO
         
         point = [self convertPointToBacking: point];
         

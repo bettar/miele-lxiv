@@ -237,6 +237,7 @@ static NSHost *currentHost = nil;
                             videoMemory = m_lPixFormats[renIdx].videoMemoryMB;
 
 #ifndef NDEBUG
+#ifdef WITH_OPENGL_32
                         NSLog(@"Renderer <%s>, ID: 0x%x\n\t videoMemory: %d (=%d MB)\n\t videoMemoryMB: %d\n\t textureMemoryMB: %d",
                               glGetString(GL_RENDERER),
                               m_lPixFormats[renIdx].rendererID,
@@ -244,6 +245,7 @@ static NSHost *currentHost = nil;
                               m_lPixFormats[renIdx].videoMemory/(1024*1024),
                               m_lPixFormats[renIdx].videoMemoryMB,
                               m_lPixFormats[renIdx].textureMemoryMB);
+#endif
 #endif
                     }
 

@@ -434,7 +434,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
                 {
                     if (decodeInfo.image->comps[compno].sgnd == 1)
                     {
-                        if (curr > 32767) curr = 32767;
+                        if (curr > 0x7FFF) curr = 0x7FFF; // 32767
                         else if (curr < -32768) curr = -32768;
 
                         *ptrS16++ = (short)(curr & mask);
