@@ -398,10 +398,10 @@ extern BOOL FULL32BITPIPELINE;
 	rawImage.imageData = nil;
 	rawImage.bytesWritten = 0;
 	
-	if( [imageRepresentation samplesPerPixel] != 3)
+	if ([imageRepresentation samplesPerPixel] != 3)
         return rawImage;
 	
-	if( imageRepresentation)
+	if (imageRepresentation)
 	{
 		long bytesWritten = [imageRepresentation bytesPerRow] * [imageRepresentation size].height;
 		if(m_ImageDataBytes)

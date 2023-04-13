@@ -86,7 +86,7 @@
 
 - (void)initializeVTKSupport
 {
-#ifndef NDEBUG
+#if 0 //ndef NDEBUG
     NSLog(@"%s %d, self:%p", __FUNCTION__, __LINE__, self);
     checkOGLVersion();
 #endif
@@ -209,6 +209,49 @@
 
     vtkActorCollection *coll = renderer->GetActors();
     coll->RemoveAllItems();
+}
+
+// Add the small logo at the bottom (left or right) of the image
++ (void) addSmallLogo:(NSString*) name
+                     :(int) dstStride
+                     :(unsigned char *) buf
+                     :(long) height
+                     :(long) rowBytes
+                     :(int) marginH // pixels
+                     :(BOOL) rightSide
+{
+    NSImage *logo = [NSImage imageNamed:name];
+    NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
+    if (TIFFRep == nil)
+        return;
+
+    int logoStride = [TIFFRep samplesPerPixel];
+    int leftMargin = marginH * dstStride;
+    if (rightSide)
+        leftMargin -= [TIFFRep bytesPerRow];
+
+    // TODO: too small when done with Retina displays
+
+    for (int i = 0; i < [TIFFRep pixelsHigh]; ++i) // do each row
+    {
+        unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
+        unsigned char *dstPtr = (buf + (height - [TIFFRep pixelsHigh] + i)*rowBytes + leftMargin);
+        long x = [TIFFRep bytesPerRow] / logoStride;
+        while (x-- > 0)
+        {
+            if (srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
+            {
+                dstPtr[ 0] = srcPtr[ 0];
+                dstPtr[ 1] = srcPtr[ 1];
+                dstPtr[ 2] = srcPtr[ 2];
+            }
+            
+            dstPtr += dstStride;
+            srcPtr += logoStride;
+        }
+    }
+    
+    [TIFFRep release];
 }
 
 @end

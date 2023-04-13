@@ -10580,8 +10580,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	
 	if (perpendicular || shift != 0)
 	{
-        NSLog(@"%s %d\n\t c[] %f, %f, %f, %f", __FUNCTION__, __LINE__,
-              c[0][0], c[0][1], c[1][0], c[1][1]);
+        //NSLog(@"%s %d\n\t c[] %f, %f, %f, %f", __FUNCTION__, __LINE__, c[0][0], c[0][1], c[1][0], c[1][1]);
 
         a[1] = c[ 0][ 0] - c[ 1][ 0];
 		a[0] = c[ 0][ 1] - c[ 1][ 1];
@@ -10595,7 +10594,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         c[ 0][ 1] -= a[1]*shift;
 		c[ 1][ 0] += a[0]*shift;
         c[ 1][ 1] -= a[1]*shift;
-        NSLog(@"%s %d\n\t c[] %f, %f, %f, %f", __FUNCTION__, __LINE__, c[0][0], c[0][1], c[1][0], c[1][1]);
+        //NSLog(@"%s %d\n\t c[] %f, %f, %f, %f", __FUNCTION__, __LINE__, c[0][0], c[0][1], c[1][0], c[1][1]);
 	}
 	
 	if (showPoint)
@@ -13269,7 +13268,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
 						if (NSIntersectsRect( curRect, rect))
 						{
-							curRect.origin.y-= 2;
+							curRect.origin.y -= 2;
 							intersect = YES;
 						}
 					}

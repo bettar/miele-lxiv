@@ -1161,13 +1161,17 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		{
 			NSRect size = [self bounds];
 			
-			*width = (long) size.size.width*2.0;
+			*width = (long) size.size.width * 2.0;
 			long leftWidth = (long) size.size.width;
 			long rightWidth = (long) size.size.width;
 			
 			*width/=4;
 			*width*=4;
 			*height = (long) size.size.height;//[LeftFullScreenWindow frame].size.height;//(long) size.size.height;
+#if 1 // TBC related to g84
+            *width *= self.window.backingScaleFactor;
+            *height *= self.window.backingScaleFactor;
+#endif
 			*spp = 3;
 			*bpp = 8;
 			
@@ -1190,13 +1194,13 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				i = *width * *height;
 				
 				//	unsigned char	*t_argb = buf;
-				unsigned char	*t_rgb = buf;
+				unsigned char *t_rgb = buf;
 				unsigned char *left_argb = leftBuf;
 				unsigned char *right_argb = rightBuf;
 				
-				while(i-->0)
+				while (i-->0)
 				{
-					if((i % *width) >= leftWidth)
+					if ((i % *width) >= leftWidth)
 					{
 						*((int*) t_rgb) = *((int*) left_argb);
 						t_rgb +=3;
@@ -1209,10 +1213,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 					}
 				}	
 				
-				long rowBytes = *width**spp**bpp/8;
+				long rowBytes = *width * *spp * *bpp/8;
 				
 				{
-					unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
+					unsigned char *tempBuf = (unsigned char*) malloc( rowBytes);
 					
 					for( i = 0; i < *height/2; i++)
 					{
@@ -1233,10 +1237,8 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		free(leftBuf);
 		return buf;
 	}
-	else{
-		
-		
-		unsigned char	*buf = nil;
+	else {
+		unsigned char *buf = nil;
 		long			i;
 		
 		//	if( screenCapture)	// Pixels displayed in current window -> only RGB 8 bits data
@@ -1247,11 +1249,15 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			*width/=4;
 			*width*=4;
 			*height = (long) size.size.height;
+#if 1 // TBC related to g84
+            *width *= self.window.backingScaleFactor;
+            *height *= self.window.backingScaleFactor;
+#endif
 			*spp = 3;
 			*bpp = 8;
 			
 			buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
-			if( buf)
+			if ( buf)
 			{
 				[self getVTKRenderWindow]->MakeCurrent();
 				//			[[NSOpenGLContext currentContext] flushBuffer];
@@ -1264,23 +1270,23 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 #else
 				glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
+#endif
 				i = *width * *height;
-				unsigned char	*t_argb = buf;
-				unsigned char	*t_rgb = buf;
+				unsigned char *t_argb = buf;
+				unsigned char *t_rgb = buf;
 				while( i-->0)
 				{
 					*((int*) t_rgb) = *((int*) t_argb);
-					t_argb+=4;
-					t_rgb+=3;
+					t_argb += 4;
+					t_rgb += 3;
 				}
-#endif
 				
 				long rowBytes = *width**spp**bpp/8;
 				
 				{
-					unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
+					unsigned char *tempBuf = (unsigned char*) malloc( rowBytes);
 					
-					for( i = 0; i < *height/2; i++)
+					for ( i = 0; i < *height/2; i++)
 					{
 						memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
 						memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
@@ -1298,11 +1304,9 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		
 		return buf;
 	}
-	
 }
 
 #pragma mark - Service Routines
-
 
 -(void) adjustWindowContent: (NSSize) proposedFrameSize
 {

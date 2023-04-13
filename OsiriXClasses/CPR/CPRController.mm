@@ -2671,7 +2671,8 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
             exportHeight = NSHeight([cprView bounds]);
 		}
         
-		if (self.exportSeriesType == CPRTransverseViewsExportSeriesType && self.exportSequenceType != CPRCurrentOnlyExportSequenceType)
+		if (self.exportSeriesType == CPRTransverseViewsExportSeriesType &&
+            self.exportSequenceType != CPRCurrentOnlyExportSequenceType)
 		{
 			exportWidth = NSWidth([middleTransverseView bounds]);
 			exportHeight = NSHeight([middleTransverseView bounds]);

@@ -9162,18 +9162,18 @@ static NSConditionLock *threadLock = nil;
 		{
 			[e setSourceFile: sourceFile];
 			
-			int bpp = [rep bitsPerPixel] / [rep samplesPerPixel]; // TODO: name should be bps
+			int bps = [rep bitsPerPixel] / [rep samplesPerPixel];
 			int spp = [rep samplesPerPixel];
 			
 			if ([rep bitsPerPixel] == 32 && spp == 3)
 			{
-				bpp = 8;
+				bps = 8;
 				spp = 4;
 			}
 			
 			[e setPixelData: [rep bitmapData]
             samplesPerPixel: spp
-              bitsPerSample: bpp
+              bitsPerSample: bps
                       width: [rep pixelsWide]
                      height: [rep pixelsHigh]];
 			

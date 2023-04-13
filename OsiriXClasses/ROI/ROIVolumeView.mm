@@ -82,6 +82,10 @@
 	*width/=4;
 	*width*=4;
 	*height = (long) size.size.height;
+#if 1 // TBC related to g84
+    *width *= self.window.backingScaleFactor;
+    *height *= self.window.backingScaleFactor;
+#endif
 	*spp = 3;
 	*bpp = 8;
 	
@@ -91,6 +95,8 @@
 		[self getVTKRenderWindow]->MakeCurrent();
 //		[[NSOpenGLContext currentContext] flushBuffer];
 		
+        const int srcStride = 4;
+        int dstStride = *spp;
 
 #ifndef WITH_GLEW
         CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -101,20 +107,19 @@
 #if __BIG_ENDIAN__
         glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 #else
-			
         glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
+#endif
         long ii = *width * *height;
         unsigned char *t_argb = buf;
         unsigned char *t_rgb = buf;
         while (ii-- > 0)
         {
             *((int*) t_rgb) = *((int*) t_argb);
-            t_argb += 4;
-            t_rgb += 3;
+            t_argb += srcStride;
+            t_rgb += dstStride;
         }
-#endif
 		
-		long rowBytes = *width**spp**bpp/8;
+		long rowBytes = (*width) * dstStride * (*bpp/8);
         unsigned char *tempBuf = (unsigned char*)malloc( rowBytes);
         for (long  i = 0; i < *height/2; i++)
         {
@@ -126,14 +131,24 @@
         free(tempBuf);
 
 		
+#if 1
+        [vtkMieleView addSmallLogo: @"SmallLogo.tif"
+                                  : dstStride
+                                  : buf
+                                  : *height
+                                  : rowBytes
+                                  : *width - 10 // pixels margin
+                                  : true]; // right side
+#else
 		// Add the small logo at the bottom right of the image
 		NSImage *logo = [NSImage imageNamed:@"SmallLogo.tif"];
 		NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
 		
 		for (long i = 0; i < [TIFFRep pixelsHigh]; i++)
 		{
+            int logoStride = [TIFFRep samplesPerPixel];
 			unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-			unsigned char *dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
+			unsigned char *dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*dstStride - [TIFFRep bytesPerRow]));
 			
 			long x = [TIFFRep bytesPerRow]/3;
 			while( x-- > 0)
@@ -145,13 +160,13 @@
 					dstPtr[ 2] = srcPtr[ 2];
 				}
 				
-				dstPtr += 3;
-				srcPtr += 3;
+				dstPtr += dstStride;
+				srcPtr += logoStride;
 			}
 		}
 		
 		[TIFFRep release];
-		
+#endif
 //		[[NSOpenGLContext currentContext] flushBuffer];
 		[NSOpenGLContext clearCurrentContext];
 	}

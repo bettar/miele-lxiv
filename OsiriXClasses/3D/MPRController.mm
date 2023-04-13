@@ -2078,7 +2078,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		
 		int resizeImage = 0;
 		
-		switch( [[NSUserDefaults standardUserDefaults] integerForKey:EXPORTMATRIXFOR3D_KEY])
+		switch ( [[NSUserDefaults standardUserDefaults] integerForKey:EXPORTMATRIXFOR3D_KEY])
 		{
 			case EXPORT_SIZE_512:
                 resizeImage = 512;

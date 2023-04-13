@@ -660,8 +660,8 @@
                             orientation[i] = o[i];
                     }
                     
-                    //Pixels data
-                    switch( bps)
+                    // Pixels data
+                    switch (bps)
                     {
                         case 8:
                             if (spp == 3)
@@ -1221,13 +1221,13 @@
 //					}
 //				}
 //				
-//				#if __BIG_ENDIAN__
+//#if __BIG_ENDIAN__
 //				if (bps == 16)
 //				{
 //					//Convert to little endian
 //					InverseShorts( (vector unsigned short*) data, height * width);
 //				}
-//				#endif
+//#endif
 //				
 //				int elemLength = height * width * spp * bps / 8;
 //				

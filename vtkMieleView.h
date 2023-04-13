@@ -65,6 +65,14 @@ typedef char* vtkCocoaRenderWindow;
 - (void)initializeVTKSupport;
 - (void)cleanUpVTKSupport;
 
++ (void) addSmallLogo:(NSString*) name
+                     :(int) dstStride
+                     :(unsigned char *) buf
+                     :(long) height
+                     :(long) rowBytes
+                     :(int) marginH // pixels margin
+                     :(BOOL) rightSide;
+
 // Accessors
 - (void)setRenderer:(vtkRenderer*)theRenderer;
 

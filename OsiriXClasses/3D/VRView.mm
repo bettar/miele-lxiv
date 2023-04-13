@@ -3363,7 +3363,7 @@ public:
 	{
 		NSRect	newFrame = [self frame];
 		NSRect	beforeFrame;
-#if 1 // TBCissue g84
+#if 1 // TBC issue g84
         NSPoint mouseLoc = [self convertPointToBacking: [theEvent locationInWindow]];
 #else
 		NSPoint mouseLoc = [theEvent locationInWindow];
@@ -3854,10 +3854,9 @@ public:
 					{
                         NSPoint center = NSMakePoint([self frame].size.width/2.,
                                                      [self frame].size.height/2.);
-#if 1
                         center = [self convertPointToBacking: center]; // issue g84
-#endif
-						// Reset window center
+
+                        // Reset window center
 						const double xx = 0.;
 						const double yy = 0.;
 						
@@ -4005,10 +4004,16 @@ public:
 
 - (NSPoint) windowCenter
 {
+    NSPoint center = NSMakePoint([self frame].size.width/2.,
+                                 [self frame].size.height/2.);
+#if 0 // TBC issue g84
+    center = [self convertPointToBacking: center];
+#endif
+    
 	double pWC[ 2];
 	aCamera->GetWindowCenter( pWC);
-	pWC[ 0] *= ([self frame].size.width/2.);
-	pWC[ 1] *= ([self frame].size.height/2.);
+	pWC[ 0] *= center.x;
+	pWC[ 1] *= center.y;
 	
 	return NSMakePoint( -pWC[ 0], pWC[ 1]);
 }
@@ -4018,7 +4023,7 @@ public:
 {
     NSPoint center = NSMakePoint([self frame].size.width/2.,
                                  [self frame].size.height/2.);
-#if 0 // issue g84 TBC
+#if 0 // TBC issue g84
     center = [self convertPointToBacking: center];
 #endif
     
@@ -4374,10 +4379,9 @@ public:
 					{
                         NSPoint center = NSMakePoint([self frame].size.width/2.,
                                                      [self frame].size.height/2.);
-#if 1
                         center = [self convertPointToBacking: center]; // issue g84
-#endif
-						double xx = -(mouseLocPre.x - center.x);
+
+                        double xx = -(mouseLocPre.x - center.x);
 						double yy = -(mouseLocPre.y - center.y);
 						
 						double pWC[ 2];
@@ -6223,7 +6227,8 @@ public:
 	// REMOVE CROPPING BOX
 	
 	if (croppingBox)
-		if (croppingBox->GetEnabled()) croppingBox->Off();
+		if (croppingBox->GetEnabled())
+            croppingBox->Off();
 	
 	aRenderer->RemoveActor(outlineRect);
 	if (textX)
@@ -6261,8 +6266,14 @@ public:
 		{
 			if (volumeMapper)
             {
-                volumeMapper->SetMinimumImageSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
-                volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
+                //
+                float a = [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"];
+#if 0 // g84
+                // not effective
+                a *= self.window.backingScaleFactor;
+#endif
+                volumeMapper->SetMinimumImageSampleDistance( a);
+                volumeMapper->SetSampleDistance( a);
 			}
             
             if (textureMapper)
@@ -7821,7 +7832,14 @@ public:
 	return [self getRawPixels: width : height : spp : bpp : screenCapture : force8bits offset: nil isSigned: nil];
 }
 
--(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits offset:(int*) offset isSigned:(BOOL*) isSigned
+-(unsigned char*) getRawPixels:(long*) width
+                              :(long*) height
+                              :(long*) spp
+                              :(long*) bpp
+                              :(BOOL) screenCapture
+                              :(BOOL) force8bits
+                        offset:(int*) offset
+                      isSigned:(BOOL*) isSigned
 {
 	unsigned char *buf = nil;
 	
@@ -7856,8 +7874,8 @@ public:
 					while (i-- > 0)
 					{
 						*((int*) t_rgb) = *((int*) t_argb);
-						t_argb+=4;
-						t_rgb+=3;
+						t_argb += 4;
+						t_rgb += 3;
 					}
 				}
 				else
@@ -7921,18 +7939,24 @@ public:
 		}
 		else
 		{
+            // not fullDepthCapture
 			NSRect size = [self bounds];
 			
 			*width = (long) size.size.width;
 			*width/=4;
 			*width*=4;
 			*height = (long) size.size.height;
+#if 1 // g84
+            *width *= self.window.backingScaleFactor;
+            *height *= self.window.backingScaleFactor;
+#endif
 			*spp = 3;
 			*bpp = 8;
 			
 			[self getVTKRenderWindow]->MakeCurrent();
-			
-			buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
+            const int srcStride = 4;
+            int dstStride = *spp;
+			buf = (unsigned char*) malloc( *width * *height * srcStride * *bpp/8);
 			if (buf)
 			{
 				CGLContextObj cgl_ctx = (CGLContextObj) [[NSOpenGLContext currentContext] CGLContextObj];
@@ -7940,28 +7964,27 @@ public:
 				glReadBuffer(GL_FRONT);
 				
 #if __BIG_ENDIAN__
-					glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+                glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 #else
-					glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
-					int i = *width * *height;
-					unsigned char	*t_argb = buf;
-					unsigned char	*t_rgb = buf;
-					while (i-- > 0)
-					{
-						*((int*) t_rgb) = *((int*) t_argb);
-						t_argb+=4;
-						t_rgb+=3;
-					}
+                glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
 #endif
+                int i = *width * *height;
+                unsigned char *t_argb = buf;
+                unsigned char *t_rgb = buf;
+                while (i-- > 0)
+                {
+                    *((int*) t_rgb) = *((int*) t_argb);
+                    t_argb += srcStride;
+                    t_rgb += dstStride;
+                }
 				
-				long rowBytes = *width**spp**bpp/8;
+				long rowBytes = (*width) * dstStride * (*bpp/8);
 				
 				{
-					unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
-					
+					unsigned char *tempBuf = (unsigned char*) malloc( rowBytes);
 					if (tempBuf)
 					{
-						for (int i = 0; i < *height/2; i++)
+						for (int i = 0; i < *height/2; ++i)
 						{
 							memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
 							memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
@@ -7972,18 +7995,30 @@ public:
 					}
 				}
 				
-				// Add the small logo at the bottom right of the image
-				NSImage	 *logo = [NSImage imageNamed:@"SmallLogo.tif"];
+#if 1
+                [vtkMieleView addSmallLogo: @"SmallLogo.tif"
+                                          : dstStride
+                                          : buf
+                                          : *height
+                                          : rowBytes
+                                          : 2 // pixels margin
+                                          : false]; // left side
+#else
+				// Add the small logo at the bottom left of the image
+				NSImage *logo = [NSImage imageNamed:@"SmallLogo.tif"];
 				NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
-				
 				if (TIFFRep)
 				{
-					for (int i = 0; i < [TIFFRep pixelsHigh]; i++)
+                    int logoStride = [TIFFRep samplesPerPixel];
+                    int leftMargin = 2 * dstStride; // 2 pixels
+
+                    // TODO: too small when done with Retina displays
+
+                    for (int i = 0; i < [TIFFRep pixelsHigh]; ++i) // do each row
 					{
 						unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-						unsigned char *dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + 2*3);
-						
-						long x = [TIFFRep bytesPerRow]/3;
+                        unsigned char *dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + leftMargin);
+						long x = [TIFFRep bytesPerRow] / logoStride;
 						while (x-- > 0)
 						{
 							if (srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
@@ -7993,13 +8028,14 @@ public:
 								dstPtr[ 2] = srcPtr[ 2];
 							}
 							
-							dstPtr += 3;
-							srcPtr += 3;
+							dstPtr += dstStride;
+							srcPtr += logoStride;
 						}
 					}
 					
 					[TIFFRep release];
 				}
+#endif
 			}
 			[NSOpenGLContext clearCurrentContext];
 		}

@@ -2667,10 +2667,16 @@ typedef struct _xyzArray
 		*width/=4;
 		*width*=4;
 		*height = (long) size.size.height;
+#if 1 // same as g84
+        *width *= self.window.backingScaleFactor;
+        *height *= self.window.backingScaleFactor;
+#endif
 		*spp = 3;
 		*bpp = 8;
 		
-		buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
+        const int srcStride = 4;
+        int dstStride = *spp;
+		buf = (unsigned char*) malloc( *width * *height * srcStride * *bpp/8);
 		if (buf)
 		{
 			[self getVTKRenderWindow]->MakeCurrent();
@@ -2684,23 +2690,23 @@ typedef struct _xyzArray
             glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 #else
             glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
+#endif
             i = *width * *height;
             unsigned char *t_argb = buf;
             unsigned char *t_rgb = buf;
             while (i-- > 0)
             {
                 *((int*) t_rgb) = *((int*) t_argb);
-                t_argb+=4;
-                t_rgb+=3;
+                t_argb += srcStride;
+                t_rgb += dstStride;
             }
-#endif
 			
-			long rowBytes = *width * *spp * *bpp / 8;
+			long rowBytes = (*width) * dstStride * (*bpp / 8);
 			
 			{
 				unsigned char *tempBuf = (unsigned char*) malloc( rowBytes);
 				
-				for (i = 0; i < *height/2; i++)
+				for (i = 0; i < *height/2; ++i)
 				{
 					memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
 					memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
@@ -2722,7 +2728,7 @@ typedef struct _xyzArray
 -(NSImage*) nsimage:(BOOL) originalSize
 {
 	NSBitmapImageRep	*rep;
-	long				width, height, i, x, spp, bpp;
+	long				width, height, x, spp, bpp;
 	NSString			*colorSpace;
 	unsigned char		*dataPtr;
 	
@@ -2747,14 +2753,23 @@ typedef struct _xyzArray
 	
 	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
 	
+#if 1
+    [vtkMieleView addSmallLogo: @"SmallLogo.tif"
+                              : spp //dstStride
+                              : [rep bitmapData] //buf
+                              : height
+                              : [rep bytesPerRow] //rowBytes
+                              : width - 10 // 10 pixels margin
+                              : true]; // right side
+#else
 	// Add the small logo at the bottom right of the image
 	NSImage *logo = [NSImage imageNamed:@"SmallLogo.tif"];
 	NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
 	
-	for (i = 0; i < [TIFFRep pixelsHigh]; i++)
+	for (long i = 0; i < [TIFFRep pixelsHigh]; i++)
 	{
-		unsigned char	*srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-		unsigned char	*dstPtr = ([rep bitmapData] + (height - [TIFFRep pixelsHigh] + i)*[rep bytesPerRow] + ((width-10)*3 - [TIFFRep bytesPerRow]));
+		unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
+		unsigned char *dstPtr = ([rep bitmapData] + (height - [TIFFRep pixelsHigh] + i)*[rep bytesPerRow] + ((width-10)*3 - [TIFFRep bytesPerRow]));
 		
 		x = [TIFFRep bytesPerRow]/3;
 		while( x-- > 0)
@@ -2772,6 +2787,7 @@ typedef struct _xyzArray
 	}
 	
 	[TIFFRep release];
+#endif
 	
      NSImage *image = [[[NSImage alloc] init] autorelease];
      [image addRepresentation:rep];

@@ -6032,16 +6032,17 @@ static volatile int numberOfThreadsForRelisce = 0;
                                         if (dcmPix && dcmPix.notAbleToLoadImage == NO)
                                         {
                                             img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
-                                            
                                             if (img)
                                             {
                                                 if ([[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
                                                     curSeries.thumbnail = [BrowserController produceJPEGThumbnail:img];
                                             }
-                                            else img = [NSImage imageNamed:@"FileNotFound.tif"];
+                                            else
+                                                img = [NSImage imageNamed:@"FileNotFound.tif"];
                                             
                                         }
-                                        else img = [NSImage imageNamed:@"FileNotFound.tif"];
+                                        else
+                                            img = [NSImage imageNamed:@"FileNotFound.tif"];
                                         
                                         [dcmPix release];
                                     }

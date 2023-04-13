@@ -993,7 +993,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	[self setNeedsDisplay:	YES];
 }
 
-#pragma mark - Mouse mouvements
+#pragma mark - Mouse movements
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
@@ -1447,10 +1447,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 					{
                         NSPoint center = NSMakePoint([self frame].size.width/2.,
                                                      [self frame].size.height/2.);
-#if 1
+
                         center = [self convertPointToBacking: center]; // TBC issue g84
-#endif
-						// Reset window center
+
+                        // Reset window center
 						const double xx = 0;
 						const double yy = 0;
 						
@@ -1826,8 +1826,8 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 {
 	if (self.StereoVisionOn)
 	{
-		unsigned char	*buf = nil;
-		unsigned char  *leftBuf = nil;
+		unsigned char *buf = nil;
+		unsigned char *leftBuf = nil;
 		unsigned char *rightBuf = nil;
 		long i;
 		
@@ -1835,7 +1835,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	
 	BOOL fullDepthCapture = NO;
 	
-	if( force8bits == NO)
+	if (force8bits == NO)
 		fullDepthCapture = YES;
 
 	
@@ -1925,6 +1925,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		*width/=4;
 		*width*=4;
 		*height = (long) size.size.height;
+#if 1 // TBC related to g84
+        *width *= self.window.backingScaleFactor;
+        *height *= self.window.backingScaleFactor;
+#endif
 		*spp = 3;
 		*bpp = 8;
 		
@@ -1954,27 +1958,27 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			unsigned char *left_argb = leftBuf;
 			unsigned char *right_argb = rightBuf;
 			
-			while( i-->0)
+			while ( i-->0)
 			{
-				if((i % *width) >= leftWidth)
+				if ((i % *width) >= leftWidth)
 				{
 					*((int*) t_rgb) = *((int*) left_argb);
 					t_rgb +=3;
-					left_argb+=4;
+					left_argb += 4;
 				}
 				else {
 					*((int*) t_rgb) = *((int*) right_argb);
 					t_rgb +=3;
-					right_argb+=4;
+					right_argb += 4;
 				}
 			}
 			
 			long rowBytes = *width**spp**bpp/8;
 			
 			{
-				unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
+				unsigned char *tempBuf = (unsigned char*) malloc( rowBytes);
 				
-				for( i = 0; i < *height/2; i++)
+				for ( i = 0; i < *height/2; i++)
 				{
 					memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
 					memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
@@ -1983,8 +1987,6 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				
 				free( tempBuf);
 			}
-			
-			
 		}
 		[NSOpenGLContext clearCurrentContext];
 	}
@@ -1996,16 +1998,16 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	}
 	//if no stereo!
 	else{
-		unsigned char	*buf = nil;
+		unsigned char *buf = nil;
 				
 		[drawLock lock];
 		
 		BOOL fullDepthCapture = NO;
 		
-		if( force8bits == NO)
+		if ( force8bits == NO)
 			fullDepthCapture = YES;
 		
-		if( fullDepthCapture)
+		if ( fullDepthCapture)
 		{
 			vImage_Buffer sf, d8;
 			BOOL rgb;
@@ -2025,8 +2027,8 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				while( i-->0)
 				{
 					*((int*) t_rgb) = *((int*) t_argb);
-					t_argb+=4;
-					t_rgb+=3;
+					t_argb += 4;
+					t_rgb += 3;
 				}
 			}
 			else
@@ -2048,7 +2050,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 					slope = firstObject.appliedFactorPET2SUV * firstObject.slope;
 				
 				buf = (unsigned char*) malloc( *width * *height * *spp * *bpp / 8);
-				if( buf)
+				if ( buf)
 				{
 					d8.data = buf;
 					
@@ -2087,6 +2089,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			*width/=4;
 			*width*=4;
 			*height = (long) size.size.height;
+#if 1 // TBC related to g84
+            *width *= self.window.backingScaleFactor;
+            *height *= self.window.backingScaleFactor;
+#endif
 			*spp = 3;
 			*bpp = 8;
 			
@@ -2103,19 +2109,18 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 #else
 				glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
-
+#endif
                 int i = *width * *height;
 				unsigned char *t_argb = buf;
 				unsigned char *t_rgb = buf;
 				while (i-- > 0)
 				{
 					*((int*) t_rgb) = *((int*) t_argb);
-					t_argb+=4;
-					t_rgb+=3;
+					t_argb += 4;
+					t_rgb += 3;
 				}
-#endif
 				
-				long rowBytes = *width**spp**bpp/8;
+				long rowBytes = *width * *spp * *bpp/8;
 				
 				{
 					unsigned char *tempBuf = (unsigned char*) malloc( rowBytes);
@@ -2130,6 +2135,15 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 					free( tempBuf);
 				}
 				
+#if 1
+                [vtkMieleView addSmallLogo: @"SmallLogo.tif"
+                                          : *spp //dstStride
+                                          : buf
+                                          : *height
+                                          : rowBytes
+                                          : *width - 10 // pixels margin
+                                          : true]; // right side
+#else
 				// Add the small logo at the bottom right of the image
 				NSImage *logo = [NSImage imageNamed:@"SmallLogo.tif"];
 				NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
@@ -2155,6 +2169,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				}
 				
 				[TIFFRep release];
+#endif
 			}
 			[NSOpenGLContext clearCurrentContext];
 		}
@@ -2164,7 +2179,6 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		return buf;
 	}
 }
-
 
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h isRGB:(BOOL*) rgb blendingView:(BOOL) blendingView
 {

@@ -993,14 +993,8 @@ static NSHost *currentHost = nil;
 			
 #pragma mark BESTRENDERING
 
-#if __ppc__
-	[defaultValuesDic setObject:@"1.6" forKey:@"BESTRENDERING"];
-#else
 	[defaultValuesDic setObject:@"1.2" forKey:@"BESTRENDERING"];
-#endif
-
     [defaultValuesDic setObject: @"120" forKey:@"DatabaseRefreshInterval"];
-    
     [defaultValuesDic setObject: @"1" forKey:@"ShowAlbumOnlyIfNotEmpty"];
 	[defaultValuesDic setObject: @"0" forKey:@"UseFrameofReferenceUID"];
 	[defaultValuesDic setObject: @"1" forKey:@"savedCommentsAndStatusInDICOMFiles"];

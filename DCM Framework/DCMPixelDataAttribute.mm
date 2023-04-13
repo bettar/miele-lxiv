@@ -1075,12 +1075,12 @@ void info_callback(const char *msg, void *a) {
 	if (NSHostByteOrder() == NS_BigEndian){
 		for ( NSMutableData *data in _values ) {
 			if (_pixelDepth <= 16) {
-//				#if __ppc__
+//#if __ppc__
 //				if ( DCMHasAltiVec()) { 
 //					 SwapShorts( (vector unsigned short *)[data mutableBytes], [data length]/2);			 
 //				}
 //				else
-//				#endif
+//#endif
 				{
 					unsigned short *shortsToSwap = (unsigned short *) [data mutableBytes];
 					//signed short *signedShort = [data mutableBytes];
@@ -1091,12 +1091,12 @@ void info_callback(const char *msg, void *a) {
 				}
 			}
 			else {
-//				#if __ppc__
+//#if __ppc__
 //				if ( DCMHasAltiVec()) { 
 //					 SwapLongs( (vector unsigned int *) [data mutableBytes], [data length]/4);			 
 //				}
 //				else
-//				#endif
+//#endif
 				{
 					unsigned long *longsToSwap = (unsigned long *) [data mutableBytes];
 					//signed short *signedShort = [data mutableBytes];
@@ -1114,15 +1114,16 @@ void info_callback(const char *msg, void *a) {
 		self.transferSyntax = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 }
 
-- (void)convertHostToLittleEndian{
+- (void)convertHostToLittleEndian
+{
 	if (NSHostByteOrder() == NS_BigEndian){
 		for ( NSMutableData *data in _values ) {
 			if (_pixelDepth <= 16) {
-//				#if __ppc__
+//#if __ppc__
 //				if ( DCMHasAltiVec()) 
 //					 SwapShorts( (vector unsigned short *) [data mutableBytes], [data length]/2);
 //				else
-//				#endif
+//#endif
 				{
 					unsigned short *shortsToSwap = (unsigned short *) [data mutableBytes];
 					unsigned int length = [data length]/2;
@@ -1133,12 +1134,12 @@ void info_callback(const char *msg, void *a) {
 				}
 			}
 			else {
-//				#if __ppc__
+//#if __ppc__
 //				if ( DCMHasAltiVec()) { 
 //					 SwapLongs( (vector unsigned int *) [data mutableBytes], [data length]/4);			 
 //				}
 //				else
-//				#endif
+//#endif
 				{
 					unsigned long *longsToSwap = (unsigned long *) [data mutableBytes];
 					//signed short *signedShort = [data mutableBytes];
@@ -1150,7 +1151,8 @@ void info_callback(const char *msg, void *a) {
 			}
 		}
 	}
-	self.transferSyntax = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
+
+    self.transferSyntax = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 }
 
 - (NSData *)convertJPEG8ToHost:(NSData *)jpegData{ 
