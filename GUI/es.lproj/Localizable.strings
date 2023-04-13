@@ -1112,7 +1112,7 @@
 "Change the WL/WW & CLUT & Opacity in the MPR views" = "Cambiar el WL/WW & CLUT & Opacidad en las vistas MPR";
 
 /* No comment provided by engineer. */
-"Change Thick Slab mode and number" = "Cambiar el modo y el número de la losa gruesa";
+"Change Thick Slab mode and number" = "Cambiar modalidad de corte grueso y espesor";
 
 /* No comment provided by engineer. */
 "Change View from Horizontal to Vertical" = "Cambiar la vista de horizontal a vertical";
@@ -4895,7 +4895,7 @@
 "This function is not available in OsiriX Light. Download the complete version of OsiriX to solve this issue." = "Esta función no está disponible en Miele-LXIV Light. Descargue la versión completa de Miele-LXIV para resolver este problema.";
 
 /* No comment provided by engineer. */
-"This function is only useful if you use Thick Slab!" = "Esta función sólo es útil si se utiliza la losa gruesa!";
+"This function is only useful if you use Thick Slab!" = "Esta función sólo es útil si se usa un corte grueso!";
 
 /* No comment provided by engineer. */
 "This function requires a VolumePRO board, the VLI.framework, and the VolumePRO.kext files" = "Esta función requiere una placa VolumePRO, el framework VLI.framework, y los archivos VolumePRO.kext";

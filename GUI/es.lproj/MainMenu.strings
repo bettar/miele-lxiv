@@ -191,7 +191,7 @@
 "1592.headerCell.title" = "Fecha de apertura";
 
 /* Class = "NSMenuItem"; title = "Propagate Selected ROI to Current Thick Slab"; ObjectID = "1644"; */
-"1644.title" = "Propague el retorno de la inversión seleccionado a la losa gruesa actual";
+"1644.title" = "Propagar ROI seleccionado al corte grueso actual";
 
 /* Class = "NSMenuItem"; title = "Plugins"; ObjectID = "1701"; */
 "1701.title" = "Plugins";
