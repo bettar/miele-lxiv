@@ -7995,49 +7995,16 @@ public:
 					}
 				}
 				
-#if 1
-                [vtkMieleView addSmallLogo: @"SmallLogo.tif"
+                [vtkMieleView addTiffLogo: @"SmallLogo.tif"
                                           : dstStride
                                           : buf
                                           : *height
                                           : rowBytes
                                           : 2 // pixels margin
                                           : false]; // left side
-#else
-				// Add the small logo at the bottom left of the image
-				NSImage *logo = [NSImage imageNamed:@"SmallLogo.tif"];
-				NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
-				if (TIFFRep)
-				{
-                    int logoStride = [TIFFRep samplesPerPixel];
-                    int leftMargin = 2 * dstStride; // 2 pixels
-
-                    // TODO: too small when done with Retina displays
-
-                    for (int i = 0; i < [TIFFRep pixelsHigh]; ++i) // do each row
-					{
-						unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-                        unsigned char *dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + leftMargin);
-						long x = [TIFFRep bytesPerRow] / logoStride;
-						while (x-- > 0)
-						{
-							if (srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
-							{
-								dstPtr[ 0] = srcPtr[ 0];
-								dstPtr[ 1] = srcPtr[ 1];
-								dstPtr[ 2] = srcPtr[ 2];
-							}
-							
-							dstPtr += dstStride;
-							srcPtr += logoStride;
-						}
-					}
-					
-					[TIFFRep release];
-				}
-#endif
 			}
-			[NSOpenGLContext clearCurrentContext];
+
+            [NSOpenGLContext clearCurrentContext];
 		}
 	}
 	@catch (NSException * e) 

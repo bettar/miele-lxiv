@@ -65,7 +65,7 @@ typedef char* vtkCocoaRenderWindow;
 - (void)initializeVTKSupport;
 - (void)cleanUpVTKSupport;
 
-+ (void) addSmallLogo:(NSString*) name
++ (void) addTiffLogo:(NSString*) name
                      :(int) dstStride
                      :(unsigned char *) buf
                      :(long) height

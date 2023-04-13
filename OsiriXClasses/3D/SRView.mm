@@ -2753,41 +2753,13 @@ typedef struct _xyzArray
 	
 	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
 	
-#if 1
-    [vtkMieleView addSmallLogo: @"SmallLogo.tif"
+    [vtkMieleView addTiffLogo: @"SmallLogo.tif"
                               : spp //dstStride
                               : [rep bitmapData] //buf
                               : height
                               : [rep bytesPerRow] //rowBytes
                               : width - 10 // 10 pixels margin
                               : true]; // right side
-#else
-	// Add the small logo at the bottom right of the image
-	NSImage *logo = [NSImage imageNamed:@"SmallLogo.tif"];
-	NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
-	
-	for (long i = 0; i < [TIFFRep pixelsHigh]; i++)
-	{
-		unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-		unsigned char *dstPtr = ([rep bitmapData] + (height - [TIFFRep pixelsHigh] + i)*[rep bytesPerRow] + ((width-10)*3 - [TIFFRep bytesPerRow]));
-		
-		x = [TIFFRep bytesPerRow]/3;
-		while( x-- > 0)
-		{
-			if (srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
-			{
-				dstPtr[ 0] = srcPtr[ 0];
-				dstPtr[ 1] = srcPtr[ 1];
-				dstPtr[ 2] = srcPtr[ 2];
-			}
-			
-			dstPtr += 3;
-			srcPtr += 3;
-		}
-	}
-	
-	[TIFFRep release];
-#endif
 	
      NSImage *image = [[[NSImage alloc] init] autorelease];
      [image addRepresentation:rep];

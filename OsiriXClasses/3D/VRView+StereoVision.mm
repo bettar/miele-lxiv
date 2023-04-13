@@ -2135,43 +2135,16 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 					free( tempBuf);
 				}
 				
-#if 1
-                [vtkMieleView addSmallLogo: @"SmallLogo.tif"
+                [vtkMieleView addTiffLogo: @"SmallLogo.tif"
                                           : *spp //dstStride
                                           : buf
                                           : *height
                                           : rowBytes
                                           : *width - 10 // pixels margin
                                           : true]; // right side
-#else
-				// Add the small logo at the bottom right of the image
-				NSImage *logo = [NSImage imageNamed:@"SmallLogo.tif"];
-				NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
-				
-				for (int i = 0; i < [TIFFRep pixelsHigh]; i++)
-				{
-					unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-					unsigned char *dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
-					
-					long x = [TIFFRep bytesPerRow]/3;
-					while( x-->0)
-					{
-						if ( srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
-						{
-							dstPtr[ 0] = srcPtr[ 0];
-							dstPtr[ 1] = srcPtr[ 1];
-							dstPtr[ 2] = srcPtr[ 2];
-						}
-						
-						dstPtr += 3;
-						srcPtr += 3;
-					}
-				}
-				
-				[TIFFRep release];
-#endif
 			}
-			[NSOpenGLContext clearCurrentContext];
+
+            [NSOpenGLContext clearCurrentContext];
 		}
 		
 		[drawLock unlock];

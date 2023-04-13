@@ -212,13 +212,13 @@
 }
 
 // Add the small logo at the bottom (left or right) of the image
-+ (void) addSmallLogo:(NSString*) name
-                     :(int) dstStride
-                     :(unsigned char *) buf
-                     :(long) height
-                     :(long) rowBytes
-                     :(int) marginH // pixels
-                     :(BOOL) rightSide
++ (void) addTiffLogo:(NSString*) name
+                    :(int) dstStride
+                    :(unsigned char *) buf
+                    :(long) height
+                    :(long) rowBytes
+                    :(int) marginH // pixels
+                    :(BOOL) rightSide
 {
     NSImage *logo = [NSImage imageNamed:name];
     NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
@@ -226,6 +226,7 @@
         return;
 
     int logoStride = [TIFFRep samplesPerPixel];
+
     int leftMargin = marginH * dstStride;
     if (rightSide)
         leftMargin -= [TIFFRep bytesPerRow];
