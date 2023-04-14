@@ -94,7 +94,7 @@
                                                                     </binding>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn editable="NO" width="90" minWidth="10" maxWidth="3.4028230607370965e+38" id="122">
+                                                            <tableColumn editable="NO" width="90" minWidth="10" maxWidth="3.4028230607370965e+38" headerToolTip="Marketing version" id="122">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Version">
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -113,7 +113,7 @@
                                                                     </binding>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn editable="NO" width="90" minWidth="10" maxWidth="3.4028230607370965e+38" id="mSF-iX-ilQ" userLabel="Build">
+                                                            <tableColumn editable="NO" width="90" minWidth="10" maxWidth="3.4028230607370965e+38" headerToolTip="Project version" id="mSF-iX-ilQ" userLabel="Build">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Build">
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
