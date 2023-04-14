@@ -66,12 +66,13 @@ typedef char* vtkCocoaRenderWindow;
 - (void)cleanUpVTKSupport;
 
 + (void) addTiffLogo:(NSString*) name
-                     :(int) dstStride
-                     :(unsigned char *) buf
-                     :(long) height
-                     :(long) rowBytes
-                     :(int) marginH // pixels margin
-                     :(BOOL) rightSide;
+                    :(int) dstStride
+                    :(unsigned char *) buf
+                    :(long) height
+                    :(long) width
+                    :(long) rowBytes
+                    :(int) marginH // pixels margin
+                    :(BOOL) rightSide;
 
 // Accessors
 - (void)setRenderer:(vtkRenderer*)theRenderer;

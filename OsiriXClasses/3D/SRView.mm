@@ -2754,12 +2754,13 @@ typedef struct _xyzArray
 	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
 	
     [vtkMieleView addTiffLogo: @"SmallLogo.tif"
-                              : spp //dstStride
-                              : [rep bitmapData] //buf
-                              : height
-                              : [rep bytesPerRow] //rowBytes
-                              : width - 10 // 10 pixels margin
-                              : true]; // right side
+                             : spp //dstStride
+                             : [rep bitmapData] //buf
+                             : height
+                             : width
+                             : [rep bytesPerRow] //rowBytes
+                             : 10 // width - 10 // 10 pixels margin
+                             : true]; // right side
 	
      NSImage *image = [[[NSImage alloc] init] autorelease];
      [image addRepresentation:rep];

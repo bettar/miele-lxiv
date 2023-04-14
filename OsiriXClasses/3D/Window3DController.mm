@@ -191,7 +191,7 @@
 	NSImage *im = ( [[self view] respondsToSelector: @selector(nsimageQuicktime:)] ) ?
 		[(VRView*) [self view] nsimageQuicktime] : nil;
 	
-	NSData *imageData = [im  TIFFRepresentation];
+	NSData *imageData = [im TIFFRepresentation];
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
 	NSData *bitmapData = [imageRep representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	
@@ -210,13 +210,13 @@
 	
 	[printOperation setCanSpawnSeparateThread: YES];
 	
-	[printOperation runOperationModalForWindow:[self window]
-                                      delegate:self
+	[printOperation runOperationModalForWindow: [self window]
+                                      delegate: self
                                 didRunSelector: @selector(printOperationDidRun:success:contextInfo:)
-                                   contextInfo:nil];
+                                   contextInfo: nil];
 }
 
-//==============================================================================
+#pragma mark -
 
 - (BOOL)is4D;
 {

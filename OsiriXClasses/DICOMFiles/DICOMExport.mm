@@ -287,11 +287,11 @@
             [self setOffset: 0];
             [self setSigned: NO];
             
-			return [self setPixelData:		imageData
-						samplesPerPixel:	[imageRepresentation samplesPerPixel]
-						bitsPerSample:		[imageRepresentation bitsPerPixel] / [imageRepresentation samplesPerPixel]
-						width:				w
-						height:				h];
+			return [self setPixelData: imageData
+                      samplesPerPixel: [imageRepresentation samplesPerPixel]
+						bitsPerSample: [imageRepresentation bitsPerPixel] / [imageRepresentation samplesPerPixel]
+                                width: w
+                               height: h];
 		}
 		else
             return -1;

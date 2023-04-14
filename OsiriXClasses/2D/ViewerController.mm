@@ -19693,7 +19693,7 @@ static BOOL viewerControllerPlaying = NO;
 				if (columns * rows > 4)
 					im = [DCMPix resizeIfNecessary: im dcmPix: [imageView curDCM]];
 				
-				NSData *bitmapData = [im  TIFFRepresentation];
+				NSData *bitmapData = [im TIFFRepresentation];
 				
 				[files addObject: [tmpFolder stringByAppendingFormat:@"/%d", i]];
 				[bitmapData writeToFile: [files lastObject] atomically:YES];

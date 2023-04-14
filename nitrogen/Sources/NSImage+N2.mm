@@ -158,7 +158,8 @@
 	
 	if ([color colorSpaceName] != NSCalibratedRGBColorSpace)
 		color = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
-	NSInteger componentsCount = [color numberOfComponents];
+
+    NSInteger componentsCount = [color numberOfComponents];
 	CGFloat components[componentsCount];
 	[color getComponents:components];
 	
@@ -463,7 +464,7 @@ end_size_y:
 	
 	NSImage *returnImage = nil;
 	
-	if( newImage)
+	if (newImage)
 		returnImage = [[NSImage alloc] initWithData: [newImage TIFFRepresentation]];
 	
 	[pool release];

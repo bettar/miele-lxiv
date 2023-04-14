@@ -7996,12 +7996,13 @@ public:
 				}
 				
                 [vtkMieleView addTiffLogo: @"SmallLogo.tif"
-                                          : dstStride
-                                          : buf
-                                          : *height
-                                          : rowBytes
-                                          : 2 // pixels margin
-                                          : false]; // left side
+                                         : dstStride
+                                         : buf
+                                         : *height
+                                         : *width
+                                         : rowBytes
+                                         : 2 // pixels margin
+                                         : false]; // left side
 			}
 
             [NSOpenGLContext clearCurrentContext];

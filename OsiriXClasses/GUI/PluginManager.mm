@@ -644,12 +644,22 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                         {
                             [pluginsBundleDictionary setObject: plugin forKey: pathResolved];
                             
-                            // First try CFBundleVersion
-                            NSString *version = [[plugin infoDictionary] valueForKey: (NSString*) kCFBundleVersionKey];
+                            NSString *version = nil;
+#if 1
+                            // First try CFBundleShortVersionString ("version" MARKETING_VERSION)
+                            version = [[plugin infoDictionary] valueForKey: @"CFBundleShortVersionString"];
+                            
+                            // If CFBundleShortVersionString is missing, try CFBundleVersion ("build" CURRENT_PROJECT_VERSION)
+                            if (version == nil)
+                                version = [[plugin infoDictionary] valueForKey: (NSString*) kCFBundleVersionKey];
+#else
+                            // First try CFBundleVersion (build)
+                            version = [[plugin infoDictionary] valueForKey: (NSString*) kCFBundleVersionKey];
                             
                             // If CFBundleVersion is missing, try CFBundleShortVersionString
                             if (version == nil)
                                 version = [[plugin infoDictionary] valueForKey: @"CFBundleShortVersionString"];
+#endif
                             
                             NSLog( @"Loaded: %@, vers: %@ (%@)", [name stringByDeletingPathExtension], version, path);
                             
@@ -1440,7 +1450,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 //				NSBundle *plugin = [NSBundle bundleWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
 //				if (filterClass = [plugin principalClass])	
 				{					
-					NSMutableDictionary *pluginDescription = [NSMutableDictionary dictionaryWithCapacity:3];
+					NSMutableDictionary *pluginDescription = [NSMutableDictionary dictionaryWithCapacity:3]; // TBC 4 ?
 					[pluginDescription setObject:[name stringByDeletingPathExtension] forKey:@"name"];
 					[pluginDescription setObject:[NSNumber numberWithBool:active] forKey:@"active"];
 					[pluginDescription setObject:[NSNumber numberWithBool:allUsers] forKey:@"allUsers"];
@@ -1449,18 +1459,23 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 					
 					// plugin version
 					
-					// taking the "version" through NSBundle is a BAD idea: Cocoa keeps the NSBundle in cache... thus for a same path you'll always have the same version
+					// taking the "version" through NSBundle is a BAD idea: Cocoa keeps the NSBundle in cache... thus for the same path you'll always have the same version
 					
 					NSURL *bundleURL = [NSURL fileURLWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
 					CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef)bundleURL);
 								
-					CFStringRef versionString = nil;
+                    CFStringRef buildString = nil; // Current Project Version, eg.: 20230414
+					CFStringRef versionString = nil; // Marketing Version, eg.: 3.1
 					if (bundleInfoDict)
 					{
+#if 1
+                        buildString = (CFStringRef)CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleVersion")); // "build" CURRENT_PROJECT_VERSION
+                        versionString = (CFStringRef)CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleShortVersionString")); // "version" MARKETING_VERSION
+#else
 						versionString = (CFStringRef)CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleVersion"));
-					
 						if (versionString == nil)
 							versionString = (CFStringRef)CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleShortVersionString"));
+#endif
 					}
 					
 					NSString *pluginVersion;
@@ -1469,8 +1484,18 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 					else
 						pluginVersion = @"";
 						
-					[pluginDescription setObject:pluginVersion forKey:@"version"];
-					
+                    [pluginDescription setObject:pluginVersion forKey:@"version"];
+                    
+#if 1
+                    NSString *pluginBuild;
+                    if (buildString)
+                        pluginBuild = (NSString*)buildString;
+                    else
+                        pluginBuild = @"";
+
+                    [pluginDescription setObject:pluginBuild forKey:@"build"];
+#endif
+
 					if (bundleInfoDict)
 						CFRelease( bundleInfoDict);
 					

@@ -347,7 +347,8 @@
                     Dicom_Image* image = [files objectAtIndex:[files count]/2];
                     
                     NSImage* thumbAv = [image thumbnailIfAlreadyAvailable];
-                    if (thumbAv) {
+                    if (thumbAv)
+                    {
                         NSImage* thumbnailImg = [[[NSImage alloc] initWithSize: NSMakeSize(THUMBNAILSIZE, THUMBNAILSIZE)] autorelease];
                         
                         [thumbnailImg lockFocus];
@@ -359,8 +360,7 @@
                         
                         tnData = [[thumbnailImg TIFFRepresentation] retain]; // autoreleased when returning
                     }
-                    else
-                    if ([[NSFileHandle fileHandleForReadingAtPath: image.completePath] readDataOfLength: 100])	// This means the file is readable...
+                    else if ([[NSFileHandle fileHandleForReadingAtPath: image.completePath] readDataOfLength: 100])	// This means the file is readable...
                     {
                         int frame = 0;
                         

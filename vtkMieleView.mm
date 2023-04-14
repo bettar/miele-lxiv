@@ -216,6 +216,7 @@
                     :(int) dstStride
                     :(unsigned char *) buf
                     :(long) height
+                    :(long) width // only used on right side
                     :(long) rowBytes
                     :(int) marginH // pixels
                     :(BOOL) rightSide
@@ -227,16 +228,18 @@
 
     int logoStride = [TIFFRep samplesPerPixel];
 
-    int leftMargin = marginH * dstStride;
+    int hotspotH;
     if (rightSide)
-        leftMargin -= [TIFFRep bytesPerRow];
+        hotspotH = (width - marginH) * dstStride - [TIFFRep bytesPerRow];
+    else
+        hotspotH = marginH * dstStride;
 
     // TODO: too small when done with Retina displays
 
     for (int i = 0; i < [TIFFRep pixelsHigh]; ++i) // do each row
     {
         unsigned char *srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-        unsigned char *dstPtr = (buf + (height - [TIFFRep pixelsHigh] + i)*rowBytes + leftMargin);
+        unsigned char *dstPtr = (buf + (height - [TIFFRep pixelsHigh] + i)*rowBytes + hotspotH);
         long x = [TIFFRep bytesPerRow] / logoStride;
         while (x-- > 0)
         {

@@ -2136,12 +2136,13 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				}
 				
                 [vtkMieleView addTiffLogo: @"SmallLogo.tif"
-                                          : *spp //dstStride
-                                          : buf
-                                          : *height
-                                          : rowBytes
-                                          : *width - 10 // pixels margin
-                                          : true]; // right side
+                                         : *spp //dstStride
+                                         : buf
+                                         : *height
+                                         : *width
+                                         : rowBytes
+                                         : 10 // *width - 10 // pixels margin
+                                         : true]; // right side
 			}
 
             [NSOpenGLContext clearCurrentContext];

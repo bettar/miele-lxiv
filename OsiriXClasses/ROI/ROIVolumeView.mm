@@ -131,12 +131,13 @@
         free(tempBuf);
 		
         [vtkMieleView addTiffLogo: @"SmallLogo.tif"
-                                  : dstStride
-                                  : buf
-                                  : *height
-                                  : rowBytes
-                                  : *width - 10 // pixels margin
-                                  : true]; // right side
+                                 : dstStride
+                                 : buf
+                                 : *height
+                                 : *width
+                                 : rowBytes
+                                 : 10 // *width - 10 // pixels margin
+                                 : true]; // right side
 
 //		[[NSOpenGLContext currentContext] flushBuffer];
 		[NSOpenGLContext clearCurrentContext];
@@ -221,7 +222,7 @@
 	
 	NSMutableArray *producedFiles = [NSMutableArray array];
 	
-	if( dataPtr)
+	if ( dataPtr)
 	{
 		ROIVolumeController *co = [[self window] windowController];
 		NSArray	*pixList = [[co viewer] pixList];
@@ -232,14 +233,14 @@
 		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
 		NSString *f = [exportDCM writeDCMFile: nil];
-		if( f == nil)
+		if ( f == nil)
             NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
                                     NSLocalizedString(@"Error during the creation of the DICOM File!", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
                                     nil);
 		
-		if( f)
+		if ( f)
 			[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
 		
 		free( dataPtr);

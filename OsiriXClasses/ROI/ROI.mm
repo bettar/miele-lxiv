@@ -10402,7 +10402,8 @@ void gl_round_box(int mode,
 		imageProps = [NSDictionary dictionaryWithObject:@0.3F forKey:NSImageCompressionFactor];
 	else
 		imageProps = [NSDictionary dictionaryWithObject:@1.0F forKey:NSImageCompressionFactor];
-	layerImageJPEG = [[imageRep representationUsingType:NSPNGFileType properties:imageProps] retain];	//NSJPEGFileType //NSJPEG2000FileType
+
+    layerImageJPEG = [[imageRep representationUsingType:NSPNGFileType properties:imageProps] retain];	//NSJPEGFileType //NSJPEG2000FileType
 }
 
 NSInteger sortPointArrayAlongX(id point1, id point2, void *context)

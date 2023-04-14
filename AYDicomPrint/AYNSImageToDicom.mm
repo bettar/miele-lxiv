@@ -404,14 +404,14 @@ extern BOOL FULL32BITPIPELINE;
 	if (imageRepresentation)
 	{
 		long bytesWritten = [imageRepresentation bytesPerRow] * [imageRepresentation size].height;
-		if(m_ImageDataBytes)
+		if (m_ImageDataBytes)
 		{
 			[m_ImageDataBytes release];
 			m_ImageDataBytes = nil;
 		}
 		
 		m_ImageDataBytes = [[NSMutableData alloc] initWithBytes: [imageRepresentation bitmapData] length: bytesWritten];
-		if(bytesWritten % 2 != 0)
+		if (bytesWritten % 2 != 0)
 		{
 			char zero = 0;
 			[m_ImageDataBytes appendBytes: &zero length: 1];
@@ -435,7 +435,7 @@ extern BOOL FULL32BITPIPELINE;
 	rawImage.imageData = nil;
 	rawImage.bytesWritten = 0;
 	
-	if( [imageRepresentation samplesPerPixel] != 3)
+	if ( [imageRepresentation samplesPerPixel] != 3)
 		return rawImage;
 	
 	long bytesWritten = 0;
