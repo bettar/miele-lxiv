@@ -17,7 +17,7 @@
 		<key>url</key>
 		<string>http://bettar.github.io/miele-lxiv/plugins/InvertData/html/index.html</string>
 		<key>version</key>
-		<string>1.2</string>
+		<string>2.1</string>
 	</dict>
 	<dict>
 		<key>download_url</key>
@@ -34,7 +34,7 @@
 		<key>url</key>
 		<string>http://bettar.github.io/miele-lxiv/plugins/CTR/html/index.html</string>
 		<key>version</key>
-		<string>2.1</string>
+		<string>3.1</string>
 	</dict>
 </array>
 </plist>
