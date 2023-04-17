@@ -1,5 +1,5 @@
 /* Class = "NSWindow"; title = "Fly Through"; ObjectID = "7"; */
-"7.title" = "Vuela a través de";
+"7.title" = "Navegación virtual";
 
 /* Class = "NSTabViewItem"; label = "Steps"; ObjectID = "30"; */
 "30.label" = "Pasos";
@@ -68,7 +68,7 @@
 "339.title" = "Calcula";
 
 /* Class = "NSButtonCell"; title = "Loop"; ObjectID = "340"; */
-"340.title" = "Loop";
+"340.title" = "Bucle";
 
 /* Class = "NSTextFieldCell"; title = "Method:"; ObjectID = "341"; */
 "341.title" = "Método:";

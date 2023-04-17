@@ -2147,7 +2147,7 @@
 "Flip Volume" = "Volúmen de volteo";
 
 /* No comment provided by engineer. */
-"Fly Thru" = "Vuela a través";
+"Fly Thru" = "Navegación virtual";
 
 /* No comment provided by engineer. */
 "Fly Thru Set up" = "Configuración de Fly Thru";
@@ -2672,7 +2672,7 @@
 "Locking database..." = "Bloqueo de la base de datos...";
 
 /* No comment provided by engineer. */
-"LOD" = "LD";
+"LOD" = "Resolución";
 
 /* No comment provided by engineer. */
 "Logarithmic Inverse Table" = "Tabla Logarítmica Inversa";
@@ -3731,7 +3731,7 @@
 "Radius (pix.)" = "Radio (pix.)";
 
 /* No comment provided by engineer. */
-"Rate" = "Tarifa";
+"Rate" = "Tasa";
 
 /* No comment provided by engineer. */
 "Reading data..." = "Lectura de datos...";
@@ -5287,7 +5287,7 @@ alfa : %2$.3f";
 "View size: %ld x %ld" = "Tamaño de la vista: %1$ld x %2$ld";
 
 /* Panel in preferences window */
-"Viewers" = "Espectadores";
+"Viewers" = "Visores";
 
 /* No comment provided by engineer. */
 "Views" = "Vistas";

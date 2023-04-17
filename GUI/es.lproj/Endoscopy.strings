@@ -340,7 +340,7 @@ Especular: 0.6, 2.0";
 "809.title" = "Longitud del paso de la trayectoria [mm]";
 
 /* Class = "NSButtonCell"; title = "Fly Thru"; ObjectID = "811"; */
-"811.title" = "Vuela a través";
+"811.title" = "Navegación virtual";
 
 /* Class = "NSButtonCell"; title = "Enable scroll wheel"; ObjectID = "819"; */
 "819.title" = "Activar roda de rato";
