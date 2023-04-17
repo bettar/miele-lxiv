@@ -130,19 +130,16 @@ static BOOL protectedReentryWindowDidResize = NO;
         return;
 	
 	protectedReentryWindowDidResize = YES;
-	if (magneticWindowActivated)
+
+    if (magneticWindowActivated)
 	{
-		if (dontEnterMagneticFunctions == NO && Button() != 0)
+		if (dontEnterMagneticFunctions == NO &&
+            Button() != 0)
 		{
 			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"])
 			{
-				NSEnumerator	*e;
-				NSWindow		*theWindow, *window;
-				NSValue			*value;
-				NSRect			frame, myFrame;
-				
-				theWindow = [aNotification object];
-				myFrame = [theWindow frame];
+                NSWindow *theWindow = [aNotification object];
+                NSRect myFrame = [theWindow frame];
 				
 				float gravityX = 30;
 				float gravityY = 30;
@@ -153,10 +150,11 @@ static BOOL protectedReentryWindowDidResize = NO;
 					return;
 				}
 				
-				NSMutableArray	*rects = [NSMutableArray array];
+				NSMutableArray *rects = [NSMutableArray array];
 				
 				// Add the viewers
-				e = [[NSApp windows] objectEnumerator];
+                NSWindow *window;
+                NSEnumerator *e = [[NSApp windows] objectEnumerator];
 				while (window = [e nextObject])
 				{
 					if (window != theWindow &&
@@ -173,50 +171,57 @@ static BOOL protectedReentryWindowDidResize = NO;
 	//			e = [[NSScreen screens] objectEnumerator];
 	//			while (screen = [e nextObject])
 				{
-					NSRect frame = [AppController usefulRectForScreen: [[self window] screen]];
-                    
-					frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
-					[rects addObject: [NSValue valueWithRect: frame]];
+					NSRect frame2 = [AppController usefulRectForScreen: [[self window] screen]];
+					frame2 = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame2];
+					[rects addObject: [NSValue valueWithRect: frame2]];
 				}
 				
-				NSRect	dstFrame = myFrame;
-				
-				for (value in rects)
+				NSRect dstFrame = myFrame;
+
+                for (NSValue *value in rects)
 				{
-					frame = [value rectValue];
-					
-					/* horizontal magnet */
-					if (fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)	// LEFT
-					{
-						gravityX = fabs(NSMinX(frame) - NSMaxX(myFrame));
-						dstFrame.size.width = frame.origin.x - myFrame.origin.x;
+                    NSRect frame3 = [value rectValue];
+
+                    /* Horizontal magnet */
+
+                    float dx2 = fabs(NSMinX(frame3) - NSMaxX(myFrame));
+					if (gravityX >= dx2)	// LEFT
+                    {
+						gravityX = dx2;
+						dstFrame.size.width = frame3.origin.x - myFrame.origin.x;
 					}
 					
-					/* vertical magnet */
-					if (fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)	//TOP
-					{
-						gravityY = fabs(NSMinY(frame) - NSMinY(myFrame));
+					/* Vertical magnet */
+
+                    float dy1 = fabs(NSMinY(frame3) - NSMinY(myFrame));
+					if (gravityY >= dy1)	// TOP
+                    {
+						gravityY = dy1;
 						
-						NSRect	previous = dstFrame;
-						dstFrame.origin.y = frame.origin.y;
+						NSRect previous = dstFrame;
+						dstFrame.origin.y = NSMinY(frame3);
 						dstFrame.size.height = dstFrame.size.height - (dstFrame.origin.y - previous.origin.y);
 					}
 				}
 				
-				for (value in rects)
+				for (NSValue *value in rects)
 				{
-					if (fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)	//RIGHT
-					{
-						gravityX = fabs(NSMaxX(frame) - NSMaxX(myFrame));
-						dstFrame.size.width = NSMaxX(frame) - NSMinX(myFrame);
+                    NSRect frame3 = [value rectValue]; // bug fix ?
+
+                    float dx4 = fabs(NSMaxX(frame3) - NSMaxX(myFrame));
+                    if (gravityX >= dx4)	// RIGHT
+                    {
+						gravityX = dx4;
+						dstFrame.size.width = NSMaxX(frame3) - NSMinX(myFrame);
 					}
 				
-					if (fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)	// BOTTOM
-					{
-						gravityY = fabs(NSMaxY(frame) - NSMinY(myFrame));
+                    float dy3 = fabs(NSMaxY(frame3) - NSMinY(myFrame));
+					if (gravityY >= dy3)	// BOTTOM
+                    {
+						gravityY = dy3;
 						
 						NSRect previous = dstFrame;
-						dstFrame.origin.y = NSMaxY(frame);
+						dstFrame.origin.y = NSMaxY(frame3);
 						dstFrame.size.height = dstFrame.size.height - (dstFrame.origin.y - previous.origin.y);
 					}
 				}
@@ -241,16 +246,14 @@ static BOOL protectedReentryWindowDidResize = NO;
 				
 				NSArray	*viewers = [ViewerController getDisplayed2DViewers];
 				
-				for( id loopItem in viewers)
+				for (id loopItem in viewers)
 				{
 					if (loopItem != self)
 					{
 						NSWindow *theWindow = [loopItem window];
 						
 						NSRect dstFrame = [theWindow frame];
-						
 						dstFrame.size = [[self window] frame].size;
-						
 						dstFrame.origin.y -= dstFrame.size.height - [theWindow frame].size.height;
 						
 						dontEnterMagneticFunctions = YES;
@@ -258,7 +261,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 						dontEnterMagneticFunctions = NO;
 					}
 				}
-			}
+			} // if SHIFT
 		}
 		else
 		{
@@ -271,9 +274,11 @@ static BOOL protectedReentryWindowDidResize = NO;
             if (dstFrame.size.width >= visibleRect.size.width)
                 dstFrame.size.width = visibleRect.size.width;
 			
-			if (dstFrame.size.height < [[self window] contentMinSize].height) dstFrame.size.height = [[self window] contentMinSize].height;
-			if (dstFrame.size.width < [[self window] contentMinSize].width) dstFrame.size.width = [[self window] contentMinSize].width;
-			
+			if (dstFrame.size.height < [[self window] contentMinSize].height)
+                dstFrame.size.height = [[self window] contentMinSize].height;
+
+            if (dstFrame.size.width < [[self window] contentMinSize].width)
+                dstFrame.size.width = [[self window] contentMinSize].width;
 			
 			dstFrame = [NavigatorView adjustIfScreenAreaIf4DNavigator: dstFrame];
 			
@@ -329,179 +334,185 @@ static BOOL protectedReentryWindowDidResize = NO;
 
 - (void)windowWillMove:(NSNotification *)notification
 {
-	if (magneticWindowActivated)
-	{
-		windowIsMovedByTheUserO = NO;
-		
-		if (dontEnterMagneticFunctions == NO)
-		{
-			savedWindowsFrameO = [[self window] frame];
-			
-			if (Button()) windowIsMovedByTheUserO = YES;
-		}
-	}
+	if (!magneticWindowActivated)
+        return;
+
+    windowIsMovedByTheUserO = NO;
+    
+    if (dontEnterMagneticFunctions == NO)
+    {
+        savedWindowsFrameO = [[self window] frame];
+        
+        if (Button())
+            windowIsMovedByTheUserO = YES;
+    }
 }
 
 - (void)windowDidMove:(NSNotification *)notification
 {
-	if (magneticWindowActivated)
-	{
-		if (/*!Button() && */
-            windowIsMovedByTheUserO == YES &&
-            dontEnterMagneticFunctions == NO &&
-            [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] &&
-            NSIsEmptyRect( savedWindowsFrameO) == NO)
-		{
-			if (Button() == 0)
-                windowIsMovedByTheUserO = NO;
-			
-			NSEnumerator	*e;
-			NSWindow		*theWindow, *window;
-			NSRect			frame, myFrame, dstFrame;
-			NSValue			*value;
-			
-			theWindow = [self window];
-			myFrame = [theWindow frame];
-			
-			float gravityX = myFrame.size.width/4;
-			float gravityY = myFrame.size.height/4;
-			
-			if ([[NSApp currentEvent] modifierFlags] & NSEventModifierFlagOption)
-                return;
-			
-			NSMutableArray *rects = [NSMutableArray array];
-			
-			// Add the viewers
-			e = [[NSApp windows] objectEnumerator];
-			while (window = [e nextObject])
-			{
-				if (window != theWindow &&
-                    [window isVisible] &&
-                    [[window windowController] isKindOfClass: [OSIWindowController class]] &&
-                    [window.screen isEqualTo: theWindow.screen])
-				{
-					if ([[window windowController] magnetic])
-						[rects addObject: [NSValue valueWithRect: [window frame]]];
-				}
-			}
-			
-			// Add the current screen ONLY
-	//		e = [[NSScreen screens] objectEnumerator];
-	//		while (screen = [e nextObject])
-			{
-				NSRect frame = [AppController usefulRectForScreen: [[self window] screen]];
-                
-				frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
-				
-				[rects addObject: [NSValue valueWithRect: frame]];
-			}
-			
-			dstFrame = myFrame;
-			
-			for (value in rects)
-			{
-				frame = [value rectValue];
-				
-				/* horizontal magnet */
-				if (fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravityX)
-				{
-					gravityX = fabs(NSMinX(frame) - NSMinX(myFrame));
-					dstFrame.origin.x = NSMinX(frame);
-				}
+    if (!magneticWindowActivated)
+        return;
 
-                if (fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
-				{
-					gravityX = fabs(NSMinX(frame) - NSMaxX(myFrame));
-					dstFrame.origin.x = NSMinX(frame) - NSWidth(myFrame);
-				}
+    if (/*!Button() && */
+        windowIsMovedByTheUserO == YES &&
+        dontEnterMagneticFunctions == NO &&
+        [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] &&
+        NSIsEmptyRect( savedWindowsFrameO) == NO)
+    {
+        if (Button() == 0)
+            windowIsMovedByTheUserO = NO;
+        
+        NSWindow *theWindow = [self window];
+        NSRect myFrame = [theWindow frame];
+        
+        float gravityX = myFrame.size.width/4;
+        float gravityY = myFrame.size.height/4;
+        
+        if ([[NSApp currentEvent] modifierFlags] & NSEventModifierFlagOption)
+            return;
+        
+        NSMutableArray *rects = [NSMutableArray array];
+        
+        // Add the viewers
+        NSWindow *window;
+        NSEnumerator *e = [[NSApp windows] objectEnumerator];
+        while (window = [e nextObject])
+        {
+            if (window != theWindow &&
+                [window isVisible] &&
+                [[window windowController] isKindOfClass: [OSIWindowController class]] &&
+                [window.screen isEqualTo: theWindow.screen])
+            {
+                if ([[window windowController] magnetic])
+                    [rects addObject: [NSValue valueWithRect: [window frame]]];
+            }
+        }
+        
+        // Add the current screen ONLY
+//		e = [[NSScreen screens] objectEnumerator];
+//		while (screen = [e nextObject])
+        {
+            NSRect frame2 = [AppController usefulRectForScreen: [[self window] screen]];
+            frame2 = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame2]; //NSLog(@"%s %d, frame2: %@", __FUNCTION__, __LINE__, NSStringFromRect(frame2));
+            [rects addObject: [NSValue valueWithRect: frame2]];
+        }
+        
+        NSRect dstFrame = myFrame;
+        
+        for (NSValue *value in rects)
+        {
+            NSRect frame3 = [value rectValue];
+            
+            /* Horizontal magnet */
 
-                if (fabs(NSMaxX(frame) - NSMinX(myFrame)) <= gravityX)
-				{
-					gravityX = fabs(NSMaxX(frame) - NSMinX(myFrame));
-					dstFrame.origin.x = NSMaxX(frame);
-				}
+            float dx1 = fabs(NSMinX(frame3) - NSMinX(myFrame));
+            if (gravityX >= dx1)
+            {
+                gravityX = dx1;
+                dstFrame.origin.x = NSMinX(frame3);
+            }
+            
+            float dx2 = fabs(NSMinX(frame3) - NSMaxX(myFrame));
+            if (gravityX >= dx2)
+            {
+                gravityX = dx2;
+                dstFrame.origin.x = NSMinX(frame3) - NSWidth(myFrame);
+            }
+            
+            float dx3 = fabs(NSMaxX(frame3) - NSMinX(myFrame));
+            if (gravityX >= dx3)
+            {
+                gravityX = dx3;
+                dstFrame.origin.x = NSMaxX(frame3);
+            }
+            
+            float dx4 = fabs(NSMaxX(frame3) - NSMaxX(myFrame));
+            if (gravityX >= dx4)
+            {
+                gravityX = dx4;
+                dstFrame.origin.x = NSMaxX(frame3) - NSWidth(myFrame);
+            }
+            
+            /* Vertical magnet */
 
-                if (fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
-				{
-					gravityX = fabs(NSMaxX(frame) - NSMaxX(myFrame));
-					dstFrame.origin.x = NSMaxX(frame) - NSWidth(myFrame);
-				}
-				
-				/* vertical magnet */
-				if (fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
-				{
-					gravityY = fabs(NSMinY(frame) - NSMinY(myFrame));
-					dstFrame.origin.y = NSMinY(frame);
-				}
-
-                if (fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravityY)
-				{
-					gravityY = fabs(NSMinY(frame) - NSMaxY(myFrame));
-                    dstFrame.origin.y = NSMinY(frame) - NSHeight(myFrame);
-				}
-
-                if (fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
-				{
-					gravityY = fabs(NSMaxY(frame) - NSMinY(myFrame));
-					dstFrame.origin.y = NSMaxY(frame);
-				}
-
-                if (fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravityY)
-				{
-					gravityY = fabs(NSMaxY(frame) - NSMaxY(myFrame));
-                    dstFrame.origin.y = NSMaxY(frame) - NSHeight(myFrame);
-				}
-			}
-			myFrame = dstFrame;
-			
-			dontEnterMagneticFunctions = YES;
-			[AppController resizeWindowWithAnimation: theWindow newSize: myFrame];
-			dontEnterMagneticFunctions = NO;
-			
-			if ([self isKindOfClass: [ViewerController class]])
-				[(ViewerController*) self updateNavigator];
-			
-			// Is the Origin identical? If yes, switch both windows
-			e = [[NSApp windows] objectEnumerator];
-			while (window = [e nextObject])
-			{
-				if (window != theWindow &&
-                    [window isVisible] &&
-                    [[window windowController] isKindOfClass: [OSIWindowController class]])
-				{
-					if ([[window windowController] magnetic])
-					{
-						frame = [window frame];
-						
-						if (fabs( frame.origin.x - myFrame.origin.x) < 30 &&
-                            fabs( NSMaxY( frame) - NSMaxY( myFrame)) < 30)
-						{
-							dontEnterMagneticFunctions = YES;
-							
-							[window orderWindow: NSWindowBelow relativeTo: [theWindow windowNumber]];
-							[AppController resizeWindowWithAnimation: window newSize: savedWindowsFrameO];
-							
-							savedWindowsFrameO = frame;
-							
-							[AppController resizeWindowWithAnimation: theWindow newSize: frame];
-							
-							dontEnterMagneticFunctions = NO;
-							
-                            if ([self isKindOfClass: [ViewerController class]]) {
-                                NSNotification *notification = nil; //[NSNotification notificationWithName:NSWindowDidChangeScreenNotification object:theWindow];
-                                [theWindow.windowController windowDidChangeScreen:notification];
-                            }
-                            
-		//					[window makeKeyAndOrderFront: self];
-		//					[theWindow makeKeyAndOrderFront: self];
-                            
-							return;
-						}
-					}
-				}
-			}
-		}
-	}
+            float dy1 = fabs(NSMinY(frame3) - NSMinY(myFrame));
+            if (gravityY >= dy1)
+            {
+                gravityY = dy1;
+                dstFrame.origin.y = NSMinY(frame3);
+            }
+            
+            float dy2 = fabs(NSMinY(frame3) - NSMaxY(myFrame));
+            if (gravityY >= dy2)
+            {
+                gravityY = dy2;
+                dstFrame.origin.y = NSMinY(frame3) - NSHeight(myFrame);
+            }
+            
+            float dy3 = fabs(NSMaxY(frame3) - NSMinY(myFrame));
+            if (gravityY >= dy3)
+            {
+                gravityY = dy3;
+                dstFrame.origin.y = NSMaxY(frame3);
+            }
+            
+            float dy4 = fabs(NSMaxY(frame3) - NSMaxY(myFrame));
+            if (gravityY >= dy4)
+            {
+                gravityY = dy4;
+                dstFrame.origin.y = NSMaxY(frame3) - NSHeight(myFrame);
+            }
+        }
+        
+        myFrame = dstFrame;
+        
+        dontEnterMagneticFunctions = YES;
+        [AppController resizeWindowWithAnimation: theWindow newSize: myFrame];
+        dontEnterMagneticFunctions = NO;
+        
+        if ([self isKindOfClass: [ViewerController class]])
+            [(ViewerController*) self updateNavigator];
+        
+        // Is the Origin identical? If yes, switch both windows
+        e = [[NSApp windows] objectEnumerator];
+        while (window = [e nextObject])
+        {
+            if (window != theWindow &&
+                [window isVisible] &&
+                [[window windowController] isKindOfClass: [OSIWindowController class]])
+            {
+                if ([[window windowController] magnetic])
+                {
+                    NSRect frame4 = [window frame];
+                    
+                    if (fabs( frame4.origin.x - myFrame.origin.x) < 30 &&
+                        fabs( NSMaxY(frame4) - NSMaxY(myFrame)) < 30)
+                    {
+                        dontEnterMagneticFunctions = YES;
+                        
+                        [window orderWindow: NSWindowBelow relativeTo: [theWindow windowNumber]];
+                        [AppController resizeWindowWithAnimation: window newSize: savedWindowsFrameO];
+                        
+                        savedWindowsFrameO = frame4;
+                        
+                        [AppController resizeWindowWithAnimation: theWindow newSize: frame4];
+                        
+                        dontEnterMagneticFunctions = NO;
+                        
+                        if ([self isKindOfClass: [ViewerController class]]) {
+                            NSNotification *notification = nil; //[NSNotification notificationWithName:NSWindowDidChangeScreenNotification object:theWindow];
+                            [theWindow.windowController windowDidChangeScreen:notification];
+                        }
+                        
+//    					[window makeKeyAndOrderFront: self];
+//    					[theWindow makeKeyAndOrderFront: self];
+                        
+                        return;
+                    }
+                }
+            }
+        } // while
+    }
 }
 
 - (void) dealloc

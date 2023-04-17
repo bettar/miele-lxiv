@@ -6885,13 +6885,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 				NSPoint o = roi.rect.origin;
 				NSRect curROIRect = NSMakeRect( o.x-w/2.0, o.y-h/2.0, w, h);
 				
-				if (!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMinX( curROIRect), NSMinY( curROIRect)) inPolygon:polyRect size:4];
+				if (!intersected)
+                    intersected = [DCMPix IsPoint: NSMakePoint( NSMinX(curROIRect), NSMinY(curROIRect)) inPolygon:polyRect size:4];
                 
-				if (!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMinX( curROIRect), NSMaxY( curROIRect)) inPolygon:polyRect size:4];
+				if (!intersected)
+                    intersected = [DCMPix IsPoint: NSMakePoint( NSMinX(curROIRect), NSMaxY(curROIRect)) inPolygon:polyRect size:4];
                 
-				if (!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMaxX( curROIRect), NSMaxY( curROIRect)) inPolygon:polyRect size:4];
+				if (!intersected)
+                    intersected = [DCMPix IsPoint: NSMakePoint( NSMaxX(curROIRect), NSMaxY(curROIRect)) inPolygon:polyRect size:4];
                 
-				if (!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMaxX( curROIRect), NSMinY( curROIRect)) inPolygon:polyRect size:4];
+				if (!intersected)
+                    intersected = [DCMPix IsPoint: NSMakePoint( NSMaxX(curROIRect), NSMinY(curROIRect)) inPolygon:polyRect size:4];
 			}
 			else if (roiType==t2DPoint)
             {

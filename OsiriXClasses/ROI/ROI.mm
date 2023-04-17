@@ -5663,7 +5663,7 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
 	if (type == t2DPoint)
 	{
 		NSMutableArray *tempArray = [NSMutableArray array];
-		MyPoint	*tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( NSMinX( rect), NSMinY( rect))];
+		MyPoint	*tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( NSMinX(rect), NSMinY(rect))];
 		[tempArray addObject:tempPoint];
 		[tempPoint release];
 		
@@ -5675,19 +5675,19 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
 		NSMutableArray *tempArray = [NSMutableArray array];
 		MyPoint *tempPoint;
 		
-		tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( NSMinX( rect), NSMinY( rect))];
+		tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( NSMinX(rect), NSMinY(rect))];
 		[tempArray addObject:tempPoint];
 		[tempPoint release];
 		
-		tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( NSMinX( rect), NSMaxY( rect))];
+		tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( NSMinX(rect), NSMaxY(rect))];
 		[tempArray addObject:tempPoint];
 		[tempPoint release];
 		
-		tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( NSMaxX( rect), NSMaxY( rect))];
+		tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( NSMaxX(rect), NSMaxY(rect))];
 		[tempArray addObject:tempPoint];
 		[tempPoint release];
 		
-		tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( NSMaxX( rect), NSMinY( rect))];
+		tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( NSMaxX(rect), NSMinY(rect))];
 		[tempArray addObject:tempPoint];
 		[tempPoint release];
 		
@@ -8379,8 +8379,8 @@ void gl_round_box(int mode,
 			interRect.size.height++;
 			interRect.size.width++;
 			
-			NSPoint cInterRect = NSMakePoint( NSMidX( interRect), NSMidY( interRect));
-			NSPoint cCurRect = NSMakePoint( NSMidX( curRect), NSMidY( curRect));
+			NSPoint cInterRect = NSMakePoint( NSMidX(interRect), NSMidY(interRect));
+			NSPoint cCurRect   = NSMakePoint( NSMidX(curRect), NSMidY(curRect));
 			
 			if (vertDirection != 0)
 			{
