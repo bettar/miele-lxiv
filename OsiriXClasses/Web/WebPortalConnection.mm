@@ -71,7 +71,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#include "url.h"
+#import "url.h"
 #import "tmp_locations.h"
 
 // TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties

@@ -10,8 +10,8 @@
 
 #import <Foundation/Foundation.h>
 
-#include "options.h"
-#include "url.h"
+#import "options.h"
+#import "url.h"
 #import "tmp_locations.h"
 
 #undef verify

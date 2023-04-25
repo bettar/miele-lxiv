@@ -37,7 +37,7 @@
 #import "ViewerController.h"
 #import "OSIVolumeWindow+Private.h"
 
-#include "N3Geometry.h"
+#import "N3Geometry.h"
 
 NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidUpdateNotification";
 

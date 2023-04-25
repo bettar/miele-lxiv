@@ -25,7 +25,7 @@
 #include <algorithm>
 #include <cmath>
 
-#include "N2ColorWell.h"
+#import "N2ColorWell.h"
 
 @implementation N2ColumnLayout
 

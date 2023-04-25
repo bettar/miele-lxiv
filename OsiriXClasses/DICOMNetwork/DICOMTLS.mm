@@ -20,7 +20,7 @@
 
 #import "DICOMTLS.h"
 #import "tmp_locations.h"
-#include "openssl/opensslv.h"       // for OPENSSL_VERSION_NUMBER
+#import "openssl/opensslv.h"       // for OPENSSL_VERSION_NUMBER
 
 @implementation DICOMTLS
 

@@ -18,7 +18,7 @@
  PURPOSE.
  =========================================================================*/
 
-#include "options.h"
+#import "options.h"
 #import "mieleTypes.h"
 
 #import "ToolbarPanel.h"
@@ -16825,19 +16825,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[pathsForSeries setObject:path forKey:kind];
 	}
 }
-#
+
 +(void) exportQuicktime:(NSArray*)dicomFiles2Export
                        :(NSString*)path
                        :(BOOL)html
                        :(BrowserController*)browser
                        :(NSMutableDictionary*)seriesPaths
 {
-	Wait                *splash = nil;
-	NSMutableArray		*imagesArray = [NSMutableArray array], *imagesArrayObjects = [NSMutableArray array];
-	NSString			*tempPath, *previousPath = nil;
-	long				previousSeries = -1;
-	NSString			*previousStudy = @"", *previousPatientUID = @"", *previousSeriesInstanceUID = @"";
-	BOOL				createHTML = html;
+	Wait *splash = nil;
+	NSMutableArray *imagesArray = [NSMutableArray array], *imagesArrayObjects = [NSMutableArray array];
+	NSString *tempPath, *previousPath = nil;
+	long previousSeries = -1;
+	NSString *previousStudy = @"", *previousPatientUID = @"", *previousSeriesInstanceUID = @"";
+	BOOL createHTML = html;
 	
 	NSMutableDictionary *htmlExportDictionary = [NSMutableDictionary dictionary];
 	
@@ -16980,7 +16980,6 @@ static volatile int numberOfThreadsForJPEG = 0;
                                     NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
                                     if (newImage)
                                         [imagesArray replaceObjectAtIndex: index withObject: newImage];
-                                    
                                 }
 							}
 						}

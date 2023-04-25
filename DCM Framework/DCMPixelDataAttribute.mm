@@ -18,7 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-#include "options.h"
+#import "options.h"
 
 #import <DCM/DCMPixelDataAttribute.h>
 #import "DCM.h"

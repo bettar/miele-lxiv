@@ -18,7 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-#include "options.h"
+#import "options.h"
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcmetinf.h" // for DCM_PreambleLen

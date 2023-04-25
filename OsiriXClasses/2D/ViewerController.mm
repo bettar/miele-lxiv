@@ -18,7 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-#include "options.h"
+#import "options.h"
 #import "mieleTypes.h"
 
 #import <Accelerate/Accelerate.h>
@@ -108,6 +108,7 @@
 #import "DCMTKSeriesQueryNode.h"
 #import "O2ViewerThumbnailsMatrix.h"
 #import "MutableArrayCategory.h"
+#import "MyPoint.h"
 
 int delayedTileWindows = NO;
 

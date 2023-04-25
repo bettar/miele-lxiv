@@ -18,7 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-#include "options.h"
+#import "options.h"
 #import "mgl.h" // include first
 
 #import "GLRenderer.h"
@@ -38,6 +38,7 @@
 #import "StringTexture.h"
 #import "DCMPix.h"
 #import "ROI.h"
+#import "MyPoint.h"
 #import "NSFont_OpenGL/NSFont+OpenGL.h"
 #import "DCMCursor.h"
 #import "GLString.h"
@@ -8899,7 +8900,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             [scene.imageProgram setUniformi:0 name:"uTextureS2D"];
 #endif
 
-//            NSLog(@"DCMView.mm %d, drawRectIn, class:%@, self:%p", __LINE__, NSStringFromClass([self class]), self);
+            //NSLog(@"DCMView.mm %d, drawRectIn, class:%@, self:%p", __LINE__, NSStringFromClass([self class]), self);
             DrawGLImageTile(GL_TRIANGLE_STRIP, curDCM.pwidth, curDCM.pheight, scaleValue,	//
                                 currTextureWidth, currTextureHeight, // draw this single texture on two tris
                                 offsetX,  offsetY,
@@ -11948,6 +11949,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    
 #ifndef WITH_OPENGL_32
     glEnable(GL_POINT_SMOOTH);
 #endif
@@ -11977,17 +11979,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     renderer_setLineWidth(3 * self.window.backingScaleFactor);
     renderer_drawLine_xy([pArray copy], GL_LINE_LOOP);
 
-
     [scene.overlayProgram Bind];
     [scene.overlayProgram setUniformMatrix: glm::value_ptr(MV) name:"uModelViewM"];
     glPointSize(3 * self.window.backingScaleFactor);
     renderer_drawPoints([pArray copy]);
 
-    glDisable(GL_LINE_SMOOTH);
-    glDisable(GL_POLYGON_SMOOTH);
-#ifndef WITH_OPENGL_32
-    glDisable(GL_POINT_SMOOTH);
-#endif
+    renderer_disable_blend_smooth();
 #endif
     checkOpenGLErrors(__LINE__);
 }
@@ -12524,13 +12521,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     (stringID == nil || [stringID isEqualToString:@"export"]) &&
                     frontMost == NO)
 				{
-					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-					glEnable(GL_BLEND);
-#ifndef WITH_OPENGL_32
-                    glEnable(GL_POINT_SMOOTH);
-#endif
-					glEnable(GL_LINE_SMOOTH);
-					glEnable(GL_POLYGON_SMOOTH);
+                    renderer_enable_blend_smooth();
                     
 #pragma mark annotations: Cross-reference lines
 
@@ -12657,12 +12648,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                         [self setShaderProgramForLineWidth: 1.0 * sf];
 					}
 					
-#ifndef WITH_OPENGL_32
-                    glDisable(GL_POINT_SMOOTH);
-#endif
-                    glDisable(GL_LINE_SMOOTH);
-					glDisable(GL_POLYGON_SMOOTH);
-					glDisable(GL_BLEND);
+                    renderer_disable_blend_smooth();
 				}
 			
 #pragma mark annotations: Ruler

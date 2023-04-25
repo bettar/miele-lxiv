@@ -470,6 +470,35 @@ void renderer_set_rgba(GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLuint fromLi
     checkOpenGLErrors(__LINE__);
 }
 
+void renderer_enable_blend_smooth()
+{
+#ifndef WITH_OPENGL_32
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (!cgl_ctx)
+        return;
+#endif
+    
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable(GL_BLEND);
+
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_POLYGON_SMOOTH);
+#ifndef WITH_OPENGL_32
+    glEnable(GL_POINT_SMOOTH);
+#endif
+}
+
+void renderer_disable_blend_smooth()
+{
+    glDisable(GL_LINE_SMOOTH);
+    glDisable(GL_POLYGON_SMOOTH);
+#ifndef WITH_OPENGL_32
+    glDisable(GL_POINT_SMOOTH);
+#endif
+    
+    glDisable(GL_BLEND);
+}
+
 void renderer_set_rgb(GLfloat r, GLfloat g, GLfloat b, GLuint fromLine)
 {
     //glDisable(GL_BLEND);

@@ -18,10 +18,10 @@
  PURPOSE.
  =========================================================================*/
 
-#include "N3Geometry.h"
-#include <ApplicationServices/ApplicationServices.h>
-#include <math.h>
-#include <Accelerate/Accelerate.h>
+#import "N3Geometry.h"
+#import <ApplicationServices/ApplicationServices.h>
+#import <math.h>
+#import <Accelerate/Accelerate.h>
 
 static const CGFloat _N3GeometrySmallNumber = (CGFLOAT_MIN * 1E5);
 

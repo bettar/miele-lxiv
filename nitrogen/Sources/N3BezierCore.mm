@@ -18,7 +18,7 @@
  PURPOSE.
  =========================================================================*/
 
-#include "N3BezierCore.h"
+#import "N3BezierCore.h"
 #include <libkern/OSAtomic.h>
 
 static const void *_N3BezierCoreRetainCallback(CFAllocatorRef allocator, const void *value)

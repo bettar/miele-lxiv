@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,14 +17,14 @@
         <window title="Calcium Scoring" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Window" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" utility="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="371" height="450"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="213" height="113"/>
-            <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="371" height="463"/>
+            <view key="contentView" misplaced="YES" id="6">
+                <rect key="frame" x="0.0" y="0.0" width="371" height="450"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <comboBox verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
-                        <rect key="frame" x="14" y="331" width="347" height="22"/>
+                        <rect key="frame" x="13" y="333" width="347" height="19"/>
                         <comboBoxCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="Left Anterior Descending Artery" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="139">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -42,9 +42,9 @@
                         </connections>
                     </comboBox>
                     <box title="CT" translatesAutoresizingMaskIntoConstraints="NO" id="12">
-                        <rect key="frame" x="11" y="362" width="350" height="92"/>
+                        <rect key="frame" x="11" y="361" width="350" height="94"/>
                         <view key="contentView" id="jNh-q5-Udp">
-                            <rect key="frame" x="3" y="3" width="344" height="74"/>
+                            <rect key="frame" x="4" y="5" width="342" height="74"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7">
@@ -82,7 +82,7 @@
                         </view>
                     </box>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="20">
-                        <rect key="frame" x="94" y="308" width="98" height="13"/>
+                        <rect key="frame" x="93" y="308" width="98" height="13"/>
                         <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="(Click in the image)" id="140">
                             <font key="font" metaFont="system" size="10"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -90,7 +90,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="21">
-                        <rect key="frame" x="12" y="307" width="80" height="14"/>
+                        <rect key="frame" x="12" y="307" width="79" height="14"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Starting Point:" id="141">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -261,7 +261,7 @@
                         </tableHeaderView>
                     </scrollView>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="65">
-                        <rect key="frame" x="239" y="2" width="64" height="32"/>
+                        <rect key="frame" x="240" y="2" width="63" height="32"/>
                         <buttonCell key="cell" type="push" title="Print" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="146">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -324,7 +324,7 @@
             </connections>
         </arrayController>
         <customView id="67" userLabel="View">
-            <rect key="frame" x="0.0" y="8" width="452" height="582"/>
+            <rect key="frame" x="0.0" y="0.0" width="452" height="582"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="132">
@@ -379,7 +379,7 @@
                     <rect key="frame" x="20" y="135" width="412" height="253"/>
                     <clipView key="contentView" id="Y9W-ac-BxB">
                         <rect key="frame" x="0.0" y="0.0" width="412" height="253"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" headerView="173" id="93">
                                 <rect key="frame" x="0.0" y="0.0" width="441" height="236"/>
@@ -488,7 +488,7 @@
                         <rect key="frame" x="-100" y="-100" width="15" height="212"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
-                    <tableHeaderView key="headerView" id="173">
+                    <tableHeaderView key="headerView" wantsLayer="YES" id="173">
                         <rect key="frame" x="0.0" y="0.0" width="441" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </tableHeaderView>
@@ -580,6 +580,7 @@
                 <constraint firstItem="92" firstAttribute="leading" secondItem="67" secondAttribute="leading" constant="20" symbolic="YES" id="sCp-qf-jGO"/>
                 <constraint firstAttribute="trailing" secondItem="113" secondAttribute="trailing" constant="18" id="wY5-xM-7pw"/>
             </constraints>
+            <point key="canvasLocation" x="62" y="-471"/>
         </customView>
     </objects>
 </document>

@@ -35,7 +35,6 @@
 #import "OSIFloatVolumeData.h"
 #import "OSIROIMask.h"
 #import "OSIROI.h"
-#import "MyPoint.h"
 
 @interface OSIPlanarPathROI ()
 

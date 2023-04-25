@@ -20,7 +20,7 @@
 
 /* See DCMTK's storescu.cc */
 
-#include "url.h"
+#import "url.h"
 
 #undef verify
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */

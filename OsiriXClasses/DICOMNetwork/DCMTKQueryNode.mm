@@ -22,7 +22,7 @@
  */
 
 #undef verify
-#include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+#import "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 
 #import "DCMTKStudyQueryNode.h"
 #import "DCMTKSeriesQueryNode.h"

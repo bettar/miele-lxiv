@@ -22,7 +22,7 @@
 #import "WaitRendering.h"
 #import "N2Debug.h"
 
-#include <Accelerate/Accelerate.h>
+#import <Accelerate/Accelerate.h>
 
 @interface ResliceOperation: NSOperation
 {

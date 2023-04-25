@@ -18,7 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-#include "url.h"
+#import "url.h"
 #import <DCM/DCMEncapsulatedPDF.h>
 #import "DCM.h"
 #import <DCM/DCMAbstractSyntaxUID.h>

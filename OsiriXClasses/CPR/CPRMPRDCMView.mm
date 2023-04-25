@@ -42,7 +42,7 @@
 #import "OSIROI.h"
 #import "OSIVolumeWindow.h"
 
-#include "N3Geometry.h"
+#import "N3Geometry.h"
 #import "vtkMath.h"
 
 extern unsigned int minimumStep;
@@ -773,13 +773,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         return;
 #endif
     
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable(GL_BLEND);
-#ifndef WITH_OPENGL_32
-    glEnable(GL_POINT_SMOOTH);
-#endif
-	glEnable(GL_LINE_SMOOTH);
-	glPointSize( 12 * self.window.backingScaleFactor);
+    renderer_enable_blend_smooth();
+
+    glPointSize( 12 * self.window.backingScaleFactor);
 
 	if (displayCrossLines && frameZoomed == NO)
 	{
@@ -1032,12 +1028,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		}
 	} // mouse position
 	
-	glDisable(GL_LINE_SMOOTH);
-	glDisable(GL_POLYGON_SMOOTH);
-#ifndef WITH_OPENGL_32
-    glDisable(GL_POINT_SMOOTH);
-#endif
-	glDisable(GL_BLEND);
+    renderer_disable_blend_smooth();
 }
 
 #pragma mark -

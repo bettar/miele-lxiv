@@ -30,6 +30,7 @@
 #import "DCMPix.h"
 #import "DCMView.h"
 #import "ROI.h"
+#import "MyPoint.h"
 
 #include "math.h"
 #import "Wait.h"

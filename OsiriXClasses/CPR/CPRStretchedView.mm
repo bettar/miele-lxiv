@@ -481,13 +481,7 @@ extern int splitPosition[ 3];
     if (cgl_ctx == nil)
         return;
     
-	glEnable(GL_BLEND);
-	glEnable(GL_POLYGON_SMOOTH);
-#ifndef WITH_OPENGL_32
-    glEnable(GL_POINT_SMOOTH);
-#endif
-	glEnable(GL_LINE_SMOOTH);
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    renderer_enable_blend_smooth();
 	
     if ([curDCM pixelSpacingX] == 0)
         return;
@@ -934,12 +928,7 @@ extern int splitPosition[ 3];
 #endif
 	}
 	
-	glDisable(GL_LINE_SMOOTH);
-	glDisable(GL_POLYGON_SMOOTH);
-#ifndef WITH_OPENGL_32
-    glDisable(GL_POINT_SMOOTH);
-#endif
-	glDisable(GL_BLEND);	
+    renderer_disable_blend_smooth();
 }
 
 #pragma mark -

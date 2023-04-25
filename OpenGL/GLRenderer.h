@@ -70,6 +70,9 @@ void renderer_drawTriangles_xy(NSArray *pArray);
 void renderer_drawLine_xy(NSArray *pArray, GLenum lineMode);
 void renderer_drawPoints(NSArray *pArray, BOOL rounded=true);
 
+void renderer_enable_blend_smooth();
+void renderer_disable_blend_smooth();
+
 typedef struct _point3D_UV {
     glm::vec3 p;
     glm::vec2 t;

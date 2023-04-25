@@ -18,9 +18,10 @@
  PURPOSE.
  =========================================================================*/
 
-#include <locale>
+#import <locale>
 
-#include <Accelerate/Accelerate.h>
+#import <Accelerate/Accelerate.h>
+
 #define id Id
 #include "itkImage.h"
 #include "itkImportImageFilter.h"
@@ -37,7 +38,7 @@
 #import "DCMPix.h"
 #import "N2Debug.h"
 
-#include "options.h"
+#import "options.h"
 
 typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 

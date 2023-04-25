@@ -21,7 +21,7 @@
 #ifndef DCMVIEW_H_INCLUDED
 #define DCMVIEW_H_INCLUDED
 
-#include "options.h"
+#import "options.h"
 
 #import "ROI.h"
 #import "N3Geometry.h"

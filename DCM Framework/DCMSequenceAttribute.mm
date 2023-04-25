@@ -18,7 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-#include "url.h"
+#import "url.h"
 #import <DCM/DCMSequenceAttribute.h>
 #import "DCM.h"
 

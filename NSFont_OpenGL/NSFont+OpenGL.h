@@ -7,7 +7,7 @@
 //  At the end of 2014 the project was forked from OsiriX to become Miele-LXIV
 //  The original version of this file had no header
 
-#include "options.h"
+#import "options.h"
 
 #import <Cocoa/Cocoa.h>
 

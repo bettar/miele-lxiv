@@ -21,7 +21,7 @@
 #import "OSIROIFloatPixelData.h"
 #import "OSIFloatVolumeData.h"
 #import "OSIROIMask.h"
-#include <Accelerate/Accelerate.h>
+#import <Accelerate/Accelerate.h>
 
 @implementation OSIROIFloatPixelData
 

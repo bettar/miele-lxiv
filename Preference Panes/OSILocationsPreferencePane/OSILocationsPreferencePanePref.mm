@@ -96,8 +96,8 @@
 					{
 						NSAlert* alert = [[NSAlert new] autorelease];
 						[alert setMessageText: NSLocalizedString(@"Same AETitle", 0L)];
-						[alert setInformativeText:  [NSString stringWithFormat: NSLocalizedString(@"This AETitle is not unique: %@. AETitles should be unique, otherwise Q&R (C-Move SCP/SCU) can fail.", 0L), currentAETitle]];
-						[alert setShowsSuppressionButton:YES ];
+						[alert setInformativeText: [NSString stringWithFormat: NSLocalizedString(@"This AETitle is not unique: %@. AETitles should be unique, otherwise Q&R (C-Move SCP/SCU) can fail.", 0L), currentAETitle]];
+						[alert setShowsSuppressionButton:YES];
 						[alert addButtonWithTitle: NSLocalizedString(@"OK", nil)];
 						
 						[alert runModal];

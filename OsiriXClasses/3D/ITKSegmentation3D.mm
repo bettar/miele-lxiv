@@ -63,7 +63,6 @@
 #include "vtkPowerCrustSurfaceReconstruction.h"
 #include <vtkMarchingCubes.h>
 
-
 #undef id
 
 #import "ViewerController.h"
@@ -71,7 +70,7 @@
 #import "DCMPix.h"
 #import "DCMView.h"
 #import "ROI.h"
-#import "MyPoint.h"
+
 #import "OSIVoxel.h"
 #import "AppController.h"
 #import "ITKSegmentation3D.h"

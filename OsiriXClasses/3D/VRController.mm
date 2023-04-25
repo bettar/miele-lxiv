@@ -30,7 +30,7 @@
 #import "DICOMFiles/dicomFile.h"
 #import "NSFullScreenWindow.h"
 #import "BrowserController.h"
-#include <Accelerate/Accelerate.h>
+#import <Accelerate/Accelerate.h>
 #import "Photos.h"
 #import "DICOMExport.h"
 #import "VRFlyThruAdapter.h"

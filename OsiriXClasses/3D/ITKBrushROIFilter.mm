@@ -20,7 +20,8 @@
 
 #include <locale>
 
-#include <Accelerate/Accelerate.h>
+#import <Accelerate/Accelerate.h>
+
 #define id Id
 #include "itkImage.h"
 #include "itkImportImageFilter.h"

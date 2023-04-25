@@ -895,10 +895,8 @@
     if (drawLeftLateralScrollBar && [self cansScrollLeft])
 #endif
 	{
-		// draw the dark part
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_BLEND);
-		glEnable(GL_POLYGON_SMOOTH);
+		// Draw the dark part
+        renderer_enable_blend_smooth();
 #ifdef WITH_OPENGL_32
         GLScene *s = [GLScene currentScene];
         [s.overlayProgram Bind];   // Added
@@ -906,7 +904,6 @@
 #endif
         renderer_set_rgba(0.0f, 0.0f, 0.0f, 0.75f); // black 0.75
 
-#ifdef WITH_OPENGL_32
         {
         const int nPoints = 4;
         glm::vec2 pA[nPoints];
@@ -921,21 +918,10 @@
 
         renderer_drawPolygon([pArray copy]); // fills the inside ?
         }
-#else
-		glBegin(GL_POLYGON);
-        {
-			glVertex2f(0.0, 0.0);
-			glVertex2f(lateralScrollBarSize, 0.0);
-			glVertex2f(lateralScrollBarSize, viewSize.height);
-			glVertex2f(0.0, viewSize.height);
-        }
-		glEnd();
-#endif
 		
-        // draw the white left triangle
+        // Draw the white left triangle
 		renderer_set_rgba(1.0f, 1.0f, 1.0f, 0.9f); // white 0.9
 
-#ifdef WITH_OPENGL_32
         {
         const int nPoints = 3;
         glm::vec2 pA[nPoints];
@@ -949,19 +935,9 @@
 
         renderer_drawPolygon([pArray copy]); // fills the inside ?
         }
-#else
-		glBegin(GL_POLYGON);
-        {
-			glVertex2f(lateralScrollBarSize-7.0, viewBounds.size.height/2.0-6.0);
-			glVertex2f(lateralScrollBarSize-7.0, viewBounds.size.height/2.0+6.0);
-			glVertex2f(3.0, viewBounds.size.height/2.0);
-        }
-		glEnd();
-#endif
 
         renderer_set_rgb(0.0f, 0.0f, 0.0f); // black
-		glDisable(GL_BLEND);
-		glDisable(GL_POLYGON_SMOOTH);
+        renderer_disable_blend_smooth();
 	}
 	
 #pragma mark lateral scroll bar (right)
@@ -971,9 +947,7 @@
 #endif
 	{
 		// draw the dark part
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_BLEND);
-		glEnable(GL_POLYGON_SMOOTH);
+        renderer_enable_blend_smooth();
 
 #ifdef WITH_OPENGL_32
         GLScene *s = [GLScene currentScene];
@@ -982,7 +956,7 @@
 #endif
 
         renderer_set_rgba(0.0f, 0.0f, 0.0f, 0.75f); // black 0.75
-#ifdef WITH_OPENGL_32
+
         {
         const int nPoints = 4;
         glm::vec2 pA[nPoints];
@@ -997,20 +971,10 @@
 
         renderer_drawPolygon([pArray copy]); // fills the inside ?
         }
-#else
-		glBegin(GL_POLYGON);
-        {
-			glVertex2f(viewBounds.size.width-lateralScrollBarSize, 0.0);
-			glVertex2f(viewBounds.size.width, 0.0);
-			glVertex2f(viewBounds.size.width, viewSize.height);
-			glVertex2f(viewBounds.size.width-lateralScrollBarSize, viewSize.height);
-        }
-		glEnd();
-#endif
 				
-        // draw the white right triangle
+        // Draw the white right triangle
         renderer_set_rgba(1.0f, 1.0f, 1.0f, 0.9f); // white 0.9
-#ifdef WITH_OPENGL_32
+
         {
         const int nPoints = 3;
         glm::vec2 pA[nPoints];
@@ -1027,18 +991,9 @@
 
         renderer_drawPolygon([pArray copy]); // fills the inside ?
         }
-#else
-		glBegin(GL_POLYGON);
-        {
-			glVertex2f(viewBounds.size.width-lateralScrollBarSize+6.0, viewBounds.size.height/2.0-6.0);
-			glVertex2f(viewBounds.size.width-lateralScrollBarSize+6.0, viewBounds.size.height/2.0+6.0);
-			glVertex2f(viewBounds.size.width-4.0, viewBounds.size.height/2.0);
-        }
-		glEnd();
-#endif
+
         renderer_set_rgb(0.0f, 0.0f, 0.0f); // black
-		glDisable(GL_BLEND);
-		glDisable(GL_POLYGON_SMOOTH);
+        renderer_disable_blend_smooth();
 	}
 	
 // mouse position (for debug purpose)	

@@ -38,7 +38,7 @@
 #include <signal.h>
 
 //#import "dcmtk/dcmnet/dimse.h"
-#include "DcmQueryRetrieveOsiriSCP.h"
+#import "DcmQueryRetrieveOsiriSCP.h"
 
 #import "tmp_locations.h"
 

@@ -112,7 +112,7 @@ class vtkMyCallbackVR;
 
 #endif
 
-#include <Accelerate/Accelerate.h>
+#import <Accelerate/Accelerate.h>
 #import "ViewerController.h"
 #import "WaitRendering.h"
 

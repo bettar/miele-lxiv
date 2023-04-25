@@ -393,7 +393,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 //		while (screen = [e nextObject])
         {
             NSRect frame2 = [AppController usefulRectForScreen: [[self window] screen]];
-            frame2 = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame2]; //NSLog(@"%s %d, frame2: %@", __FUNCTION__, __LINE__, NSStringFromRect(frame2));
+            frame2 = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame2];
             [rects addObject: [NSValue valueWithRect: frame2]];
         }
         

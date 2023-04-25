@@ -19,7 +19,7 @@
 =========================================================================*/
 
 #import "CPRProjectionOperation.h"
-#include <Accelerate/Accelerate.h>
+#import <Accelerate/Accelerate.h>
 #import "CPRVolumeData.h"
 
 @implementation CPRProjectionOperation

@@ -35,7 +35,7 @@
 #import "UserNotifications/UserNotifications.h"
 #import "XMLRPCMethods.h"
 
-#include "options.h"
+#import "options.h"
 
 //@class ThreadPoolServer;
 //@class ThreadPerConnectionServer;

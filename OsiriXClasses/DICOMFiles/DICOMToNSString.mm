@@ -27,12 +27,12 @@
 {
 	NSStringEncoding stringEncoding = [NSString encodingForDICOMCharacterSet: encoding];
 	
-	return [self initWithCString:cString  encoding:stringEncoding];
+	return [self initWithCString:cString encoding:stringEncoding];
 }
 
-+ (id) stringWithCString:(const char *)cString  DICOMEncoding:(NSString *)encoding
++ (id) stringWithCString:(const char *)cString DICOMEncoding:(NSString *)encoding
 {
-	return [[[NSString alloc] initWithCString: cString  DICOMEncoding: encoding] autorelease];
+	return [[[NSString alloc] initWithCString: cString DICOMEncoding: encoding] autorelease];
 }
 
 //+ (NSArray *)allAvailableEncodings

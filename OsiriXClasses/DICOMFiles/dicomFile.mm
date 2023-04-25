@@ -18,9 +18,9 @@
      PURPOSE.
 =========================================================================*/
 
-#include "options.h"
+#import "options.h"
 #import "mgl.h" // include first
-#include "url.h"
+#import "url.h"
 #import "tmp_locations.h"
 
 #import <DCM/DCMUIDs.h>
@@ -53,7 +53,7 @@
 #import "PluginManager.h"
 #import "NSString+N2.h"
 #import "N2Debug.h"
-#include "NSFileManager+N2.h"
+#import "NSFileManager+N2.h"
 
 #import <AVFoundation/AVFoundation.h>
 
@@ -796,6 +796,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 }
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 -(short) getImageFile
 {
 	NSString *extension = [[filePath pathExtension] lowercaseString];
@@ -1081,8 +1082,8 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	
 	return -1;
 }
-#pragma GCC diagnostic warning "-Wdeprecated-declarations"
 
+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
 
 //-(short) getSIGNA5
 //{
@@ -1177,7 +1178,9 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 //	return -1;
 //}
 
-#include "DICOMFiles/BioradHeader.h" // MieleAPI
+#if 1 //ndef DECOMPRESS_APP
+#import "DICOMFiles/BioradHeader.h" // MieleAPI
+#endif
 
 -(short) getBioradPicFile
 {

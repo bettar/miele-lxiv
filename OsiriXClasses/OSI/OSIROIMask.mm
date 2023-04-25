@@ -21,7 +21,7 @@
 #import "OSIROIMask.h"
 #import "OSIFloatVolumeData.h"
 #import "OSIROIMaskRunStack.h"
-#include <Accelerate/Accelerate.h>
+#import <Accelerate/Accelerate.h>
 
 OSIROIMaskRun OSIROIMaskRunMake(NSRange widthRange, NSUInteger heightIndex, NSUInteger depthIndex, float intensity)
 {

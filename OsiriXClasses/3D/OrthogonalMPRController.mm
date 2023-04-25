@@ -25,6 +25,7 @@
 #import "AppController.h"
 
 #import "ROI.h"
+#import "MyPoint.h"
 
 @implementation OrthogonalMPRController
 

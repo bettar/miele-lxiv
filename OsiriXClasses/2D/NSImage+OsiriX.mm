@@ -21,7 +21,7 @@
 #import "NSImage+OsiriX.h"
 #import "N2Debug.h"
 
-#include "options.h"
+#import "options.h"
 
 #define FIX_ISSUE_9
 

@@ -18,8 +18,8 @@
      PURPOSE.
 =========================================================================*/
 
-#include "url.h"
-#include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
+#import "url.h"
+#import "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
 #import "AppController.h"
 #import "SRAnnotation.h"

@@ -18,7 +18,7 @@
  PURPOSE.
  =========================================================================*/
 
-#include "options.h"
+#import "options.h"
 #import "mgl.h" // include first
 
 #import "GLRenderer.h"

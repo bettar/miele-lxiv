@@ -18,11 +18,10 @@
      PURPOSE.
 =========================================================================*/
 
-#include "options.h"
+#import "options.h"
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import "MyPoint.h"
 
 #ifdef __cplusplus
 extern "C"

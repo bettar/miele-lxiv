@@ -117,13 +117,7 @@
 #endif // WITH_OPENGL_32
 
 	// Antialiasing
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable(GL_BLEND);
-#ifndef WITH_OPENGL_32
-    glEnable(GL_POINT_SMOOTH);
-#endif
-	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_POLYGON_SMOOTH);
+    renderer_enable_blend_smooth();
     checkOpenGLErrors(__LINE__);
 
 #pragma mark Focal Vector
@@ -251,12 +245,9 @@
     }
 	
 	// Antialiasing end
-	glDisable(GL_LINE_SMOOTH);
-	glDisable(GL_POLYGON_SMOOTH);
-	glDisable(GL_BLEND);
+    renderer_disable_blend_smooth();
 	
 #ifndef WITH_OPENGL_32
-    glDisable(GL_POINT_SMOOTH);
     glPopMatrix();
 #endif
 }

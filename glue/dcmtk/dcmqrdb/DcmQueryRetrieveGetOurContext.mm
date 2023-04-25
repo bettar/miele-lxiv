@@ -43,7 +43,7 @@
 #include "dcmtk/dcmdata/dcrlerp.h"
 #endif
 
-#include "url.h"
+#import "url.h"
 
 //extern OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname);
 //extern OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *outfname, E_TransferSyntax newXfer);

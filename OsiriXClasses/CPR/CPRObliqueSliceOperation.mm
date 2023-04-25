@@ -23,8 +23,7 @@
 #import "CPRProjectionOperation.h"
 #import "CPRGeneratorRequest.h"
 #import "CPRVolumeData.h"
-#include <libkern/OSAtomic.h>
-
+#import <libkern/OSAtomic.h>
 
 static const NSUInteger FILL_HEIGHT = 40;
 static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;

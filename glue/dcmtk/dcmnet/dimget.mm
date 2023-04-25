@@ -41,7 +41,7 @@
 #include "dcmtk/dcmqrdbx/dcmqrdbq.h"
 #else
 //#include "dcmtk/dcmqrdb/dcmqrdbi.h"
-#include "dcmqrdbq.h" // glue/dcmqrdb
+#import "dcmqrdbq.h" // glue/dcmqrdb
 #endif
 
 static int

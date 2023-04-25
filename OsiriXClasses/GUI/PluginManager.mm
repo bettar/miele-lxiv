@@ -1521,15 +1521,13 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 - (IBAction)checkForPluginUpdates:(id)sender
 {
-	NSURL				*url;
-	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
     [NSThread currentThread].name = @"Check for plugins updates";
     
 	[NSThread sleepForTimeInterval: 10];
 	
-	url = [NSURL URLWithString:URL_PLUGIN_LIST];
-	
+    NSURL *url = [NSURL URLWithString:URL_PLUGIN_LIST];
 	if (url)
 	{
 		NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];

@@ -24,7 +24,7 @@
 #import "OSIFloatVolumeData.h"
 #import "Notifications.h"
 
-#include <Accelerate/Accelerate.h>
+#import <Accelerate/Accelerate.h>
 
 @interface OSIMaskROI ()
 @property (nonatomic, readwrite, retain) NSString *name;
@@ -366,13 +366,7 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
     // OpenGL
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-#ifndef WITH_OPENGL_32
-    glEnable(GL_POINT_SMOOTH);
-#endif
-    glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_POLYGON_SMOOTH);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    renderer_enable_blend_smooth();
 
     renderer_set_rgba((float)[deviceColor redComponent],
                       (float)[deviceColor greenComponent],
@@ -380,13 +374,7 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
                       (float)[deviceColor alphaComponent]);
 
     renderer_drawQuads_xyz([pArray copy]);
-
-    glDisable(GL_LINE_SMOOTH);
-    glDisable(GL_POLYGON_SMOOTH);
-#ifndef WITH_OPENGL_32
-    glDisable(GL_POINT_SMOOTH);
-#endif
-    glDisable(GL_BLEND);
+    renderer_disable_blend_smooth();
 }
 
 - (CGFloat)volume

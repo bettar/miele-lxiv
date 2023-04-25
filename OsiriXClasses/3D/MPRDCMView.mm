@@ -791,12 +791,7 @@ unsigned int minimumStep;
         return;
     }
     
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable(GL_BLEND);
-#ifndef WITH_OPENGL_32
-    glEnable(GL_POINT_SMOOTH);
-#endif
-	glEnable(GL_LINE_SMOOTH);
+    renderer_enable_blend_smooth();
 	glPointSize( 12 * self.window.backingScaleFactor);
 	
     //NSLog(@"%s %d, %@, %p, ID:%d", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, viewID);
@@ -1152,12 +1147,7 @@ unsigned int minimumStep;
 
     [self drawOSIROIs];
 	
-	glDisable(GL_LINE_SMOOTH);
-	glDisable(GL_POLYGON_SMOOTH);
-#ifndef WITH_OPENGL_32
-    glDisable(GL_POINT_SMOOTH);
-#endif
-	glDisable(GL_BLEND);
+    renderer_disable_blend_smooth();
 }
 
 #pragma mark -

@@ -27,6 +27,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #import "ROI.h"
+#import "MyPoint.h"
 
 #import "AppController.h"
 #import "StringTexture.h"
@@ -8987,13 +8988,8 @@ void gl_round_box(int mode,
 		
 		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-#ifndef WITH_OPENGL_32
-		glEnable(GL_POINT_SMOOTH);
-#endif
-		glEnable(GL_LINE_SMOOTH);
-		glEnable(GL_POLYGON_SMOOTH);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        renderer_enable_blend_smooth();
 		
 		switch (type)
 		{
@@ -9741,18 +9737,14 @@ void gl_round_box(int mode,
 		
 		glPointSize( 1.0 * backingScaleFactor);
 		
-		glDisable(GL_LINE_SMOOTH);
-		glDisable(GL_POLYGON_SMOOTH);
-#ifndef WITH_OPENGL_32
-		glDisable(GL_POINT_SMOOTH);
-#endif
-		glDisable(GL_BLEND);
+        renderer_disable_blend_smooth();
 	}
 	@catch (NSException *e)
 	{
 		NSLog(@"%s %d, exception: %@", __FUNCTION__, __LINE__, e);
 	}
-	[roiLock unlock];
+
+    [roiLock unlock];
 }
 
 #pragma mark -

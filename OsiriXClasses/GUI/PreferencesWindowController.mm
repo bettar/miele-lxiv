@@ -34,7 +34,7 @@
 #import <Foundation/NSObjCRuntime.h>
 #include <algorithm>  // for std::min
 #import "AppDefaults.h"
-#include "url.h"
+#import "url.h"
 
 //static NSMutableDictionary *paneBundles = nil;
 

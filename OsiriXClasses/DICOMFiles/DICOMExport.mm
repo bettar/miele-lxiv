@@ -18,7 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-#include "url.h"
+#import "url.h"
 #import "tmp_locations.h"
 
 #import "DICOMExport.h"

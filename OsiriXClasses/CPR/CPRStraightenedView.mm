@@ -43,6 +43,8 @@
 #import "N3Geometry.h"
 #import "N3BezierCoreAdditions.h"
 #import "ROI.h"
+#import "MyPoint.h"
+
 #import "Notifications.h"
 #import "StringTexture.h"
 #import "NSColor+N2.h"
@@ -451,17 +453,8 @@ extern int splitPosition[ 3];
     CGFloat pixelsPerMm;
 	NSColor *planeColor;
 
-    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    if (!cgl_ctx)
-        return;
-    
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable(GL_BLEND);
-#ifndef WITH_OPENGL_32
-    glEnable(GL_POINT_SMOOTH);
-#endif
-	glEnable(GL_LINE_SMOOTH);
-	glPointSize( 12 * self.window.backingScaleFactor);
+    renderer_enable_blend_smooth();
+    glPointSize( 12 * self.window.backingScaleFactor);
 	
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
     pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
@@ -990,12 +983,7 @@ extern int splitPosition[ 3];
 #endif
 	}
 	
-	glDisable(GL_LINE_SMOOTH);
-	glDisable(GL_POLYGON_SMOOTH);
-#ifndef WITH_OPENGL_32
-    glDisable(GL_POINT_SMOOTH);
-#endif
-	glDisable(GL_BLEND);	
+    renderer_disable_blend_smooth();
 }
 
 #pragma mark - Mouse

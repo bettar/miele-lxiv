@@ -23,7 +23,7 @@
 #import "DICOMFiles/dicomFile.h"
 #import "DDData.h"
 
-#include "options.h"
+#import "options.h"
 
 @implementation DICOMFilesTests
 

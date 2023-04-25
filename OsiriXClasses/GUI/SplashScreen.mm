@@ -18,7 +18,7 @@
      PURPOSE.
 *****************************************************************/
 
-#include "options.h"
+#import "options.h"
 #import "SplashScreen.h"
 
 #include <mach/mach.h>

@@ -23,7 +23,7 @@
 #import <Cocoa/Cocoa.h>
 #import "NSFont_OpenGL/NSFont+OpenGL.h"
 
-#include "options.h"
+#import "options.h"
 
 #ifndef MIELE_LIGHT
 #include "FVTiff.h"

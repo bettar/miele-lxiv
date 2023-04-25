@@ -61,7 +61,7 @@
 #include "vtkFixedPointVolumeRayCastMapper.h"
 #undef id
 
-#include <Accelerate/Accelerate.h>
+#import <Accelerate/Accelerate.h>
 
 /** \brief View for Thick Slab Volume Rendering */
 @interface ThickSlabVR : NSView

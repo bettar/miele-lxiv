@@ -30,6 +30,7 @@
 #import "BrowserController.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "ROI.h"
+#import "MyPoint.h"
 #import "SRAnnotation.h"
 #import "Notifications.h"
 #import "N2Debug.h"
@@ -73,9 +74,9 @@
 #include "nifti1_io.h"
 #endif
 
-#include <Accelerate/Accelerate.h>
-#include "AppController.h"
-#include "NSFileManager+N2.h"
+#import <Accelerate/Accelerate.h>
+#import "AppController.h"
+#import "NSFileManager+N2.h"
 #import "Point3D.h"
 
 #import "math.h"

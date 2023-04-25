@@ -21,7 +21,7 @@
 #ifndef _N3BEZIERCORE_ADDITIONS_H_
 #define _N3BEZIERCORE_ADDITIONS_H_
 
-#include "N3BezierCore.h"
+#import "N3BezierCore.h"
 
 // N3BezierCore functions that don't need any access to the actual implementation details of the N3BezierCore
 

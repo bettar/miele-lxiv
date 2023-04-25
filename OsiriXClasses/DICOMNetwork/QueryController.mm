@@ -62,7 +62,7 @@
 #include <ctime>
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#include "url.h"
+#import "url.h"
 #import "tmp_locations.h"
 #import "AppDefaults.h"
 

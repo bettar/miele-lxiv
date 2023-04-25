@@ -25,6 +25,8 @@
 #import "DCMPix.h"
 #import "Notifications.h"
 
+#import "MyPoint.h"
+
 @implementation ROIWindow
 
 - (void)comboBoxWillPopUp:(NSNotification *)notification

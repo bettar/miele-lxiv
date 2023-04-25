@@ -5,11 +5,11 @@
 //  At the end of 2014 the project was forked from OsiriX to become Miele-LXIV
 //  The original version of this file had no header
 
-#include "url.h"
+#import "url.h"
 #import "DDKeychain.h"
 #import "DICOMTLS.h"
 
-#include <AssertMacros.h>
+#import <AssertMacros.h>
 
 static NSMutableDictionary *lockedFiles = nil;
 static NSRecursiveLock *lockFile = nil;

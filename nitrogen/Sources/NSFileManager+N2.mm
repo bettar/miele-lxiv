@@ -22,7 +22,7 @@
 #import "NSFileManager+N2.h"
 #import "NSString+N2.h"
 #import <sys/stat.h>
-#include "tmp_locations.h"
+#import "tmp_locations.h"
 
 @implementation NSFileManager (N2)
 
