@@ -72,6 +72,7 @@ void renderer_drawPoints(NSArray *pArray, BOOL rounded=true);
 
 void renderer_enable_blend_smooth();
 void renderer_disable_blend_smooth();
+void renderer_set_point_size(GLfloat size);
 
 typedef struct _point3D_UV {
     glm::vec3 p;

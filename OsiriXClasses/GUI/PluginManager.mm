@@ -639,7 +639,6 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                     else
                     {
                         Class filterClass = [plugin principalClass];
-                        
                         if (filterClass)
                         {
                             [pluginsBundleDictionary setObject: plugin forKey: pathResolved];
@@ -662,9 +661,18 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 #endif
                             
                             NSLog( @"Loaded: %@, vers: %@ (%@)", [name stringByDeletingPathExtension], version, path);
-                            
-                            if (filterClass == NSClassFromString( @"ARGS"))
-                                return;
+#ifndef NDEBUG
+                            NSLog( @"Type:<%@>", [[plugin infoDictionary] objectForKey:PINFO_TYPE]);
+#endif
+                            if (filterClass == NSClassFromString(@"ARGS"))
+                            {
+                                goto pluginDone;
+                            }
+
+                            if ([[plugin infoDictionary] objectForKey:PINFO_TYPE] == nil)
+                            {
+                                goto pluginDone;
+                            }
                             
                             if ([[[plugin infoDictionary] objectForKey:PINFO_TYPE] rangeOfString:PTYPE_PRE_PROCESS].location != NSNotFound)
                             {
@@ -677,7 +685,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                                 NSString *fileFormat;
                                 while (fileFormat = [enumerator nextObject])
                                 {
-                                    //we will save the bundle rather than a filter.  Each file decode will require a separate decoder
+                                    // We will save the bundle rather than a filter.  Each file decode will require a separate decoder
                                     [fileFormatPlugins setObject:plugin forKey:fileFormat];
                                 }
                             }
@@ -696,7 +704,6 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                                 }
                                 
                                 NSArray *toolbarNames = [[plugin infoDictionary] objectForKey:PINFO_TB_NAMES];
-                                
                                 if (toolbarNames)
                                 {
                                     for (NSString *toolbarName in toolbarNames)
@@ -707,6 +714,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                                 }
                             }
                             
+                            // else if ?
                             if ([[[plugin infoDictionary] objectForKey:PINFO_TYPE] rangeOfString: PTYPE_REPORT].location != NSNotFound)
                             {
                                 [reportPlugins setObject: plugin
@@ -717,10 +725,11 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                             NSLog( @"********* principal class not found for: %@ - %@", name, [plugin principalClass]);
                     }
                 }
-                
+
+pluginDone:
                 [PluginManager endProtectForCrash];
             }
-            @catch( NSException *e)
+            @catch (NSException *e)
             {
                 NSLog( @"******** Plugin loading exception: %@", e);
             }
@@ -800,7 +809,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 		[reportPlugins release];
 		[fusionPlugins release];
 		[fusionPluginsMenu release];
-		[pluginsNames  release];
+		[pluginsNames release];
         [pluginsBundleDictionary release];
         
         pluginsBundleDictionary = [[NSMutableDictionary alloc] init];

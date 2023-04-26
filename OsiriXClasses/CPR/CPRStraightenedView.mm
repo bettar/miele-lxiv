@@ -454,7 +454,7 @@ extern int splitPosition[ 3];
 	NSColor *planeColor;
 
     renderer_enable_blend_smooth();
-    glPointSize( 12 * self.window.backingScaleFactor);
+    renderer_set_point_size( 12 * self.window.backingScaleFactor);
 	
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
     pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
@@ -523,9 +523,10 @@ extern int splitPosition[ 3];
         [self setShaderProgramOverlay_withMode_Point];
         renderer_set_rgba(0.0, 1.0, 0.0, 0.8); // green 0.8
 #else
+        CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         glEnable(GL_POINT_SMOOTH);
 #endif
-        glPointSize(8 * self.window.backingScaleFactor);
+        renderer_set_point_size(8 * self.window.backingScaleFactor);
         renderer_drawPoints([pArray copy]);
     }
     
@@ -590,7 +591,6 @@ extern int splitPosition[ 3];
 			lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, topEdge, 0), pixToSubDrawRectTransform);
 			lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, bottomEdge, 0), pixToSubDrawRectTransform);
 
-#ifdef WITH_OPENGL_32
             {
             const int nPoints = 2;
             glm::vec2 pA[nPoints];
@@ -603,14 +603,6 @@ extern int splitPosition[ 3];
 
             renderer_drawLine_xy([pArray copy], GL_LINE_STRIP); // TODO consolidate
             }
-#else
-			glBegin(GL_LINE_STRIP);
-            {
-                glVertex2f(lineStart.x, lineStart.y);
-                glVertex2f(lineEnd.x, lineEnd.y);
-            }
-			glEnd();
-#endif
 		}
 	}
 	else if (_displayTransverseLines)
@@ -734,6 +726,7 @@ extern int splitPosition[ 3];
 #ifdef WITH_OPENGL_32
         NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
 #else
+        CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		glEnable(GL_TEXTURE_RECTANGLE_EXT);
 #endif
 		glEnable(GL_BLEND);
@@ -824,9 +817,10 @@ extern int splitPosition[ 3];
 #ifdef WITH_OPENGL_32
         [self setShaderProgramOverlay_withMode_Point]; // Added
 #else
+        CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         glEnable(GL_POINT_SMOOTH);
 #endif
-        glPointSize(8 * self.window.backingScaleFactor);
+        renderer_set_point_size(8 * self.window.backingScaleFactor);
 
         NSMutableArray *pArray = [NSMutableArray array];
         for (NSString *planeName in _mousePlanePointsInPix)
@@ -889,9 +883,10 @@ extern int splitPosition[ 3];
 #ifdef WITH_OPENGL_32
         [self setShaderProgramOverlay_withMode_Point]; // Added
 #else
+        CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         glEnable(GL_POINT_SMOOTH);
 #endif
-        glPointSize(8 * self.window.backingScaleFactor);
+        renderer_set_point_size(8 * self.window.backingScaleFactor);
 
         for (int i = 0; i < [_curvedPath.nodes count]; i++)
 		{
@@ -939,6 +934,7 @@ extern int splitPosition[ 3];
                                     1.0f));
         #endif
 #else
+        CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		glLoadIdentity();
 		glScalef (2.0f / (xFlipped ? -drawingFrameRect.size.width : drawingFrameRect.size.width),
                  -2.0f / (yFlipped ? -drawingFrameRect.size.height : drawingFrameRect.size.height),

@@ -405,7 +405,7 @@ GLuint loadShaders(NSString *vertex, NSString *geometry, NSString *fragment)
 }
 #endif // WITH_OPENGL_32
 
-#pragma mark -
+#pragma mark - Color
 
 void renderer_setTextColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
@@ -470,6 +470,22 @@ void renderer_set_rgba(GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLuint fromLi
     checkOpenGLErrors(__LINE__);
 }
 
+void renderer_set_rgb(GLfloat r, GLfloat g, GLfloat b, GLuint fromLine)
+{
+    //glDisable(GL_BLEND);
+
+#ifdef WITH_OPENGL_32
+    renderer_set_rgba(r, g, b, 1.0, fromLine);  // TODO: confirm
+#else
+    NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
+    CGLContextObj cgl_ctx = [currentContext CGLContextObj];
+    glColor3f(r, g, b);
+#endif
+    checkOpenGLErrors(__LINE__);
+}
+
+#pragma mark - Blend
+
 void renderer_enable_blend_smooth()
 {
 #ifndef WITH_OPENGL_32
@@ -490,6 +506,12 @@ void renderer_enable_blend_smooth()
 
 void renderer_disable_blend_smooth()
 {
+#ifndef WITH_OPENGL_32
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (!cgl_ctx)
+        return;
+#endif
+    
     glDisable(GL_LINE_SMOOTH);
     glDisable(GL_POLYGON_SMOOTH);
 #ifndef WITH_OPENGL_32
@@ -499,18 +521,14 @@ void renderer_disable_blend_smooth()
     glDisable(GL_BLEND);
 }
 
-void renderer_set_rgb(GLfloat r, GLfloat g, GLfloat b, GLuint fromLine)
+void renderer_set_point_size(GLfloat size)
 {
-    //glDisable(GL_BLEND);
-
-#ifdef WITH_OPENGL_32
-    renderer_set_rgba(r, g, b, 1.0, fromLine);  // TODO: confirm
-#else
-    NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
-    CGLContextObj cgl_ctx = [currentContext CGLContextObj];
-    glColor3f(r, g, b);
+#ifndef WITH_OPENGL_32
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if (!cgl_ctx)
+        return;
 #endif
-    checkOpenGLErrors(__LINE__);
+    glPointSize( size );
 }
 
 #pragma mark - overlayLine shader
