@@ -189,6 +189,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
     [context release];
 }
 
+// It gets called from each plugin's `initPlugin`
 +(void) addPluginPaneWithResourceNamed: (NSString*)resourceName
                               inBundle: (NSBundle*)parentBundle
                              withTitle: (NSString*)title

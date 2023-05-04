@@ -428,7 +428,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		[rightView setNeedsDisplay:flag];
 }
 
--(IBAction) SwitchStereoMode :(id) sender
+-(IBAction) SwitchStereoMode: (id) sender
 {
 #ifndef _STEREO_VISION_
 	for (int i = 0; i <6; i++)

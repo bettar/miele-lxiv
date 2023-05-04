@@ -7064,7 +7064,7 @@ static NSConditionLock *threadLock = nil;
 			
 			if ([[tableColumn identifier] isEqualToString:@"name"])
 			{
-				BOOL	icon = NO;
+				BOOL icon = NO;
 				
 				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"] && [[self window] firstResponder] == outlineView)
 				{

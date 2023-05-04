@@ -28,6 +28,7 @@
 
 #undef verify
 #include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcvrpn.h" // for issue #91
 
 #define NUM_ENCODINGS        10
 
@@ -104,7 +105,23 @@
 			_theDescription = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
 		
 		if (dataset ->findAndGetString(DCM_PatientName, string).good() && string != nil)
-			_name = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
+        {
+#if 1 // Issue #91
+            OFString dicomPersonName(string);
+            OFString readablePersonName;
+            if (DcmPersonName::getFormattedNameFromString(dicomPersonName,
+                                                          readablePersonName,
+                                                          0 /*componentGroup*/
+                                                          ).good())
+            {
+                _name = [[NSString alloc] initWithUTF8String:readablePersonName.c_str()];
+            }
+            else
+#endif
+            {
+                _name = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
+            }
+        }
 		
 		if (dataset ->findAndGetString(DCM_PatientID, string).good() && string != nil)		
 			_patientID = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];

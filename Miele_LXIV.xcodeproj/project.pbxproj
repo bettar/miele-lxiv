@@ -8161,7 +8161,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 9.26.114;
+				MARKETING_VERSION = 9.28.116;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8687,7 +8687,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 9.26.114;
+				MARKETING_VERSION = 9.28.116;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -9292,7 +9292,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 9.26.114;
+				MARKETING_VERSION = 9.28.116;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (

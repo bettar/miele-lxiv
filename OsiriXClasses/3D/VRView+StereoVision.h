@@ -148,8 +148,8 @@ class vtkMyCallbackVR;
 - (void) setNewGeometry: (double) screenHeight: (double) screenDistance: (double) eyeDistance;
 #endif // _STEREO_VISION_
 
-//- (IBAction) SwitchStereoMode :(id) sender;
-- (IBAction) invertedSides :(id) sender;
+//- (IBAction) SwitchStereoMode: (id) sender;
+- (IBAction) invertedSides: (id) sender;
 
 @end
 
