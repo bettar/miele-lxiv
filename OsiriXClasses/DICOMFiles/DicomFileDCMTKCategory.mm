@@ -289,28 +289,60 @@ extern NSRecursiveLock *Papyrus_Lock;
         return -1;
 }
 
+//#define ISSUE_e15_WORKAROUND_1 // The proper fix is to patch DCMTK 3.5.7
+#define ISSUE_e15_WORKAROUND_2
+
 #define NUM_ENCODINGS     10
+// Return 0:success, -1:failure
 - (short) getDicomFileDCMTK
 {
 	DcmFileFormat fileformat;
 	[Papyrus_Lock lock];
 
+#ifdef ISSUE_e15_WORKAROUND_2
+    OFCondition status = fileformat.loadFileUntilTag(
+                                            [filePath UTF8String],
+                                            EXS_Unknown,
+                                            EGL_noChange,
+                                            DCM_MaxReadLength,
+                                            ERM_autoDetect,
+                                            DCM_PixelData); // ignore pixel data chunk
+#else
 	OFCondition status = fileformat.loadFile([filePath UTF8String],
                                              EXS_Unknown,
                                              EGL_noChange,
                                              DCM_MaxReadLength,
                                              ERM_autoDetect);
+#endif
 
 	[Papyrus_Lock unlock];
 
-	if (status.bad())
+#ifdef ISSUE_e15_WORKAROUND_1
+    DcmDataset *dataset = fileformat.getDataset();
+    DcmMetaInfo *metainfo = fileformat.getMetaInfo();
+
+    //if (status.bad()) // this is redundant because the following check must pass anyway
+    {
+        if (!dataset || !metainfo)
+            return -1;
+    }
+#else // original
+    if (status.bad())
         return -1;
     
     DcmDataset *dataset = fileformat.getDataset();
+    DcmMetaInfo *metainfo = fileformat.getMetaInfo();
+#endif
+    
+#ifdef ISSUE_e15_WORKAROUND_2
+    if (!dataset || !metainfo)
+        return -1;
+#endif
+    
     const char *string = NULL;
 
     // (0002,0010)
-    if (fileformat.getMetaInfo()->findAndGetString(DCM_TransferSyntaxUID, string, OFFalse).good() &&
+    if (metainfo->findAndGetString(DCM_TransferSyntaxUID, string, OFFalse).good() &&
         string != NULL &&
         [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] isEqualToString:@(UID_MPEG2MainProfileAtMainLevelTransferSyntax)])
     {
@@ -322,7 +354,7 @@ extern NSRecursiveLock *Papyrus_Lock;
     [dicomElements setObject:fileType forKey:@"fileType"];
 
     // (0002,0100)
-    if (fileformat.getMetaInfo()->findAndGetString(DCM_PrivateInformationCreatorUID, string, OFFalse).good() && string != NULL)
+    if (metainfo->findAndGetString(DCM_PrivateInformationCreatorUID, string, OFFalse).good() && string != NULL)
     {
         [dicomElements setObject:[NSString stringWithCString:string encoding:NSISOLatin1StringEncoding] forKey:@"PrivateInformationCreatorUID"];
     }
@@ -362,7 +394,7 @@ extern NSRecursiveLock *Papyrus_Lock;
                 DcmTagKey key = DcmTagKey([self commentsGroup], [self commentsElement]);
                 
                 if ([self commentsGroup] == 2) // MetaHeader
-                    dicomItems = fileformat.getMetaInfo();
+                    dicomItems = metainfo;
                 else
                     dicomItems = dataset;
                 
@@ -375,7 +407,7 @@ extern NSRecursiveLock *Papyrus_Lock;
                 DcmTagKey key = DcmTagKey([self commentsGroup2], [self commentsElement2]);
                 
                 if ([self commentsGroup2] == 2) // MetaHeader
-                    dicomItems = fileformat.getMetaInfo();
+                    dicomItems = metainfo;
                 else
                     dicomItems = dataset;
                 
@@ -394,7 +426,7 @@ extern NSRecursiveLock *Papyrus_Lock;
                 DcmTagKey key = DcmTagKey([self commentsGroup3], [self commentsElement3]);
                 
                 if ([self commentsGroup3] == 2) // MetaHeader
-                    dicomItems = fileformat.getMetaInfo();
+                    dicomItems = metainfo;
                 else
                     dicomItems = dataset;
                 
@@ -414,7 +446,7 @@ extern NSRecursiveLock *Papyrus_Lock;
                 DcmTagKey key = DcmTagKey([self commentsGroup4], [self commentsElement4]);
                 
                 if ([self commentsGroup4] == 2) // MetaHeader
-                    dicomItems = fileformat.getMetaInfo();
+                    dicomItems = metainfo;
                 else
                     dicomItems = dataset;
                 

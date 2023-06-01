@@ -25,6 +25,9 @@
 #import <DCM/DCMAbstractSyntaxUID.h>
 #import <Accelerate/Accelerate.h>
 
+//#define FIX_ISSUE_e17
+#define FIX_ISSUE_e19
+
 static NSString *DCM_SecondaryCaptureImageStorage = @"1.2.840.10008.5.1.4.1.1.7";
 static NSString *rootUID = @"1.3.6.1.4.1.19291.2.1";
 static NSString *uidQualifier = @"99";
@@ -814,11 +817,11 @@ PixelRepresentation
 	
 	BOOL pixelRepresentationIsSigned = NO;
 	int previousByteOffset = -1;
-#ifdef DEBUG_ISSUE_i67
+#ifdef DEBUG_ISSUE_e18
     static int nestingLevel = 0;
 #endif
     
-#ifdef DEBUG_ISSUE_i67
+#ifdef DEBUG_ISSUE_e18
     NSLog(@"===--- Start parsing tags, nesting level:%d", nestingLevel);
 #endif
 
@@ -872,7 +875,7 @@ PixelRepresentation
                 if (DCMDEBUG)
                     NSLog(@"DCMObject.mm:%d, offset: 0x%x (%04x,%04x)\n\tTag: %@", __LINE__, *byteOffset+0x80, group, element,
                           tag.description);
-#ifdef DEBUG_ISSUE_i67
+#ifdef DEBUG_ISSUE_e18
                 NSLog(@"Line %d, nl:%d", __LINE__, nestingLevel);
 #endif
 
@@ -996,7 +999,7 @@ PixelRepresentation
                     if ([DCMValueRepresentation isSequenceVR:vr] ||
                         ([DCMValueRepresentation isUnknownVR:vr] && vl == 0xFFFFFFFFL))
                     {
-#if 1 //def FIX_ISSUE_i66
+#ifdef FIX_ISSUE_e17
                         //auto saveTS = dicomData.transferSyntaxInUse;
                         auto saveTS4DS = dicomData.transferSyntaxForDataset;
                         auto saveExplicit = dicomData.isExplicitTS;
@@ -1017,10 +1020,15 @@ PixelRepresentation
                             [dicomData setExplicitTS:false];
                             [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]]; //UID_LittleEndianImplicitTransferSyntax];
                         }
+#endif // FIX_ISSUE_e17
+                        
+#ifdef FIX_ISSUE_e19
+                        auto saveTS4DS = dicomData.transferSyntaxForDataset;
+                        auto saveExplicit = dicomData.isExplicitTS;
 #endif
                         attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
 
-#ifdef DEBUG_ISSUE_i67
+#ifdef DEBUG_ISSUE_e18
                         NSLog(@"--- Start parsing SQ (%s), nesting level:%d", tagUTF8, nestingLevel);
                         nestingLevel++;
 #endif
@@ -1029,12 +1037,12 @@ PixelRepresentation
                                                           byteOffset:byteOffset
                                                         lengthToRead:(int)vl // 0xffffffff=4294967295
                                                 specificCharacterSet:specificCharacterSet];
-#ifdef DEBUG_ISSUE_i67
+#ifdef DEBUG_ISSUE_e18
                         nestingLevel--;
                         NSLog(@"--- End parsing SQ (%s), nesting level:%d\n", tagUTF8, nestingLevel);
 #endif
 
-#if 1 //def FIX_ISSUE_i66
+#ifdef FIX_ISSUE_e17
                         if (forceImplicitSq)
                         {
                             // restore TS
@@ -1042,13 +1050,18 @@ PixelRepresentation
                             [dicomData setTransferSyntaxForDataset:saveTS4DS];
                         }
 #endif
+#ifdef FIX_ISSUE_e19
+                        // restore TS
+                        [dicomData setExplicitTS:saveExplicit];
+                        [dicomData setTransferSyntaxForDataset:saveTS4DS];
+#endif
                     }
                     else if (strcmp(tagUTF8, "7FE0,0010") == 0 && // DCM_PixelData
                              tag.isPrivate == NO)
                     {
 #pragma mark DCM_PixelData
                         int posBefore = [dicomData position];
-#ifdef DEBUG_ISSUE_i67
+#ifdef DEBUG_ISSUE_e18
                         NSLog(@"Line %d, PixelData before\n\t nl: %d, vl: 0x%lx\n\t byteOffset: 0x%x=%d, dicomData pos: 0x%x", __LINE__, nestingLevel, vl, *byteOffset, *byteOffset, posBefore);
 #endif
                         attr = (DCMAttribute *) [[[DCMPixelDataAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag
@@ -1062,7 +1075,7 @@ PixelRepresentation
 
                         int posAfter = [dicomData position];
 
-#ifdef DEBUG_ISSUE_i67
+#ifdef DEBUG_ISSUE_e18
                         NSLog(@"Line %d, PixelData after\n\t byteOffset: 0x%x=%d, dicomData pos: 0x%x, parsed %d bytes", __LINE__, *byteOffset, *byteOffset, posAfter, posAfter-posBefore);
 #endif
 
@@ -1170,7 +1183,7 @@ PixelRepresentation
         [pool release];
     }
 
-#ifdef DEBUG_ISSUE_i67
+#ifdef DEBUG_ISSUE_e18
     NSLog(@"===--- End parsing tags, nesting level:%d", nestingLevel);
 #endif
     
@@ -1220,8 +1233,16 @@ PixelRepresentation
                 else if ([tag.stringValue isEqualToString:[sharedTagForNameDictionary objectForKey:@"Item"]]) // DCM_Item
                 {
                     if (DCMDEBUG)
-                        NSLog(@"DCMObject.mm:%d, New Item", __LINE__); // Start of item (in a sequence)
-
+                        NSLog(@"DCMObject.mm:%d, New Item, length: %lx", __LINE__, vl); // Start of item (in a sequence)
+#ifdef FIX_ISSUE_e19
+                    // Is this an empyrical rule for Philips only or is it more general ?
+                    //  explicit item length --> implicit VR
+                    //  undefined item length --> explicit VR
+                    if (vl != 0xFFFFFFFFL) // DCM_UndefinedLength
+                        [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]];
+                    else
+                        [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]];
+#endif
                     DCMObject *object = [[[[self class] alloc] initWithDataContainer:dicomData
                                                                         lengthToRead:vl
                                                                           byteOffset:byteOffset

@@ -9512,7 +9512,8 @@ static BOOL withReset = NO;
                                 @synchronized( previewPixThumbnails)
                                 {
                                     DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
-NSLog(@"%s %d, %ld, %lu", __FUNCTION__, __LINE__, (long)[cell tag], (unsigned long)[previewPix count]);
+
+                                    //NSLog(@"%s %d, %ld, %lu", __FUNCTION__, __LINE__, (long)[cell tag], (unsigned long)[previewPix count]);
                                     [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix3];
                                     
                                     [dcmPix3 release];

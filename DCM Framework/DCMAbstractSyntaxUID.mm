@@ -119,7 +119,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 	static NSString *BasicTextSRStorage = @"1.2.840.10008.5.1.4.1.1.88.11";
 	static NSString *EnhancedSRStorage = @"1.2.840.10008.5.1.4.1.1.88.22";
-	static NSString *ComprehensiveSRStorage = @"1.2.840.10008.5.1.4.1.1.88.33";
+	static NSString *ComprehensiveSRStorage = @(UID_ComprehensiveSRStorage);
 	static NSString *ProcedureLogStorage = @"1.2.840.10008.5.1.4.1.1.88.40";
 	static NSString *MammographyCADSRStorage = @"1.2.840.10008.5.1.4.1.1.88.50";
 	static NSString *ChestCADSR = @"1.2.840.10008.5.1.4.1.1.88.65";
@@ -620,8 +620,11 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 + (BOOL) isStructuredReport:(NSString *)sopClassUID
 {
-		if (sopClassUID != nil && [[DCMAbstractSyntaxUID structuredReportSyntaxes] containsObject: sopClassUID])
-			return YES;
+    if (sopClassUID != nil &&
+        [[DCMAbstractSyntaxUID structuredReportSyntaxes] containsObject: sopClassUID])
+    {
+        return YES;
+    }
 		
 	return NO;
 }
