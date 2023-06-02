@@ -45,8 +45,9 @@
 	BOOL _decodePixelData;
 	BOOL isSequence;
     
-    BOOL isPhilips; // to handle private sequences item length "empyrical" rules
-    BOOL isSequencePrivateGroup;
+    // Related to FIX_ISSUE_e19
+    // to handle private sequences item length "empyrical" rules
+    BOOL isPhilips;
 }
 
 @property(readonly) NSMutableDictionary *attributes; /**< Attributes as an NSDictionary */
@@ -211,7 +212,8 @@
                       dicomData:(DCMDataContainer *)dicomData
                      byteOffset:(int *)byteOffset
                    lengthToRead:(int)lengthToRead
-           specificCharacterSet:(DCMCharacterSet *)specificCharacterSet;
+           specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
+           sequencePrivateGroup:(BOOL)inSPG;
 
 /** Create a DCMAttribute\n
 * Used when parsing the DICOM data. */

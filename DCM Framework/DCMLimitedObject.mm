@@ -227,8 +227,7 @@
                         NSLog(@"Tag: %@, length: %ld", [tag description], vl);
                     //if (DCMDEBUG)
                     //	NSLog(@"byteoffset after length %d, VR:%@  length:%d",*byteOffset,  vr, vl);
-                        
-                
+
                     // generate Attributes
                     DCMAttribute *attr = nil;
                     //sequence attribute
@@ -238,11 +237,13 @@
                     {
                         //NSLog(@"DCMObject sequence: %f", -[timestamp  timeIntervalSinceNow]);
                         attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
+
                         *byteOffset = [self readNewSequenceAttribute:attr
                                                            dicomData:dicomData
                                                           byteOffset:byteOffset
                                                         lengthToRead:(int)vl
-                                                specificCharacterSet:specificCharacterSet];
+                                                specificCharacterSet:specificCharacterSet
+                                                sequencePrivateGroup:FALSE]; // related to FIX_ISSUE_e19
                     }
                     else if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"PixelData"]])
                     {

@@ -816,10 +816,7 @@ PixelRepresentation
 	
 	BOOL pixelRepresentationIsSigned = NO;
 	int previousByteOffset = -1;
-#if 1 // related to FIX_ISSUE_e19
-    self->isPhilips = NO;
-    self->isSequencePrivateGroup = NO;
-#endif
+    self->isPhilips = NO; // related to FIX_ISSUE_e19
 
 #ifdef DEBUG_ISSUE_e18
     static int nestingLevel = 0;
@@ -1003,15 +1000,14 @@ PixelRepresentation
                     if ([DCMValueRepresentation isSequenceVR:vr] ||
                         ([DCMValueRepresentation isUnknownVR:vr] && vl == 0xFFFFFFFFL))
                     {
-#if 1 // related to  FIX_ISSUE_e19
+                        // Related to FIX_ISSUE_e19
                         // Private sequences of undefined length
-                        isSequencePrivateGroup = (vl == 0xFFFFFFFFL) &&
-                                                 (group == 0x2001 || group == 0x2005);
-#endif
+                        BOOL isSequencePrivateGroup = (vl == 0xFFFFFFFFL) &&
+                                                      (group == 0x2001 || group == 0x2005);
 #ifdef FIX_ISSUE_e19
                         DCMTransferSyntax *saveTS4DS = NULL;
                         BOOL saveExplicit = FALSE;
-                        if (self->isPhilips && self->isSequencePrivateGroup)
+                        if (self->isPhilips && isSequencePrivateGroup)
                         {
                             //NSLog(@"DCMObject.mm:%d, (%04x,%04x), ts4ds: %@, explicit: %d", __LINE__, group,element, saveTS4DS, saveExplicit);
                             saveTS4DS = dicomData.transferSyntaxForDataset;
@@ -1028,14 +1024,15 @@ PixelRepresentation
                                                            dicomData: dicomData
                                                           byteOffset: byteOffset
                                                         lengthToRead: (int)vl // 0xffffffff=4294967295
-                                                specificCharacterSet: bspecificCharacterSet];
+                                                specificCharacterSet: specificCharacterSet
+                                                sequencePrivateGroup: isSequencePrivateGroup];
 #ifdef DEBUG_ISSUE_e18
                         nestingLevel--;
                         NSLog(@"--- End parsing SQ (%s), nesting level:%d\n", tagUTF8, nestingLevel);
 #endif
 
 #ifdef FIX_ISSUE_e19
-                        if (self->isPhilips && self->isSequencePrivateGroup)
+                        if (self->isPhilips && isSequencePrivateGroup)
                         {
                             // restore TS
                             [dicomData setExplicitTS:saveExplicit];
@@ -1134,15 +1131,13 @@ PixelRepresentation
                         [specificCharacterSet release];
                         specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"\\"]];
                     }
-                    
-#if 1 // related to  FIX_ISSUE_e19
-                    else if (strcmp(tagUTF8, "0008,0070") == 0)
+                    else if (strcmp(tagUTF8, "0008,0070") == 0) // related to FIX_ISSUE_e19
                     {
                         NSString *temp = [[attr values] firstObject];
                         //NSLog(@"Line %d, temp: <%@>", __LINE__, temp );
                         self->isPhilips = [temp hasPrefix:@"Philips"];
                     }
-#endif
+
                     /*
                     if (readingMetaHeader && (*byteOffset >= endMetaHeaderPosition)) {
                         if (DCMDEBUG)
@@ -1192,6 +1187,7 @@ PixelRepresentation
                       byteOffset:(int *)byteOffset
                     lengthToRead:(int)lengthToRead
             specificCharacterSet:(DCMCharacterSet *)aSpecificCharacterSet
+            sequencePrivateGroup:(BOOL)inSPG
 {
 	BOOL undefinedLength = (lengthToRead == 0xFFFFFFFF);
 	int endByteOffset = (undefinedLength) ? 0xFFFFFFFF : (*byteOffset + lengthToRead - 1);
@@ -1233,7 +1229,7 @@ PixelRepresentation
                     // Empyrical rule for Philips only
                     //  explicit item length --> implicit VR
                     //  undefined item length --> explicit VR
-                    if (self->isPhilips && self->isSequencePrivateGroup)
+                    if (self->isPhilips && inSPG)
                     {
                         if (vl != 0xFFFFFFFFL) // DCM_UndefinedLength
                             [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]];
