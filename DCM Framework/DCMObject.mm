@@ -25,8 +25,7 @@
 #import <DCM/DCMAbstractSyntaxUID.h>
 #import <Accelerate/Accelerate.h>
 
-//#define FIX_ISSUE_e17
-#define FIX_ISSUE_e19
+#define FIX_ISSUE_e19 // includes e17
 
 static NSString *DCM_SecondaryCaptureImageStorage = @"1.2.840.10008.5.1.4.1.1.7";
 static NSString *rootUID = @"1.3.6.1.4.1.19291.2.1";
@@ -54,9 +53,9 @@ static kern_return_t GetMACAddress(io_iterator_t intfIterator, UInt8 *MACAddress
 // releasing the iterator after the caller is done with it.
 static kern_return_t FindEthernetInterfaces(io_iterator_t *matchingServices)
 {
-    kern_return_t		kernResult; 
-    CFMutableDictionaryRef	matchingDict;
-    CFMutableDictionaryRef	propertyMatchDict;
+    kern_return_t kernResult;
+    CFMutableDictionaryRef matchingDict;
+    CFMutableDictionaryRef propertyMatchDict;
     
     // Ethernet interfaces are instances of class kIOEthernetInterfaceClass. 
     // IOServiceMatching is a convenience function to create a dictionary with the key kIOProviderClassKey and 
@@ -817,6 +816,11 @@ PixelRepresentation
 	
 	BOOL pixelRepresentationIsSigned = NO;
 	int previousByteOffset = -1;
+#if 1 // related to FIX_ISSUE_e19
+    self->isPhilips = NO;
+    self->isSequencePrivateGroup = NO;
+#endif
+
 #ifdef DEBUG_ISSUE_e18
     static int nestingLevel = 0;
 #endif
@@ -999,32 +1003,20 @@ PixelRepresentation
                     if ([DCMValueRepresentation isSequenceVR:vr] ||
                         ([DCMValueRepresentation isUnknownVR:vr] && vl == 0xFFFFFFFFL))
                     {
-#ifdef FIX_ISSUE_e17
-                        //auto saveTS = dicomData.transferSyntaxInUse;
-                        auto saveTS4DS = dicomData.transferSyntaxForDataset;
-                        auto saveExplicit = dicomData.isExplicitTS;
-
-                        // Philips private sequences of undefined length
-                        bool forceImplicitSq = (vl == 0xFFFFFFFFL) &&
-                                               (group == 0x2001 || group == 0x2005);
-                        if (forceImplicitSq)
-                        {
-#if 0 // TBC: is this a good idea ?
-                            // force tag.VR to be "SQ"
-                            if ([tag.vr isEqualToString:@"UN"])
-                                tag.vr = @"SQ";
+#if 1 // related to  FIX_ISSUE_e19
+                        // Private sequences of undefined length
+                        isSequencePrivateGroup = (vl == 0xFFFFFFFFL) &&
+                                                 (group == 0x2001 || group == 0x2005);
 #endif
-
-                            //NSLog(@"DCMObject.mm:%d, (%04x,%04x), ts4ds: %@, explicit: %d", __LINE__, group,element, saveTS4DS, saveExplicit);
-                            
-                            [dicomData setExplicitTS:false];
-                            [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]]; //UID_LittleEndianImplicitTransferSyntax];
-                        }
-#endif // FIX_ISSUE_e17
-                        
 #ifdef FIX_ISSUE_e19
-                        auto saveTS4DS = dicomData.transferSyntaxForDataset;
-                        auto saveExplicit = dicomData.isExplicitTS;
+                        DCMTransferSyntax *saveTS4DS = NULL;
+                        BOOL saveExplicit = FALSE;
+                        if (self->isPhilips && self->isSequencePrivateGroup)
+                        {
+                            //NSLog(@"DCMObject.mm:%d, (%04x,%04x), ts4ds: %@, explicit: %d", __LINE__, group,element, saveTS4DS, saveExplicit);
+                            saveTS4DS = dicomData.transferSyntaxForDataset;
+                            saveExplicit = dicomData.isExplicitTS;
+                        }
 #endif
                         attr = (DCMAttribute *) [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
 
@@ -1032,28 +1024,23 @@ PixelRepresentation
                         NSLog(@"--- Start parsing SQ (%s), nesting level:%d", tagUTF8, nestingLevel);
                         nestingLevel++;
 #endif
-                        *byteOffset = [self readNewSequenceAttribute:attr
-                                                           dicomData:dicomData
-                                                          byteOffset:byteOffset
-                                                        lengthToRead:(int)vl // 0xffffffff=4294967295
-                                                specificCharacterSet:specificCharacterSet];
+                        *byteOffset = [self readNewSequenceAttribute: attr
+                                                           dicomData: dicomData
+                                                          byteOffset: byteOffset
+                                                        lengthToRead: (int)vl // 0xffffffff=4294967295
+                                                specificCharacterSet: bspecificCharacterSet];
 #ifdef DEBUG_ISSUE_e18
                         nestingLevel--;
                         NSLog(@"--- End parsing SQ (%s), nesting level:%d\n", tagUTF8, nestingLevel);
 #endif
 
-#ifdef FIX_ISSUE_e17
-                        if (forceImplicitSq)
+#ifdef FIX_ISSUE_e19
+                        if (self->isPhilips && self->isSequencePrivateGroup)
                         {
                             // restore TS
                             [dicomData setExplicitTS:saveExplicit];
                             [dicomData setTransferSyntaxForDataset:saveTS4DS];
                         }
-#endif
-#ifdef FIX_ISSUE_e19
-                        // restore TS
-                        [dicomData setExplicitTS:saveExplicit];
-                        [dicomData setTransferSyntaxForDataset:saveTS4DS];
 #endif
                     }
                     else if (strcmp(tagUTF8, "7FE0,0010") == 0 && // DCM_PixelData
@@ -1148,6 +1135,14 @@ PixelRepresentation
                         specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"\\"]];
                     }
                     
+#if 1 // related to  FIX_ISSUE_e19
+                    else if (strcmp(tagUTF8, "0008,0070") == 0)
+                    {
+                        NSString *temp = [[attr values] firstObject];
+                        //NSLog(@"Line %d, temp: <%@>", __LINE__, temp );
+                        self->isPhilips = [temp hasPrefix:@"Philips"];
+                    }
+#endif
                     /*
                     if (readingMetaHeader && (*byteOffset >= endMetaHeaderPosition)) {
                         if (DCMDEBUG)
@@ -1235,14 +1230,18 @@ PixelRepresentation
                     if (DCMDEBUG)
                         NSLog(@"DCMObject.mm:%d, New Item, length: %lx", __LINE__, vl); // Start of item (in a sequence)
 #ifdef FIX_ISSUE_e19
-                    // Is this an empyrical rule for Philips only or is it more general ?
+                    // Empyrical rule for Philips only
                     //  explicit item length --> implicit VR
                     //  undefined item length --> explicit VR
-                    if (vl != 0xFFFFFFFFL) // DCM_UndefinedLength
-                        [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]];
-                    else
-                        [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]];
+                    if (self->isPhilips && self->isSequencePrivateGroup)
+                    {
+                        if (vl != 0xFFFFFFFFL) // DCM_UndefinedLength
+                            [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]];
+                        else
+                            [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]];
+                    }
 #endif
+                    // Factory method
                     DCMObject *object = [[[[self class] alloc] initWithDataContainer:dicomData
                                                                         lengthToRead:vl
                                                                           byteOffset:byteOffset

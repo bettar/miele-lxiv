@@ -289,7 +289,6 @@ extern NSRecursiveLock *Papyrus_Lock;
         return -1;
 }
 
-//#define ISSUE_e15_WORKAROUND_1 // The proper fix is to patch DCMTK 3.5.7
 #define ISSUE_e15_WORKAROUND_2
 
 #define NUM_ENCODINGS     10
@@ -317,22 +316,11 @@ extern NSRecursiveLock *Papyrus_Lock;
 
 	[Papyrus_Lock unlock];
 
-#ifdef ISSUE_e15_WORKAROUND_1
-    DcmDataset *dataset = fileformat.getDataset();
-    DcmMetaInfo *metainfo = fileformat.getMetaInfo();
-
-    //if (status.bad()) // this is redundant because the following check must pass anyway
-    {
-        if (!dataset || !metainfo)
-            return -1;
-    }
-#else // original
     if (status.bad())
         return -1;
     
     DcmDataset *dataset = fileformat.getDataset();
     DcmMetaInfo *metainfo = fileformat.getMetaInfo();
-#endif
     
 #ifdef ISSUE_e15_WORKAROUND_2
     if (!dataset || !metainfo)
@@ -712,7 +700,7 @@ extern NSRecursiveLock *Papyrus_Lock;
         [dicomElements setObject:protocol  forKey:@"protocolName"];
     }
     
-//		//manufacturer
+//		// manufacturer
 //		if (dataset->findAndGetString(DCM_Manufacturer, string, OFFalse).good() && string != NULL)
 //		{
 //			NSString *manufacturer = [DicomFile stringWithBytes: (char*) string encodings: encoding];

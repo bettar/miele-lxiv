@@ -44,6 +44,9 @@
 	DCMTransferSyntax *transferSyntax;
 	BOOL _decodePixelData;
 	BOOL isSequence;
+    
+    BOOL isPhilips; // to handle private sequences item length "empyrical" rules
+    BOOL isSequencePrivateGroup;
 }
 
 @property(readonly) NSMutableDictionary *attributes; /**< Attributes as an NSDictionary */
