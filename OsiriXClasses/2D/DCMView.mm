@@ -90,7 +90,7 @@ const char *stringCRSpaces = "\n                                                
 //#define new_loupe
 
 #if defined(WITH_OPENGL_32)
-//#define WITH_SWIZZLE_MASK
+#define WITH_SWIZZLE_MASK // to fix issue E20
 #endif
 
 SynchroType syncro = SYNCHRO_POSITION_ABS;
@@ -4240,6 +4240,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #ifndef WITH_OPENGL_32
     glTexParameteri(target, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 #endif
+    // case AA
     glTexImage2D(target, 0,
                  ([bitmap samplesPerPixel]==4) ? GL_RGBA : GL_RGB,
                  imageSize.width, imageSize.height, 0,
@@ -9898,7 +9899,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                     
                                     if (blendingView)
                                     {
-                                        if ([[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
+                                        if ([[blendingView curDCM] displaySUVValue] &&
+                                            [[blendingView curDCM] hasSUV] &&
+                                            [[blendingView curDCM] SUVConverted] == NO)
                                         {
                                             [tempString4 appendFormat: NSLocalizedString( @"SUV (fused image): %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getBlendedSUV]];
                                         }
@@ -10887,16 +10890,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
             if (bred)
             {
-#ifdef WITH_OPENGL_32
                 NSMutableArray *arrayColorMap = [NSMutableArray array];
                 for (int i = 0; i < 256; i++) {
                     Point_xy_rgb pcFrom;
                                     
-#ifdef USE_COLOR_UB
+    #ifdef USE_COLOR_UB
                     pcFrom.c = glm::vec3( bred[ i], bgreen[ i], bblue[ i]);
-#else
+    #else
                     pcFrom.c = glm::vec3( bred[ i]/255., bgreen[ i]/255., bblue[ i]/255.);
-#endif
+    #endif
                     // 0,0 is at the center of the screen
                     pcFrom.p = glm::vec2(-clutBarX + B_BAR_POS_FROM_X*sf,
                                           clutBarY - (-128.f*sf + i*sf));
@@ -10911,19 +10913,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                 }
                 
                 renderer_drawLines_xy_rgb([arrayColorMap copy]);
-#else
-                glBegin(GL_LINES);
-                {
-                    for (int i = 0; i < 256; i++)
-                    {
-                        glColor3ub( bred[ i], bgreen[ i], bblue[ i]);
-                        
-                        glVertex2f( -clutBarX + B_BAR_POS_FROM_X*sf, clutBarY - (-128.f*sf + i*sf));
-                        glVertex2f( -clutBarX + B_BAR_POS_TO_X*sf,   clutBarY - (-128.f*sf + i*sf));
-                    }
-                }
-                glEnd();
-#endif
             }
 
             // Draw gray box around blended CLUT
@@ -11742,6 +11731,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     assert(_textRectMode == GL_TEXTURE_2D); // make sure it matches sampler2D in shader
 #endif
 
+    // case BB
     // This defines the magnified DICOM image texture
     // See 'computeMagnifyLens' for definition of source buffer 'lensTexture'
     glTexImage2D(_textRectMode, 0,      // target, LOD
@@ -15666,6 +15656,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                         [scene.imageProgram Bind];
                         [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
 #endif
+                        // case CC
                         glTexImage2D(_textRectMode, 0,
                                       GL_RGBA,
                                       currWidth, currHeight, 0,
@@ -15682,6 +15673,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                         [scene.imageProgram Bind];
                         [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
 #endif
+                        // case DD issue e20
                         // grayscale image with LUT
                         glTexImage2D(_textRectMode, 0,
                                       GL_RGBA,
@@ -15717,6 +15709,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                             GLint internalFormat = GL_INTENSITY8;
                             GLenum format = GL_LUMINANCE;
 #endif
+                            // case EE
                             glTexImage2D(target, 0, // Opacity "log table", Subtraction (#i45)
                                          internalFormat,
                                          currWidth, currHeight, 0,
@@ -15763,6 +15756,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                 GLint internalFormat = GL_LUMINANCE_FLOAT32_APPLE;  // deprecated rendering engine ?
                                 GLenum format = GL_LUMINANCE;
             #endif
+                                // case FF
                                 glTexImage2D(target, 0,
                                              internalFormat,
                                              currWidth, currHeight, 0,
@@ -15781,6 +15775,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                 //glBindTexture(target, texture[k++]);
                                 glTexParameteriv(target, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask); checkOpenGLErrors(__LINE__);
   #endif
+                                // case GG issue e20
                                 // Give the image to OpenGL
                                 glTexImage2D(target, 0,  // preview, 2D view, Opacity "linear table"
                                              GL_R32F, //GL_RGBA,
@@ -16054,18 +16049,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                 bT = PETblueTable;
             }
 
-            blendingTextureName = [blendingView loadTextureIn:blendingTextureName
-                                                     blending:YES
-                                                     colorBuf:&blendingColorBuf
-                                                     textureX:&blendingTextureX
-                                                     textureY:&blendingTextureY
-                                                     redTable:rT
-                                                   greenTable:gT
-                                                    blueTable:bT
-                                                 textureWidth:&blendingTextureWidth
-                                                textureHeight:&blendingTextureHeight
-                                            resampledBaseAddr:&blendingResampledBaseAddr
-                                        resampledBaseAddrSize:&blendingResampledBaseAddrSize];
+            blendingTextureName = [blendingView loadTextureIn: blendingTextureName
+                                                     blending: YES
+                                                     colorBuf: &blendingColorBuf
+                                                     textureX: &blendingTextureX
+                                                     textureY: &blendingTextureY
+                                                     redTable: rT
+                                                   greenTable: gT
+                                                    blueTable: bT
+                                                 textureWidth: &blendingTextureWidth
+                                                textureHeight: &blendingTextureHeight
+                                            resampledBaseAddr: &blendingResampledBaseAddr
+                                        resampledBaseAddrSize: &blendingResampledBaseAddrSize];
 		}
 
 		needToLoadTexture = NO;

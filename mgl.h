@@ -40,8 +40,4 @@
 
 #import <OpenGL/CGLContext.h> // for (*cgl_ctx->disp.delete_textures)
 
-#if defined(WITH_OPENGL_32)
-//#define WITH_SWIZZLE_MASK
-#endif
-
 #endif /* mgl_h */

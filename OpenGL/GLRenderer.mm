@@ -440,7 +440,7 @@ void renderer_set_rgba(GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLuint fromLi
 #ifdef WITH_OPENGL_32
   #ifdef DEBUG_RENDERER_CALLS
     NSString *s = [NSString stringWithFormat:@" from line %d", fromLine];
-    NSLog(@"%s %d, currentProgram:%d, mode:%ld, color:(%.1f,%.1f,%.1f, %.1f)%@", __FUNCTION__, __LINE__,
+    NSLog(@"%s %d, currentProgram:%d, mode:%ld, RGBA:(%.1f,%.1f,%.1f, %.1f)%@", __FUNCTION__, __LINE__,
           sScene.currentProgram, (long)sScene.currentShaderMode, r,g,b,a, s);
   #endif
 #else

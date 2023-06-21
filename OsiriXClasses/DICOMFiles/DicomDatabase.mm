@@ -2780,20 +2780,13 @@ static BOOL protectionAgainstReentry = NO;
                                                                                     userInfo: [NSDictionary dictionaryWithObject:newStudies forKey: OsirixAddToDBNotificationImagesArray]];
                     }
                     
-#ifdef DEBUG_MIELE_WIN
-                    NSLog(@"DicomDatabase.mm:%d array pathNumber: %@", __LINE__, [[addedImageObjects valueForKey:@"pathNumber"] componentsJoinedByString:@", "] ); // or instanceNumber
-                    NSLog(@"DicomDatabase.mm:%d dict keys %@", __LINE__, [addedImagesPerCreatorUID allKeys]);
-#endif
                     [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName: OsirixAddToDBNotification
                                                                                   object: self
                                                                                 userInfo: [NSDictionary dictionaryWithObjectsAndKeys: // alternating values and keys
                                                                                           addedImageObjects, OsirixAddToDBNotificationImagesArray,
                                                                                           addedImagesPerCreatorUID, OsirixAddToDBNotificationImagesPerAETDictionary,
                                                                                           nil]];
-#ifdef DEBUG_MIELE_WIN
-                    NSLog(@"DicomDatabase.mm:%d array pathNumber %@", __LINE__, [[completeAddedImageObjects valueForKey:@"pathNumber"] componentsJoinedByString:@", "]);
-                    NSLog(@"DicomDatabase.mm:%d dict keys %@", __LINE__, [completeAddedImagesPerCreatorUID allKeys]);
-#endif
+
                     [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName: OsirixAddToDBCompleteNotification
                                                                                   object: self
                                                                                 userInfo: [NSDictionary dictionaryWithObjectsAndKeys: // alternating values and keys
@@ -2854,9 +2847,6 @@ static BOOL protectionAgainstReentry = NO;
 
 -(void)copyFilesThread:(NSDictionary*)dict
 {
-#ifdef DEBUG_MIELE_WIN
-    NSLog(@"%s %d, dictionary:%@", __FUNCTION__, __LINE__, dict);
-#endif
     @autoreleasepool
     {
         NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];

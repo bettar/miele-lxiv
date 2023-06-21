@@ -5774,9 +5774,6 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
 
 - (void) setTextBoxOffset:(NSPoint) o
 {
-#ifdef DEBUG_MIELE_WIN
-    NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, NSStringFromPoint(o));
-#endif
 	offsetTextBox_x += o.x;
 	offsetTextBox_y += o.y;
 }
@@ -8319,9 +8316,6 @@ void gl_round_box(int mode,
                                     :(BOOL*) movedOut // output parameter
 {
 	NSMutableArray *rectArray = [curView rectArray];
-#ifdef DEBUG_MIELE_WIN
-    NSLog(@"ROI.mm:%d, === array size: %lu", __LINE__, (unsigned long)[rectArray count]);
-#endif
 	if (rectArray == nil)
 	{
 		*movedOut = NO;
@@ -8333,10 +8327,6 @@ void gl_round_box(int mode,
     int vertDirection = 0;
 
     int maxRedo = [rectArray count] + 2;
-#ifdef DEBUG_MIELE_WIN
-    if (maxRedo == 3)
-        NSLog(@"ROI.mm:%d, break here", __LINE__);
-#endif
 	
 	*movedOut = NO;
 	
@@ -8368,15 +8358,9 @@ void gl_round_box(int mode,
 	for (int i = 0; i < [rectArray count]; i++)
 	{
 		NSRect curRect = [[rectArray objectAtIndex: i] rectValue];
-#ifdef DEBUG_MIELE_WIN
-        NSLog(@"ROI.mm:%d, i: %d,  maxRedo: %d\n\t curRect: %@\n\t   dRect: %@", __LINE__, i, maxRedo, NSStringFromRect(curRect), NSStringFromRect(dRect));
-#endif
 		if (NSIntersectsRect( curRect, dRect))
 		{
 			NSRect interRect = NSIntersectionRect( curRect, dRect);
-#ifdef DEBUG_MIELE_WIN
-            NSLog(@"ROI.mm:%d\n\t interRect: %@", __LINE__, NSStringFromRect(interRect));
-#endif
 			interRect.size.height++;
 			interRect.size.width++;
 			

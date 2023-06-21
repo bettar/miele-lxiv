@@ -88,10 +88,23 @@
 	
 	NSInteger spp = [self _spp];
 	
-	NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:[self pixelsWide] pixelsHigh:[self pixelsHigh] bitsPerSample:8 samplesPerPixel:spp hasAlpha:[self hasAlpha] isPlanar:NO colorSpaceName:colorSpaceName bytesPerRow:0 bitsPerPixel:0];
-	for (int y = [self pixelsHigh]-1; y >= 0; --y)
+	NSBitmapImageRep* rep = [[NSBitmapImageRep alloc]
+                             initWithBitmapDataPlanes:NULL
+                             pixelsWide:[self pixelsWide]
+                             pixelsHigh:[self pixelsHigh]
+                             bitsPerSample:8
+                             samplesPerPixel:spp
+                             hasAlpha:[self hasAlpha]
+                             isPlanar:NO
+                             colorSpaceName:colorSpaceName
+                             bytesPerRow:0
+                             bitsPerPixel:0];
+
+    for (int y = [self pixelsHigh]-1; y >= 0; --y)
 		for (int x = [self pixelsWide]-1; x >= 0; --x)
-			[rep setColor:[[self colorAtX:x y:y] colorUsingColorSpaceName:colorSpaceName] atX:x y:y];
+			[rep setColor:[[self colorAtX:x y:y] colorUsingColorSpaceName:colorSpaceName]
+                      atX:x
+                        y:y];
 	
 	return [rep autorelease];
 }
