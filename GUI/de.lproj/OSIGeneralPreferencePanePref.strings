@@ -1,7 +1,7 @@
 /* Class = "NSWindow"; title = "<< do not localize >>"; ObjectID = "12"; */
 "12.title" = "<< do not localize >>";
 
-/* Class = "NSButton"; ibShadowedToolTip = "Connect to OsiriX and check for latest version."; ObjectID = "101"; */
+/* Class = "NSButton"; ibShadowedToolTip = "Connect to Miele-LXIV and check for latest version."; ObjectID = "101"; */
 "101.ibShadowedToolTip" = "Verbinden Sie sich mit Miele-LXIV und überprüfen Sie die neueste Version.";
 
 /* Class = "NSBox"; title = "Check version"; ObjectID = "129"; */
@@ -13,7 +13,7 @@
 /* Class = "NSBox"; title = "Global"; ObjectID = "157"; */
 "157.title" = "Global";
 
-/* Class = "NSButton"; ibShadowedToolTip = "Connect to OsiriX and check for latest version."; ObjectID = "159"; */
+/* Class = "NSButton"; ibShadowedToolTip = "Connect to Miele-LXIV and check for latest version."; ObjectID = "159"; */
 "159.ibShadowedToolTip" = "Verbinden Sie sich mit Miele-LXIV und überprüfen Sie die neueste Version.";
 
 /* Class = "NSButtonCell"; title = "Papyrus"; ObjectID = "163"; */
@@ -25,7 +25,7 @@
 /* Class = "NSBox"; title = "DICOM Editing"; ObjectID = "169"; */
 "169.title" = "DICOM Editieren";
 
-/* Class = "NSButton"; ibShadowedToolTip = "Connect to OsiriX and check for latest version."; ObjectID = "171"; */
+/* Class = "NSButton"; ibShadowedToolTip = "Connect to Miele-LXIV and check for latest version."; ObjectID = "171"; */
 "171.ibShadowedToolTip" = "Verbinden Sie sich mit Miele-LXIV und überprüfen Sie die neueste Version.";
 
 /* Class = "NSButtonCell"; title = "Automatically check for Miele-LXIV application updates at startup time"; ObjectID = "178"; */
@@ -46,7 +46,7 @@
 /* Class = "NSButtonCell"; title = "Radio"; ObjectID = "185"; */
 "185.title" = "Radio";
 
-/* Class = "NSButton"; ibShadowedToolTip = "Connect to OsiriX and check for latest version."; ObjectID = "191"; */
+/* Class = "NSButton"; ibShadowedToolTip = "Connect to Miele-LXIV and check for latest version."; ObjectID = "191"; */
 "191.ibShadowedToolTip" = "Verbinden Sie sich mit Miele-LXIV und überprüfen Sie die neueste Version.";
 
 /* Class = "NSButtonCell"; title = "Automatically check for installed Plugins updates at startup time"; ObjectID = "192"; */
@@ -173,7 +173,7 @@
 "534.title" = "Starten Sie Miele-LXIV neu, um die Änderungen anzuwenden.\n
 Wenn mehrere Sprachen aktiviert sind, wird die verwendete Sprache nach den MacOS-Einstellungen gewählt.";
 
-/* Class = "NSButton"; ibShadowedToolTip = "Connect to OsiriX and check for latest version."; ObjectID = "535"; */
+/* Class = "NSButton"; ibShadowedToolTip = "Connect to Miele-LXIV and check for latest version."; ObjectID = "535"; */
 "535.ibShadowedToolTip" = "Verbinden Sie sich mit Miele-LXIV und überprüfen Sie die neueste Version.";
 
 /* Class = "NSButtonCell"; title = "Synchronize preferences at startup with this url :"; ObjectID = "536"; */
@@ -191,7 +191,7 @@ Wenn mehrere Sprachen aktiviert sind, wird die verwendete Sprache nach den MacOS
 /* Class = "NSTextFieldCell"; title = "http://www.preferences-server.com/preferences.plist"; ObjectID = "548"; */
 "548.title" = "http://www.preferences-server.com/preferences.plist";
 
-/* Class = "NSButton"; ibShadowedToolTip = "Connect to OsiriX and check for latest version."; ObjectID = "BXs-xj-ZZ5"; */
+/* Class = "NSButton"; ibShadowedToolTip = "Connect to Miele-LXIV and check for latest version."; ObjectID = "BXs-xj-ZZ5"; */
 "BXs-xj-ZZ5.ibShadowedToolTip" = "Verbinden Sie sich mit Miele-LXIV und überprüfen Sie die neueste Version.";
 
 /* Class = "NSButtonCell"; title = "Display Notifications"; ObjectID = "eOV-F7-aFg"; */

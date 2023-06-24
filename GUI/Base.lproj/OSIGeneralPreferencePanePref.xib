@@ -18,7 +18,7 @@
         <window title="&lt;&lt; do not localize &gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" toolbarStyle="expanded" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="722" height="699"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="722" height="699"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -41,7 +41,7 @@
                                         <action selector="resetPreferences:" target="-2" id="344"/>
                                     </connections>
                                 </button>
-                                <button toolTip="Connect to OsiriX and check for latest version." verticalCompressionResistancePriority="751" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="535">
+                                <button toolTip="Connect to Miele-LXIV and check for latest version." verticalCompressionResistancePriority="751" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="535">
                                     <rect key="frame" x="18" y="54" width="321" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Synchronize preferences at startup with this url :" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="536">
@@ -77,7 +77,7 @@
                                         <binding destination="167" name="value" keyPath="values.SyncPreferencesURL" id="551"/>
                                     </connections>
                                 </textField>
-                                <button toolTip="Connect to OsiriX and check for latest version." fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BXs-xj-ZZ5">
+                                <button toolTip="Connect to Miele-LXIV and check for latest version." fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BXs-xj-ZZ5">
                                     <rect key="frame" x="18" y="5" width="151" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Display Notifications" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="eOV-F7-aFg">
@@ -99,7 +99,7 @@
                                         <action selector="savePreferences:" target="-2" id="549"/>
                                     </connections>
                                 </button>
-                                <button toolTip="Connect to OsiriX and check for latest version." horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="159">
+                                <button toolTip="Connect to Miele-LXIV and check for latest version." horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="159">
                                     <rect key="frame" x="18" y="79" width="462" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Require an 'Administrator' authentication to modify preferences settings" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="183">
@@ -220,7 +220,7 @@
                             <rect key="frame" x="4" y="5" width="680" height="64"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button toolTip="Connect to OsiriX and check for latest version." horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="191">
+                                <button toolTip="Connect to Miele-LXIV and check for latest version." horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="191">
                                     <rect key="frame" x="15" y="36" width="416" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Automatically check for installed Plugins updates at startup time" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="192">
@@ -231,7 +231,7 @@
                                         <binding destination="167" name="value" keyPath="values.checkForUpdatesPlugins" id="193"/>
                                     </connections>
                                 </button>
-                                <button toolTip="Connect to OsiriX and check for latest version." horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="101">
+                                <button toolTip="Connect to Miele-LXIV and check for latest version." horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="101">
                                     <rect key="frame" x="15" y="10" width="454" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Automatically check for Miele-LXIV application updates at startup time" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="178">
@@ -267,7 +267,7 @@
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                 <tableColumns>
-                                                    <tableColumn width="69" minWidth="40" maxWidth="1000" id="522">
+                                                    <tableColumn width="70" minWidth="40" maxWidth="1000" id="522">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Enabled">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -281,7 +281,7 @@
                                                             <binding destination="433" name="value" keyPath="arrangedObjects.active" id="529"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn width="252" minWidth="40" maxWidth="1000" id="523">
+                                                    <tableColumn width="252.5" minWidth="40" maxWidth="1000" id="523">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Language">
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -337,7 +337,7 @@ If multiple languages are enabled, the used language will be chosen according to
                             <rect key="frame" x="4" y="5" width="680" height="37"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button toolTip="Connect to OsiriX and check for latest version." fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="171">
+                                <button toolTip="Connect to Miele-LXIV and check for latest version." fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="171">
                                     <rect key="frame" x="15" y="10" width="305" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Allow DICOM Editing. See Meta-Data Window." bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="184">
