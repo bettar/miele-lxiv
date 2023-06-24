@@ -213,7 +213,10 @@
 - (IBAction) undo:(id) sender;
 - (void) sendMail:(id) sender;
 - (void) exportJPEG:(id) sender;
+
+// TODO: carefully rename it to 'export2Photos'
 - (void) export2iPhoto:(id) sender;
+
 - (void) exportTIFF:(id) sender;
 - (void) computeMinMax;
 - (float) minimumValue;

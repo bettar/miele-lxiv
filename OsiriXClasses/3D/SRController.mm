@@ -982,6 +982,7 @@ return YES;
     return enable;
 }
 
+// TODO: carefully rename it to 'export2Photos'
 -(void) export2iPhoto:(id) sender
 {
 	NSImage *im = [view nsimage:NO];

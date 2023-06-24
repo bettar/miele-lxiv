@@ -9317,6 +9317,7 @@ public:
 	aRenderer->SetDraw( 1);
 }
 
+// TODO: carefully rename it to 'export2Photos'
 - (void) export2iPhoto:(id) sender
 {
 	aRenderer->SetDraw( 0);

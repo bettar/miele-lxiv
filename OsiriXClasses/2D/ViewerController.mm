@@ -21041,9 +21041,9 @@ static BOOL viewerControllerPlaying = NO;
 	[self exportImage: sender];
 }
 
+// TODO: carefully rename it to 'export2Photos'
 -(IBAction) export2iPhoto:(id) sender
 {
-    NSLog(@"%s:%i", __FILE__, __LINE__);
 	[imageFormat selectCellWithTag: TAG_EXPORT_FORMAT_PHOTOS];
 	[self exportImage: sender];
 }
@@ -21372,8 +21372,7 @@ static BOOL viewerControllerPlaying = NO;
 				{
 					_export = YES;
 				}
-				
-				if ([[imageSelection selectedCell] tag] == TAG_EXPORT_SELECTION_KEY_IMAGE)
+				else if ([[imageSelection selectedCell] tag] == TAG_EXPORT_SELECTION_KEY_IMAGE)
 				{
 					Dicom_Image *image = [[self fileList] objectAtIndex: index];
 					
@@ -21385,8 +21384,7 @@ static BOOL viewerControllerPlaying = NO;
                             _export = YES;
                     }
 				}
-				
-				if ([[imageSelection selectedCell] tag] == TAG_EXPORT_SELECTION_CURRENT_IMAGE)
+				else if ([[imageSelection selectedCell] tag] == TAG_EXPORT_SELECTION_CURRENT_IMAGE)
 				{
 					if (index == [imageView curImage])
                         _export = YES;
@@ -21430,56 +21428,54 @@ static BOOL viewerControllerPlaying = NO;
 						
 						[JPEGExif addExif: [NSURL fileURLWithPath: jpegFile] properties: exifDict format:@"jpeg"];
 					}
-					else
-					{
-						if ([[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_JPEG)
-						{
-							NSString *jpegFile;
-							
-							if (numberOfExportedImages > 1)
-                                jpegFile = [[[[panel filename] stringByDeletingPathExtension] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4ld.jpg", fileIndex++]];
-							else
-								jpegFile = [panel filename];
-							
-//							if ([[NSUserDefaults standardUserDefaults] boolForKey: @"exportImageInGrayColorSpace"]) // 8-bit
-//							{
-//								NSBitmapImageRep *grayRepresentation = [NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]];
-//								bitmapData = [[grayRepresentation bitmapImageRepByConvertingToColorSpace: [NSColorSpace genericGrayColorSpace] renderingIntent: NSColorRenderingIntentDefault] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-//							}
-//							else
-								bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-							
-							[bitmapData writeToFile: jpegFile atomically:YES];
-							
-							Dicom_Image *curImage = [fileList[0] objectAtIndex:0];
-						
-							NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                      EXIF_USER_COMMENT, kCGImagePropertyExifUserComment,
-                                                      [curImage.series.study.date descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:nil locale: nil] , kCGImagePropertyExifDateTimeOriginal,
-                                                      nil];
-							
-							[JPEGExif addExif: [NSURL fileURLWithPath: jpegFile] properties: exifDict format:@"jpeg"];
-						}
-						else
-						{
-							NSString *tiffFile;
-						
-							if (numberOfExportedImages > 1)
-                                tiffFile = [[[[panel filename] stringByDeletingPathExtension] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4ld.tif", fileIndex++]];
-							else
-								tiffFile = [panel filename];
-							
-//							if ([[NSUserDefaults standardUserDefaults] boolForKey: @"exportImageInGrayColorSpace"]) // 8-bit
-//							{
-//								NSBitmapImageRep *grayRepresentation = [NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]];
-//								[[[grayRepresentation bitmapImageRepByConvertingToColorSpace: [NSColorSpace genericGrayColorSpace] renderingIntent: NSColorRenderingIntentDefault] TIFFRepresentation] writeToFile: tiffFile atomically:NO];
-//							}
-//							else
-								[[im TIFFRepresentation] writeToFile: tiffFile atomically:NO];
-						}
-					}
+                    else if ([[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_JPEG)
+                    {
+                        NSString *jpegFile;
+                        
+                        if (numberOfExportedImages > 1)
+                            jpegFile = [[[[panel filename] stringByDeletingPathExtension] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4ld.jpg", fileIndex++]];
+                        else
+                            jpegFile = [panel filename];
+                        
+//                            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"exportImageInGrayColorSpace"]) // 8-bit
+//                            {
+//                                NSBitmapImageRep *grayRepresentation = [NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]];
+//                                bitmapData = [[grayRepresentation bitmapImageRepByConvertingToColorSpace: [NSColorSpace genericGrayColorSpace] renderingIntent: NSColorRenderingIntentDefault] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+//                            }
+//                            else
+                            bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+                        
+                        [bitmapData writeToFile: jpegFile atomically:YES];
+                        
+                        Dicom_Image *curImage = [fileList[0] objectAtIndex:0];
+                    
+                        NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                  EXIF_USER_COMMENT, kCGImagePropertyExifUserComment,
+                                                  [curImage.series.study.date descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:nil locale: nil] , kCGImagePropertyExifDateTimeOriginal,
+                                                  nil];
+                        
+                        [JPEGExif addExif: [NSURL fileURLWithPath: jpegFile] properties: exifDict format:@"jpeg"];
+                    }
+                    else  // TIFF
+                    {
+                        NSString *tiffFile;
+                    
+                        if (numberOfExportedImages > 1)
+                            tiffFile = [[[[panel filename] stringByDeletingPathExtension] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4ld.tif", fileIndex++]];
+                        else
+                            tiffFile = [panel filename];
+                        
+//                        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"exportImageInGrayColorSpace"]) // 8-bit
+//                        {
+//                            NSBitmapImageRep *grayRepresentation = [NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]];
+//                            [[[grayRepresentation bitmapImageRepByConvertingToColorSpace: [NSColorSpace genericGrayColorSpace] renderingIntent: NSColorRenderingIntentDefault] TIFFRepresentation] writeToFile: tiffFile atomically:NO];
+//                        }
+//                        else
+
+                        [[im TIFFRepresentation] writeToFile: tiffFile atomically:NO];
+                    }
 				}
-			}
+			} // for
 			
 			NSString *rootDir = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"];
 			
@@ -21489,8 +21485,7 @@ static BOOL viewerControllerPlaying = NO;
 				[photos importIniPhoto: [NSArray arrayWithObject: rootDir]];
 				[photos release];
 			}
-			
-			if ([[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_MAIL)
+			else if ([[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_MAIL)
 			{
 #define kScriptName (@"Mail")
 #define kScriptType (@"scpt")
@@ -21503,7 +21498,7 @@ static BOOL viewerControllerPlaying = NO;
 
 				NSDictionary *errorInfo = nil;
 				
-				/* Here I am using "initWithContentsOfURL:" to load a pre-compiled script, rather than using "initWithSource:" to load a text file with AppleScript source.  The main reason for this is that the latter technique seems to give rise to inexplicable -1708 (errAEEventNotHandled) errors on Jaguar. */
+				/* Here I am using "initWithContentsOfURL:" to load a pre-compiled script, rather than using "initWithSource:" to load a text file with AppleScript source.  The main reason for this is that the latter technique seems to give rise to inexplicable -1708 (errAEEventNotHandled) errors on macOS Jaguar. */
 				NSAppleScript *script = [[NSAppleScript alloc] initWithContentsOfURL: scriptURL error: &errorInfo];
 				
 				/* See if there were any errors loading the script */
@@ -21514,8 +21509,7 @@ static BOOL viewerControllerPlaying = NO;
 				NSAppleEventDescriptor *arguments = [[NSAppleEventDescriptor alloc] initListDescriptor];
 				[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"subject"] atIndex: 1];
 				[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"defaultaddress@mac.com"] atIndex: 2];
-				
-				
+								
 				NSAppleEventDescriptor *listFiles = [NSAppleEventDescriptor listDescriptor];
 				NSAppleEventDescriptor *listCaptions = [NSAppleEventDescriptor listDescriptor];
 				NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
@@ -21567,11 +21561,10 @@ static BOOL viewerControllerPlaying = NO;
 				[script release];
 				[arguments release];
 			}
-			
-			if ([[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_JPEG ||
-                [[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_TIFF)
+			else if ([[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_JPEG ||
+                     [[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_TIFF)
 			{
-				NSString	*filePath;
+				NSString *filePath;
 				
 				if (numberOfExportedImages > 1)
 				{
@@ -21597,7 +21590,9 @@ static BOOL viewerControllerPlaying = NO;
                 }
 			}
 		}
-//			{
+
+#if 0 // originally commented out section
+        {
 //				NSImage *im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers:[imageAllViewers state]];
 //				
 //				NSArray *representations;
@@ -21666,8 +21661,9 @@ static BOOL viewerControllerPlaying = NO;
 //					{
 //						[ws openFile:[panel filename]];
 //					}
-//				}									
-//			}
+//				}
+        }
+#endif
 	}
 }
 

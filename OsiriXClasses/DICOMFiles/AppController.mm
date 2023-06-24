@@ -2243,7 +2243,7 @@ static bool isGrantedNotificationAccess = false;
     {
 		quitting = YES;
 		
-		// The Built-In StoreSCP is now the default and only storescp available in OsiriX.... Antoine 4/9/06
+		// The Built-In StoreSCP is now the default and only C-STORE-SCP available in the app
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"] != YES)
 			[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"USESTORESCP"];
 		

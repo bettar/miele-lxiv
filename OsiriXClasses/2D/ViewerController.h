@@ -797,7 +797,10 @@ enum
 //- (IBAction) HuVRViewer:(id) sender;
 - (IBAction) clutAction:(id)sender;
 - (void) tileWindows;
+
+// TODO: carefully rename it to 'export2Photos'
 -(IBAction) export2iPhoto:(id) sender;
+
 -(IBAction) PagePadCreate:(id) sender;
 - (void) exportQuicktime:(id) sender;
 - (IBAction) exportQuicktimeSlider:(id) sender;

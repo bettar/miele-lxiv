@@ -713,7 +713,7 @@
 
  if path is valid, but not DB is found, we will create a new one
 
- Example: {path: "/Users/antoinerosset/Documents/"}
+ Example: {path: "/Users/lxiv/Documents/"}
 
  Response: {error: "0"}
 */
