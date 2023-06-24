@@ -116,7 +116,7 @@ int delayedTileWindows = NO;
 
 #define TAG_EXPORT_FORMAT_JPEG                  0
 #define TAG_EXPORT_FORMAT_TIFF                  1
-#define TAG_EXPORT_FORMAT_IPHOTO                2  // TODO: update to Photos
+#define TAG_EXPORT_FORMAT_PHOTOS                2
 #define TAG_EXPORT_FORMAT_MAIL                  3
 
 #define TAG_EXPORT_SELECTION_CURRENT_IMAGE      0
@@ -21044,7 +21044,7 @@ static BOOL viewerControllerPlaying = NO;
 -(IBAction) export2iPhoto:(id) sender
 {
     NSLog(@"%s:%i", __FILE__, __LINE__);
-	[imageFormat selectCellWithTag: TAG_EXPORT_FORMAT_IPHOTO];
+	[imageFormat selectCellWithTag: TAG_EXPORT_FORMAT_PHOTOS];
 	[self exportImage: sender];
 }
 
@@ -21335,7 +21335,7 @@ static BOOL viewerControllerPlaying = NO;
 	{
 		BOOL pathOK = YES;
 		
-		if ([[imageFormat selectedCell] tag] != TAG_EXPORT_FORMAT_IPHOTO &&
+		if ([[imageFormat selectedCell] tag] != TAG_EXPORT_FORMAT_PHOTOS &&
             [[imageFormat selectedCell] tag] != TAG_EXPORT_FORMAT_MAIL)
 		{
 			NSString *defaultExportName = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.name"];
@@ -21406,7 +21406,7 @@ static BOOL viewerControllerPlaying = NO;
 
 					NSArray *representations = [im representations];
 					
-					if ([[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_IPHOTO ||
+					if ([[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_PHOTOS ||
                         [[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_MAIL)
 					{
 //						if ([[NSUserDefaults standardUserDefaults] boolForKey: @"exportImageInGrayColorSpace"] && ) // 8-bit
@@ -21483,7 +21483,7 @@ static BOOL viewerControllerPlaying = NO;
 			
 			NSString *rootDir = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"];
 			
-			if ([[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_IPHOTO)
+			if ([[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_PHOTOS)
 			{
 				Photos *photos = [[Photos alloc] init];
 				[photos importIniPhoto: [NSArray arrayWithObject: rootDir]];
@@ -21605,7 +21605,7 @@ static BOOL viewerControllerPlaying = NO;
 //				
 //				representations = [im representations];
 //				
-//				if ([[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_IPHOTO)
+//				if ([[imageFormat selectedCell] tag] == TAG_EXPORT_FORMAT_PHOTOS)
 //				{
 //					bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 //					

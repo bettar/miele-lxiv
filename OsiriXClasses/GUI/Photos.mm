@@ -106,17 +106,20 @@
     return self;
 }
 
-// Issue #56
+// Issue #g56
 - (bool) automationConsent: (NSString *)bundleID
 {
     bool consentResult = true;
 
     NSAppleEventDescriptor *targetAppEventDescriptor = [NSAppleEventDescriptor descriptorWithBundleIdentifier:bundleID];
-
+    
     if (@available(macOS 10.14, *))
     {
         OSStatus appleScriptPermission
-            = AEDeterminePermissionToAutomateTarget( targetAppEventDescriptor.aeDesc, typeWildCard, typeWildCard, true);
+            = AEDeterminePermissionToAutomateTarget(targetAppEventDescriptor.aeDesc, // AEAddressDesc
+                                                    typeWildCard, // AEEventClass
+                                                    typeWildCard, // AEEventID
+                                                    true); // askUserIfNeeded
 
         switch (appleScriptPermission) {
             case procNotFound:
@@ -139,13 +142,20 @@
                 consentResult = false;
                 break;
                 
-            // If askUserIfNeeded is false, and this application is not yet permitted to send AppleEvents to the target, then errAEEventWouldRequireUserConsent will be returned
-            //case errAEEventWouldRequireUserConsent:
-                //break;
+            case errAEEventWouldRequireUserConsent:
+                // If askUserIfNeeded is false, and this application is not yet permitted to send AppleEvents to the target, then errAEEventWouldRequireUserConsent will be returned
+                NSLog(@"Automation consent not yet granted for %@, would require user consent.", bundleID);
+                consentResult = false;
+                break;
+
+            case noErr:
+                NSLog(@"Automation permitted for %@.", bundleID);
+                // the current application is permitted to send the given AppleEvent to the target
+                break;
 
             default:
-            case noErr:
-                // the current application is permitted to send the given AppleEvent to the target
+                NSLog(@"%s switch statement fell through: %@ %d", __PRETTY_FUNCTION__, bundleID, appleScriptPermission);
+                consentResult = false;
                 break;
         }
     }
@@ -161,9 +171,7 @@
 
 - (void)runScript:(NSString *)txt
 {
-    NSLog(@"%s:%i %@", __FILE__, __LINE__, txt);
-
-    // Issue #56
+    // Issue #g56
     if (![self automationConsent:@"com.apple.Photos"])
         return;
 
