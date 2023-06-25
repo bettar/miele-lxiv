@@ -564,11 +564,12 @@ void renderer_setLineWidth(GLfloat w)
 // OpenGL Legacy draws with GL_TRIANGLES
 // OpenGL Core draws with GL_TRIANGLES
 // The triangle gets "filled"
-void renderer_drawTriangles_xy(NSArray *pArray)
+void renderer_drawTriangles_xy(NSArray *pArray, BOOL filled)
 {
 #ifdef WITH_OPENGL_32
     //NSLog(@"%s %d, count: %lu", __FUNCTION__, __LINE__, (unsigned long)[pArray count]);
-    assert(sScene.currentProgram == sScene.overlayProgram.programHandle);
+    assert(sScene.currentProgram == sScene.overlayProgram.programHandle ||
+           sScene.currentProgram == sScene.overlayLineProgram.programHandle);
     assert([pArray count] % 3 == 0); // 3 points for each triangle
 
     const int dimV = 2;         // number of components in the vertex array: X,Y
@@ -600,7 +601,10 @@ void renderer_drawTriangles_xy(NSArray *pArray)
     glVertexAttribPointer(indexCoords, dimV, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(indexCoords);
     
-    glDrawArrays(GL_TRIANGLES, 0, nPoints*nVertPerLine);
+    if (filled)
+        glDrawArrays(GL_TRIANGLES, 0, nPoints*nVertPerLine);
+    else
+        glDrawArrays(GL_LINE_LOOP, 0, nPoints*nVertPerLine);
     
     // Final Cleanup
     glBindBuffer(GL_ARRAY_BUFFER, 0);

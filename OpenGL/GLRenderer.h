@@ -66,7 +66,7 @@ void renderer_setLineWidth(GLfloat w);
 void renderer_drawQuads_xyz(NSArray *pArray);
 void renderer_drawLine_xyz(NSArray *pArray, GLenum lineMode);
 
-void renderer_drawTriangles_xy(NSArray *pArray);
+void renderer_drawTriangles_xy(NSArray *pArray, BOOL filled=true);
 void renderer_drawLine_xy(NSArray *pArray, GLenum lineMode);
 void renderer_drawPoints(NSArray *pArray, BOOL rounded=true);
 

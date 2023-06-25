@@ -15,7 +15,7 @@
 - (void) createShaderProgram: (NSString *)shaderName
 {
 #ifdef WITH_OPENGL_32
-    //NSLog(@"%s:%d ====== <%@> %@", __FUNCTION__, __LINE__, shaderName, [NSOpenGLContext currentContext]);
+    //NSLog(@"%s ====== <%@> %@", __FUNCTION__, shaderName, [NSOpenGLContext currentContext]);
 
     if (self.programHandle != GL_ZERO)
         return;

@@ -522,10 +522,19 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
             glm::vec2 a(arh[i].x, arh[i].y);
             [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
         }
-
-        [curView setShaderProgramForLineWidth: 1.0*backingScaleFactor];
+        
+#if 0
+        // Arrow triangle not filled
+        [curView setShaderProgramForLineWidth: 2 * thick * backingScaleFactor];
+        renderer_set_rgba(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+        renderer_drawTriangles_xy([pArray copy], false);
+#else
+        // Arrow triangle filled
+        [curView setShaderProgramForLineWidth: 1.0]; // width must be 1 for the triangle to be filled
         renderer_set_rgba(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
         renderer_drawTriangles_xy([pArray copy]);
+#endif
+
 
 //        glBegin(GL_LINE_LOOP);
 //        {
