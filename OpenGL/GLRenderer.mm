@@ -563,7 +563,6 @@ void renderer_setLineWidth(GLfloat w)
 // 'pArray' is an array of glm::vec2
 // OpenGL Legacy draws with GL_TRIANGLES
 // OpenGL Core draws with GL_TRIANGLES
-// The triangle gets "filled"
 void renderer_drawTriangles_xy(NSArray *pArray, BOOL filled)
 {
 #ifdef WITH_OPENGL_32
@@ -602,9 +601,14 @@ void renderer_drawTriangles_xy(NSArray *pArray, BOOL filled)
     glEnableVertexAttribArray(indexCoords);
     
     if (filled)
+    {
+        glLineWidth(1.0);
         glDrawArrays(GL_TRIANGLES, 0, nPoints*nVertPerLine);
+    }
     else
+    {
         glDrawArrays(GL_LINE_LOOP, 0, nPoints*nVertPerLine);
+    }
     
     // Final Cleanup
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -618,7 +622,10 @@ void renderer_drawTriangles_xy(NSArray *pArray, BOOL filled)
 #else // WITH_OPENGL_32
     NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
     CGLContextObj cgl_ctx = [currentContext CGLContextObj];
-    glBegin(GL_TRIANGLES);
+    GLenum lineMode = GL_TRIANGLES;
+    if (!filled)
+        lineMode = GL_LINE_LOOP;
+    glBegin(lineMode);
     {
         for (long i = 0; i < [pArray count]; i++) {
             glm::vec2 p;

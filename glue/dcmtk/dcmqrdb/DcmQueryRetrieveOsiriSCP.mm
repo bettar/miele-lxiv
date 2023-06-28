@@ -38,6 +38,8 @@
 
 #import "tmp_locations.h"
 
+extern DCMTK_DCMQRDB_EXPORT OFLogger DCM_dcmqrdbLogger;
+
 BOOL forkedProcess = NO;
 
 static char *last(char *p, int c)
@@ -77,7 +79,8 @@ static void getCallback(
                                                   response->NumberOfWarningSubOperations)];
 }
 
-// See DIMSE_StoreProviderCallback in dimse.h
+// See DCMTK    dimse.h     DIMSE_StoreProviderCallback()
+// See original dcmqrsrv.mm:381 storeCallback()
 static void storeCallback(
   /* in */
   void *callbackData,
@@ -87,10 +90,10 @@ static void storeCallback(
   DcmDataset **imageDataSet,        /* being received into */
   /* out */
   T_DIMSE_C_StoreRSP *rsp,          /* final store response */
-  DcmDataset **statusDetail)
+  DcmDataset **stDetail)
 {
-  DcmQueryRetrieveStoreContext *context = OFstatic_cast(DcmQueryRetrieveStoreContext *, callbackData);
-  context->callbackHandler(progress, req, imageFileName, imageDataSet, rsp, statusDetail);
+    DcmQueryRetrieveStoreContext *context = OFstatic_cast(DcmQueryRetrieveStoreContext *, callbackData);
+    context->callbackHandler(progress, req, imageFileName, imageDataSet, rsp, stDetail);
 }
 
 #pragma mark - class DcmQueryRetrieveOsiriSCP
@@ -120,7 +123,7 @@ void DcmQueryRetrieveOsiriSCP::writeErrorMessage( const char *str)
     else
     {
         char dir[ 1024];
-        sprintf( dir, "%serror_message", [NSTemporaryDirectory() UTF8String]);
+        snprintf( dir, sizeof(dir), "%serror_message", [NSTemporaryDirectory() UTF8String]);
         unlink( dir);
         
         FILE * pFile = fopen (dir,"w+");
@@ -183,22 +186,13 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
 }
 */
 
-// see DCMTK source: dcmqrsrv.cc:353
-OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request,
-             T_ASC_PresentationContextID presId,
-             DcmQueryRetrieveDatabaseHandle& dbHandle,
-             OFBool correctUIDPadding)
+// see DCMTK source: dcmqrsrv.cc:344
+OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(T_ASC_Association * assoc,
+                                               T_DIMSE_C_StoreRQ * request,
+                                               T_ASC_PresentationContextID presId,
+                                               DcmQueryRetrieveDatabaseHandle& dbHandle,
+                                               OFBool correctUIDPadding)
 {
-    NSLog(@"DcmQueryRetrieveOsiriSCP.mm %s %d", __FUNCTION__, __LINE__);
-#if 0
-    // TODO: call base class instead of repeating this block of code (need to resolve imageFileName)
-    DcmQueryRetrieveSCP::storeSCP(assoc,request,presId,dbHandle,correctUIDPadding);
-#else
-    OFCondition cond = EC_Normal;
-    OFCondition dbcond = EC_Normal;
-    char imageFileName[MAXPATHLEN+1];
-    DcmFileFormat dcmff;
-
 #ifndef NDEBUG
     OFLog::configure(OFLogger::DEBUG_LOG_LEVEL);
     //DCM_dcmdataLogger.setLogLevel(OFLogger::DEBUG_LOG_LEVEL);
@@ -210,29 +204,36 @@ OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(T_ASC_Association * assoc, T_DIMS
     }
     else
     {
-        OFLog::configure(OFLogger::ERROR_LOG_LEVEL);        
+        OFLog::configure(OFLogger::ERROR_LOG_LEVEL);
     }
 #endif
     
+#if 0 //def DEBUG_ISSUE_E23
+    DCM_dcmqrdbLogger.setLogLevel(OFLogger::DEBUG_LOG_LEVEL);
+#endif
+
+#if 0
+    // TODO: call base class instead of repeating this block of code (need to resolve imageFileName)
+    DcmQueryRetrieveSCP::storeSCP(assoc,request,presId,dbHandle,correctUIDPadding);
+#else
+    OFCondition cond = EC_Normal;
+    OFCondition dbcond = EC_Normal;
+    char imageFileName[MAXPATHLEN+1];
+    DcmFileFormat dcmff;
     DcmQueryRetrieveStoreContext context(dbHandle, options_, STATUS_Success, &dcmff, correctUIDPadding);
     
     OFString temp_str;
     DCMQRDB_INFO("Received Store SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
-    
+    // 355
     if (!dcmIsaStorageSOPClassUID(request->AffectedSOPClassUID)) {
         /* callback will send back sop class not supported status */
         context.setStatus(STATUS_STORE_Refused_SOPClassNotSupported);
         /* must still receive data */
-        //strcpy(imageFileName, NULL_DEVICE_NAME);
         OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
-    }
-    else if (options_.ignoreStoreData_)
-    {
+    } else if (options_.ignoreStoreData_) {
         strcpy(imageFileName, NULL_DEVICE_NAME);
         OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
-    }
-    else
-    {
+    } else {
         dbcond = dbHandle.makeNewStoreFileName(
             request->AffectedSOPClassUID,
             request->AffectedSOPInstanceUID,
@@ -242,25 +243,18 @@ OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(T_ASC_Association * assoc, T_DIMS
         {
             DCMQRDB_ERROR("storeSCP: Database: makeNewStoreFileName Failed");
             /* must still receive data */
-#if 0
-            strcpy(imageFileName, NULL_DEVICE_NAME);
-#else
             OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
-#endif
-
             /* callback will send back out of resources status */
             context.setStatus(STATUS_STORE_Refused_OutOfResources);
         }
     }
 
-#if 1
     FILE *pFile = fopen([[NSTemporaryDirectory() stringByAppendingPathComponent:@"kill_all_storescu"] UTF8String], "r");
     if (pFile)
     {
         fclose (pFile);
         cond = ASC_abortAssociation(assoc);
     }
-#endif
 
 #ifdef LOCK_IMAGE_FILES
     /* exclusively lock image file */
@@ -364,7 +358,7 @@ OFCondition DcmQueryRetrieveOsiriSCP::storeSCP(T_ASC_Association * assoc, T_DIMS
     if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
     {
         char dir[ 1024];
-        sprintf( dir, "%s/%s",
+        snprintf( dir, sizeof(dir), "%s/%s",
                 [[BrowserController currentBrowser] cfixedIncomingNoIndexDirectory],
                 last( imageFileName, '/'));
         rename( imageFileName, dir); // Moving the file from TEMP.noindex to INCOMING.noindex

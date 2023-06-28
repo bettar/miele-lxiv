@@ -1188,7 +1188,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::storeRequest(
     DcmQueryRetrieveDatabaseStatus *status,
     OFBool     isNew)
 {
- return EC_Normal;
+    return EC_Normal;
 }
 
 #pragma mark -
@@ -1303,6 +1303,16 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
  *      Provides a storage filename
  */
 
+#define FIX_ISSUE_E23
+#define DEBUG_ISSUE_E23
+
+/* The filename has the structure `MM_PPPP_TTTTTTTTRRRRRRRR.dcm`
+    where
+        MM = modality
+        PPPP = pid
+        TTTTTTTT = hexCreationTime
+        RRRRRRRR = rand
+ */
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
                 const char      *SOPClassUID,
                 const char      * /* SOPInstanceUID */ ,
@@ -1313,20 +1323,43 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
     char prefix[80];
 
     const char *m = dcmSOPClassUIDToModality(SOPClassUID);
-    if (m==NULL) m = "XX";
-    sprintf(prefix, "%s_%d_", m, getpid());    // getpid is very important, to be sure that this filename is UNIQUE, if multiple associations are currently running
+    if (m==NULL)
+        m = "XX";
 
+    snprintf(prefix, sizeof(prefix), "%s_%d_", m, getpid()); // getpid is very important, to be sure that this filename is UNIQUE, if multiple associations are currently running
+
+#ifdef FIX_ISSUE_E23
+    static // so that it's initialized only once
+#endif
+    // unsigned int seed = 0;
     // unsigned int seed = fnamecreator.hashString(SOPInstanceUID);
     unsigned int seed = (unsigned int)time(NULL);
+
+#ifdef DEBUG_ISSUE_E23
+    DCMQRDB_INFO("@@@ e23 " << __FUNCTION__ << __LINE__ << " seed before<" << seed
+                 << "> dir<" << [[BrowserController currentBrowser] cfixedTempNoIndexDirectory]
+                 << "> prefix<" << prefix
+                 << ">");
+#endif
+
     newImageFileName[0]=0; // return empty string in case of error
 
-    if (! fnamecreator.makeFilename(seed, [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], prefix, ".dcm", filename))
+    if (! fnamecreator.makeFilename(seed, // in/out It gets modified by calls to OFrand_r()
+                                    [[BrowserController currentBrowser] cfixedTempNoIndexDirectory],
+                                    prefix,
+                                    ".dcm",
+                                    filename)) // out
     {
         return DcmQROsiriXDatabaseError;
     }
 
-
     OFStandard::strlcpy(newImageFileName, filename.c_str(), newImageFileNameLen);
+
+#ifdef DEBUG_ISSUE_E23
+    DCMQRDB_INFO("@@@ e23 " << __FUNCTION__ << __LINE__ << " seed after<" << seed
+                 << "> newImageFileName:\n" << newImageFileName);
+#endif
+
     return EC_Normal;
 }
 

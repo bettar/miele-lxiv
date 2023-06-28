@@ -991,14 +991,14 @@ extern BOOL forkedProcess;
                     {
                         int numberInstances = [[fetchedObject valueForKey:@"rawNoFiles"] intValue];
                         char value[10];
-                        sprintf(value, "%d", numberInstances);
+                        snprintf(value, sizeof(value), "%d", numberInstances);
                         dataset->putAndInsertString(DCM_NumberOfStudyRelatedInstances, value);
                     }
                     else if (key == DCM_NumberOfStudyRelatedSeries && [fetchedObject valueForKey:@"series"])
                     {
                         int numberInstances = [[fetchedObject valueForKey:@"series"] count];
                         char value[10];
-                        sprintf(value, "%d", numberInstances);
+                        snprintf(value, sizeof(value), "%d", numberInstances);
                         dataset->putAndInsertString(DCM_NumberOfStudyRelatedSeries, value);
                     }
                     else
@@ -1089,7 +1089,7 @@ extern BOOL forkedProcess;
                     {
                         int numberInstances = [[fetchedObject valueForKey:@"rawNoFiles"] intValue];
                         char value[ 20];
-                        sprintf( value, "%d", numberInstances);
+                        snprintf( value, sizeof(value), "%d", numberInstances);
                         dataset->putAndInsertString(DCM_NumberOfSeriesRelatedInstances, value);
                     }
                     
@@ -1203,7 +1203,7 @@ extern BOOL forkedProcess;
                     {
                         int numberInstances = [[fetchedObject valueForKeyPath:@"study.rawNoFiles"] intValue];
                         char value[10];
-                        sprintf(value, "%d", numberInstances);
+                        snprintf(value, sizeof(value), "%d", numberInstances);
                         dataset->putAndInsertString(DCM_NumberOfStudyRelatedInstances, value);
                     }
                     else if (key == DCM_NumberOfStudyRelatedSeries)
@@ -1212,7 +1212,7 @@ extern BOOL forkedProcess;
                         
                         int numberInstances = [[study valueForKeyPath:@"series"] count];
                         char value[10];
-                        sprintf(value, "%d", numberInstances);
+                        snprintf(value, sizeof(value), "%d", numberInstances);
                         dataset->putAndInsertString(DCM_NumberOfStudyRelatedSeries, value);
                     }
                     else
@@ -1348,7 +1348,7 @@ extern BOOL forkedProcess;
                     {
                         int numberInstances = [[fetchedObject valueForKeyPath:@"series.rawNoFiles"] intValue];
                         char value[ 20];
-                        sprintf( value, "%d", numberInstances);
+                        snprintf( value, sizeof(value), "%d", numberInstances);
                         dataset->putAndInsertString(DCM_NumberOfSeriesRelatedInstances, value);
                     }
                     
@@ -1456,7 +1456,7 @@ extern BOOL forkedProcess;
                     {
                         int numberInstances = [[fetchedObject valueForKeyPath:@"series.study.rawNoFiles"] intValue];
                         char value[10];
-                        sprintf(value, "%d", numberInstances);
+                        snprintf(value, sizeof(value), "%d", numberInstances);
                         dataset->putAndInsertString(DCM_NumberOfStudyRelatedInstances, value);
                     }
                     else if (key == DCM_NumberOfStudyRelatedSeries)
@@ -1465,7 +1465,7 @@ extern BOOL forkedProcess;
                         
                         int numberInstances = [[study valueForKeyPath:@"series"] count];
                         char value[10];
-                        sprintf(value, "%d", numberInstances);
+                        snprintf(value, sizeof(value), "%d", numberInstances);
                         dataset->putAndInsertString(DCM_NumberOfStudyRelatedSeries, value);
                     }
                     
@@ -1862,7 +1862,7 @@ extern BOOL forkedProcess;
             // See DcmQueryRetrieveOsiriSCP::unlockFile dcmqrsrv.mm
             BOOL fileExist = YES;
             char dir[ 1024];
-            sprintf( dir, "%slock_process-%d", [NSTemporaryDirectory() UTF8String], getpid());
+            snprintf( dir, sizeof(dir), "%slock_process-%d", [NSTemporaryDirectory() UTF8String], getpid());
             
             int inc = 0;
             do

@@ -3484,7 +3484,7 @@ static NSConditionLock *threadLock = nil;
 						kill( pid, 15);
 						
 						char dir[ 1024];
-						sprintf( dir, "%slock_process-%d", [NSTemporaryDirectory() UTF8String], pid);
+						snprintf( dir, sizeof(dir), "%slock_process-%d", [NSTemporaryDirectory() UTF8String], pid);
 						unlink( dir);
 					}
 				}

@@ -3609,7 +3609,7 @@
 "Preparing the files..." = "Préparation des fichiers...";
 
 /* No comment provided by engineer. */
-"Preprocessing %d files with %d plugins..." = "Prétraitement de fichiers %1$d avec des plugins %2$d...";
+"Preprocessing %lu files with %lu plugins..." = "Prétraitement de fichiers %1$lu avec des plugins %2$lu...";
 
 /* No comment provided by engineer. */
 "Preset" = "Préréglage";

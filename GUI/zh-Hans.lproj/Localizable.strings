@@ -3608,7 +3608,7 @@
 "Preparing the files..." = "正在准备文件...";
 
 /* No comment provided by engineer. */
-"Preprocessing %d files with %d plugins..." = "使用%2$d 插件预处理 %1$d 个文件...";
+"Preprocessing %lu files with %lu plugins..." = "使用 %2$lu 插件预处理 %1$lu 个文件...";
 
 /* No comment provided by engineer. */
 "Preset" = "预设";

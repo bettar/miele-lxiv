@@ -3052,7 +3052,7 @@ public:
     else
         phi -= 180;
     
-    sprintf( string, "S-I: %2.1f\nL-R: %2.1f\nRoll: %2.1f", theta - 90., psi, phi);
+    snprintf( string, sizeof(string), "S-I: %2.1f\nL-R: %2.1f\nRoll: %2.1f", theta - 90., psi, phi);
     if (oText[ 4])
         oText[ 4]->SetInput( string);
 	
@@ -3660,16 +3660,16 @@ public:
 					if ([[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"]))
 					{
 						if (ww < 50)
-                            sprintf(WLWWString, "From: %0.4f   To: %0.4f ", wl-ww/2, wl+ww/2);
+                            snprintf(WLWWString, sizeof(WLWWString), "From: %0.4f   To: %0.4f ", wl-ww/2, wl+ww/2);
 						else
-                            sprintf(WLWWString, "From: %0.f   To: %0.f ", wl-ww/2, wl+ww/2);
+                            snprintf(WLWWString, sizeof(WLWWString), "From: %0.f   To: %0.f ", wl-ww/2, wl+ww/2);
 					}
 					else
 					{
 						if (ww < 50)
-                            sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
+                            snprintf(WLWWString, sizeof(WLWWString), "WL: %0.4f WW: %0.4f ", wl, ww);
 						else
-                            sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
+                            snprintf(WLWWString, sizeof(WLWWString), "WL: %0.f WW: %0.f ", wl, ww);
 					}
 					
 //					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
@@ -6163,16 +6163,16 @@ public:
 	if ([[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"]))
 	{
 		if (ww < 50)
-            sprintf(WLWWString, "From: %0.4f   To: %0.4f ", wl-ww/2, wl+ww/2);
+            snprintf(WLWWString, sizeof(WLWWString), "From: %0.4f   To: %0.4f ", wl-ww/2, wl+ww/2);
 		else
-            sprintf(WLWWString, "From: %0.f   To: %0.f ", wl-ww/2, wl+ww/2);
+            snprintf(WLWWString, sizeof(WLWWString), "From: %0.f   To: %0.f ", wl-ww/2, wl+ww/2);
 	}
 	else
 	{
 		if (ww < 50)
-            sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
+            snprintf(WLWWString, sizeof(WLWWString), "WL: %0.4f WW: %0.4f ", wl, ww);
 		else
-            sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
+            snprintf(WLWWString, sizeof(WLWWString), "WL: %0.f WW: %0.f ", wl, ww);
 	}
 	textWLWW->SetInput( WLWWString);
 	
@@ -7320,9 +7320,9 @@ public:
 #endif
 		textWLWW = vtkTextActor::New();
 		if (ww < 50)
-            sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
+            snprintf(WLWWString, sizeof(WLWWString), "WL: %0.4f WW: %0.4f ", wl, ww);
 		else
-            sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
+            snprintf(WLWWString, sizeof(WLWWString), "WL: %0.f WW: %0.f ", wl, ww);
         
 		textWLWW->SetInput( WLWWString);
 		textWLWW->SetTextScaleModeToNone();									//vtkviewPort

@@ -149,11 +149,10 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     return;
 }
 
-
 static void
 getCallback(void *callbackData, T_DIMSE_C_GetRQ *request,
     int responseCount, T_DIMSE_C_GetRSP *response)
-{
+{ 
 	[[NSThread currentThread] setProgress:1.0/(response->NumberOfCompletedSubOperations+response->NumberOfFailedSubOperations+response->NumberOfWarningSubOperations+response->NumberOfRemainingSubOperations)*(response->NumberOfCompletedSubOperations+response->NumberOfFailedSubOperations+response->NumberOfWarningSubOperations)];
 	return;
 }
@@ -2237,7 +2236,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			/* Figure out the presentation addresses and copy the */
 			/* corresponding values into the association parameters.*/
 			gethostname(localHost, sizeof(localHost) - 1);
-			sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
+			snprintf(peerHost, sizeof(peerHost), "%s:%d", opt_peer, (int)opt_port);
 			//NSLog(@"peer host: %s", peerHost);
 			ASC_setPresentationAddresses(params, localHost, peerHost);	//localHost
 			

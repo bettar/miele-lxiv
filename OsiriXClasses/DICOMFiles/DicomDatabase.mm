@@ -1624,7 +1624,12 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     return [self addFilesAtPaths: paths postNotifications:postNotifications dicomOnly:dicomOnly rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX returnArray: YES];
 }
 
--(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX returnArray: (BOOL) returnArray
+-(NSArray*)addFilesAtPaths:(NSArray*)paths
+         postNotifications:(BOOL)postNotifications
+                 dicomOnly:(BOOL)dicomOnly
+       rereadExistingItems:(BOOL)rereadExistingItems
+         generatedByOsiriX:(BOOL)generatedByOsiriX
+               returnArray:(BOOL)returnArray
 {
     return [self addFilesAtPaths: paths postNotifications: postNotifications dicomOnly: dicomOnly rereadExistingItems: rereadExistingItems generatedByOsiriX: generatedByOsiriX importedFiles: NO returnArray: returnArray];
 }
@@ -1904,7 +1909,12 @@ static BOOL protectionAgainstReentry = NO;
 
 -(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX returnArray: (BOOL) returnArray
 {
-    return [self addFilesDescribedInDictionaries: dicomFilesArray postNotifications: postNotifications rereadExistingItems: rereadExistingItems generatedByOsiriX: generatedByOsiriX importedFiles: NO returnArray: returnArray];
+    return [self addFilesDescribedInDictionaries: dicomFilesArray
+                               postNotifications: postNotifications
+                             rereadExistingItems: rereadExistingItems
+                               generatedByOsiriX: generatedByOsiriX
+                                   importedFiles: NO
+                                     returnArray: returnArray];
 }
 
 -(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray
@@ -3135,6 +3145,11 @@ static BOOL protectionAgainstReentry = NO;
 	NSUInteger addedFilesCount = 0;
 	BOOL activityFeedbackShown = NO;
     
+#if 0 //def DEBUG_ISSUE_E23
+    // For debugging, leave files in INCOMING
+    NSLog(@"DicomDatabase.mm:%d, E23 SKIP !!!", __LINE__);
+    return addedFilesCount;
+#endif
 	[NSFileManager.defaultManager confirmNoIndexDirectoryAtPath:self.decompressionDirPath];
 	
     N2DirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath limitTo:-1];
@@ -3447,7 +3462,7 @@ static BOOL protectionAgainstReentry = NO;
 			
 			if ([[PluginManager preProcessPlugins] count])
             {
-				thread.status = [NSString stringWithFormat:NSLocalizedString(@"Preprocessing %d files with %d plugins...", nil), filesArray.count, [[PluginManager preProcessPlugins] count]];
+                thread.status = [NSString stringWithFormat:NSLocalizedString(@"Preprocessing %lu files with %lu plugins...", nil), (unsigned long)filesArray.count, (unsigned long)[[PluginManager preProcessPlugins] count]];
 				for (id filter in [PluginManager preProcessPlugins])
                 {
 					@try
@@ -3670,6 +3685,7 @@ static BOOL protectionAgainstReentry = NO;
             thread.status = NSLocalizedString(@"Finishing...", nil);
             thread.progress = -1;
 		}
+        
         DicomDatabase* theDatabase = self.isMainDatabase? self : self.mainDatabase;
 		if (theDatabase == DicomDatabase.activeLocalDatabase)
         {
@@ -3684,7 +3700,6 @@ static BOOL protectionAgainstReentry = NO;
               }
             });            
         }
-		
 	}
     @catch (NSException* e)
     {

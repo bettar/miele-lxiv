@@ -160,7 +160,7 @@ OFCondition AYPrintManager::sendNRequest(
             if (response.CommandField != expectedResponse)
             {
                 char buf1[256];
-                sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
+                snprintf(buf1, sizeof(buf1), "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
                 return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
             }
 
@@ -192,7 +192,7 @@ OFCondition AYPrintManager::sendNRequest(
                 default:
                 {
                     char buf1[256];
-                    sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
+                    snprintf(buf1, sizeof(buf1), "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
                     return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
                 }
                     /* break; */
@@ -201,7 +201,7 @@ OFCondition AYPrintManager::sendNRequest(
             if (responseMessageID != expectedMessageID)
             {
                 char buf1[256];
-                sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
+                snprintf(buf1, sizeof(buf1), "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
                 return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
             }
 

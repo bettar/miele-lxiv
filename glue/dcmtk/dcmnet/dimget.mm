@@ -185,7 +185,7 @@ DIMSE_getUser(
                 if (response->MessageIDBeingRespondedTo != msgId)
                 {
                     char buf2[256];
-                    sprintf(buf2, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, msgId);
+                    snprintf(buf2, sizeof(buf2), "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, msgId);
                     return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf2);
                 }
                 
@@ -226,7 +226,7 @@ DIMSE_getUser(
             case DIMSE_C_STORE_RQ:
                 cond = mainStoreSCP(assoc, &rsp.msg.CStoreRQ, presID, dbHandle);
                 
-                if( forkedProcess == NO && index == 0)
+                if (forkedProcess == NO && index == 0)
                     [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
                 
                 index++;
@@ -235,7 +235,7 @@ DIMSE_getUser(
             default:
                 {
                     char buf1[256];
-                    sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
+                    snprintf(buf1, sizeof(buf1), "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
                     return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
                 }
                 break;

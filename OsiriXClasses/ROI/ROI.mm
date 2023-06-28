@@ -524,28 +524,15 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
         }
         
 #if 0
-        // Arrow triangle not filled
-        [curView setShaderProgramForLineWidth: 2 * thick * backingScaleFactor];
-        renderer_set_rgba(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-        renderer_drawTriangles_xy([pArray copy], false);
+        BOOL arrowTriangleFilled = FALSE;
+        GLfloat lineWidth = 2 * thick * backingScaleFactor;
 #else
-        // Arrow triangle filled
-        [curView setShaderProgramForLineWidth: 1.0]; // width must be 1 for the triangle to be filled
-        renderer_set_rgba(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-        renderer_drawTriangles_xy([pArray copy]);
+        BOOL arrowTriangleFilled = TRUE;
+        GLfloat lineWidth = 1.0;  // must be 1 for the triangle to be filled
 #endif
-
-
-//        glBegin(GL_LINE_LOOP);
-//        {
-//            glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//            renderer_set_rgba(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-//
-//            glVertex2f( aa1.x, aa1.y);
-//            glVertex2f( aa2.x, aa2.y);
-//            glVertex2f( aa3.x, aa3.y);
-//        }
-//        glEnd();
+        [curView setShaderProgramForLineWidth: lineWidth];
+        renderer_set_rgba(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+        renderer_drawTriangles_xy([pArray copy], arrowTriangleFilled);
     }
     else  // type == tMeasure or tOpenPolygon
     {

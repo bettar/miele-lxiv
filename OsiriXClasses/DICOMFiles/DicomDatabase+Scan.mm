@@ -499,7 +499,12 @@ static NSString* _dcmElementKey(DcmElement* element) {
     NSArray* objectIDs = nil;
     if (items.count) {
         thread.status = [NSString stringWithFormat:NSLocalizedString(@"Importing %@...", nil), N2LocalizedSingularPluralCount(items.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
-        objectIDs = [self addFilesDescribedInDictionaries:items postNotifications:NO rereadExistingItems:NO generatedByOsiriX:NO importedFiles:NO returnArray: YES];
+        objectIDs = [self addFilesDescribedInDictionaries:items
+                                        postNotifications:NO
+                                      rereadExistingItems:NO
+                                        generatedByOsiriX:NO
+                                            importedFiles:NO
+                                              returnArray:YES];
     }
     
     return [self objectsWithIDs:objectIDs];

@@ -900,7 +900,7 @@ static bool isGrantedNotificationAccess = false;
                     kill( MyArray[ Counter], 15);
                     
                     char dir[ 1024];
-                    sprintf( dir, "%slock_process-%d", [NSTemporaryDirectory() UTF8String], MyArray[ Counter]);
+                    snprintf( dir, sizeof(dir), "%slock_process-%d", [NSTemporaryDirectory() UTF8String], MyArray[ Counter]);
                     unlink( dir);
                 }
             } 

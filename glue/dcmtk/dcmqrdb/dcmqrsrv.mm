@@ -115,7 +115,7 @@ static int numberOfActiveAssociations = 0;
 	BOOL fileExist = YES;
 	int pid = [[dict valueForKey: @"pid"] intValue], inc = 0, rc = pid, state;
 	char dir[ 1024];
-	sprintf( dir, "%slock_process-%d", [NSTemporaryDirectory() UTF8String], pid);
+	snprintf( dir, sizeof(dir), "%slock_process-%d", [NSTemporaryDirectory() UTF8String], pid);
 
     #define TIMEOUT 1200 // 1200*100000 = 120 secs
     #define DBTIMEOUT 400 // = 40 secs

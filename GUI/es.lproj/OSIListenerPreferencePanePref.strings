@@ -34,7 +34,7 @@
 /* Class = "NSButtonCell"; title = "Activate DICOM listener when Miele-LXIV is running"; ObjectID = "309"; */
 "309.title" = "Activar el oyente DICOM cuando Miele-LXIV se está ejecutando";
 
-/* Class = "NSTextFieldCell"; title = "If OsiriX is not able to open a file received by the DICOM listener:"; ObjectID = "310"; */
+/* Class = "NSTextFieldCell"; title = "If Miele-LXIV is not able to open a file received by the DICOM listener:"; ObjectID = "310"; */
 "310.title" = "Si Miele-LXIV no es capaz de abrir un archivo recibido por el oyente DICOM:";
 
 /* Class = "NSTextFieldCell"; title = "(between 1 and 65535)"; ObjectID = "311"; */

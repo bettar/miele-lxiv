@@ -3608,7 +3608,7 @@
 "Preparing the files..." = "ファイル処理中...";
 
 /* No comment provided by engineer. */
-"Preprocessing %d files with %d plugins..." = "%2$d 個のプラグインで %1$d 個のファイルを前処理中です...";
+"Preprocessing %lu files with %lu plugins..." = "%2$lu 個のプラグインで %1$lu 個のファイルを前処理中です...";
 
 /* No comment provided by engineer. */
 "Preset" = "プリセット";

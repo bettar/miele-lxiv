@@ -481,10 +481,10 @@
                             <rect key="frame" x="4" y="5" width="581" height="154"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="964" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="106">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="964" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="106" userLabel="If Miele-LXIV is not able to open a file received by the DICOM listener:">
                                     <rect key="frame" x="20" y="43" width="350" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="If OsiriX is not able to open a file received by the DICOM listener:" id="310">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="If Miele-LXIV is not able to open a file received by the DICOM listener:" id="310" userLabel="If Miele-LXIV is not able to open a file received by the DICOM listener:">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
