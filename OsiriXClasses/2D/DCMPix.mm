@@ -6319,7 +6319,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
  #ifndef MIELE_LIGHT
         @try
         {
-            NSString *pathDicomSrSlash = [NSTemporaryDirectory() stringByAppendingPathComponent:@"dicomsr_osirix/"];
+            NSString *pathDicomSrSlash = [NSTemporaryDirectory() stringByAppendingPathComponent:DICOM_SR_TMP_SUFFIX];
             [[NSFileManager defaultManager] confirmDirectoryAtPath: pathDicomSrSlash];            
             NSString *htmlpath = [[pathDicomSrSlash stringByAppendingPathComponent: [srcFile lastPathComponent]] stringByAppendingPathExtension: @"xml"];
             

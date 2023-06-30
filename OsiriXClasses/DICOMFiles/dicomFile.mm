@@ -1178,7 +1178,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 //}
 
 #if 1 //ndef DECOMPRESS_APP
-#import "DICOMFiles/BioradHeader.h" // MieleAPI
+#import "OsiriXClasses/DICOMFiles/BioradHeader.h" // MieleAPI
 #endif
 
 -(short) getBioradPicFile
@@ -1848,18 +1848,20 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 } 
 #endif
 
+// filePath is <db>/2289.dcm
+// htmlPath is <temp>/2289.dcm.xml
+// pdfPath  is <temp>/2289.dcm.xml.pdf
 - (NSPDFImageRep*) PDFImageRep
 {
 #ifdef OSIRIX_VIEWER
 #ifndef MIELE_LIGHT
-
-    NSString *pathDicomSrSlash = [NSTemporaryDirectory() stringByAppendingPathComponent:@"dicomsr_osirix/"];
-
+    NSString *pathDicomSrSlash = [NSTemporaryDirectory() stringByAppendingPathComponent:DICOM_SR_TMP_SUFFIX];
 	[[NSFileManager defaultManager] confirmDirectoryAtPath: pathDicomSrSlash];
+
+    // Create file <temp>/2289.dcm.xml
+	NSString *htmlPath = [[pathDicomSrSlash stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"xml"];
 	
-	NSString *htmlpath = [[pathDicomSrSlash stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"xml"];
-	
-	if ([[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
+    if ([[NSFileManager defaultManager] fileExistsAtPath: htmlPath] == NO)
 	{
 		NSTask *aTask = [[[NSTask alloc] init] autorelease];
 
@@ -1875,8 +1877,8 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
                               @"--ignore-constraints",
                               @"--ignore-item-errors",
                               @"--skip-invalid-items",
-                              filePath,
-                              htmlpath,
+                              filePath, // dsrfile-in
+                              htmlPath, // htmlfile-out
                               nil]];
 		[aTask launch];
 		while( [aTask isRunning])
@@ -1886,14 +1888,17 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 		[aTask interrupt];
 	}
 	
-	if ([[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
+    // Create file <temp>/2289.dcm.xml.pdf
+    NSString *pdfPath = [htmlPath stringByAppendingPathExtension: @"pdf"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: pdfPath] == NO)
 	{
+
         NSString *launchPath = [[[NSBundle mainBundle] URLForAuxiliaryExecutable:@"Decompress"] path];
         if ([[NSFileManager defaultManager] fileExistsAtPath: launchPath])
         {
             NSTask *aTask = [[[NSTask alloc] init] autorelease];
             [aTask setLaunchPath: launchPath];
-            [aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
+            [aTask setArguments: [NSArray arrayWithObjects: htmlPath, @"pdfFromURL", nil]];
             [aTask launch];
             NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 			while( [aTask isRunning] && [NSDate timeIntervalSinceReferenceDate] - start < 10)
@@ -1904,7 +1909,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
         }
 	}
 	
-	return [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]]];
+	return [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: pdfPath]];
 #endif
 #endif
 	

@@ -12,4 +12,6 @@
 #define PRIVATE_TMP                 @"/private/tmp/"
 #define PRIVATE_VAR_TMP             @"/private/var/tmp/"
 
+#define DICOM_SR_TMP_SUFFIX         @"dicomsr_miele_lxiv/"
+
 #endif

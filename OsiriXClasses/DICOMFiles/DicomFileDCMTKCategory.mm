@@ -1017,7 +1017,7 @@ extern NSRecursiveLock *Papyrus_Lock;
         if ([DicomStudy displaySeriesWithSOPClassUID: sopClassUID
                                 andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]])
         {
-            NSPDFImageRep *rep = [self PDFImageRep]; // it uses dsr2html and Decompress
+            NSPDFImageRep *rep = [self PDFImageRep]; // it calls dsr2html and Decompress
         
             NoOfFrames = [rep pageCount];
             NSImage *pdfImage = [[[NSImage alloc] init] autorelease];

@@ -771,6 +771,7 @@ int main(int argc, const char *argv[])
 # pragma mark - pdfFromURL
     else if( [what isEqualToString: @"pdfFromURL"])
     {
+        // Create a PDF file, (it doesn't print to a physical printer)
         @try
         {
             WebView *webView = [[[WebView alloc] initWithFrame: NSMakeRect(0,0,1,1)
@@ -778,7 +779,7 @@ int main(int argc, const char *argv[])
                                                      groupName: @"myGroup"] autorelease];
             NSWindow *w = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,1,1)
                                                        styleMask:NSWindowStyleMaskBorderless
-                                                         backing:NSBackingStoreNonretained
+                                                         backing:NSBackingStoreBuffered
                                                            defer:NO] autorelease];
             [w setContentView:webView];
             
@@ -793,7 +794,7 @@ int main(int argc, const char *argv[])
             [webPrefs setJavaScriptCanOpenWindowsAutomatically: NO];
             [webPrefs setShouldPrintBackgrounds: YES];
             
-            [webView setApplicationNameForUserAgent: @"OsiriX"];
+            [webView setApplicationNameForUserAgent: @"Miele LXIV"];
             [webView setPreferences: webPrefs];
             [webView setMaintainsBackForwardList: NO];
             
@@ -816,14 +817,12 @@ int main(int argc, const char *argv[])
                         break;
                 }
                 
-                NSPrintInfo *sharedInfo = [NSPrintInfo sharedPrintInfo];
-                NSMutableDictionary *sharedDict = [sharedInfo dictionary];
-                NSMutableDictionary *printInfoDict = [NSMutableDictionary dictionaryWithDictionary: sharedDict];
-                
+                NSMutableDictionary *printInfoDict = [[NSPrintInfo sharedPrintInfo] dictionary];
                 [printInfoDict setObject: NSPrintSaveJob forKey: NSPrintJobDisposition];
                 
-                [[NSFileManager defaultManager] removeItemAtPath: [path stringByAppendingPathExtension: @"pdf"] error: nil];
-                [printInfoDict setObject: [path stringByAppendingPathExtension: @"pdf"] forKey: NSPrintJobSavingURL];
+                NSString *temporaryFilePath = [path stringByAppendingPathExtension: @"pdf"];
+                [[NSFileManager defaultManager] removeItemAtPath: temporaryFilePath error: nil];
+                [printInfoDict setObject: [NSURL fileURLWithPath: temporaryFilePath] forKey: NSPrintJobSavingURL]; // fixed e16
                 
                 NSPrintInfo *printInfo = [[NSPrintInfo alloc] initWithDictionary: printInfoDict];
                 
@@ -842,6 +841,7 @@ int main(int argc, const char *argv[])
                 [printOp setShowsProgressPanel: NO];
                 [printOp runOperation];
                 
+#if 0
                 //jf remove empty last PDF page
                 @try
                 {
@@ -863,6 +863,8 @@ int main(int argc, const char *argv[])
                 @catch ( NSException *e) {
                     N2LogException( e);
                 }
+#endif
+
             }
         }
         @catch (NSException * e)
