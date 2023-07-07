@@ -8563,7 +8563,7 @@ public:
 	if (color && aRenderer)
 	{
 		//change background color
-		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
+		aRenderer->SetBackground([color redComponent], [color greenComponent], [color blueComponent]);
 		
 		if ([color redComponent]+[color greenComponent]+[ color blueComponent] < 1.5)
 		{
@@ -8584,23 +8584,25 @@ public:
 				textX->GetTextProperty()->SetColor(0,0,0);
 		}
 
-        [backgroundColor setColor: [NSColor colorWithDeviceRed:[color redComponent]
-                                                         green:[color greenComponent]
-                                                          blue:[color blueComponent]
-                                                         alpha:1.0]];
+        [viewBackgroundColor setColor: [NSColor colorWithDeviceRed:[color redComponent]
+                                                             green:[color greenComponent]
+                                                              blue:[color blueComponent]
+                                                             alpha:1.0]];
+        NSLog(@"%s %d, @@@ e24, color: %@, viewBackgroundColor:%@", __FUNCTION__, __LINE__, color, viewBackgroundColor);
 		[self setNeedsDisplay:YES];
 	}
 }
 
 - (IBAction)changeColor:(id)sender
 {
-	//if ([backgroundColor isActive])
+	//if ([viewBackgroundColor isActive])
 		[self changeColorWith: [[(NSColorPanel*)sender color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace]];
 }
 
 - (NSColor*)backgroundColor;
 {
-	return [backgroundColor color];
+    NSLog(@"%s %d, @@@ e24, viewBackgroundColor:%@", __FUNCTION__, __LINE__, viewBackgroundColor);
+	return [viewBackgroundColor color];
 }
 
 - (void) convert3Dto2Dpoint:(double*) pt3D :(double*) pt2D

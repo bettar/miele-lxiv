@@ -202,6 +202,7 @@
                             <outlet property="quality" destination="450" id="456"/>
                             <outlet property="rotation" destination="444" id="455"/>
                             <outlet property="scissorStateMatrix" destination="dph-L6-lTP" id="oLj-AW-TdA"/>
+                            <outlet property="viewBackgroundColor" destination="1019" id="EyX-JN-fah"/>
                         </connections>
                     </customView>
                 </subviews>
@@ -2826,7 +2827,7 @@ Gw
                     </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="847" y="1825"/>
+            <point key="canvasLocation" x="848" y="1881"/>
         </window>
         <window title="3D Presets" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="3DPresetsPanel" animationBehavior="default" id="1408" userLabel="3D Presets" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" HUD="YES"/>
@@ -3140,7 +3141,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1538">
-                        <rect key="frame" x="8" y="14" width="47" height="28"/>
+                        <rect key="frame" x="8" y="14" width="238" height="28"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="2173">
                             <font key="font" metaFont="message" size="11"/>
@@ -3192,7 +3193,7 @@ Gw
                     </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="1289" y="2304"/>
+            <point key="canvasLocation" x="1245" y="2409"/>
         </window>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="2198" userLabel="GrowingRegion">
             <windowStyleMask key="styleMask" titled="YES"/>

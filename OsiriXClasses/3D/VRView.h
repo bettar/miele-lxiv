@@ -228,7 +228,7 @@ typedef char* VTKStereoVRView;
 	IBOutlet NSMatrix		*VRquality;
 	
 	IBOutlet NSMatrix		*scissorStateMatrix;
-	IBOutlet NSColorWell	*backgroundColor;
+	IBOutlet NSColorWell	*viewBackgroundColor;
 	
 	IBOutlet NSObjectController	*shadingController;
 	
