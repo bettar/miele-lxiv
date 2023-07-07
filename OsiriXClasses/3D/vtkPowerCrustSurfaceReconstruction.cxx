@@ -6037,7 +6037,7 @@ void off_out(point *v, int vdim, FILE *Fin, int amble) {
 
     if (Fin) {F=Fin;}
 
-    if (pdim!=3) { warning(-10, off apparently for 3d points only); return;}
+    if (pdim!=3) { warning(-10, off apparently for 3D points only); return;}
 
     if (amble==0) {
         for (i=0;i<vdim;i++) if (v[i]==infinity) return;
@@ -6184,7 +6184,7 @@ void cpr_out(point *v, int vdim, FILE *Fin, int amble) {
 
     if (Fin) {F=Fin; if (!v) return;}
 
-    if (pdim!=3) { warning(-10, cpr for 3d points only); return;}
+    if (pdim!=3) { warning(-10, cpr for 3D points only); return;}
     
     for (i=0;i<vdim;i++) if (v[i]==infinity) return;
 

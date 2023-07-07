@@ -268,7 +268,7 @@
 
 -(void) load3DState
 {
-	NSLog (@"Load Endoscopy 3d State");
+	NSLog (@"Load Endoscopy 3D State");
 	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: STATE_3D_DB_PATH];
 	BOOL isDir = YES;
 	
@@ -287,7 +287,7 @@
         dict = nil;
 	
 	[view set3DStateDictionary:dict];
-	NSLog(@"3d Dict: %@", dict);
+	//NSLog(@"3D Dict: %@", dict);
 	if (dict==nil)
 		[self applyWLWWForString:@"VR - Endoscopy"];
 	

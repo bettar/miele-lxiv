@@ -394,7 +394,7 @@ z";
 "1024.title" = "倒置边";
 
 /* Class = "NSMenuItem"; title = "Changing 3D Settings..."; ObjectID = "1026"; */
-"1026.title" = "正在更改3d 设置...";
+"1026.title" = "正在更改3D 设置...";
 
 /* Class = "NSWindow"; title = "Setup Geometry"; ObjectID = "1027"; */
 "1027.title" = "设置几何";

@@ -744,7 +744,7 @@
 "2325.title" = "倒置边";
 
 /* Class = "NSMenuItem"; title = "Changing 3D Settings..."; ObjectID = "2327"; */
-"2327.title" = "正在更改3d 设置...";
+"2327.title" = "正在更改3D 设置...";
 
 /* Class = "NSWindow"; title = "Setup Geometry"; ObjectID = "2363"; */
 "2363.title" = "设置几何";
@@ -837,7 +837,7 @@
 "nHE-HA-fUE.title" = "Item 3";
 
 /* Class = "NSButtonCell"; ibShadowedToolTip = "Load 3D Scissor State"; ObjectID = "oIz-IQ-59o"; */
-"oIz-IQ-59o.ibShadowedToolTip" = "加载3d 剪刀状态";
+"oIz-IQ-59o.ibShadowedToolTip" = "加载3D 剪刀状态";
 
 /* Class = "NSButtonCell"; title = "Button"; ObjectID = "Qbu-5y-2lb"; */
 "Qbu-5y-2lb.title" = "Button";

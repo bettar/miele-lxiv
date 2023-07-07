@@ -8588,7 +8588,6 @@ public:
                                                              green:[color greenComponent]
                                                               blue:[color blueComponent]
                                                              alpha:1.0]];
-        NSLog(@"%s %d, @@@ e24, color: %@, viewBackgroundColor:%@", __FUNCTION__, __LINE__, color, viewBackgroundColor);
 		[self setNeedsDisplay:YES];
 	}
 }
@@ -8601,7 +8600,6 @@ public:
 
 - (NSColor*)backgroundColor;
 {
-    NSLog(@"%s %d, @@@ e24, viewBackgroundColor:%@", __FUNCTION__, __LINE__, viewBackgroundColor);
 	return [viewBackgroundColor color];
 }
 

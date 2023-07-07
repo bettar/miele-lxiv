@@ -100,7 +100,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 }
 
-#pragma mark - IBAction
+#pragma mark -
 
 - (IBAction) roiDeleteAll:(id) sender
 {
@@ -219,8 +219,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) updateBlendingImage
 {
-	Pixel_8			*alphaTable, *redTable, *greenTable, *blueTable;
-	float			iwl, iww;
+	Pixel_8 *alphaTable, *redTable, *greenTable, *blueTable;
+	float iwl, iww;
 
 	[[viewer2D imageView] blendingColorTables:&alphaTable :&redTable :&greenTable :&blueTable];
 	
@@ -230,8 +230,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[view setBlendingWLWW :iwl :iww];
 }
 
-#pragma mark - IBAction
-
 - (IBAction) applyConvolution:(id) sender
 {
 	[self prepareUndo];
@@ -239,8 +237,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[viewer2D applyConvolutionOnSource: self];
 	[appliedConvolutionFilters addObject:[sender title]];
 }
-
-#pragma mark -
 
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
@@ -1174,7 +1170,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
 }
 
-#pragma mark - IBAction
+#pragma mark -
 
 - (IBAction) undo:(id) sender
 {
@@ -1360,7 +1356,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	return valid;
 }
 
-#pragma mark - IBAction
+#pragma mark -
 
 -(IBAction) setDefaultTool:(id) sender
 {
@@ -1375,8 +1371,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         [self setCurrentTool:(ToolMode)tag];
     }
 }
-
-#pragma mark -
 
 - (void) setCurrentTool:(ToolMode) newTool
 {
@@ -1500,8 +1494,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 }
 
-#pragma mark - IBAction
-
 - (IBAction) applyShading:(id) sender
 {
 	NSDictionary	*dict = [[shadingsPresetsController selectedObjects] lastObject];
@@ -1524,8 +1516,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[view setNeedsDisplay: YES];
 	}
 }
-
-#pragma mark -
 
 - (void) findShadingPreset:(id) sender
 {
@@ -1550,7 +1540,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	//[self applyShading: self];
 }
 
-#pragma mark - IBAction
+#pragma mark -
 
 - (IBAction) editShadingValues:(id) sender
 {
@@ -1719,7 +1709,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
 }
 
-#pragma mark - IBAction
+#pragma mark -
 
 - (IBAction) setModeIndex:(long) val
 {
@@ -2422,7 +2412,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	return view;
 }
 
-#pragma mark - IBAction
+#pragma mark - Fly Through
 
 - (IBAction) flyThruButtonMenu:(id) sender
 {
@@ -2444,8 +2434,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[[flyThruController window] makeKeyAndOrderFront :sender];
 	[flyThruController setWindow3DController: self];
 }
-
-#pragma mark -
 
 - (FlyThruController *) flyThruController
 {
@@ -2811,7 +2799,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
 }
 
-#pragma mark - IBAction
+#pragma mark -
 
 - (IBAction) roiGetManager:(id) sender
 {
@@ -2838,8 +2826,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		}
 	}
 }
-
-#pragma mark
 
 - (void)updateROIVolume:(NSNotification*)notification;
 {
@@ -3077,17 +3063,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     }
 }
 
-- (void)drawerDidClose:(NSNotification *)sender
-{
-	[[self window] zoom:self];
-}
-
-- (void)drawerDidOpen:(NSNotification *)sender
-{
-	[[self window] zoom:self];
-}
-
-#pragma mark - IBAction
+#pragma mark - Growing Region
 
 -(IBAction) endEditGrowingRegion:(id) sender
 {
@@ -3115,22 +3091,24 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 #pragma mark - 3D presets
 
-#pragma mark - save current
-
 - (NSMutableDictionary*)getCurrent3DSettings;
 {
 	//window level & width
 	float iwl, iww;
 	[view getWLWW:&iwl :&iww];
-	//background color
+
+    //background color
 	NSColor *backgroundColor = [view backgroundColor];
-	//shading
+	
+    //shading
 	NSDictionary *shading = [[shadingsPresetsController selectedObjects] lastObject];
 	NSString *shadingPresetName = [shading valueForKey:@"name"];
-	//CLUT
+	
+    //CLUT
 	BOOL isAdvancedCLUT = [view advancedCLUT];
 	NSString *clut = curCLUTMenu;
-	//projection
+	
+    //projection
 	int projection = [[view valueForKey:@"projectionMode"] intValue];
 	
 	NSMutableDictionary *presetDictionary = [NSMutableDictionary dictionaryWithCapacity:6];
@@ -3162,8 +3140,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
 	return presetDictionary;
 }
-
-#pragma mark - IBAction
 
 - (IBAction)save3DSettings:(id)sender;
 {
@@ -3220,8 +3196,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			[convolutionFiltersString appendString:NSLocalizedString(@"(none).", nil)];
 		}
 		[settingsConvolutionFilterTextField setStringValue:convolutionFiltersString];
-		
-		[settingsBackgroundColorTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Background: red:%.0f%%, green:%.0f%%, blue:%.0f%%", nil), 100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
+
+		[settingsBackgroundColorTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Background: red:%.0f%%, green:%.0f%%, blue:%.0f%%", nil),
+                        100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue],
+                        100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue],
+                        100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
 		
 		int proj = [[presetDictionary objectForKey:@"projection"] intValue];
 		NSString *projectionName = nil;
@@ -3248,11 +3227,18 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		if ([presetsPanel isVisible])
 			[settingsGroupPopUpButton selectItemWithTitle:[[presetsGroupPopUpButton selectedItem] title]];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidChange:) name:NSControlTextDidChangeNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(controlTextDidChange:)
+                                                     name:NSControlTextDidChangeNotification
+                                                   object:nil];
 
 		[self show3DSettingsNewGroupTextField:[settingsGroupPopUpButton selectedItem]];
 		
-		[NSApp beginSheet:save3DSettingsWindow modalForWindow:[self window] modalDelegate:nil didEndSelector:nil contextInfo:nil];
+		[NSApp beginSheet:save3DSettingsWindow
+           modalForWindow:[self window]
+            modalDelegate:nil
+           didEndSelector:nil
+              contextInfo:nil];
 	}
 	else if ([[sender className] isEqualToString:@"NSButton"])
 	{
@@ -3280,16 +3266,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[settingsSaveButton setEnabled:NO];
 }
 
-#pragma mark -
-
-- (void)controlTextDidChange:(NSNotification*)notification;
-{
-	if ([[notification object] isEqualTo:settingsNameTextField] || [[notification object] isEqualTo:settingsNewGroupNameTextField])
-		[self enable3DSettingsSaveButton:self];
-}
-
-#pragma mark - IBAction
-
 - (IBAction)show3DSettingsNewGroupTextField:(id)sender;
 {
 	if ([[sender title] isEqualToString:NSLocalizedString(@"New group", nil)])
@@ -3312,8 +3288,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[NSApp endSheet:save3DSettingsWindow];
 }
 
-#pragma mark -
-
 - (void)save3DSettings:(NSMutableDictionary*)settings WithName:(NSString*)name group:(NSString*)groupName;
 {
 	[settings setObject:name forKey:@"name"];
@@ -3333,8 +3307,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
 	[settings writeToFile:path atomically:YES];
 }
-
-#pragma mark - presets generic methods
 
 - (NSArray*)find3DSettingsGroups;
 {
@@ -3380,6 +3352,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
 	return [settingsGroups sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 }
+
 NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 {
     NSString *name1 = [preset1 objectForKey:@"name"];
@@ -3432,8 +3405,6 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	return [settingsList sortedArrayUsingFunction:sort3DSettingsDict context:NULL];
 }
 
-#pragma mark - load preset
-
 - (void)updatePresetsGroupPopUpButton;
 {
 	[self updatePresetsGroupPopUpButtonSelectingGroupWithName:@""];
@@ -3465,8 +3436,6 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 {
 	[self load3DSettings:self];
 }
-
-#pragma mark - IBAction
 
 - (IBAction)load3DSettings:(id)sender;
 {
@@ -3541,7 +3510,8 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 					[clutOpacityView updateView];
 					if (curCLUTMenu)
                         [curCLUTMenu release];
-					curCLUTMenu = [clut retain];
+
+                    curCLUTMenu = [clut retain];
 					[[[clutPopup menu] itemAtIndex:0] setTitle:clut];
 					[OpacityPopup setEnabled:NO];
 				}
@@ -3615,7 +3585,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		}
 		@catch (NSException *e)
 		{
-			NSLog( @"Applying 3d preset exception: %@", e);
+			NSLog( @"Applying 3D preset exception: %@", e);
 		}
 		[www end];
 		[www close];
@@ -3628,8 +3598,6 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	presetPageNumber = 0;
 	[self displayPresetsForSelectedGroup];
 }
-
-#pragma mark -
 
 - (void)displayPresetsForSelectedGroup;
 {
@@ -3881,8 +3849,6 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	[self displayPresetsForSelectedGroup:presetsGroupPopUpButton];
 }
 
-#pragma mark - IBAction
-
 - (IBAction)nextPresetPage:(id)sender;
 {
 	presetPageNumber++;
@@ -3896,8 +3862,6 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	if (presetPageNumber<0) presetPageNumber += presetPageMax+1;
 	[self displayPresetsForSelectedGroup];
 }
-
-#pragma mark -
 
 - (void)enablePresetPageButtons;
 {
@@ -3958,10 +3922,8 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	needToMovePresetsPanelToUserDefinedPosition = YES;
 }
 
-#pragma mark - info preset
-
 - (void)updatePresetInfoPanel;
-{	
+{
 	if ([selectedPresetPreview index] < 0)
         NSLog( @" ******** [selectedPresetPreview index] < 0");
     
@@ -4043,15 +4005,29 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	[infoProjectionTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Projection: %@", nil), projectionName]];
 }
 
-#pragma mark - IBAction
-
 - (IBAction)showPresetInfoPanel:(id)sender;
 {
 	[self updatePresetInfoPanel];
 	[presetsInfoPanel orderFront:self];
 }
 
-#pragma mark - NSWindow Notifications action
+#pragma mark - NSNotification
+
+- (void)drawerDidClose:(NSNotification *)sender
+{
+    [[self window] zoom:self];
+}
+
+- (void)drawerDidOpen:(NSNotification *)sender
+{
+    [[self window] zoom:self];
+}
+
+- (void)controlTextDidChange:(NSNotification*)notification;
+{
+    if ([[notification object] isEqualTo:settingsNameTextField] || [[notification object] isEqualTo:settingsNewGroupNameTextField])
+        [self enable3DSettingsSaveButton:self];
+}
 
 - (void)windowWillCloseNotification:(NSNotification*)notification;
 {
@@ -4077,6 +4053,8 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		}
 	}
 }
+
+#pragma mark -
 
 - (void)setVtkCameraForAllPresetPreview:(void*)aCamera;
 {

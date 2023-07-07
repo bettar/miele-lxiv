@@ -35,7 +35,7 @@
 "367.title" = "查看大小:";
 
 /* Class = "NSButtonCell"; title = "If there are multiple screens, open the 3D window on a different screen of the 2D Viewer."; ObjectID = "368"; */
-"368.title" = "如果有多个屏幕, 请在2d 查看器的不同屏幕上打开3d 窗口。";
+"368.title" = "如果有多个屏幕, 请在2D 查看器的不同屏幕上打开3D 窗口。";
 
 /* Class = "NSButtonCell"; title = "Auto-Rotate objects after 3 min. in Volume Rendering/MIP viewers."; ObjectID = "369"; */
 "369.title" = "在卷渲染/MIP 查看器中的3分钟后自动旋转对象。";

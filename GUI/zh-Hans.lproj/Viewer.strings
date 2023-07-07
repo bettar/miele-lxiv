@@ -775,7 +775,7 @@
 "2177.title" = "40张图片";
 
 /* Class = "NSButtonCell"; title = "Include all displayed 2D viewers"; ObjectID = "2178"; */
-"2178.title" = "包括所有显示的2d 查看器";
+"2178.title" = "包括所有显示的2D 查看器";
 
 /* Class = "NSButtonCell"; title = "If current value is larger than:"; ObjectID = "2181"; */
 "2181.title" = "如果当前值大于:";
@@ -844,7 +844,7 @@
 "2203.title" = "毫米";
 
 /* Class = "NSTextFieldCell"; title = "Force display of this window by selecting a 3D reconstruction + shift key"; ObjectID = "2204"; */
-"2204.title" = "通过选择3d 重建 + 移位键强制显示此窗口";
+"2204.title" = "通过选择3D 重建 + 移位键强制显示此窗口";
 
 /* Class = "NSTextFieldCell"; title = "Pixel X resolution:"; ObjectID = "2205"; */
 "2205.title" = "像素 x 分辨率:";
@@ -1034,7 +1034,7 @@
 "2310.title" = "系列名称:";
 
 /* Class = "NSButtonCell"; title = "Include all displayed 2D viewers"; ObjectID = "2311"; */
-"2311.title" = "包括所有显示的2d 查看器";
+"2311.title" = "包括所有显示的2D 查看器";
 
 /* Class = "NSButtonCell"; title = "Key Image"; ObjectID = "2312"; */
 "2312.title" = "密钥图像";
@@ -1225,7 +1225,7 @@
 "2393.title" = "Radio";
 
 /* Class = "NSButtonCell"; title = "Include all displayed 2D viewers"; ObjectID = "2397"; */
-"2397.title" = "包括所有显示的2d 查看器";
+"2397.title" = "包括所有显示的2D 查看器";
 
 /* Class = "NSButtonCell"; title = "Radio"; ObjectID = "2405"; */
 "2405.title" = "Radio";

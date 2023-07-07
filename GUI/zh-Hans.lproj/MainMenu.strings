@@ -1019,7 +1019,7 @@
 "13424.title" = "创建 HTML 页面";
 
 /* Class = "NSTextFieldCell"; title = "Multiple 3D series are contained in this series. Which series to open?"; ObjectID = "13427"; */
-"13427.title" = "本系列中包含多个3d 系列。要打开哪个系列？";
+"13427.title" = "本系列中包含多个3D 系列。要打开哪个系列？";
 
 /* Class = "NSTextFieldCell"; title = "3D"; ObjectID = "13428"; */
 "13428.title" = "3D";
@@ -1538,7 +1538,7 @@
 "14079.title" = "9";
 
 /* Class = "NSButtonCell"; title = "Re-Index in 3D in DB"; ObjectID = "14081"; */
-"14081.title" = "在数据库中重新索引3d";
+"14081.title" = "在数据库中重新索引3D";
 
 /* Class = "NSButtonCell"; title = "Re-Index in 4D in DB"; ObjectID = "14084"; */
 "14084.title" = "数据库中4d 中的重新索引";

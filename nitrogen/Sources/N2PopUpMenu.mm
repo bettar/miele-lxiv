@@ -634,9 +634,14 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     [self.window close];
 }
 
-- (void)controlTextDidChange:(NSNotification*)notification {
+- (void)controlTextDidChange:(NSNotification*)notification
+{
     [[self class] cancelPreviousPerformRequestsWithTarget:self];
-    [self performSelector:@selector(filter) withObject:nil afterDelay:(notification? 0.1 : 0) inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]]; // TODO: get system key delay preference
+    [self performSelector:@selector(filter)
+               withObject:nil
+               afterDelay:(notification? 0.1 : 0)
+                  inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]]; // TODO: get system key delay preference
+
     if (!notification)
         [[self.window fieldEditor:YES forObject:_filterField] setSelectedRange:NSMakeRange(0, _filterField.stringValue.length)];
 }

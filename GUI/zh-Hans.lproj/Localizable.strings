@@ -1808,7 +1808,7 @@
 "Drag Error" = "拖动错误";
 
 /* No comment provided by engineer. */
-"Draw an ROI on the 3D image and then press Return (include) or Delete (exclude) keys." = "在3d 图像上绘制 ROI, 然后按 return (包括) 或 \"删除\" (排除) 键。";
+"Draw an ROI on the 3D image and then press Return (include) or Delete (exclude) keys." = "在3D 图像上绘制 ROI, 然后按 return (包括) 或 \"删除\" (排除) 键。";
 
 /* No comment provided by engineer. */
 "Dumping SQL Index file..." = "转储 SQL 索引文件...";
@@ -1904,7 +1904,7 @@
 "Export" = "导出";
 
 /* No comment provided by engineer. */
-"Export 3D-SR" = "出口3d-sr";
+"Export 3D-SR" = "出口3D-SR";
 
 /* No comment provided by engineer. */
 "Export as DICOM File" = "导出为多博文件";
@@ -1970,7 +1970,7 @@
 "Export this image/series in a DICOM file" = "在 DICOM 文件中导出此映像系列";
 
 /* No comment provided by engineer. */
-"Export this series in a 3D file format" = "以3d 文件格式导出此系列";
+"Export this series in a 3D file format" = "以3D 文件格式导出此系列";
 
 /* No comment provided by engineer. */
 "Export this series in a Movie file" = "在影片文件中导出此系列";
@@ -2636,7 +2636,7 @@
 "Loading" = "载入中";
 
 /* No comment provided by engineer. */
-"Loading 3D object..." = "正在加载3d 对象...";
+"Loading 3D object..." = "正在加载3D 对象...";
 
 /* No comment provided by engineer. */
 "Loading OsiriX database..." = "正在加载 Miele-LXIV 数据库...";
@@ -3896,7 +3896,7 @@
 "Resample" = "重新采样";
 
 /* No comment provided by engineer. */
-"Resampling 3D data..." = "重采样3d 数据...";
+"Resampling 3D data..." = "重采样3D 数据...";
 
 /* No comment provided by engineer. */
 "Resampling data..." = "重采样数据...";
@@ -4799,7 +4799,7 @@
 "These images are stored in locked studies. First, unlock these studies to delete them." = "这些图像存储在锁定的研究中。首先, 解锁这些研究以删除它们。";
 
 /* No comment provided by engineer. */
-"These images don't have the same height and width to allow a 3D reconstruction..." = "这些图像没有相同的高度和宽度, 以允许3d 重建...";
+"These images don't have the same height and width to allow a 3D reconstruction..." = "这些图像没有相同的高度和宽度, 以允许3D 重建...";
 
 /* No comment provided by engineer. */
 "These images were acquired with a gantry tilt: %0.2f°. This gantry tilt will produce a distortion in 3D post-processing. Should I convert these images to a real 3D dataset." = "这些图像是通过机架倾斜获得的:%0.2f°。这种龙门架倾斜会在3D后处理中产生扭曲。我应该将这些图像转换为真实的3D数据集。";
@@ -4943,7 +4943,7 @@
 "This tool currently does not work with RGB data series." = "此工具当前不适用于 RGB 数据系列。";
 
 /* No comment provided by engineer. */
-"This tool works only with 3D data series with identical matrix sizes." = "此工具仅适用于具有相同矩阵大小的3d 数据系列。";
+"This tool works only with 3D data series with identical matrix sizes." = "此工具仅适用于具有相同矩阵大小的3D 数据系列。";
 
 /* No comment provided by engineer. */
 "This tool works only with 3D data series." = "此工具仅适用于 3D 数据系列。";
@@ -5311,7 +5311,7 @@ alpha:%2$.3f";
 "VolumePRO Error" = "VolumePRO错误";
 
 /* No comment provided by engineer. */
-"Voxel values have a very high dynamic range (>8192). Two options are available to use the 3D engine: clip values above 7168 and below -1024 or resample the values." = "Voxel 值具有非常高的动态范围 (> 8192)。有两个选项可用于使用3d 引擎: 剪辑值高于7168和低于-1024 或重新采样这些值。";
+"Voxel values have a very high dynamic range (>8192). Two options are available to use the 3D engine: clip values above 7168 and below -1024 or resample the values." = "Voxel 值具有非常高的动态范围 (> 8192)。有两个选项可用于使用3D 引擎: 剪辑值高于7168和低于-1024 或重新采样这些值。";
 
 /* No comment provided by engineer. */
 "WADO Retrieve Failed" = "WADO 检索失败";
@@ -5353,7 +5353,7 @@ alpha:%2$.3f";
 "Warning! Multiple instances of the same plugin have been found. Only one instance will be loaded. Check the Plugin Manager (Plugins menu) for multiple identical plugins." = "警告！找到了同一插件的多个实例。将只加载一个实例。检查插件管理器 (插件菜单) 中是否有多个相同的插件。";
 
 /* No comment provided by engineer. */
-"Warning! Slice interval/thickness is varying, it can create distortion in 3D." = "警告！切片间隙厚度变化, 在3d 中可能产生变形。";
+"Warning! Slice interval/thickness is varying, it can create distortion in 3D." = "警告！切片间隙厚度变化, 在3D 中可能产生变形。";
 
 /* No comment provided by engineer. */
 "Warning! With this option, each time OsiriX is restarted, the entire database will be erased. All studies will be deleted. This cannot be undone." = "警告！使用此选项, 每次重新启动 Miele-LXIV 时, 整个数据库都将被擦除。所有研究将被删除。这不能撤消。";
