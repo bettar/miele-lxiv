@@ -243,7 +243,7 @@ Si un estudio está en un álbum, NO será borrado.";
 "795.title" = "Radio";
 
 /* Class = "NSButtonCell"; title = "For US : one series per file"; ObjectID = "797"; */
-"797.title" = "Para EE.UU.: una serie por archivo";
+"797.title" = "Para US: una serie por archivo";
 
 /* Class = "NSMenu"; title = "OtherViews"; ObjectID = "802"; */
 "802.title" = "OtherViews";
@@ -402,7 +402,8 @@ Si un estudio está en un álbum, NO será borrado.";
 "982.title" = "Utilice los siguientes campos para generar el UID del paciente:";
 
 /* Class = "NSTextFieldCell"; title = "Changing these settings will recompute all database patientUIDs.\nIt can require several minutes on large database."; ObjectID = "984"; */
-"984.title" = "Si se cambian estas configuraciones, se volverán a calcular todos los patientUIDs de la base de datos.
+"984.title" = "Si se cambian estas configuraciones, se volverán a calcular
+todos los patientUIDs de la base de datos.
 Puede requerir varios minutos en una gran base de datos.";
 
 /* Class = "NSMenu"; title = "OtherViews"; ObjectID = "1004"; */

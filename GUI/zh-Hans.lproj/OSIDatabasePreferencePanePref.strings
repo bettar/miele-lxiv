@@ -243,7 +243,7 @@
 "795.title" = "Radio";
 
 /* Class = "NSButtonCell"; title = "For US : one series per file"; ObjectID = "797"; */
-"797.title" = "对于美国: 每个文件一个系列";
+"797.title" = "对于US: 每个文件一个系列";
 
 /* Class = "NSMenu"; title = "OtherViews"; ObjectID = "802"; */
 "802.title" = "OtherViews";

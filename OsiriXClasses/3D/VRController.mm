@@ -3288,7 +3288,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[NSApp endSheet:save3DSettingsWindow];
 }
 
-- (void)save3DSettings:(NSMutableDictionary*)settings WithName:(NSString*)name group:(NSString*)groupName;
+- (void)save3DSettings:(NSMutableDictionary*)settings
+              WithName:(NSString*)name
+                 group:(NSString*)groupName;
 {
 	[settings setObject:name forKey:@"name"];
 	[settings setObject:groupName forKey:@"groupName"];

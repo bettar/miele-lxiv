@@ -243,7 +243,7 @@ Wenn eine Studie in einem Album ist, wird sie NICHT gelöscht.";
 "795.title" = "Radio";
 
 /* Class = "NSButtonCell"; title = "For US : one series per file"; ObjectID = "797"; */
-"797.title" = "Für die USA: Eine Serie pro Datei";
+"797.title" = "Für US: Eine Serie pro Datei";
 
 /* Class = "NSMenu"; title = "OtherViews"; ObjectID = "802"; */
 "802.title" = "OtherViews";
