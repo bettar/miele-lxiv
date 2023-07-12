@@ -264,7 +264,7 @@ Wenn eine Studie in einem Album ist, wird sie NICHT gelöscht.";
 "817.title" = "Regenerieren";
 
 /* Class = "NSButtonCell"; title = "Don't delete a study, if there are comments (Comment Field of the Database)"; ObjectID = "822"; */
-"822.title" = "Löschen Sie keine Studie, wenn es Kommentare gibt (Kommentarfeld der Datenbank)";
+"822.title" = "Lösche keine Studie, wenn es Kommentare gibt (Kommentarfeld der Datenbank)";
 
 /* Class = "NSMenuItem"; title = "LibreOffice (.odt)"; ObjectID = "828"; */
 "828.title" = "LibreOffice (.odt)";
@@ -445,7 +445,7 @@ Es kann mehrere Minuten auf großer Datenbank benötigen.";
 "1029.title" = "Stufe:";
 
 /* Class = "NSButtonCell"; title = "Automatically delete the ENTIRE default database, at each startup: all studies will be deleted."; ObjectID = "1033"; */
-"1033.title" = "Löschen Sie automatisch die ENTIRE-Standarddatenbank, bei jedem Start: Alle Studien werden gelöscht.";
+"1033.title" = "Lösche automatisch die gesamte Standarddatenbank, bei jedem Start: Alle Studien werden gelöscht.";
 
 /* Class = "NSMenu"; title = "OtherViews"; ObjectID = "1039"; */
 "1039.title" = "OtherViews";
@@ -463,7 +463,7 @@ Es kann mehrere Minuten auf großer Datenbank benötigen.";
 "1043.title" = "Schriftgröße:";
 
 /* Class = "NSButtonCell"; title = "Don't delete a study, if it is stored in an album (smart albums are not considered)"; ObjectID = "ENc-og-Jds"; */
-"ENc-og-Jds.title" = "Löschen Sie eine Studie nicht, wenn sie in einem Album gespeichert ist (intelligente Alben werden nicht berücksichtigt)";
+"ENc-og-Jds.title" = "Lösche eine Studie nicht, wenn sie in einem Album gespeichert ist (intelligente Alben werden nicht berücksichtigt)";
 
 /* Class = "NSMenuItem"; title = "Two weeks"; ObjectID = "k9l-Sm-hVU"; */
 "k9l-Sm-hVU.title" = "Zwei Wochen";

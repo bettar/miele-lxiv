@@ -923,7 +923,7 @@
 "Bone Removal Tool" = "Knochenentfernungswerkzeug";
 
 /* No comment provided by engineer. */
-"Bone Removing" = "Knochenablösung";
+"Bone Removing" = "Knochen rauslösen";
 
 /* No comment provided by engineer. */
 "BRACHIAL" = "Brachial";
@@ -2033,7 +2033,7 @@
 "Failed to create the report with Pages." = "Es ist nicht gescheitert, den Bericht mit Seiten zu erstellen.";
 
 /* No comment provided by engineer. */
-"Failed to detect a high density voxel to start growing region." = "Es ist nicht geschafft, eine Voxel-Hochdichte zu erkennen, um eine wachsende Region zu beginnen.";
+"Failed to detect a high density voxel to start growing region." = "Es gelang nicht, ein Voxel hoher Dichte zu entdecken, um mit dem Anbau zu beginnen.";
 
 /* No comment provided by engineer. */
 "Failed to download and synchronize preferences from this URL: %@" = "Einstellungen von der URL %@ konnten nicht heruntergeladen und synchronisiert werden";
@@ -2300,7 +2300,7 @@
 "Horizontally Flipped" = "Horizontal geklickt";
 
 /* Panel in preferences window */
-"Hot Keys" = "Heiße Tasten";
+"Hot Keys" = "Hotkeys";
 
 /* No comment provided by engineer. */
 "hour" = "Stunde";
@@ -3170,7 +3170,7 @@
 "On component %d: %@" = "Auf Komponente%1$d:%2$@";
 
 /* Panel in preferences window */
-"On-Demand" = "Auf Abforderung";
+"On-Demand" = "Zugriffe";
 
 /* No comment provided by engineer. */
 "One ROI has an area equal to ZERO!" = "Ein ROI hat eine Fläche, die ZERO gleich ist!";

@@ -813,7 +813,7 @@ Spiegelnd: 0.6, 2.0";
 "2480.title" = "GPU";
 
 /* Class = "NSButtonCell"; title = "CPU"; ObjectID = "2481"; */
-"2481.title" = "Prozessor";
+"2481.title" = "CPU";
 
 /* Class = "NSButtonCell"; title = "Endoscopy"; ObjectID = "Amx-n9-82A"; */
 "Amx-n9-82A.title" = "Endoskopie";
