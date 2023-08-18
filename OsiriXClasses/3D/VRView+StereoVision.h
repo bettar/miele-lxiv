@@ -90,7 +90,7 @@
 #include "vtkImageFlip.h"
 #include "vtkAnnotatedCubeActor.h"
 #include "vtkOrientationMarkerWidget.h"
-#include "OsiriXFixedPointVolumeRayCastMapper.h"
+#include "vtkMieleFixedPointVolumeRayCastMapper.h"
 
 #include "vtkCellArray.h"
 #include "vtkProperty2D.h"

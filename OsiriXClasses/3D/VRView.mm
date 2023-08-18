@@ -23,7 +23,7 @@
 
 #import "VRView.h"
 
-#import "OsiriXFixedPointVolumeRayCastMapper.h"
+#import "vtkMieleFixedPointVolumeRayCastMapper.h"
 
 #import "DCMCursor.h"
 #import "AppController.h"
@@ -96,8 +96,11 @@
 //#define BONEVALUE 250
 #define BONEOPACITY 1.1
 
-extern bool dontRenderVolumeRenderingOsiriX;	// See OsiriXFixedPointVolumeRayCastMapper.cxx
-extern unsigned int minimumStep;
+// accessed as 'extern' in two other modules
+// TBC the naming of this variable should be the opposite ?
+bool skipRenderingVR = false;
+
+extern unsigned int minimumStep;    // See MPRDCMView.mm
 
 static NSRecursiveLock *drawLock = nil;
 static unsigned short *linearOpacity = nil;
@@ -927,7 +930,7 @@ public:
 {
     if (volumeMapper == nil)
     {
-        volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
+        volumeMapper = vtkMieleFixedPointVolumeRayCastMapper::New();
         volumeMapper->SetInputConnection(reader->GetOutputPort());
     }
     
@@ -1081,7 +1084,7 @@ public:
 		case ENGINE_CPU:
 			if (blendingVolumeMapper == nil)
 			{
-				blendingVolumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
+				blendingVolumeMapper = vtkMieleFixedPointVolumeRayCastMapper::New();
 				blendingVolumeMapper->SetInputConnection(blendingReader->GetOutputPort());
 			}
             
@@ -2365,14 +2368,14 @@ public:
 
     aRenderer->SetDraw( 0);
     
-    dontRenderVolumeRenderingOsiriX = false;
+    skipRenderingVR = false;
     volumeMapper->SetIntermixIntersectingGeometry( 0);
     
     _cocoaRenderWindow->UpdateContext();
     _cocoaRenderWindow->MakeCurrent();
 
     volumeMapper->Render( aRenderer, volume); // #i18 stack 5
-    dontRenderVolumeRenderingOsiriX = true;
+    skipRenderingVR = true;
 }
 
 - (void) renderBlendedVolume
@@ -2381,14 +2384,14 @@ public:
 	{
 		aRenderer->SetDraw( 0);
 		
-		dontRenderVolumeRenderingOsiriX = false;
+		skipRenderingVR = false;
 		blendingVolumeMapper->SetIntermixIntersectingGeometry( 0);
 		
 		_cocoaRenderWindow->UpdateContext();
 		_cocoaRenderWindow->MakeCurrent();
 		blendingVolumeMapper->Render( aRenderer, blendingVolume);
 		
-		dontRenderVolumeRenderingOsiriX = true;
+		skipRenderingVR = true;
 	}
 }
 
@@ -2938,7 +2941,7 @@ public:
                 renderingMode == 3)   // CPR_PROJECTION_MODE_MEAN
             {
                 // MIP modes - full depth
-                dontRenderVolumeRenderingOsiriX = true;
+                skipRenderingVR = true;
                 aRenderer->SetDraw( 0);
                 [self prepareFullDepthCapture];
                 [self renderImageWithBestQuality: NO waitDialog: NO display: YES];
@@ -2967,7 +2970,7 @@ public:
                 [self endRenderImageWithBestQuality];
                 [self restoreFullDepthCapture];
                 aRenderer->SetDraw( 1);
-                dontRenderVolumeRenderingOsiriX = false;
+                skipRenderingVR = false;
                 free( pixels);
             }
         }
@@ -3446,7 +3449,7 @@ public:
 					[self display];
 				}
                 
-                dontRenderVolumeRenderingOsiriX = true;
+                skipRenderingVR = true;
                 
                 // Click point 3D to 2D
                 
@@ -3489,7 +3492,7 @@ public:
 					[self display];
 				}
 
-                dontRenderVolumeRenderingOsiriX = true;
+                skipRenderingVR = true;
 			
 				double	*pp;
 				
@@ -3936,7 +3939,7 @@ public:
             case tOval:
 			case t3DCut:
 				[self displayIfNeeded];
-				dontRenderVolumeRenderingOsiriX = false;
+				skipRenderingVR = false;
                 break;
                 
 			case tBonesRemoval:		// <- DO NOTHING !
@@ -4069,7 +4072,7 @@ public:
         return;
     
 	snVRView = self;
-	dontRenderVolumeRenderingOsiriX = false;
+	skipRenderingVR = false;
 	
 	_hasChanged = YES;
 	[drawLock lock];
@@ -4189,7 +4192,7 @@ public:
 				[self display];
 			}
             
-			dontRenderVolumeRenderingOsiriX = true;
+			skipRenderingVR = true;
 			
 			vtkPoints *pts = Line2DData->GetPoints();
 			if (pts->GetNumberOfPoints() >= 2)
@@ -4271,7 +4274,7 @@ public:
 				[self display];
 			}
             
-			dontRenderVolumeRenderingOsiriX = true;
+			skipRenderingVR = true;
 			
 			// Click point 3D to 2D
             _mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow]];
@@ -4303,7 +4306,7 @@ public:
 				[self display];
 			}
 			
-			dontRenderVolumeRenderingOsiriX = true;
+			skipRenderingVR = true;
 			
 			// Click point 3D to 2D
 			
@@ -5306,7 +5309,7 @@ public:
 	
     [self display];
     
-    dontRenderVolumeRenderingOsiriX = true;
+    skipRenderingVR = true;
     aRenderer->SetDraw( 0);
     
 	for (int m = 0; m < [[controller viewer2D] maxMovieIndex] ; m++)
@@ -5372,7 +5375,7 @@ public:
     
     [self setNeedsDisplay:YES];
     
-    dontRenderVolumeRenderingOsiriX = false;
+    skipRenderingVR = false;
     aRenderer->SetDraw( 1);
 	
 	[controller setMovieFrame: savedMovieFrame];
@@ -5546,7 +5549,7 @@ public:
 			[self display];
 		}
 		
-		dontRenderVolumeRenderingOsiriX = true;
+		skipRenderingVR = true;
 		
 		if (pts->GetNumberOfPoints() != 0)
 		{
@@ -5564,7 +5567,7 @@ public:
 			[self display];
 		}
 		
-		dontRenderVolumeRenderingOsiriX = false;
+		skipRenderingVR = false;
 	}
 	else if (currentTool == tMeasure || currentTool == tOval)
 	{
@@ -5584,7 +5587,7 @@ public:
                     [self display];
                 }
                 
-                dontRenderVolumeRenderingOsiriX = true;
+                skipRenderingVR = true;
 
                 if (pts->GetNumberOfPoints() != 0)
                 {
@@ -5602,7 +5605,7 @@ public:
                     [self display];
                 }
                 
-                dontRenderVolumeRenderingOsiriX = false;
+                skipRenderingVR = false;
             }
             else if (currentTool == tOval)
             {
@@ -5612,7 +5615,7 @@ public:
                     [self display];
                 }
                 
-                dontRenderVolumeRenderingOsiriX = true;
+                skipRenderingVR = true;
                 
                 // Delete current ROI
                 aRenderer->RemoveActor( Oval2DText);
@@ -5622,7 +5625,7 @@ public:
                 [self computeLength];
                 [self display];
                 
-                dontRenderVolumeRenderingOsiriX = false;
+                skipRenderingVR = false;
             }
         }
 	}
@@ -5736,7 +5739,7 @@ public:
 			[self display];
 		}
         
-		dontRenderVolumeRenderingOsiriX = true;
+		skipRenderingVR = true;
 		
 //		vtkPoints *pts = Oval2DData->GetPoints();
 //		
@@ -5755,7 +5758,7 @@ public:
 //			[self display];
 //		}
 		
-		dontRenderVolumeRenderingOsiriX = false;
+		skipRenderingVR = false;
 	}
     
 	if (currentTool == tMeasure || previousTool == tMeasure)
@@ -5766,7 +5769,7 @@ public:
 			[self display];
 		}
         
-		dontRenderVolumeRenderingOsiriX = true;
+		skipRenderingVR = true;
 		
 		vtkPoints *pts = Line2DData->GetPoints();
 		
@@ -5788,7 +5791,7 @@ public:
 			[self display];
 		}
 		
-		dontRenderVolumeRenderingOsiriX = false;
+		skipRenderingVR = false;
 	}
 	
 	if ((currentTool == t3DCut && previousTool == t3DCut) || currentTool != t3DCut)
@@ -5799,7 +5802,7 @@ public:
 			[self display];
 		}
         
-		dontRenderVolumeRenderingOsiriX = true;
+		skipRenderingVR = true;
 		vtkPoints *roiPts = ROI3DData->GetPoints();
 		
 		if (roiPts->GetNumberOfPoints() != 0)
@@ -5819,7 +5822,7 @@ public:
 			[self display];
 		}
 		
-		dontRenderVolumeRenderingOsiriX = false;
+		skipRenderingVR = false;
 	}
 	
 	if (currentTool!=t3Dpoint && previousTool==t3Dpoint)
@@ -6232,12 +6235,17 @@ public:
         [self display];
 }
 
-- (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait
+- (void) renderImageWithBestQuality: (BOOL) best
+                         waitDialog: (BOOL) wait
 {
-	return [self renderImageWithBestQuality: best waitDialog: wait display: YES];
+	return [self renderImageWithBestQuality: best
+                                 waitDialog: wait
+                                    display: YES];
 }
 
-- (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait display: (BOOL) display
+- (void) renderImageWithBestQuality: (BOOL) best
+                         waitDialog: (BOOL) wait
+                            display: (BOOL) display
 {
 	[splash setCancel:YES];
 		
@@ -6254,7 +6262,8 @@ public:
 	// RAY CASTING SETTINGS
 	if (best)
 	{
-		if ([[NSApp currentEvent] modifierFlags] & NSEventModifierFlagShift || projectionMode == 2)
+		if ([[NSApp currentEvent] modifierFlags] & NSEventModifierFlagShift ||
+            projectionMode == 2) // 2: endoscopy mode
 		{
 			if (volumeMapper)
             {
@@ -6315,7 +6324,7 @@ public:
 		if (wait == NO)
             noWaitDialog = YES;
 		
-		if (dontRenderVolumeRenderingOsiriX)
+		if (skipRenderingVR)
 			[self render];
 		else
 			[self display];
@@ -6800,7 +6809,7 @@ public:
 		if (blendingVolumeMapper)
             blendingVolumeMapper->Delete();
         
-		blendingVolumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
+		blendingVolumeMapper = vtkMieleFixedPointVolumeRayCastMapper::New();
 		blendingVolumeMapper->SetInputConnection(blendingReader->GetOutputPort());
 		blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 		blendingVolumeMapper->Update();
@@ -7046,7 +7055,7 @@ public:
     [pix retain];
     pixList = pix;
 	
-	[self setProjectionMode: 1];  // Parallel
+	[self setProjectionMode: 1];  // 1: Parallel
 	
 	data = volumeData;
 	
@@ -7697,7 +7706,7 @@ public:
     
     @try
     {
-        OsiriXFixedPointVolumeRayCastMapper *mapper = nil;
+        vtkMieleFixedPointVolumeRayCastMapper *mapper = nil;
         DCMPix *firstObj = nil;
         
         if (blendingView)
@@ -9765,7 +9774,7 @@ public:
 {
 	if (volumeMapper == nil)
     {
-        volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
+        volumeMapper = vtkMieleFixedPointVolumeRayCastMapper::New();
         volumeMapper->SetInputConnection(reader->GetOutputPort());
     }
     
@@ -9780,7 +9789,7 @@ public:
         if (volumeMapper)
             volumeMapper->Delete();
         
-        volumeMapper = (OsiriXFixedPointVolumeRayCastMapper*) mapper; // TODO
+        volumeMapper = (vtkMieleFixedPointVolumeRayCastMapper*) mapper; // TODO
         volume->SetMapper( volumeMapper);
     }
 }

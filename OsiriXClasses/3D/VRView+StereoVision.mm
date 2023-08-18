@@ -109,7 +109,7 @@ typedef NS_ENUM(NSUInteger, MyStereoMode) {
 };
 
 #ifdef _STEREO_VISION_
-extern bool dontRenderVolumeRenderingOsiriX;	// See OsiriXFixedPointVolumeRayCastMapper.cxx
+extern bool skipRenderingVR; // See VRView.mm
 
 static NSRecursiveLock *drawLock = nil;
 static unsigned short *linearOpacity = nil;
@@ -1073,10 +1073,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 					bestRenderingWasGenerated = NO;
 					[self display];
 				}
-				dontRenderVolumeRenderingOsiriX = true;
+				skipRenderingVR = true;
 				
-				double	*pp;
-				//long	i;
+				double *pp;
+				//long i;
 				
 				vtkPoints *pts = Line2DData->GetPoints();
 				
@@ -1518,7 +1518,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
             case tMeasure:
 			case t3DCut:
 				[self displayIfNeeded];
-				dontRenderVolumeRenderingOsiriX = false;
+				skipRenderingVR = false;
 				break;
 
             case tBonesRemoval:		// <- DO NOTHING !
@@ -1659,7 +1659,9 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	return [self nsimageQuicktime];
 }
 
-- (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait display: (BOOL) display
+- (void) renderImageWithBestQuality: (BOOL) best
+                         waitDialog: (BOOL) wait
+                            display: (BOOL) display
 {
 	[splash setCancel:YES];
 	
@@ -1748,12 +1750,12 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		}
 	}
 	
-	if( display)
+	if (display)
 	{
-		if ( wait == NO)
+		if (wait == NO)
             noWaitDialog = YES;
 		
-		if ( dontRenderVolumeRenderingOsiriX)
+		if (skipRenderingVR)
 		{
 			[self render];
 		}
@@ -1764,7 +1766,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				[rightView display];
 		}
 		
-		if( wait == NO)
+		if (wait == NO)
             noWaitDialog = NO;
 	}
 	
@@ -2156,7 +2158,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h isRGB:(BOOL*) rgb blendingView:(BOOL) blendingView
 {
-	OsiriXFixedPointVolumeRayCastMapper *mapper = nil;
+	vtkMieleFixedPointVolumeRayCastMapper *mapper = nil;
 	DCMPix *firstObj = nil;
 	
 	if( blendingView)

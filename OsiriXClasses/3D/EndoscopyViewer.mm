@@ -78,7 +78,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	[vrController initWithPix: pix : files : vData : bC : vC];
 	[vrController load3DState];
 	
-	[[vrController view] setProjectionMode: 2]; // endoscopy mode
+	[[vrController view] setProjectionMode: 2]; // 2: endoscopy mode
     
 	//[[vrController view] setEngine:ENGINE_GPU_OPEN_GL];
 	

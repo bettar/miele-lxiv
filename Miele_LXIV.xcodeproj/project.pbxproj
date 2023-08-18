@@ -58,7 +58,7 @@
 		433C9DD12255FD5300EBC6E9 /* DICOMFilesTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98795D116DB9FD100926023 /* DICOMFilesTests.mm */; };
 		433DA138215A5B2600D5A70B /* BrowserController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 433DA136215A5B2500D5A70B /* BrowserController.mm */; };
 		433F9A801A1B18A500E52C6C /* vtkMieleView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A7E1A1B18A500E52C6C /* vtkMieleView.mm */; };
-		433F9A891A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */; };
+		433F9A891A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A871A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.cxx */; };
 		4341DF7E29C9BDD5003E0332 /* echoscu in Copy Executables */ = {isa = PBXBuildFile; fileRef = 4341DF7C29C9BD87003E0332 /* echoscu */; };
 		4341DF8529C9C04C003E0332 /* libming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8329C9C045003E0332 /* libming.a */; };
 		4341DF8729C9C075003E0332 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8629C9C075003E0332 /* libxml2.a */; };
@@ -1548,8 +1548,8 @@
 		433E5B88223B876700AD47B6 /* AYPrintManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYPrintManager.h; path = DICOMPrint/AYPrintManager.h; sourceTree = "<group>"; };
 		433F9A7E1A1B18A500E52C6C /* vtkMieleView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = vtkMieleView.mm; sourceTree = "<group>"; };
 		433F9A7F1A1B18A500E52C6C /* vtkMieleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkMieleView.h; sourceTree = "<group>"; };
-		433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OsiriXFixedPointVolumeRayCastMapper.cxx; sourceTree = "<group>"; };
-		433F9A881A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OsiriXFixedPointVolumeRayCastMapper.h; sourceTree = "<group>"; };
+		433F9A871A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vtkMieleFixedPointVolumeRayCastMapper.cxx; sourceTree = "<group>"; };
+		433F9A881A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkMieleFixedPointVolumeRayCastMapper.h; sourceTree = "<group>"; };
 		4341DF7C29C9BD87003E0332 /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = "../../../../../../install/project68/20230320_UB/DCMTK-3.6.7/bin/echoscu"; sourceTree = "<group>"; };
 		4341DF8329C9C045003E0332 /* libming.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libming.a; path = "../../../install/project68/20230320_UB/ming-0_4_8/lib/libming.a"; sourceTree = "<group>"; };
 		4341DF8629C9C075003E0332 /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../../install/project68/20230320_UB/libxml2-v2.9.13/lib/libxml2.a"; sourceTree = "<group>"; };
@@ -3145,8 +3145,8 @@
 				433777D82A8E48610002A83D /* vtkMieleFixedPointVolumeRayCastMIPHelper.cxx */,
 				AB87FA740C06BEB200CD2976 /* NIfTI_Library */,
 				8417219210D8D707001A833F /* HTTP-HTTPS Server */,
-				433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */,
-				433F9A881A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.h */,
+				433F9A871A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.cxx */,
+				433F9A881A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.h */,
 				433F9A7E1A1B18A500E52C6C /* vtkMieleView.mm */,
 				433F9A7F1A1B18A500E52C6C /* vtkMieleView.h */,
 				CE96D0F20BEE71E800C4E397 /* mdfconen.cc */,
@@ -6364,7 +6364,7 @@
 				43985D3523DCB23E00DD57DD /* GLProgramImage.mm in Sources */,
 				CE74456A06DBA4CB0034D05E /* ITK.mm in Sources */,
 				CE4A922D06DBF255006DAAF7 /* ITKSegmentation3D.mm in Sources */,
-				433F9A891A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */,
+				433F9A891A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.cxx in Sources */,
 				CE26442306DCF096007F5B71 /* ITKSegmentation3DController.mm in Sources */,
 				BF00C95D06F3F43A00715191 /* DCMCursor.mm in Sources */,
 				7ECB4B42072EF9F800C2CFC4 /* DCMCalendarScript.mm in Sources */,

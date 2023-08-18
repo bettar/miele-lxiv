@@ -76,7 +76,7 @@
 //#include "vtkSmartVolumeMapper.h"
 #include "vtkGPUVolumeRayCastMapper.h"
 
-#include "OsiriXFixedPointVolumeRayCastMapper.h"
+#include "vtkMieleFixedPointVolumeRayCastMapper.h"
 
 #include "vtkProperty2D.h"
 #include "vtkRegularPolygonSource.h"
@@ -114,7 +114,7 @@ typedef char* vtkTextActor;
 typedef char* vtkVolumeMapper;
 typedef char* vtkVolumeRayCastMapper;
 typedef char* vtkFixedPointVolumeRayCastMapper;
-typedef char* OsiriXFixedPointVolumeRayCastMapper;
+typedef char* vtkMieleFixedPointVolumeRayCastMapper;
 typedef char* vtkVolumeRayCastMIPFunction;
 typedef char* vtkVolume;
 
@@ -197,7 +197,7 @@ typedef char* VTKStereoVRView;
 	float						blendingWl, blendingWw, measureLength;
 	vtkImageImport				*blendingReader;
 
-    OsiriXFixedPointVolumeRayCastMapper *blendingVolumeMapper;
+    vtkMieleFixedPointVolumeRayCastMapper *blendingVolumeMapper;
 
 	vtkGPUVolumeRayCastMapper	*blendingTextureMapper;
 	
@@ -275,7 +275,7 @@ typedef char* VTKStereoVRView;
 	
 	// MAPPERS
 	
-	OsiriXFixedPointVolumeRayCastMapper *volumeMapper;  // CPU
+	vtkMieleFixedPointVolumeRayCastMapper *volumeMapper;  // CPU
 	vtkGPUVolumeRayCastMapper	        *textureMapper; // GPU
 	
 	vtkVolume					*volume;

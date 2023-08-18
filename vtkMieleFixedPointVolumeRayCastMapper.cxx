@@ -7,7 +7,7 @@
 
 #import "mgl.h" // for WITH_OPENGL_32
 
-#include "OsiriXFixedPointVolumeRayCastMapper.h"
+#include "vtkMieleFixedPointVolumeRayCastMapper.h"
 
 #include "vtkObjectFactory.h"
 #include "vtkRenderWindow.h"
@@ -16,7 +16,6 @@
 #include "vtkOpenGLRenderWindow.h"
 #include "vtkImageData.h"
 
-// Issue #e27
 #include "vtkMieleFixedPointVolumeRayCastMIPHelper.h"
 
 #ifndef NDEBUG
@@ -26,22 +25,20 @@
 
 #include <cmath>
 
-bool dontRenderVolumeRenderingOsiriX = false;
+extern bool skipRenderingVR; // Moved to VRView.mm
 
-vtkStandardNewMacro(OsiriXFixedPointVolumeRayCastMapper);
+vtkStandardNewMacro(vtkMieleFixedPointVolumeRayCastMapper);
 
-OsiriXFixedPointVolumeRayCastMapper::OsiriXFixedPointVolumeRayCastMapper()
+vtkMieleFixedPointVolumeRayCastMapper::vtkMieleFixedPointVolumeRayCastMapper()
 {
     // Issue #e27
     this->MIPHelper = vtkMieleFixedPointVolumeRayCastMIPHelper::New();
 }
 
 // See VTK's vtkFixedPointVolumeRayCastMapper.cxx line 1361
-void OsiriXFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *vol )
+void vtkMieleFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *vol )
 {
-#ifndef NDEBUG
-    vtkDebugMacro(<< "Blend mode = " << this->GetBlendMode()); // COMPOSITE_BLEND
-#endif
+    //vtkDebugMacro(<< "Blend mode = " << this->GetBlendMode());
 
 #if 1 // added after comparing with latest VTK code
     if (vtkImageData::SafeDownCast(this->GetInput()) == nullptr)
@@ -50,6 +47,7 @@ void OsiriXFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *v
       return;
     }
 
+    // AVERAGE_INTENSITY_BLEND not supported (Issue #e27)
     if (this->GetBlendMode() != vtkVolumeMapper::COMPOSITE_BLEND &&
       this->GetBlendMode() != vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND &&
       this->GetBlendMode() != vtkVolumeMapper::MINIMUM_INTENSITY_BLEND &&
@@ -70,16 +68,16 @@ void OsiriXFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *v
     // be used so just initialize everything to 0. No need to check
     // the return value of the PerImageInitialization method - since this
     // is not a multirender it will always return 1.
-    double dummyOrigin[3]  = {0.0, 0.0, 0.0};
-    double dummySpacing[3] = {0.0, 0.0, 0.0};
-    int dummyExtent[6] = {0, 0, 0, 0, 0, 0};
+    double dummyOrigin[3] = { 0.0, 0.0, 0.0 };
+    double dummySpacing[3] = { 0.0, 0.0, 0.0 };
+    int dummyExtent[6] = { 0, 0, 0, 0, 0, 0 };
     this->PerImageInitialization(ren, vol, 0, dummyOrigin, dummySpacing, dummyExtent);
 
-    this->PerVolumeInitialization( ren, vol );
+    this->PerVolumeInitialization(ren, vol);
 
-    vtkRenderWindow *renWin = ren->GetRenderWindow(); // vtkCocoaRenderWindow
+    vtkRenderWindow* renWin = ren->GetRenderWindow(); // vtkCocoaRenderWindow
 
-#if 1 // @@@ TBC
+#if 1 // @@@ TBC (not in VTK)
     vtkOpenGLRenderWindow *rw = (vtkOpenGLRenderWindow *)renWin;
     //if (!rw->Initialized)
         rw->OpenGLInit();
@@ -98,7 +96,7 @@ void OsiriXFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *v
       return;
     }
 
-    if (!dontRenderVolumeRenderingOsiriX)  // Our addition
+    if (!skipRenderingVR)  // Our addition
         this->RenderSubVolume();
 
     if (renWin && renWin->CheckAbortStatus())
@@ -131,14 +129,14 @@ void OsiriXFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *v
 #endif
 
 #ifdef WITH_OPENGL_32
-    this->DisplayRenderedImage( ren, vol ); // Issue #i18
+    this->DisplayRenderedImage(ren, vol); // Issue #i18
 #endif
 
     this->Timer->StopTimer();
     this->TimeToDraw = this->Timer->GetElapsedTime();
     // If we've increased the sample distance, account for that in the stored time. Since we
     // don't get linear performance improvement, use a factor of .66
-    this->StoreRenderTime( ren, vol,
+    this->StoreRenderTime(ren, vol,
 			 this->TimeToDraw * this->ImageSampleDistance * this->ImageSampleDistance *
 			 (1.0 + 0.66 * (this->SampleDistance - this->OldSampleDistance) / this->OldSampleDistance));
 
