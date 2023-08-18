@@ -112,7 +112,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		volumeData[0] = volume;
 		
 		fusedViewer2D = fusedViewer;
-		clippingRangeMode = 1;
+		clippingRangeMode = 1; // MIP
 		LOD = 1;
 		if (LOD < 1) LOD = 1;
 		
@@ -192,7 +192,8 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[[hiddenVRController window] orderOut: self];
 		
         hiddenVRController.view.engine = ENGINE_CPU;
-		[hiddenVRController load3DState];
+
+        [hiddenVRController load3DState];
 		
 		hiddenVRView = [hiddenVRController view];
 		[hiddenVRView setClipRangeActivated: YES];
@@ -1506,9 +1507,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[mprView3 setIndex:[mprView3 curImage]];
 	}
 	
-	if([str isEqualToString:NSLocalizedString(@"No CLUT", nil)])
+	if ([str isEqualToString:NSLocalizedString(@"No CLUT", nil)])
 	{
-		if(clippingRangeMode==0)
+		if (clippingRangeMode==0) // VR
 		{
 			[mprView1.vrView setCLUT: nil :nil :nil];
 			
@@ -1572,7 +1573,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 				blue[i] = [[array objectAtIndex: i] longValue];
 			}
 			
-			if (clippingRangeMode==0)
+			if (clippingRangeMode==0) // VR
 			{
 				[mprView1.vrView setCLUT:red :green: blue];
 
@@ -1658,11 +1659,13 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 
 - (void)ApplyOpacityString:(NSString*)str
 {
-	if (clippingRangeMode == 1 || clippingRangeMode == 3  || clippingRangeMode == 2)
+	if (clippingRangeMode == 1 || // MIP Max Intensity Projection
+        clippingRangeMode == 3 || // Mean
+        clippingRangeMode == 2) // minIP
 	{
 		[self Apply2DOpacityString:str];
 	}
-	else
+	else // 0 VR
 	{
 		[self Apply3DOpacityString:str];
 	}
@@ -1851,7 +1854,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	float pWL, pWW;
 	float bpWL, bpWW;
 	
-	if (clippingRangeMode == 1 || clippingRangeMode == 3 || clippingRangeMode == 2) // MIP
+	if (clippingRangeMode == 1 || // MIP
+        clippingRangeMode == 3 || // Mean
+        clippingRangeMode == 2) // minIP
 	{
 		[mprView1 getWLWW: &pWL :&pWW];
 		[blendedMprView1 getWLWW: &bpWL :&bpWW];
@@ -1867,9 +1872,11 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[mprView1.vrView setMode: clippingRangeMode];
 	[mprView1.vrView setBlendingMode: clippingRangeMode];
 
-	if (clippingRangeMode == 1 || clippingRangeMode == 3 || clippingRangeMode == 2)	// MIP - Mean - minIP
+	if (clippingRangeMode == 1 || // MIP
+        clippingRangeMode == 3 || // Mean
+        clippingRangeMode == 2)	// minIP
 	{
-		if (clippingRangeMode == 3) //mean
+		if (clippingRangeMode == 3) // Mean
 			setvtkMeanIPMode( 1);
 		else
 			setvtkMeanIPMode( 0);

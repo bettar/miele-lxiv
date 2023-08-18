@@ -236,7 +236,7 @@
 "2D Pos: X:n/a %@ Y:n/a %@" = "2D Pos: X:n/a %1$@ Y:n/a %2$@";
 
 /* No comment provided by engineer. */
-"2D Viewer" = "Visor 3D";
+"2D Viewer" = "Visor 2D";
 
 /* No comment provided by engineer. */
 "2D/3D" = "2D/3D";
@@ -1245,7 +1245,7 @@
 "Color Look Up Table" = "Table de consultation des couleurs";
 
 /* No comment provided by engineer. */
-"Comments" = "Commentaires";
+"Comments" = "Remarques";
 
 /* No comment provided by engineer. */
 "Comments 2" = "Remarques 2";
@@ -1641,7 +1641,7 @@
 "DICOM Echo %@..." = "DICOM Echo %@...";
 
 /* No comment provided by engineer. */
-"DICOM Editing" = "Montage DICOM";
+"DICOM Editing" = "Édition DICOM";
 
 /* No comment provided by engineer. */
 "DICOM editing is allowed only on DICOM files." = "L'édition DICOM n'est autorisée que sur les fichiers DICOM.";
@@ -5181,7 +5181,7 @@
 "Use all screens for viewers" = "Utiliser tous les écrans pour les téléspectateurs";
 
 /* No comment provided by engineer. */
-"Use Linear Interpollation" = "Utiliser l'interpolation linéaire";
+"Use Linear Interpolation" = "Utiliser l'interpolation linéaire";
 
 /* No comment provided by engineer. */
 "Use this screen for viewers" = "Utilisez cet écran pour les téléspectateurs";

@@ -202,7 +202,7 @@
 	{
 		userChoice = NSRunAlertPanel(NSLocalizedString(@"Spline Interpolation Error", nil),
                                      NSLocalizedString(@"The Spline Interpolation needs at least 3 points to be run.", nil),
-                                     NSLocalizedString(@"Use Linear Interpollation", nil),
+                                     NSLocalizedString(@"Use Linear Interpolation", nil),
                                      NSLocalizedString(@"Cancel", nil),
                                      nil);
 		if(userChoice == 1)

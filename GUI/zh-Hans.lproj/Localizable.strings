@@ -2198,19 +2198,19 @@
 "Full screen" = "全屏";
 
 /* No special characters for this string, only ASCII characters. */
-"Fused Image : X: %d px Y: %d px" = "融合图像: x: %1$d, y:%2$d px";
+"Fused Image : X: %d px Y: %d px" = "融合画像 : X: %1$d px Y: %2$d px";
 
 /* No comment provided by engineer. */
-"Fused Image Mean: %0.3f%@ SDev: %0.3f%@ Sum: %@%@" = "融合图像均值: %1$3f%2$@ 用普瑞 sdeff: %$3. 3f外交 4 $ @ sum:%5$@%6$@";
+"Fused Image Mean: %0.3f%@ SDev: %0.3f%@ Sum: %@%@" = "融合画像 平均: %1$.3f%2$@ 標準偏差: %3$.3f%4$@ 合計: %5$@%6$@";
 
 /* No comment provided by engineer. */
-"Fused Image Min: %0.3f%@ Max: %0.3f%@" = "熔融图像最小值: %1$3 f用普西 2 $ @ max: %3$3. 3f外交 4 $ @";
+"Fused Image Min: %0.3f%@ Max: %0.3f%@" = "融合画像 最小: %1$.3f%2$@ 最大: %3$.3f%4$@";
 
 /* No comment provided by engineer. */
-"Fused Image Min: %0.3f%@ Max: %0.3f%@ Skewness: %0.3f Kurtosis: %0.3f" = "融合图像 min: %1$3. 3fcoco宁 2 $ 最大值: %3$3. 3f用前 4 $@ kewness:% 5$3. f kerdosist:%6$3. f";
+"Fused Image Min: %0.3f%@ Max: %0.3f%@ Skewness: %0.3f Kurtosis: %0.3f" = "融合画像 最小: %1$.3f%2$@ 最大: %3$.3f%4$@ 歪度: %5$.3f 尖度: %6$.3f";
 
 /* No comment provided by engineer. */
-"Fused Image Value: %0.3f%@" = "融合图像值: %1$3 fcores 2 $@";
+"Fused Image Value: %0.3f%@" = "融合画像値: %1$.3f%2$@";
 
 /* No comment provided by engineer. */
 "Fusion" = "融合";
@@ -5180,7 +5180,7 @@
 "Use all screens for viewers" = "为观看者使用所有屏幕";
 
 /* No comment provided by engineer. */
-"Use Linear Interpollation" = "使用线性插值";
+"Use Linear Interpolation" = "使用线性插值";
 
 /* No comment provided by engineer. */
 "Use this screen for viewers" = "对观看者使用此屏幕";

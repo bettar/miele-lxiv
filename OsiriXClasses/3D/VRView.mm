@@ -773,18 +773,25 @@ public:
 	
 	switch (modeID)
 	{
-		case 0:
+		case 0: // VR
 			if (blendingVolumeMapper)
                 blendingVolumeMapper->SetBlendModeToComposite();
 			break;
 			
-		case 1:
+		case 1: // MIP
 			if (blendingVolumeMapper)
                 blendingVolumeMapper->SetBlendModeToMaximumIntensity();
 			break;
 		
-		case 2:
-		case 3:
+        case 3: // Mean
+#ifdef TEST_ISSUE_E27_METHOD1 // (TBC it requires vtkGPUVolumeRayCastMapper)
+            if (blendingVolumeMapper)
+                blendingVolumeMapper->SetBlendModeToAverageIntensity();
+            break;
+#endif
+            // Fall through: effect of Mean is triggered externally by setvtkMeanIPMode
+
+		case 2: // minIP
 			if (blendingVolumeMapper)
                 blendingVolumeMapper->SetBlendModeToMinimumIntensity();
             break;
@@ -824,9 +831,18 @@ public:
 			if (textureMapper)
 				textureMapper->SetBlendModeToMaximumIntensity();
 		break;
-		
-		case 2: // CPR_PROJECTION_MODE_MIN_IP
+            
         case 3: // CPR_PROJECTION_MODE_MEAN
+#ifdef TEST_ISSUE_E27_METHOD1 // (TBC it requires vtkGPUVolumeRayCastMapper)
+            if (volumeMapper)
+                volumeMapper->SetBlendModeToAverageIntensity();
+            
+            if (textureMapper)
+                textureMapper->SetBlendModeToAverageIntensity();
+#endif
+            // Fall through: effect of Mean is triggered externally by setvtkMeanIPMode
+
+        case 2: // CPR_PROJECTION_MODE_MIN_IP
 			if (volumeMapper)
 				volumeMapper->SetBlendModeToMinimumIntensity();
 			

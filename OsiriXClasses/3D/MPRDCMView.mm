@@ -152,7 +152,8 @@ unsigned int minimumStep;
 	[windowController updateToolbarItems];
 }
 
-- (void) setVRView: (VRView*) v viewID:(int) i
+- (void) setVRView: (VRView*) v
+            viewID: (int) i
 {
 	viewID = i;
 	vrView = v;

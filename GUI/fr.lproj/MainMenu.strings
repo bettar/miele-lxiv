@@ -725,10 +725,10 @@
 "13047.headerCell.title" = "Verrouiller";
 
 /* Class = "NSMenuItem"; title = "2D Viewer"; ObjectID = "13064"; */
-"13064.title" = "Visor 3D";
+"13064.title" = "Visor 2D";
 
 /* Class = "NSMenu"; title = "2D Viewer"; ObjectID = "13065"; */
-"13065.title" = "Visor 3D";
+"13065.title" = "Visor 2D";
 
 /* Class = "NSMenuItem"; title = "Convolution Filters"; ObjectID = "13068"; */
 "13068.title" = "Filtres à convection";

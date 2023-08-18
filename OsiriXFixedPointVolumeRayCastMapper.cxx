@@ -16,6 +16,9 @@
 #include "vtkOpenGLRenderWindow.h"
 #include "vtkImageData.h"
 
+// Issue #e27
+#include "vtkMieleFixedPointVolumeRayCastMIPHelper.h"
+
 #ifndef NDEBUG
 #include "vtkRayCastImageDisplayHelper.h"
 #include "vtkFixedPointRayCastImage.h"
@@ -29,7 +32,8 @@ vtkStandardNewMacro(OsiriXFixedPointVolumeRayCastMapper);
 
 OsiriXFixedPointVolumeRayCastMapper::OsiriXFixedPointVolumeRayCastMapper()
 {
-    //this->MIPHelper = vtkMieleFixedPointVolumeRayCastHelper::New();
+    // Issue #e27
+    this->MIPHelper = vtkMieleFixedPointVolumeRayCastMIPHelper::New();
 }
 
 // See VTK's vtkFixedPointVolumeRayCastMapper.cxx line 1361

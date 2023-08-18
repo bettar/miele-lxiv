@@ -724,7 +724,6 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
         [[NSFileManager defaultManager] removeItemAtPath: [jsonPath stringByDeletingLastPathComponent] error: nil];
 #else
         NSLog(@"%s %d, TODO: removeItemAtPath: %@", __FUNCTION__, __LINE__, [jsonPath stringByDeletingLastPathComponent]);
->>>>>>> b3cd440d5
         [[NSWorkspace sharedWorkspace] openFile: jsonPath];
 #endif
 

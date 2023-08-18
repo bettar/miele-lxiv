@@ -32,7 +32,7 @@
 "307.title" = "Item1";
 
 /* Class = "NSBox"; title = "CLUT (Color Look-Up Tables) :"; ObjectID = "314"; */
-"314.title" = "CLUT (Tablas de búsqueda de colores)..:";
+"314.title" = "CLUT (Tablas de búsqueda de colores):";
 
 /* Class = "NSButtonCell"; title = "Classic ( X: Window Width Y: Window Level )"; ObjectID = "319"; */
 "319.title" = "Clásico ( X: Ancho de ventana Y: Nivel de ventana)";

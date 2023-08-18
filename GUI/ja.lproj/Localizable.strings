@@ -2753,7 +2753,7 @@
 "Mean: %0.3f%@ SDev: %0.3f%@ Sum: %@%@" = "平均: %1$.3f%2$@ 標準偏差: %3$.3f%4$@ 合計: %5$@%6$@";
 
 /* ONLY ASCII CHARACTERS ! NO ACCENTS OR HIEROGLYPHS */
-"Mean: %2.2f SDev: %2.2f\nMin: %2.2f Max: %2.2f" = "平均: %$.2f 標準偏差: %2$.2f\n最小: %3$.2f 最大: %4$.2f";
+"Mean: %2.2f SDev: %2.2f\nMin: %2.2f Max: %2.2f" = "平均: %1$2.2f 標準偏差: %2$2.2f\n最小: %3$2.2f 最大: %4$2.2f";
 
 /* No comment provided by engineer. */
 "Measure Angle Tool" = "測定角度 ROI ツール";
@@ -5180,7 +5180,7 @@
 "Use all screens for viewers" = "ビューアとしてすべてのモニタを使用";
 
 /* No comment provided by engineer. */
-"Use Linear Interpollation" = "リニア補間を使用";
+"Use Linear Interpolation" = "リニア補間を使用";
 
 /* No comment provided by engineer. */
 "Use this screen for viewers" = "ビューアとしてこのモニタを使用";

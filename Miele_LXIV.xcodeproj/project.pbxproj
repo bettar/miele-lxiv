@@ -48,6 +48,7 @@
 		4323CE2023E036D700E96458 /* GLScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4323CE1F23E036D700E96458 /* GLScene.mm */; };
 		4329FF3C239D3E7A0006FF16 /* font.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 4329FF3B239D3E7A0006FF16 /* font.vsh */; };
 		4333FD721AB3082C00E82B49 /* DcmQueryRetrieveOsiriSCP.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4333FD711AB3082C00E82B49 /* DcmQueryRetrieveOsiriSCP.mm */; };
+		433777D92A8E48610002A83D /* vtkMieleFixedPointVolumeRayCastMIPHelper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 433777D82A8E48610002A83D /* vtkMieleFixedPointVolumeRayCastMIPHelper.cxx */; };
 		43384CD22347352C00662E7E /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
 		433C9DC82255F5FC00EBC6E9 /* miele_lxivTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 434930EE225512EC00C30B21 /* miele_lxivTests.mm */; };
 		433C9DCC2255F8B500EBC6E9 /* Point3D.mm in Sources */ = {isa = PBXBuildFile; fileRef = 183C864308563F3A000E6A68 /* Point3D.mm */; };
@@ -1539,6 +1540,8 @@
 		43254D58216A1A9F003846E3 /* LXIV Launcher-Development.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Development.entitlements"; path = "LXIV Launcher/LXIV Launcher-Development.entitlements"; sourceTree = "<group>"; };
 		4329FF3B239D3E7A0006FF16 /* font.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = font.vsh; sourceTree = "<group>"; };
 		4333FD711AB3082C00E82B49 /* DcmQueryRetrieveOsiriSCP.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DcmQueryRetrieveOsiriSCP.mm; sourceTree = "<group>"; };
+		433777D82A8E48610002A83D /* vtkMieleFixedPointVolumeRayCastMIPHelper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vtkMieleFixedPointVolumeRayCastMIPHelper.cxx; sourceTree = "<group>"; };
+		433777DA2A8E48790002A83D /* vtkMieleFixedPointVolumeRayCastMIPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkMieleFixedPointVolumeRayCastMIPHelper.h; sourceTree = "<group>"; };
 		433DA136215A5B2500D5A70B /* BrowserController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BrowserController.mm; sourceTree = "<group>"; };
 		433DA137215A5B2500D5A70B /* BrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserController.h; sourceTree = "<group>"; };
 		433E5B87223B873600AD47B6 /* AYDcmPrintSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDcmPrintSCU.h; path = DICOMPrint/AYDcmPrintSCU.h; sourceTree = "<group>"; };
@@ -3138,6 +3141,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				433777DA2A8E48790002A83D /* vtkMieleFixedPointVolumeRayCastMIPHelper.h */,
+				433777D82A8E48610002A83D /* vtkMieleFixedPointVolumeRayCastMIPHelper.cxx */,
 				AB87FA740C06BEB200CD2976 /* NIfTI_Library */,
 				8417219210D8D707001A833F /* HTTP-HTTPS Server */,
 				433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */,
@@ -6412,6 +6417,7 @@
 				A9E80EB10987742A005121AA /* ROIVolume.mm in Sources */,
 				A91CE495098F5441008665E3 /* ROIVolumeManagerController.mm in Sources */,
 				A94D784D09A0D58E0039F5A2 /* EndoscopyVRView.mm in Sources */,
+				433777D92A8E48610002A83D /* vtkMieleFixedPointVolumeRayCastMIPHelper.cxx in Sources */,
 				ABEF7E7909A21070006CEC3E /* Reports.mm in Sources */,
 				A9D780B109A4D2A6004302DC /* ITKBrushROIFilter.mm in Sources */,
 				BF7A836009B8B8E70051F091 /* DICOMToNSString.mm in Sources */,

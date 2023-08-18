@@ -54,12 +54,7 @@
 
 static NSString *MPRPlaneObservationContext = @"MPRPlaneObservationContext";
 
-#ifdef OSIRIX_VIEWER
-void setvtkMeanIPMode( int m){}
-#else
 extern void setvtkMeanIPMode( int m);
-#endif
-
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
 
 @interface CPRController ()

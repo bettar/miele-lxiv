@@ -52,8 +52,8 @@
 
 
 
--(void) computePath; // interpollation of the path for every parameters
--(NSMutableArray*) path: (NSMutableArray*) pts : (int) interpolMeth : (BOOL) computeStepsPositions; // interpollation for 1 parameter
+-(void) computePath; // interpolation of the path for every parameters
+-(NSMutableArray*) path: (NSMutableArray*) pts : (int) interpolMeth : (BOOL) computeStepsPositions; // interpolation for 1 parameter
 
 -(NSMutableDictionary*) exportToXML;
 -(void) setFromDictionary: (NSDictionary*) xml;

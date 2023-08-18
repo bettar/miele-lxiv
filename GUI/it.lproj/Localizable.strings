@@ -2378,10 +2378,10 @@
 "Image Position" = "Posizione Immagine";
 
 /* No comment provided by engineer. */
-"Image Size" = "Dimensione immagine";
+"Image Size" = "Dimensione";
 
 /* No comment provided by engineer. */
-"Image size: %ld x %ld" = "Dimensione immagine: %1$ld x %2$ld";
+"Image size: %ld x %ld" = "Dimensione: %1$ld x %2$ld";
 
 /* No comment provided by engineer. */
 "Image Tiling" = "Affianca immagini";
@@ -4424,7 +4424,7 @@
 "Show/Hide 3D points" = "Mostra/Nascondi punti 3D";
 
 /* No comment provided by engineer. */
-"Shutter" = "Stato";
+"Shutter" = "Otturatore";
 
 /* No comment provided by engineer. */
 "SINUS" = "SINUS";
@@ -5180,7 +5180,7 @@
 "Use all screens for viewers" = "Utilizzare tutti gli schermi per le viste";
 
 /* No comment provided by engineer. */
-"Use Linear Interpollation" = "Utilizzare l'interpolazione lineare";
+"Use Linear Interpolation" = "Utilizzare l'interpolazione lineare";
 
 /* No comment provided by engineer. */
 "Use this screen for viewers" = "Usa questo schermo per le viste";
