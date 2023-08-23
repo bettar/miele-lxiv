@@ -16265,8 +16265,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     }
 
     self = [super initWithFrame:frameRect pixelFormat:pixFmt];
-#ifndef NDEBUG
+
     [[self openGLContext] makeCurrentContext];
+#ifndef NDEBUG
     NSLog(@"%s %d, class %@, OpenGL legacy:%i", __FUNCTION__, __LINE__,
           NSStringFromClass([self class]), checkOGLVersion());
 #endif

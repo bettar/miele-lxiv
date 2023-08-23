@@ -44,6 +44,10 @@ vtkMieleFixedPointVolumeRayCastMIPHelper::vtkMieleFixedPointVolumeRayCastMIPHelp
 // Destruct a vtkMieleFixedPointVolumeRayCastMIPHelper - clean up any memory used
 vtkMieleFixedPointVolumeRayCastMIPHelper::~vtkMieleFixedPointVolumeRayCastMIPHelper() = default;
 
+// TODO: find a way of avoiding this repetition and use instead the identical methods in the base class
+#define REPEAT_BASE_CLASS_METHODS
+
+#ifdef REPEAT_BASE_CLASS_METHODS
 // This method is called when the interpolation type is nearest neighbor and
 // the data contains one component. In the inner loop we will compute the
 // maximum value (in native type). After we have a maximum value for the ray
@@ -263,6 +267,7 @@ void vtkFixedPointMIPHelperGenerateImageIndependentNN(
 
   VTKKWRCHelper_IncrementAndLoopEnd();
 }
+#endif // REPEAT_BASE_CLASS_METHODS
 
 // This method is called when the interpolation type is linear, the
 // data contains one component and scale = 1.0 and shift = 0.0. This is
@@ -272,8 +277,14 @@ void vtkFixedPointMIPHelperGenerateImageIndependentNN(
 // according to our fractional position within the cell, and apply trilinear
 // interpolation to compute the index. We find the maximum index along
 // the ray, and then use this to look up a final color.
+/*
+    It's been renamed to prevent "undefined behaviour" observed before renaming
+    when the Debug build was calling the method in this subclass
+    and the Release build was calling the method in the base class.
+    For the other methods it doesn't matter because they are identical
+ */
 template <class T>
-void vtkFixedPointMIPHelperGenerateImageOneSimpleTrilin(T* dataPtr, int threadID, int threadCount,
+void vtkFixedPointMIPHelperGenerateImageOneSimpleTrilin2(T* dataPtr, int threadID, int threadCount,
   vtkFixedPointVolumeRayCastMapper* mapper, vtkVolume* vtkNotUsed(vol))
 {
   VTKKWRCHelper_InitializationAndLoopStartTrilin();
@@ -284,7 +295,7 @@ void vtkFixedPointMIPHelperGenerateImageOneSimpleTrilin(T* dataPtr, int threadID
   unsigned short maxIdx = 0;
   unsigned int maxScalar = 0;
 
-#if 1 // Issue #e27
+#if 1 // Our addition
   int meanIP = vtkMeanIPMode;
   unsigned int hits = 0;
   long total = 0;
@@ -331,7 +342,7 @@ void vtkFixedPointMIPHelperGenerateImageOneSimpleTrilin(T* dataPtr, int threadID
       }
     }
 
-#if 1 // Issue #e27
+#if 1 // Our addition
     if (meanIP)
     {
       VTKKWRCHelper_ComputeWeights(pos);
@@ -360,7 +371,7 @@ void vtkFixedPointMIPHelperGenerateImageOneSimpleTrilin(T* dataPtr, int threadID
     }
   }
 
-#if 1 // Issue #e27
+#if 1 // Our addition
   if (meanIP)
   {
     maxValue = total / hits;
@@ -384,6 +395,7 @@ void vtkFixedPointMIPHelperGenerateImageOneSimpleTrilin(T* dataPtr, int threadID
   VTKKWRCHelper_IncrementAndLoopEnd();
 }
 
+#ifdef REPEAT_BASE_CLASS_METHODS
 // This method is called when the interpolation type is linear, the
 // data contains one component and scale != 1.0 or shift != 0.0. This
 // means that we need to apply scale/shift in the inner loop to compute
@@ -615,6 +627,7 @@ void vtkFixedPointMIPHelperGenerateImageIndependentTrilin(T* dataPtr, int thread
 
   VTKKWRCHelper_IncrementAndLoopEnd();
 }
+#endif // REPEAT_BASE_CLASS_METHODS
 
 void vtkMieleFixedPointVolumeRayCastMIPHelper::GenerateImage(
   int threadID, int threadCount, vtkVolume* vol, vtkFixedPointVolumeRayCastMapper* mapper)
@@ -664,7 +677,7 @@ void vtkMieleFixedPointVolumeRayCastMIPHelper::GenerateImage(
       {
         switch (scalarType)
         {
-          vtkTemplateMacro(vtkFixedPointMIPHelperGenerateImageOneSimpleTrilin(
+          vtkTemplateMacro(vtkFixedPointMIPHelperGenerateImageOneSimpleTrilin2(
             static_cast<VTK_TT*>(dataPtr), threadID, threadCount, mapper, vol));
         }
       }

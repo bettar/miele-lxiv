@@ -96,8 +96,8 @@
 //#define BONEVALUE 250
 #define BONEOPACITY 1.1
 
-// accessed as 'extern' in two other modules
-// TBC the naming of this variable should be the opposite ?
+// Accessed as 'extern' in two other modules
+// TBC the naming of this variable infers the opposite meaning ?
 bool skipRenderingVR = false;
 
 extern unsigned int minimumStep;    // See MPRDCMView.mm
@@ -2863,9 +2863,9 @@ public:
 		double length = sqrt(xd*xd + yd*yd + zd*zd);
         
         if (std::isnan(length)) {
-            NSLog( @"****** vrView getResolution NaN. %@", NSStringFromClass([self class]));
-            NSLog( @"   point 1: %f %f %f", point1[0], point1[1], point1[2]);
-            NSLog( @"   point 2: %f %f %f", point2[0], point2[1], point2[2]);
+            NSLog(@"****** vrView getResolution NaN. Class <%@>", NSStringFromClass([self class]));
+            NSLog(@"   point 1: %f %f %f", point1[0], point1[1], point1[2]);
+            NSLog(@"   point 2: %f %f %f", point2[0], point2[1], point2[2]);
             return NAN;
         }
 
@@ -7043,8 +7043,9 @@ public:
           NSStringFromClass([self class]),
           cgl_ctx,
           glGetString(GL_VERSION));
-    // Legacy: 2.1 APPLE-12.1.0
-    //   Core: 4.1 APPLE-19.5.1
+    // Legacy:  2.1 APPLE-12.1.0
+    //   Core:  4.1 APPLE-19.5.1
+    //   Core: <4.1 Metal - 83.1>
 
     //NSLog(@"OpenGL renderer <%s>", glGetString(GL_RENDERER)); // Apple Software Renderer
 #endif
@@ -9782,14 +9783,14 @@ public:
     return volumeMapper;
 }
 
-- (void)setMapper:(vtkVolumeMapper*) mapper;  // TODO @@@
+- (void)setMapper:(vtkVolumeMapper*) mapper;
 {
     if (mapper && mapper != volumeMapper)
     {
         if (volumeMapper)
             volumeMapper->Delete();
         
-        volumeMapper = (vtkMieleFixedPointVolumeRayCastMapper*) mapper; // TODO
+        volumeMapper = (vtkMieleFixedPointVolumeRayCastMapper*) mapper;
         volume->SetMapper( volumeMapper);
     }
 }

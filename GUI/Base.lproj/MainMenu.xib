@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -2129,7 +2129,7 @@ CA
                                                     <rect key="frame" x="-1" y="-6" width="192" height="194"/>
                                                     <clipView key="contentView" drawsBackground="NO" id="SVE-qJ-JP0">
                                                         <rect key="frame" x="1" y="1" width="190" height="192"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" selectionHighlightStyle="sourceList" columnReordering="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" headerView="13474" id="1465">
                                                                 <rect key="frame" x="0.0" y="0.0" width="190" height="175"/>
@@ -2194,7 +2194,7 @@ CA
                                                     <rect key="frame" x="-1" y="-11" width="192" height="374"/>
                                                     <clipView key="contentView" drawsBackground="NO" id="Gln-GV-aBY">
                                                         <rect key="frame" x="1" y="1" width="190" height="372"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" selectionHighlightStyle="sourceList" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" headerView="13477" id="11693">
                                                                 <rect key="frame" x="0.0" y="0.0" width="190" height="355"/>
@@ -2267,7 +2267,7 @@ CA
                                                     <rect key="frame" x="-1" y="-4" width="192" height="107"/>
                                                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ydr-H4-NAn">
                                                         <rect key="frame" x="1" y="1" width="190" height="105"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" selectionHighlightStyle="sourceList" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="38" headerView="14179" id="14153" customClass="ThreadsTableView">
                                                                 <rect key="frame" x="0.0" y="0.0" width="190" height="88"/>
@@ -2345,10 +2345,10 @@ CA
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" id="cHT-ZM-bts">
                                                             <rect key="frame" x="0.0" y="0.0" width="416" height="236"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <outlineView focusRingType="exterior" verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" emptySelection="NO" autosaveColumns="NO" headerView="13469" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="958" id="966" customClass="MyOutlineView">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="2724" height="219"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="2720" height="219"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -2368,7 +2368,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="caseInsensitiveCompare:" sortKey="name"/>
                                                                             <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="reportURL" editable="NO" width="100" minWidth="55" maxWidth="120" id="12364">
+                                                                        <tableColumn identifier="reportURL" editable="NO" width="100.5" minWidth="55" maxWidth="120" id="12364">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Report">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -2381,7 +2381,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="reportURL"/>
                                                                             <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="lockedStudy" width="50" minWidth="45" maxWidth="55" id="13047">
+                                                                        <tableColumn identifier="lockedStudy" width="49.5" minWidth="45" maxWidth="55" id="13047">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Lock">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -2419,7 +2419,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="intervalSinceBirth"/>
                                                                             <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="accessionNumber" editable="NO" width="119" minWidth="50" maxWidth="200" id="12005">
+                                                                        <tableColumn identifier="accessionNumber" editable="NO" width="120" minWidth="50" maxWidth="200" id="12005">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Accession Number">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -2432,7 +2432,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="accessionNumber"/>
                                                                             <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="studyName" editable="NO" width="155" minWidth="50" maxWidth="400" id="11576">
+                                                                        <tableColumn identifier="studyName" editable="NO" width="154" minWidth="50" maxWidth="400" id="11576">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Study Description">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -2458,7 +2458,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="modality"/>
                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="id" editable="NO" width="60" minWidth="60" maxWidth="100" id="11577">
+                                                                        <tableColumn identifier="id" editable="NO" width="60.5" minWidth="60" maxWidth="100" id="11577">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="ID">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2545,7 +2545,7 @@ CA
                                                                             </textFieldCell>
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="dateAdded"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="dateOpened" editable="NO" width="130" minWidth="130" maxWidth="180" id="1592">
+                                                                        <tableColumn identifier="dateOpened" editable="NO" width="130.5" minWidth="130" maxWidth="180" id="1592">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Date Opened">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2570,7 +2570,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="referringPhysician"/>
                                                                             <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="performingPhysician" editable="NO" width="120" minWidth="40" maxWidth="400" id="11709">
+                                                                        <tableColumn identifier="performingPhysician" editable="NO" width="120.5" minWidth="40" maxWidth="400" id="11709">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Performing Physician">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2583,7 +2583,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="performingPhysician"/>
                                                                             <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="institutionName" editable="NO" width="120" minWidth="40" maxWidth="400" id="11710">
+                                                                        <tableColumn identifier="institutionName" editable="NO" width="119.5" minWidth="40" maxWidth="400" id="11710">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Institution">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2596,7 +2596,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="institutionName"/>
                                                                             <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="albumsNames" editable="NO" width="120" minWidth="40" maxWidth="200" id="13662">
+                                                                        <tableColumn identifier="albumsNames" editable="NO" width="120.5" minWidth="40" maxWidth="200" id="13662">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Albums">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2633,7 +2633,7 @@ CA
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="comment2" width="100" minWidth="100" maxWidth="300" id="14132">
+                                                                        <tableColumn identifier="comment2" width="100.5" minWidth="100" maxWidth="300" id="14132">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Comments 2">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2702,7 +2702,7 @@ CA
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <tableHeaderView key="headerView" wantsLayer="YES" id="13469">
-                                                            <rect key="frame" x="0.0" y="0.0" width="2724" height="17"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="2720" height="17"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </tableHeaderView>
                                                     </scrollView>
@@ -2711,7 +2711,7 @@ CA
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="vKi-LS-gLS">
                                                             <rect key="frame" x="0.0" y="0.0" width="428" height="251"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" selectionHighlightStyle="sourceList" columnReordering="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowHeight="29" headerView="14721" id="14724">
                                                                     <rect key="frame" x="0.0" y="0.0" width="428" height="234"/>
@@ -2720,7 +2720,7 @@ CA
                                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                     <tableColumns>
-                                                                        <tableColumn identifier="Cell" editable="NO" width="396" minWidth="48" maxWidth="4000" id="14725">
+                                                                        <tableColumn identifier="Cell" editable="NO" width="396.5" minWidth="48" maxWidth="4000" id="14725">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="History">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -2793,7 +2793,7 @@ CA
                                                                                 <rect key="frame" x="2" y="0.0" width="384" height="371"/>
                                                                                 <clipView key="contentView" id="mpo-d1-Wrk">
                                                                                     <rect key="frame" x="0.0" y="0.0" width="369" height="371"/>
-                                                                                    <autoresizingMask key="autoresizingMask"/>
+                                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <subviews>
                                                                                         <matrix verticalHuggingPriority="750" mode="list" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12411" customClass="BrowserMatrix">
                                                                                             <rect key="frame" x="0.0" y="0.0" width="424" height="432"/>

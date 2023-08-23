@@ -1,5 +1,3 @@
-// Adapted from VTK
-//  Rendering/Volume/vtkFixedPointVolumeRayCastMIPHelper.h
 /*=========================================================================
 
   Program:   Visualization Toolkit
@@ -30,8 +28,10 @@
 #ifndef vtkMieleFixedPointVolumeRayCastMIPHelper_h
 #define vtkMieleFixedPointVolumeRayCastMIPHelper_h
 
-#include "vtkRenderingVolumeModule.h" // For export macro
+// The base class is VTK 'Rendering/Volume/vtkFixedPointVolumeRayCastMIPHelper.h'
 #include "vtkFixedPointVolumeRayCastMIPHelper.h"
+
+#include "vtkRenderingVolumeModule.h" // For export macro
 
 class vtkFixedPointVolumeRayCastMapper;
 class vtkVolume;
@@ -41,7 +41,7 @@ class VTKRENDERINGVOLUME_EXPORT vtkMieleFixedPointVolumeRayCastMIPHelper
 {
 public:
   static vtkMieleFixedPointVolumeRayCastMIPHelper* New();
-  vtkTypeMacro(vtkMieleFixedPointVolumeRayCastMIPHelper, vtkFixedPointVolumeRayCastHelper);
+  vtkTypeMacro(vtkMieleFixedPointVolumeRayCastMIPHelper, vtkFixedPointVolumeRayCastMIPHelper);
   void PrintSelf(ostream& os, vtkIndent indent) override;
 
   void GenerateImage(int threadID, int threadCount, vtkVolume* vol,

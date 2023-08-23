@@ -119,9 +119,7 @@ void vtkMieleFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume 
 
     std::cerr << "\n=== ren" << std::endl;
     ren->PrintSelf(std::cerr, *indent);
-#endif
-
-#if 0 //ndef NDEBUG
+    
     std::cerr << __FILE__ << ":" << __LINE__
     << ", ren:" << ren->GetClassName() // vtkOpenGLRenderer
     << ", win:" << ren->GetRenderWindow()->GetClassName() // vtkCocoaRenderWindow
