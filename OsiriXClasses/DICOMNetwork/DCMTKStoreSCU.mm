@@ -739,7 +739,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     DcmFileFormat dcmff;
     OFCondition cond = dcmff.loadFile(fname);
 
-    /* figure out if an error occured while the file was read*/
+    /* figure out if an error occurred while the file was read*/
     if (cond.bad()) {
         OFLOG_ERROR(storescuLogger, "Bad DICOM file: " << fname << ": " << cond.text());
         return cond;
@@ -953,7 +953,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
     /* opt_repeatCount specifies how many times a certain file shall be processed */
     int n = (int)opt_repeatCount;
 
-    /* as long as no error occured and the counter does not equal 0 */
+    /* as long as no error occurred and the counter does not equal 0 */
     while ((cond.good()) && n--)
     {
         /* process file (read file, send C-STORE-RQ, receive C-STORE-RSP) */

@@ -848,7 +848,7 @@ CFIndex N3BezierCoreGetProjectedVectorInfo(N3BezierCoreRef bezierCore, CGFloat s
 	return i;
 }
 
-//CFIndex N3BezierCoreGetCollapsedVectorInfo(N3BezierCoreRef bezierCore, CGFloat spacing, CGFloat startingPoint, N3Vector collapsingDirection, // returns points that are spacing away from each other after the collapsing has occured, the returned points are not collapsed
+//CFIndex N3BezierCoreGetCollapsedVectorInfo(N3BezierCoreRef bezierCore, CGFloat spacing, CGFloat startingPoint, N3Vector collapsingDirection, // returns points that are spacing away from each other after the collapsing has occurred, the returned points are not collapsed
 //                                           N3VectorArray vectors, N3VectorArray tangents, N3VectorArray normals, CGFloat *relativePositions, CFIndex numVectors) // fills numVectors in the vector arrays, returns the actual number of vectors that were set in the arrays
 //{
 //    N3BezierCoreRef flattenedBezierCore;

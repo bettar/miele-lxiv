@@ -361,7 +361,7 @@ DIMSE_getProvider(
                 } else if (cond == DIMSE_NODATAAVAILABLE) {
                     /* timeout */
                 } else {
-                    /* some exception condition occured, bail out */
+                    /* some exception condition occurred, bail out */
                     normal = OFFalse;
                 }
             

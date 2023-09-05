@@ -1062,7 +1062,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
     handle_->NumberRemainOperations = [handle_->dataHandler moveMatchFound];
     //NSLog(@"NumberRemainOperations: %d", [handle_->dataHandler moveMatchFound]);
     
-     /**** If an error occured in Matching function
+     /**** If an error occurred in Matching function
     ****    return a failed status
     ***/
     

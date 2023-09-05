@@ -2807,7 +2807,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
     /* opt_repeatCount specifies how many times a certain file shall be processed */
     //int n = (int)_repeatCount;
 	int n = 1;
-    /* as long as no error occured and the counter does not equal 0 */
+    /* as long as no error occurred and the counter does not equal 0 */
     while (cond == EC_Normal && n--) {
         /* process file (read file, send C-FIND-RQ, receive C-FIND-RSP messages) */
         cond = [self findSCU:assoc dataset:dataset];
@@ -2828,7 +2828,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
     //int n = (int)_repeatCount;
 	int n = 1;
 	OFCondition cond = EC_Normal;
-    /* as long as no error occured and the counter does not equal 0 */
+    /* as long as no error occurred and the counter does not equal 0 */
 	//only do move if we aren't already moving
     while (cond == EC_Normal && n-- && ![[MoveManager sharedManager] containsMove:self]) {
         /* process file (read file, send C-FIND-RQ, receive C-FIND-RSP messages) */
@@ -2845,7 +2845,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
     //int n = (int)_repeatCount;
 	int n = 1;
 	OFCondition cond = EC_Normal;
-    /* as long as no error occured and the counter does not equal 0 */
+    /* as long as no error occurred and the counter does not equal 0 */
 	//only do move if we aren't already moving
     while (cond == EC_Normal && n-- && ![[MoveManager sharedManager] containsMove:self]) {
         /* process file (read file, send C-FIND-RQ, receive C-FIND-RSP messages) */

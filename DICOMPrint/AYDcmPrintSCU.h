@@ -191,10 +191,10 @@ class AYDcmPrintSCU
      * @param bIsMandatory Flag, which has to be set if the attribute is a mandatory attribute.
      * @return Error status. Possible values:
      *         - NO_ERROR
-     *           No error occured. Attribute has been successfully added or it was an
+     *           No error occurred. Attribute has been successfully added or it was an
      *           optional attribute and not found in one of the sources.
      *         - SET_ATTRIBUTE_ERROR
-     *           An error occured while adding the attribute to the new item.
+     *           An error occurred while adding the attribute to the new item.
      *         - MISSING_ATTRIBUTE_ERROR
      *           The attribute was flaged as mandatory but not found in one of the sources
      */

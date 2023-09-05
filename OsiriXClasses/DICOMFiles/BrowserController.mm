@@ -15004,11 +15004,14 @@ static NSArray*	openSubSeriesArray = nil;
             N2LogExceptionWithStackTrace(ne);
             [@"" writeToFile:_database.loadingFilePath atomically:NO encoding:NSUTF8StringEncoding error:NULL];
             
-            NSString *message = [NSString stringWithFormat: NSLocalizedString(@"A problem occured during start-up of OsiriX:\r\r%@\r\r%@",nil), [ne description], [AppController printStackTrace: ne]];
+            NSString *message = [NSString stringWithFormat:
+                                 NSLocalizedString(@"A problem occurred during start-up:\r\r%@\r\r%@", nil),
+                                 [ne description],
+                                 [AppController printStackTrace: ne]];
             
             NSRunCriticalAlertPanel(NSLocalizedString(@"Error",nil),
                                     @"%@",
-                                    NSLocalizedString( @"OK",nil),
+                                    NSLocalizedString(@"OK",nil),
                                     nil,
                                     nil,
                                         message);
