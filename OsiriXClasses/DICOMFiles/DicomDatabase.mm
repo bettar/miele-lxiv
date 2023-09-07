@@ -2928,7 +2928,11 @@ static BOOL protectionAgainstReentry = NO;
                                       
                                         if ([[NSFileManager defaultManager] fileExistsAtPath: dstPath])
                                         {
-                                            if ([extension isEqualToString: @"dcm"] == NO)
+                                            if ([extension isEqualToString: @"dcm"] == NO
+#if 1 // Issue #97 If 'onlyDICOM' is false, don't rename .tif to .dcm
+                                                && [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"] == YES
+#endif
+                                                )
                                             {
                                                 if ([DicomFile isDICOMFile:dstPath])
                                                 {
