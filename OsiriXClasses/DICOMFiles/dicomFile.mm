@@ -24,6 +24,7 @@
 #import "tmp_locations.h"
 
 #import <DCM/DCMUIDs.h>
+#import <DCM/DCMObject.h> // for isDICOM
 
 #ifndef MIELE_LIGHT
 #include "FVTiff.h"
@@ -547,6 +548,10 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
     
     @try
     {
+        // Issue #g97
+        if ([DCMObject isDICOM:[NSData dataWithContentsOfFile: file]] == NO)
+            return NO;
+        
         if (image) {
             // Check if it has pixel data
             // (0002,0002) DCM_MediaStorageSOPClassUID

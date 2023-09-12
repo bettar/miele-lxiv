@@ -2925,23 +2925,39 @@ static BOOL protectionAgainstReentry = NO;
                                             if ([[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil] == NO)
                                                 NSLog( @"***** copyItemAtPath %@ failed", srcPath);
                                         }
-                                      
+
                                         if ([[NSFileManager defaultManager] fileExistsAtPath: dstPath])
                                         {
-                                            if ([extension isEqualToString: @"dcm"] == NO
-#if 1 // Issue #97 If 'onlyDICOM' is false, don't rename .tif to .dcm
-                                                && [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"] == YES
-#endif
-                                                )
+                                            if ([extension isEqualToString: @"dcm"] == YES)
                                             {
-                                                if ([DicomFile isDICOMFile:dstPath])
-                                                {
-                                                    NSString *newPathExtension = [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"dcm"];
-                                                    [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newPathExtension error: nil];
-                                                    dstPath = newPathExtension;
-                                                }
+                                                // Assume it's a valid DICOM file without checking, based on the extension
+                                                [copiedFiles addObject: dstPath];
                                             }
-                                            [copiedFiles addObject: dstPath];
+                                            else if ([DicomFile isDICOMFile:dstPath])
+                                            {
+                                                // We know it doesn't have ".dcm" extension so fix that
+                                                NSString *newPathExtension = [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"dcm"];
+                                                [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newPathExtension error: nil];
+                                                dstPath = newPathExtension;
+                                                
+                                                [copiedFiles addObject: dstPath];
+                                            }
+                                            else if ([[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"] == NO)
+                                            {
+                                                // @@@ Issue #g97 D
+                                                // All other non-DICOM files if allowed in the Preferences
+                                                [copiedFiles addObject: dstPath];
+                                            }
+                                            else
+                                            {
+                                                // No DICOM && Not allowed
+#ifndef NDEBUG
+                                                NSLog( @"Cleanup: %@", dstPath);
+#endif
+                                                // Delete from DATABASE.noindex
+                                                [[NSFileManager defaultManager] removeItemAtPath:dstPath error: nil];
+                                            }
+                                            
                                             //NSLog( @"=== # copied files: %lu", (unsigned long)copiedFiles.count);
                                         }
                                     } // @synchronized
