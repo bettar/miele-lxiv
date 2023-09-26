@@ -28,6 +28,7 @@
 #import "GLRenderer.h"
 
 #import "MPRDCMView.h"
+
 #import "VRController.h"
 #import "VRView.h"
 #import "DCMCursor.h"
@@ -39,7 +40,8 @@
 #import "OSIGeometry.h"
 #import "vtkMath.h"
 
-BOOL arePlanesParallel( float *Pn1, float *Pn2)
+// TODO: consolidate
+static BOOL arePlanesParallel( float *Pn1, float *Pn2)
 {
 	float u[ 3];
 
@@ -59,12 +61,15 @@ static int splitPosition[ 2];
 static BOOL frameZoomed = NO;
 unsigned int minimumStep;
 
-#pragma mark -
+#pragma mark - private methods
 
 @interface MPRDCMView ()
+
 - (void)drawOSIROIs;
 - (OSIROIManager *)ROIManager;
+
 - (N3Plane)plane;
+
 @end
 
 #pragma mark -
@@ -88,6 +93,7 @@ unsigned int minimumStep;
 	[windowController updateToolbarItems];
 }
 
+// TODO: consolidate
 - (BOOL)is2DTool:(ToolMode)tool;
 {
 	switch( tool)
@@ -141,14 +147,12 @@ unsigned int minimumStep;
 	self.rotation = 0;
 	
 	pix = [pixList lastObject];
-	
 	currentTool = t3DRotate;
 	
 	frameZoomed = NO;
 	displayCrossLines = YES;
 	
 	windowController = [self windowController];
-	
 	[windowController updateToolbarItems];
 }
 
@@ -166,13 +170,16 @@ unsigned int minimumStep;
 	camera = [[vrView cameraWithThumbnail: NO] retain];
 }
 
+// TODO: consolidate
 - (void) setFrame:(NSRect)frameRect
 {
     NSDisableScreenUpdates();
     
 	if (NSEqualRects( frameRect, [self frame]) == NO)
 	{
-		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(updateViewsAccordingToFrame:) object: nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget: windowController
+                                                 selector: @selector(updateViewsAccordingToFrame:)
+                                                   object: nil];
 		[windowController performSelector: @selector(updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.1];
 	}
 	
@@ -187,6 +194,7 @@ unsigned int minimumStep;
     NSEnableScreenUpdates();
 }
 
+// TODO: consolidate
 - (void) checkForFrame
 {
 	NSRect frame = [self convertRectToBacking: [self frame]];
@@ -199,7 +207,7 @@ unsigned int minimumStep;
 		[vrView setFrame: frame];
 	}
 }
-//
+
 //- (BOOL) hasCameraMoved: (Camera*) currentCamera
 //{
 //	if (fabs( currentCamera.position.x - camera.position.x) > 0.1) return YES;
@@ -221,6 +229,7 @@ unsigned int minimumStep;
 //
 //}
 
+// not in CPRMPRDCMView
 - (float) displayedScaleValue
 {
     DCMPix *o = [windowController originalPix];
@@ -228,11 +237,13 @@ unsigned int minimumStep;
     return [o pixelSpacingX] / previousResolution;
 }
 
+// not in CPRMPRDCMView
 - (float) displayedRotation
 {
     return camera.rollAngle;
 }
 
+// TODO: consolidate
 - (BOOL) hasCameraChanged: (Camera*) currentCamera
 {
 	if (camera.forceUpdate)
@@ -270,11 +281,13 @@ unsigned int minimumStep;
 	return NO;
 }
 
+// TODO: consolidate
 - (void) restoreCamera
 {
 	return [self restoreCameraAndCheckForFrame: YES];
 }
 
+// TODO: consolidate
 - (void) restoreCameraAndCheckForFrame: (BOOL) v
 {
 	if (v)
@@ -286,7 +299,6 @@ unsigned int minimumStep;
 {
 //	[vrView restoreFullDepthCapture];
 	[camera release];
-	
 	[super dealloc];
 }
 
@@ -337,7 +349,6 @@ unsigned int minimumStep;
                                 nil);
 }
 
-
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
     if ([item action] == @selector(scaleToFit:))
@@ -351,6 +362,7 @@ unsigned int minimumStep;
 	[self updateViewMPR: YES];
 }
 
+// TODO: consolidate.
 - (void) updateViewMPR:(BOOL) computeCrossReferenceLines
 {
 	if ([self frame].size.width <= 0)
@@ -418,9 +430,9 @@ unsigned int minimumStep;
             [self frame].size.height > 0)
         {
             if (windowController.maxMovieIndex > 1 &&
-               (windowController.clippingRangeMode == 1 ||
-                windowController.clippingRangeMode == 3 ||
-                windowController.clippingRangeMode == 2))	//To avoid the wrong pixel value bug...
+               (windowController.clippingRangeMode == MPR_PROJECTION_MODE_MIP ||
+                windowController.clippingRangeMode == MPR_PROJECTION_MODE_MEAN ||
+                windowController.clippingRangeMode == MPR_PROJECTION_MODE_MIN_IP))	//To avoid the wrong pixel value bug...
             {
                 [vrView prepareFullDepthCapture];
             }
@@ -448,15 +460,18 @@ unsigned int minimumStep;
 			[vrView setLOD: LOD];
 		}
 		else
-			imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
+        {
+            imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
+        }
 		
-		////
+		// //
 		float orientation[ 9];
 		[vrView getOrientation: orientation];
 		
-		float location[ 3] = {previousOrigin[ 0], previousOrigin[ 1], previousOrigin[ 2]},
-              orig[ 3] = {currentCamera.position.x, currentCamera.position.y, currentCamera.position.z},
-              locationTemp[ 3];
+        float location[ 3] = {previousOrigin[ 0], previousOrigin[ 1], previousOrigin[ 2]};
+        float orig[ 3] = {currentCamera.position.x, currentCamera.position.y, currentCamera.position.z};
+        
+        float locationTemp[ 3];
 		float distance = [DCMView pbase_Plane: location :orig :&(orientation[ 6]) :locationTemp];
 		if (distance < pix.sliceThickness / 2.)
 			previousOriginInPlane = YES;
@@ -487,7 +502,9 @@ unsigned int minimumStep;
 				}
 			}
 			
-			if ([pix pwidth] == w && [pix pheight] == h && isRGB == [pix isRGB])
+			if ([pix pwidth] == w &&
+                [pix pheight] == h &&
+                isRGB == [pix isRGB])
 			{
 				if (imagePtr != [pix fImage])
 				{
@@ -556,7 +573,10 @@ unsigned int minimumStep;
 						r.pixelSpacingY = [pix pixelSpacingY];
 					}
 					else
-						[r setOriginAndSpacing: resolution : resolution :[DCMPix originCorrectedAccordingToOrientation: pix] :NO];
+						[r setOriginAndSpacing: resolution
+                                              : resolution
+                                              : [DCMPix originCorrectedAccordingToOrientation: pix]
+                                              : NO];
 				}
 				
 				[pix orientation: previousOrientation];
@@ -588,8 +608,10 @@ unsigned int minimumStep;
 				isRGB = [bPix isRGB];
 			}
 			else
-				blendedImagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB blendingView: YES];
-			
+            {
+                blendedImagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB blendingView: YES];
+            }
+            
 			if ([bPix pwidth] == w && [bPix pheight] == h && isRGB == [bPix isRGB])
 			{
 				if (blendedImagePtr != [bPix fImage])
@@ -645,6 +667,7 @@ unsigned int minimumStep;
 	[self setNeedsDisplay: YES];
 }
 
+// TODO: consolidate.
 - (void) colorForView:(int) v
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -682,6 +705,7 @@ unsigned int minimumStep;
 	}
 }
 
+// TODO: consolidate.
 - (void) drawLine: (float[2][3]) sft
         thickness: (float) thickness
 {
@@ -777,6 +801,10 @@ unsigned int minimumStep;
 
 - (void) subDrawRect: (NSRect) r
 {
+#ifndef NDEBUG // debug #g93
+    NSLog(@"%s %d #g93, self:%p %@, viewID %d, rect:%@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]), viewID, NSStringFromRect(r));
+#endif
+    
 	if ([stringID isEqualToString: @"export"] &&
         [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"] == NO)
     {
@@ -786,24 +814,23 @@ unsigned int minimumStep;
 	
 	self.rotation = 0;
 	
+#ifndef WITH_OPENGL_32
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil) {
         NSLog(@"%s %d, %@, %p %d early return", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, viewID);
         return;
     }
+#endif
     
     renderer_enable_blend_smooth();
 	glPointSize( 12 * self.window.backingScaleFactor);
 	
-    //NSLog(@"%s %d, %@, %p, ID:%d", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, viewID);
-
 #pragma mark crosslines
 
     if (displayCrossLines && frameZoomed == NO)
 	{
 		// All pix have the same thickness
 		float thickness = [pix sliceThickness];
-        //NSLog(@"%s %d, %@, %p, ID:%d", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, viewID);
 
 #ifdef WITH_OPENGL_32
         [self setShaderProgramOverlay_withMode_Normal];
@@ -815,13 +842,16 @@ unsigned int minimumStep;
                                   [windowController.colorAxis2 greenComponent],
                                   [windowController.colorAxis2 blueComponent],
                                   [windowController.colorAxis2 alphaComponent]);
+
                 if (crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesA thickness: thickness];
 					
+                    // Not in CPR
 					if (viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
 						[self drawExportLines: crossLinesA];
 					
+                    // Not in CPR
 					if (viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
 						[self drawRotationLines: crossLinesA];
 				}
@@ -835,9 +865,11 @@ unsigned int minimumStep;
 				{
 					[self drawLine: crossLinesB thickness: thickness];
 					
+                    // Not in CPR
 					if (viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
 						[self drawExportLines: crossLinesB];
 					
+                    // Not in CPR
 					if (viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
 						[self drawRotationLines: crossLinesB];
 				}
@@ -848,13 +880,16 @@ unsigned int minimumStep;
                                   [windowController.colorAxis1 greenComponent],
                                   [windowController.colorAxis1 blueComponent],
                                   [windowController.colorAxis1 alphaComponent]);
-				if (crossLinesA[ 0][ 0] != HUGE_VALF)
+
+                if (crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesA thickness: thickness];
 					
+                    // Not in CPR
 					if (viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
 						[self drawExportLines: crossLinesA];
 					
+                    // Not in CPR
 					if (viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
 						[self drawRotationLines: crossLinesA];
 				}
@@ -863,13 +898,16 @@ unsigned int minimumStep;
                                   [windowController.colorAxis3 greenComponent],
                                   [windowController.colorAxis3 blueComponent],
                                   [windowController.colorAxis3 alphaComponent]);
-				if (crossLinesB[ 0][ 0] != HUGE_VALF)
+
+                if (crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesB thickness: thickness];
 					
+                    // Not in CPR
 					if (viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
 						[self drawExportLines: crossLinesB];
 					
+                    // Not in CPR
 					if (viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
 						[self drawRotationLines: crossLinesB];
 				}
@@ -880,13 +918,16 @@ unsigned int minimumStep;
                                   [windowController.colorAxis1 greenComponent],
                                   [windowController.colorAxis1 blueComponent],
                                   [windowController.colorAxis1 alphaComponent]);
-				if (crossLinesA[ 0][ 0] != HUGE_VALF)
+
+                if (crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesA thickness: thickness];
 					
+                    // Not in CPR
 					if (viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
 						[self drawExportLines: crossLinesA];
 					
+                    // Not in CPR
 					if (viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
 						[self drawRotationLines: crossLinesA];
 				}
@@ -895,13 +936,16 @@ unsigned int minimumStep;
                                   [windowController.colorAxis2 greenComponent],
                                   [windowController.colorAxis2 blueComponent],
                                   [windowController.colorAxis2 alphaComponent]);
-				if (crossLinesB[ 0][ 0] != HUGE_VALF)
+
+                if (crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesB thickness: thickness];
 					
+                    // Not in CPR
 					if (viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
 						[self drawExportLines: crossLinesB];
 					
+                    // Not in CPR
 					if (viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
 						[self drawRotationLines: crossLinesB];
 				}
@@ -918,17 +962,14 @@ unsigned int minimumStep;
 	
 #pragma mark colored bounding box
 
-    //NSLog(@"%s %d, %@, %p, ID:%d", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, viewID);
-
 	float heighthalf = [self convertSizeToBacking: self.frame.size].height/2;
 	float widthhalf = [self convertSizeToBacking: self.frame.size].width/2;
 	
 	[self colorForView: viewID];
 	
-    if ([[self window] firstResponder] == self && frameZoomed == NO)
+    if ([[self window] firstResponder] == self &&
+        frameZoomed == NO)
 	{
-        [self setShaderProgramForLineWidth: 8.0 * self.window.backingScaleFactor];
-#ifdef WITH_OPENGL_32
         const int nPoints = 4;
         glm::vec2 pA[nPoints];
         pA[0] = glm::vec2( -widthhalf, -heighthalf);
@@ -940,23 +981,12 @@ unsigned int minimumStep;
         for (int i=0; i<nPoints; i++)
             [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec2)]];
         
+        [self setShaderProgramForLineWidth: 8.0 * self.window.backingScaleFactor];
         renderer_drawLine_xy([pArray copy], GL_LINE_LOOP);
-#else
-		glBegin(GL_LINE_LOOP);
-        {
-			glVertex2f( -widthhalf, -heighthalf);
-			glVertex2f( -widthhalf,  heighthalf);
-			glVertex2f(  widthhalf,  heighthalf);
-			glVertex2f(  widthhalf, -heighthalf);
-        }
-		glEnd();
-#endif
 	}
 	
 #pragma mark color label
     // Small colored box identifying the subview in the top right corner
-
-#define VIEW_COLOR_LABEL_SIZE 25
 
 #ifdef WITH_OPENGL_32
     // We don't need to set the line width, it's filled anyway
@@ -965,10 +995,10 @@ unsigned int minimumStep;
     [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
 #endif
 
-#ifdef WITH_OPENGL_32
     {
         const int nPoints = 4;
         glm::vec2 pA[nPoints];
+        float VIEW_COLOR_LABEL_SIZE = 25 * self.window.backingScaleFactor;
         pA[0] = glm::vec2(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
         pA[1] = glm::vec2(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
         pA[2] = glm::vec2(widthhalf, -heighthalf);
@@ -980,25 +1010,17 @@ unsigned int minimumStep;
         
         renderer_drawPolygon([pArray copy]); // GL_TRIANGLE_FAN
     }
-#else
-	glBegin(GL_POLYGON);
-    {
-		glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
-		glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
-		glVertex2f(widthhalf, -heighthalf);
-		glVertex2f(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
-    }
-	glEnd();
-#endif
     
     // Maybe we don't need this with Core profile
     [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
 	
 #pragma mark mouse position (points)
 
+    // Draw 2 points iif this the selected view, or 1 point in this view is unselected
+
     if (displayCrossLines &&
         frameZoomed == NO &&
-        windowController.displayMousePosition &&
+        windowController.displayMousePosition && // It can be enabled via toolbar icon
         !windowController.mprView1.rotateLines &&
         !windowController.mprView2.rotateLines &&
         !windowController.mprView3.rotateLines &&
@@ -1006,14 +1028,22 @@ unsigned int minimumStep;
         !windowController.mprView2.moveCenter &&
         !windowController.mprView3.moveCenter)
 	{
-		// Mouse Position
+        Point3D *pt = windowController.mousePosition;
+        float dc[ 3] = { pt.x, pt.y, pt.z};
+        float sc[ 3];
+        
+#ifdef WITH_OPENGL_32
+        [self setShaderProgramOverlay_withMode_Point]; // Added
+#endif
+
 		if (viewID == windowController.mouseViewID)
 		{
 			DCMPix *pixA, *pixB;
 			int viewIDA, viewIDB;
-			
+            float location[ 3];
+
 			switch (viewID)
-			{	
+			{
 				case 1:
 					pixA = [windowController.mprView2 pix];
 					pixB = [windowController.mprView3 pix];
@@ -1036,86 +1066,64 @@ unsigned int minimumStep;
 					break;		
 			}
 			
-#ifdef WITH_OPENGL_32
-            [self setShaderProgramOverlay_withMode_Point]; // Added
-#endif
+            // first point
+            {
+                [self colorForView:viewIDA];
+                [pixA convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
+                
+                sc[0] = sc[ 0] / pixA.pixelSpacingX;
+                sc[1] = sc[ 1] / pixA.pixelSpacingY;
+                
+                [pixA convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
+                [pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
+                
+                sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+                sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+                sc[0] -= curDCM.pwidth * 0.5f;
+                sc[1] -= curDCM.pheight * 0.5f;
+                
+                // render
+                {
+                    NSMutableArray *pArray = [NSMutableArray array];
+                    glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
+                    [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
 
-            [self colorForView:viewIDA];
-			Point3D *pt = windowController.mousePosition;
-            float dc[ 3] = { pt.x, pt.y, pt.z};
-            float sc[ 3];
-			[pixA convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
-
-            sc[0] = sc[ 0] / pixA.pixelSpacingX;
-			sc[1] = sc[ 1] / pixA.pixelSpacingY;
-
-            float location[ 3];
-			[pixA convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
-			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
+                    glPointSize( 10 * self.window.backingScaleFactor);
+                    renderer_drawPoints([pArray copy]);
+                }
+            }
 			
-            sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-            sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-            sc[0] -= curDCM.pwidth * 0.5f;
-            sc[1] -= curDCM.pheight * 0.5f;
-
-            glPointSize( 10 * self.window.backingScaleFactor);
-#ifdef WITH_OPENGL_32
+            // second point
             {
-            NSMutableArray *pArray = [NSMutableArray array];
-            glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
-            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
-            renderer_drawPoints([pArray copy]);
+                [self colorForView:viewIDB];
+                [pixB convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
+                
+                sc[0] = sc[ 0] / pixB.pixelSpacingX;
+                sc[1] = sc[ 1] / pixB.pixelSpacingY;
+                
+                [pixB convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
+                [pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
+                
+                sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+                sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+                sc[0] -= curDCM.pwidth * 0.5f;
+                sc[1] -= curDCM.pheight * 0.5f;
+                
+                // render
+                {
+                    NSMutableArray *pArray = [NSMutableArray array];
+                    glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
+                    [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+                    
+                    glPointSize( 10 * self.window.backingScaleFactor);
+                    renderer_drawPoints([pArray copy]);
+                }
             }
-#else
-			glBegin( GL_POINTS);
-            {
-                glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
-            }
-			glEnd();
-#endif
-			
-			[self colorForView:viewIDB];
-			pt = windowController.mousePosition;
-			dc[0] = pt.x;
-            dc[1] = pt.y;
-            dc[2] = pt.z;
-			[pixB convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
-			sc[0] = sc[ 0] / pixB.pixelSpacingX;
-			sc[1] = sc[ 1] / pixB.pixelSpacingY;
-			[pixB convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
-			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
-			
-            sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-            sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-            sc[0] -= curDCM.pwidth * 0.5f;
-            sc[1] -= curDCM.pheight * 0.5f;
-			glPointSize( 10 * self.window.backingScaleFactor);
-#ifdef WITH_OPENGL_32
-            {
-            NSMutableArray *pArray = [NSMutableArray array];
-            glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
-            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
-            renderer_drawPoints([pArray copy]);
-            }
-#else
-			glBegin( GL_POINTS);
-            {
-                glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
-            }
-			glEnd();
-#endif
 		}
-        
-#pragma mark points
-
-        if (viewID != windowController.mouseViewID)
+        else //if (viewID != windowController.mouseViewID)
 		{
 			[self colorForView: viewID];
 //			[self colorForView: windowController.mouseViewID];
-			Point3D *pt = windowController.mousePosition;
-            float sc[ 3];
-            float dc[ 3] = { pt.x, pt.y, pt.z};
-			
 			[pix convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
 			
             sc[0] = sc[ 0] / curDCM.pixelSpacingX;
@@ -1123,36 +1131,27 @@ unsigned int minimumStep;
             sc[0] -= curDCM.pwidth * 0.5f;
             sc[1] -= curDCM.pheight * 0.5f;
             
-#ifdef WITH_OPENGL_32
-            [self setShaderProgramOverlay_withMode_Point]; // Added
-#endif
-			glPointSize( 10 * self.window.backingScaleFactor);
-#ifdef WITH_OPENGL_32
+            // render only point
             {
-            NSMutableArray *pArray = [NSMutableArray array];
-            glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
-            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
-            renderer_drawPoints([pArray copy]);
+                NSMutableArray *pArray = [NSMutableArray array];
+                glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
+                [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+
+                glPointSize( 10 * self.window.backingScaleFactor);
+                renderer_drawPoints([pArray copy]);
             }
-#else
-			glBegin( GL_POINTS);
-            {
-                glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
-            }
-			glEnd();
-#endif
 		}
 	}
     
 #pragma mark OSIROIs
 
     [self drawOSIROIs];
-	
     renderer_disable_blend_smooth();
 }
 
 #pragma mark -
 
+// TODO: consolidate
 - (void) setCrossReferenceLines: (float[2][3]) a
                         andLine: (float[2][3]) b
 {	
@@ -1171,6 +1170,7 @@ unsigned int minimumStep;
 	crossLinesB[ 1][ 2] = b[ 1][ 2];
 }
 
+// TODO: consolidate
 -(void) setCurrentTool:(ToolMode) i
 {
 	if (i != tRepulsor)
@@ -1179,7 +1179,8 @@ unsigned int minimumStep;
 
 - (void)keyDown:(NSEvent *)theEvent
 {
-    if ([[theEvent characters] length] == 0) return;
+    if ([[theEvent characters] length] == 0)
+        return;
     
     unichar c = [[theEvent characters] characterAtIndex:0];
     
@@ -1187,7 +1188,10 @@ unsigned int minimumStep;
 	{
 		[windowController keyDown:theEvent];
 	}
-    else if (c == NSUpArrowFunctionKey || c == NSDownArrowFunctionKey || c == NSRightArrowFunctionKey || c ==  NSLeftArrowFunctionKey)
+    else if (c == NSUpArrowFunctionKey ||
+             c == NSDownArrowFunctionKey ||
+             c == NSRightArrowFunctionKey ||
+             c ==  NSLeftArrowFunctionKey)
     {
         moveCenter = YES;
         
@@ -1294,11 +1298,8 @@ unsigned int minimumStep;
 	else
 	{
         float scale = self.scaleValue;
-        
 		[super keyDown: theEvent];
-		
         self.scaleValue = scale;
-        
 		[windowController propagateWLWW: self];
 	}
 }
@@ -1308,14 +1309,14 @@ unsigned int minimumStep;
     N3AffineTransform pixToDicomTransform;
     double spacingX;
     double spacingY;
-    //    double spacingZ;
+    //double spacingZ;
     double orientation[9];
     
     memset(orientation, 0, sizeof(double) * 9);
     [pix orientationDouble:orientation];
     spacingX = pix.pixelSpacingX;
     spacingY = pix.pixelSpacingY;
-    //    spacingZ = pix.sliceInterval;
+    //spacingZ = pix.sliceInterval;
     
     pixToDicomTransform = N3AffineTransformIdentity;
     pixToDicomTransform.m41 = pix.originX;
@@ -1339,7 +1340,7 @@ unsigned int minimumStep;
         pix.pixelSpacingX > 1000 ||
         pix.pixelSpacingY > 1000)
     {
-		NSLog( @"******* CPR pixel spacing incorrect for pixToSubDrawRectTransform");
+		NSLog( @"******* MPR pixel spacing incorrect for pixToSubDrawRectTransform");
     }
 #endif
 	
@@ -1348,6 +1349,7 @@ unsigned int minimumStep;
 
 #pragma mark - 3D ROI Point
 
+// TODO: consolidate
 - (void) detect2DPointInThisSlice
 {
 	ViewerController *viewer2D = [windowController viewer];
@@ -1430,6 +1432,7 @@ unsigned int minimumStep;
     [self setNeedsDisplay: YES];
 }
 
+// TODO: consolidate
 - (void) add2DPoint: (float*) r
 {
 	ViewerController *viewer2D = [windowController viewer];
@@ -1463,7 +1466,8 @@ unsigned int minimumStep;
     }
 }
 
--(void) roiChange:(NSNotification*)note
+// TODO: consolidate
+- (void) roiChange: (NSNotification*) note
 {
 	if (dontCheckRoiChange == NO)
 	{
@@ -1476,6 +1480,7 @@ unsigned int minimumStep;
 	[super roiChange: note];
 }
 
+// TODO: consolidate
 - (void) removeROI: (NSNotification*) note
 {
 	ROI *r = [note object];
@@ -1484,13 +1489,15 @@ unsigned int minimumStep;
 	{
 		[[windowController viewer] deleteROI: r.parentROI];
 		r.parentROI = nil;
-		
 	}
 	
 	if (dontCheckRoiChange == NO)
 	{
-		if ([r curView] != nil && [r curView] == [[windowController viewer] imageView])
-			[self detect2DPointInThisSlice];
+		if ([r curView] != nil &&
+            [r curView] == [[windowController viewer] imageView])
+        {
+            [self detect2DPointInThisSlice];
+        }
 	}
 }
 
@@ -1498,6 +1505,8 @@ unsigned int minimumStep;
 
 #define BS 10.
 
+// TODO: consolidate
+// Returns angle in degrees
 - (float) angleBetween:(NSPoint) mouseLocation
                 center:(NSPoint) center
 {
@@ -1507,6 +1516,7 @@ unsigned int minimumStep;
     return glm::degrees(-atan2(mouseLocation.x, mouseLocation.y));
 }
 
+// TODO: consolidate
 - (NSPoint) centerLines
 {
     NSPoint r = NSZeroPoint;
@@ -1546,6 +1556,7 @@ unsigned int minimumStep;
 	return r;
 }
 
+// TODO: consolidate
 - (int) mouseOnLines: (NSPoint) mouseLocation
 {
 	if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] == ANNOTATIONS_NONE)
@@ -1728,8 +1739,13 @@ unsigned int minimumStep;
 	
 	@try
 	{
-		if ([theEvent type] ==	NSLeftMouseDown || [theEvent type] ==	NSRightMouseDown || [theEvent type] ==	NSLeftMouseUp || [theEvent type] == NSRightMouseUp)
-			clickCount = [theEvent clickCount];
+		if ([theEvent type] == NSLeftMouseDown ||
+            [theEvent type] == NSRightMouseDown ||
+            [theEvent type] == NSLeftMouseUp ||
+            [theEvent type] == NSRightMouseUp)
+        {
+            clickCount = [theEvent clickCount];
+        }
 	}
 	@catch (NSException * e)
 	{

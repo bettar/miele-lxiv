@@ -29,12 +29,12 @@
     CPRVolumeData *_volumeData;
     CPRVolumeData *_generatedVolume;
     
-    CPRProjectionMode _projectionMode;
+    MPRProjectionMode _projectionMode;
 }
 
 @property (nonatomic, readwrite, retain) CPRVolumeData *volumeData;
 @property (nonatomic, readonly, retain) CPRVolumeData *generatedVolume;
 
-@property (nonatomic, readwrite, assign) CPRProjectionMode projectionMode;
+@property (nonatomic, readwrite, assign) MPRProjectionMode projectionMode;
 
 @end

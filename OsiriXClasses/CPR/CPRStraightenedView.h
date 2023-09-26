@@ -77,7 +77,7 @@
 @property (nonatomic, readwrite, retain) CPRVolumeData *volumeData; // the volume data of the original data
 @property (nonatomic, readwrite, copy) CPRCurvedPath *curvedPath;
 @property (nonatomic, readwrite, copy) CPRDisplayInfo *displayInfo;
-@property (nonatomic, readwrite, assign) CPRProjectionMode clippingRangeMode; // custom setter
+@property (nonatomic, readwrite, assign) MPRProjectionMode clippingRangeMode; // custom setter
 
 @property (nonatomic, readwrite, assign) N3Plane orangePlane; // set these to N3PlaneInvalid to keep the plane from appearing
 @property (nonatomic, readwrite, assign) N3Plane purplePlane;

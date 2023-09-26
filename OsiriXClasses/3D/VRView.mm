@@ -58,9 +58,6 @@
 #include "vtkSphereSource.h"
 #include "vtkAssemblyPath.h"
 #include "vtkDoubleArray.h"
-//#include "vtkMieleView.h"
-//#include "vtkGPUInfo.h"
-//#include "vtkGPUInfoList.h"
 
 #define id Id
 #include "itkImage.h"
@@ -88,8 +85,10 @@
 #include "vtkRendererCollection.h"
 #endif
 
-#import "vtkConfigure.h"
+//#import "vtkConfigure.h" // ok in 9.2 no longer available in 9.3
 #import "vtkMath.h"
+#import "thickSlabTypes.h"
+
 
 #define MAXDYNAMICVALUE 32000.
 
@@ -246,7 +245,6 @@ public:
 - (BOOL) checkPointInVolume: (double*) position
 {
 	double bounds[ 6];
-
 	volume->GetBounds( bounds);
 	
 	if (position[ 0] <= bounds[ 0]) return NO;
@@ -264,7 +262,6 @@ public:
 - (void) goToCenter
 {
 	double bounds[ 6];
-	
 	volume->GetBounds( bounds);
 	
 	double center[ 3] = {
@@ -813,13 +810,13 @@ public:
 	[self setBlendingMode: modeID];
 }
 
-- (void) setMode: (long) modeID // TODO: CPRProjectionMode
+- (void) setMode: (long) modeID // TODO: MPRProjectionMode
 {
 	renderingMode = modeID;
 	
 	switch (modeID)
 	{
-		case 0: // CPR_PROJECTION_MODE_VR
+        case MPR_PROJECTION_MODE_VR:
 			if (volumeMapper)
 				volumeMapper->SetBlendModeToComposite();
 				
@@ -827,7 +824,7 @@ public:
 				textureMapper->SetBlendModeToComposite();
 		break;
 		
-		case 1: // CPR_PROJECTION_MODE_MIP
+		case MPR_PROJECTION_MODE_MIP:
 			if (volumeMapper)
 				volumeMapper->SetBlendModeToMaximumIntensity();
 				
@@ -835,7 +832,7 @@ public:
 				textureMapper->SetBlendModeToMaximumIntensity();
 		break;
             
-        case 3: // CPR_PROJECTION_MODE_MEAN
+        case MPR_PROJECTION_MODE_MEAN:
 #ifdef TEST_ISSUE_E27_METHOD1 // (TBC it requires vtkGPUVolumeRayCastMapper)
             if (volumeMapper)
                 volumeMapper->SetBlendModeToAverageIntensity();
@@ -845,7 +842,7 @@ public:
 #endif
             // Fall through: effect of Mean is triggered externally by setvtkMeanIPMode
 
-        case 2: // CPR_PROJECTION_MODE_MIN_IP
+        case MPR_PROJECTION_MODE_MIN_IP:
 			if (volumeMapper)
 				volumeMapper->SetBlendModeToMinimumIntensity();
 			
@@ -853,7 +850,7 @@ public:
 				textureMapper->SetBlendModeToMinimumIntensity();
 		break;
             
-//        case 4: // CPR_PROJECTION_MODE_ADDITIVE
+//        case MPR_PROJECTION_MODE_ADDITIVE:
 //            if (volumeMapper)
 //				volumeMapper->SetBlendModeToAdditive();
 //			
@@ -942,7 +939,7 @@ public:
 {
     @try
 	{
-//        double a[ 6];
+//      double a[ 6];
 //		BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
 		
 		switch (e)
@@ -1463,9 +1460,9 @@ public:
 		
 		if ([dcmExportDepth selectedTag] == 1 &&
             [dcmExportDepth isEnabled] &&
-            (renderingMode == 1 || // CPR_PROJECTION_MODE_MIP
-             renderingMode == 2 || // CPR_PROJECTION_MODE_MIN_IP
-             renderingMode == 3))  // CPR_PROJECTION_MODE_MEAN
+            (renderingMode == MPR_PROJECTION_MODE_MIP ||
+             renderingMode == MPR_PROJECTION_MODE_MIN_IP ||
+             renderingMode == MPR_PROJECTION_MODE_MEAN))
         {
 			fullDepthCapture = YES;
         }
@@ -1677,9 +1674,9 @@ public:
 	else
         [[dcmExportMode cellWithTag:2] setEnabled: NO];
 	
-	if (renderingMode == 1 || // CPR_PROJECTION_MODE_MIP
-        renderingMode == 2 || // CPR_PROJECTION_MODE_MIN_IP
-        renderingMode == 3)   // CPR_PROJECTION_MODE_MEAN
+	if (renderingMode == MPR_PROJECTION_MODE_MIP ||
+        renderingMode == MPR_PROJECTION_MODE_MIN_IP ||
+        renderingMode == MPR_PROJECTION_MODE_MEAN)
     {
 		[dcmExportDepth setEnabled: YES];
     }
@@ -2056,7 +2053,7 @@ public:
 		blendingValueFactor = 1.0;
 		blendingOFFSET16 = -[controller blendingMinimumValue];
 		
-		renderingMode = 0;	// CPR_PROJECTION_MODE_VR
+		renderingMode = MPR_PROJECTION_MODE_VR;
 		blendingController = nil;
 		blendingFactor = 128.;
 		blendingVolume = nil;
@@ -2227,7 +2224,7 @@ public:
                                   :[[tempArray objectAtIndex:3] floatValue]];
 		}
 		
-		if (renderingMode == 0 && // CPR_PROJECTION_MODE_VR
+		if (renderingMode == MPR_PROJECTION_MODE_VR &&
             volumeProperty)
         {
 			volumeProperty->SetShade( [[dict objectForKey:@"ShadingFlag"] longValue]);
@@ -2282,7 +2279,7 @@ public:
 	}
 	else
 	{
-		if (renderingMode == 0 && // CPR_PROJECTION_MODE_VR
+		if (renderingMode == MPR_PROJECTION_MODE_VR &&
             volumeProperty)
         {
 			volumeProperty->SetShade( [[NSUserDefaults standardUserDefaults] boolForKey: @"defaultShading"]);
@@ -2374,7 +2371,7 @@ public:
     _cocoaRenderWindow->UpdateContext();
     _cocoaRenderWindow->MakeCurrent();
 
-    volumeMapper->Render( aRenderer, volume); // #i18 stack 5
+    volumeMapper->Render( aRenderer, volume); // #i18 stack 5, #g93
     skipRenderingVR = true;
 }
 
@@ -2691,9 +2688,19 @@ public:
         
         // Position of upper left part of the image
         
-        double *viewport = aRenderer->GetViewport();
+        double *viewport = aRenderer->GetViewport(); // xmin,ymin,xmax,ymax
+#if 0 // Try to fix #g93 ng
+//        aRenderer->NormalizedDisplayToDisplay(viewport[0], viewport[1]);
+//        aRenderer->NormalizedDisplayToDisplay(viewport[2], viewport[3]);
+#endif
         int *renWinSize = aRenderer->GetRenderWindow()->GetSize();
-        
+
+#ifndef NDEBUG // debug #g93
+        NSLog(@"%s %d, viewport XY min:(%.1f,%.1f) max:(%.1f,%.1f)", __FUNCTION__, __LINE__,
+              viewport[0], viewport[1], viewport[2], viewport[3]);
+        NSLog(@"%s %d, renWinSize XY:(%d,%d) pixels", __FUNCTION__, __LINE__,
+              renWinSize[0], renWinSize[1]);
+#endif
         double sampleDistance = 0;
         
         if (blendedView)
@@ -2846,30 +2853,30 @@ public:
         aCamera->GetParallelProjection() &&
         factor > 0)
 	{
-        double point1[ 4] = { 0, 0, 0, 0};
-        double point2[ 4] = { 1, 0, 0, 0};
-		
-		aRenderer->SetDisplayPoint( point1);
-		aRenderer->DisplayToWorld();
-		aRenderer->GetWorldPoint( point1);
-		
-		aRenderer->SetDisplayPoint( point2);
-		aRenderer->DisplayToWorld();
-		aRenderer->GetWorldPoint( point2);
-		
+        aRenderer->SetDisplayPoint(0,0,0);
+        aRenderer->DisplayToWorld();
+        double point1[4];
+        aRenderer->GetWorldPoint(point1);
+        
+        aRenderer->SetDisplayPoint(1,0,0);
+        aRenderer->DisplayToWorld();
+        double point2[4];
+        aRenderer->GetWorldPoint(point2);
+
 		double xd = point2[ 0] - point1[ 0];
 		double yd = point2[ 1] - point1[ 1];
 		double zd = point2[ 2] - point1[ 2];
 		double length = sqrt(xd*xd + yd*yd + zd*zd);
         
         if (std::isnan(length)) {
-            NSLog(@"****** vrView getResolution NaN. Class <%@>", NSStringFromClass([self class]));
-            NSLog(@"   point 1: %f %f %f", point1[0], point1[1], point1[2]);
-            NSLog(@"   point 2: %f %f %f", point2[0], point2[1], point2[2]);
+            NSLog(@"****** vrView getResolution NaN. %p Class <%@>, p1:(%5.1f %5.1f %5.1f), p2:(%5.1f %5.1f %5.1f)",
+                  self, NSStringFromClass([self class]),
+                  point1[0], point1[1], point1[2],
+                  point2[0], point2[1], point2[2]);
             return NAN;
         }
 
-        if (length < 0.00001 || length > 1000.)
+        if ((length > 0. && length < 0.00001) || length > 1000.)
             NSLog( @"****** vrView getResolution %f", length);
         
 		return (length/factor);
@@ -2936,9 +2943,9 @@ public:
     {
         if (Oval2DPix == nil)
         {
-            if (renderingMode == 1 || // CPR_PROJECTION_MODE_MIP
-                renderingMode == 2 || // CPR_PROJECTION_MODE_MIN_IP
-                renderingMode == 3)   // CPR_PROJECTION_MODE_MEAN
+            if (renderingMode == MPR_PROJECTION_MODE_MIP ||
+                renderingMode == MPR_PROJECTION_MODE_MIN_IP ||
+                renderingMode == MPR_PROJECTION_MODE_MEAN)
             {
                 // MIP modes - full depth
                 skipRenderingVR = true;
@@ -4043,7 +4050,7 @@ public:
 {
     NSPoint center = NSMakePoint([self frame].size.width/2.,
                                  [self frame].size.height/2.);
-#if 0 // TBC issue g84
+#if 0 // TBC issue g84. It doesn't fix #g93, maybe make it worse
     center = [self convertPointToBacking: center];
 #endif
     
@@ -5992,7 +5999,7 @@ public:
 	float start, end;
 	float opacityAdapter = 1;
 	
-	if (renderingMode == 0) // CPR_PROJECTION_MODE_VR
+	if (renderingMode == MPR_PROJECTION_MODE_VR)
 		opacityAdapter = superSampling;
 		
 	if (isRGB)
@@ -6292,7 +6299,6 @@ public:
 		{
 			if (volumeMapper)
             {
-                //
                 float a = [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"];
 #if 0 // g84
                 // not effective
@@ -7167,7 +7173,7 @@ public:
 		
 		float opacityAdapter = 1;
 		
-		if (renderingMode == 0) // CPR_PROJECTION_MODE_VR
+		if (renderingMode == MPR_PROJECTION_MODE_VR)
 			opacityAdapter = superSampling;
 		
 		opacityTransferFunction->AddPoint(255., 1. / opacityAdapter);
@@ -7544,10 +7550,10 @@ public:
     return false; // No error
 }
 
-#if 0
 // reinstated from old code, still commented out. see issue i55
 -(IBAction) SwitchStereoMode :(id) sender
 {
+#if 0
     if ([self renderWindow]->GetStereoRender() == false)
     {
         [self renderWindow]->StereoRenderOn();
@@ -7559,8 +7565,8 @@ public:
     }
     
     [self setNeedsDisplay:YES];
-}
 #endif
+}
 
 - (NSImage*) resizeMatrix:(NSImage*) currentImage size: (int) matrixsize
 {
@@ -7701,6 +7707,7 @@ public:
 	return [self imageInFullDepthWidth: w height: h isRGB: rgb blendingView: NO];
 }
 
+// w,h output parameters
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h isRGB:(BOOL*) rgb blendingView:(BOOL) blendingView
 {
     float *returnedPtr = nil;
@@ -7727,19 +7734,49 @@ public:
             
             unsigned short *im = rayCastImage->GetImage();
             
+#if 0 // Debug #g93
+            int imageViewportSize[2];
+            rayCastImage->GetImageViewportSize(imageViewportSize);
+            if (imageViewportSize[0] == 300) // hit only once, but it doesn't affect w,h
+            {
+                rayCastImage->SetImageViewportSize(600,imageViewportSize[1]);
+                NSLog(@"VRView.mm %d, imageInFullDepthWidth %p", __LINE__, self);
+            }
+#endif
+            
             int fullSize[2];
             rayCastImage->GetImageMemorySize( fullSize);
             
             int size[2];
-            rayCastImage->GetImageInUseSize( size);
-            
+            rayCastImage->GetImageInUseSize( size); // #g93  @@@ @@@
+     
+#ifndef NDEBUG // debug #g93
+            if (size[0] > 0)
+            {
+                int imageViewportSize[2];
+                rayCastImage->GetImageViewportSize(imageViewportSize);
+                NSLog(@"VRView.mm %d, imageInFullDepthWidth %p, viewport:(%i,%i), fullSize:(%i,%i), size:(%i,%i)", __LINE__, self,
+                      imageViewportSize[0], imageViewportSize[1],
+                      fullSize[0], fullSize[1],
+                      size[0], size[1]);
+            }
+#endif
             *w = size[0];
             *h = size[1];
-            
+
+#if 0 // Debug #g93 see what happens: strange we get two images in each view
+            if (*w > 290) {
+                int sz[2] = {800,700};
+                rayCastImage->SetImageInUseSize( sz);
+                *w = sz[0];
+                *h = sz[1];
+            }
+#endif
+
             if (firstObject.isRGB == NO &&
-                (renderingMode == 1 || // CPR_PROJECTION_MODE_MIP
-                 renderingMode == 2 || // CPR_PROJECTION_MODE_MIN_IP
-                 renderingMode == 3))  // CPR_PROJECTION_MODE_MEAN
+                (renderingMode == MPR_PROJECTION_MODE_MIP ||
+                 renderingMode == MPR_PROJECTION_MODE_MIN_IP ||
+                 renderingMode == MPR_PROJECTION_MODE_MEAN))
             {
                 unsigned short *destPtr, *destFixedPtr;
                 
@@ -9714,7 +9751,7 @@ public:
 				
 				float opacityAdapter = 1;
 				
-				if (renderingMode == 0) // CPR_PROJECTION_MODE_VR
+				if (renderingMode == MPR_PROJECTION_MODE_VR)
 					opacityAdapter = superSampling;
 				
 				float o = [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y / opacityAdapter;

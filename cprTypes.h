@@ -11,6 +11,7 @@
 #define cprTypes_h
 
 #import <AppKit/AppKit.h>
+#import "thickSlabTypes.h"
 
 // originally in CPRTransverseView.h
 typedef NS_ENUM(NSInteger, CPRTransverseViewSection) {
@@ -18,17 +19,6 @@ typedef NS_ENUM(NSInteger, CPRTransverseViewSection) {
     CPR_TRANSVERSE_VIEW_SECTION_CENTER = 0,
     CPR_TRANSVERSE_VIEW_SECTION_LEFT,
     CPR_TRANSVERSE_VIEW_SECTION_RIGHT
-};
-
-// originally in CPRProjectionOperation.h
-typedef NS_ENUM(NSInteger, CPRProjectionMode) {
-    CPR_PROJECTION_MODE_VR = 0,   // don't use this, it is not implemented
-    CPR_PROJECTION_MODE_MIP = 1,
-    CPR_PROJECTION_MODE_MIN_IP = 2,
-    CPR_PROJECTION_MODE_MEAN = 3,
-    CPR_PROJECTION_MODE_ADDITIVE = 4,
-    
-    CPR_PROJECTION_MODE_NONE = 0xFFFFFF
 };
 
 typedef NS_ENUM(NSInteger, CPRLayoutType) {

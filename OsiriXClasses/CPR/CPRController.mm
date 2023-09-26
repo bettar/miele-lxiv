@@ -31,6 +31,7 @@
 #import "Notifications.h"
 #import "ROIWindow.h"
 #import "NSUserDefaultsController+OsiriX.h"
+
 #import "CPRCurvedPath.h"
 #import "CPRDisplayInfo.h"
 #import "N3BezierPath.h"
@@ -42,6 +43,7 @@
 #import "CPRGenerator.h"
 #import "CPRUnsignedInt16ImageRep.h"
 #import "CPRMPRDCMView.h"
+
 #import "N2OpenGLViewWithSplitsWindow.h"
 #import "AppController.h"
 #import "DicomDatabase.h"
@@ -51,6 +53,8 @@
 #import "AppDefaults.h"
 #define PRESETS_DIRECTORY   @"/3DPRESETS/"
 #define CLUTDATABASE        @"/CLUTs/"
+
+//#define FIX_CPR_WORKAROUND
 
 static NSString *MPRPlaneObservationContext = @"MPRPlaneObservationContext";
 
@@ -62,11 +66,10 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 @property (readwrite, copy) CPRDisplayInfo *displayInfo;
 @end
 
-
 @implementation CPRController
 
+@synthesize clippingRangeMode;
 @synthesize clippingRangeThickness, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
-//@synthesize clippingRangeMode;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit1, horizontalSplit2, verticalSplit, lowLOD;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingModeAvailable, highResolutionMode;
 //@synthesize blendingMode;
@@ -91,17 +94,17 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 {
 	double sc[ 2];
 	
-    //	double la = sqrt( a[0]*a[0] + a[1]*a[1] + a[2]*a[2]);
-    //	double lo = sqrt( orientation[0]*orientation[0] + orientation[1]*orientation[1] + orientation[2]*orientation[2]);
-    //	
-    //	sc[ 0 ] = a[ 0]/la * orientation[ 0 ]/lo + a[ 1]/la * orientation[ 1 ]/lo + a[ 2]/la * orientation[ 2 ]/lo;
-    //	sc[ 1 ] = a[ 0]/la * orientation[ 3 ]/lo + a[ 1]/la * orientation[ 4 ]/lo + a[ 2]/la * orientation[ 5 ]/lo;
+//	double la = sqrt( a[0]*a[0] + a[1]*a[1] + a[2]*a[2]);
+//	double lo = sqrt( orientation[0]*orientation[0] + orientation[1]*orientation[1] + orientation[2]*orientation[2]);
+//
+//	sc[ 0 ] = a[ 0]/la * orientation[ 0 ]/lo + a[ 1]/la * orientation[ 1 ]/lo + a[ 2]/la * orientation[ 2 ]/lo;
+//	sc[ 1 ] = a[ 0]/la * orientation[ 3 ]/lo + a[ 1]/la * orientation[ 4 ]/lo + a[ 2]/la * orientation[ 5 ]/lo;
 	
 	
 	sc[ 0 ] = a[ 0] * orientation[ 0 ] + a[ 1] * orientation[ 1 ] + a[ 2] * orientation[ 2 ];
 	sc[ 1 ] = a[ 0] * orientation[ 3 ] + a[ 1] * orientation[ 4 ] + a[ 2] * orientation[ 5 ];
 	
-	return glm::degrees((atan2( sc[1], sc[0])));
+	return glm::degrees(atan2(sc[1], sc[0]));
 }
 
 - (DCMPix*) emptyPix: (DCMPix*) oP width: (long) w height: (long) h
@@ -200,6 +203,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     self.straightenedCPRAngle = self.straightenedCPRAngle + 0.1; // To force the update...
 }
 
+// TBC related to issue #g93 ?
 - (instancetype)initWithDCMPixList:(NSMutableArray*)pix
                          filesList:(NSMutableArray*)files
                         volumeData:(NSData*)volume
@@ -240,7 +244,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		volumeData[0] = volume;
 		
 		fusedViewer2D = fusedViewer;
-		_clippingRangeMode = CPR_PROJECTION_MODE_MIP;
+		clippingRangeMode = MPR_PROJECTION_MODE_MIP;
 
         LOD = 1;
 		if (LOD < 1)
@@ -257,105 +261,126 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		for (int i = 0; i < [popupRoi numberOfItems]; i++)
 			[[popupRoi itemAtIndex: i] setImage: [self imageForROI: (ToolMode)[[popupRoi itemAtIndex: i] tag]]];
 		
-        int dim[3];
-        DCMPix* firstObject = [pix objectAtIndex:0];
-        dim[0] = [firstObject pwidth];
-        dim[1] = [firstObject pheight];
-        dim[2] = [pix count];
-        float spacing[3];
-        spacing[0] = [firstObject pixelSpacingX];
-        spacing[1] = [firstObject pixelSpacingY];
-        float sliceThickness = [firstObject sliceInterval];   
-        if (sliceThickness == 0)
+#if 1 // not in MPRController (commenting it out doesn't fix #g93)
         {
-            NSLog(@"Slice interval = slice thickness!");
-            sliceThickness = [firstObject sliceThickness];
-        }
-
-        spacing[2]=sliceThickness;
-        float resamplesize=spacing[0];
-        if (dim[0]>256 ||
-            dim[1]>256)
-        {
-            if (spacing[0] * (float)dim[0] > spacing[1] * (float)dim[1]) {
-                resamplesize = spacing[0]*(float)dim[0]/256.0;
+            int dim[3];
+            DCMPix* firstObject = [pix objectAtIndex:0];
+            dim[0] = [firstObject pwidth];
+            dim[1] = [firstObject pheight];
+            dim[2] = [pix count];
+            float spacing[3];
+            spacing[0] = [firstObject pixelSpacingX];
+            spacing[1] = [firstObject pixelSpacingY];
+            float sliceThickness = [firstObject sliceInterval];
+            if (sliceThickness == 0)
+            {
+                NSLog(@"Slice interval = slice thickness!");
+                sliceThickness = [firstObject sliceThickness];
             }
-            else {
-                resamplesize = spacing[1]*(float)dim[1]/256.0;
+            
+            spacing[2]=sliceThickness;
+            float resamplesize=spacing[0];
+            if (dim[0]>256 ||
+                dim[1]>256)
+            {
+                if (spacing[0] * (float)dim[0] > spacing[1] * (float)dim[1]) {
+                    resamplesize = spacing[0]*(float)dim[0]/256.0;
+                }
+                else {
+                    resamplesize = spacing[1]*(float)dim[1]/256.0;
+                }
             }
+            
+            assistant = [[FlyAssistant alloc] initWithVolume:(float*)[volume bytes]
+                                              WidthDimension:dim
+                                                     Spacing:spacing
+                                           ResampleVoxelSize:resamplesize];
+            [assistant setCenterlineResampleStepLength:3.0];
+            
+            centerline = [[NSMutableArray alloc] init];
+            nodeRemovalCost = [[NSMutableArray alloc] init];
+            delHistory = [[NSMutableArray alloc] init];
+            delNodes = [[NSMutableArray alloc] init];
+            curvedPath = [[CPRCurvedPath alloc] init];
+            displayInfo = [[CPRDisplayInfo alloc] init];
+            
+            [[NSUserDefaults standardUserDefaults] registerDefaults:
+             [NSDictionary dictionaryWithObjectsAndKeys:@0.0F, @"CPRColorR",
+              @1.0F, @"CPRColorG",
+              @0.0F, @"CPRColorB",
+              nil]];
+            self.curvedPathCreationMode = YES;
+            
+            //NSLog(@"%s %d %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
+            cprVolumeData = [[CPRVolumeData alloc] initWithWithPixList:pix volume:volume];
+            cprView.volumeData = cprVolumeData;
+            
+            mprView1.delegate = self;
+            mprView2.delegate = self;
+            mprView3.delegate = self;
+            cprView.delegate = self;
+            
+            mprView1.curvedPath = curvedPath;
+            mprView2.curvedPath = curvedPath;
+            mprView3.curvedPath = curvedPath;
+            cprView.curvedPath = curvedPath;
+            
+            mprView1.displayInfo = displayInfo;
+            mprView2.displayInfo = displayInfo;
+            mprView3.displayInfo = displayInfo;
+            cprView.displayInfo = displayInfo;
+            topTransverseView.displayInfo = displayInfo;
+            middleTransverseView.displayInfo = displayInfo;
+            bottomTransverseView.displayInfo = displayInfo;
+            
+            topTransverseView.delegate = self;
+            topTransverseView.curvedPath = curvedPath;
+            topTransverseView.sectionType = CPR_TRANSVERSE_VIEW_SECTION_LEFT;
+            
+            middleTransverseView.delegate = self;
+            middleTransverseView.curvedPath = curvedPath;
+            middleTransverseView.sectionType = CPR_TRANSVERSE_VIEW_SECTION_CENTER;
+            
+            bottomTransverseView.delegate = self;
+            bottomTransverseView.curvedPath = curvedPath;
+            bottomTransverseView.sectionType = CPR_TRANSVERSE_VIEW_SECTION_RIGHT;
+            
+            topTransverseView.sectionWidth = cprView.generatedHeight;
+            middleTransverseView.sectionWidth = cprView.generatedHeight;
+            bottomTransverseView.sectionWidth = cprView.generatedHeight;
+            
+            //NSLog(@"%s %d %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
+            topTransverseView.volumeData = cprView.volumeData;
+            middleTransverseView.volumeData = cprView.volumeData;
+            bottomTransverseView.volumeData = cprView.volumeData;
         }
+#endif
 
-        assistant = [[FlyAssistant alloc] initWithVolume:(float*)[volume bytes]
-                                          WidthDimension:dim
-                                                 Spacing:spacing
-                                       ResampleVoxelSize:resamplesize];
-        [assistant setCenterlineResampleStepLength:3.0];
-
-        centerline = [[NSMutableArray alloc] init];
-        nodeRemovalCost = [[NSMutableArray alloc] init];
-        delHistory = [[NSMutableArray alloc] init];
-        delNodes = [[NSMutableArray alloc] init];
-        curvedPath = [[CPRCurvedPath alloc] init];
-        displayInfo = [[CPRDisplayInfo alloc] init];
-        
-        [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:@0.0F, @"CPRColorR",
-                                                                                                           @1.0F, @"CPRColorG",
-                                                                                                           @0.0F, @"CPRColorB", nil]];
-		self.curvedPathCreationMode = YES;
-        
-        //NSLog(@"%s %d %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
-        cprVolumeData = [[CPRVolumeData alloc] initWithWithPixList:pix volume:volume];
-        cprView.volumeData = cprVolumeData;
-
-        mprView1.delegate = self;
-        mprView2.delegate = self;
-        mprView3.delegate = self;
-        cprView.delegate = self;
-
-        mprView1.curvedPath = curvedPath;
-        mprView2.curvedPath = curvedPath;
-        mprView3.curvedPath = curvedPath;
-		cprView.curvedPath = curvedPath;
-
-        mprView1.displayInfo = displayInfo;
-        mprView2.displayInfo = displayInfo;
-        mprView3.displayInfo = displayInfo;
-        cprView.displayInfo = displayInfo;
-        topTransverseView.displayInfo = displayInfo;
-        middleTransverseView.displayInfo = displayInfo;
-        bottomTransverseView.displayInfo = displayInfo;
-        
-        topTransverseView.delegate = self;
-        topTransverseView.curvedPath = curvedPath;
-        topTransverseView.sectionType = CPR_TRANSVERSE_VIEW_SECTION_LEFT;
-        
-        middleTransverseView.delegate = self;
-        middleTransverseView.curvedPath = curvedPath;
-        middleTransverseView.sectionType = CPR_TRANSVERSE_VIEW_SECTION_CENTER;
-        
-        bottomTransverseView.delegate = self;
-        bottomTransverseView.curvedPath = curvedPath;
-        bottomTransverseView.sectionType = CPR_TRANSVERSE_VIEW_SECTION_RIGHT;
-        
-        topTransverseView.sectionWidth = cprView.generatedHeight;
-        middleTransverseView.sectionWidth = cprView.generatedHeight;
-        bottomTransverseView.sectionWidth = cprView.generatedHeight;
-        
-        //NSLog(@"%s %d %@ %p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
-        topTransverseView.volumeData = cprView.volumeData;
-        middleTransverseView.volumeData = cprView.volumeData;
-        bottomTransverseView.volumeData = cprView.volumeData;
-        
 		DCMPix *emptyPix = [self emptyPix: originalPix width: 100 height: 100];
-		[mprView1 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList: nil firstImage:0 type:'i' reset:YES];
+		[mprView1 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix]
+                      filesList: [NSArray arrayWithObject: [files lastObject]]
+                        roiList: nil
+                     firstImage: 0
+                           type: 'i'
+                          reset: YES];
 		[mprView1 setFlippedData: [[viewer imageView] flippedData]];
 		
 		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
-		[mprView2 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList: nil firstImage:0 type:'i' reset:YES];
+		[mprView2 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix]
+                      filesList: [NSArray arrayWithObject: [files lastObject]]
+                        roiList: nil
+                     firstImage: 0
+                           type: 'i'
+                          reset:YES];
 		[mprView2 setFlippedData: [[viewer imageView] flippedData]];
 		
 		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
-		[mprView3 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix] filesList: [NSArray arrayWithObject: [files lastObject]] roiList: nil firstImage:0 type:'i' reset:YES];
+		[mprView3 setDCMPixList: [NSMutableArray arrayWithObject: emptyPix]
+                      filesList: [NSArray arrayWithObject: [files lastObject]]
+                        roiList: nil
+                     firstImage: 0
+                           type: 'i'
+                          reset:YES];
 		[mprView3 setFlippedData: [[viewer imageView] flippedData]];
 		
 //		emptyPix = [self emptyPix: originalPix width: 100 height: 100];
@@ -399,7 +424,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 			self.blendingPercentage = 50;
 			_blendingMode = BLENDING_MODE_LINEAR_FUSION;
 		}
-		        
+        
 		hiddenVRController = [[VRController alloc] initWithPix:pix
                                                               :files
                                                               :volume
@@ -414,12 +439,14 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[[hiddenVRController window] orderBack: self];
 		[[hiddenVRController window] orderOut: self];
 		
+        //hiddenVRController.view.engine = ENGINE_CPU; // try to fix #g93 by copying MPRController: ng
+
 		[hiddenVRController load3DState];
 		
 		hiddenVRView = [hiddenVRController view];
-		[hiddenVRView setClipRangeActivated: YES];
+		[hiddenVRView setClipRangeActivated: YES]; // No effect on #g93
 		[hiddenVRView resetImage: self];
-		[hiddenVRView setLOD: 20];
+        [hiddenVRView setLOD: 20]; // No effect on #g93
 		hiddenVRView.keep3DRotateCentered = YES;
 		
 		[mprView1 setVRView: hiddenVRView viewID: 1];
@@ -433,7 +460,10 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		
 		[hiddenVRView setWLWW: [[viewer imageView] curWL] :[[viewer imageView] curWW]];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultToolModified:) name:OsirixDefaultToolModifiedNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(defaultToolModified:)
+                                                     name:OsirixDefaultToolModifiedNotification
+                                                   object:nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateWLWWMenu:) name:OsirixUpdateWLWWMenuNotification object:nil];
 		curWLWWMenu = [[viewer2D curWLWWMenu] retain];
@@ -457,16 +487,20 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[shadingCheck setAction:@selector(switchShading:)];
 		[shadingCheck setTarget:self];
 		
-//		self.dcmNumberOfFrames = 50;
-//		self.dcmRotationDirection = 0;
-//		self.dcmRotation = 360;
-//		self.dcmSeriesName = @"CPR";
-        
+#if 0 // originally commented out. Try to fix #g93
+		self.dcmNumberOfFrames = 50;
+		self.dcmRotationDirection = 0;
+		self.dcmRotation = 360;
+		self.dcmSeriesName = @"CPR";
+#endif
+
+#if 1 // not in MPRController
         self.exportSeriesName = @"CPR";
         self.exportSequenceType = CPRCurrentOnlyExportSequenceType;
         self.exportSeriesType = CPRRotationExportSeriesType;
         self.exportRotationSpan = CPR180ExportRotationSpan;
         self.exportReverseSliceOrder = NO;
+#endif
 
 		float r1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_RED"];
 		float g1 = [[NSUserDefaults standardUserDefaults] floatForKey:@"MPR_AXIS_1_GREEN"];
@@ -496,6 +530,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		self.colorAxis2 = [NSColor colorWithDeviceRed:r2 green:g2 blue:b2 alpha:a2];
 		self.colorAxis3 = [NSColor colorWithDeviceRed:r3 green:g3 blue:b3 alpha:a3];
 		
+#if 1 // not in MPRController
 		cprView.orangePlaneColor = self.colorAxis1;
 		cprView.purplePlaneColor = self.colorAxis2;
 		cprView.bluePlaneColor = self.colorAxis3;
@@ -503,18 +538,20 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[mprView1 addObserver:self forKeyPath:@"plane" options:0 context:MPRPlaneObservationContext];
 		[mprView2 addObserver:self forKeyPath:@"plane" options:0 context:MPRPlaneObservationContext];
 		[mprView3 addObserver:self forKeyPath:@"plane" options:0 context:MPRPlaneObservationContext];
-		
-		[[NSColorPanel sharedColorPanel] setShowsAlpha: YES];
+#endif
+
+        [[NSColorPanel sharedColorPanel] setShowsAlpha: YES];
 		
 		undoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
 		redoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
 		
 		[self setToolIndex: tWL];
         
+#if 1 // not in MPRController
         self.controllerCprType = (CPRType)[[NSUserDefaults standardUserDefaults] integerForKey: @"SavedCPRType"];
-        
         [[self window] registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, nil]];
-        
+#endif
+
         [self setupToolbar];
 	}
 	
@@ -545,6 +582,46 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	if (windowWillClose)
         return;
 	
+#if 0 // try to fix #g93 by doing it like MPRController: no change
+    if (windowWillClose)
+        return;
+    
+    NSDisableScreenUpdates();
+    
+    NSWindow *win = [self window];
+    
+    if (FullScreenOn)
+        win = FullScreenWindow;
+    
+    id view = [win firstResponder];
+    
+    [mprView1 camera].forceUpdate = YES;
+    [mprView2 camera].forceUpdate = YES;
+    [mprView3 camera].forceUpdate = YES;
+    
+    if (sender)
+    {
+        [[self window] makeFirstResponder: sender];
+        [sender restoreCamera];
+        [sender updateViewMPR];
+    }
+    else
+    {
+        CPRMPRDCMView *selectedView = [self selectedView];
+        [[self window] makeFirstResponder: selectedView];
+        [selectedView restoreCamera];
+        [selectedView updateViewMPR];
+    }
+    
+    if (view)
+        [[self window] makeFirstResponder: view];
+    
+    [mprView1 setNeedsDisplay: YES];
+    [mprView2 setNeedsDisplay: YES];
+    [mprView3 setNeedsDisplay: YES];
+    
+    NSEnableScreenUpdates();
+#else // original
 	id view = [[self window] firstResponder];
 	
 	[mprView1 camera].forceUpdate = YES;
@@ -574,10 +651,13 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
+#endif
 }
 
 - (void) showWindow:(id) sender
 {
+    [self applyViewsPosition];
+    
 	mprView1.dontUseAutoLOD = YES;
 	mprView2.dontUseAutoLOD = YES;
 	mprView3.dontUseAutoLOD = YES;
@@ -590,11 +670,17 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"syncZoomLevelMPR"];
 	
 	// Default Init
-	[self setClippingRangeMode: CPR_PROJECTION_MODE_MIP];    // #i18 stack 12
+	[self setClippingRangeMode: MPR_PROJECTION_MODE_MIP];    // #i18 stack 12
+#ifdef FIX_CPR_WORKAROUND // try for #g93
+    self.clippingRangeThickness = 1;
+    if ([self getClippingRangeThicknessInMm] < fabs( [originalPix sliceInterval]))
+        self.clippingRangeThickness = 2;
+#else
 	self.clippingRangeThickness = 0.5;
-	
+#endif
+
     int min = [self getClippingRangeThicknessInMm] * 100.;
-    self.dcmIntervalMin = (float) min / 100.;
+    self.dcmIntervalMin = (float)min / 100.;
     self.dcmIntervalMin -= 0.001;
     if (self.dcmIntervalMin < 0.01)
         self.dcmIntervalMin = 0.01;
@@ -607,7 +693,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	mprView1.angleMPR = 0;
 	mprView2.angleMPR = 0;
 	mprView3.angleMPR = 0;
-    
+
 	[mprView1 updateViewMPR];
 	
 	mprView2.camera.viewUp = [Point3D pointWithX:0 y:-1 z:0];
@@ -616,8 +702,13 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	mprView3.camera.viewUp = [Point3D pointWithX:0 y:0 z:1];
 	mprView3.camera.rollAngle = 0;
 	mprView3.angleMPR = 0;
+#ifdef FIX_CPR_WORKAROUND // try for #g93
+    mprView3.camera.parallelScale /= 2.;
+#else
 	mprView3.camera.parallelScale /= 1.5;
-	[mprView3 restoreCamera];
+#endif
+
+    [mprView3 restoreCamera];
 	[mprView3 updateViewMPR];
 	
 	[super showWindow: sender];
@@ -626,7 +717,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	if (c == NO)
 		[[NSUserDefaults standardUserDefaults] setBool: c forKey: @"syncZoomLevelMPR"];
-    
+
 	mprView1.dontUseAutoLOD = NO;
 	mprView2.dontUseAutoLOD = NO;
 	mprView3.dontUseAutoLOD = NO;
@@ -655,21 +746,26 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
         [self loadBezierPathFromFile: path];
 }
 
+-(void) applyViewsPosition
+{
+    NSScreen *s = [viewer2D get3DViewerScreen: viewer2D];
+
+    if ([s frame].size.height > [s frame].size.width)
+    {
+        [horizontalSplit1 setVertical: NO];
+        [horizontalSplit2 setVertical: NO];
+        [verticalSplit setVertical: YES];
+    }
+}
+
 -(void) awakeFromNib
 {
-	NSScreen *s = [viewer2D get3DViewerScreen: viewer2D];
-	
+    [self applyViewsPosition];
+
     [horizontalSplit1 setDelegate: self];
     [horizontalSplit2 setDelegate: self];
     [verticalSplit setDelegate: self];
-    
-	if ([s frame].size.height > [s frame].size.width)
-	{
-		[horizontalSplit1 setVertical: NO];
-		[horizontalSplit2 setVertical: NO];
-		[verticalSplit setVertical: YES];
-	}
-	
+
 	[shadingsPresetsController setWindowController: self];
 	[shadingCheck setAction:@selector(switchShading:)];
 	[shadingCheck setTarget:self];
@@ -714,7 +810,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     [displayInfo release];
     mprView1.delegate = nil;
     mprView2.delegate = nil;
-    mprView3.delegate = nil;   
+    mprView3.delegate = nil;
     cprView.delegate = nil;
     topTransverseView.delegate = nil;
     middleTransverseView.delegate = nil;
@@ -769,13 +865,13 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[mprView2 setCurrentTool:toolIndex];
 	[mprView3 setCurrentTool:toolIndex];
 	[cprView setCurrentTool:toolIndex];
-	[topTransverseView setCurrentTool:toolIndex];
-	[middleTransverseView setCurrentTool:toolIndex];
-	[bottomTransverseView setCurrentTool:toolIndex];
-	
 	[mprView1.vrView setCurrentTool:toolIndex];
 	[mprView2.vrView setCurrentTool:toolIndex];
 	[mprView3.vrView setCurrentTool:toolIndex];
+
+    [topTransverseView setCurrentTool:toolIndex];
+    [middleTransverseView setCurrentTool:toolIndex];
+    [bottomTransverseView setCurrentTool:toolIndex];
 }
 
 - (IBAction) setTool:(id)sender;
@@ -792,7 +888,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 }
 
 - (void) computeCrossReferenceLinesBetween: (CPRMPRDCMView*) mp1
-                                   andView:(CPRMPRDCMView*) mp2
+                                   andView: (CPRMPRDCMView*) mp2
                                     result: (float[2][3]) s
 {
 	float vectorA[ 9], vectorB[ 9];
@@ -801,7 +897,8 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	s[ 0][ 0] = HUGE_VALF; s[ 0][ 1] = HUGE_VALF; s[ 0][ 2] = HUGE_VALF;
 	s[ 1][ 0] = HUGE_VALF; s[ 1][ 1] = HUGE_VALF; s[ 1][ 2] = HUGE_VALF;
 	
-    if (mp2.frame.size.height > 10 && mp2.frame.size.width > 10)
+    if (mp2.frame.size.height > 10 &&
+        mp2.frame.size.width > 10)
     {
         originA[ 0] = mp2.pix.originX; originA[ 1] = mp2.pix.originY; originA[ 2] = mp2.pix.originZ;
         originB[ 0] = mp1.pix.originX; originB[ 1] = mp1.pix.originY; originB[ 2] = mp1.pix.originZ;
@@ -839,14 +936,15 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[mprView1 setWLWW: [sender curWL] :[sender curWW]];
 	[mprView2 setWLWW: [sender curWL] :[sender curWW]];
 	[mprView3 setWLWW: [sender curWL] :[sender curWW]];
-	[cprView setWLWW: [sender curWL] :[sender curWW]];
-	[topTransverseView setWLWW: [sender curWL] :[sender curWW]];
-	[middleTransverseView setWLWW: [sender curWL] :[sender curWW]];
-	[bottomTransverseView setWLWW: [sender curWL] :[sender curWW]];
-    
-	mprView1.camera.wl = [sender curWL];	mprView1.camera.ww = [sender curWW];
+
+    mprView1.camera.wl = [sender curWL];	mprView1.camera.ww = [sender curWW];
 	mprView2.camera.wl = [sender curWL];	mprView2.camera.ww = [sender curWW];
 	mprView3.camera.wl = [sender curWL];	mprView3.camera.ww = [sender curWW];
+
+    [cprView setWLWW: [sender curWL] :[sender curWW]];
+    [topTransverseView setWLWW: [sender curWL] :[sender curWW]];
+    [middleTransverseView setWLWW: [sender curWL] :[sender curWW]];
+    [bottomTransverseView setWLWW: [sender curWL] :[sender curWW]];
 }
 
 - (void) computeCrossReferenceLines:(CPRMPRDCMView*) sender
@@ -865,7 +963,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 			if (selectedView != mprView3) mprView3.camera.parallelScale = selectedView.camera.parallelScale;
 		}
 	}
-    
+
 	// Center other views on the sender view
 	if (sender && [sender isKeyView] == YES && avoidReentry == NO)
 	{
@@ -889,32 +987,48 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		if (sender == mprView1)
 		{
 			float angle = mprView1.angleMPR;
-			XYZ vector, rotationVector;
-			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
+            XYZ vector;
+            XYZ rotationVector;
+			rotationVector.x = cos[ 6];
+            rotationVector.y = cos[ 7];
+            rotationVector.z = cos[ 8];
 			
-			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
+			vector.x = cos[ 3];
+            vector.y = cos[ 4];
+            vector.z = cos[ 5];
 			vector = ArbitraryRotate(vector, glm::radians(angle-180.), rotationVector);
-			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
+			x = position.x + vector.x;
+            y = position.y + vector.y;
+            z = position.z + vector.z;
 			mprView2.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
 			// Correct slice position according to slice center (VR: position is the beginning of the slice)
 			Point3D *p = mprView2.camera.position;
-			mprView2.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
+			mprView2.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x
+                                                         y: p.y + halfthickness*-vector.y
+                                                         z: p.z + halfthickness*-vector.z];
 			
-			vector.x = cos[ 0];	vector.y = cos[ 1];	vector.z = cos[ 2];
-			vector =  ArbitraryRotate(vector, glm::radians(angle), rotationVector);
-			x = position.x + vector.x;	y = position.y + vector.y;	z = position.z + vector.z;
+			vector.x = cos[ 0];
+            vector.y = cos[ 1];
+            vector.z = cos[ 2];
+			vector = ArbitraryRotate(vector, glm::radians(angle), rotationVector);
+			x = position.x + vector.x;
+            y = position.y + vector.y;
+            z = position.z + vector.z;
 			mprView3.camera.focalPoint = [Point3D pointWithX:x y:y z:z];
 			
 			// Correct slice position according to slice center (VR: position is the beginning of the slice)
 			p = mprView3.camera.position;
-			mprView3.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x y:p.y + halfthickness*-vector.y z:p.z + halfthickness*-vector.z];
+			mprView3.camera.position = [Point3D pointWithX: p.x + halfthickness*-vector.x
+                                                         y: p.y + halfthickness*-vector.y
+                                                         z: p.z + halfthickness*-vector.z];
 		}
 		
 		if (sender == mprView2)
 		{
 			float angle = mprView2.angleMPR;
-			XYZ vector, rotationVector;
+            XYZ vector;
+            XYZ rotationVector;
 			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
 			
 			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
@@ -939,7 +1053,8 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		if (sender == mprView3)
 		{
 			float angle = mprView3.angleMPR;
-			XYZ vector, rotationVector;
+            XYZ vector;
+            XYZ rotationVector;
 			rotationVector.x = cos[ 6];	rotationVector.y = cos[ 7];	rotationVector.z = cos[ 8];
 			
 			vector.x = cos[ 3];	vector.y = cos[ 4];	vector.z = cos[ 5];
@@ -968,7 +1083,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		{
 			[mprView1 restoreCamera];
 			
-			if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
+			if (clippingRangeMode == MPR_PROJECTION_MODE_VR)
 			{
 				[mprView1.vrView setOpacity: [sender.vrView currentOpacityArray]];
 				[mprView1.vrView setWLWW: l : w];
@@ -981,7 +1096,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		{
 			[mprView2 restoreCamera];
 			
-			if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
+			if (clippingRangeMode == MPR_PROJECTION_MODE_VR)
 			{
 				[mprView2.vrView setOpacity: [sender.vrView currentOpacityArray]];
 				[mprView2.vrView setWLWW: l : w];
@@ -994,7 +1109,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		{
 			[mprView3 restoreCamera];
 			
-			if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
+			if (clippingRangeMode == MPR_PROJECTION_MODE_VR)
 			{
 				[mprView3.vrView setOpacity: [sender.vrView currentOpacityArray]];
 				[mprView3.vrView setWLWW: l : w];
@@ -1374,27 +1489,27 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 
 - (id) prepareObjectForUndo:(NSString*) string
 {
-    //	if ([string isEqualToString: @"roi"])
-    //	{
-    //		NSMutableArray	*rois = [NSMutableArray array];
-    //		
-    //		for( int i = 0; i < maxMovieIndex+1; i++)
-    //		{
-    //			NSMutableArray *array = [NSMutableArray array];
-    //			for( NSArray *ar in roiList[ i])
-    //			{
-    //				NSMutableArray	*a = [NSMutableArray array];
-    //				
-    //				for( ROI *r in ar)
-    //					[a addObject: [[r copy] autorelease]];
-    //				
-    //				[array addObject: a];
-    //			}
-    //			[rois addObject: array];
-    //		}
-    //		
-    //		return [NSDictionary dictionaryWithObjectsAndKeys: string, @"type", rois, @"rois", nil];
-    //	}
+//	if ([string isEqualToString: @"roi"])
+//	{
+//		NSMutableArray	*rois = [NSMutableArray array];
+//
+//		for( int i = 0; i < maxMovieIndex+1; i++)
+//		{
+//			NSMutableArray *array = [NSMutableArray array];
+//			for( NSArray *ar in roiList[ i])
+//			{
+//				NSMutableArray	*a = [NSMutableArray array];
+//
+//				for( ROI *r in ar)
+//					[a addObject: [[r copy] autorelease]];
+//
+//				[array addObject: a];
+//			}
+//			[rois addObject: array];
+//		}
+//
+//		return [NSDictionary dictionaryWithObjectsAndKeys: string, @"type", rois, @"rois", nil];
+//	}
 	
 	if ([string isEqualToString: @"mprCamera"] && mprView1.camera && mprView2.camera && mprView3.camera)
 	{
@@ -1446,7 +1561,8 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 			
 			[self updateViewsAccordingToFrame: nil];
 		}
-        else if ([[[u lastObject] objectForKey: @"type"] isEqualToString:@"curvedPath"]) {
+        else if ([[[u lastObject] objectForKey: @"type"] isEqualToString:@"curvedPath"])
+        {
 			self.curvedPath = [NSKeyedUnarchiver unarchiveObjectWithData:[[u lastObject] objectForKey:@"curvedPath"]];
 			mprView1.curvedPath = curvedPath;
 			mprView2.curvedPath = curvedPath;
@@ -1818,7 +1934,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	mprView2.camera.forceUpdate = YES;
 	mprView3.camera.forceUpdate = YES;
 	
-	if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
+	if (clippingRangeMode == MPR_PROJECTION_MODE_VR)
 	{
 		[mprView1 setCLUT: nil :nil :nil];
 		[mprView2 setCLUT: nil :nil :nil];
@@ -1841,7 +1957,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	if ([str isEqualToString:NSLocalizedString(@"No CLUT", nil)])
 	{
-		if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
+		if (clippingRangeMode == MPR_PROJECTION_MODE_VR)
 		{
 			[mprView1.vrView setCLUT: nil :nil :nil];
 			
@@ -1915,7 +2031,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 				blue[i] = [[array objectAtIndex: i] longValue];
 			}
 			
-			if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
+			if (clippingRangeMode == MPR_PROJECTION_MODE_VR)
 			{
 				[mprView1.vrView setCLUT:red :green: blue];
                 
@@ -1985,8 +2101,8 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     {
         [[OpacityPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
     }
-    //    [[OpacityPopup menu] addItem: [NSMenuItem separatorItem]];
-    //    [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
+//    [[OpacityPopup menu] addItem: [NSMenuItem separatorItem]];
+//    [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
 	
 	[[[OpacityPopup menu] itemAtIndex:0] setTitle:curOpacityMenu];
 }
@@ -2010,9 +2126,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 
 - (void)ApplyOpacityString:(NSString*)str
 {
-	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
+	if (clippingRangeMode == MPR_PROJECTION_MODE_MIP ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MEAN ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MIN_IP)
 	{
 		[self Apply2DOpacityString:str];
 	}
@@ -2191,8 +2307,12 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	float halfthicknessChange = ((previousThickness - clippingRangeThickness) /2.) * [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"];
 	
-	v.camera.position = [Point3D pointWithX: position.x + halfthicknessChange*cos[ 6] y:position.y + halfthicknessChange*cos[ 7] z:position.z + halfthicknessChange*cos[ 8]];
-	v.camera.focalPoint = [Point3D pointWithX: v.camera.position.x + cos[ 6] y: v.camera.position.y + cos[ 7] z:v.camera.position.z + cos[ 8]];
+	v.camera.position = [Point3D pointWithX: position.x + halfthicknessChange*cos[ 6]
+                                          y: position.y + halfthicknessChange*cos[ 7]
+                                          z: position.z + halfthicknessChange*cos[ 8]];
+	v.camera.focalPoint = [Point3D pointWithX: v.camera.position.x + cos[ 6]
+                                            y: v.camera.position.y + cos[ 7]
+                                            z: v.camera.position.z + cos[ 8]];
 	
 	// Update all views
 	[mprView1 restoreCamera];
@@ -2232,14 +2352,14 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[self didChangeValueForKey:@"clippingRangeThicknessInMm"];
 }
 
-- (void) setClippingRangeMode:(CPRProjectionMode) f // TODO: CPRProjectionMode
+- (void) setClippingRangeMode:(MPRProjectionMode) f
 {
 	float pWL, pWW;
 	float bpWL, bpWW;
 	
-	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
+	if (clippingRangeMode == MPR_PROJECTION_MODE_MIP ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MEAN ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MIN_IP)
 	{
 		[mprView1 getWLWW: &pWL :&pWW];
 		[blendedMprView1 getWLWW: &bpWL :&bpWW];
@@ -2250,16 +2370,16 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[mprView1.vrView getBlendingWLWW: &bpWL :&bpWW];
 	}
 	
-	_clippingRangeMode = f;
+	clippingRangeMode = f;
 	
-	[mprView1.vrView setMode: _clippingRangeMode];
-	[mprView1.vrView setBlendingMode: _clippingRangeMode];
+	[mprView1.vrView setMode: clippingRangeMode];
+	[mprView1.vrView setBlendingMode: clippingRangeMode];
     
-	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
+	if (clippingRangeMode == MPR_PROJECTION_MODE_MIP ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MEAN ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MIN_IP)
 	{
-		if (_clippingRangeMode == CPR_PROJECTION_MODE_MEAN)
+		if (clippingRangeMode == MPR_PROJECTION_MODE_MEAN)
 			setvtkMeanIPMode( 1);
 		else
 			setvtkMeanIPMode( 0);
@@ -2300,9 +2420,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	[mprView1 restoreCamera];
 	mprView1.camera.forceUpdate = YES;
-	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
+	if (clippingRangeMode == MPR_PROJECTION_MODE_MIP ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MEAN ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MIN_IP)
 	{
 		[mprView1 setWLWW: pWL :pWW];
 		[blendedMprView1 setWLWW: bpWL :bpWW];
@@ -2312,13 +2432,13 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[mprView1.vrView setWLWW: pWL :pWW];
 		[mprView1.vrView setBlendingWLWW: bpWL :bpWW];
 	}
-	[mprView1 updateViewMPR];   // #i18 stack 8
+	[mprView1 updateViewMPR];   // #i18 stack 8, #g93
 	
 	[mprView2 restoreCamera];
 	mprView2.camera.forceUpdate = YES;
-	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
+	if (clippingRangeMode == MPR_PROJECTION_MODE_MIP ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MEAN ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MIN_IP)
 	{
 		[mprView2 setWLWW: pWL :pWW];
 		[blendedMprView2 setWLWW: bpWL :bpWW];
@@ -2332,9 +2452,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	[mprView3 restoreCamera];
 	mprView3.camera.forceUpdate = YES;
-	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
+	if (clippingRangeMode == MPR_PROJECTION_MODE_MIP ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MEAN ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MIN_IP)
 	{
 		[mprView3 setWLWW: pWL :pWW];
 		[blendedMprView3 setWLWW: bpWL :bpWW];
@@ -2346,7 +2466,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	}
 	[mprView3 updateViewMPR];
     
-    [cprView setClippingRangeMode:_clippingRangeMode];
+    [cprView setClippingRangeMode:clippingRangeMode];
 }
 
 #pragma mark - Export	
@@ -3726,7 +3846,10 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	float sambient, sdiffuse, sspecular, sspecularpower;	
 	[hiddenVRView getShadingValues: &sambient :&sdiffuse :&sspecular :&sspecularpower];
 	
-	if (sambient != ambient || sdiffuse != diffuse || sspecular != specular || sspecularpower != specularpower)
+	if (sambient != ambient ||
+        sdiffuse != diffuse ||
+        sspecular != specular ||
+        sspecularpower != specularpower)
 	{
 		[hiddenVRView setShadingValues: ambient :diffuse :specular :specularpower];
 		[shadingValues setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Ambient: %2.2f\nDiffuse: %2.2f\nSpecular :%2.2f, %2.2f", nil), ambient, diffuse, specular, specularpower]];
@@ -3849,14 +3972,16 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 {
     NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
     
-//	if ([itemIdent isEqualToString: @"tbLOD"])
-//	{
-//		[toolbarItem setLabel: NSLocalizedString(@"LOD",nil)];
-//		[toolbarItem setPaletteLabel:NSLocalizedString( @"LOD",nil)];
-//		[toolbarItem setView: tbLOD];
-//      [toolbarItem setMinSize: tbLOD.frame.size];
-//    }
-//    else
+#if 0
+	if ([itemIdent isEqualToString: @"tbLOD"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"LOD",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"LOD",nil)];
+		[toolbarItem setView: tbLOD];
+      [toolbarItem setMinSize: tbLOD.frame.size];
+    }
+    else
+#endif
 	if ([itemIdent isEqualToString: @"tbCPRType"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Reformation Type",nil)];
@@ -3911,29 +4036,31 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(saveBezierPath:)];
     }
-//	else if ([itemIdent isEqualToString: @"BestRendering.pdf"])
-//	{
-//		[toolbarItem setLabel: NSLocalizedString(@"Best",nil)];
-//		[toolbarItem setPaletteLabel:NSLocalizedString(@"Best",nil)];
-//		[toolbarItem setImage: [NSImage imageNamed: @"BestRendering.pdf"]];
-//		[toolbarItem setTarget: self];
-//		[toolbarItem setAction: @selector(bestRendering:)];
-//    }
-//	else if ([itemIdent isEqualToString: @"QTExport.pdf"])
-//	{
-//		[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
-//		[toolbarItem setPaletteLabel:NSLocalizedString(@"Movie Export",nil)];
-//		[toolbarItem setImage: [NSImage imageNamed: @"QTExport.icns"]];
-//		[toolbarItem setTarget: self];
-//		[toolbarItem setAction: @selector(exportQuicktime:)];
-//    }
-//	else if ([itemIdent isEqualToString: @"tbBlending"])
-//	{
-//		[toolbarItem setLabel: NSLocalizedString(@"Fusion",nil)];
-//		[toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
-//		[toolbarItem setView: tbBlending];
-//      [toolbarItem setMinSize: tbBlending.frame.size];
-//    }
+#if 0
+	else if ([itemIdent isEqualToString: @"BestRendering.pdf"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Best",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Best",nil)];
+		[toolbarItem setImage: [NSImage imageNamed: @"BestRendering.pdf"]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(bestRendering:)];
+    }
+	else if ([itemIdent isEqualToString: @"QTExport.pdf"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Movie Export",nil)];
+		[toolbarItem setImage: [NSImage imageNamed: @"QTExport.pdf"]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(exportQuicktime:)];
+    }
+	else if ([itemIdent isEqualToString: @"tbBlending"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Fusion",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
+		[toolbarItem setView: tbBlending];
+      [toolbarItem setMinSize: tbBlending.frame.size];
+    }
+#endif
 	else if ([itemIdent isEqualToString: @"tbThickSlab"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Thick Slab",nil)];
@@ -4227,7 +4354,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		
 		if (iww != [blendedMprView1 curWW] || iwl != [blendedMprView1 curWL])
 		{
-			if (_clippingRangeMode == CPR_PROJECTION_MODE_VR)
+			if (clippingRangeMode == MPR_PROJECTION_MODE_VR)
 			{
 				[blendedMprView1 setWLWW:128 :256];
 				[blendedMprView2 setWLWW:128 :256];
@@ -4304,9 +4431,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	[hiddenVRController addMoviePixList: pix :vData];	
     
-	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
+	if (clippingRangeMode == MPR_PROJECTION_MODE_MIP ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MEAN ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MIN_IP)
     {
 		[mprView1.vrView prepareFullDepthCapture];
     }
@@ -4329,9 +4456,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	[hiddenVRController setMovieFrame: m];
 	
-	if (_clippingRangeMode == CPR_PROJECTION_MODE_MIP ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MEAN ||
-        _clippingRangeMode == CPR_PROJECTION_MODE_MIN_IP)
+	if (clippingRangeMode == MPR_PROJECTION_MODE_MIP ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MEAN ||
+        clippingRangeMode == MPR_PROJECTION_MODE_MIN_IP)
     {
 		[mprView1.vrView prepareFullDepthCapture];
     }
@@ -4453,9 +4580,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 	if (curvedPathCreationMode)
 		curvedPathColor = [NSColor colorWithDeviceRed: 1.0
-                                                 green: 0.1
-                                                  blue: 0
-                                                 alpha:1];
+                                                green: 0.1
+                                                 blue: 0.0
+                                                alpha: 1.0];
 	else
 		curvedPathColor = [NSColor colorWithDeviceRed:[[NSUserDefaults standardUserDefaults] floatForKey: @"CPRColorR"]
                                                  green:[[NSUserDefaults standardUserDefaults] floatForKey: @"CPRColorG"]
@@ -4574,20 +4701,36 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     switch ( viewsPosition)
     {
         case NormalPosition:
-            [verticalSplit setPosition:([verticalSplit minPossiblePositionOfDividerAtIndex:0]+[verticalSplit maxPossiblePositionOfDividerAtIndex:0])/2 ofDividerAtIndex:0];
-            [horizontalSplit2 setPosition:([horizontalSplit2 minPossiblePositionOfDividerAtIndex:0]+[horizontalSplit2 maxPossiblePositionOfDividerAtIndex:0])/2 ofDividerAtIndex:0];
+            [verticalSplit setPosition:([verticalSplit minPossiblePositionOfDividerAtIndex:0] +
+                                        [verticalSplit maxPossiblePositionOfDividerAtIndex:0])/2
+                      ofDividerAtIndex:0];
+
+            [horizontalSplit2 setPosition:([horizontalSplit2 minPossiblePositionOfDividerAtIndex:0] +
+                                           [horizontalSplit2 maxPossiblePositionOfDividerAtIndex:0])/2
+                         ofDividerAtIndex:0];
+
             cprView.rotation = 0;
         break;
         
         case VerticalPosition:
-            [verticalSplit setPosition:([verticalSplit minPossiblePositionOfDividerAtIndex:0]+[verticalSplit maxPossiblePositionOfDividerAtIndex:0])/2 ofDividerAtIndex:0];
-            [horizontalSplit2 setPosition: [horizontalSplit2 minPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
+            [verticalSplit setPosition:([verticalSplit minPossiblePositionOfDividerAtIndex:0] +
+                                        [verticalSplit maxPossiblePositionOfDividerAtIndex:0])/2
+                      ofDividerAtIndex:0];
+            
+            [horizontalSplit2 setPosition: [horizontalSplit2 minPossiblePositionOfDividerAtIndex:0]
+                         ofDividerAtIndex:0];
+            
             cprView.rotation = 90;
         break;
         
         case HorizontalPosition:
-             [horizontalSplit2 setPosition:([horizontalSplit2 minPossiblePositionOfDividerAtIndex:0]+[horizontalSplit2 maxPossiblePositionOfDividerAtIndex:0])/2 ofDividerAtIndex:0];
-             [verticalSplit setPosition:[verticalSplit minPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
+             [horizontalSplit2 setPosition:([horizontalSplit2 minPossiblePositionOfDividerAtIndex:0] +
+                                            [horizontalSplit2 maxPossiblePositionOfDividerAtIndex:0])/2
+                          ofDividerAtIndex:0];
+            
+             [verticalSplit setPosition:[verticalSplit minPossiblePositionOfDividerAtIndex:0]
+                       ofDividerAtIndex:0];
+            
             cprView.rotation = 0;
         break;
     }
@@ -5099,8 +5242,8 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 {
     if ([centerline count] && [[curvedPath nodes] count] > 2)
         return YES;
-    else
-        return NO;
+
+    return NO;
 }
 
 - (IBAction)onSliderMove:(id)sender

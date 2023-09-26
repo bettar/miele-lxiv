@@ -1994,7 +1994,7 @@ PixelRepresentation
 	if (flag)
 	{
 		[self updateMetaInformationWithTransferSyntax:ts aet:aet];
-		[container addPremable];
+		[container addPreamble];
 	}
 
 	NSMutableArray *mutableKeys = [NSMutableArray arrayWithArray:[attributes allKeys]];
@@ -2102,7 +2102,7 @@ PixelRepresentation
                 NSLog(@"updateMetaInformation newTransferSyntax:%@", ts.description);
 
             [self updateMetaInformationWithTransferSyntax:ts aet:aet];
-            [container addPremable];
+            [container addPreamble];
         }
         
         //set character set if necessary

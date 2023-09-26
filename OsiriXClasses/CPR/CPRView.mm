@@ -242,12 +242,12 @@
     _stretchedView.displayInfo = displayInfo;
 }
 
-- (CPRProjectionMode)clippingRangeMode
+- (MPRProjectionMode)clippingRangeMode
 {
     return [[self reformationView] clippingRangeMode];
 }
 
-- (void)setClippingRangeMode:(CPRProjectionMode)clippingRangeMode
+- (void)setClippingRangeMode:(MPRProjectionMode)clippingRangeMode
 {
     _straightenedView.clippingRangeMode = clippingRangeMode;
     _stretchedView.clippingRangeMode = clippingRangeMode;

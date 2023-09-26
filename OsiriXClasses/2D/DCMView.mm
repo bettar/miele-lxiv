@@ -82,6 +82,7 @@ const char *stringCRSpaces = "\n                                                
 #define WITH_DRAW_OVERFLOW_FUNCTION
 
 @class MPRDCMView;
+@class CPRMPRDCMView; // Debug #g93
 
 // kvImageHighQualityResampling
 #define QUALITY     kvImageNoFlags
@@ -338,10 +339,12 @@ static void DrawGLImageTile (unsigned long drawType,
                              Boolean texturesOverlap,
                              Boolean textureRectangle)
 {
-//    NSLog(@"%s %d, img WH:(%.1f,%.1f), tex WH:(%.1f,%.1f), offset:(%.1f,%.1f)", __FUNCTION__, __LINE__,
-//          imageWidth, imageHeight,
-//          _textureWidth, _textureHeight,
-//          _offsetX, _offsetY);
+#if 1
+    NSLog(@"%s %d, img WH:(%.1f,%.1f), tex WH:(%.1f,%.1f), offset:(%.1f,%.1f)", __FUNCTION__, __LINE__,
+          imageWidth, imageHeight,
+          _textureWidth, _textureHeight,
+          _offsetX, _offsetY);
+#endif
 
     // left edge of poly: offset is in image local coordinates convert to world coordinates
 	float startX = (_offsetX - imageWidth * 0.5f) * zoom;
@@ -8738,7 +8741,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 {
 #ifdef WITH_OPENGL_32
     [self setShaderProgramOverlayLine];
-    renderer_reset_scale_translate_MV(scaleFactor, translationOffset);
+    renderer_reset_scale_translate_MV(scaleFactor, translationOffset); // TBC related to #g93 ? No effect ?
 
     [self setShaderProgramOverlay];
 #endif
@@ -8809,7 +8812,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #endif // WITH_OPENGL_32
 
 #ifdef WITH_OPENGL_32
-    [self reset_fontShader_P:rrr]; // FIXME: ok, but it shouldn't be here
+    [self reset_fontShader_P:rrr]; // FIXME: ok, but it shouldn't be here. TBC no effect on #g93
 #else
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
@@ -8820,17 +8823,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
     //NSLog(@"DCMView.mm drawRectIn %d, rotation(deg):%.1f", __LINE__, _rotation);
 #ifdef WITH_OPENGL_32
-     CGSize scaleFactor = rrr.size;
-     float rotationAngleDeg = _rotation;
-     float signX = xFlipped ? -1.0 : 1.0;
-     float signY = yFlipped ? -1.0 : 1.0;
+    CGSize scaleFactor = rrr.size;
+    float rotationAngleDeg = _rotation;
+    float signX = xFlipped ? -1.0 : 1.0;
+    float signY = yFlipped ? -1.0 : 1.0;
 
-     glm::mat4 MV = glm::mat4(1.0);
-     MV = glm::scale(MV, glm::vec3(signX * 2.0f / scaleFactor.width,
+    glm::mat4 MV = glm::mat4(1.0);
+    MV = glm::scale(MV, glm::vec3(signX * 2.0f / (scaleFactor.width),
                                   -signY * 2.0f / scaleFactor.height,
                                    1.0f));
      
-     MV = glm::rotate(MV, glm::radians(rotationAngleDeg), glm::vec3(0,0,1));
+    MV = glm::rotate(MV, glm::radians(rotationAngleDeg), glm::vec3(0,0,1));
+    // TODO: use renderer_reset_scale_rotate_MV()
 #else
     glLoadIdentity();
     glScalef ( 2.0f / (xFlipped ? -(rrr.size.width) : rrr.size.width),
@@ -8856,6 +8860,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
     [scene.imageProgram Bind];
     [scene.imageProgram setUniformMatrix: glm::value_ptr(MV) name:"uModelViewM"];
+
+    #ifndef NDEBUG // debug #g93
+    if ([self class] == [CPRMPRDCMView class]) // Debug #g93
+        NSLog(@"%s %d #g93, self:%p %@, rrr:%@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]), NSStringFromRect(rrr));
+    #endif
 #else
     glTranslatef( origin.x - offset.x,
 				 -origin.y - offset.y,
@@ -8901,7 +8910,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             [scene.imageProgram setUniformi:0 name:"uTextureS2D"];
 #endif
 
-            //NSLog(@"DCMView.mm %d, drawRectIn, class:%@, self:%p", __LINE__, NSStringFromClass([self class]), self);
+            #ifndef NDEBUG // debug #g93
+            NSLog(@"DCMView.mm %d, drawRectIn, class:%@, self:%p, WH:(%li,%li)", __LINE__,
+                  NSStringFromClass([self class]), self, curDCM.pwidth, curDCM.pheight); // #g93
+            #endif
+
             DrawGLImageTile(GL_TRIANGLE_STRIP, curDCM.pwidth, curDCM.pheight, scaleValue,	//
                                 currTextureWidth, currTextureHeight, // draw this single texture on two tris
                                 offsetX,  offsetY,
@@ -10459,6 +10472,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         return;
 
     //NSLog(@"%s %d, self:%p %@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]));
+#ifndef NDEBUG // debug #g93
+    if ([self class] == [CPRMPRDCMView class]) // Debug #g93
+        NSLog(@"%s %d Aa %@ %p, WH:(%li,%li)", __FUNCTION__, __LINE__,
+              NSStringFromClass([self class]), self, curDCM.pwidth, curDCM.pheight);
+#endif
 
     @synchronized (self)
 	{
@@ -10469,7 +10487,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         if (previousScalingFactor != self.window.backingScaleFactor &&
 			self.window.backingScaleFactor != 0)
         {
-            if (previousScalingFactor)
+            if (previousScalingFactor != 0.0)
             {
                 scaleValue *= self.window.backingScaleFactor / previousScalingFactor;
                 origin.x *= self.window.backingScaleFactor / previousScalingFactor;
@@ -10494,8 +10512,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         checkOpenGLErrors(__LINE__);
 #ifdef WITH_OPENGL_32
         [GLScene setCurrentScene: &scene];
+        //[[self openGLContext] makeCurrentContext]; // try to fix #g93 it makes it worse
+#endif
+       
+#ifndef NDEBUG // debug #g93
+        if ([self class] == [CPRMPRDCMView class]) // Debug #g93
+            NSLog(@"%s %d Ab, %@ %p, WH:(%li,%li)", __FUNCTION__, __LINE__,
+                  NSStringFromClass([self class]), self, curDCM.pwidth, curDCM.pheight);
 #endif
 
+#if 0 // Debug #g93
+        backingBounds.size.width += 200; // ng it makes the whole drawing expand beyond the right margin
+#endif
         [self drawRect: backingBounds
            withContext: [self openGLContext]];
 	}
@@ -11984,7 +12012,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 - (void) drawRect:(NSRect)aRect
       withContext:(NSOpenGLContext *)ctx
 {
-    //NSLog(@"%s %d, self:%p %@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]));
+    NSLog(@"%s %d, self:%p %@, rect:%@, tw:%li", __FUNCTION__, __LINE__,
+          self, NSStringFromClass([self class]), NSStringFromRect(aRect),
+          textureWidth); // #g93
 
 #ifdef WITH_OPENGL_32
     if (needToUpdateProjections) {
@@ -12026,7 +12056,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		drawLock = nil;
 	}
 	
-    [[self openGLContext] makeCurrentContext];
+    [[self openGLContext] makeCurrentContext]; // no effect on #g93
     
 #ifndef WITH_OPENGL_32
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -12039,6 +12069,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 //        if ([self class] == [MPRDCMView class])
 //            NSLog(@"%s %d, %p needToLoadTexture:%d", __FUNCTION__, __LINE__, self, needToLoadTexture);
 
+#ifndef NDEBUG // debug #g93
+        if ([self class] == [CPRMPRDCMView class]) // Debug #g93
+            NSLog(@"%s %d B, %@ %p, WH:(%li,%li)", __FUNCTION__, __LINE__,
+                  NSStringFromClass([self class]), self, curDCM.pwidth, curDCM.pheight);
+#endif
+        
         if (needToLoadTexture)// || iChatRunning)
 			[self loadTexturesCompute];
 		
@@ -12071,14 +12107,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         // ( 1, 1) ------> (width,height)
 		glViewport(0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height);
 
+#ifndef NDEBUG // Debug #g93
+        glClearColor(0.0f, 0.0f, 0.5f, 1.0f); // ok dark blue
+#else
         if (self.whiteBackground)
             glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         else
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+#endif
         
-		glClear (GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 
-#ifdef WITH_OPENGL_32
+#ifdef WITH_OPENGL_32 // TBC is this related to issue #g93 ?
 //  #ifdef WITH_GLM
 //        // Send our transformation to the currently bound shader,
 //        // in the "MVP" uniform
@@ -12093,12 +12133,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                 syncOnLocationImpossible == NO)// && ctx!=_alternateContext)
 			{
 				glBlendFunc(GL_ONE, GL_ONE);    checkOpenGLErrors(__LINE__);
-				glEnable( GL_BLEND);            checkOpenGLErrors(__LINE__);
+				glEnable( GL_BLEND);
 			}
 			else
 			{
 				glBlendFunc(GL_ONE, GL_ONE);    checkOpenGLErrors(__LINE__);
-				glDisable( GL_BLEND);           checkOpenGLErrors(__LINE__);
+				glDisable( GL_BLEND);
 			}
             
             checkOpenGLErrors(__LINE__);
@@ -12114,7 +12154,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                 :offset
                                 :textureX
                                 :textureY
-                                :textureWidth
+                                :textureWidth // #g93
                                 :textureHeight];
 
 			BOOL noBlending = NO;
@@ -12155,7 +12195,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     translationOffset.x = -drawingFrameRect.size.width;
                     translationOffset.y = -drawingFrameRect.size.height;
 
-                    [self reset_scale_translate_overlay_MV:scaleFactor
+                    [self reset_scale_translate_overlay_MV:scaleFactor  // TBC related to #g93 ?
                                                  translate:translationOffset];
 						
 					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -12499,7 +12539,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 																	object: self
 																  userInfo: userInfo];
 #pragma mark subclasses
-				[self subDrawRect: aRect];
+				[self subDrawRect: aRect]; // Unrelated to #g93 because the image has already been drawn
 
                 self.scaleValue = scaleValue;
 				
@@ -15026,6 +15066,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	return NO;
 }
 
+// *tX, *tY, *tW, *tH are output parameters !!!
 - (GLuint *) loadTextureIn: (GLuint *) texture
                   blending: (BOOL) blending
                   colorBuf: (unsigned char**) colorBufPtr
@@ -15034,13 +15075,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                   redTable: (unsigned char*) rT
                 greenTable: (unsigned char*) gT
                  blueTable: (unsigned char*) bT
-              textureWidth: (long*) tW
+              textureWidth: (long*) tW  // #g93 out parameter
              textureHeight: (long*) tH
          resampledBaseAddr: (char**) rAddr
      resampledBaseAddrSize: (int*) rBAddrSize
 {
-    //NSLog(@"=== DCMView.mm %d loadTextureIn >>> START %@ %p", __LINE__, NSStringFromClass([self class]), self);
-	// *tX, *tY, *tW, *tH are output parameters ?
+    NSLog(@"=== DCMView.mm %d loadTextureIn >>> START %@ %p", __LINE__, NSStringFromClass([self class]), self);
     checkOpenGLErrors(__LINE__);
 
 	unsigned char* currentAlphaTable = alphaTable;
@@ -15105,7 +15145,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		return texture;	// == nil
     }
 	
-	BOOL isRGB = curDCM.isRGB;
+#ifndef NDEBUG // debug #g93
+    if ([self class] == [CPRMPRDCMView class]) // Debug #g93
+        NSLog(@"DCMView.mm %d D loadTextureIn %@ %p, WH:(%li,%li)", __LINE__, NSStringFromClass([self class]), self, curDCM.pwidth, curDCM.pheight); // 0,0
+#endif
+
+    BOOL isRGB = curDCM.isRGB;
 	
 	if ([curDCM transferFunctionPtr])
 		intFULL32BITPIPELINE = NO;
@@ -15452,6 +15497,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
         *tW = curDCM.pwidth;
 		rowBytes = curDCM.pwidth * 4;
+        
+#ifndef NDEBUG // debug #g93
+        if ([self class] == [CPRMPRDCMView class]) // Debug #g93
+            NSLog(@"%s %d E, %@ %p, WH:(%li,%li)", __FUNCTION__, __LINE__,
+                  NSStringFromClass([self class]), self, curDCM.pwidth, curDCM.pheight);
+#endif
+        
 		computedfImage = [curDCM computefImage];
 		baseAddr = (char *)computedfImage;
 	}
@@ -16017,6 +16069,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 {
     [drawLock lock];
 
+#ifndef NDEBUG // debug #g93
+    if ([self class] == [CPRMPRDCMView class]) // Debug #g93
+        NSLog(@"DCMView.mm %d Ca loadTexturesCompute %@ %p, WH:(%li,%li)", __LINE__, NSStringFromClass([self class]), self, curDCM.pwidth, curDCM.pheight);
+#endif
+    
 	@try
 	{
 		pTextureName = [self loadTextureIn: pTextureName
@@ -16027,17 +16084,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                   redTable: redTable
                                 greenTable: greenTable
                                  blueTable: blueTable
-                              textureWidth: &textureWidth
+                              textureWidth: &textureWidth // #g93 out parameter
                              textureHeight: &textureHeight
                          resampledBaseAddr: &resampledBaseAddr
                      resampledBaseAddrSize: &resampledBaseAddrSize];
         
-//#ifndef NDEBUG
-//        if (pTextureName)
-//            NSLog(@"%s %d %@ %p, pTextureName: %p %u", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, pTextureName, *pTextureName);
-//        else
-//            NSLog(@"%s %d %@ %p, pTextureName is NULL", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
-//#endif
+#ifndef NDEBUG // debug #g93
+        if ([self class] == [CPRMPRDCMView class]) // Debug #g93
+            NSLog(@"DCMView.mm %d Cb loadTextureIn %@ %p, WH:(%li,%li)", __LINE__, NSStringFromClass([self class]), self, curDCM.pwidth, curDCM.pheight);
+#endif
+        
+#ifndef NDEBUG
+        if (pTextureName)
+            NSLog(@"%s %d %@ %p, pTextureName: %p %u", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, pTextureName, *pTextureName);
+        else
+            NSLog(@"%s %d %@ %p, pTextureName is NULL", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
+#endif
 
 		if (blendingView)
 		{
@@ -16268,8 +16330,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
     [[self openGLContext] makeCurrentContext];
 #ifndef NDEBUG
-    NSLog(@"%s %d, class %@, OpenGL legacy:%i", __FUNCTION__, __LINE__,
-          NSStringFromClass([self class]), checkOGLVersion());
+    {
+        bool doneOnceOnly = false;
+        if (!doneOnceOnly)
+        {
+            NSLog(@"%s %d, class %@, OpenGL legacy:%i", __FUNCTION__, __LINE__,
+                  NSStringFromClass([self class]), checkOGLVersion());
+            doneOnceOnly = true;
+        }
+    }
 #endif
     return self;
 }
@@ -16460,7 +16529,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);  // hint for antialiasing
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // byte alignment, otherwise default is 4
+#ifndef NDEBUG // Debug #g93
+    glClearColor(0.0f, 0.5f, 0.0f, 1.0f); // green but it doesn't show up anywhere
+#else
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+#endif
 
     fontColor = nil;
     

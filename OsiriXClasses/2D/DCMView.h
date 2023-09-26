@@ -138,7 +138,7 @@ typedef NS_ENUM(NSInteger, BlendingMode2DType) {
 	float slicePoint3D[ 3];
 	float syncRelativeDiff;
 
-    //long			syncSeriesIndex;
+    //long syncSeriesIndex;
 	
     float mprVector[ 3];
     float mprPoint[ 3];
@@ -358,6 +358,10 @@ typedef NS_ENUM(NSInteger, BlendingMode2DType) {
     NSArray *cleanedOutDcmPixArray;
     NSTimeInterval firstDisplay;
     NSString *mousePosUSRegion;
+
+#ifdef WITH_OPENGL_32
+    //glm::mat4 MV; // Tentative #g93
+#endif
 }
 
 #if 0 //def WITH_OPENGL_32
@@ -639,7 +643,8 @@ typedef NS_ENUM(NSInteger, BlendingMode2DType) {
 - (void) makeTextureObjectFromImage:(NSImage*)image
                    forTexture:(GLuint*)texName
                        buffer:(GLubyte*)buffer
-                  textureUnit:(GLuint)textureUnit;
+                  //textureUnit:(GLuint)textureUnit
+                            ;
 
 - (void) stopROIEditingForce:(BOOL) force;
 - (void) subDrawRect: (NSRect)aRect;     // Subclassable, default does nothing.

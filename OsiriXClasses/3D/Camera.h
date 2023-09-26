@@ -41,7 +41,6 @@
 	BOOL forceUpdate;
 }
 
-
 @property int index;
 @property (readwrite, copy) Point3D *position;
 @property (readwrite, copy) Point3D *focalPoint;

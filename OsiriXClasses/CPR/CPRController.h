@@ -40,11 +40,12 @@
 	IBOutlet NSObjectController *ob;
 	
 	// To be able to use Cocoa bindings with toolbar...
-	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading, *tbMovie, *tbBlending, *tbSyncZoomLevel, *tbHighResolution;
-	
+    IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading, *tbMovie, *tbBlending, *tbSyncZoomLevel;
+    IBOutlet NSView *tbHighResolution;
+
     IBOutlet NSView *tbPathAssistant;
     IBOutlet NSView *testView;
-    
+
 	NSToolbar *toolbar;
 	
 	IBOutlet NSMatrix *toolsMatrix;
@@ -57,6 +58,7 @@
     IBOutlet NSSplitView *horizontalSplit1;
     IBOutlet NSSplitView *horizontalSplit2;
     IBOutlet NSSplitView *verticalSplit;
+
     IBOutlet NSView *tbStraightenedCPRAngle;
     double straightenedCPRAngle; // this is in degrees, the CPRView uses radians
     IBOutlet NSView *tbCPRType;
@@ -100,6 +102,7 @@
 	DCMPix *originalPix;
 	NSData *volumeData[ MAX4D];
 	BOOL avoidReentry;
+
 	BOOL highResolutionMode;
     
 	// 4D Data support
@@ -140,7 +143,6 @@
 	// Clipping Range
     float dcmIntervalMin, dcmIntervalMax;
 	float clippingRangeThickness;
-	//int clippingRangeMode; // TODO: CPRProjectionMode
 	
 	NSArray *wlwwMenuItems;
 	
@@ -160,8 +162,8 @@
 	NSMutableArray *_delegateDisplayInfoDebugging;
 }
 
-@property (nonatomic) float clippingRangeThickness, dcmIntervalMin, dcmIntervalMax, blendingPercentage;
-@property (nonatomic) CPRProjectionMode clippingRangeMode;
+@property (nonatomic) float clippingRangeThickness, blendingPercentage, dcmIntervalMin, dcmIntervalMax;
+@property (nonatomic) MPRProjectionMode clippingRangeMode;
 @property (nonatomic) int mouseViewID;
 @property (nonatomic) int curMovieIndex, maxMovieIndex;
 @property (nonatomic) BlendingMode2DType blendingMode;
@@ -215,7 +217,9 @@
 - (void) setToolIndex: (ToolMode) toolIndex;
 - (float) getClippingRangeThicknessInMm;
 - (void) propagateWLWW:(DCMView*) sender;
+
 - (void) propagateOriginRotationAndZoomToTransverseViews: (CPRTransverseView*) sender;
+
 - (void)bringToFrontROI:(ROI*) roi;
 - (id) prepareObjectForUndo:(NSString*) string;
 - (void)createWLWWMenuItems;
@@ -236,13 +240,16 @@
 - (NSImage*) imageForROI: (ToolMode) i;
 - (void) setROIToolTag:(ToolMode) roitype;
 - (IBAction) roiGetInfo:(id) sender;
+
 - (void) delayedFullLODRendering: (id) sender;
 - (IBAction) saveBezierPath: (id) sender;
 - (IBAction) loadBezierPath: (id) sender;
 - (void) saveBezierPathToFile:(NSString*) f;
 - (void) loadBezierPathFromFile:(NSString*) f;
 - (NSDictionary*)exportDCMImage16bitWithWidth:(NSUInteger)width height:(NSUInteger)height fullDepth:(BOOL)fullDepth withDicomExport:(DICOMExport *)dicomExport; // dicomExport can be nil
+
 - (void) setupToolbar;
+
 - (void)removeNode;
 - (void)undoLastNodeRemoval;
 - (void)updateCurvedPathCost;

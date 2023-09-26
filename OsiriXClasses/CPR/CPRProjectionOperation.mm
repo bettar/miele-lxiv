@@ -31,7 +31,7 @@
 - (id)init
 {
     if ( (self = [super init]) ) {
-        _projectionMode = CPR_PROJECTION_MODE_NONE;
+        _projectionMode = MPR_PROJECTION_MODE_NONE;
     }
     return self;
 }
@@ -59,7 +59,7 @@
         if ([self isCancelled])
             return;
         
-		if (_projectionMode == CPR_PROJECTION_MODE_NONE) {
+		if (_projectionMode == MPR_PROJECTION_MODE_NONE) {
 			_generatedVolume = [_volumeData retain];
 			return;
 		}
@@ -71,7 +71,7 @@
         memcpy(floatBytes, CPRVolumeDataFloatBytes(&inlineBuffer), sizeof(float) * pixelsPerPlane);
         switch (_projectionMode)
         {
-            case CPR_PROJECTION_MODE_MIP:
+            case MPR_PROJECTION_MODE_MIP:
                 for (NSInteger i = 1; i < _volumeData.pixelsDeep; i++) {
                     if ([self isCancelled]) {
                         break;
@@ -80,7 +80,7 @@
                 }
                 break;
 
-            case CPR_PROJECTION_MODE_MIN_IP:
+            case MPR_PROJECTION_MODE_MIN_IP:
                 for (NSInteger i = 1; i < _volumeData.pixelsDeep; i++) {
                     if ([self isCancelled]) {
                         break;
@@ -89,7 +89,7 @@
                 }
                 break;
 
-            case CPR_PROJECTION_MODE_MEAN:
+            case MPR_PROJECTION_MODE_MEAN:
                 for (NSInteger i = 1; i < _volumeData.pixelsDeep; i++) {
                     if ([self isCancelled]) {
                         break;

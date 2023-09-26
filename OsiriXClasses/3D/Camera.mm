@@ -96,8 +96,6 @@
 	[super dealloc];
 }
 
-
-
 -(void) setClippingRangeFrom: (float)near To: (float)far
 {
 	self.clippingRangeNear = near;
@@ -168,13 +166,14 @@
 	wl = [[xml valueForKey:@"wl"] floatValue];
 	ww = [[xml valueForKey:@"ww"] floatValue];
     
-    for( int i = 0; i < 6; i++)
+    for (int i = 0; i < 6; i++)
     {
         N3Plane plane;
-        if( N3PlaneMakeWithDictionaryRepresentation( (CFDictionaryRef) [xml valueForKey: [NSString stringWithFormat: @"croppingPlanes %d", i]], &plane))
+        if (N3PlaneMakeWithDictionaryRepresentation( (CFDictionaryRef) [xml valueForKey: [NSString stringWithFormat: @"croppingPlanes %d", i]], &plane))
            [croppingPlanes replaceObjectAtIndex: i withObject: [NSValue valueWithN3Plane: plane]];
     }
-	fusionPercentage = [[xml valueForKey:@"fusionPercentage"] floatValue];
+
+    fusionPercentage = [[xml valueForKey:@"fusionPercentage"] floatValue];
 	return self;
 }
 

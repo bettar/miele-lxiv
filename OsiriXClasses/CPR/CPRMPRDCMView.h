@@ -41,15 +41,10 @@
 	VRView *vrView;
 	DCMPix *pix;
 	Camera *camera;
-	CPRController *windowController;
-    CPRCurvedPath *curvedPath;
-    CPRDisplayInfo *displayInfo;
-	NSInteger editingCurvedPathCount;
-    CPRCurvedPathControlToken draggedToken;
-	float angleMPR;
-//    CPRType _viewCprType;
+
+    float angleMPR;
+    BOOL dontUseAutoLOD;
     OSIROIManager *_ROIManager;
-	BOOL dontUseAutoLOD;
 	
 	float crossLinesA[2][3];
 	float crossLinesB[2][3];
@@ -64,25 +59,35 @@
 	BOOL lastRenderingWasMoveCenter;
 	
 	float rotateLinesStartAngle;
-	
 	BOOL dontReenterCrossReferenceLines;
-	
 	BOOL dontCheckRoiChange;
+
+    // Sub-class specific stuff
+
+    CPRController *windowController;
+    CPRCurvedPath *curvedPath;
+    CPRDisplayInfo *displayInfo;
+    NSInteger editingCurvedPathCount;
+    CPRCurvedPathControlToken draggedToken;
+    //CPRType _viewCprType;
 }
 
-@property (assign) id <CPRViewDelegate> delegate;
 @property (readonly) DCMPix *pix;
 @property (retain) Camera *camera;
-@property (nonatomic, copy) CPRCurvedPath *curvedPath;
-@property (nonatomic, copy) CPRDisplayInfo *displayInfo;
-@property (nonatomic) float angleMPR, fromIntervalExport, toIntervalExport, LOD;
+@property (nonatomic) float angleMPR;   // in degrees
+@property (nonatomic) float fromIntervalExport, toIntervalExport, LOD;
 @property int viewExport;
 @property (nonatomic) BOOL displayCrossLines, dontUseAutoLOD;
 @property (readonly) VRView *vrView;
 @property (readonly) BOOL rotateLines, moveCenter;
-@property (nonatomic, assign) CPRType viewCprType;  // custom setter
 
-- (BOOL)is2DTool:(ToolMode)tool;
+// Sub-class specific stuff
+@property (nonatomic, assign) CPRType viewCprType;  // custom setter
+@property (assign) id <CPRViewDelegate> delegate;
+@property (nonatomic, copy) CPRCurvedPath *curvedPath;
+@property (nonatomic, copy) CPRDisplayInfo *displayInfo;
+
+- (BOOL) is2DTool:(ToolMode)tool;
 - (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
 - (void) setVRView: (VRView*) v viewID:(int) i;
 - (void) updateViewMPR;
@@ -96,9 +101,9 @@
 - (void) magicTrick;
 - (void) removeROI: (NSNotification*) note;
 
-- (void)setCrossCenter:(NSPoint)crossCenter;
-
 - (N3AffineTransform)pixToDicomTransform; // converts points in the DCMPix's coordinate space ("Slice Coordinates") into the DICOM space (patient space with mm units)
+
+- (void)setCrossCenter:(NSPoint)crossCenter;
 - (N3Plane)plane;
 - (NSString *)planeName;
 - (NSColor *)colorForPlaneName:(NSString *)planeName;

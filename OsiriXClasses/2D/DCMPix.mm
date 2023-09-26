@@ -2716,11 +2716,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 return;
             }
             
-			long			textWidth = roi.textureWidth;
-			long			textHeight = roi.textureHeight;
-			long			textureUpLeftCornerX = roi.textureUpLeftCornerX;
-			long			textureUpLeftCornerY = roi.textureUpLeftCornerY;
-			unsigned char	*buf = roi.textureBuffer;
+			long textWidth = roi.textureWidth;
+			long textHeight = roi.textureHeight;
+			long textureUpLeftCornerX = roi.textureUpLeftCornerX;
+			long textureUpLeftCornerY = roi.textureUpLeftCornerY;
+			unsigned char *buf = roi.textureBuffer;
 			
 			// *** INSIDE
 			
@@ -3494,7 +3494,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         s < 0.00001 ||
         s > 1000)
     {
-		NSLog( @"***** setPixelSpacingX with value : %lf", s);
+		NSLog(@"****** DCMPix setPixelSpacingX with value : %lf", s);
         s = 1;
 	}
     
@@ -3510,7 +3510,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         s < 0.00001 ||
         s > 1000)
     {
-		NSLog( @"***** setPixelSpacingY with value : %lf", s);
+		NSLog(@"****** DCMPix setPixelSpacingY with value : %lf", s);
         s = 1;
     }
     
@@ -3736,6 +3736,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	//if (pixelSize != 32)
     //  NSLog( @"Only floating images are supported...");
     
+#ifndef NDEBUG // debug #g93
+    NSLog(@"DCMPix.mm %d initWithData %@ #g93, WH:(%li,%li)", __LINE__, NSStringFromClass([self class]), xDim, yDim);
+#endif
 	if (self = [super init])
     {
 		[self initParameters];
@@ -3794,7 +3797,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						}
 					}
 					else
-                        N2LogStackTrace( @"*** Not enough memory - malloc failed");
+                        N2LogStackTrace( @"*** Not enough memory - malloc failed"); // TODO: MALLOC_ERROR_MESSAGE
 					break;
 					
                 case 8:		// RGBA -> argb
@@ -4290,11 +4293,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 #ifndef STATIC_DICOM_LIB
 #ifndef MIELE_LIGHT
-	long			i, totSize;
-	int				w, h, row;
-	short			bpp, count, tifspp;
-	short			dataTypeTiff = 0;
-	short			planarConfig = 0;
+	long i, totSize;
+	int w, h, row;
+	short bpp, count, tifspp;
+	short dataTypeTiff = 0;
+	short planarConfig = 0;
 	
 	isRGB = NO;
 	
@@ -7482,6 +7485,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     if (srcFile == nil)
         return;
     
+#ifndef NDEBUG // debug #g93
+    long beforeW = width;
+    NSLog(@"%s %d, %p, before W:%li", __FUNCTION__, __LINE__, self, beforeW);
+#endif
+    
     if (isBonjour)
     {
 #ifdef OSIRIX_VIEWER
@@ -7505,6 +7513,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             return;
 #endif
     }
+    
+#ifndef NDEBUG // debug #g93
+    if (beforeW != width)
+        NSLog(@"%s %d, %p, after1 W:%li", __FUNCTION__, __LINE__, self, width);
+#endif
     
     if ([self isDICOMFile: srcFile])
     {
@@ -7574,6 +7587,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         [self checkSUV];
         [pool release];
     }
+    
+#ifndef NDEBUG // debug #g93
+    if (beforeW != width) {
+        NSLog(@"%s %d, %p, W: %li ==> %li", __FUNCTION__, __LINE__, self, beforeW, width);
+        beforeW = width;
+    }
+#endif
     
     if (success == NO)	// Is it a NON-DICOM IMAGE ??
     {
@@ -8425,6 +8445,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         [self loadCustomImageAnnotationsPapyLink:-1 DCMLink:nil];
 #endif
     } // ! success
+
+#ifndef NDEBUG // debug #g93
+    if (beforeW != width)
+        NSLog(@"%s %d, %p, after3 W:%li", __FUNCTION__, __LINE__, self, width);
+#endif
     
     if (fImage == nil)
     {
@@ -8445,6 +8470,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             fImage[i] = i;
     }
     
+#ifndef NDEBUG // debug #g93
+    if (beforeW != width)
+        NSLog(@"%s %d, %p, after4 W:%li", __FUNCTION__, __LINE__, self, width);
+#endif
+    
     if (isRGB)	// COMPUTE ALPHA MASK = ALPHA = R+G+B/3
     {
         unsigned char *argbPtr = (unsigned char*) fImage;
@@ -8456,6 +8486,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             argbPtr+=4;
         }
     }
+    
+#ifndef NDEBUG // debug #g93
+    if (beforeW != width)
+        NSLog(@"%s %d, %p, after5 W:%li", __FUNCTION__, __LINE__, self, width);
+#endif
 }
 
 #pragma GCC diagnostic warning "-Wdeprecated-declarations"
@@ -10302,7 +10337,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if (convolution)
 		result = [self applyConvolutionOnImage: result RGB: NO];
 	
-	return result;
+#ifndef NDEBUG // debug #g93
+    NSLog(@"%s %d, %@ %p, WH:(%li,%li)", __FUNCTION__, __LINE__,
+          NSStringFromClass([self class]), self, width, height); // #g93
+#endif
+
+    return result;
 }
 
 - (void)setTransferFunction:(NSData*) tf
@@ -10318,7 +10358,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) compute8bitRepresentation
 {
-	float iwl, iww;
+#ifndef NDEBUG // debug #g93
+    NSLog(@"%s %d, %@ %p, WH:(%li,%li)", __FUNCTION__, __LINE__,
+          NSStringFromClass([self class]), self, width, height); // #g93
+#endif
+
+    float iwl, iww;
 	
 	if (fixed8bitsWLWW)
 	{

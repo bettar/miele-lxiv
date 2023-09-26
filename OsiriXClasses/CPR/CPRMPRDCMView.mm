@@ -27,26 +27,28 @@
 
 #import "GLRenderer.h"
 
-#import "CPRController.h"
 #import "CPRMPRDCMView.h"
+#import "CPRController.h"
+#import "CPRController.h"
+#import "CPRCurvedPath.h"
+#import "CPRDisplayInfo.h"
+
 #import "VRController.h"
 #import "VRView.h"
 #import "DCMCursor.h"
 #import "ROI.h"
 #import "Notifications.h"
-#import "CPRController.h"
-#import "CPRCurvedPath.h"
-#import "CPRDisplayInfo.h"
-#import "N3BezierPath.h"
 #import "OSIEnvironment.h"
 #import "OSIROI.h"
 #import "OSIVolumeWindow.h"
 
+#import "N3BezierPath.h"
 #import "N3Geometry.h"
 #import "vtkMath.h"
 
 extern unsigned int minimumStep;
 
+// TODO: consolidate into new file MPRDCMViewBase.mm
 static BOOL arePlanesParallel( float *Pn1, float *Pn2)
 {
 	float u[ 3];
@@ -63,20 +65,20 @@ static BOOL arePlanesParallel( float *Pn1, float *Pn2)
     return NO;
 }
 
-#define VIEW_COLOR_LABEL_SIZE 25
-
-	int splitPosition[3];
-	BOOL frameZoomed = NO;
+// Referenced by other CPR* files, so it cannot be static
+int splitPosition[3];
+BOOL frameZoomed = NO;
 
 static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
-#pragma mark -
+#pragma mark - private methods
 
 @interface CPRMPRDCMView ()
 
-- (void)drawCurvedPathInGL;
 - (void)drawOSIROIs;
 - (OSIROIManager *)ROIManager;
+
+- (void)drawCurvedPathInGL;
 - (void)drawCircleAtPoint:(NSPoint)point pointSize:(CGFloat)pointSize;
 - (void)drawCircleAtPoint:(NSPoint)point;
 - (void)sendWillEditCurvedPath;
@@ -85,6 +87,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 - (void)sendDidEditAssistedCurvedPath;
 - (void)sendWillEditDisplayInfo;
 - (void)sendDidEditDisplayInfo;
+
 @end
 
 #pragma mark -
@@ -101,7 +104,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	BOOL v = [super becomeFirstResponder];
 	
 	[windowController updateToolbarItems];
-    
+
 	return v;
 }
 
@@ -111,6 +114,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	[windowController updateToolbarItems];
 }
 
+// TODO: consolidate into new class MPRDCMViewBase
 - (BOOL)is2DTool:(ToolMode)tool;
 {
 	switch( tool)
@@ -167,19 +171,19 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	self.rotation = 0;
 	
 	pix = [pixList lastObject];
-	
 	currentTool = t3DRotate;
 	
 	frameZoomed = NO;
 	displayCrossLines = YES;
 	
 	windowController = [self windowController];
-	
 	[windowController updateToolbarItems];
-    draggedToken = CPRCurvedPathControlTokenNone;
+    
+    draggedToken = CPRCurvedPathControlTokenNone; // not in MPRDCMView
 }
 
-- (void) setVRView: (VRView*) v viewID:(int) i
+- (void) setVRView: (VRView*) v
+            viewID: (int) i
 {
 	viewID = i;
 	vrView = v;
@@ -192,19 +196,23 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	camera = [[vrView cameraWithThumbnail: NO] retain];
 }
 
+// not in MPRDCMView
 - (void) drawRect:(NSRect)rect
 {
 	if (rect.size.width > 10)
 		[super drawRect: rect];
 }
 
+// TODO: consolidate
 - (void) setFrame:(NSRect)frameRect
 {
     NSDisableScreenUpdates();
     
 	if (NSEqualRects( frameRect, [self frame]) == NO)
 	{
-		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(updateViewsAccordingToFrame:) object: nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget: windowController
+                                                 selector: @selector(updateViewsAccordingToFrame:)
+                                                   object: nil];
 		[windowController performSelector: @selector(updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.1];
 	}
 	
@@ -219,6 +227,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     NSEnableScreenUpdates();
 }
 
+// not in MPRDCMView
 - (void)setCurvedPath:(CPRCurvedPath *)newCurvedPath
 {
     if (curvedPath != newCurvedPath) {
@@ -228,6 +237,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     }
 }
 
+// not in MPRDCMView
 - (void)setDisplayInfo:(CPRDisplayInfo *)newDisplayInfo
 {
     if (displayInfo != newDisplayInfo) {
@@ -237,7 +247,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     }
 }
 
- -(void)setViewCprType:(CPRType)type
+// not in MPRDCMView
+-(void)setViewCprType:(CPRType)type
 {
     if (type != _viewCprType) {
         _viewCprType = type;
@@ -245,10 +256,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     }
 }
 
+// TODO: consolidate
 - (void) checkForFrame
 {
 	NSRect frame = [self convertRectToBacking: [self frame]];
-	NSPoint o = [self convertPoint: NSZeroPoint toView:0L];
+	NSPoint o = [self convertPoint: NSZeroPoint
+                            toView: 0L];
 	frame.origin = o;
 	
 	if (NSEqualRects( frame, [vrView frame]) == NO)
@@ -256,7 +269,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		[vrView setFrame: frame];
 	}
 }
-//
+
 //- (BOOL) hasCameraMoved: (Camera*) currentCamera
 //{
 //	if (fabs( currentCamera.position.x - camera.position.x) > 0.1) return YES;
@@ -278,6 +291,16 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 //
 //}
 
+#if 0 // try to fix #g93. No difference
+- (float) displayedScaleValue
+{
+    DCMPix *o = [windowController originalPix];
+    
+    return [o pixelSpacingX] / previousResolution;
+}
+#endif
+
+// TODO: consolidate
 - (BOOL) hasCameraChanged: (Camera*) currentCamera
 {
 	if (camera.forceUpdate)
@@ -285,7 +308,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		camera.forceUpdate = NO;
 		return YES;
 	}
-	
+
+    //NSLog(@"%s %d, self:%p %@, camera:%@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]), currentCamera);
+    
 #define PRECISION 0.0001
 	
 	if (fabs( currentCamera.position.x - camera.position.x) > PRECISION) return YES;
@@ -315,11 +340,13 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	return NO;
 }
 
+// TODO: consolidate
 - (void) restoreCamera
 {
 	return [self restoreCameraAndCheckForFrame: YES];
 }
 
+// TODO: consolidate
 - (void) restoreCameraAndCheckForFrame: (BOOL) v
 {
 	if (v)
@@ -329,18 +356,62 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 - (void) dealloc
 {
-    //	[vrView restoreFullDepthCapture];
+//	[vrView restoreFullDepthCapture];
     [curvedPath release];
     [displayInfo release];
-	[camera release];
-	
+
+    [camera release];
 	[super dealloc];
 }
 
--(void) updateViewMPR
+#if 0 // try to fix #g93. No difference
+- (IBAction) actualSize:(id)sender
 {
-	[self updateViewMPR: YES];  // #i18 stack 7
+    [self setOriginX: 0 Y: 0];
+    self.rotation = 0.0f;
+    
+    DCMPix *o = [windowController originalPix];
+    
+    camera.forceUpdate = YES;
+    camera.parallelScale *= [o pixelSpacingX] / previousResolution;
+    
+    [self restoreCamera];
+    [self updateViewMPR];
 }
+
+- (IBAction) realSize:(id)sender
+{
+    CGSize f = CGDisplayScreenSize( [[[[[self window] screen] deviceDescription] valueForKey: @"NSScreenNumber"] intValue]);
+    CGRect r = CGDisplayBounds( [[[[[self window] screen] deviceDescription] valueForKey: @"NSScreenNumber"] intValue]);
+    
+    if (f.width != 0 && f.height != 0)
+    {
+        NSLog( @"screen pixel ratio: %f", fabs( (f.width/r.size.width) - (f.height/r.size.height)));
+        if (fabs( (f.width/r.size.width) - (f.height/r.size.height)) < 0.01)
+        {
+//            DCMPix *o = [windowController originalPix];
+            
+            camera.forceUpdate = YES;
+            camera.parallelScale *= (f.width/r.size.width) / previousResolution;
+            
+            [self restoreCamera];
+            [self updateViewMPR];
+        }
+        else
+            NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil),
+                                    NSLocalizedString(@"Displayed pixels are non-squared pixel. Images cannot be displayed at actual size.",nil),
+                                    NSLocalizedString( @"OK",nil),
+                                    nil,
+                                    nil);
+    }
+    else
+        NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil),
+                                NSLocalizedString(@"This screen doesn't support this function.",nil),
+                                NSLocalizedString( @"OK",nil),
+                                nil,
+                                nil);
+}
+#endif
 
 - (void) setLOD: (float) l
 {
@@ -356,6 +427,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     [super reshape];
 }
 
+-(void) updateViewMPR
+{
+    [self updateViewMPR: YES];  // #i18 stack 7
+}
+
+// TODO: consolidate. Only one small difference marked @@@ TBC
 - (void) updateViewMPR:(BOOL) computeCrossReferenceLines
 {
 	if ([self frame].size.width <= 0)
@@ -365,14 +442,14 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		return;
     
 	long h, w;
-	float previousWW, previousWL;
 	BOOL isRGB;
 	BOOL previousOriginInPlane = NO;
 	
+    float previousWW, previousWL;
 	[self getWLWW: &previousWL :&previousWW];
 	
 	Camera *currentCamera = [vrView cameraWithThumbnail: NO];
-	
+
     minimumStep = 1;
     
 	if ([self hasCameraChanged: currentCamera] == YES)
@@ -419,12 +496,13 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		else
 			[vrView setLOD: LOD];
         
-		if ([self frame].size.width > 0 && [self frame].size.height > 0)
+		if ([self frame].size.width > 0 &&
+            [self frame].size.height > 0)
 		{
 			if (windowController.maxMovieIndex > 1 &&
-                (windowController.clippingRangeMode == 1 ||
-                 windowController.clippingRangeMode == 3 ||
-                 windowController.clippingRangeMode == 2))	//To avoid the wrong pixel value bug...
+                (windowController.clippingRangeMode == MPR_PROJECTION_MODE_MIP ||
+                 windowController.clippingRangeMode == MPR_PROJECTION_MODE_MEAN ||
+                 windowController.clippingRangeMode == MPR_PROJECTION_MODE_MIN_IP))	//To avoid the wrong pixel value bug...
             {
 				[vrView prepareFullDepthCapture];
             }
@@ -452,13 +530,21 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			[vrView setLOD: LOD];
 		}
 		else
-			imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
+        {
+#ifndef NDEBUG // debug #g93
+            NSLog(@"%s %d, %p, viewID: %d", __FUNCTION__, __LINE__, self, viewID); // @@@ @@@
+#endif
+            imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
+        }
 		
-		////
+		// //
 		float orientation[ 9];
 		[vrView getOrientation: orientation];
 		
-		float location[ 3] = {previousOrigin[ 0], previousOrigin[ 1], previousOrigin[ 2]}, orig[ 3] = {currentCamera.position.x, currentCamera.position.y, currentCamera.position.z}, locationTemp[ 3];
+        float location[ 3] = {previousOrigin[ 0], previousOrigin[ 1], previousOrigin[ 2]};
+        float orig[ 3] = {currentCamera.position.x, currentCamera.position.y, currentCamera.position.z};
+
+        float locationTemp[ 3];
 		float distance = [DCMView pbase_Plane: location :orig :&(orientation[ 6]) :locationTemp];
 		if (distance < pix.sliceThickness / 2.)
 			previousOriginInPlane = YES;
@@ -502,6 +588,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				[pix setRGB: isRGB];
 				[pix setfImage: imagePtr];
 				[pix freefImageWhenDone: YES];
+#ifndef NDEBUG // debug #g93
+                // @@@ @@@
+                if (pix.pwidth != w)
+                    NSLog(@"%s %d, %p, viewID: %d, pix WH: (%li,%li) --> (%li,%li)", __FUNCTION__, __LINE__, self, viewID, pix.pwidth, pix.pheight, w, h);
+#endif
 				[pix setPwidth: w];
 				[pix setPheight: h];
 				
@@ -519,13 +610,16 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			if (!moveCenter)
 			{
 				resolution = [vrView getResolution] * [vrView imageSampleDistance];
-				[pix setPixelSpacingX: resolution];
-				[pix setPixelSpacingY: resolution];
+                //if (resolution > 0) // @@@ TBC try to fix #g93 No difference
+                {
+                    [pix setPixelSpacingX: resolution];
+                    [pix setPixelSpacingY: resolution];
+                }
 			}
 			
-			[self willChangeValueForKey:@"plane"];
+			[self willChangeValueForKey:@"plane"]; // @@@ TBC
 			[pix setOrientation: orientation];
-			[self didChangeValueForKey:@"plane"];
+			[self didChangeValueForKey:@"plane"]; // @@@ TBC
 			[pix setSliceThickness: [vrView getClippingRangeThicknessInMm]];
 			
 			[self setWLWW: previousWL :previousWW];
@@ -545,7 +639,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				
 				NSPoint rotationCenter = NSMakePoint( [pix pwidth]/2., [pix pheight]/2.);
 				
-				for( ROI* r in curRoiList)
+				for (ROI* r in curRoiList)
 				{
 					if (rotationPlane)
 					{
@@ -557,7 +651,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 						r.pixelSpacingY = [pix pixelSpacingY];
 					}
 					else
-						[r setOriginAndSpacing: resolution : resolution :[DCMPix originCorrectedAccordingToOrientation: pix] :NO];
+						[r setOriginAndSpacing: resolution
+                                              : resolution
+                                              : [DCMPix originCorrectedAccordingToOrientation: pix]
+                                              : NO];
 				}
 				
 				[pix orientation: previousOrientation];
@@ -573,23 +670,25 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		}
 		
 		if (blendingView)
-		{
-			[blendingView getWLWW: &previousWL :&previousWW];
-			
-			[vrView renderBlendedVolume];
-			
-			float *blendedImagePtr = nil;
-			DCMPix *bPix = [blendingView curDCM];
-			
-			if (moveCenter)
-			{
-				blendedImagePtr = [bPix fImage];
-				w = [bPix pwidth];
-				h = [bPix pheight];
-				isRGB = [bPix isRGB];
-			}
-			else
-				blendedImagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB blendingView: YES];
+        {
+            [blendingView getWLWW: &previousWL :&previousWW];
+            
+            [vrView renderBlendedVolume];
+            
+            float *blendedImagePtr = nil;
+            DCMPix *bPix = [blendingView curDCM];
+            
+            if (moveCenter)
+            {
+                blendedImagePtr = [bPix fImage];
+                w = [bPix pwidth];
+                h = [bPix pheight];
+                isRGB = [bPix isRGB];
+            }
+            else
+            {
+                blendedImagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB blendingView: YES];
+            }
 			
 			if ([bPix pwidth] == w && [bPix pheight] == h && isRGB == [bPix isRGB])
 			{
@@ -646,12 +745,16 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	[self setNeedsDisplay: YES];
 }
 
+// TODO: consolidate.
 - (void) colorForView:(int) v
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if (cgl_ctx == nil)
         return;
     
+//#ifdef WITH_OPENGL_32
+//        [self setShaderProgramOverlay_withMode_Normal];
+//#endif
 	switch( v)
 	{
 		case 1:
@@ -680,6 +783,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	}
 }
 
+// TODO: consolidate.
 - (void) drawLine: (float[2][3]) sft
         thickness: (float) thickness
 {
@@ -706,6 +810,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	}
 }
 
+#if 0
 - (void) drawExportLines: (float[2][3]) sft
 {
 //	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -742,6 +847,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 //		glRotatef( -(float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
 //	}
 }
+#endif
 
 - (void) drawTextualData:(NSRect) size :(long) annotations
 {
@@ -752,10 +858,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 }
 
 #pragma mark -
-
+// Note for #g93: the image has already been drawn by base class DCMView
 - (void) subDrawRect: (NSRect) r
 {
-    NSLog(@"%s %d, self:%p", __FUNCTION__, __LINE__, self);
+#ifndef NDEBUG // debug #g93
+    NSLog(@"%s %d #g93, self:%p %@, viewID %d, rect:%@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]), viewID, NSStringFromRect(r));
+#endif
 
 	if ([stringID isEqualToString: @"export"])
 		return;
@@ -766,7 +874,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	self.rotation = 0;
 	
 #ifdef WITH_OPENGL_32
-    [self setShaderProgramOverlay_withMode_Normal]; // Added
+    [self setShaderProgramOverlay_withMode_Normal]; // #g93
 #else
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if (cgl_ctx == nil)
@@ -774,14 +882,18 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 #endif
     
     renderer_enable_blend_smooth();
-
     glPointSize( 12 * self.window.backingScaleFactor);
 
+#pragma mark crosslines
+    
 	if (displayCrossLines && frameZoomed == NO)
 	{
 		// All pix have the same thickness
 		float thickness = [pix sliceThickness];
 		
+#ifdef WITH_OPENGL_32
+        //[self setShaderProgramOverlay_withMode_Normal];
+#endif
 		switch (viewID)
 		{
 			case 1:
@@ -882,6 +994,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
     const int nPoints = 4;
     glm::vec2 pA[nPoints];
+    float VIEW_COLOR_LABEL_SIZE = 25 * self.window.backingScaleFactor;
     pA[0] = glm::vec2(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
     pA[1] = glm::vec2(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
     pA[2] = glm::vec2(widthhalf, -heighthalf);
@@ -892,15 +1005,17 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         [pArray addObject: [NSValue valueWithBytes:&pA[i] objCType:@encode(glm::vec2)]];
 
     renderer_drawPolygon([pArray copy]); // GL_TRIANGLE_FAN
-
-#pragma mark cross lines
-
+    
     // Restore line width (unnecessary ?)
     [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
 	
-	if (displayCrossLines &&
+#pragma mark mouse position (points)
+    
+    // Draw 2 points iif this the selected view, or 1 point in this view is unselected
+
+    if (displayCrossLines &&
         frameZoomed == NO &&
-        windowController.displayMousePosition &&
+        windowController.displayMousePosition && // It can be enabled via toolbar icon
         !windowController.mprView1.rotateLines &&
         !windowController.mprView2.rotateLines &&
         !windowController.mprView3.rotateLines &&
@@ -908,16 +1023,20 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         !windowController.mprView2.moveCenter &&
         !windowController.mprView3.moveCenter)
 	{
-        float sc[ 3];
         Point3D *pt = windowController.mousePosition;
         float dc[ 3] = { pt.x, pt.y, pt.z};
+        float sc[ 3];
 
-        // Mouse Position
-		if (viewID == windowController.mouseViewID)
+#ifdef WITH_OPENGL_32
+        [self setShaderProgramOverlay_withMode_Point]; // Added
+#endif
+
+        if (viewID == windowController.mouseViewID)
 		{
 			DCMPix *pixA, *pixB;
 			int viewIDA, viewIDB;
-			
+            float location[ 3];
+
 			switch (viewID)
 			{
                 default:
@@ -941,41 +1060,49 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 					break;		
 			}
 			
-			[self colorForView:viewIDA];
-            float location[ 3];
-			[pixA convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
-			sc[0] = sc[ 0] / pixA.pixelSpacingX;
-			sc[1] = sc[ 1] / pixA.pixelSpacingY;
-			[pixA convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
-			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
-			
-            sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-            sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-            sc[0] -= curDCM.pwidth * 0.5f;
-            sc[1] -= curDCM.pheight * 0.5f;
+            // first point
+            {
+                [self colorForView:viewIDA];
+                [pixA convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
+                
+                sc[0] = sc[ 0] / pixA.pixelSpacingX;
+                sc[1] = sc[ 1] / pixA.pixelSpacingY;
+                
+                [pixA convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
+                [pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
+                
+                sc[0] = sc[ 0] / curDCM.pixelSpacingX;
+                sc[1] = sc[ 1] / curDCM.pixelSpacingY;
+                sc[0] -= curDCM.pwidth * 0.5f;
+                sc[1] -= curDCM.pheight * 0.5f;
+                
+                // render
+                {
+                    NSMutableArray *pArray = [NSMutableArray array];
+                    glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
+                    [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
 
-            NSMutableArray *pArray = [NSMutableArray array];
-            glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
-            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+                    glPointSize( 10 * self.window.backingScaleFactor);
+                    renderer_drawPoints([pArray copy]);
+                }
+            }
             
-#ifdef WITH_OPENGL_32
-            [self setShaderProgramOverlay_withMode_Point]; // Added
-#endif
-            glPointSize( 10 * self.window.backingScaleFactor);
-            renderer_drawPoints([pArray copy]);
-            
-			[self colorForView:viewIDB];
-			[pixB convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
-			sc[0] = sc[ 0] / pixB.pixelSpacingX;
-			sc[1] = sc[ 1] / pixB.pixelSpacingY;
-			[pixB convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
-			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
+            // second point
+            {
+                [self colorForView:viewIDB];
+                [pixB convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
+                
+                sc[0] = sc[ 0] / pixB.pixelSpacingX;
+                sc[1] = sc[ 1] / pixB.pixelSpacingY;
+                
+                [pixB convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
+                [pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
+            }
 		}
         else // (viewID != windowController.mouseViewID)
 		{
 			[self colorForView: viewID];
             //[self colorForView: windowController.mouseViewID];
-			
             [pix convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
 		}
 
@@ -984,13 +1111,15 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         sc[0] -= curDCM.pwidth * 0.5f;
         sc[1] -= curDCM.pheight * 0.5f;
 
-        NSMutableArray *pArray = [NSMutableArray array];
-        glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
-        [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
+        // render second or only point
+        {
+            NSMutableArray *pArray = [NSMutableArray array];
+            glm::vec2 a(scaleValue*sc[ 0], scaleValue*sc[ 1]);
+            [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
 
-        [self setShaderProgramOverlay_withMode_Point];
-        glPointSize( 10 * self.window.backingScaleFactor);
-        renderer_drawPoints([pArray copy]);
+            glPointSize( 10 * self.window.backingScaleFactor);
+            renderer_drawPoints([pArray copy]);
+        }
     }
 
 #pragma mark CurvedPathInGL, OSIROI
@@ -1029,10 +1158,15 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	} // mouse position
 	
     renderer_disable_blend_smooth();
+    
+#ifdef WITH_OPENGL_32
+    [self setShaderProgramImage]; // try to fix #g93
+#endif
 }
 
 #pragma mark -
 
+// TODO: consolidate
 - (void) setCrossReferenceLines: (float[2][3]) a
                         andLine: (float[2][3]) b
 {	
@@ -1051,6 +1185,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	crossLinesB[ 1][ 2] = b[ 1][ 2];
 }
 
+// TODO: consolidate
 -(void) setCurrentTool:(ToolMode) i
 {
 	if (i != tRepulsor)
@@ -1101,7 +1236,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     
 	ToolMode tool = [self getTool: theEvent];
 	
-	if(( c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSNewlineCharacter) && tool == tCurvedROI)
+	if ((c == NSCarriageReturnCharacter ||
+         c == NSEnterCharacter ||
+         c == NSNewlineCharacter) &&
+        tool == tCurvedROI)
 	{
 		if (windowController.curvedPathCreationMode)
 			[self stopCurvedPathCreationMode];
@@ -1138,7 +1276,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
             [[NSNotificationCenter defaultCenter] postNotificationName:OsirixDeletedCurvedPathNotification object:nil];
 		}
 	}
-    else if (c == NSUpArrowFunctionKey || c == NSDownArrowFunctionKey || c == NSRightArrowFunctionKey || c ==  NSLeftArrowFunctionKey)
+    else if (c == NSUpArrowFunctionKey ||
+             c == NSDownArrowFunctionKey ||
+             c == NSRightArrowFunctionKey ||
+             c == NSLeftArrowFunctionKey)
     {
         moveCenter = YES;
         
@@ -1237,8 +1378,55 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	}
 }
 
+- (N3AffineTransform)pixToDicomTransform // converts points in the DCMPix's coordinate space ("Slice Coordinates") into the DICOM space (patient space with mm units)
+{
+    N3AffineTransform pixToDicomTransform;
+    double spacingX;
+    double spacingY;
+    //double spacingZ;
+    double orientation[9];
+    
+    memset(orientation, 0, sizeof(double) * 9);
+    [pix orientationDouble:orientation];
+    spacingX = pix.pixelSpacingX;
+    spacingY = pix.pixelSpacingY;
+    //spacingZ = pix.sliceInterval;
+    
+    pixToDicomTransform = N3AffineTransformIdentity;
+    pixToDicomTransform.m41 = pix.originX;
+    pixToDicomTransform.m42 = pix.originY;
+    pixToDicomTransform.m43 = pix.originZ;
+    pixToDicomTransform.m11 = orientation[0]*spacingX;
+    pixToDicomTransform.m12 = orientation[1]*spacingX;
+    pixToDicomTransform.m13 = orientation[2]*spacingX;
+    pixToDicomTransform.m21 = orientation[3]*spacingY;
+    pixToDicomTransform.m22 = orientation[4]*spacingY;
+    pixToDicomTransform.m23 = orientation[5]*spacingY;
+    pixToDicomTransform.m31 = orientation[6];
+    pixToDicomTransform.m32 = orientation[7];
+    pixToDicomTransform.m33 = orientation[8];
+
+    // Because DICOM uses Center rule and DCMPix uses Top-Left Rule (TBC why us this not done in MPRDCMView ?)
+    pixToDicomTransform = N3AffineTransformConcat(N3AffineTransformMakeTranslation(-.5, -.5, 0), pixToDicomTransform);
+
+#ifndef NDEBUG
+    if (isnan( pix.pixelSpacingX) ||
+        isnan( pix.pixelSpacingY) ||
+        pix.pixelSpacingX <= 0 ||
+        pix.pixelSpacingY <= 0 ||
+        pix.pixelSpacingX > 1000 ||
+        pix.pixelSpacingY > 1000)
+    {
+        NSLog( @"******* CPR pixel spacing incorrect for pixToSubDrawRectTransform");
+    }
+#endif
+    
+    return pixToDicomTransform;
+}
+
 #pragma mark - 3D ROI Point
 
+// TODO: consolidate
 - (void) detect2DPointInThisSlice
 {
 	ViewerController *viewer2D = [windowController viewer];
@@ -1320,6 +1508,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     [self setNeedsDisplay: YES];
 }
 
+// TODO: consolidate
 - (void) add2DPoint: (float*) r
 {
 	ViewerController *viewer2D = [windowController viewer];
@@ -1356,6 +1545,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     }
 }
 
+// TODO: consolidate
 -(void) roiChange:(NSNotification*)note
 {
 	if (dontCheckRoiChange == NO)
@@ -1369,6 +1559,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	[super roiChange: note];
 }
 
+// TODO: consolidate
 - (void) removeROI: (NSNotification*) note
 {
 	ROI *r = [note object];
@@ -1377,13 +1568,15 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	{
 		[[windowController viewer] deleteROI: r.parentROI];
 		r.parentROI = nil;
-		
 	}
 	
 	if (dontCheckRoiChange == NO)
 	{
-		if ([r curView] != nil && [r curView] == [[windowController viewer] imageView])
-			[self detect2DPointInThisSlice];
+		if ([r curView] != nil &&
+            [r curView] == [[windowController viewer] imageView])
+        {
+            [self detect2DPointInThisSlice];
+        }
 	}
 }
 
@@ -1401,6 +1594,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 #define BS 10.
 
+// TODO: consolidate
 // Returns angle in degrees
 - (float) angleBetween:(NSPoint) mouseLocation
                 center:(NSPoint) center
@@ -1411,6 +1605,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	return glm::degrees(-atan2(mouseLocation.x, mouseLocation.y));
 }
 
+// TODO: consolidate
 - (NSPoint) centerLines
 {
     NSPoint r = NSZeroPoint;
@@ -1450,6 +1645,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	return r;
 }
 
+// TODO: consolidate
 - (int) mouseOnLines: (NSPoint) mouseLocation
 {
 	if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] == ANNOTATIONS_NONE)
@@ -1481,7 +1677,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
             mouseLocation.y > r.y - BS * f &&
             mouseLocation.y < r.y + BS * f)
 		{
-			return 2;
+			return 2; // near center of crosshair
 		}
 		else
 		{
@@ -1507,7 +1703,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			if (distance1 * scaleValue < 10*self.window.backingScaleFactor ||
                 distance2 * scaleValue < 10*self.window.backingScaleFactor)
 			{
-				return 1;
+				return 1; // near only one of the crosshair axis
 			}
 		}
 	}
@@ -1644,8 +1840,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		[[self window] makeFirstResponder: self];
 		return;
 	}
-	
-	dontCheckRoiChange = YES;
+    
+#ifndef NDEBUG // debug #g93
+    NSLog(@"%s %d #g93, self:%p, viewID %d, frame %@", __FUNCTION__, __LINE__, self, viewID, NSStringFromRect([self frame]));
+#endif
+
+    dontCheckRoiChange = YES;
 	
 	[self checkCursor];
 	
@@ -1653,8 +1853,13 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	@try
 	{
-		if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown || [theEvent type] == NSLeftMouseUp || [theEvent type] == NSRightMouseUp)
-			clickCount = [theEvent clickCount];
+		if ([theEvent type] == NSLeftMouseDown ||
+            [theEvent type] == NSRightMouseDown ||
+            [theEvent type] == NSLeftMouseUp ||
+            [theEvent type] == NSRightMouseUp)
+        {
+            clickCount = [theEvent clickCount];
+        }
 	}
 	@catch (NSException * e)
 	{
@@ -2312,14 +2517,14 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		}
         
 		int mouseOnLines = [self mouseOnLines:viewPoint];
-		if (mouseOnLines==2)
+		if (mouseOnLines==2) // near center of crosshair
 		{
 			if ([theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown)
                 [[NSCursor closedHandCursor] set];
 			else
                 [[NSCursor openHandCursor] set];
 		}
-		else if (mouseOnLines==1)
+		else if (mouseOnLines==1) // near only one of the crosshair axis
 		{
 			[[NSCursor rotateAxisCursor] set];
 		}
@@ -2772,8 +2977,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     double pixToSubdrawRectOpenGLTransform[16];
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
 
-    OSIROI *osiroi;
-    for (osiroi in [[self ROIManager] ROIs])
+    for (OSIROI *osiroi in [[self ROIManager] ROIs])
     {
 #ifdef WITH_OPENGL_32
         // TODO: To be tested
@@ -2845,45 +3049,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     [self drawCircleAtPoint:point pointSize:8];
 }
 
-- (N3AffineTransform)pixToDicomTransform // converts points in the DCMPix's coordinate space ("Slice Coordinates") into the DICOM space (patient space with mm units)
-{
-    N3AffineTransform pixToDicomTransform;
-    double spacingX;
-    double spacingY;
-    //double spacingZ;
-    double orientation[9];
-    
-    memset(orientation, 0, sizeof(double) * 9);
-    [pix orientationDouble:orientation];
-    spacingX = pix.pixelSpacingX;
-    spacingY = pix.pixelSpacingY;
-//    spacingZ = pix.sliceInterval;
-    
-    pixToDicomTransform = N3AffineTransformIdentity;
-    pixToDicomTransform.m41 = pix.originX;
-    pixToDicomTransform.m42 = pix.originY;
-    pixToDicomTransform.m43 = pix.originZ;
-    pixToDicomTransform.m11 = orientation[0]*spacingX;
-    pixToDicomTransform.m12 = orientation[1]*spacingX;
-    pixToDicomTransform.m13 = orientation[2]*spacingX;
-    pixToDicomTransform.m21 = orientation[3]*spacingY;
-    pixToDicomTransform.m22 = orientation[4]*spacingY;
-    pixToDicomTransform.m23 = orientation[5]*spacingY;
-    pixToDicomTransform.m31 = orientation[6];
-    pixToDicomTransform.m32 = orientation[7];
-    pixToDicomTransform.m33 = orientation[8];
-
-    // Because Dicom uses Center rule and DCMPix uses Top-Left Rule
-    pixToDicomTransform = N3AffineTransformConcat(N3AffineTransformMakeTranslation(-.5, -.5, 0), pixToDicomTransform);
-
-#ifndef NDEBUG
-	if (isnan( pix.pixelSpacingX) || isnan( pix.pixelSpacingY) || pix.pixelSpacingX <= 0 || pix.pixelSpacingY <= 0 || pix.pixelSpacingX > 1000 || pix.pixelSpacingY > 1000)
-		NSLog( @"******* CPR pixel spacing incorrect for pixToSubDrawRectTransform");
-#endif
-	
-    return pixToDicomTransform;
-}
-
 - (N3Plane)plane
 {
     N3AffineTransform pixToDicomTransform;
@@ -2941,25 +3106,26 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 @implementation DCMView (CPRAdditions)
 
+// TBC relevant to issue #g93 ?
 - (N3AffineTransform)viewToPixTransform // converts coordinates in the NSView's space to coordinates on a DCMPix object in "Slice Coordinates"
 {
-    // since there is no way to get matrix values directly for this transformation, we will figure out how the basis vectors get transformed, and contruct the matrix from these values
+    // since there is no way to get matrix values directly for this transformation, we will figure out how the basis vectors get transformed, and construct the matrix from these values
     N3AffineTransform viewToPixTransform;
-    NSPoint orginBasis;
+    NSPoint originBasis;
     NSPoint xBasis;
     NSPoint yBasis;
     
-    orginBasis = [self ConvertFromNSView2GL:NSZeroPoint];
+    originBasis = [self ConvertFromNSView2GL:NSZeroPoint];
     xBasis = [self ConvertFromNSView2GL:NSMakePoint(1, 0)];
     yBasis = [self ConvertFromNSView2GL:NSMakePoint(0, 1)];
     
     viewToPixTransform = N3AffineTransformIdentity;
-    viewToPixTransform.m41 = orginBasis.x;
-    viewToPixTransform.m42 = orginBasis.y;
-    viewToPixTransform.m11 = xBasis.x - orginBasis.x;
-    viewToPixTransform.m12 = xBasis.y - orginBasis.y;
-    viewToPixTransform.m21 = yBasis.x - orginBasis.x;
-    viewToPixTransform.m22 = yBasis.y - orginBasis.y;
+    viewToPixTransform.m41 = originBasis.x;
+    viewToPixTransform.m42 = originBasis.y;
+    viewToPixTransform.m11 = xBasis.x - originBasis.x;
+    viewToPixTransform.m12 = xBasis.y - originBasis.y;
+    viewToPixTransform.m21 = yBasis.x - originBasis.x;
+    viewToPixTransform.m22 = yBasis.y - originBasis.y;
     
     return viewToPixTransform;
 }

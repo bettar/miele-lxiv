@@ -34,20 +34,29 @@
 
 -(id) init
 {
-	return [self initWithX:0.0  y:0.0  z:0.0];
+	return [self initWithX:0.0
+                         y:0.0
+                         z:0.0];
 }
 
 -(id) initWithValues:(float)x1 :(float)y1 :(float)z1
 {
-	return [self initWithX:x1  y:y1  z:z1];	
+	return [self initWithX:x1
+                         y:y1
+                         z:z1];
 }
 
 -(id) initWithPoint3D: (Point3D*)p
 {
-	return [self initWithX:p.x  y:p.y  z:p.z];
+	return [self initWithX: p.x
+                         y: p.y
+                         z: p.z];
 }
 
--(id) initWithX:(float)x1  y:(float)y1  z:(float)z1{
+-(id) initWithX:(float)x1
+              y:(float)y1
+              z:(float)z1
+{
 	if (self = [super init]) {
 		x = x1;
 		y = y1;
@@ -59,8 +68,6 @@
 - (id)copyWithZone:(NSZone *)zone{
 	return [[Point3D alloc] initWithPoint3D:self];
 }
-
-
 
 -(void) setPoint3D: (Point3D*)p
 {
@@ -120,6 +127,8 @@
 }
 
 @end
+
+#pragma mark - category
 
 @implementation Point3D (N3GeometryAdditions)
 

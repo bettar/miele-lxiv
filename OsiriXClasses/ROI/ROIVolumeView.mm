@@ -39,7 +39,7 @@
 #import "DicomDatabase.h"
 #import "ROI.h"
 
-#import "vtkConfigure.h"
+//#import "vtkConfigure.h" // ok in 9.2 no longer available in 9.3
 #import "vtkMath.h"
 #import "vtkPolyData.h"
 

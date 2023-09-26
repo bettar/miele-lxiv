@@ -7,6 +7,6 @@
 /* Class = "NSButtonCell"; title = "Version Number"; ObjectID = "32"; */
 "32.title" = "バージョンナンバー";
 
-/* Class = "NSTextFieldCell"; title = "This is not the Pixmeo version of OsiriX.\nThis is a 64-bit free version."; ObjectID = "34"; */
-"34.title" = "これはPixmeoのOsiriXバージョンではありません。これは64ビットの無料版です。";
+/* Class = "NSTextFieldCell"; title = "This is NOT the Pixmeo version of OsiriX.\nThis is a 64-bit affordable version."; ObjectID = "34"; */
+"34.title" = "これはPixmeoのOsiriXバージョンではありません。手頃な価格の64ビット版です。";
 

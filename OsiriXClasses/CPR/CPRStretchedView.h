@@ -82,7 +82,7 @@
 @property (nonatomic, readwrite, retain) CPRVolumeData *volumeData; // the volume data of the original data
 @property (nonatomic, readwrite, copy) CPRCurvedPath *curvedPath;
 @property (nonatomic, readwrite, copy) CPRDisplayInfo *displayInfo;
-@property (nonatomic, readwrite, assign) CPRProjectionMode clippingRangeMode; // custom setter
+@property (nonatomic, readwrite, assign) MPRProjectionMode clippingRangeMode; // custom setter
 
 @property (nonatomic, readonly, retain) CPRVolumeData *curvedVolumeData; // the volume data that was generated
 @property (nonatomic, readonly, assign) CGFloat generatedHeight; // height of the image that is generated in mm. kinda hack sends CPRViewDidChangeGeneratedHeight to the delegate when this value changes

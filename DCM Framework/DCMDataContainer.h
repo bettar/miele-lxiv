@@ -126,6 +126,6 @@
 - (void)startReadingMetaHeader;
 - (void)startReadingDataSet;
 
-- (void)addPremable;
+- (void)addPreamble;
 
 @end

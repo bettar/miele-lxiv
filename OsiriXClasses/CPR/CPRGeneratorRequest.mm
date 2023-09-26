@@ -97,7 +97,7 @@
 - (id)init
 {
     if ( (self = [super init]) ) {
-        _projectionMode = CPR_PROJECTION_MODE_NONE;
+        _projectionMode = MPR_PROJECTION_MODE_NONE;
     }
     return self;
 }
@@ -163,7 +163,7 @@
 - (id)init
 {
     if ( (self = [super init]) ) {
-        _projectionMode = CPR_PROJECTION_MODE_NONE;
+        _projectionMode = MPR_PROJECTION_MODE_NONE;
     }
     return self;
 }
@@ -278,7 +278,7 @@
 - (id)init
 {
     if ( (self = [super init]) ) {
-        _projectionMode = CPR_PROJECTION_MODE_NONE;
+        _projectionMode = MPR_PROJECTION_MODE_NONE;
     }
     return self;
 }
@@ -301,7 +301,7 @@
 
         _origin = N3VectorAdd(N3VectorAdd(center, N3VectorScalarMultiply(xBasis, (CGFloat)pixelsWide/-2.0)), N3VectorScalarMultiply(yBasis, (CGFloat)pixelsHigh/-2.0));
         
-        _projectionMode = CPR_PROJECTION_MODE_NONE;
+        _projectionMode = MPR_PROJECTION_MODE_NONE;
     }
     return self;
 }
@@ -381,7 +381,6 @@
     
     return sliceToDicomTransform;
 }
-
 
 @end
 

@@ -1211,7 +1211,7 @@ void signal_EXC(int sig_num)
 	transferSyntaxInUse = [transferSyntaxForDataset retain];
 }
 
-- (void)addPremable
+- (void)addPreamble
 {
 	NSMutableData *emptyData = [NSMutableData dataWithLength:128];
 	[dicomData appendData:emptyData];

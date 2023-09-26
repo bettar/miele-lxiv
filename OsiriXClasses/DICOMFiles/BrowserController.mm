@@ -905,136 +905,148 @@ static NSConditionLock *threadLock = nil;
         
 		@try
 		{
-			if ([[filename lastPathComponent] characterAtIndex: 0] != '.')
-			{
-				if ([defaultManager fileExistsAtPath: filename isDirectory:&isDirectory])
-				{
-					if (isDirectory && // A directory
-                        [[filename pathExtension] isEqualToString: @"pages"] == NO &&
-                        [[filename pathExtension] isEqualToString: @"app"] == NO)
-					{
-						NSString *pathname;
-						NSString *folderSkip = nil;
-						NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath: filename];
-						
-						while (pathname = [enumer nextObject])
-						{
-                            NSAutoreleasePool *p = [NSAutoreleasePool new];
-                            
-							@try
-							{
-								NSString * itemPath = [filename stringByAppendingPathComponent: pathname];
-								id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
-								
-								if ([fileType isEqual:NSFileTypeRegular])
-								{
-									BOOL skip = NO;
-									
-									if (folderSkip && [pathname length] >= [folderSkip length])
-										if ([[pathname substringToIndex: [folderSkip length]] isEqualToString: folderSkip])
-											skip = YES;
-									
-									if (skip == NO)
-									{
-										folderSkip = nil;
-										
-										if ([[itemPath lastPathComponent] characterAtIndex: 0] != '.')
-										{
-											if ([[itemPath pathExtension] isEqualToString: @"dcmURLs"])
-											{
-												NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(asyncWADODownload:) object: filename] autorelease];
-												t.name = NSLocalizedString( @"WADO Retrieve...", nil);
-												t.supportsCancel = YES;
-												t.status = [itemPath lastPathComponent];
-												[[ThreadsManager defaultManager] addThreadAndStart: t];
-											}
-											else if ([[itemPath pathExtension] isEqualToString: @"zip"] || [[itemPath pathExtension] isEqualToString: @"osirixzip"])
-											{
-												NSString *unzipPath = [NSTemporaryDirectory() stringByAppendingPathComponent: @"unzip_folder"];
-												
-												[[NSFileManager defaultManager] removeItemAtPath: unzipPath error: nil];
-												[[NSFileManager defaultManager] createDirectoryAtPath: unzipPath
-                                                                          withIntermediateDirectories: YES
-                                                                                           attributes: nil
-                                                                                                error: nil];
-												
-												[self askForZIPPassword: itemPath destination: unzipPath];
-												
-												static int uniqueZipFolder = 1;
-												NSString *uniqueFolder = [NSString stringWithFormat: @"unzip_folder_A%d", uniqueZipFolder++];
-												[[NSFileManager defaultManager] moveItemAtPath: unzipPath
-                                                                                        toPath: [[self INCOMINGPATH] stringByAppendingPathComponent: uniqueFolder]
-                                                                                         error: nil];
-											}
-											else if ([[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] ||
-                                                     [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."])
-                                            {
-                                                [self addDICOMDIR: itemPath : filesArray];
-                                            }
-											else
-                                                [filesArray addObject:itemPath];
-										}
-									}
-								}
-								else if ([[pathname pathExtension] isEqualToString:@"app"])
-								{
-									folderSkip = pathname;
-								}
-							}
-							@catch( NSException *e)
-							{
-                                N2LogExceptionWithStackTrace(e/*, @"addFilesAndFolderToDatabase 2"*/);
-							}
-                            
-                            [p release];
-						}
-					}
-					else    // A file
-					{
-                        if ([[filename pathExtension] isEqualToString: @"xml"]) // Is it a WADO xml file? (like used for Weasis)
-						{
-                            [BrowserController asyncWADOXMLDownloadURL: [NSURL fileURLWithPath: filename]];
-						}
-						else if ([[filename pathExtension] isEqualToString: @"dcmURLs"])
-						{
-							NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(asyncWADODownload:) object: filename] autorelease];
-							t.name = NSLocalizedString( @"WADO Retrieve...", nil);
-							t.supportsCancel = YES;
-							t.status = [filename lastPathComponent];
-							[[ThreadsManager defaultManager] addThreadAndStart: t];
-						}
-						else if ([[filename pathExtension] isEqualToString: @"zip"] ||
-                                 [[filename pathExtension] isEqualToString: @"osirixzip"])
-						{
-							NSString *unzipPath = [NSTemporaryDirectory() stringByAppendingPathComponent: @"unzip_folder"];
-							
-							[[NSFileManager defaultManager] removeItemAtPath: unzipPath error: nil];
-							[[NSFileManager defaultManager] createDirectoryAtPath: unzipPath
-                                                      withIntermediateDirectories: YES
-                                                                       attributes: nil
-                                                                            error: nil];
-							
-							[self askForZIPPassword: filename destination: unzipPath];
-							
-							static int uniqueZipFolder = 1;
-							NSString *uniqueFolder = [NSString stringWithFormat: @"unzip_folder_B%d", uniqueZipFolder++];
-							[[NSFileManager defaultManager] moveItemAtPath: unzipPath
-                                                                    toPath: [[self INCOMINGPATH] stringByAppendingPathComponent: uniqueFolder]
-                                                                     error: nil];
-						}
-						else if ([[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] ||
-                                 [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."])
+            // Ignore hidden filenames
+			if ([[filename lastPathComponent] characterAtIndex: 0] == '.')
+                continue;
+
+            // It probably exists but the important thing is knowing if it's a dir
+            if ([defaultManager fileExistsAtPath: filename
+                                     isDirectory:&isDirectory] == NO)
+            {
+                continue;
+            }
+
+            if (isDirectory)
+            {
+                // Bundles
+                if ([[filename pathExtension] isEqualToString: @"pages"] == NO &&
+                    [[filename pathExtension] isEqualToString: @"app"] == NO)
+                {
+                    NSString *pathname;
+                    NSString *folderSkip = nil;
+                    NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath: filename];
+                    
+                    while (pathname = [enumer nextObject])
+                    {
+                        NSAutoreleasePool *p = [NSAutoreleasePool new];
+                        
+                        @try
                         {
-							[self addDICOMDIR: filename :filesArray];
+                            NSString * itemPath = [filename stringByAppendingPathComponent: pathname];
+                            id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
+                            
+                            if ([fileType isEqual:NSFileTypeRegular])
+                            {
+                                BOOL skip = NO;
+                                
+                                if (folderSkip && [pathname length] >= [folderSkip length])
+                                    if ([[pathname substringToIndex: [folderSkip length]] isEqualToString: folderSkip])
+                                        skip = YES;
+                                
+                                if (skip == NO)
+                                {
+                                    folderSkip = nil;
+                                    
+                                    if ([[itemPath lastPathComponent] characterAtIndex: 0] != '.')
+                                    {
+                                        if ([[itemPath pathExtension] isEqualToString: @"dcmURLs"])
+                                        {
+                                            NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(asyncWADODownload:) object: filename] autorelease];
+                                            t.name = NSLocalizedString( @"WADO Retrieve...", nil);
+                                            t.supportsCancel = YES;
+                                            t.status = [itemPath lastPathComponent];
+                                            [[ThreadsManager defaultManager] addThreadAndStart: t];
+                                        }
+                                        else if ([[itemPath pathExtension] isEqualToString: @"zip"] || [[itemPath pathExtension] isEqualToString: @"osirixzip"])
+                                        {
+                                            NSString *unzipPath = [NSTemporaryDirectory() stringByAppendingPathComponent: @"unzip_folder"];
+                                            
+                                            [[NSFileManager defaultManager] removeItemAtPath: unzipPath error: nil];
+                                            [[NSFileManager defaultManager] createDirectoryAtPath: unzipPath
+                                                                      withIntermediateDirectories: YES
+                                                                                       attributes: nil
+                                                                                            error: nil];
+                                            
+                                            [self askForZIPPassword: itemPath destination: unzipPath];
+                                            
+                                            static int uniqueZipFolder = 1;
+                                            NSString *uniqueFolder = [NSString stringWithFormat: @"unzip_folder_A%d", uniqueZipFolder++];
+                                            [[NSFileManager defaultManager] moveItemAtPath: unzipPath
+                                                                                    toPath: [[self INCOMINGPATH] stringByAppendingPathComponent: uniqueFolder]
+                                                                                     error: nil];
+                                        }
+                                        else if ([[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] ||
+                                                 [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."])
+                                        {
+                                            [self addDICOMDIR: itemPath : filesArray];
+                                        }
+                                        else
+                                            [filesArray addObject:itemPath];
+                                    }
+                                }
+                            }
+                            else if ([[pathname pathExtension] isEqualToString:@"app"])
+                            {
+                                folderSkip = pathname;
+                            }
                         }
-						else if ([[filename pathExtension] isEqualToString: @"app"])
-						{
-						}
-						else
-                            [filesArray addObject: filename];
-					}
-				}
-			}
+                        @catch( NSException *e)
+                        {
+                            N2LogExceptionWithStackTrace(e/*, @"addFilesAndFolderToDatabase 2"*/);
+                        }
+                        
+                        [p release];
+                    }
+                }
+            }
+            else    // It's a file, not a directory
+            {
+                if ([[filename pathExtension] isEqualToString: @"xml"]) // Is it a WADO xml file? (like used for Weasis)
+                {
+                    [BrowserController asyncWADOXMLDownloadURL: [NSURL fileURLWithPath: filename]];
+                }
+                else if ([[filename pathExtension] isEqualToString: @"dcmURLs"])
+                {
+                    NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(asyncWADODownload:) object: filename] autorelease];
+                    t.name = NSLocalizedString( @"WADO Retrieve...", nil);
+                    t.supportsCancel = YES;
+                    t.status = [filename lastPathComponent];
+                    [[ThreadsManager defaultManager] addThreadAndStart: t];
+                }
+                else if ([[filename pathExtension] isEqualToString: @"zip"] ||
+                         [[filename pathExtension] isEqualToString: @"osirixzip"])
+                {
+                    NSString *unzipPath = [NSTemporaryDirectory() stringByAppendingPathComponent: @"unzip_folder"];
+                    
+                    [[NSFileManager defaultManager] removeItemAtPath: unzipPath error: nil];
+                    [[NSFileManager defaultManager] createDirectoryAtPath: unzipPath
+                                              withIntermediateDirectories: YES
+                                                               attributes: nil
+                                                                    error: nil];
+                    
+                    [self askForZIPPassword: filename destination: unzipPath];
+                    
+                    static int uniqueZipFolder = 1;
+                    NSString *uniqueFolder = [NSString stringWithFormat: @"unzip_folder_B%d", uniqueZipFolder++];
+                    [[NSFileManager defaultManager] moveItemAtPath: unzipPath
+                                                            toPath: [[self INCOMINGPATH] stringByAppendingPathComponent: uniqueFolder]
+                                                             error: nil];
+                }
+                else if ([[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] ||
+                         [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."])
+                {
+                    [self addDICOMDIR: filename :filesArray];
+                }
+                else if ([[filename pathExtension] isEqualToString: @"app"])
+                {
+                    // Fake bundle ?
+                }
+                else
+                {
+                    // Normal importable file, usually DICOM
+                    [filesArray addObject: filename];
+                }
+            }
 		}
 		@catch (NSException* e)
 		{

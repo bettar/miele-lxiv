@@ -294,7 +294,7 @@ dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
     sliceRequest.pixelsWide = width;
     sliceRequest.pixelsHigh = height;
     sliceRequest.slabWidth = slab.thickness;
-    sliceRequest.projectionMode = CPR_PROJECTION_MODE_MIP;
+    sliceRequest.projectionMode = MPR_PROJECTION_MODE_MIP;
     
     sliceRequest.sliceToDicomTransform = N3AffineTransformConcat(N3AffineTransformMakeTranslation(minCorner.x, minCorner.y, 0), N3AffineTransformInvert(dicomToPixTransform));
     

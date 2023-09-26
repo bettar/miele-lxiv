@@ -107,7 +107,7 @@ extern int splitPosition[ 3];
 @property (nonatomic, readwrite, assign) BOOL drawAllNodes;
 @property (nonatomic, readwrite, retain) NSMutableDictionary *mousePlanePointsInPix;
 
-+ (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRProjectionMode)clippingRangeMode;
++ (NSInteger)_fusionModeForCPRViewClippingRangeMode:(MPRProjectionMode)clippingRangeMode;
 
 - (void)_setNeedsNewRequest;
 - (void)_sendNewRequestIfNeeded;
@@ -355,7 +355,7 @@ extern int splitPosition[ 3];
     }
 }
 
-- (void)setClippingRangeMode:(CPRProjectionMode)mode
+- (void)setClippingRangeMode:(MPRProjectionMode)mode
 {
     if (mode == _clippingRangeMode)
         return;
@@ -769,8 +769,9 @@ extern int splitPosition[ 3];
             [stringTexC setFlippedX: [self xFlipped] Y:[self yFlipped]];
             
             float quarter = -(lineAStart.y - lineAEnd.y)/3.;
-            
-            [self setShaderProgramOverlay];
+
+            [self setShaderProgramOverlay_withMode_TextureRgba];
+
             NSPoint tPt;
 
             tPt = [self positionWithoutRotation: NSMakePoint( lineAStart.x - [stringTexA frameSize].width, quarter+lineAStart.y)];
@@ -781,21 +782,21 @@ extern int splitPosition[ 3];
             glm::vec4 pTemp = M*glm::vec4(glm::vec2(tPt.x, tPt.y),0,1);
             tPt = NSMakePoint(pTemp.x, pTemp.y);
             #endif
-            renderer_set_rgba(0, 0, 0, 1);
+            renderer_setTextColor(0, 0, 0, 1);
             [stringTexA drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
-            renderer_set_rgba(1, 1, 0, 1);
+            renderer_setTextColor(1, 1, 0, 1);
             [stringTexA drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
             
             tPt = [self positionWithoutRotation: NSMakePoint( lineBStart.x - [stringTexB frameSize].width, quarter+lineBStart.y)];
-            renderer_set_rgba(0, 0, 0, 1);
+            renderer_setTextColor(0, 0, 0, 1);
             [stringTexB drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
-            renderer_set_rgba(1, 1, 0, 1);
+            renderer_setTextColor(1, 1, 0, 1);
             [stringTexB drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
             
             tPt = [self positionWithoutRotation: NSMakePoint( lineCStart.x - [stringTexC frameSize].width, quarter+lineCStart.y)];
-            renderer_set_rgba(0, 0, 0, 1);
+            renderer_setTextColor(0, 0, 0, 1);
             [stringTexC drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
-            renderer_set_rgba(1, 1, 0, 1);
+            renderer_setTextColor(1, 1, 0, 1);
             [stringTexC drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
 
 #ifndef WITH_OPENGL_32
@@ -826,9 +827,13 @@ extern int splitPosition[ 3];
         for (NSString *planeName in _mousePlanePointsInPix)
 		{
 			planeColor = [self valueForKey:[NSString stringWithFormat:@"%@PlaneColor", planeName]];
-            renderer_set_rgba([planeColor redComponent], [planeColor greenComponent], [planeColor blueComponent], [planeColor alphaComponent]);
+            renderer_set_rgba([planeColor redComponent],
+                              [planeColor greenComponent],
+                              [planeColor blueComponent],
+                              [planeColor alphaComponent]);
 
-			cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue], pixToSubDrawRectTransform);
+			cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue],
+                                                  pixToSubDrawRectTransform);
 
             glm::vec2 a(cursorVector.x, cursorVector.y);
             [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
@@ -838,7 +843,8 @@ extern int splitPosition[ 3];
 
 #pragma mark yellow point, size 8
 
-        if (_displayInfo.mouseTransverseSection != CPR_TRANSVERSE_VIEW_SECTION_NONE) {
+        if (_displayInfo.mouseTransverseSection != CPR_TRANSVERSE_VIEW_SECTION_NONE)
+        {
             switch (_displayInfo.mouseTransverseSection)
             {
                 case CPR_TRANSVERSE_VIEW_SECTION_LEFT:
@@ -1468,23 +1474,23 @@ extern int splitPosition[ 3];
 	[_generator runUntilAllRequestsAreFinished];
 }
 
-+ (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRProjectionMode)clippingRangeMode
++ (NSInteger)_fusionModeForCPRViewClippingRangeMode:(MPRProjectionMode)clippingRangeMode
 {
     switch (clippingRangeMode)
     {
-        case CPR_PROJECTION_MODE_VR:
+        case MPR_PROJECTION_MODE_VR:
             return 0; // not supported
             break;
 
-        case CPR_PROJECTION_MODE_MIP:
+        case MPR_PROJECTION_MODE_MIP:
             return 2;
             break;
 
-        case CPR_PROJECTION_MODE_MIN_IP:
+        case MPR_PROJECTION_MODE_MIN_IP:
             return 3;
             break;
 
-        case CPR_PROJECTION_MODE_MEAN:
+        case MPR_PROJECTION_MODE_MEAN:
             return 1;
             break;
 

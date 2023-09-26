@@ -97,7 +97,7 @@ void vtkMieleFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume 
     }
 
     if (!skipRenderingVR)  // Our addition
-        this->RenderSubVolume();
+        this->RenderSubVolume(); // #g93
 
     if (renWin && renWin->CheckAbortStatus())
     {

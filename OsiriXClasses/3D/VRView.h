@@ -276,7 +276,7 @@ typedef char* VTKStereoVRView;
 	// MAPPERS
 	
 	vtkMieleFixedPointVolumeRayCastMapper *volumeMapper;  // CPU
-	vtkGPUVolumeRayCastMapper	        *textureMapper; // GPU
+	vtkGPUVolumeRayCastMapper	          *textureMapper; // GPU
 	
 	vtkVolume					*volume;
 	vtkVolumeProperty			*volumeProperty;

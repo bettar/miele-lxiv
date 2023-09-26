@@ -66,14 +66,14 @@
     N3BezierPath *_bezierPath;
     N3Vector _initialNormal;
     
-    CPRProjectionMode _projectionMode;
+    MPRProjectionMode _projectionMode;
 //    BOOL _vertical; // it would be cool to implement this one day
 }
 
 @property (nonatomic, readwrite, retain) N3BezierPath *bezierPath;
 @property (nonatomic, readwrite, assign) N3Vector initialNormal; // the down direction on the left/top of the output CPR, this vector must be normal to the initial tangent of the curve
 
-@property (nonatomic, readwrite, assign) CPRProjectionMode projectionMode;
+@property (nonatomic, readwrite, assign) MPRProjectionMode projectionMode;
 
 // @property (nonatomic, readwrite, assign) BOOL vertical; // the straightened bezier is horizantal across the screen, or vertical it would be cool to implement this one day
 
@@ -90,13 +90,13 @@
     N3Vector _projectionNormal; 
     N3Vector _midHeightPoint; // this point in the volume will be half way up the volume
     
-    CPRProjectionMode _projectionMode;
+    MPRProjectionMode _projectionMode;
 }
 
 @property (nonatomic, readwrite, retain) N3BezierPath *bezierPath;
 @property (nonatomic, readwrite, assign) N3Vector projectionNormal;
 @property (nonatomic, readwrite, assign) N3Vector midHeightPoint;
-@property (nonatomic, readwrite, assign) CPRProjectionMode projectionMode;
+@property (nonatomic, readwrite, assign) MPRProjectionMode projectionMode;
 
 - (BOOL)isEqual:(id)object;
 
@@ -114,7 +114,7 @@
     CGFloat _pixelSpacingX;
     CGFloat _pixelSpacingY;
     
-    CPRProjectionMode _projectionMode;
+    MPRProjectionMode _projectionMode;
 }
 
 - (id)init;
@@ -128,7 +128,7 @@
 @property (nonatomic, readwrite, assign) CGFloat pixelSpacingY;
 @property (nonatomic, readwrite, assign) CGFloat pixelSpacingZ; // maps to slabSampleDistance
 
-@property (nonatomic, readwrite, assign) CPRProjectionMode projectionMode;
+@property (nonatomic, readwrite, assign) MPRProjectionMode projectionMode;
 
 @property (nonatomic, readwrite, assign) N3AffineTransform sliceToDicomTransform;
 

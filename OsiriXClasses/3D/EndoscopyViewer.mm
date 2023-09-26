@@ -425,7 +425,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	float factor = [vrController factor];
 		// coordinates conversion
 	float pos[3], fp[3];
-	 // The order of the piXList appears reversed in the views relative to the orginal viewer2D
+	 // The order of the piXList appears reversed in the views relative to the original viewer2D
 	 
 	// tranform coordinates
 

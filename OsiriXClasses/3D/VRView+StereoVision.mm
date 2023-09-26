@@ -77,6 +77,8 @@
 
 #include <CoreVideo/CVPixelBuffer.h>
 
+#import "thickSlabTypes.h"
+
 //#import <InstantMessage/IMService.h>
 //#import <InstantMessage/IMAVManager.h>
 
@@ -157,7 +159,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		blendingValueFactor = 1.0;
 		blendingOFFSET16 = -[controller blendingMinimumValue];
 		
-		renderingMode = 0;	// CPR_PROJECTION_MODE_VR
+		renderingMode = MPR_PROJECTION_MODE_VR
 		blendingController = nil;
 		blendingFactor = 128.;
 		blendingVolume = nil;
@@ -2187,9 +2189,9 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		*w = size[0];
 		*h = size[1];
 		
-		if (renderingMode == 1 || // CPR_PROJECTION_MODE_MIP
-            renderingMode == 3 || // CPR_PROJECTION_MODE_MEAN
-            renderingMode == 2)   // CPR_PROJECTION_MODE_MIN_IP
+		if (renderingMode == MPR_PROJECTION_MODE_MIP ||
+            renderingMode == MPR_PROJECTION_MODE_MEAN ||
+            renderingMode == MPR_PROJECTION_MODE_MIN_IP)
 		{
 			unsigned short *destPtr, *destFixedPtr;
 			

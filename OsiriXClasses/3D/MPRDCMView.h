@@ -34,8 +34,8 @@
 	VRView *vrView;
 	DCMPix *pix;
 	Camera *camera;
-	MPRController *windowController;
-	float angleMPR;
+
+    float angleMPR;
 	BOOL dontUseAutoLOD;
 	OSIROIManager *_ROIManager;
 
@@ -56,6 +56,10 @@
 	BOOL dontReenterCrossReferenceLines;
 	
 	BOOL dontCheckRoiChange;
+
+    // Sub-class specific stuff
+
+    MPRController *windowController;
 }
 
 @property (readonly) DCMPix *pix;

@@ -717,7 +717,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         if (viewer2D)
         {		
             float x, y, z;
-            NSMutableArray	*curRoiList;
+            NSMutableArray *curRoiList;
             ROI	*curROI;
             
             for (long i=0; i<[[[viewer2D imageView] dcmPixList] count]; i++)

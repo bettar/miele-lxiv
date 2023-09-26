@@ -24,7 +24,7 @@
 #include <exception>
 
 #if __LP64__
-#import "vtkConfigure.h"
+//#import "vtkConfigure.h" // ok in 9.2 no longer available in 9.3
 #endif
 
 vtkStandardNewMacro(vtkPowerCrustSurfaceReconstruction);

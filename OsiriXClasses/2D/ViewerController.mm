@@ -23317,7 +23317,7 @@ static BOOL viewerControllerPlaying = NO;
 	return viewer;
 }
 
-- (IBAction) mprViewer:(id) sender
+- (IBAction) mprViewer:(id) sender // TBC related to issue #g93 ?
 {
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
@@ -23355,7 +23355,6 @@ static BOOL viewerControllerPlaying = NO;
     
     [self displayAWarningIfNonTrueVolumicData];
     [self displayWarningIfGantryTitled];
-    
     [self MovieStop: self];
 
     MPRController *viewer = [[AppController sharedAppController] FindViewer :@"MPR" :pixList[0]];
@@ -23369,7 +23368,9 @@ static BOOL viewerControllerPlaying = NO;
     [self place3DViewerWindow:viewer];
     dispatch_async(dispatch_get_main_queue(), ^(){
         [viewer showWindow:self];
-        [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
+        [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@",
+                                    [[viewer window] title],
+                                    [[self window] title]]];
     });
 }
 
@@ -23388,14 +23389,14 @@ static BOOL viewerControllerPlaying = NO;
                                       viewerController: self
                                  fusedViewerController: blendingController];
     
-	for (int i = 1; i < maxMovieIndex; i++) // @@@
+	for (int i = 1; i < maxMovieIndex; i++)
 		[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
 	
 	return viewer;
 }
 
 // Action to open the CPRViewer
-- (IBAction) cprViewer:(id) sender
+- (IBAction) cprViewer:(id) sender // TBC related to issue #g93 ?
 {
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];

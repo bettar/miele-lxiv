@@ -94,7 +94,7 @@ extern int splitPosition[ 3];
 @property (nonatomic, readwrite, assign) BOOL drawAllNodes;
 @property (nonatomic, readwrite, retain) N3BezierPath *centerlinePath;
 
-+ (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRProjectionMode)clippingRangeMode;
++ (NSInteger)_fusionModeForCPRViewClippingRangeMode:(MPRProjectionMode)clippingRangeMode;
 
 - (void)_setNeedsNewRequest;
 - (void)_sendNewRequestIfNeeded;
@@ -355,7 +355,7 @@ extern int splitPosition[ 3];
     }
 }
 
-- (void)setClippingRangeMode:(CPRProjectionMode)mode
+- (void)setClippingRangeMode:(MPRProjectionMode)mode
 {
     if (mode == _clippingRangeMode)
         return;
@@ -725,16 +725,32 @@ extern int splitPosition[ 3];
         {
             float ratio = 1;
             
-            if (self.pixelSpacingX != 0 && self.pixelSpacingY != 0)
+            if (self.pixelSpacingX != 0 &&
+                self.pixelSpacingY != 0)
+            {
                 ratio = self.pixelSpacingX / self.pixelSpacingY;
+            }
             
 #ifdef WITH_OPENGL_32
-            // TODO:
-            NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+            //#define WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH2
+            #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH2
+            // Define a local model matrix and apply it locally without affecting the shader
+            BOOL flipX = [self xFlipped];
+            BOOL flipY = [self yFlipped];
+            float signX = flipX ? -1.0 : 1.0;
+            float signY = flipY ? -1.0 : 1.0;
+            glm::mat4 M = glm::mat4(1.0);
+            M = glm::scale(M, glm::vec3(signX * 2.0f / [self drawingFrameRect].size.width,
+                                       -signY * 2.0f / [self drawingFrameRect].size.height,
+                                        1.0f));
+            M = glm::translate(M, glm::vec3( [self origin].x, -[self origin].y, 0.0f));
+            #endif
 #else
             glPushMatrix();
             glLoadIdentity();
-            glScalef (2.0f /([self xFlipped] ? -([self drawingFrameRect].size.width) : [self drawingFrameRect].size.width), -2.0f / ([self yFlipped] ? -([self drawingFrameRect].size.height) : [self drawingFrameRect].size.height), 1.0f); // scale to port per pixel scale
+            glScalef (2.0f /([self xFlipped] ? -([self drawingFrameRect].size.width) : [self drawingFrameRect].size.width),
+                     -2.0f / ([self yFlipped] ? -([self drawingFrameRect].size.height) : [self drawingFrameRect].size.height),
+                      1.0f); // scale to port per pixel scale
             glTranslatef( [self origin].x, -[self origin].y, 0.0f);
 #endif
             
@@ -742,24 +758,31 @@ extern int splitPosition[ 3];
             [stringTexB setFlippedX: [self xFlipped] Y:[self yFlipped]];
             [stringTexC setFlippedX: [self xFlipped] Y:[self yFlipped]];
             
+            [self setShaderProgramOverlay_withMode_TextureRgba];
+            
             NSPoint tPt;
             
             tPt = [self positionWithoutRotation: NSMakePoint( transverseIntersectionA.x, transverseIntersectionA.y)];
-            renderer_set_rgba(0, 0, 0, 1);
+            #ifdef WITH_LOCAL_MV_MATRIX_TRANSFORMATION_CPR_STRETCH2
+            // Apply local model transformation
+            glm::vec4 pTemp = M*glm::vec4(glm::vec2(tPt.x, tPt.y),0,1);
+            tPt = NSMakePoint(pTemp.x, pTemp.y);
+            #endif
+            renderer_setTextColor(0, 0, 0, 1);
             [stringTexA drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
-            renderer_set_rgba(1, 1, 0, 1);
+            renderer_setTextColor(1, 1, 0, 1);
             [stringTexA drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
             
             tPt = [self positionWithoutRotation: NSMakePoint( transverseIntersectionB.x, transverseIntersectionB.y)];
-            renderer_set_rgba(0, 0, 0, 1);
+            renderer_setTextColor(0, 0, 0, 1);
             [stringTexB drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
-            renderer_set_rgba(1, 1, 0, 1);
+            renderer_setTextColor(1, 1, 0, 1);
             [stringTexB drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
             
             tPt = [self positionWithoutRotation: NSMakePoint( transverseIntersectionC.x, transverseIntersectionC.y)];
-            renderer_set_rgba(0, 0, 0, 1);
+            renderer_setTextColor(0, 0, 0, 1);
             [stringTexC drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
-            renderer_set_rgba(1, 1, 0, 1);
+            renderer_setTextColor(1, 1, 0, 1);
             [stringTexC drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
 
 #ifndef WITH_OPENGL_32
@@ -780,8 +803,14 @@ extern int splitPosition[ 3];
         
 #ifdef WITH_OPENGL_32
         [self setShaderProgramOverlay_withMode_Point]; // Added
+#else
+        CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+        glEnable(GL_POINT_SMOOTH);
 #endif
 
+        renderer_set_point_size(8 * self.window.backingScaleFactor);
+
+        NSMutableArray *pArray = [NSMutableArray array];
         for (planeName in _mousePlanePointsInPix)
 		{
 			planeColor = [self valueForKey:[NSString stringWithFormat:@"%@PlaneColor", planeName]];
@@ -789,55 +818,17 @@ extern int splitPosition[ 3];
                               [planeColor greenComponent],
                               [planeColor blueComponent],
                               [planeColor alphaComponent]);
-            
-#ifndef WITH_OPENGL_32
-            glEnable(GL_POINT_SMOOTH);
-#endif
-			glPointSize(8 * self.window.backingScaleFactor);
-			cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue], pixToSubDrawRectTransform);
 
-#ifdef WITH_OPENGL_32
-            NSMutableArray *pArray = [NSMutableArray array];
+			cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue],
+                                                  pixToSubDrawRectTransform);
+
             glm::vec2 a(cursorVector.x, cursorVector.y);
             [pArray addObject: [NSValue valueWithBytes:&a objCType:@encode(glm::vec2)]];
-            renderer_drawPoints([pArray copy]);
-#else
-            glBegin(GL_POINTS);
-            {
-                glVertex2f(cursorVector.x, cursorVector.y);
-            }
-			glEnd();
-#endif
 		}
-        
-//        if (_displayInfo.mouseTransverseSection != CPR_TRANSVERSE_VIEW_SECTION_NONE) {
-//            switch (_displayInfo.mouseTransverseSection) {
-//                case CPR_TRANSVERSE_VIEW_SECTION_LEFT:
-//                    relativePosition = _curvedPath.leftTransverseSectionPosition;
-//                    break;
-//                case CPR_TRANSVERSE_VIEW_SECTION_CENTER:
-//                    relativePosition = _curvedPath.transverseSectionPosition;
-//                    break;
-//                case CPR_TRANSVERSE_VIEW_SECTION_RIGHT:
-//                    relativePosition = _curvedPath.rightTransverseSectionPosition;
-//                    break;
-//                default:
-//                    relativePosition = 0;
-//                    break;
-//            }
-//            
-//            cursorVector = N3VectorMake((CGFloat)curDCM.pwidth*relativePosition, ((CGFloat)curDCM.pheight/2.0)+(_displayInfo.mouseTransverseSectionDistance*pixelsPerMm), 0);
-//            cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
-//            
-//            renderer_set_rgba(1.0, 1.0, 0.0, 1.0);
-//#ifndef WITH_OPENGL_32
-//            glEnable(GL_POINT_SMOOTH);
-//#endif
-//            glPointSize(8 * self.window.backingScaleFactor);
-//            glBegin(GL_POINTS);
-//            glVertex2f(cursorVector.x, cursorVector.y);
-//            glEnd();
-//        }
+
+        renderer_drawPoints([pArray copy]);
+
+//      CPRStraightened view has code here for drawing a yellow point
     }
 
 #pragma mark all curved path nodes
@@ -1469,7 +1460,7 @@ didGenerateVolume:(CPRVolumeData *)volume
     
     unichar c = [[theEvent characters] characterAtIndex:0];
     
-    if(( c == NSDeleteCharacter || c == NSDeleteFunctionKey) && _isDraggingNode && _draggedNode != -1)
+    if (( c == NSDeleteCharacter || c == NSDeleteFunctionKey) && _isDraggingNode && _draggedNode != -1)
 	{
 		// Delete node
         [_curvedPath removeNodeAtIndex:_draggedNode];
@@ -1481,10 +1472,11 @@ didGenerateVolume:(CPRVolumeData *)volume
     else
         [super keyDown:theEvent];
 }
+
 - (void)scrollWheel:(NSEvent *)theEvent
 {
 	// Scroll/Move transverse lines
-	if( [theEvent modifierFlags] & NSEventModifierFlagOption)
+	if ( [theEvent modifierFlags] & NSEventModifierFlagOption)
 	{
 		CGFloat transverseSectionPosition = MIN(MAX(_curvedPath.transverseSectionPosition + [theEvent deltaY] * .002, 0.0), 1.0); 
 		
@@ -1497,11 +1489,11 @@ didGenerateVolume:(CPRVolumeData *)volume
 	}
 	
 	// Scroll/Move transverse lines
-	else if( [theEvent modifierFlags] & NSEventModifierFlagCommand)
+	else if ( [theEvent modifierFlags] & NSEventModifierFlagCommand)
 	{
         float factor = 0.4;
         
-        if( curDCM.pixelSpacingX)
+        if ( curDCM.pixelSpacingX)
             factor = curDCM.pixelSpacingX;
         
 		CGFloat transverseSectionSpacing = MIN(MAX(_curvedPath.transverseSectionSpacing + [theEvent deltaY] * factor, 0.0), 300);
@@ -1515,7 +1507,7 @@ didGenerateVolume:(CPRVolumeData *)volume
 	}
     
     // Scroll/push the curve in and out
-	else if( [theEvent modifierFlags] & NSEventModifierFlagControl) {
+	else if ( [theEvent modifierFlags] & NSEventModifierFlagControl) {
         [self _pushBezierPath:[theEvent deltaY] * .4];
     }
     
@@ -1537,23 +1529,23 @@ didGenerateVolume:(CPRVolumeData *)volume
 }
 
 
-+ (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRProjectionMode)mode
++ (NSInteger)_fusionModeForCPRViewClippingRangeMode:(MPRProjectionMode)mode
 {
     switch (mode)
     {
-        case CPR_PROJECTION_MODE_VR:
+        case MPR_PROJECTION_MODE_VR:
             return 0; // not supported
             break;
 
-        case CPR_PROJECTION_MODE_MIP:
+        case MPR_PROJECTION_MODE_MIP:
             return 2;
             break;
 
-        case CPR_PROJECTION_MODE_MIN_IP:
+        case MPR_PROJECTION_MODE_MIN_IP:
             return 3;
             break;
 
-        case CPR_PROJECTION_MODE_MEAN:
+        case MPR_PROJECTION_MODE_MEAN:
             return 1;
             break;
 

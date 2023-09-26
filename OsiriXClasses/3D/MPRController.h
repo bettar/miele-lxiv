@@ -24,6 +24,8 @@
 #import "VRController.h"
 #import "VRView.h"
 
+#import "thickSlabTypes.h"
+
 @class MPRDCMView;
 
 @interface MPRController : Window3DController <NSToolbarDelegate, NSSplitViewDelegate>
@@ -89,7 +91,6 @@
 	
 	// Clipping Range
 	float clippingRangeThickness;
-	int clippingRangeMode;
 	
 	NSArray *wlwwMenuItems;
 	
@@ -106,8 +107,10 @@
 	NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 }
 
-@property (nonatomic) float clippingRangeThickness, dcmInterval, blendingPercentage, dcmIntervalMin, dcmIntervalMax;
-@property (nonatomic) int dcmmN, clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
+@property (nonatomic) float dcmInterval;
+@property (nonatomic) float clippingRangeThickness, blendingPercentage, dcmIntervalMin, dcmIntervalMax;
+@property (nonatomic) MPRProjectionMode clippingRangeMode;
+@property (nonatomic) int dcmmN, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
 @property (nonatomic) int dcmFormat, curMovieIndex, maxMovieIndex;
 @property (nonatomic) BlendingMode2DType blendingMode; // custom setter
 @property (nonatomic, retain) Point3D *mousePosition;

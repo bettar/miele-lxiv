@@ -1583,6 +1583,7 @@
 		438AE1AA21B51E1400C5E98F /* miele-lxiv-Development.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "miele-lxiv-Development.entitlements"; sourceTree = "<group>"; };
 		438AE1AB21B5651B00C5E98F /* LXIV Launcher-Deployment.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Deployment.entitlements"; path = "LXIV Launcher/LXIV Launcher-Deployment.entitlements"; sourceTree = "<group>"; };
 		438AE1AC21B5651C00C5E98F /* LXIV Launcher-Distribution.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Distribution.entitlements"; path = "LXIV Launcher/LXIV Launcher-Distribution.entitlements"; sourceTree = "<group>"; };
+		43953FD52AB2E03A0080F497 /* thickSlabTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = thickSlabTypes.h; sourceTree = "<group>"; };
 		43977C2D23D340920044054B /* loupe.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = loupe.vsh; sourceTree = "<group>"; };
 		43977C2F23D340AF0044054B /* loupe.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = loupe.fsh; sourceTree = "<group>"; };
 		4398390923DD7F2C0019B0A8 /* GLProgram.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgram.h; sourceTree = "<group>"; };
@@ -3231,6 +3232,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				43953FD52AB2E03A0080F497 /* thickSlabTypes.h */,
 				43E27D261AF32929007B92CA /* tmp_locations.h */,
 				4307C62B1A2091900083877C /* url.h */,
 				434B46151A19F2A3008CF8CF /* options.h */,
@@ -8070,7 +8072,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20230823;
+				CURRENT_PROJECT_VERSION = 20230926;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8140,7 +8142,7 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.2",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
@@ -8169,7 +8171,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 9.32.124;
+				MARKETING_VERSION = 9.33.126;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8247,7 +8249,7 @@
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.2",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.2",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -8270,7 +8272,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 9.32.124;
+				MARKETING_VERSION = 9.33.126;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8598,7 +8600,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20230823;
+				CURRENT_PROJECT_VERSION = 20230926;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8666,7 +8668,7 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.2",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
@@ -8695,7 +8697,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 9.32.124;
+				MARKETING_VERSION = 9.33.126;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8773,7 +8775,7 @@
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.2",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.2",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -8796,7 +8798,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 9.32.124;
+				MARKETING_VERSION = 9.33.126;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9118,7 +9120,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 9.32.124;
+				MARKETING_VERSION = 9.33.126;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9272,7 +9274,7 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.2",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
@@ -9300,7 +9302,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 9.32.124;
+				MARKETING_VERSION = 9.33.126;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -9376,7 +9378,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.2",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.2",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -9406,7 +9408,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
-				CURRENT_PROJECT_VERSION = 20230823;
+				CURRENT_PROJECT_VERSION = 20230926;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
