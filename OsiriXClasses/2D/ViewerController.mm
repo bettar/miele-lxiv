@@ -22664,10 +22664,33 @@ static BOOL viewerControllerPlaying = NO;
 }
 #endif
 
-#ifndef MIELE_LIGHT
+- (NSScreen*) get3DViewerScreen: (ViewerController*) v
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ThreeDViewerOnAnotherScreen"])
+    {
+        NSArray *allScreens = [NSScreen screens];
+        for (id loopItem in allScreens)
+        {
+            if ([[[v window] screen] frame].origin.x != [loopItem frame].origin.x ||
+                [[[v window] screen] frame].origin.y != [loopItem frame].origin.y)
+            {
+                return loopItem;
+            }
+        }
+    }
+
+    return [[v window] screen];
+}
+
+- (void) place3DViewerWindow:(NSWindowController*) viewer
+{
+    [[viewer window] setFrame: [[self get3DViewerScreen: self] visibleFrame] display:NO];
+}
+
+#pragma mark 3D VR
+
 - (VRController *)openVRViewerForMode:(NSString *)mode
 {
-    // @@@ VR 3
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];	
 	[self MovieStop: self];
@@ -22728,39 +22751,9 @@ static BOOL viewerControllerPlaying = NO;
 
     return viewer;
 }
-#endif
 
-- (NSScreen*) get3DViewerScreen: (ViewerController*) v
-{
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ThreeDViewerOnAnotherScreen"])
-	{
-		NSArray *allScreens = [NSScreen screens];
-		for (id loopItem in allScreens)
-		{
-			if ([[[v window] screen] frame].origin.x != [loopItem frame].origin.x ||
-                [[[v window] screen] frame].origin.y != [loopItem frame].origin.y)
-			{
-				return loopItem;
-			}
-		}
-		
-		return [[v window] screen];
-	}
-	else
-	{
-		return [[v window] screen];
-	}
-}
-
-- (void) place3DViewerWindow:(NSWindowController*) viewer
-{
-	[[viewer window] setFrame: [[self get3DViewerScreen: self] visibleFrame] display:NO];
-}
-
-#ifndef MIELE_LIGHT
 -(IBAction) VRViewer:(id) sender
 {
-    // @@@ VR 1
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
@@ -22825,7 +22818,6 @@ static BOOL viewerControllerPlaying = NO;
     
     VRController *viewer = nil;
     
-    // @@@ VR 2
     for (NSWindowController *v in viewers)
     {
         if ([v.windowNibName isEqualToString: @"VR"])
@@ -22876,6 +22868,8 @@ static BOOL viewerControllerPlaying = NO;
     }
 }
 
+#pragma mark 3D SR
+
 - (SRController *)openSRViewer
 {
 	[self checkEverythingLoaded];
@@ -22901,9 +22895,6 @@ static BOOL viewerControllerPlaying = NO;
 // Action to open SRViewer (Surface Rendering)
 -(IBAction) SRViewer:(id) sender
 {
-#ifndef NDEBUG
-    NSLog(@"%s (IBAction)", __FUNCTION__);
-#endif
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
@@ -22938,7 +22929,6 @@ static BOOL viewerControllerPlaying = NO;
 		([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSEventModifierFlagShift))
 	{
 		[self SetThicknessInterval:sender];
-        NSLog(@"%s %d early return", __FUNCTION__, __LINE__);
         return;
 	}
 
@@ -22959,7 +22949,7 @@ static BOOL viewerControllerPlaying = NO;
         return;
     }
 
-    NSLog(@"%s %d, SR viewer %@", __FUNCTION__, __LINE__, viewer);
+    //NSLog(@"%s %d, SR viewer %@", __FUNCTION__, __LINE__, viewer);
     [self place3DViewerWindow: viewer];
 
 //	[[viewer window] performZoom:self];
@@ -22968,12 +22958,11 @@ static BOOL viewerControllerPlaying = NO;
     [viewer ChangeSettings:self];
     [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 }
-#endif
+
+#pragma mark 2D Orthogonal MPR
 
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer
 {
-    NSLog(@"%s %d, class:%@, self:%p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
-
     [self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
@@ -23018,7 +23007,6 @@ static BOOL viewerControllerPlaying = NO;
 	return viewer;
 }
 
-#ifndef MIELE_LIGHT
 - (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer
 {
 	[self checkEverythingLoaded];
@@ -23088,12 +23076,9 @@ static BOOL viewerControllerPlaying = NO;
 	}
 	return nil;	
 }
-#endif
 
 -(IBAction) orthogonalMPRViewer:(id) sender
 {
-    NSLog(@"%s %d, class:%@, self:%p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
-
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 			
@@ -23176,20 +23161,24 @@ static BOOL viewerControllerPlaying = NO;
     }
 }
 
-#ifndef MIELE_LIGHT
+#pragma mark 3D Endoscopy
+
 - (EndoscopyViewer *)openEndoscopyViewer
 {
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
-	EndoscopyViewer *viewer;
-		
-	viewer = [[AppController sharedAppController] FindViewer :@"Endoscopy" :pixList[0]];
+
+    EndoscopyViewer *viewer = [[AppController sharedAppController] FindViewer :@"Endoscopy" :pixList[0]];
     if (viewer) {
-        NSLog(@"%s %d, Found viewer: Endoscopy", __FUNCTION__, __LINE__);
+        //NSLog(@"%s %d, Found viewer: Endoscopy", __FUNCTION__, __LINE__);
 		return viewer;
     }
 	
-	viewer = [[EndoscopyViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :blendingController : self];
+	viewer = [[EndoscopyViewer alloc] initWithPixList: pixList[0]
+                                                     : fileList[0]
+                                                     : volumeData[0]
+                                                     : blendingController
+                                                     : self];
 	return viewer;
 }
 
@@ -23234,15 +23223,12 @@ static BOOL viewerControllerPlaying = NO;
     
     [self displayAWarningIfNonTrueVolumicData];
     [self displayWarningIfGantryTitled];
-    
     [self MovieStop: self];
     
-    EndoscopyViewer *viewer;
-    
-    viewer = [[AppController sharedAppController] FindViewer :@"Endoscopy" :pixList[0]];
+    EndoscopyViewer *viewer = [[AppController sharedAppController] FindViewer :@"Endoscopy" :pixList[0]];
     if (viewer)
     {
-        NSLog(@"%s %d, found viewer: Endoscopy", __FUNCTION__, __LINE__);
+        //NSLog(@"%s %d, found viewer: Endoscopy", __FUNCTION__, __LINE__);
         [[viewer window] makeKeyAndOrderFront:self];
         return;
     }
@@ -23252,7 +23238,6 @@ static BOOL viewerControllerPlaying = NO;
     [viewer showWindow:self];
     [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 }
-#endif
 
 //-(IBAction) MIPViewer:(id) sender
 //{
@@ -23295,9 +23280,14 @@ static BOOL viewerControllerPlaying = NO;
 //	}
 //}
 
-#ifndef MIELE_LIGHT
+#pragma mark 3D MPR
+
 - (MPRController *)openMPRViewer
 {
+#ifdef DEBUG_ISSUE_G93
+    NSLog(@"===\n%s %d", __FUNCTION__, __LINE__);
+#endif
+    
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
@@ -23317,7 +23307,7 @@ static BOOL viewerControllerPlaying = NO;
 	return viewer;
 }
 
-- (IBAction) mprViewer:(id) sender // TBC related to issue #g93 ?
+- (IBAction) mprViewer:(id) sender
 {
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
@@ -23366,6 +23356,9 @@ static BOOL viewerControllerPlaying = NO;
 
     viewer = [self openMPRViewer];
     [self place3DViewerWindow:viewer];
+#ifdef DEBUG_ISSUE_G93
+    NSLog(@"---\n%s %d, before viewer showWindow\n---", __FUNCTION__, __LINE__);
+#endif
     dispatch_async(dispatch_get_main_queue(), ^(){
         [viewer showWindow:self];
         [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@",
@@ -23374,8 +23367,13 @@ static BOOL viewerControllerPlaying = NO;
     });
 }
 
+#pragma mark 3D CPR
+
 - (CPRController *)openCPRViewer
 {
+#ifdef DEBUG_ISSUE_G93
+    NSLog(@"===\n%s %d", __FUNCTION__, __LINE__);
+#endif
     [self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
@@ -23396,7 +23394,7 @@ static BOOL viewerControllerPlaying = NO;
 }
 
 // Action to open the CPRViewer
-- (IBAction) cprViewer:(id) sender // TBC related to issue #g93 ?
+- (IBAction) cprViewer:(id) sender
 {
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
@@ -23443,25 +23441,29 @@ static BOOL viewerControllerPlaying = NO;
         return;
     }
 
-#if 1 // Horos
     id waitWindow = [self startWaitWindow:NSLocalizedString(@"Loading...",nil)];
-#endif
+
     viewer = [self openCPRViewer];
     assert(viewer);
     [self place3DViewerWindow:viewer];
+
+#if 0 // originally commented in. Commenting it out fixes #g93
     [viewer showWindow:self];       // #i18 stack 13
-    [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@",
-                                [[viewer window] title],
-                                [[self window] title]]];
-#if 1 // Horos
+#endif
+
+#ifdef DEBUG_ISSUE_G93
+    NSLog(@"---\n%s %d, before viewer showWindow\n---", __FUNCTION__, __LINE__);
+#endif
     dispatch_async(dispatch_get_main_queue(), ^(){
+//        [viewer showWindow:self];
         [viewer showWindow:self];
-        [viewer showWindow:self];
+        [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@",
+                                    [[viewer window] title],
+                                    [[self window] title]]];
+
         [self endWaitWindow:waitWindow];
     });
-#endif
 }
-#endif
 
 #pragma mark - 4.5.4 Study navigation
 

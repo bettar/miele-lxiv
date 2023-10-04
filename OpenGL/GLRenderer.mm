@@ -15,6 +15,10 @@
 #import <assert.h>
 #include <string>
 
+#ifdef DEBUG_ISSUE_G93
+#include <iostream> // for std::cout
+#endif
+
 #import "GLScene.h"
 
 #import "GLRenderer.h"
@@ -1040,8 +1044,6 @@ void renderer_drawTriangleFan_xyz_uv_uv(NSArray *pArray)
 
 #pragma mark - imageShader
 
-#include <iostream> // for #g93 std::cout
-
 // Used for drawing DICOM images with "imageShader"
 // Used for drawing DICOM loupe ring with "loupeShader"
 // 'pArray' is an array of Point_xyz_uv
@@ -1049,7 +1051,7 @@ void renderer_drawTriangleFan_xyz_uv_uv(NSArray *pArray)
 // TODO: maybe revert to not using Z now that we have the loupe shader
 void renderer_draw_xyz_uv(NSArray *pArray, GLenum mode)
 {
-#if 1 // DEBUG_RENDERER_CALLS #g93
+#ifdef DEBUG_RENDERER_CALLS
     NSLog(@"%s %d, %@, program:%d, shader mode:%ld, %lu points", __FUNCTION__, __LINE__,
           [NSOpenGLContext currentContext],
           sScene.currentProgram,
@@ -1069,7 +1071,9 @@ void renderer_draw_xyz_uv(NSArray *pArray, GLenum mode)
     GLfloat vertex_buffer_data[nPoints*dimV];
     GLfloat uv_buffer_data[nPoints*dimT];
     
-
+#ifdef DEBUG_ISSUE_G93
+    std::cout << std::endl;
+#endif
     for (long i = 0; i < nPoints; i++) {
         Point_xyz_uv pt;
         [pArray[i] getValue:&pt];
@@ -1080,13 +1084,16 @@ void renderer_draw_xyz_uv(NSArray *pArray, GLenum mode)
         uv_buffer_data[i*dimT] = pt.t.s;
         uv_buffer_data[i*dimT+1] = pt.t.t;
 
-#ifndef NDEBUG // debug #g93
+#ifdef DEBUG_ISSUE_G93
         std::cout << i
         << ", XYZ:(" << pt.p.x << "," << pt.p.y << "," << pt.p.z << ")"
         << ", ST:(" << pt.p.s << "," << pt.p.t << ")"
         << std::endl;
 #endif
     }
+#ifdef DEBUG_ISSUE_G93
+    std::cout << std::endl;
+#endif
 
     // Give array to OpenGL
     checkOpenGLErrors(__LINE__);
@@ -1141,7 +1148,7 @@ void renderer_draw_xyz_uv(NSArray *pArray, GLenum mode)
             glTexCoord2f(pt.t.s, pt.t.t);
             glVertex2f(pt.p.x, pt.p.y);
             
-#ifndef NDEBUG // debug #g93
+#ifdef DEBUG_ISSUE_G93
             std::cout << i
             << ", XYZ:(" << pt.p.x << "," << pt.p.y << "," << pt.p.z << ")"
             << ", ST:(" << pt.p.s << "," << pt.p.t << ")"

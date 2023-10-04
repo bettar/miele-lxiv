@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22154" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22154"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -59,7 +59,7 @@
                     <splitView vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="357">
                         <rect key="frame" x="0.0" y="0.0" width="730" height="443"/>
                         <subviews>
-                            <splitView fixedFrame="YES" id="355">
+                            <splitView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="355">
                                 <rect key="frame" x="0.0" y="0.0" width="356" height="443"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <subviews>
@@ -185,11 +185,8 @@
                 <rect key="frame" x="0.0" y="0.0" width="499" height="530"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="420">
+                    <button tag="1" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="420">
                         <rect key="frame" x="390" y="39" width="99" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="hZH-f2-dgL"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" tag="1" inset="2" id="465">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -197,15 +194,15 @@
 DQ
 </string>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="hZH-f2-dgL"/>
+                        </constraints>
                         <connections>
                             <action selector="endDCMExportSettings:" target="-2" id="751"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="419">
                         <rect key="frame" x="390" y="8" width="99" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="PtD-Z5-nAW"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="466">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -213,6 +210,9 @@ DQ
 Gw
 </string>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="PtD-Z5-nAW"/>
+                        </constraints>
                         <connections>
                             <action selector="endDCMExportSettings:" target="-2" id="750"/>
                         </connections>
@@ -1053,9 +1053,6 @@ Gw
                 <subviews>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="678">
                         <rect key="frame" x="51" y="44" width="104" height="16"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="99" id="ULc-9d-ThP"/>
-                        </constraints>
                         <popUpButtonCell key="cell" type="push" title="WL/WW" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="681" id="679">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="miniSystem"/>
@@ -1067,12 +1064,12 @@ Gw
                                 </items>
                             </menu>
                         </popUpButtonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="99" id="ULc-9d-ThP"/>
+                        </constraints>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="677">
                         <rect key="frame" x="51" y="30" width="104" height="16"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="99" id="8hd-7X-tYx"/>
-                        </constraints>
                         <popUpButtonCell key="cell" type="push" title="CLUT" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="686" id="684">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="miniSystem"/>
@@ -1084,6 +1081,9 @@ Gw
                                 </items>
                             </menu>
                         </popUpButtonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="99" id="8hd-7X-tYx"/>
+                        </constraints>
                     </popUpButton>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="676">
                         <rect key="frame" x="13" y="47" width="42" height="11"/>
@@ -1111,9 +1111,6 @@ Gw
                     </textField>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="673">
                         <rect key="frame" x="51" y="16" width="104" height="16"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="99" id="3jK-Ve-cB5"/>
-                        </constraints>
                         <popUpButtonCell key="cell" type="push" title="Opacity" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" enabled="NO" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="694" id="692">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="miniSystem"/>
@@ -1125,6 +1122,9 @@ Gw
                                 </items>
                             </menu>
                         </popUpButtonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="99" id="3jK-Ve-cB5"/>
+                        </constraints>
                     </popUpButton>
                 </subviews>
             </view>
@@ -1220,9 +1220,6 @@ Gw
                     </matrix>
                     <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="1606">
                         <rect key="frame" x="239" y="-1" width="21" height="17"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="16" id="m9N-Nq-9HY"/>
-                        </constraints>
                         <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="1615" id="1607">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -1298,6 +1295,9 @@ Gw
                                 </items>
                             </menu>
                         </popUpButtonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="16" id="m9N-Nq-9HY"/>
+                        </constraints>
                     </popUpButton>
                 </subviews>
             </view>
@@ -1450,9 +1450,6 @@ Gw
             <subviews>
                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="857">
                     <rect key="frame" x="42" y="25" width="82" height="16"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="77" id="sxg-XE-H27"/>
-                    </constraints>
                     <popUpButtonCell key="cell" type="push" title="Linear" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="869" id="864">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="miniSystem"/>
@@ -1467,6 +1464,9 @@ Gw
                             </items>
                         </menu>
                     </popUpButtonCell>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="77" id="sxg-XE-H27"/>
+                    </constraints>
                     <connections>
                         <binding destination="342" name="selectedTag" keyPath="selection.blendingMode" id="892"/>
                         <binding destination="342" name="enabled" keyPath="selection.blendingModeAvailable" id="908"/>
@@ -1769,13 +1769,13 @@ Gw
                 <subviews>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="1466">
                         <rect key="frame" x="-1" y="5" width="34" height="42"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="28" id="aK1-LK-bdq"/>
-                        </constraints>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="PathAssistant" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="1467">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system" size="10"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="28" id="aK1-LK-bdq"/>
+                        </constraints>
                         <connections>
                             <action selector="runFlyAssistant:" target="-2" id="1491"/>
                         </connections>

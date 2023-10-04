@@ -211,7 +211,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
              fusedViewerController:(ViewerController*)fusedViewer
 {
 #ifndef NDEBUG
-    NSLog(@"CPRController.mm %d, initWithDCMPixList, class:%@, self:%p, pix count: %lu", __LINE__,
+    NSLog(@"===\nCPRController.mm %d, initWithDCMPixList, class:%@, self:%p, pix count: %lu", __LINE__,
           NSStringFromClass([self class]), self, (unsigned long)pix.count);
 #endif
 	@try
@@ -448,6 +448,17 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[hiddenVRView resetImage: self];
         [hiddenVRView setLOD: 20]; // No effect on #g93
 		hiddenVRView.keep3DRotateCentered = YES;
+#ifdef DEBUG_ISSUE_G93
+        {
+            NSRect rrr = [mprView1 frame];
+            NSLog(@"%s %d, rrr:%@", __FUNCTION__, __LINE__, NSStringFromRect(rrr));
+#if 0
+            float sf = self.window.backingScaleFactor;
+            // @@@ @@@ it has some effect but it's not the right fix. _cocoaRenderWindow
+            [hiddenVRView renderWindow]->SetSize(rrr.size.width*sf, rrr.size.height*sf);
+#endif
+        }
+#endif
 		
 		[mprView1 setVRView: hiddenVRView viewID: 1];
 		[mprView1 setWLWW: [[viewer imageView] curWL] :[[viewer imageView] curWW]];
@@ -670,7 +681,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"syncZoomLevelMPR"];
 	
 	// Default Init
+#if 1 // originally commented in. Try for #g93
 	[self setClippingRangeMode: MPR_PROJECTION_MODE_MIP];    // #i18 stack 12
+#endif
 #ifdef FIX_CPR_WORKAROUND // try for #g93
     self.clippingRangeThickness = 1;
     if ([self getClippingRangeThicknessInMm] < fabs( [originalPix sliceInterval]))
@@ -766,10 +779,39 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     [horizontalSplit2 setDelegate: self];
     [verticalSplit setDelegate: self];
 
+    // Try to fix Sonoma layout. TODO: use NSSplitViewController
+
+#if 0 // method 1
+    CGFloat mmm = [horizontalSplit1 minPossiblePositionOfDividerAtIndex: 0];
+    CGFloat MMM = [horizontalSplit1 maxPossiblePositionOfDividerAtIndex: 0];
+    [horizontalSplit1 setPosition: (MMM+mmm)/2
+                 ofDividerAtIndex: 0];
+#endif
+#if 0 // method 2
+    [self setViewsPosition:NormalPosition];
+#endif
+    
 	[shadingsPresetsController setWindowController: self];
 	[shadingCheck setAction:@selector(switchShading:)];
 	[shadingCheck setTarget:self];
 }
+
+#if 0 // methods 3 and 4
+// Try to fix Sonoma layout. TODO: use NSSplitViewController
+- (void) windowDidLoad
+{
+#if 0  // method 3 - inconsistent results, sometimes good sometimes does nothing
+    [self setViewsPosition:NormalPosition];
+    [verticalSplit adjustSubviews];
+    //[horizontalSplit1 adjustSubviews];
+    [horizontalSplit2 adjustSubviews];
+#else // method 4
+    mprView1.translatesAutoresizingMaskIntoConstraints=
+    mprView2.translatesAutoresizingMaskIntoConstraints=
+    mprView3.translatesAutoresizingMaskIntoConstraints=YES;
+#endif
+}
+#endif
 
 -(void)splitViewWillResizeSubviews:(NSNotification *)notification
 {

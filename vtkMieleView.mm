@@ -95,10 +95,15 @@
     vtkRenderer *ren = vtkRenderer::New();
     vtkRenderWindow *renWin = vtkRenderWindow::New();
 
-#ifndef NDEBUG
+    // Originally commented out. Try to fix #g93 but it does the opposite: MPR becomes broken like CPR
     //renWin->InitializeFromCurrentContext();
-    NSLog(@"%s %d, ren:%p", __FUNCTION__, __LINE__, ren);
+
+#ifdef DEBUG_ISSUE_G93
+    double vp[4];
+    ren->GetViewport(vp); // xmin,ymin,xmax,ymax
+    NSLog(@"%s %d, self:%p, ren:%p, vp:%f,%f,%f,%f", __FUNCTION__, __LINE__, self, ren, vp[0], vp[1], vp[2], vp[3]);
     checkOGLVersion();
+    //renWin->SetSize(700,400); // ok Try to fix #g93
 #endif
     vtkRenderWindowInteractor* renWinInt = vtkRenderWindowInteractor::New();
     vtkInteractorStyleTrackballCamera *interactorStyle = vtkInteractorStyleTrackballCamera::New();
@@ -111,11 +116,11 @@
     
     if (ren && _cocoaRenderWindow && renWinInt)
     {
-        // This is special to our usage of vtk.  To prevent vtk
+        // This is special to our usage of VTK. To prevent VTK
         // from creating an NSWindow and NSView automatically (its
-        // default behaviour) we tell vtk that they exist already.
+        // default behaviour) we tell VTK that they exist already.
         // The APIs names are a bit misleading, due to the cross
-        // platform nature of vtk, but this usage is correct.
+        // platform nature of VTK, but this usage is correct.
         _cocoaRenderWindow->SetRootWindow([self window]);
         _cocoaRenderWindow->SetWindowId(self);
         

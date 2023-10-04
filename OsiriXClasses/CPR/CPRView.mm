@@ -24,8 +24,9 @@
 
 - (id)initWithFrame:(NSRect)frame
 {
+#ifndef NDEBUG
     NSLog(@"%s %d, frame: %@", __FUNCTION__, __LINE__, NSStringFromRect(frame));
-
+#endif
     self = [super initWithFrame:frame];
     if (self) {
         _straightenedView = [[CPRStraightenedView alloc] initWithFrame:[self bounds]];

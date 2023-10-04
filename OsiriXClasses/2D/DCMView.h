@@ -358,10 +358,6 @@ typedef NS_ENUM(NSInteger, BlendingMode2DType) {
     NSArray *cleanedOutDcmPixArray;
     NSTimeInterval firstDisplay;
     NSString *mousePosUSRegion;
-
-#ifdef WITH_OPENGL_32
-    //glm::mat4 MV; // Tentative #g93
-#endif
 }
 
 #if 0 //def WITH_OPENGL_32

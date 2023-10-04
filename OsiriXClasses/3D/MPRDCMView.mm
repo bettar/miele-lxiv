@@ -37,8 +37,8 @@
 #import "OSIEnvironment.h"
 #import "OSIROI.h"
 #import "OSIVolumeWindow.h"
-#import "OSIGeometry.h"
 #import "vtkMath.h"
+#import "OSIGeometry.h"
 
 // TODO: consolidate
 static BOOL arePlanesParallel( float *Pn1, float *Pn2)
@@ -302,6 +302,7 @@ unsigned int minimumStep;
 	[super dealloc];
 }
 
+// Not in CPRDCMView. Unused ?
 - (IBAction) actualSize:(id)sender
 {
 	[self setOriginX: 0 Y: 0];
@@ -316,6 +317,7 @@ unsigned int minimumStep;
 	[self updateViewMPR];
 }
 
+// Not in CPRDCMView. Unused ?
 - (IBAction) realSize:(id)sender
 {
     CGSize f = CGDisplayScreenSize( [[[[[self window] screen] deviceDescription] valueForKey: @"NSScreenNumber"] intValue]);
@@ -436,14 +438,11 @@ unsigned int minimumStep;
             {
                 [vrView prepareFullDepthCapture];
             }
-            
+
+            lastRenderingWasMoveCenter = moveCenter;
+
             if (moveCenter)
-            {
-                lastRenderingWasMoveCenter = YES;
                 [vrView setLOD: 100];	// We don't need to really compute the image - we just want image origin for the other views.
-            }
-            else
-                lastRenderingWasMoveCenter = NO;
 
             [vrView render];
         }
@@ -461,6 +460,9 @@ unsigned int minimumStep;
 		}
 		else
         {
+#ifdef DEBUG_ISSUE_G93
+            NSLog(@"%s %d, %p, viewID: %d", __FUNCTION__, __LINE__, self, viewID);
+#endif
             imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
         }
 		
@@ -801,7 +803,7 @@ unsigned int minimumStep;
 
 - (void) subDrawRect: (NSRect) r
 {
-#ifndef NDEBUG // debug #g93
+#ifdef DEBUG_ISSUE_G93
     NSLog(@"%s %d #g93, self:%p %@, viewID %d, rect:%@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]), viewID, NSStringFromRect(r));
 #endif
     

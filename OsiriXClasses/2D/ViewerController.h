@@ -777,13 +777,13 @@ enum
 
 /** Action to open the EndoscopyViewer */
 - (IBAction) endoscopyViewer:(id) sender;
+#endif
 
 /** Action to open VRViewer (Volume Rendering) */
 - (IBAction) VRViewer:(id) sender;
 
 /** Action to open SRViewer (Surface Rendering) */
 - (IBAction) SRViewer:(id) sender;
-#endif
 
 /** Action to export as JPEG */
 - (void) exportJPEG:(id) sender;
@@ -1014,8 +1014,6 @@ enum
 /** Returns the OrthogonalMPRViewer for this ViewerController; creating one if necessary */
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer;
 
-#ifndef MIELE_LIGHT
-
 /** Returns the VRController for this ViewerController; creating one if necessary
 * See VRController for modes
  */
@@ -1031,14 +1029,12 @@ enum
 - (SRController *)openSRViewer;
 
 /** Returns the MPRController for this ViewerController; creating one if necessary */
-
 - (MPRController *)openMPRViewer;
 - (IBAction)mprViewer:(id)sender;
 
 /** Action to open the CPRViewer */
 - (id)openCPRViewer;
 - (IBAction)cprViewer:(id)sender;
-#endif
 
 /** Current SeriesView */
 - (SeriesView *) seriesView;

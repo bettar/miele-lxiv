@@ -312,7 +312,6 @@ static volatile int sendControllerObjects = 0;
 		
 		[self selectServer: newServerList];
 	}
-
 }
 
 - (void)dealloc

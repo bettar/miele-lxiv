@@ -41,10 +41,10 @@
 #import "OSIEnvironment.h"
 #import "OSIROI.h"
 #import "OSIVolumeWindow.h"
+#import "vtkMath.h"
 
 #import "N3BezierPath.h"
 #import "N3Geometry.h"
-#import "vtkMath.h"
 
 extern unsigned int minimumStep;
 
@@ -196,12 +196,14 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	camera = [[vrView cameraWithThumbnail: NO] retain];
 }
 
+#if 1 // original. Commented out to try to fix #g93
 // not in MPRDCMView
 - (void) drawRect:(NSRect)rect
 {
 	if (rect.size.width > 10)
 		[super drawRect: rect];
 }
+#endif
 
 // TODO: consolidate
 - (void) setFrame:(NSRect)frameRect
@@ -364,7 +366,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	[super dealloc];
 }
 
-#if 0 // try to fix #g93. No difference
+#if 0 // try to fix #g93 by adding code like in MPRDCMView. No difference
 - (IBAction) actualSize:(id)sender
 {
     [self setOriginX: 0 Y: 0];
@@ -429,7 +431,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 -(void) updateViewMPR
 {
+#if 1 // originally commented in. Try for #g93. Commenting out there is no image
     [self updateViewMPR: YES];  // #i18 stack 7
+#endif
 }
 
 // TODO: consolidate. Only one small difference marked @@@ TBC
@@ -506,16 +510,13 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
             {
 				[vrView prepareFullDepthCapture];
             }
-			
+
+            lastRenderingWasMoveCenter = moveCenter;
+
 			if (moveCenter)
-			{
-				lastRenderingWasMoveCenter = YES;
 				[vrView setLOD: 100];	// We don't need to really compute the image - we just want image origin for the other views.
-			}
-			else
-                lastRenderingWasMoveCenter = NO;
-			
-			[vrView render];    // #i18 stack 6
+
+            [vrView render];    // #i18 stack 6
 		}
 		
 		float *imagePtr = nil;
@@ -531,8 +532,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		}
 		else
         {
-#ifndef NDEBUG // debug #g93
-            NSLog(@"%s %d, %p, viewID: %d", __FUNCTION__, __LINE__, self, viewID); // @@@ @@@
+#ifdef DEBUG_ISSUE_G93
+            NSLog(@"%s %d, %p, viewID: %d", __FUNCTION__, __LINE__, self, viewID);
 #endif
             imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
         }
@@ -588,9 +589,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				[pix setRGB: isRGB];
 				[pix setfImage: imagePtr];
 				[pix freefImageWhenDone: YES];
-#ifndef NDEBUG // debug #g93
-                // @@@ @@@
-                if (pix.pwidth != w)
+#ifdef DEBUG_ISSUE_G93
+                //if (pix.pwidth != w)
                     NSLog(@"%s %d, %p, viewID: %d, pix WH: (%li,%li) --> (%li,%li)", __FUNCTION__, __LINE__, self, viewID, pix.pwidth, pix.pheight, w, h);
 #endif
 				[pix setPwidth: w];
@@ -602,7 +602,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				
 				[curRoiList addObjectsFromArray: savedROIs];
 			}
-			float porigin[ 3];
+
+            float porigin[ 3];
 			[vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES];
 			[pix setOrigin: porigin];
 			
@@ -861,7 +862,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 // Note for #g93: the image has already been drawn by base class DCMView
 - (void) subDrawRect: (NSRect) r
 {
-#ifndef NDEBUG // debug #g93
+#ifdef DEBUG_ISSUE_G93
     NSLog(@"%s %d #g93, self:%p %@, viewID %d, rect:%@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]), viewID, NSStringFromRect(r));
 #endif
 
@@ -1406,8 +1407,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     pixToDicomTransform.m32 = orientation[7];
     pixToDicomTransform.m33 = orientation[8];
 
+#if 1 // originally commented in. No effect on #g94
     // Because DICOM uses Center rule and DCMPix uses Top-Left Rule (TBC why us this not done in MPRDCMView ?)
     pixToDicomTransform = N3AffineTransformConcat(N3AffineTransformMakeTranslation(-.5, -.5, 0), pixToDicomTransform);
+#endif
 
 #ifndef NDEBUG
     if (isnan( pix.pixelSpacingX) ||
@@ -1841,10 +1844,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		return;
 	}
     
-#ifndef NDEBUG // debug #g93
-    NSLog(@"%s %d #g93, self:%p, viewID %d, frame %@", __FUNCTION__, __LINE__, self, viewID, NSStringFromRect([self frame]));
-#endif
-
     dontCheckRoiChange = YES;
 	
 	[self checkCursor];

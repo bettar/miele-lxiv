@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22154" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22154"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -179,11 +179,8 @@
                 <rect key="frame" x="0.0" y="0.0" width="608" height="435"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="420">
+                    <button tag="1" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="420">
                         <rect key="frame" x="504" y="12" width="99" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="Rdy-q4-WBt"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" tag="1" inset="2" id="465">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -191,15 +188,15 @@
 DQ
 </string>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="Rdy-q4-WBt"/>
+                        </constraints>
                         <connections>
                             <action selector="endDCMExportSettings:" target="-2" id="751"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="419">
                         <rect key="frame" x="407" y="12" width="99" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="n49-dI-oaw"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="466">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -207,6 +204,9 @@ DQ
 Gw
 </string>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="n49-dI-oaw"/>
+                        </constraints>
                         <connections>
                             <action selector="endDCMExportSettings:" target="-2" id="750"/>
                         </connections>
@@ -1123,13 +1123,13 @@ Gw
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="527">
                         <rect key="frame" x="265" y="3" width="62" height="25"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="56" id="wPI-kJ-cd4"/>
-                        </constraints>
                         <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="buttonCell:574:image" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="574">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                             <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="56" id="wPI-kJ-cd4"/>
+                        </constraints>
                         <connections>
                             <binding destination="595" name="value" keyPath="enableEditing" id="620"/>
                         </connections>
@@ -1500,9 +1500,6 @@ Gw
                     </matrix>
                     <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="698">
                         <rect key="frame" x="208" y="-2" width="21" height="17"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="16" id="UKs-nF-Mc4"/>
-                        </constraints>
                         <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="719" id="712">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -1578,6 +1575,9 @@ Gw
                                 </items>
                             </menu>
                         </popUpButtonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="16" id="UKs-nF-Mc4"/>
+                        </constraints>
                     </popUpButton>
                 </subviews>
             </view>
@@ -1600,13 +1600,13 @@ Gw
                 <subviews>
                     <button verticalHuggingPriority="750" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="734">
                         <rect key="frame" x="-3" y="-5" width="49" height="19"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="45" id="jwH-39-rD1"/>
-                        </constraints>
                         <buttonCell key="cell" type="squareTextured" title="Edit" bezelStyle="texturedSquare" alignment="center" controlSize="small" borderStyle="border" inset="2" id="735">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="miniSystem"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="45" id="jwH-39-rD1"/>
+                        </constraints>
                         <connections>
                             <action selector="editShadingValues:" target="-2" id="801"/>
                             <binding destination="342" name="enabled" keyPath="selection.clippingRangeMode" id="906">
@@ -1632,13 +1632,13 @@ Specular: 0.6, 2.0</string>
                     </textField>
                     <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="732">
                         <rect key="frame" x="-2" y="14" width="64" height="24"/>
-                        <constraints>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="5" id="9yQ-zq-81I"/>
-                        </constraints>
                         <buttonCell key="cell" type="check" title="Shading" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="737">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="message" size="11"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="5" id="9yQ-zq-81I"/>
+                        </constraints>
                         <connections>
                             <binding destination="342" name="enabled" keyPath="selection.clippingRangeMode" id="903">
                                 <dictionary key="options">
@@ -1765,13 +1765,13 @@ Specular: 0.6, 2.0</string>
                 </textField>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="849">
                     <rect key="frame" x="137" y="4" width="34" height="19"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="30" id="lXD-AD-oIs"/>
-                    </constraints>
                     <buttonCell key="cell" type="squareTextured" title="Play" bezelStyle="texturedSquare" alignment="center" controlSize="small" borderStyle="border" inset="2" id="850">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="miniSystem"/>
                     </buttonCell>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="lXD-AD-oIs"/>
+                    </constraints>
                     <connections>
                         <action selector="moviePlayStop:" target="-2" id="880"/>
                         <binding destination="342" name="enabled" keyPath="selection.movieDataAvailable" id="884"/>
@@ -1805,9 +1805,6 @@ Specular: 0.6, 2.0</string>
             <subviews>
                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="857">
                     <rect key="frame" x="41" y="18" width="82" height="16"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="77" id="H5G-vM-5ml"/>
-                    </constraints>
                     <popUpButtonCell key="cell" type="push" title="Linear" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="869" id="864">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="miniSystem"/>
@@ -1822,6 +1819,9 @@ Specular: 0.6, 2.0</string>
                             </items>
                         </menu>
                     </popUpButtonCell>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="77" id="H5G-vM-5ml"/>
+                    </constraints>
                     <connections>
                         <binding destination="342" name="selectedTag" keyPath="selection.blendingMode" id="892"/>
                         <binding destination="342" name="enabled" keyPath="selection.blendingModeAvailable" id="908"/>
@@ -1892,11 +1892,8 @@ Specular: 0.6, 2.0</string>
                 <rect key="frame" x="0.0" y="0.0" width="625" height="367"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="921">
+                    <button tag="1" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="921">
                         <rect key="frame" x="522" y="4" width="99" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="85" id="086-lT-gOI"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" tag="1" inset="2" id="973">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -1904,15 +1901,15 @@ Specular: 0.6, 2.0</string>
 DQ
 </string>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="85" id="086-lT-gOI"/>
+                        </constraints>
                         <connections>
                             <action selector="endDCMExportSettings:" target="-2" id="996"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="920">
                         <rect key="frame" x="425" y="4" width="99" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="85" id="Nj8-3K-9Fc"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="974">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -1920,6 +1917,9 @@ DQ
 Gw
 </string>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="85" id="Nj8-3K-9Fc"/>
+                        </constraints>
                         <connections>
                             <action selector="endDCMExportSettings:" target="-2" id="995"/>
                         </connections>
@@ -2281,13 +2281,13 @@ Gw
                                 </textField>
                                 <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="934">
                                     <rect key="frame" x="160" y="36" width="134" height="18"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="132" id="rTX-8p-JV9"/>
-                                    </constraints>
                                     <buttonCell key="cell" type="check" title="Same as thickness" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="959">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="132" id="rTX-8p-JV9"/>
+                                    </constraints>
                                     <connections>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="1012" id="1035">
                                             <dictionary key="options">

@@ -38,7 +38,7 @@ typedef enum {SyncSeriesBehaviorAbsolutePosWithSameStudy, SyncSeriesBehaviorRela
 
 @interface OrthogonalMPRViewer : Window3DController <NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
-    ViewerController *viewer;
+    ViewerController *viewer; // TODO: rename 'viewer2D' for consistency with usage in MPR and CPR
 
 	IBOutlet OrthogonalMPRController	*controller;
 	IBOutlet NSSplitView				*splitView;

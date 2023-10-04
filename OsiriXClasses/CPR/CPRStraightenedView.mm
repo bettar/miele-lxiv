@@ -724,7 +724,13 @@ extern int splitPosition[ 3];
 		}
 		
 #ifdef WITH_OPENGL_32
-        NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+        {
+            static int warnCount = 3;
+            if (warnCount > 0) {
+                NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
+                warnCount--;
+            }
+        }
 #else
         CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		glEnable(GL_TEXTURE_RECTANGLE_EXT);

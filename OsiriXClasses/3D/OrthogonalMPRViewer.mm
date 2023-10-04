@@ -121,8 +121,7 @@ static SyncSeriesScope globalSyncSeriesScope;
 
 - (void) awakeFromNib
 {
-    NSLog(@"%s %d, class:%@, self:%p", __FUNCTION__, __LINE__,
-          NSStringFromClass([self class]), self);
+    //NSLog(@"%s %d, class:%@, self:%p", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self);
 
     NSScreen *s = [viewer get3DViewerScreen: viewer];
 	

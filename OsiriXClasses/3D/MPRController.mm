@@ -92,6 +92,10 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
         viewerController:(ViewerController*)viewer
    fusedViewerController:(ViewerController*)fusedViewer
 {
+#ifndef NDEBUG
+    NSLog(@"===\nMPRController.mm %d, initWithDCMPixList, class:%@, self:%p, pix count: %lu", __LINE__,
+          NSStringFromClass([self class]), self, (unsigned long)pix.count);
+#endif
 	@try
 	{
 		if ([[NSUserDefaults standardUserDefaults] integerForKey: ANNOTATIONS_KEY] == ANNOTATIONS_NONE)
@@ -218,7 +222,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[hiddenVRView resetImage: self];
 		[hiddenVRView setLOD: 20];
 		hiddenVRView.keep3DRotateCentered = YES;
-		
+        
 		[mprView1 setVRView: hiddenVRView viewID: 1];
 		[mprView1 setWLWW: [[viewer imageView] curWL] :[[viewer imageView] curWW]];
 		
@@ -467,7 +471,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     CGFloat height = [[self window] frame].size.height;
     NSRect r;
 
-    switch( [[NSUserDefaults standardUserDefaults] integerForKey:MPR2DViewsPosition_KEY])
+    switch ([[NSUserDefaults standardUserDefaults] integerForKey:MPR2DViewsPosition_KEY])
     {
         case MPR_LAYOUT_2_1:
             if (portrait) {
@@ -578,6 +582,14 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
                                                                  options: NSKeyValueObservingOptionNew
                                                                  context: NULL];
 }
+
+#if 0 // method 3
+// Try to fix Sonoma layout. TODO: use NSSplitViewController
+- (void) windowDidLoad
+{
+    [self applyViewsPosition];
+}
+#endif
 
 - (void) dealloc
 {

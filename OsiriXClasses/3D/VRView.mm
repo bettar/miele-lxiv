@@ -2031,6 +2031,9 @@ public:
 
 -(instancetype)initWithFrame:(NSRect)frame
 {
+#ifdef DEBUG_ISSUE_G93
+    NSLog(@"%s %d #g93, self:%p %@, rect:%@", __FUNCTION__, __LINE__, self, NSStringFromClass([self class]), NSStringFromRect(frame));
+#endif
     self = [super initWithFrame:frame];
     if (self)
     {
@@ -2688,17 +2691,12 @@ public:
         
         // Position of upper left part of the image
         
-        double *viewport = aRenderer->GetViewport(); // xmin,ymin,xmax,ymax
-#if 0 // Try to fix #g93 ng
-//        aRenderer->NormalizedDisplayToDisplay(viewport[0], viewport[1]);
-//        aRenderer->NormalizedDisplayToDisplay(viewport[2], viewport[3]);
-#endif
+        double *viewport = aRenderer->GetViewport();
         int *renWinSize = aRenderer->GetRenderWindow()->GetSize();
 
-#ifndef NDEBUG // debug #g93
-        NSLog(@"%s %d, viewport XY min:(%.1f,%.1f) max:(%.1f,%.1f)", __FUNCTION__, __LINE__,
-              viewport[0], viewport[1], viewport[2], viewport[3]);
-        NSLog(@"%s %d, renWinSize XY:(%d,%d) pixels", __FUNCTION__, __LINE__,
+#ifdef DEBUG_ISSUE_G93
+        NSLog(@"%s %d, self:%p, vp XY min:(%.1f,%.1f) max:(%.1f,%.1f), renWinSize XY:(%d,%d) pixels", __FUNCTION__, __LINE__, self,
+              viewport[0], viewport[1], viewport[2], viewport[3],
               renWinSize[0], renWinSize[1]);
 #endif
         double sampleDistance = 0;
@@ -2876,10 +2874,12 @@ public:
             return NAN;
         }
 
+#ifndef NDEBUG
         if ((length > 0. && length < 0.00001) || length > 1000.)
             NSLog( @"****** vrView getResolution %f", length);
-        
-		return (length/factor);
+#endif
+
+        return (length/factor);
 	}
 
     return 0.;
@@ -4033,9 +4033,6 @@ public:
 {
     NSPoint center = NSMakePoint([self frame].size.width/2.,
                                  [self frame].size.height/2.);
-#if 0 // TBC issue g84
-    center = [self convertPointToBacking: center];
-#endif
     
 	double pWC[ 2];
 	aCamera->GetWindowCenter( pWC);
@@ -4050,9 +4047,6 @@ public:
 {
     NSPoint center = NSMakePoint([self frame].size.width/2.,
                                  [self frame].size.height/2.);
-#if 0 // TBC issue g84. It doesn't fix #g93, maybe make it worse
-    center = [self convertPointToBacking: center];
-#endif
     
 	double xx = -(loc.x - center.x);
 	double yy = -(loc.y - center.y);
@@ -6571,7 +6565,6 @@ public:
 	}	
 	
 	[self setNeedsDisplay: YES];
-	
 }
 
 -(void) setBlendingPixSource:(ViewerController*) bC
@@ -7734,28 +7727,18 @@ public:
             
             unsigned short *im = rayCastImage->GetImage();
             
-#if 0 // Debug #g93
-            int imageViewportSize[2];
-            rayCastImage->GetImageViewportSize(imageViewportSize);
-            if (imageViewportSize[0] == 300) // hit only once, but it doesn't affect w,h
-            {
-                rayCastImage->SetImageViewportSize(600,imageViewportSize[1]);
-                NSLog(@"VRView.mm %d, imageInFullDepthWidth %p", __LINE__, self);
-            }
-#endif
-            
             int fullSize[2];
             rayCastImage->GetImageMemorySize( fullSize);
             
             int size[2];
-            rayCastImage->GetImageInUseSize( size); // #g93  @@@ @@@
+            rayCastImage->GetImageInUseSize( size);
      
-#ifndef NDEBUG // debug #g93
+#ifdef DEBUG_ISSUE_G93
             if (size[0] > 0)
             {
                 int imageViewportSize[2];
                 rayCastImage->GetImageViewportSize(imageViewportSize);
-                NSLog(@"VRView.mm %d, imageInFullDepthWidth %p, viewport:(%i,%i), fullSize:(%i,%i), size:(%i,%i)", __LINE__, self,
+                NSLog(@"\nVRView.mm %d, imageInFullDepthWidth %p, viewport:(%i,%i), fullSize:(%i,%i), size:(%i,%i)", __LINE__, self,
                       imageViewportSize[0], imageViewportSize[1],
                       fullSize[0], fullSize[1],
                       size[0], size[1]);
@@ -7763,15 +7746,6 @@ public:
 #endif
             *w = size[0];
             *h = size[1];
-
-#if 0 // Debug #g93 see what happens: strange we get two images in each view
-            if (*w > 290) {
-                int sz[2] = {800,700};
-                rayCastImage->SetImageInUseSize( sz);
-                *w = sz[0];
-                *h = sz[1];
-            }
-#endif
 
             if (firstObject.isRGB == NO &&
                 (renderingMode == MPR_PROJECTION_MODE_MIP ||

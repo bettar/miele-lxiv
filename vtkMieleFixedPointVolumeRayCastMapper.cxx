@@ -78,9 +78,27 @@ void vtkMieleFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume 
     vtkRenderWindow* renWin = ren->GetRenderWindow(); // vtkCocoaRenderWindow
 
 #if 1 // @@@ TBC (not in VTK)
+  #if 0 // original
     vtkOpenGLRenderWindow *rw = (vtkOpenGLRenderWindow *)renWin;
     //if (!rw->Initialized)
         rw->OpenGLInit();
+  #else // #g93
+    //vtkOpenGLRenderWindow *rw = static_cast<vtkOpenGLRenderWindow*>(renWin);
+    auto rw = vtkOpenGLRenderWindow::SafeDownCast(renWin);
+    {
+        static bool Initialized = false;
+        if (!Initialized) {
+            rw->OpenGLInit();
+            #ifndef NDEBUG
+            int majorV, minorV;
+            rw->GetOpenGLVersion(majorV, minorV); // 4.1
+            #endif
+            Initialized = true;
+        }
+    }
+    
+    rw->MakeCurrent();
+  #endif
 #endif
     
     if (renWin && renWin->CheckAbortStatus())
@@ -127,7 +145,7 @@ void vtkMieleFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume 
 #endif
 
 #ifdef WITH_OPENGL_32
-    this->DisplayRenderedImage(ren, vol); // Issue #i18
+    this->DisplayRenderedImage(ren, vol); // Issue #i18, #g93 ?
 #endif
 
     this->Timer->StopTimer();

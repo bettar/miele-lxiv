@@ -3736,7 +3736,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	//if (pixelSize != 32)
     //  NSLog( @"Only floating images are supported...");
     
-#ifndef NDEBUG // debug #g93
+#ifdef DEBUG_ISSUE_G93
     NSLog(@"DCMPix.mm %d initWithData %@ #g93, WH:(%li,%li)", __LINE__, NSStringFromClass([self class]), xDim, yDim);
 #endif
 	if (self = [super init])
@@ -3947,6 +3947,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         
         annotationsDictionary = [[NSMutableDictionary alloc] init];
     }
+
     return self;
 }
 
@@ -7485,7 +7486,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     if (srcFile == nil)
         return;
     
-#ifndef NDEBUG // debug #g93
+#ifdef DEBUG_ISSUE_G93
     long beforeW = width;
     NSLog(@"%s %d, %p, before W:%li", __FUNCTION__, __LINE__, self, beforeW);
 #endif
@@ -7514,7 +7515,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #endif
     }
     
-#ifndef NDEBUG // debug #g93
+#ifdef DEBUG_ISSUE_G93
     if (beforeW != width)
         NSLog(@"%s %d, %p, after1 W:%li", __FUNCTION__, __LINE__, self, width);
 #endif
@@ -7588,7 +7589,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         [pool release];
     }
     
-#ifndef NDEBUG // debug #g93
+#ifdef DEBUG_ISSUE_G93
     if (beforeW != width) {
         NSLog(@"%s %d, %p, W: %li ==> %li", __FUNCTION__, __LINE__, self, beforeW, width);
         beforeW = width;
@@ -8446,7 +8447,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #endif
     } // ! success
 
-#ifndef NDEBUG // debug #g93
+#ifdef DEBUG_ISSUE_G93
     if (beforeW != width)
         NSLog(@"%s %d, %p, after3 W:%li", __FUNCTION__, __LINE__, self, width);
 #endif
@@ -8470,7 +8471,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             fImage[i] = i;
     }
     
-#ifndef NDEBUG // debug #g93
+#ifdef DEBUG_ISSUE_G93
     if (beforeW != width)
         NSLog(@"%s %d, %p, after4 W:%li", __FUNCTION__, __LINE__, self, width);
 #endif
@@ -8487,7 +8488,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         }
     }
     
-#ifndef NDEBUG // debug #g93
+#ifdef DEBUG_ISSUE_G93
     if (beforeW != width)
         NSLog(@"%s %d, %p, after5 W:%li", __FUNCTION__, __LINE__, self, width);
 #endif
@@ -10337,9 +10338,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if (convolution)
 		result = [self applyConvolutionOnImage: result RGB: NO];
 	
-#ifndef NDEBUG // debug #g93
-    NSLog(@"%s %d, %@ %p, WH:(%li,%li)", __FUNCTION__, __LINE__,
-          NSStringFromClass([self class]), self, width, height); // #g93
+#ifdef DEBUG_ISSUE_G93
+    NSLog(@"%s %d, %@ %p, WH:(%li,%li)", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, width, height);
 #endif
 
     return result;
@@ -10358,9 +10358,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) compute8bitRepresentation
 {
-#ifndef NDEBUG // debug #g93
-    NSLog(@"%s %d, %@ %p, WH:(%li,%li)", __FUNCTION__, __LINE__,
-          NSStringFromClass([self class]), self, width, height); // #g93
+#ifdef DEBUG_ISSUE_G93
+    NSLog(@"%s %d, %@ %p, WH:(%li,%li)", __FUNCTION__, __LINE__, NSStringFromClass([self class]), self, width, height);
 #endif
 
     float iwl, iww;
