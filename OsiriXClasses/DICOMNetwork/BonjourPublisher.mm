@@ -595,7 +595,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
                                 [NSString stringWithFormat: @"%d", [DCMTKStoreSCU sendSyntaxForListenerSyntax: [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"]]], @"TransferSyntax",
                                 nil];
     
-    [self writeData:[NSMutableData dataWithData: [NSArchiver archivedDataWithRootObject: dictionary]]];
+    [self writeData:[NSMutableData dataWithData: [NSKeyedArchiver archivedDataWithRootObject: dictionary]]];
     
     _mode = DONE;
 }

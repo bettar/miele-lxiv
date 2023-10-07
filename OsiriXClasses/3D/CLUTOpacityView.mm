@@ -1820,7 +1820,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 		[dict setObject:[curves objectAtIndex:curveIndex] forKey:@"curve"];
 		[dict setObject:[pointColors objectAtIndex:curveIndex] forKey:@"colors"];
 
-		NSData* curveData = [NSArchiver archivedDataWithRootObject:dict];
+		NSData* curveData = [NSKeyedArchiver archivedDataWithRootObject:dict];
 		NSPasteboard* pasteboard = [NSPasteboard generalPasteboard];
 
 		[pasteboard declareTypes:[NSArray arrayWithObjects:@"osirixCLUTOpacityCurve", nil] owner:self];
@@ -1840,7 +1840,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
                 if ((int) selectedPoint.x==(int) pt.x &&
                     (float) selectedPoint.y==(float) pt.y)
                 {
-                    NSData* colorData = [NSArchiver archivedDataWithRootObject:[[pointColors objectAtIndex:i] objectAtIndex:j]];
+                    NSData* colorData = [NSKeyedArchiver archivedDataWithRootObject:[[pointColors objectAtIndex:i] objectAtIndex:j]];
                     NSPasteboard* pasteboard = [NSPasteboard generalPasteboard];
 
                     [pasteboard declareTypes:[NSArray arrayWithObjects:@"osirixCLUTOpacityPointColor", nil] owner:self];
@@ -1855,17 +1855,23 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 - (IBAction)paste:(id)sender;
 {
 	NSPasteboard* pasteboard = [NSPasteboard generalPasteboard];
-	NSString* type = [pasteboard availableTypeFromArray:[NSArray arrayWithObjects:@"osirixCLUTOpacityCurve", @"osirixCLUTOpacityPointColor", nil]];
-	if([type isEqualToString:@"osirixCLUTOpacityCurve"])
+	NSString* type = [pasteboard availableTypeFromArray:[NSArray arrayWithObjects:
+                                                         @"osirixCLUTOpacityCurve",
+                                                         @"osirixCLUTOpacityPointColor",
+                                                         nil]];
+    
+	if ([type isEqualToString:@"osirixCLUTOpacityCurve"])
 	{
 		NSData* curveData = [pasteboard dataForType:type];
-		NSMutableDictionary *dict = [NSUnarchiver unarchiveObjectWithData:curveData];
+        NSMutableDictionary *dict = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSMutableDictionary class]
+                                                                      fromData:curveData 
+                                                                         error:nil];
 		NSMutableArray *aCurve = [dict objectForKey:@"curve"];
 		NSMutableArray *newColors = [dict objectForKey:@"colors"];
 		
 		int scx = [self selectedCurveIndex];
 		NSMutableArray *selectedCurve;
-		if(scx>=0)
+		if (scx>=0)
 			selectedCurve = [curves objectAtIndex:scx];
 		else
 			selectedCurve = aCurve;
@@ -1885,26 +1891,28 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 		[self selectCurveAtIndex:0];
 		[self updateView];
 	}
-	else if([type isEqualToString:@"osirixCLUTOpacityPointColor"])
+	else if ([type isEqualToString:@"osirixCLUTOpacityPointColor"])
 	{
-		if (selectedPoint.y >= 0.0)
-		{
-			for (int i=0; i<[curves count]; i++)
-			{
-				NSArray *aCurve = [curves objectAtIndex:i];
-				for (int j=0; j<[aCurve count]; j++)
-				{
-					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-					if ((int) selectedPoint.x==(int) pt.x &&
-                        (float) selectedPoint.y==(float) pt.y)
-					{
-						NSData* colorData = [pasteboard dataForType:type];
-						NSColor *color = [NSUnarchiver unarchiveObjectWithData:colorData];
-						[self setColor:color forPointAtIndex:j inCurveAtIndex:i];
-						[self updateView];
-					}
-				}
-			}
+		if (selectedPoint.y < 0.0)
+            return;
+
+        for (int i=0; i<[curves count]; i++)
+        {
+            NSArray *aCurve = [curves objectAtIndex:i];
+            for (int j=0; j<[aCurve count]; j++)
+            {
+                NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
+                if ((int) selectedPoint.x==(int) pt.x &&
+                    (float) selectedPoint.y==(float) pt.y)
+                {
+                    NSData* colorData = [pasteboard dataForType:type];
+                    NSColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSColor class]
+                                                                       fromData:colorData
+                                                                          error:nil];
+                    [self setColor:color forPointAtIndex:j inCurveAtIndex:i];
+                    [self updateView];
+                }
+            }
 		}
 	}
 }
@@ -2045,7 +2053,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	{
 		if ([[path pathExtension] isEqualToString:@""])
 		{
-			NSMutableDictionary *clut = [NSUnarchiver unarchiveObjectWithFile:path];
+			NSMutableDictionary *clut = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
 			return clut;
 		}
 	}

@@ -10335,7 +10335,7 @@ static int avoidReentryRefreshDatabase = 0;
 		savedROIs[ j] = [NSMutableArray array];
 		
 		for (NSArray *r in roiList[ j])
-			[savedROIs[ j] addObject: [NSArchiver archivedDataWithRootObject: r]];
+			[savedROIs[ j] addObject: [NSKeyedArchiver archivedDataWithRootObject: r]];
 		
 		isResampled = [ViewerController resampleDataFromViewer:self inPixArray:newPixList fileArray:newDcmList data:&newData withXFactor:xFactor yFactor:yFactor zFactor:zFactor movieIndex: j];
 		
@@ -10386,7 +10386,7 @@ static int avoidReentryRefreshDatabase = 0;
 				
 				NSData *r = [savedROIs[ j] objectAtIndex: index];
 				
-				[[roiList[ j] objectAtIndex: x] addObjectsFromArray: [NSUnarchiver unarchiveObjectWithData: r]];
+				[[roiList[ j] objectAtIndex: x] addObjectsFromArray: [NSKeyedUnarchiver unarchiveObjectWithData: r]];
 				
 				for (ROI *r in [roiList[ j] objectAtIndex: x])
 					[r setOriginAndSpacing :[imageView curDCM].pixelSpacingX : [imageView curDCM].pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: [imageView curDCM]]];	//NSMakePoint( [imageView curDCM].originX, [imageView curDCM].originY)];
@@ -14009,9 +14009,9 @@ long				x, y;
 						@try
 						{
 							if (data)
-								array = [NSUnarchiver unarchiveObjectWithData: data];
+								array = [NSKeyedUnarchiver unarchiveObjectWithData: data];
 							else
-								array = [NSUnarchiver unarchiveObjectWithFile: str];
+								array = [NSKeyedUnarchiver unarchiveObjectWithFile: str];
 						}
 						@catch (NSException * e)
 						{
@@ -14158,7 +14158,7 @@ long				x, y;
 							
 							if ([roisArray count])
 							{
-								if ([ViewerController areROIsArraysIdentical: [NSUnarchiver unarchiveObjectWithData: [copyRoiList[ mIndex] objectAtIndex: i]] with: roisArray] == NO || forceArchive == YES)
+								if ([ViewerController areROIsArraysIdentical: [NSKeyedUnarchiver unarchiveObjectWithData: [copyRoiList[ mIndex] objectAtIndex: i]] with: roisArray] == NO || forceArchive == YES)
 								{
 									[SRAnnotation archiveROIsAsDICOM: roisArray toPath: str forImage: image];
 									[allDICOMSR addObject: str];
@@ -14168,7 +14168,7 @@ long				x, y;
 							{
 								if ([[NSFileManager defaultManager] fileExistsAtPath: str])
 								{
-									if ([ViewerController areROIsArraysIdentical: [NSUnarchiver unarchiveObjectWithData: [copyRoiList[ mIndex] objectAtIndex: i]] with: roisArray] == NO || forceArchive == YES)
+									if ([ViewerController areROIsArraysIdentical: [NSKeyedUnarchiver unarchiveObjectWithData: [copyRoiList[ mIndex] objectAtIndex: i]] with: roisArray] == NO || forceArchive == YES)
 									{
 										[SRAnnotation archiveROIsAsDICOM: roisArray toPath: str forImage: image];
 										[allDICOMSR addObject: str];
@@ -14898,7 +14898,7 @@ long				x, y;
 	// Unselect all ROIs
 	[self roiSelectDeselectAll: nil];
 	
-	NSArray *roisMovies = [NSUnarchiver unarchiveObjectWithFile: filename];
+	NSArray *roisMovies = [NSKeyedUnarchiver unarchiveObjectWithFile: filename];
 	
 	for (int y = 0; y < maxMovieIndex; y++)
 	{
@@ -14985,7 +14985,7 @@ long				x, y;
         [panel setNameFieldStringValue: imageView.seriesObj.name];
 		if ([panel runModal] == NSModalResponseOK)
 		{
-			[NSArchiver archiveRootObject: roisPerMovies toFile :[panel filename]];
+			[NSKeyedArchiver archiveRootObject: roisPerMovies toFile :[panel filename]];
 		}
 	}
 	else

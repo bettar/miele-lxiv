@@ -2190,7 +2190,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 						
 						if (d)
 						{
-							NSArray *o = [NSUnarchiver unarchiveObjectWithData: d];
+							NSArray *o = [NSKeyedUnarchiver unarchiveObjectWithData: d];
 							
 							if ([o count])
 							{
@@ -2210,7 +2210,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			if ([r count])
 			{
-				NSArray *o = [NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: [[found lastObject] valueForKey: @"completePathResolved"]]];
+				NSArray *o = [NSKeyedUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: [[found lastObject] valueForKey: @"completePathResolved"]]];
 				[r addObjectsFromArray: o];
                 
 				[SRAnnotation archiveROIsAsDICOM: r toPath: [[found lastObject] valueForKey: @"completePathResolved"] forImage: image];
@@ -2295,8 +2295,9 @@ static NSRecursiveLock *dbModifyLock = nil;
     
     for (Dicom_Image *roi in [self.roiSRSeries images])
     {
-        NSArray *robjs = [NSUnarchiver unarchiveObjectWithData:[SRAnnotation roiFromDICOM:[roi completePath]]];
-        if (!robjs.count) continue;
+        NSArray *robjs = [NSKeyedUnarchiver unarchiveObjectWithData:[SRAnnotation roiFromDICOM:[roi completePath]]];
+        if (!robjs.count)
+            continue;
         
         NSInteger it = [roi.comment rangeOfString:@"-" options:NSLiteralSearch+NSBackwardsSearch].location;
         NSString *uid = [roi.comment substringToIndex:it];

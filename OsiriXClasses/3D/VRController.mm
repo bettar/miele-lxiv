@@ -3707,7 +3707,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		{
 			if ([[path pathExtension] isEqualToString:@""])
 			{
-				NSMutableDictionary *clut = [NSUnarchiver unarchiveObjectWithFile:path];
+				NSMutableDictionary *clut = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
 				curves = [clut objectForKey:@"curves"];
 				pointColors = [clut objectForKey:@"colors"];
 			}

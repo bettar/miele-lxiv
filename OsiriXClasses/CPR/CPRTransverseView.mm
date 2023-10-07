@@ -705,7 +705,7 @@ extern int splitPosition[ 3];
 	if( [self windowController] == nil)
 		return;
 	
-	NSData *previousROIs = [NSArchiver archivedDataWithRootObject: [self curRoiList]];
+	NSData *previousROIs = [NSKeyedArchiver archivedDataWithRootObject: [self curRoiList]];
 	CPRVolumeDataInlineBuffer inlineBuffer;
 	DCMPix *newPix;
     
@@ -742,7 +742,7 @@ extern int splitPosition[ 3];
 		
 		[[self windowController] propagateWLWW: [[self windowController] mprView1]];
 		
-		NSArray *roiArray = [NSUnarchiver unarchiveObjectWithData: previousROIs];
+		NSArray *roiArray = [NSKeyedUnarchiver unarchiveObjectWithData: previousROIs];
 		for( ROI *r in roiArray)
 		{
 			r.pix = curDCM;

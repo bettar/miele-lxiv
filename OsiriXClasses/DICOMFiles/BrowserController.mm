@@ -9212,7 +9212,6 @@ static NSConditionLock *threadLock = nil;
 	NSBeep();
 }
 
-
 - (IBAction) paste: (id)sender
 {
 	[self pasteImageForSourceFile: nil];
@@ -20585,7 +20584,7 @@ redoZIPpassword:
 			NSString *str = [image.series.study roiPathForImage: image];
 			
             @try {
-                if (str && [[NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: str]] count] > 0)
+                if (str && [[NSKeyedUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: str]] count] > 0)
                     [roisImagesArray addObject: image];
             }
             @catch (NSException *exception) {

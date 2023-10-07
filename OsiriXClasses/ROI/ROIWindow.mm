@@ -81,7 +81,7 @@
 
 	if ([panel runModal] == NSModalResponseOK)
 	{
-		[NSArchiver archiveRootObject: selectedROIs toFile :[panel filename]];
+		[NSKeyedArchiver archiveRootObject: selectedROIs toFile :[panel filename]];
 	}
 }
 

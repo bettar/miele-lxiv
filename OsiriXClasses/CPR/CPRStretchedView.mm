@@ -945,7 +945,7 @@ didGenerateVolume:(CPRVolumeData *)volume
 	float previousScale = [self scaleValue];
 	float previousRotation = [self rotation];
 	int previousHeight = [curDCM pheight], previousWidth = [curDCM pwidth];
-	NSData *previousROIs = [NSArchiver archivedDataWithRootObject: [self curRoiList]];
+	NSData *previousROIs = [NSKeyedArchiver archivedDataWithRootObject: [self curRoiList]];
 	
 	[[self.curvedVolumeData retain] autorelease]; // make sure this is around long enough so that it doesn't disapear under the old DCMPix
     self.curvedVolumeData = volume;
@@ -1004,7 +1004,7 @@ didGenerateVolume:(CPRVolumeData *)volume
 			[self setRotation: previousRotation];
 		}
 		
-		NSArray *roiArray = [NSUnarchiver unarchiveObjectWithData: previousROIs];
+		NSArray *roiArray = [NSKeyedUnarchiver unarchiveObjectWithData: previousROIs];
 		for( ROI *r in roiArray)
 		{
 			r.pix = curDCM;

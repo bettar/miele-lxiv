@@ -3220,7 +3220,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     //NSData *colorData = [[NSUserDefaults standardUserDefaults] objectForKey:@"peakValueColor"];
     NSData *colorData = [[NSUserDefaults standardUserDefaults] dataForKey:@"peakValueColor"];
     if (colorData != nil)
-        colorPeak = (NSColor *)[NSUnarchiver unarchiveObjectWithData:colorData];
+        colorPeak = (NSColor *)[NSKeyedUnarchiver unarchiveObjectWithData:colorData];
 
     NSLog(@"%f %f %f", [colorPeak redComponent], [colorPeak greenComponent], [colorPeak blueComponent]);
 #endif
@@ -4658,7 +4658,7 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
 
 - (NSData*) data
 {
-	return [NSArchiver archivedDataWithRootObject: self];
+	return [NSKeyedArchiver archivedDataWithRootObject: self];
 }
 
 - (void) deleteTexture:(NSOpenGLContext*) c

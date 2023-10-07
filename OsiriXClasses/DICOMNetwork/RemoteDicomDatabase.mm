@@ -437,7 +437,7 @@
 	if (response.length == 0)
         [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(@"Failed to connect to the remote host. Is database sharing activated on the distant computer?", nil)];
 
-    return [NSUnarchiver unarchiveObjectWithData:response];
+    return [NSKeyedUnarchiver unarchiveObjectWithData:response];
 }
 
 -(NSDictionary*)fetchDicomDestinationInfo {

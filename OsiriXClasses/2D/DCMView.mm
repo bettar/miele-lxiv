@@ -1531,7 +1531,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	
 	for (NSString *path in filenames)
 	{
-		NSArray* roiArray = [NSUnarchiver unarchiveObjectWithFile: path];
+		NSArray* roiArray = [NSKeyedUnarchiver unarchiveObjectWithFile: path];
         
         if ([roiArray isKindOfClass: [NSArray class]])
         {
@@ -1660,7 +1660,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         [panel setNameFieldStringValue: [[selectedROIs objectAtIndex:0] name]];
 		if ([panel runModal] == NSModalResponseOK)
 		{
-			[NSArchiver archiveRootObject: selectedROIs toFile: [panel filename]];
+			[NSKeyedArchiver archiveRootObject: selectedROIs toFile: [panel filename]];
 		}
 	}
 	else
@@ -1783,7 +1783,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	{
 		[[self windowController] addToUndoQueue:@"roi"];
 		
-		NSMutableArray*	roiArray = [NSUnarchiver unarchiveObjectWithData: archived_data];
+		NSMutableArray*	roiArray = [NSKeyedUnarchiver unarchiveObjectWithData: archived_data];
 		
 		// Unselect all ROIs
 		for (ROI *r in curRoiList)
@@ -1871,7 +1871,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                           NSPasteboardTypeString,
                           nil]
                    owner:nil];
-		[pb setData: [NSArchiver archivedDataWithRootObject: roiSelectedArray] forType:@"ROIObject"];
+		[pb setData: [NSKeyedArchiver archivedDataWithRootObject: roiSelectedArray] forType:@"ROIObject"];
 		
 		NSMutableString *r = [NSMutableString string];
 		

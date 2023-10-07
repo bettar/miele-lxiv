@@ -9708,8 +9708,8 @@ public:
 	NSArray *curves = [clut objectForKey:@"curves"];
 	NSArray *pointColors = [clut objectForKey:@"colors"];
 	
-	if ([[NSArchiver archivedDataWithRootObject: clut] isEqualToData: appliedCurves] == NO || (appliedResolution == YES && lowRes == NO))
-	{	
+	if ([[NSKeyedArchiver archivedDataWithRootObject: clut] isEqualToData: appliedCurves] == NO || (appliedResolution == YES && lowRes == NO))
+	{
 		colorTransferFunction->RemoveAllPoints();
 		opacityTransferFunction->RemoveAllPoints();
 	
@@ -9735,7 +9735,7 @@ public:
 		}
 		
 		[appliedCurves release];
-		appliedCurves = [[NSArchiver archivedDataWithRootObject: clut] retain];
+		appliedCurves = [[NSKeyedArchiver archivedDataWithRootObject: clut] retain];
 		appliedResolution = lowRes;
 		
 		if (volumeMapper)

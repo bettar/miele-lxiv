@@ -137,14 +137,14 @@
 -(id)unarchiveObjectForKey:(NSString*)key default:(id)def class:(Class)c {
 	NSData* value = [self objectForKey:key];
 	if ([value isKindOfClass:[NSData class]]) {
-		id unarchivedValue = [NSUnarchiver unarchiveObjectWithData:value];
+		id unarchivedValue = [NSKeyedUnarchiver unarchiveObjectWithData:value];
 		if ([unarchivedValue isKindOfClass:c])
 			return unarchivedValue;
 	} return def;
 }
 
 -(void)archiveAndSetObject:(id)value forKey:(NSString*)key {
-	[self setObject:[NSArchiver archivedDataWithRootObject:value] forKey:key];
+	[self setObject:[NSKeyedArchiver archivedDataWithRootObject:value] forKey:key];
 }
 
 -(NSColor*)colorForKey:(NSString*)key default:(NSColor*)def {

@@ -1136,8 +1136,8 @@ static NSHost *currentHost = nil;
 #if 1
     NSColor *colorPeak = [NSColor colorWithCalibratedRed:0.5 green:0.5 blue:1.0 alpha:1.0];
     NSColor *colorIso  = [NSColor colorWithCalibratedRed:0.5 green:1.0 blue:0.5 alpha:1.0];
-    NSData *dataPeak = [NSArchiver archivedDataWithRootObject:colorPeak];
-    NSData *dataIso = [NSArchiver archivedDataWithRootObject:colorIso];
+    NSData *dataPeak = [NSKeyedArchiver archivedDataWithRootObject:colorPeak];
+    NSData *dataIso = [NSKeyedArchiver archivedDataWithRootObject:colorIso];
     [defaultValuesDic setObject: dataPeak forKey: @"peakValueColor"];
     [defaultValuesDic setObject: dataIso  forKey: @"isoContourColor"];
 #else

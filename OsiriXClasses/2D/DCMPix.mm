@@ -5628,7 +5628,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 NSData *data = [SRAnnotation roiFromDICOM: str];
                 if (data)
                 {
-                    NSMutableArray *array = [NSUnarchiver unarchiveObjectWithData: data];
+                    NSMutableArray *array = [NSKeyedUnarchiver unarchiveObjectWithData: data];
                     //NSLog(@"DCMPix.mm:%d, pre-existing ROIs = %lu", __LINE__, i, (unsigned long)array.count);
                     if (array)
                         [roiArray[ i] addObjectsFromArray: array];

@@ -1050,7 +1050,7 @@ extern NSRecursiveLock *Papyrus_Lock;
                     [dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
                 
                 NSData *srData = [SRAnnotation roiFromDICOM: filePath];
-                int numberOfROIs = [[NSUnarchiver unarchiveObjectWithData: srData] count];
+                int numberOfROIs = [[NSKeyedUnarchiver unarchiveObjectWithData: srData] count];
                 [dicomElements setObject: [NSNumber numberWithInt: numberOfROIs] forKey: @"numberOfROIs"];
             }
         }

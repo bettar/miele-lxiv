@@ -1223,7 +1223,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         NSWindow* win = [[NSWindow alloc] initWithContentRect:frame styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:NO];
         
         Dicom_Image* roisImage = [self.series.study roiForImage:self inArray:nil];
-        NSArray* rois = roisImage? [NSUnarchiver unarchiveObjectWithData:[SRAnnotation roiFromDICOM:[roisImage completePath]]] : nil;
+        NSArray* rois = roisImage ? [NSKeyedUnarchiver unarchiveObjectWithData:[SRAnnotation roiFromDICOM:[roisImage completePath]]] : nil;
         
         DCMView* view = [[DCMView alloc] initWithFrame:frame imageRows:self.height.intValue imageColumns:self.width.intValue];
         [view setPixels:[NSMutableArray arrayWithObject:pix] files:[NSMutableArray arrayWithObject:self] rois:(rois? [NSMutableArray arrayWithObject:rois] : nil) firstImage:0 level:'i' reset:YES];
@@ -1279,7 +1279,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
             NSWindow* win = [[NSWindow alloc] initWithContentRect:frame styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:NO];
             
             Dicom_Image* roisImage = [self.series.study roiForImage:self inArray:nil];
-            NSArray* rois = roisImage? [NSUnarchiver unarchiveObjectWithData:[SRAnnotation roiFromDICOM:[roisImage completePath]]] : nil;
+            NSArray* rois = roisImage ? [NSKeyedUnarchiver unarchiveObjectWithData:[SRAnnotation roiFromDICOM:[roisImage completePath]]] : nil;
             
             DCMView* view = [[DCMView alloc] initWithFrame:frame imageRows:self.height.intValue imageColumns:self.width.intValue];
             view.annotationType = ANNOTATIONS_GRAPHICS;

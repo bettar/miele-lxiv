@@ -557,9 +557,9 @@
 - (void) addROIs: (NSArray *) someROIs;
 {
 	if( !_dataEncapsulated)
-		_dataEncapsulated = [[NSArchiver archivedDataWithRootObject: [NSArray array]] retain];
+		_dataEncapsulated = [[NSKeyedArchiver archivedDataWithRootObject: [NSArray array]] retain];
 		
-	NSArray *preExistingROIs = [NSUnarchiver unarchiveObjectWithData: _dataEncapsulated];
+	NSArray *preExistingROIs = [NSKeyedUnarchiver unarchiveObjectWithData: _dataEncapsulated];
 	
 //	for( ROI *aROI in someROIs)
 //	{
@@ -579,12 +579,12 @@
 	NSArray *newROIs = [preExistingROIs arrayByAddingObjectsFromArray: someROIs];
 	
 	[_dataEncapsulated release];
-	_dataEncapsulated = [[NSArchiver archivedDataWithRootObject: newROIs] retain];
+	_dataEncapsulated = [[NSKeyedArchiver archivedDataWithRootObject: newROIs] retain];
 }
 
 - (NSArray *) ROIs
 {
-	return [NSUnarchiver unarchiveObjectWithData: _dataEncapsulated];
+	return [NSKeyedUnarchiver unarchiveObjectWithData: _dataEncapsulated];
 }
 
 #pragma mark - DICOM write
