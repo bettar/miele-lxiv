@@ -196,14 +196,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	camera = [[vrView cameraWithThumbnail: NO] retain];
 }
 
-#if 1 // original. Commented out to try to fix #g93
 // not in MPRDCMView
 - (void) drawRect:(NSRect)rect
 {
 	if (rect.size.width > 10)
 		[super drawRect: rect];
 }
-#endif
 
 // TODO: consolidate
 - (void) setFrame:(NSRect)frameRect
@@ -293,15 +291,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 //
 //}
 
-#if 0 // try to fix #g93. No difference
-- (float) displayedScaleValue
-{
-    DCMPix *o = [windowController originalPix];
-    
-    return [o pixelSpacingX] / previousResolution;
-}
-#endif
-
 // TODO: consolidate
 - (BOOL) hasCameraChanged: (Camera*) currentCamera
 {
@@ -365,55 +354,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     [camera release];
 	[super dealloc];
 }
-
-#if 0 // try to fix #g93 by adding code like in MPRDCMView. No difference
-- (IBAction) actualSize:(id)sender
-{
-    [self setOriginX: 0 Y: 0];
-    self.rotation = 0.0f;
-    
-    DCMPix *o = [windowController originalPix];
-    
-    camera.forceUpdate = YES;
-    camera.parallelScale *= [o pixelSpacingX] / previousResolution;
-    
-    [self restoreCamera];
-    [self updateViewMPR];
-}
-
-- (IBAction) realSize:(id)sender
-{
-    CGSize f = CGDisplayScreenSize( [[[[[self window] screen] deviceDescription] valueForKey: @"NSScreenNumber"] intValue]);
-    CGRect r = CGDisplayBounds( [[[[[self window] screen] deviceDescription] valueForKey: @"NSScreenNumber"] intValue]);
-    
-    if (f.width != 0 && f.height != 0)
-    {
-        NSLog( @"screen pixel ratio: %f", fabs( (f.width/r.size.width) - (f.height/r.size.height)));
-        if (fabs( (f.width/r.size.width) - (f.height/r.size.height)) < 0.01)
-        {
-//            DCMPix *o = [windowController originalPix];
-            
-            camera.forceUpdate = YES;
-            camera.parallelScale *= (f.width/r.size.width) / previousResolution;
-            
-            [self restoreCamera];
-            [self updateViewMPR];
-        }
-        else
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil),
-                                    NSLocalizedString(@"Displayed pixels are non-squared pixel. Images cannot be displayed at actual size.",nil),
-                                    NSLocalizedString( @"OK",nil),
-                                    nil,
-                                    nil);
-    }
-    else
-        NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil),
-                                NSLocalizedString(@"This screen doesn't support this function.",nil),
-                                NSLocalizedString( @"OK",nil),
-                                nil,
-                                nil);
-}
-#endif
 
 - (void) setLOD: (float) l
 {

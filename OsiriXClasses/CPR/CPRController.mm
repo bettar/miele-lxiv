@@ -439,8 +439,6 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[[hiddenVRController window] orderBack: self];
 		[[hiddenVRController window] orderOut: self];
 		
-        //hiddenVRController.view.engine = ENGINE_CPU; // try to fix #g93 by copying MPRController: ng
-
 		[hiddenVRController load3DState];
 		
 		hiddenVRView = [hiddenVRController view];
@@ -498,12 +496,10 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[shadingCheck setAction:@selector(switchShading:)];
 		[shadingCheck setTarget:self];
 		
-#if 0 // originally commented out. Try to fix #g93
-		self.dcmNumberOfFrames = 50;
-		self.dcmRotationDirection = 0;
-		self.dcmRotation = 360;
-		self.dcmSeriesName = @"CPR";
-#endif
+//		self.dcmNumberOfFrames = 50;
+//		self.dcmRotationDirection = 0;
+//		self.dcmRotation = 360;
+//		self.dcmSeriesName = @"CPR";
 
 #if 1 // not in MPRController
         self.exportSeriesName = @"CPR";
@@ -593,46 +589,6 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	if (windowWillClose)
         return;
 	
-#if 0 // try to fix #g93 by doing it like MPRController: no change
-    if (windowWillClose)
-        return;
-    
-    NSDisableScreenUpdates();
-    
-    NSWindow *win = [self window];
-    
-    if (FullScreenOn)
-        win = FullScreenWindow;
-    
-    id view = [win firstResponder];
-    
-    [mprView1 camera].forceUpdate = YES;
-    [mprView2 camera].forceUpdate = YES;
-    [mprView3 camera].forceUpdate = YES;
-    
-    if (sender)
-    {
-        [[self window] makeFirstResponder: sender];
-        [sender restoreCamera];
-        [sender updateViewMPR];
-    }
-    else
-    {
-        CPRMPRDCMView *selectedView = [self selectedView];
-        [[self window] makeFirstResponder: selectedView];
-        [selectedView restoreCamera];
-        [selectedView updateViewMPR];
-    }
-    
-    if (view)
-        [[self window] makeFirstResponder: view];
-    
-    [mprView1 setNeedsDisplay: YES];
-    [mprView2 setNeedsDisplay: YES];
-    [mprView3 setNeedsDisplay: YES];
-    
-    NSEnableScreenUpdates();
-#else // original
 	id view = [[self window] firstResponder];
 	
 	[mprView1 camera].forceUpdate = YES;
@@ -662,7 +618,6 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
-#endif
 }
 
 - (void) showWindow:(id) sender

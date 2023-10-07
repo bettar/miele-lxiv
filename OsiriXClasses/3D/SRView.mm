@@ -368,19 +368,11 @@ typedef struct _xyzArray
 	
 	switch ([sender tag])
 	{
-#if 0
-		case 1: [panel setRequiredFileType:@"rib"];	break;
-		case 2: [panel setRequiredFileType:@"wrl"];	break;
-		case 3: [panel setRequiredFileType:@"iv"];	break;
-		case 4: [panel setRequiredFileType:@"obj"];	break;
-		case 5: [panel setRequiredFileType:@"stl"];	break;
-#else
         case 1: [panel setAllowedFileTypes: @[@"rib"]];    break;
         case 2: [panel setAllowedFileTypes: @[@"wrl"]];    break;
         case 3: [panel setAllowedFileTypes: @[@"iv"]];     break;
         case 4: [panel setAllowedFileTypes: @[@"obj"]];    break;
         case 5: [panel setAllowedFileTypes: @[@"stl"]];    break;
-#endif
 	}
 	
     [panel setNameFieldStringValue: @"3DFile"];

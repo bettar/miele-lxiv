@@ -98,13 +98,6 @@
     // Originally commented out. Try to fix #g93 but it does the opposite: MPR becomes broken like CPR
     //renWin->InitializeFromCurrentContext();
 
-#ifdef DEBUG_ISSUE_G93
-    double vp[4];
-    ren->GetViewport(vp); // xmin,ymin,xmax,ymax
-    NSLog(@"%s %d, self:%p, ren:%p, vp:%f,%f,%f,%f", __FUNCTION__, __LINE__, self, ren, vp[0], vp[1], vp[2], vp[3]);
-    checkOGLVersion();
-    //renWin->SetSize(700,400); // ok Try to fix #g93
-#endif
     vtkRenderWindowInteractor* renWinInt = vtkRenderWindowInteractor::New();
     vtkInteractorStyleTrackballCamera *interactorStyle = vtkInteractorStyleTrackballCamera::New();
     renWinInt->SetInteractorStyle( interactorStyle );

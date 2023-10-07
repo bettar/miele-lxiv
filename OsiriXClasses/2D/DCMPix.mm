@@ -9939,7 +9939,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 -(void) applyShutter
 {
-	if (shutterEnabled == NSOnState)
+	if (shutterEnabled == NSControlStateValueOn)
 	{
         if (shutterRect.origin.x < 0) { shutterRect.size.width += shutterRect.origin.x; shutterRect.origin.x = 0;}
         if (shutterRect.origin.y < 0) { shutterRect.size.height += shutterRect.origin.y; shutterRect.origin.y = 0;}
