@@ -140,23 +140,26 @@
 	
 	if ([path hasSuffix:ext]) {
 		pathWithExt = path;
-		pathWithoutExt = [path stringByAppendingString:ext];
+        pathWithoutExt = [path substringToIndex:path.length-ext.length];
 	}
     else {
 		pathWithoutExt = path;
-		pathWithExt = [path substringToIndex:path.length-ext.length];
+        pathWithExt = [path stringByAppendingString:ext];
 	}
 	
 	BOOL pathWithoutExtIsDir = YES, pathWithoutExtExists = [self fileExistsAtPath:pathWithoutExt isDirectory:&pathWithoutExtIsDir];
 	BOOL pathWithExtIsDir = YES, pathWithExtExists = [self fileExistsAtPath:pathWithExt isDirectory:&pathWithExtIsDir];
 	
-	if (pathWithExtExists && !pathWithExtIsDir) {
+    // If (with) is not a directory delete it
+	if (pathWithExtExists && !pathWithExtIsDir)
+    {
 		[self removeItemAtPath:pathWithExt error:NULL];
 		pathWithExtExists = [self fileExistsAtPath:pathWithExt isDirectory:&pathWithExtIsDir];
 		if (pathWithExtExists)
             [NSException raise:NSGenericException format:@"Could not delete file at %@", pathWithExt];
 	}
 	
+    // If (with) is missing and (without) is an existing directory rename it
 	if (!pathWithExtExists && pathWithoutExtExists && pathWithoutExtIsDir)
     {
 		[self moveItemAtPath: pathWithoutExt
