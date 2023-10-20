@@ -313,15 +313,16 @@ jpeg16_nsdata_src (j_decompress_ptr cinfo, NSData *aData)
 		//NSLog(@"Invalid header");
 		return rawData;
 	}
+
 	if (_samplesPerPixel == 1)
 		theCInfo.out_color_space = JCS_GRAYSCALE;
-
-	if (_samplesPerPixel == 3)
+	else if (_samplesPerPixel == 3)
 		theCInfo.out_color_space = JCS_RGB;
-	//NSLog(@"jpeg color space: %d", theCInfo.out_color_space);
-	//start decompress	
+	
+    //NSLog(@"jpeg color space: %d", theCInfo.out_color_space);
+	
 	//NSLog(@"Start decompress");
-	 (void) jpeg_start_decompress (&theCInfo);
+    (void) jpeg_start_decompress (&theCInfo);
 	 
 	/* JSAMPLEs per row in output buffer */
 	theRowStride = theCInfo.output_width * theCInfo.output_components * 2;
@@ -331,7 +332,7 @@ jpeg16_nsdata_src (j_decompress_ptr cinfo, NSData *aData)
 	*/	
 
     theBuffer16P = (unsigned short *) malloc ((unsigned long) theRowStride);
-	rawData = [NSMutableData dataWithLength:2 * _rows * _columns * _samplesPerPixel];
+	rawData = [NSMutableData dataWithLength: 2 * _rows * _columns * _samplesPerPixel];
     theWrkCh16P = (unsigned short *)[rawData mutableBytes];
   
     theLimit = theCInfo.output_width * theCInfo.output_components;

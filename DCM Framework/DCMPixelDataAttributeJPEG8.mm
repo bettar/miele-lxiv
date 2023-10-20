@@ -442,18 +442,18 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 		case 3:
 		{
 			theCInfo.out_color_space = JCS_RGB;
-			
-			DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
-			DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
-			NSString *photometricInterpretation = [attr value];
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"])
+						
+			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"])
 			{
-				
+                theCInfo.jpeg_color_space = JCS_RGB; // FIX issue #e30
 			}
 			else
 			{
-				if ([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
+                DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
+                DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
+                NSString *photometricInterpretation = [attr value];
+
+                if      ([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
 				else if ([photometricInterpretation isEqualToString:@"YBR_FULL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
 				else if ([photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
 				else if ([photometricInterpretation isEqualToString:@"YBR_RCT"]) theCInfo.jpeg_color_space = JCS_YCbCr;
@@ -481,11 +481,14 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 					}
 				}
 				else
+                {
                     theCInfo.jpeg_color_space = JCS_RGB;
+                }
 			}
 		}
             break;
 	}
+    
 //	if (_samplesPerPixel == 3)
 //	{
 //		//theCInfo.jpeg_color_space = JCS_RGB;

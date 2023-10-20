@@ -424,11 +424,10 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 
 	if (_samplesPerPixel == 1)
 		theCInfo.out_color_space = JCS_GRAYSCALE;
-
-	if (_samplesPerPixel == 3)
+	else if (_samplesPerPixel == 3)
 		theCInfo.out_color_space = JCS_RGB;
-	//start decompress	
-	 (void) jpeg_start_decompress (&theCInfo);
+
+    (void) jpeg_start_decompress (&theCInfo);
 	 
 	/* JSAMPLEs per row in output buffer */
 	theRowStride = theCInfo.output_width * theCInfo.output_components * 2;
