@@ -726,7 +726,7 @@ static bool isGrantedNotificationAccess = false;
         return NO;
     
     if (version.majorVersion == 14 &&
-        version.minorVersion > 0)
+        version.minorVersion > 1)
     {
         return NO;
     }
@@ -3503,12 +3503,16 @@ API_AVAILABLE(macos(10.14))
     //NSLog(@"%s %d", __FUNCTION__, __LINE__);
     [AppController cleanOsiriXSubProcesses];
     
+#if 0
     if ([NSDate timeIntervalSinceReferenceDate] -
         [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastDate32bitPipelineCheck"] > 60L*60L*24L) // 1 day
+#endif
     {
         [[NSUserDefaults standardUserDefaults] setDouble: [NSDate timeIntervalSinceReferenceDate]
                                                   forKey: @"lastDate32bitPipelineCheck"];
+#if 0 // FIXME:
         [self verifyHardwareInterpolation];
+#endif
     }
     
     BOOL dialog = NO;
@@ -4288,6 +4292,7 @@ static BOOL firstCall = YES;
 	[mutableDict writeToFile: [path stringByExpandingTildeInPath] atomically: YES];
 }
 
+#if 0 // It doesn't seem to work on M2 and it's not used anyway
 #define kIOPCIDevice                "IOPCIDevice"
 #define kIONameKey                  "IOName"
 #define kDisplayKey                 "display"
@@ -4338,28 +4343,16 @@ static BOOL firstCall = YES;
     
     return GPUs;
 }
+#endif
 
+// This implementation seems to be flawed:
+// - buffer 'gray_2' is never initialized and yet used to evaluate the result
+// - the result flag is always true because of garbage data in 'gray_2'
+// - the gray value is incorreclty calculated as the average of RGB
+// - the step flipping the data vertically seems to be irrelevant
+// - GL_INVALID_FRAMEBUFFER_OPERATION during drawRect --> glClear(GL_COLOR_BUFFER_BIT);
 -(void)verifyHardwareInterpolation
 {
-//    if ([AppController hasMacOSX1083]) // Intel 10.8.3 graphic bug
-//    {
-//        BOOL onlyIntelGraphicBoard = YES;
-//        for (NSString *gpuName in [AppController getGPUNames])
-//        {
-//            if ([gpuName hasPrefix: kIntelGPUPrefix] == NO)
-//                onlyIntelGraphicBoard = NO;
-//        }
-//
-//        if (onlyIntelGraphicBoard)
-//        {
-//            NSLog( @"**** 10.8.3 graphic board bug: only intel board discovered : No 32-bit pipeline available");
-//            NSLog( @"%@", [AppController getGPUNames]);
-//
-//            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FULL32BITPIPELINE"];
-//            return;
-//        }
-//    }
-    
     NSUInteger size = 32;
     NSUInteger size2 = size*size;
 	
@@ -4384,83 +4377,103 @@ static BOOL firstCall = YES;
 	[[NSUserDefaults standardUserDefaults] setInteger:CLUT_BAR_HIDE forKey:CLUTBARS_KEY];
 	
 	// pix 1: no interpolation
-    
-	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NOINTERPOLATION"];
-	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
-	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
-	
-	dcmView = [[DCMView alloc] initWithFrame:NSMakeRect(0, 0, size,size)];
-	[dcmView setPixels:[NSMutableArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
-	[dcmView setScaleValueCentered:size];
-	[win.contentView addSubview:dcmView];
-	[dcmView drawRect:NSMakeRect(0,0,size,size)];
-    
     {
-        float imOrigin[ 3], imSpacing[ 2];
-        long width, height, spp, bpp;
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NOINTERPOLATION"];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
         
-        unsigned char *data = [dcmView getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
+        dcmView = [[DCMView alloc] initWithFrame:NSMakeRect(0, 0, size,size)];
+        [dcmView setPixels:[NSMutableArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+        [dcmView setScaleValueCentered:size];
+        [win.contentView addSubview:dcmView];
+        [dcmView drawRect:NSMakeRect(0,0,size,size)]; // FIXME: OpenGL error GL_INVALID_FRAMEBUFFER_OPERATION
         
-        assert( spp == 3);
-        
-        if (data)
         {
-            for (int i = 0; i < size2; ++i)
-                gray_1[i] = (data[i*3]+data[i*3+1]+data[i*3+2])/3;
+            float imOrigin[ 3], imSpacing[ 2];
+            long width, height, spp, bpp;
             
-            free( data);
+            unsigned char *data = [dcmView getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
             
-//            planes[0] = gray_1;
-//            NSBitmapImageRep* representation = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes
-//                                                                                       pixelsWide:size pixelsHigh:size bitsPerSample:8
-//                                                                                  samplesPerPixel:1 hasAlpha:NO isPlanar:NO
-//                                                                                   colorSpaceName:NSCalibratedBlackColorSpace bytesPerRow:size
-//                                                                                     bitsPerPixel:8];
-//            [[representation TIFFRepresentation] writeToFile:@"/tmp/aaaaa1.tif" atomically:YES];
-//            [representation release];
+            assert( spp == 3);
+            
+            if (data)
+            {
+                for (int i = 0; i < size2; ++i)
+                    gray_1[i] = (data[i*3]+data[i*3+1]+data[i*3+2])/3;
+                
+                free( data);
+#if 0
+            unsigned char *planes[1];
+            planes[0] = gray_1;
+            NSBitmapImageRep* representation = [[NSBitmapImageRep alloc]
+                                                initWithBitmapDataPlanes:planes
+                                                pixelsWide:size
+                                                pixelsHigh:size
+                                                bitsPerSample:8
+                                                samplesPerPixel:1
+                                                hasAlpha:NO
+                                                isPlanar:NO
+                                                colorSpaceName:NSCalibratedBlackColorSpace
+                                                bytesPerRow:size
+                                                bitsPerPixel:8];
+            [[representation TIFFRepresentation] writeToFile:@"/tmp/aaaaa1.tif" atomically:YES];
+            [representation release];
+#endif
+            }
         }
+        
+        [dcmView removeFromSuperview];
+        [dcmView release];
     }
-    
-	[dcmView removeFromSuperview];
-	[dcmView release];
 	
 	// pix 2: interpolation
-	
-	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NOINTERPOLATION"];
-	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
-	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
-	dcmView = [[DCMView alloc] initWithFrame: NSMakeRect(0, 0, size,size)];
-	[dcmView setPixels:[NSMutableArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
-	[dcmView setScaleValueCentered:size];
-	[win.contentView addSubview:dcmView];
-	[dcmView drawRect:NSMakeRect(0,0,size,size)];
-	
     {
-        float imOrigin[ 3], imSpacing[ 2];
-        long width, height, spp, bpp;
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NOINTERPOLATION"];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
+        dcmView = [[DCMView alloc] initWithFrame: NSMakeRect(0, 0, size,size)];
+        [dcmView setPixels:[NSMutableArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+        [dcmView setScaleValueCentered:size];
+        [win.contentView addSubview:dcmView];
+        [dcmView drawRect:NSMakeRect(0,0,size,size)]; // FIXME: OpenGL error GL_INVALID_FRAMEBUFFER_OPERATION
         
-        unsigned char *data = [dcmView getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
-        
-        assert( spp == 3);
-        
-        if (data)
         {
-            for (int i = 0; i < size2; ++i)
-                gray_1[i] = (data[i*3]+data[i*3+1]+data[i*3+2])/3;
-            free( data);
+            float imOrigin[ 3], imSpacing[ 2];
+            long width, height, spp, bpp;
             
-//            planes[0] = gray_1;
-//            NSBitmapImageRep* representation = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes
-//                                                                                       pixelsWide:size pixelsHigh:size bitsPerSample:8
-//                                                                                  samplesPerPixel:1 hasAlpha:NO isPlanar:NO
-//                                                                                   colorSpaceName:NSCalibratedBlackColorSpace bytesPerRow:size
-//                                                                                     bitsPerPixel:8];
-//            [[representation TIFFRepresentation] writeToFile:@"/tmp/aaaaa2.tif" atomically:YES];
-//            [representation release];
+            unsigned char *data = [dcmView getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
+            
+            assert( spp == 3);
+            
+            if (data)
+            {
+                for (int i = 0; i < size2; ++i)
+                    gray_1[i] = (data[i*3]+data[i*3+1]+data[i*3+2])/3; // FIXME: use gray_2 ???
+
+                free( data);
+                
+#if 0
+            unsigned char *planes[1];
+            planes[0] = gray_1;
+            NSBitmapImageRep* representation = [[NSBitmapImageRep alloc]
+                                                initWithBitmapDataPlanes:planes
+                                                pixelsWide:size
+                                                pixelsHigh:size
+                                                bitsPerSample:8
+                                                samplesPerPixel:1
+                                                hasAlpha:NO
+                                                isPlanar:NO
+                                                colorSpaceName:NSCalibratedBlackColorSpace
+                                                bytesPerRow:size
+                                                bitsPerPixel:8];
+            [[representation TIFFRepresentation] writeToFile:@"/tmp/aaaaa2.tif" atomically:YES];
+            [representation release];
+#endif
+            }
         }
+        [dcmView removeFromSuperview];
+        [dcmView release];
     }
-	[dcmView removeFromSuperview];
-	[dcmView release];
 	
 	[win release];
 	[dcmPix release];
@@ -4474,26 +4487,21 @@ static BOOL firstCall = YES;
 	[DCMView setCLUTBARS:clutBarsCopy
          withAnnotations:annotCopy];
 	
-	// eval results
+	// Evaluate results
 	
 	CGFloat delta = 0;
 	for (int i = 0; i < size2; ++i)
-		delta += fabsf((float)gray_1[i] - (float)gray_2[i]);
+		delta += fabsf((float)gray_1[i] - (float)gray_2[i]); // FIXME: gray_2 was never initialized
 
     BOOL has32bitPipeline = delta > 1000.0F; // we may want to raise this..
 	
 	if (has32bitPipeline)
-	{
-		NSLog( @"-- 32bit pipeline available : delta = %f", delta);
-		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"hasFULL32BITPIPELINE"];
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
-	}
+		NSLog(@"-- 32bit pipeline available : delta = %f", delta);
 	else
-	{
-		NSLog( @"-- 32bit pipeline inactivated : delta = %f", delta);
-		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"hasFULL32BITPIPELINE"];
-		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FULL32BITPIPELINE"];
-	}
+		NSLog(@"-- 32bit pipeline inactivated : delta = %f", delta);
+    
+    [[NSUserDefaults standardUserDefaults] setBool:has32bitPipeline forKey:@"hasFULL32BITPIPELINE"];
+    [[NSUserDefaults standardUserDefaults] setBool:has32bitPipeline forKey:@"FULL32BITPIPELINE"];
 }
 
 - (IBAction) updateViews:(id) sender

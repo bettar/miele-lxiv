@@ -13698,17 +13698,25 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 				unsigned char *tempBuf = (unsigned char *)malloc( rowBytes);
 				
 				if (!tempBuf)
+                {
                     NSLog(@"%s:%i %s", __FILE__, __LINE__, MALLOC_ERROR_MESSAGE);
+                }
                 else
 				{
+                    // Flip it vertically: proceeed swapping rows
 					for (long i = 0; i < *height/2; i++ )
 					{
-						memcpy(tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+						memcpy(tempBuf,
+                               buf + (*height - 1 - i)*rowBytes,
+                               rowBytes);
                         
 						memcpy(buf + (*height - 1 - i)*rowBytes,
-                               buf + i*rowBytes, rowBytes);
+                               buf + i*rowBytes,
+                               rowBytes);
                         
-						memcpy(buf + i*rowBytes, tempBuf, rowBytes);
+						memcpy(buf + i*rowBytes,
+                               tempBuf,
+                               rowBytes);
 					}
 					
 					free( tempBuf);

@@ -171,7 +171,7 @@
 	if (histogram)
         free(histogram);
 	
-	histogram = (vImagePixelCount*) malloc(sizeof(vImagePixelCount) * ((histogramSize+100)*2L));
+	histogram = (vImagePixelCount*) malloc(sizeof(vImagePixelCount) * ((histogramSize + 100)*2L));
 	if( histogram && buffer.data)
 	{
 		vImageHistogramCalculation_PlanarF( &buffer, histogram, histogramSize, HUmin, HUmax, kvImageDoNotTile);

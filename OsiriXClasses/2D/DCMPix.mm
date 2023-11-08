@@ -89,6 +89,8 @@
 #define PREVIEWSIZE 68
 #endif
 
+#define MALLOC_SAFETY_MARGIN    64 // not needed really
+
 /* From PapyTypeDef3.h
    Definition of the photometric interpretation
    See also 'photometricmode'
@@ -3552,7 +3554,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	originX = o[ 0];
 	originY = o[ 1];
 	originZ = o[ 2];
-};
+}
 
 - (double) sliceLocation{ [self CheckLoad]; return sliceLocation;}
 - (void) setSliceLocation: (double)l { [self CheckLoad]; sliceLocation = l;}
@@ -4270,7 +4272,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 		else
 		{
-			fImage = (float *)malloc(width*height*sizeof(float) + 100);
+			fImage = (float *)malloc(width*height*sizeof(float) + MALLOC_SAFETY_MARGIN);
 		}
 		
 		dstf.data = fImage;
@@ -4599,7 +4601,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			}
 			else
 			{
-				fImage = (float *)malloc(width*height*sizeof(float) + 100);
+				fImage = (float *)malloc(width*height*sizeof(float) + MALLOC_SAFETY_MARGIN);
 			}
 			
 			dstf.data = fImage;
@@ -4626,7 +4628,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			if (fExternalOwnedImage)
 				fImage = fExternalOwnedImage;
 			else
-				fImage = (float *)malloc(width*height*sizeof(float) + 100);
+				fImage = (float *)malloc(width*height*sizeof(float) + MALLOC_SAFETY_MARGIN);
 			
 			if (fImage)
 				memcpy( fImage, oImage, width*height*4);
@@ -5063,7 +5065,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		if (fExternalOwnedImage)
             fImage = fExternalOwnedImage;
 		else
-            fImage = (float *)malloc(width*height*sizeof(float) + 100);
+            fImage = (float *)malloc(width*height*sizeof(float) + MALLOC_SAFETY_MARGIN);
 		
 		long numPixels = height * width;
 		
@@ -7026,7 +7028,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     if (fExternalOwnedImage)
                         fImage = fExternalOwnedImage;
                     else
-                        fImage = (float *)malloc(width*height*sizeof(float) + 100);
+                        fImage = (float *)malloc(width*height*sizeof(float) + MALLOC_SAFETY_MARGIN);
                     
                     if (fImage)
                     {
@@ -7073,7 +7075,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     if (fExternalOwnedImage)
                         fImage = fExternalOwnedImage;
                     else
-                        fImage = (float *)malloc(width*height*sizeof(float) + 100);
+                        fImage = (float *)malloc(width*height*sizeof(float) + MALLOC_SAFETY_MARGIN);
                     
                     dstf.data = fImage;
                     
@@ -7789,7 +7791,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             if (fExternalOwnedImage)
                                 fImage = fExternalOwnedImage;
                             else
-                                fImage = (float *)malloc( (width+1) * (height+1) * sizeof(float) + 100);
+                                fImage = (float *)malloc( (width+1) * (height+1) * sizeof(float) + MALLOC_SAFETY_MARGIN);
                             
                             if ([fileData length] < height * width * sizeof(float))
                                 NSLog( @"****** [fileData length] < height * width * sizeof(float)");
@@ -7812,7 +7814,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             if (fExternalOwnedImage)
                                 fImage = fExternalOwnedImage;
                             else
-                                fImage = (float *)malloc( (width+1) * (height+1) * sizeof(float) + 100);
+                                fImage = (float *)malloc( (width+1) * (height+1) * sizeof(float) + MALLOC_SAFETY_MARGIN);
                             
                             if ([fileData length] < height * width * sizeof(float))
                                 NSLog( @"****** [fileData length] < height * width * sizeof(float)");
@@ -7893,7 +7895,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         if (fExternalOwnedImage)
                             fImage = fExternalOwnedImage;
                         else
-                            fImage = (float *)malloc(width*height*sizeof(float) + 100);
+                            fImage = (float *)malloc(width*height*sizeof(float) + MALLOC_SAFETY_MARGIN);
                         
                         dstf.data = fImage;
                         if (dstf.data)
@@ -8225,7 +8227,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                     if (fExternalOwnedImage)
                                         fImage = fExternalOwnedImage;
                                     else
-                                        fImage = (float *)malloc(width*height*sizeof(float) + 100);
+                                        fImage = (float *)malloc(width*height*sizeof(float) + MALLOC_SAFETY_MARGIN);
                                     
                                     if (fImage)
                                     {
@@ -8268,7 +8270,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                 if (fExternalOwnedImage)
                                     fImage = fExternalOwnedImage;
                                 else
-                                    fImage = (float *)malloc(width*height*sizeof(float) + 100);
+                                    fImage = (float *)malloc(width*height*sizeof(float) + MALLOC_SAFETY_MARGIN);
                                 
                                 dstf.data = fImage;
                                 
@@ -9026,7 +9028,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                        scale: (float) scale
                     xFlipped: (BOOL) xF
                     yFlipped: (BOOL) yF
-                   smartCrop: (BOOL) smartCrop;
+                   smartCrop: (BOOL) smartCrop
 {
 	if ([self isRGB])
         return nil;
