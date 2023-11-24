@@ -152,7 +152,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     self.window = [[N2PopUpMenuWindow alloc] initWithContentRect:viewFrame styleMask:NSWindowStyleMaskBorderless backing:NSBackingStoreBuffered defer:NO];
     [self.window setLevel:NSMainMenuWindowLevel];
     [self.window setOpaque:NO];
-    [self.window setBackgroundColor:[[NSColor whiteColor] colorWithAlphaComponent:0]];
+    [self.window setBackgroundColor:[NSColor controlBackgroundColor]];
     [self.window setHasShadow:YES];
     [self.window setAcceptsMouseMovedEvents:YES];
     [self.window setReleasedWhenClosed:YES];
@@ -1073,7 +1073,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     [NSGraphicsContext saveGraphicsState];
     
     NSBezierPath* path = [NSBezierPath bezierPathWithRoundedRect:[self bounds] xRadius:4 yRadius:4];
-    [[[NSColor whiteColor] colorWithAlphaComponent:0.99] setFill];
+    [[NSColor controlBackgroundColor] setFill];
     [path fill];
     
     [NSGraphicsContext restoreGraphicsState];

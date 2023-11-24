@@ -8831,7 +8831,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if ([self isRGB])
         return nil;
 	
-	NSRect dstRect = [self usefulRectWithRotation: rDeg scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF];
+	NSRect dstRect = [self usefulRectWithRotation: rDeg
+                                            scale: scale
+                                         xFlipped: xF
+                                         yFlipped: yF];
 	
 	float rotRad = glm::radians(rDeg);
 	int newHeight;
@@ -8842,8 +8845,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	newHeight = [self pheight] * scale * pixelRatio;
 	NSPoint centerPt = NSMakePoint( newWidth/2., newHeight/2.);
 	
-	int newW = (dstRect.size.width);
-	int newH = (dstRect.size.height);
+	int newW = dstRect.size.width;
+	int newH = dstRect.size.height;
 	
 	vImage_Buffer src;
 	vImage_Buffer dst;

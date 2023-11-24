@@ -26,7 +26,7 @@
 - (id)initWithFrame:(NSRect)frameRect {
     if ((self = [super initWithFrame:frameRect])) {
         self.datePickerStyle = NSTextFieldAndStepperDatePickerStyle;
-        self.backgroundColor = [NSColor whiteColor];
+        self.backgroundColor = [NSColor controlBackgroundColor];
         self.drawsBackground = YES;
         self.bezeled = YES;
     }
@@ -64,7 +64,7 @@
     
     _helperWindow = [[NSWindow alloc] initWithContentRect:cwr styleMask:NSWindowStyleMaskBorderless backing:NSBackingStoreBuffered defer:NO];
     [_helperWindow.contentView addSubview:dp];
-    _helperWindow.backgroundColor = [NSColor grayColor];//[NSColor whiteColor];
+    _helperWindow.backgroundColor = [NSColor controlBackgroundColor];
     _helperWindow.hasShadow = YES;
   //  _helperWindow.isOpaque = NO;
     
