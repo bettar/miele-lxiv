@@ -1700,13 +1700,20 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 + (NSArray*) seriesSortDescriptors
 {
-    NSSortDescriptor * sortid = [NSSortDescriptor sortDescriptorWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];
-    NSSortDescriptor * sortdate = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES];
+    NSSortDescriptor * sortid = [NSSortDescriptor sortDescriptorWithKey:@"seriesInstanceUID"
+                                                              ascending:YES
+                                                               selector:@selector(numericCompare:)];
+    
+    NSSortDescriptor * sortdate = [NSSortDescriptor sortDescriptorWithKey:@"date"
+                                                                ascending:YES];
+
     NSArray * sortDescriptors = nil;
     
-    if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0)
+    int sortBy = [[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"];
+    
+    if (sortBy == 0)
         sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
-    else if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1)
+    else if (sortBy == 1)
         sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
     else
         sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];

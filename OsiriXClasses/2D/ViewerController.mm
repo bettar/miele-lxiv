@@ -8102,7 +8102,7 @@ return YES;
 							[[pixList[ x] objectAtIndex: j] orientation: o];
 							for (int k = 0 ; k < 9; k++)
 							{
-								if (fabs( o[ k] - orientation[ k]) > ORIENTATION_SENSIBILITY)
+								if (fabs( o[ k] - orientation[ k]) > ORIENTATION_SENSITIVITY)
 								{
 									volumicData = NO;
 									
@@ -11374,7 +11374,7 @@ static int avoidReentryRefreshDatabase = 0;
 {
 	double vectors[ 9], vectorsB[ 9];
 	BOOL equalVector = YES;
-	float interval = 0;
+	float interval2 = 0;
 	
 	[p1 orientationDouble: vectors];
 	[p2 orientationDouble: vectorsB];
@@ -11382,7 +11382,7 @@ static int avoidReentryRefreshDatabase = 0;
 	for (int i = 0; i < 9; i++)
 	{
 		const double epsilon = fabs(vectors[ i] - vectorsB[ i]);
-		if (epsilon > ORIENTATION_SENSIBILITY)
+		if (epsilon > ORIENTATION_SENSITIVITY)
 		{
 			equalVector = NO;
 			break;
@@ -11408,38 +11408,38 @@ static int avoidReentryRefreshDatabase = 0;
 		if (fabs( vectors[6]) > fabs(vectors[7]) &&
             fabs( vectors[6]) > fabs(vectors[8]))
 		{
-			interval = [p1 originX] - [p2 originX];
+			interval2 = [p1 originX] - [p2 originX];
 			
 			if (vectors[6] > 0)
-                interval = -( interval);
+                interval2 = -( interval2);
 			else
-                interval = ( interval);
+                interval2 = ( interval2);
 		}
 		
 		if (fabs( vectors[7]) > fabs(vectors[6]) &&
             fabs( vectors[7]) > fabs(vectors[8]))
 		{
-			interval = [p1 originY] - [p2 originY];
+			interval2 = [p1 originY] - [p2 originY];
 			
 			if (vectors[7] > 0)
-                interval = -( interval);
+                interval2 = -( interval2);
 			else
-                interval = ( interval);
+                interval2 = ( interval2);
 		}
 		
 		if (fabs( vectors[8]) > fabs(vectors[6]) &&
             fabs( vectors[8]) > fabs(vectors[7]))
 		{
-			interval = [p1 originZ] - [p2 originZ];
+			interval2 = [p1 originZ] - [p2 originZ];
 				
 			if (vectors[8] > 0)
-                interval = -( interval);
+                interval2 = -( interval2);
 			else
-                interval = ( interval);
+                interval2 = ( interval2);
 		}
 	}
 	
-	return interval;
+	return interval2;
 }
 
 - (BOOL) isGantryTilted
@@ -11489,14 +11489,14 @@ static int avoidReentryRefreshDatabase = 0;
     for (int i = 0; i < 9; i++)
     {
         const double epsilon = fabs(vectors[ i] - vectorsB[ i]);
-        if (epsilon > ORIENTATION_SENSIBILITY)
+        if (epsilon > ORIENTATION_SENSITIVITY)
         {
             equalVector = NO;
             break;
         }
     }
     
-    double interval = 0;
+    double interval3 = 0.0;
     BOOL equalZero = YES;
     
     for (int i = 0; i < 9; i++)
@@ -11517,12 +11517,12 @@ static int avoidReentryRefreshDatabase = 0;
         if (fabs( vectors[6]) > fabs(vectors[7]) &&
             fabs( vectors[6]) > fabs(vectors[8]))
         {
-            interval = [[pixList[ curMovieIndex] objectAtIndex:1] originX] -
+            interval3 = [[pixList[ curMovieIndex] objectAtIndex:1] originX] -
                        [[pixList[ curMovieIndex] objectAtIndex:2] originX];
             
             if (vectors[6] > 0)
             {
-                interval = -interval;
+                interval3 = -interval3;
                 orientationVector = eSagittalPos;
             }
             else
@@ -11534,11 +11534,11 @@ static int avoidReentryRefreshDatabase = 0;
         if (fabs( vectors[7]) > fabs(vectors[6]) &&
             fabs( vectors[7]) > fabs(vectors[8]))
         {
-            interval = [[pixList[ curMovieIndex] objectAtIndex:1] originY] - [[pixList[ curMovieIndex] objectAtIndex:2] originY];
+            interval3 = [[pixList[ curMovieIndex] objectAtIndex:1] originY] - [[pixList[ curMovieIndex] objectAtIndex:2] originY];
             
             if (vectors[7] > 0)
             {
-                interval = -interval;
+                interval3 = -interval3;
                 orientationVector = eCoronalPos;
             }
             else
@@ -11550,11 +11550,11 @@ static int avoidReentryRefreshDatabase = 0;
         if (fabs( vectors[8]) > fabs(vectors[6]) &&
             fabs( vectors[8]) > fabs(vectors[7]))
         {
-            interval = [[pixList[ curMovieIndex] objectAtIndex:1] originZ] - [[pixList[ curMovieIndex] objectAtIndex:2] originZ];
+            interval3 = [[pixList[ curMovieIndex] objectAtIndex:1] originZ] - [[pixList[ curMovieIndex] objectAtIndex:2] originZ];
             
             if (vectors[8] > 0)
             {
-                interval = -interval;
+                interval3 = -interval3;
                 orientationVector = eAxialPos;
             }
             else
@@ -11567,7 +11567,7 @@ static int avoidReentryRefreshDatabase = 0;
             originalOrientation = currentOrientationTool;
     }
     
-    return interval;
+    return interval3;
 }
 
 - (float) computeIntervalFlipNow: (NSNumber*) flipNowNumber
@@ -11589,7 +11589,7 @@ static int avoidReentryRefreshDatabase = 0;
         
         int z = curMovieIndex;
         
-        double interval = [[pixList[ z] objectAtIndex:0] sliceInterval];
+        double interval4 = [[pixList[ z] objectAtIndex:0] sliceInterval];
         BOOL flipNow = [flipNowNumber boolValue];
         
         if (flipNow)
@@ -11598,21 +11598,21 @@ static int avoidReentryRefreshDatabase = 0;
         if ([pixList[ z] count] > 1)
         {
             if (flipNow)
-                interval = 0;
+                interval4 = 0;
         }
         
-        if (interval == 0 && [pixList[ z] count] > 2)
+        if (interval4 == 0 && [pixList[ z] count] > 2)
         {
             tiltedGantry = NO;
             
-            interval = [self computeOriginalOrientation];
+            interval4 = [self computeOriginalOrientation];
             
-            if (interval != 0.0)
+            if (interval4 != 0.0)
             {
                 if (currentOrientationTool != ORIENTATION_UNDEFINED)
                     [orientationMatrix selectCellWithTag: currentOrientationTool];
                 
-                if (interval != 0)
+                if (interval4 != 0)
                     [orientationMatrix setEnabled: YES];
                 
                 double xd = [[pixList[ z] objectAtIndex: 2] originX] - [[pixList[ z] objectAtIndex: 1] originX];
@@ -11625,15 +11625,15 @@ static int avoidReentryRefreshDatabase = 0;
                 yd /= interval3d;
                 zd /= interval3d;
                 
-                if (interval == 0 &&
+                if (interval4 == 0 &&
                     [[pixList[ z] objectAtIndex: 0] originX] == 0 &&
                     [[pixList[ z] objectAtIndex: 0] originY] == 0 &&
                     [[pixList[ z] objectAtIndex: 0] originZ] == 0)
                 {
-                    interval = [[pixList[ z] objectAtIndex:0] spacingBetweenSlices];
-                    if (interval)
+                    interval4 = [[pixList[ z] objectAtIndex:0] spacingBetweenSlices];
+                    if (interval4)
                     {
-                        interval3d = -interval;
+                        interval3d = -interval4;
                         orientationVector = eAxialNeg;
                         [orientationMatrix setEnabled: YES];
                         
@@ -11649,13 +11649,13 @@ static int avoidReentryRefreshDatabase = 0;
                         {
                             [pix setOrientation: v];
                             [pix setOrigin: o];
-                            o[ 2] += interval;
+                            o[ 2] += interval4;
                         }
                     }
                 }
                 
                 // FLIP DATA !!!!!! FOR 3D TEXTURE MAPPING !!!!!
-                if (interval < 0 && flipNow == YES)
+                if (interval4 < 0 && flipNow == YES)
                 {
                     BOOL sameSize = YES;
                     
@@ -11673,9 +11673,9 @@ static int avoidReentryRefreshDatabase = 0;
                     if (sameSize)
                     {
                         if (interval3d)
-                            interval = fabs( interval3d);	//interval3d;	//-interval;
+                            interval4 = fabs( interval3d);	//interval3d;	//-interval;
                         else
-                            interval = fabs( interval);
+                            interval4 = fabs( interval4);
                             
                         for (int x = 0; x < maxMovieIndex; x++)
                         {
@@ -11693,7 +11693,7 @@ static int avoidReentryRefreshDatabase = 0;
                                 long offset = ((long)[pixList[ x] count]-1-i)*[firstObject pheight] * [firstObject pwidth];
                                 
                                 [[pixList[ x] objectAtIndex: i] setfImage: volumeDataPtr + offset];
-                                [[pixList[ x] objectAtIndex: i] setSliceInterval: interval];
+                                [[pixList[ x] objectAtIndex: i] setSliceInterval: interval4];
                             }
                             
                             id tempObj;
@@ -11737,22 +11737,22 @@ static int avoidReentryRefreshDatabase = 0;
                 {
                     if (interval3d)
                     {
-                        if ( interval < 0)
-                            interval = -interval3d;
+                        if ( interval4 < 0)
+                            interval4 = -interval3d;
                         else
-                            interval = interval3d;
+                            interval4 = interval3d;
                     }
                     else
                     {
-                        if ( interval < 0)
-                            interval = -interval;
+                        if ( interval4 < 0)
+                            interval4 = -interval4;
                         else
-                            interval = interval;
+                            interval4 = interval4;
                     }
                     
                     for (int x = 0; x < maxMovieIndex; x++)
                         for (int i = 0; i < [pixList[ x] count]; i++)
-                            [[pixList[ x] objectAtIndex: i] setSliceInterval: interval];
+                            [[pixList[ x] objectAtIndex: i] setSliceInterval: interval4];
                 }
                 
                 if (flipNow == YES)

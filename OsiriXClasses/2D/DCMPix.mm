@@ -9137,7 +9137,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	[c orientationDouble: o];
 	
 	for (int i = 0 ; i < 9; i++)
-        if (fabs( o[ i] - orientation[ i]) > ORIENTATION_SENSIBILITY)
+        if (fabs( o[ i] - orientation[ i]) > ORIENTATION_SENSITIVITY)
             return NO;
 	
 	return YES;

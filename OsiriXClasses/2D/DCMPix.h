@@ -27,7 +27,7 @@
 
 #import "options.h"
 
-#define ORIENTATION_SENSIBILITY 0.001
+#define ORIENTATION_SENSITIVITY     0.001
 
 typedef NS_ENUM(NSUInteger, StackType) {
     STACK_MODE_MEAN = 1,

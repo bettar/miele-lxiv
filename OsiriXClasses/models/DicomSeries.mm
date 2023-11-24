@@ -723,21 +723,21 @@
 
 - (NSArray*) sortDescriptorsForImages
 {
-	int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
+	int sortBy = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
     
 	NSSortDescriptor *sortInstance = nil, *sortLocation = nil, *sortDate = nil;
     
-	sortDate = [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO];
+	sortDate = [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: (sortBy > 0) ? YES : NO];
 	sortInstance = [NSSortDescriptor sortDescriptorWithKey: @"instanceNumber" ascending: YES];
-	sortLocation = [NSSortDescriptor sortDescriptorWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO];
+	sortLocation = [NSSortDescriptor sortDescriptorWithKey: @"sliceLocation" ascending: (sortBy > 0) ? YES : NO];
     
 	NSArray *sortDescriptors = nil;
     
-	if( sortSeriesBySliceLocation == 0)
+	if (sortBy == 0)
 		sortDescriptors = [NSArray arrayWithObjects: sortInstance, sortLocation, nil];
 	else
 	{
-		if( sortSeriesBySliceLocation == 2 || sortSeriesBySliceLocation == -2)
+		if (sortBy == 2 || sortBy == -2)
 			sortDescriptors = [NSArray arrayWithObjects: sortDate, sortLocation, sortInstance, nil];
 		else
 			sortDescriptors = [NSArray arrayWithObjects: sortLocation, sortInstance, nil];
