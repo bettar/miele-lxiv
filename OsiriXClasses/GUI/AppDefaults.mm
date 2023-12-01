@@ -94,13 +94,24 @@ static NSHost *currentHost = nil;
     if (videoMemory > 0)
         return videoMemory;
 
+    // Find all renderers across all displays
+    CGLRendererInfoObj rendInfo;
+    GLint nrend;
+#if 1 // original
+    CGLQueryRendererInfo(0xFFFFFFFF, &rendInfo, &nrend);  // all renderers on all displays.  In 10.9 "Mavericks" this includes mux displays.
+#else // ok but no difference, still 2 renderers
+    CGLQueryRendererInfo(CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay), &rendInfo, &nrend);
+#endif
+    
+#ifndef NDEBUG
     NSUInteger MAX_DISPLAYS = [[NSScreen screens] count];
-    //NSLog(@"# displays %lu", MAX_DISPLAYS);
+    NSLog(@"# renderers = %d, # displays %lu", nrend, MAX_DISPLAYS);
+#endif
 
     struct cglPixFormat
     {
         GLint rendererID;
-        GLint videoMemory;
+        GLint videoMemory; // if the memory size in bytes doesn't fit this 32-bit signed variable (about 2GB limit), this value is wrong
         GLint textureMemory;
         GLint videoMemoryMB; // we only need this one
         GLint textureMemoryMB;
@@ -113,16 +124,16 @@ static NSHost *currentHost = nil;
 //        GLint offScreen;
 //        GLint accelerated;
 //        GLint backingStore;
+        bool isCore;
     };
     
-    cglPixFormat m_lPixFormats[MAX_DISPLAYS];
-    GLint m_lRenderers[32];     // IDs
-    GLint m_lRenderersCore[32]; // bool
+    NSUInteger npf = nrend; // was MAX_DISPLAYS;
+    cglPixFormat m_lPixFormats[npf];
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
 
     {
-        memset(m_lPixFormats, 0, sizeof(cglPixFormat) * MAX_DISPLAYS);
-        int renIdx = 0;
+        memset(m_lPixFormats, 0, sizeof(cglPixFormat) * npf);
+    
         // Create a dummy pixel format here, *without* requesting kCGLPFASupportsAutomaticGraphicsSwitching.
         // On mux-capable laptops, this has the effect of forcing the display to mux to the discrete GPU.
         // The integrated GPU can still be detected after this, but the side-effect is that the GPU owning
@@ -136,39 +147,29 @@ static NSHost *currentHost = nil;
             CGLDestroyPixelFormat(pixelFormatObj);
         }
 
-        // Find all renderers across all displays
         {
-            CGLRendererInfoObj rend;
-            GLint nrend;
-#if 1 // original
-            CGLQueryRendererInfo(0xFFFFFFFF, &rend, &nrend);  // all renderers on all displays.  In 10.9, this includes mux displays.
-#else // ok but no difference, still 2 renderers
-            CGLQueryRendererInfo(CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay), &rend, &nrend);
-#endif
-            NSLog(@"# renderers = %d", nrend);
+            int renIdx;
             for (GLint i = 0; i < nrend; i++)
             {
-                GLint value;
-                CGLDescribeRenderer(rend, i, kCGLRPRendererID, &value);
-                {
-                    m_lRenderers[renIdx] = value; // renderer ID
-                    //NSLog(@"i: %d, renderer ID: 0x%x", i, m_lRenderers[renIdx]);
+                renIdx = i;
+                CGLDescribeRenderer(rendInfo, i, kCGLRPRendererID, &m_lPixFormats[renIdx].rendererID);
 
+                {
 #if 1
                     // determine if this rendererID supports Core Profile.  There's no CGLRendererProperty for this, so just see if the pixel format works.
                     GLint numPixelFormats = 0;
                     if (version.majorVersion > 10 ||
-                        (version.majorVersion == 10 && version.minorVersion >= 7))//(GetOSVersion() >= 0x1070) // MAC_OS_X_VERSION_10_7 ?
+                        (version.majorVersion == 10 && version.minorVersion >= 7)) // "Lion" (GetOSVersion() >= 0x1070) // MAC_OS_X_VERSION_10_7 ?
                     {
                         CGLPixelFormatAttribute attribs[32] = { (CGLPixelFormatAttribute)0 };
                         int a = 0;
                         attribs[a++] = kCGLPFARendererID;
-                        attribs[a++] = (CGLPixelFormatAttribute)value;
+                        attribs[a++] = (CGLPixelFormatAttribute)m_lPixFormats[renIdx].rendererID;
                         
                         attribs[a++] = kCGLPFAAllowOfflineRenderers;
                         
                         if (version.majorVersion > 10 ||
-                            (version.majorVersion == 10 && version.minorVersion >= 8))//(GetOSVersion() >= 0x1080) // MAC_OS_X_VERSION_10_8 ?
+                            (version.majorVersion == 10 && version.minorVersion >= 8)) // "Mountain Lion" (GetOSVersion() >= 0x1080) // MAC_OS_X_VERSION_10_8 ?
                         {
                             attribs[a++] = kCGLPFASupportsAutomaticGraphicsSwitching;
                         }
@@ -183,77 +184,77 @@ static NSHost *currentHost = nil;
                         CGLDestroyPixelFormat(pixelFormatObj);
                     }
 
-                    m_lRenderersCore[renIdx] = numPixelFormats > 0;
-                    //NSLog(@"core: %d", m_lRenderersCore[renIdx]);
+                    m_lPixFormats[renIdx].isCore = (numPixelFormats > 0);
 #endif
 
                     // Deprecated
-//                    CGLDescribeRenderer(rend, i, kCGLRPFullScreen,          &m_lPixFormats[renIdx].fullScreen);
-//                    CGLDescribeRenderer(rend, i, kCGLRPRobust,              &m_lPixFormats[renIdx].robust);
-//                    CGLDescribeRenderer(rend, i, kCGLRPMPSafe,              &m_lPixFormats[renIdx].mpSafe);
-//                    CGLDescribeRenderer(rend, i, kCGLRPMultiScreen,         &m_lPixFormats[renIdx].multiScreen);
-                    CGLDescribeRenderer(rend, i, kCGLRPVideoMemory,         &m_lPixFormats[renIdx].videoMemory);
-                    CGLDescribeRenderer(rend, i, kCGLRPTextureMemory,       &m_lPixFormats[renIdx].textureMemory);
+                    {
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPFullScreen,          &m_lPixFormats[renIdx].fullScreen);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPRobust,              &m_lPixFormats[renIdx].robust);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPMPSafe,              &m_lPixFormats[renIdx].mpSafe);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPMultiScreen,         &m_lPixFormats[renIdx].multiScreen);
+                    CGLDescribeRenderer(rendInfo, i, kCGLRPVideoMemory,         &m_lPixFormats[renIdx].videoMemory);  // maybe overflow 32 bit value ==> use videoMemoryMB
+                    CGLDescribeRenderer(rendInfo, i, kCGLRPTextureMemory,       &m_lPixFormats[renIdx].textureMemory);
 
                     // Query the renderer for supported pixel formats and other window centric info
-//                    CGLDescribeRenderer(rend, i, kCGLRPDisplayMask,         &m_lPixFormats[renIdx].displayMask);
-                    CGLDescribeRenderer(rend, i, kCGLRPRendererID,          &m_lPixFormats[renIdx].rendererID);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPDisplayMask,         &m_lPixFormats[renIdx].displayMask);
 
-//                    CGLDescribeRenderer(rend, i, kCGLRPOffScreen,           &m_lPixFormats[renIdx].offScreen);
-//                    CGLDescribeRenderer(rend, i, kCGLRPAccelerated,         &m_lPixFormats[renIdx].accelerated);
-//                    CGLDescribeRenderer(rend, i, kCGLRPBackingStore,        &m_lPixFormats[renIdx].backingStore);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPOffScreen,           &m_lPixFormats[renIdx].offScreen);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPAccelerated,         &m_lPixFormats[renIdx].accelerated);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPBackingStore,        &m_lPixFormats[renIdx].backingStore);
 
-//                    CGLDescribeRenderer(rend, i, kCGLRPWindow,              &m_lPixFormats[renIdx].window);
-//                    CGLDescribeRenderer(rend, i, kCGLRPCompliant,           &m_lPixFormats[renIdx].compliant);
-//                    CGLDescribeRenderer(rend, i, kCGLRPBufferModes,         &m_lPixFormats[renIdx].bufferModes);
-//                    CGLDescribeRenderer(rend, i, kCGLRPColorModes,          &m_lPixFormats[renIdx].colorModes);
-//                    CGLDescribeRenderer(rend, i, kCGLRPAccumModes,          &m_lPixFormats[renIdx].accumModes);
-//                    CGLDescribeRenderer(rend, i, kCGLRPDepthModes,          &m_lPixFormats[renIdx].depthModes);
-//                    CGLDescribeRenderer(rend, i, kCGLRPStencilModes,        &m_lPixFormats[renIdx].stencilModes);
-//                    CGLDescribeRenderer(rend, i, kCGLRPMaxAuxBuffers,       &m_lPixFormats[renIdx].maxAuxBuffers);
-//                    CGLDescribeRenderer(rend, i, kCGLRPMaxSampleBuffers,    &m_lPixFormats[renIdx].maxSampleBuffers);
-//                    CGLDescribeRenderer(rend, i, kCGLRPMaxSamples,          &m_lPixFormats[renIdx].maxSamples);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPWindow,              &m_lPixFormats[renIdx].window);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPCompliant,           &m_lPixFormats[renIdx].compliant);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPBufferModes,         &m_lPixFormats[renIdx].bufferModes);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPColorModes,          &m_lPixFormats[renIdx].colorModes);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPAccumModes,          &m_lPixFormats[renIdx].accumModes);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPDepthModes,          &m_lPixFormats[renIdx].depthModes);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPStencilModes,        &m_lPixFormats[renIdx].stencilModes);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPMaxAuxBuffers,       &m_lPixFormats[renIdx].maxAuxBuffers);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPMaxSampleBuffers,    &m_lPixFormats[renIdx].maxSampleBuffers);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPMaxSamples,          &m_lPixFormats[renIdx].maxSamples);
 
 //                    // The next two queries will err on 10.2,
-//                    CGLDescribeRenderer(rend, i, kCGLRPSampleModes,         &m_lPixFormats[renIdx].sampleModes);
-//                    CGLDescribeRenderer(rend, i, kCGLRPSampleAlpha,         &m_lPixFormats[renIdx].sampleAlpha);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPSampleModes,         &m_lPixFormats[renIdx].sampleModes);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPSampleAlpha,         &m_lPixFormats[renIdx].sampleAlpha);
 
 //                    // The next two queries added in 10.4.3,
-//                    CGLDescribeRenderer(rend, i, kCGLRPGPUVertProcCapable,  &m_lPixFormats[renIdx].GPUVertCapable);
-//                    CGLDescribeRenderer(rend, i, kCGLRPGPUFragProcCapable,  &m_lPixFormats[renIdx].GPUFragCapable);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPGPUVertProcCapable,  &m_lPixFormats[renIdx].GPUVertCapable);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPGPUFragProcCapable,  &m_lPixFormats[renIdx].GPUFragCapable);
 
 //                    // The next two queries added in 10.6
-//                    CGLDescribeRenderer(rend, i, kCGLRPOnline,              &m_lPixFormats[renIdx].Online);
-//                    CGLDescribeRenderer(rend, i, kCGLRPAcceleratedCompute,  &m_lPixFormats[renIdx].AcceleratedCompute);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPOnline,              &m_lPixFormats[renIdx].Online);
+//                    CGLDescribeRenderer(rendInfo, i, kCGLRPAcceleratedCompute,  &m_lPixFormats[renIdx].AcceleratedCompute);
+                    }
 
                     // The next two queries added in 10.7
                     if (version.majorVersion > 10 ||
-                        (version.majorVersion == 10 && version.minorVersion >= 7))//(GetOSVersion() >= 0x1070) // MAC_OS_X_VERSION_10_7 ?
+                        (version.majorVersion == 10 && version.minorVersion >= 7)) // // "Lion" (GetOSVersion() >= 0x1070) // MAC_OS_X_VERSION_10_7 ?
                     {
-                        CGLDescribeRenderer(rend, i, kCGLRPVideoMemoryMegabytes,    &m_lPixFormats[renIdx].videoMemoryMB);
-                        CGLDescribeRenderer(rend, i, kCGLRPTextureMemoryMegabytes,  &m_lPixFormats[renIdx].textureMemoryMB);
+                        CGLDescribeRenderer(rendInfo, i, kCGLRPVideoMemoryMegabytes,    &m_lPixFormats[renIdx].videoMemoryMB);
+                        CGLDescribeRenderer(rendInfo, i, kCGLRPTextureMemoryMegabytes,  &m_lPixFormats[renIdx].textureMemoryMB);
 
                         if (videoMemory < m_lPixFormats[renIdx].videoMemoryMB)
-                            videoMemory = m_lPixFormats[renIdx].videoMemoryMB;
+                            videoMemory = m_lPixFormats[renIdx].videoMemoryMB; // update return value
 
 #ifndef NDEBUG
 #ifdef WITH_OPENGL_32
-                        NSLog(@"Renderer <%s>, ID: 0x%x\n\t videoMemory: %d (=%d MB)\n\t videoMemoryMB: %d\n\t textureMemoryMB: %d",
+                        NSLog(@"Renderer <%s>, ID: 0x%x\n\t videoMemoryMB: %d\n\t textureMemoryMB: %d\n\t core: %d",
                               glGetString(GL_RENDERER),
                               m_lPixFormats[renIdx].rendererID,
-                              m_lPixFormats[renIdx].videoMemory,
-                              m_lPixFormats[renIdx].videoMemory/(1024*1024),
                               m_lPixFormats[renIdx].videoMemoryMB,
-                              m_lPixFormats[renIdx].textureMemoryMB);
+                              m_lPixFormats[renIdx].textureMemoryMB,
+                              m_lPixFormats[renIdx].isCore);
+                        //NSLog(@"videoMemory: %d (=%d MB)", m_lPixFormats[renIdx].videoMemory, m_lPixFormats[renIdx].videoMemory/(1024*1024)); // deprecated
 #endif
 #endif
                     }
 
-                    renIdx++;
+                    //renIdx++;
                 } // CGLDescribeRenderer
             } // for
 
-            CGLDestroyRendererInfo(rend);
+            CGLDestroyRendererInfo(rendInfo);
         }
     }
 
