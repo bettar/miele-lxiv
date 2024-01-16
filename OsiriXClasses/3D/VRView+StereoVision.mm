@@ -1241,16 +1241,16 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"]))
 				{
 					if( ww < 50)
-                        sprintf(WLWWString, "From: %0.4f   To: %0.4f ", wl-ww/2, wl+ww/2);
+                        snprintf(WLWWString, sizeof(WLWWString), "From: %0.4f   To: %0.4f ", wl-ww/2, wl+ww/2);
 					else
-                        sprintf(WLWWString, "From: %0.f   To: %0.f ", wl-ww/2, wl+ww/2);
+                        snprintf(WLWWString, sizeof(WLWWString), "From: %0.f   To: %0.f ", wl-ww/2, wl+ww/2);
 				}
 				else
 				{
 					if( ww < 50)
-                        sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
+                        snprintf(WLWWString, sizeof(WLWWString), "WL: %0.4f WW: %0.4f ", wl, ww);
 					else
-                        sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
+                        snprintf(WLWWString, sizeof(WLWWString), "WL: %0.f WW: %0.f ", wl, ww);
 				}
 				
 //				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)

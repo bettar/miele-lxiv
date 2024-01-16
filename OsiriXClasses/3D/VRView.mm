@@ -1789,12 +1789,12 @@ public:
 	
 	switch (mode)
 	{
-		case 0:
+		case 0: // Perspective
 			aCamera->SetParallelProjection( false);
 			aCamera->SetViewAngle( 30);
             break;
 		
-		case 2:  // Endoscopy mode
+		case 2: // Endoscopy
 			aCamera->SetParallelProjection( false);
 			aCamera->SetViewAngle( 60);
             break;
@@ -4529,7 +4529,7 @@ public:
 					[point3DInfoPanel orderFront:self];
 					
 					float pos[3];
-					[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:pos];
+					[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:pos size:3];
 					
 					int pix[3];
 					pix[0] = (int)[[[[[controller roi2DPointsArray] objectAtIndex:[self selected3DPointIndex]] points] objectAtIndex:0] x];
@@ -9186,7 +9186,7 @@ public:
 	{
 		// remove 2D Point
 		float position[3];
-		[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:position];
+		[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:position size:3];
 		
 		[controller remove2DPoint: position[0] : position[1] : position[2]];
 		// remove 3D Point
@@ -9277,7 +9277,7 @@ public:
 	vtkSphereSource *sphereSource = vtkSphereSource::New();
 	sphereSource->SetRadius(radius*superSampling);
 	float center[3];
-	[[point3DPositionsArray objectAtIndex:index] getValue:center];
+	[[point3DPositionsArray objectAtIndex:index] getValue:center size:3];
 	sphereSource->SetCenter(center[0],center[1],center[2]);
 	//Mapper
 	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
@@ -9698,7 +9698,7 @@ public:
 
 #pragma mark - Advanced CLUT / Opacity
 
-- (void)setAdvancedCLUT:(NSMutableDictionary*)clut lowResolution:(BOOL)lowRes;
+- (void)setAdvancedCLUT:(NSMutableDictionary*)clut lowResolution:(BOOL)lowRes
 {
     if ([controller windowWillClose])
         return;
@@ -9758,31 +9758,31 @@ public:
 	}
 }
 
-- (void)setAdvancedCLUTWithName:(NSString*)name;
+- (void)setAdvancedCLUTWithName:(NSString*)name
 {
 }
 
-- (BOOL)advancedCLUT;
+- (BOOL)advancedCLUT
 {
 	return advancedCLUT;
 }
 
--(VRController*)controller;
+-(VRController*)controller
 {
 	return controller;
 }
 
-- (void)setController:(VRController *)aController;
+- (void)setController:(VRController *)aController
 {
 	controller = aController;
 }
 
-- (BOOL)isRGB;
+- (BOOL)isRGB
 {
 	return isRGB;
 }
 
-- (vtkVolumeMapper*) mapper;
+- (vtkVolumeMapper*) mapper
 {
 	if (volumeMapper == nil)
     {
@@ -9794,7 +9794,7 @@ public:
     return volumeMapper;
 }
 
-- (void)setMapper:(vtkVolumeMapper*) mapper;
+- (void)setMapper:(vtkVolumeMapper*) mapper
 {
     if (mapper && mapper != volumeMapper)
     {
@@ -9806,12 +9806,12 @@ public:
     }
 }
 
-- (vtkVolume*)volume;
+- (vtkVolume*)volume
 {
 	return volume;
 }
 
-- (void)setVolume:(vtkVolume*)aVolume;
+- (void)setVolume:(vtkVolume*)aVolume
 {
 	if (volume)
         volume->Delete();
@@ -9819,12 +9819,12 @@ public:
 	volume = aVolume;
 }
 
-- (char*)data8;
+- (char*)data8
 {
 	return data8;
 }
 
-- (void)setData8:(char*)someData;
+- (void)setData8:(char*)someData
 {
 	if (data8)
         free(data8);

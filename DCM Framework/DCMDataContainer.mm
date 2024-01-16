@@ -341,8 +341,7 @@ void signal_EXC(int sig_num)
 {
 	NSException *exception = [self testForLength:2];
 	if (!exception) {
-		unsigned short *x;
-		x = (unsigned short *)(_ptr + position);
+		unsigned short *x = (unsigned short *)(_ptr + position);
 		position += 2;
 		return ([self isLittleEndian]) ? NSSwapLittleShortToHost(*x) : NSSwapBigShortToHost(*x);
 	}
@@ -356,8 +355,7 @@ void signal_EXC(int sig_num)
 {
 	NSException *exception = [self testForLength:2];
 	if (!exception) {
-		signed short *x;
-		x = (signed short *)(_ptr + position);
+		signed short *x = (signed short *)(_ptr + position);
 		position += 2;
 		return (signed short)(([self isLittleEndian]) ? NSSwapLittleShortToHost(*x) : NSSwapBigShortToHost(*x));
 	}
@@ -371,11 +369,22 @@ void signal_EXC(int sig_num)
 {
 	NSException *exception = [self testForLength:4];
 	if (!exception) {
-		int size = 4;
-		unsigned int *x;
-		x = (unsigned int *)(_ptr + position);
+		int size = 4; // sizeof(unsigned int)
+#if 1
+        // Take care of possible analyze warning: "Load of misaligned address ... for type 'unsigned int', which requires 4 byte alignment"
+        unsigned int xx; // This is guaranteed to be correctly aligned
+        memcpy(&xx, _ptr + position, 4);
+        position += size;
+        
+        if ([self isLittleEndian])
+            return NSSwapLittleIntToHost(xx);
+        
+        return NSSwapBigIntToHost(xx);
+#else
+		unsigned int *x = (unsigned int *)(_ptr + position);
 		position += size;
 		return (unsigned int)([self isLittleEndian]) ? NSSwapLittleIntToHost(*x) : NSSwapBigIntToHost(*x);
+#endif
 	}
 	else
 		[exception raise];
@@ -388,8 +397,7 @@ void signal_EXC(int sig_num)
 	NSException *exception = [self testForLength:4];
 	if (!exception) {
 		int size = 4;
-		signed int *x;
-		x = (signed int *)(_ptr + position);
+		signed int *x = (signed int *)(_ptr + position);
 		position += size;
 		return (signed int)([self isLittleEndian]) ? NSSwapLittleIntToHost(*x) : NSSwapBigIntToHost(*x);
 	}
@@ -404,8 +412,7 @@ void signal_EXC(int sig_num)
 	NSException *exception = [self testForLength:8];
 	if (!exception) {
 		int size = 8;
-		unsigned long long *x;
-		x = (unsigned long long *)(_ptr + position);
+		unsigned long long *x = (unsigned long long *)(_ptr + position);
 		position += size;
 		return (unsigned  long long)([self isLittleEndian]) ? NSSwapLittleLongLongToHost(*x) : NSSwapBigLongLongToHost(*x);
 	}

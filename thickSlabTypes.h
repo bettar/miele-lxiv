@@ -12,7 +12,7 @@
 #import <AppKit/AppKit.h>
 
 // Originally in CPRProjectionOperation.h
-// Note: These values must match taags in MPR.xib and CPR.xib
+// Note: These values must match tags in MPR.xib and CPR.xib
 typedef NS_ENUM(NSInteger, MPRProjectionMode) {
     MPR_PROJECTION_MODE_VR = 0,   // don't use this in CPR, it's implemented only in MPR
     MPR_PROJECTION_MODE_MIP = 1,

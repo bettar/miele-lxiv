@@ -3328,7 +3328,7 @@ void info_callback(const char *msg, void *a) {
 				The 0 frame starts on 0
 				the 1 frame starts of offset - 8  ( Two Item tag and lengths)
 				The 2 frame starts at offset - 16   ( three Item tag and lengths)
-				So will use 0 for first frame, and then  subtract (n-1) * 8
+				So will use 0 for first frame, and then subtract (n-1) * 8
 			*/
 			unsigned long offset;
 			if ([_values count] > 1 &&
@@ -3339,7 +3339,7 @@ void info_callback(const char *msg, void *a) {
 				NSUInteger numberOfOffsets = [offsetData length]/4;
 				for (int i = 0; i < numberOfOffsets; i++)
 				{
-					if ( transferSyntax.isLittleEndian ) 
+					if ( transferSyntax.isLittleEndian )
 						offset = NSSwapLittleLongToHost(offsets[i]);
 					else
 						offset = offsets[i];
@@ -3470,7 +3470,7 @@ void info_callback(const char *msg, void *a) {
 				The 0 frame starts on 0
 				the 1 frame starts of offset - 8  ( Two Item tag and lengths)
 				The 2 frame starts at offset - 16   ( three Item tag and lengths)
-				So will use 0 for first frame, and then  subtract (n-1) * 8
+				So will use 0 for first frame, and then subtract (n-1) * 8
 			*/
 			unsigned long offset;
 				

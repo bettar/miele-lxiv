@@ -89,7 +89,7 @@
 #define PREVIEWSIZE 68
 #endif
 
-#define MALLOC_SAFETY_MARGIN    64 // not needed really
+#define MALLOC_SAFETY_MARGIN    100 // not needed really
 
 /* From PapyTypeDef3.h
    Definition of the photometric interpretation

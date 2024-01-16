@@ -2592,17 +2592,17 @@ typedef struct _xyzArray
 	
 	switch (projectionMode)
 	{
-		case 0:
+		case 0: // perspective
 			//aCamera->SetParallelProjection( false);
 			aCamera->SetViewAngle( 30);
 		break;
 		
-		case 2:
+		case 2: // endoscopy
 			//aCamera->SetParallelProjection( false);
 			aCamera->SetViewAngle( 60);
 		break;
 		
-		case 1:
+		case 1: // parallel
 			aCamera->SetParallelProjection( true);
 			aCamera->SetViewAngle( 30);
 		break;
@@ -3134,7 +3134,7 @@ typedef struct _xyzArray
 		// remove 2D Point
 		double position[3];
 		NSLog(@"[point3DPositionsArray count]: %d", (int) [point3DPositionsArray count]);
-		[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:position];
+		[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:position size:3];
 		[controller remove2DPoint: position[0] : position[1] : position[2]];
 		// remove 3D Point
 		// the 3D Point is removed through notification (sent in [controller remove2DPoint..)
@@ -3223,7 +3223,7 @@ typedef struct _xyzArray
 	vtkSphereSource *sphereSource = vtkSphereSource::New();
 	sphereSource->SetRadius(radius);
 	double center[3];
-	[[point3DPositionsArray objectAtIndex:index] getValue:center];
+	[[point3DPositionsArray objectAtIndex:index] getValue:center size:3];
 	sphereSource->SetCenter(center[0],center[1],center[2]);
 	//Mapper
 	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
@@ -3333,7 +3333,7 @@ typedef struct _xyzArray
 	
 	float radius = [[point3DRadiusArray objectAtIndex:index] floatValue];
 	double position[3];
-	[[point3DPositionsArray objectAtIndex:index] getValue:position];
+	[[point3DPositionsArray objectAtIndex:index] getValue:position size:3];
 	
     // text
 	vtkFollower *text = vtkFollower::New();

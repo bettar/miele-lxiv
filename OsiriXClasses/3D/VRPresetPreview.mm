@@ -482,9 +482,9 @@
 //		
 	textWLWW = vtkTextActor::New();
 	if (ww < 50)
-        sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
+        snprintf(WLWWString, sizeof(WLWWString), "WL: %0.4f WW: %0.4f", wl, ww);
 	else
-        sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
+        snprintf(WLWWString, sizeof(WLWWString), "WL: %0.f WW: %0.f", wl, ww);
     
 	textWLWW->SetInput( WLWWString);
 	textWLWW->SetTextScaleModeToNone();												//vtkviewPort

@@ -909,7 +909,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject:@"1" forKey: @"AUTOTILING"];
 	[defaultValuesDic setObject:@YES forKey: @"USEALWAYSTOOLBARPANEL2"];
 	[defaultValuesDic setObject:@"1" forKey: @"SquareWindowForPrinting"];
-	[defaultValuesDic setObject:@"Softw Tissue CT" forKey: @"LAST_3D_PRESET"];
+	[defaultValuesDic setObject:@"Soft Tissue CT" forKey: @"LAST_3D_PRESET"];
 	[defaultValuesDic setObject:@"0" forKey:@"HIDEPATIENTNAME"];
 	[defaultValuesDic setObject:@"1" forKey:@"onlyDICOM"];
 	[defaultValuesDic setObject:@"0" forKey:@"CheckForMultipleVolumesInSeries"];

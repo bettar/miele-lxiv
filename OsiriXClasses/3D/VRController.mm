@@ -156,7 +156,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
     [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
 	[[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
-    for (NSUInteger i = 0; i < [sortedKeys count]; i++)
+    for (NSUInteger i = 0; i < [sortedKeys count]; ++i)
     {
         [[OpacityPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
     }
@@ -193,7 +193,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[[wlwwPopup menu] addItemWithTitle:NSLocalizedString(@"Full dynamic", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
 	[[wlwwPopup menu] addItem: [NSMenuItem separatorItem]];
     
-    for (NSUInteger i = 0; i < [sortedKeys count]; i++)
+    for (NSUInteger i = 0; i < [sortedKeys count]; ++i)
     {
         [[wlwwPopup menu] addItemWithTitle:[NSString stringWithFormat:@"%d - %@", (int) i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
     }
@@ -253,7 +253,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
 	[[convolutionMenu menu] addItemWithTitle: NSLocalizedString( @"Apply a filter", nil) action:nil keyEquivalent:@""];
 	
-    for (NSUInteger i = 0; i < [sortedKeys count]; i++)
+    for (NSUInteger i = 0; i < [sortedKeys count]; ++i)
     {
         [[convolutionMenu menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (applyConvolution:) keyEquivalent:@""];
     }
@@ -276,7 +276,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	if ([[note userInfo] objectForKey: @"sender"] == view)
 		return;
 	
-	for (long i = 0; i < maxMovieIndex; i++)
+	for (long i = 0; i < maxMovieIndex; ++i)
 	{
 		if ([note object] == pixList[ i])
 		{
@@ -429,7 +429,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	blendingMinimumValue = [[blendingPixList objectAtIndex: 0] minValueOfSeries];
 	blendingMaximumValue = [[blendingPixList objectAtIndex: 0] maxValueOfSeries];
 	
-	for (int i = 0; i < maxMovieIndex; i++)
+	for (int i = 0; i < maxMovieIndex; ++i)
 	{
         float max = [[pixList[ i] objectAtIndex: 0] maxValueOfSeries];
 		if (maximumValue < max)
@@ -568,7 +568,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         style = [m retain];
         _renderingMode = [renderingMode retain];
         
-        for (unsigned long i = 0; i < UNDO_DATA_SIZE; i++)
+        for (unsigned long i = 0; i < UNDO_DATA_SIZE; ++i)
             undodata[ i] = nil;
         
         curMovieIndex = 0;
@@ -609,7 +609,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
         BOOL invalidSize = false;
         // CHECK IMAGE SIZE
-        for (unsigned long i =0; i < [pixList[0] count]; i++)
+        for (unsigned long i =0; i < [pixList[0] count]; ++i)
         {
             if ([firstObject pwidth] != [[pixList[0] objectAtIndex:i] pwidth])
                 invalidSize = true;
@@ -632,7 +632,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 //	if (testInterval)
 //	{
 //		float prevLoc = [firstObject sliceLocation];
-//		for (i = 1 ; i < [pixList count]; i++)
+//		for (i = 1 ; i < [pixList count]; ++i)
 //		{
 //			if (fabs( sliceThickness - fabs( [[pixList objectAtIndex:i] sliceLocation] - prevLoc)) > 0.1) err = -1;
 //			prevLoc = [[pixList objectAtIndex:i] sliceLocation];
@@ -720,7 +720,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
             NSMutableArray *curRoiList;
             ROI	*curROI;
             
-            for (long i=0; i<[[[viewer2D imageView] dcmPixList] count]; i++)
+            for (long i=0; i<[[[viewer2D imageView] dcmPixList] count]; ++i)
             {
                 curRoiList = [[viewer2D roiList] objectAtIndex: i];
                 for (long j=0; j<[curRoiList count];j++)
@@ -1056,8 +1056,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         
         if (!has16bitCLUT)
         {
-            if ([dict objectForKey:@"OpacityName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
-            else if ([view mode] == 0 && [[pixList[ 0] objectAtIndex:0] isRGB] == NO) [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];		//For VR mode only
+            if ([dict objectForKey:@"OpacityName"])
+                [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
+            else if ([view mode] == 0 && [[pixList[ 0] objectAtIndex:0] isRGB] == NO)
+                [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];		//For VR mode only
         }
         
         if ([view shading])
@@ -1132,7 +1134,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void) prepareUndo
 {
-	for (long i = 0; i < maxMovieIndex; i++)
+	for (long i = 0; i < maxMovieIndex; ++i)
 	{
         if (i >= UNDO_DATA_SIZE)
             break;
@@ -1174,7 +1176,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (IBAction) undo:(id) sender
 {
-	for (long i = 0; i < maxMovieIndex; i++)
+	for (long i = 0; i < maxMovieIndex; ++i)
 	{
         if (i >= UNDO_DATA_SIZE)
             break;
@@ -1228,7 +1230,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[style release];
 	
 	// Release Undo system
-	for (int i = 0; i < maxMovieIndex; i++)
+	for (int i = 0; i < maxMovieIndex; ++i)
 	{
         if (i >= UNDO_DATA_SIZE)
             break;
@@ -1242,7 +1244,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc removeObserver: self];
     
-	for (int i = 0; i < maxMovieIndex; i++)
+	for (int i = 0; i < maxMovieIndex; ++i)
 	{
 		[pixList[ i] release];
 		[volumeData[ i] release];
@@ -1524,7 +1526,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[view getShadingValues: &ambient :&diffuse :&specular :&specularpower];
 	
 	NSArray	*shadings = [shadingsPresetsController arrangedObjects];
-	for (int i = 0; i < [shadings count]; i++)
+	for (int i = 0; i < [shadings count]; ++i)
 	{
 		NSDictionary *dict = [shadings objectAtIndex: i];
 		if (ambient == [[dict valueForKey:@"ambient"] floatValue] &&
@@ -1618,19 +1620,19 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		if (aCLUT)
 		{
 			array = [aCLUT objectForKey:@"Red"];
-			for (long i = 0; i < 256; i++)
+			for (long i = 0; i < 256; ++i)
 			{
 				red[i] = [[array objectAtIndex: i] longValue];
 			}
 			
 			array = [aCLUT objectForKey:@"Green"];
-			for (long i = 0; i < 256; i++)
+			for (long i = 0; i < 256; ++i)
 			{
 				green[i] = [[array objectAtIndex: i] longValue];
 			}
 			
 			array = [aCLUT objectForKey:@"Blue"];
-			for (long i = 0; i < 256; i++)
+			for (long i = 0; i < 256; ++i)
 			{
 				blue[i] = [[array objectAtIndex: i] longValue];
 			}
@@ -1755,19 +1757,19 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	if (aCLUT)
 	{
 		array = [aCLUT objectForKey:@"Red"];
-		for (i = 0; i < 256; i++)
+		for (i = 0; i < 256; ++i)
 		{
 			red[i] = [[array objectAtIndex: i] longValue];
 		}
 		
 		array = [aCLUT objectForKey:@"Green"];
-		for (i = 0; i < 256; i++)
+		for (i = 0; i < 256; ++i)
 		{
 			green[i] = [[array objectAtIndex: i] longValue];
 		}
 		
 		array = [aCLUT objectForKey:@"Blue"];
-		for (i = 0; i < 256; i++)
+		for (i = 0; i < 256; ++i)
 		{
 			blue[i] = [[array objectAtIndex: i] longValue];
 		}
@@ -2736,7 +2738,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	{	
 		[roiVolumes[m] removeAllObjects];
 		
-		for (NSUInteger i=0; i<[roiNames count]; i++)
+		for (NSUInteger i=0; i<[roiNames count]; ++i)
 		{
 			NSArray *roisWithCurrentName = [viewer2D roisWithName:[roiNames objectAtIndex:i] forMovieIndex:m];
 			ROIVolume *volume = [[[ROIVolume alloc] initWithViewer: viewer2D] autorelease];
@@ -2784,13 +2786,13 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 {
 	for (int m=0; m<maxMovieIndex; m++)
 	{	
-		for (NSUInteger i=0; i<[roiVolumes[m] count]; i++)
+		for (NSUInteger i=0; i<[roiVolumes[m] count]; ++i)
 		{			
 			[self hideROIVolume:[roiVolumes[m] objectAtIndex:i]];
 		}
 	}
 
-	for (NSUInteger i=0; i<[roiVolumes[curMovieIndex] count]; i++)
+	for (NSUInteger i=0; i<[roiVolumes[curMovieIndex] count]; ++i)
 	{
 		if ([[roiVolumes[curMovieIndex] objectAtIndex:i] visible])
 		{
@@ -2808,7 +2810,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	BOOL	found = NO;
 	NSArray *winList = [NSApp windows];
 	
-	for (NSUInteger i = 0; i < [winList count]; i++)
+	for (NSUInteger i = 0; i < [winList count]; ++i)
 	{
 		if ([[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROIVolumeManager"])
 		{
@@ -2834,7 +2836,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	{
 		BOOL found = NO;
 		int index;
-		for (NSUInteger i=0; i<[roiVolumes[m] count] && !found; i++)
+		for (NSUInteger i=0; i<[roiVolumes[m] count] && !found; ++i)
 		{
 			found = (changedROIVolume == [roiVolumes[m] objectAtIndex:i]);
 			index = i;
@@ -2992,7 +2994,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		if ([[NSFileManager defaultManager] fileExistsAtPath:[paths objectAtIndex:j] isDirectory:&isDir] && isDir)
 		{
 			NSArray *content = [[NSFileManager defaultManager] directoryContentsAtPath:[paths objectAtIndex:j]];
-			for (NSUInteger i=0; i<[content count]; i++)
+			for (NSUInteger i=0; i<[content count]; ++i)
 			{
 				if ([[content objectAtIndex:i] length] > 0)
 				{
@@ -3026,7 +3028,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
                                        keyEquivalent:@""
                                              atIndex:[[clutPopup menu] numberOfItems]-2];
 
-		for (NSUInteger i=0; i<[clutArray count]; i++)
+		for (NSUInteger i=0; i<[clutArray count]; ++i)
 		{
 			item = [[clutPopup menu] insertItemWithTitle:[clutArray objectAtIndex:i]
                                                   action:@selector(loadAdvancedCLUTOpacity:)
@@ -3182,7 +3184,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		
 		if ([filters count]>0)
 		{
-			for (NSUInteger i=0; i<(long)[filters count]-1; i++)
+			for (NSUInteger i=0; i<(long)[filters count]-1; ++i)
 			{
 				[convolutionFiltersString appendString:[filters objectAtIndex:i]];
 				[convolutionFiltersString appendString:@", "];
@@ -3216,7 +3218,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[settingsGroupPopUpButton removeAllItems];
 		
 		NSArray *groups = [self find3DSettingsGroups];
-		for (NSUInteger i=0; i<[groups count]; i++)
+		for (NSUInteger i=0; i<[groups count]; ++i)
 			[settingsGroupPopUpButton addItemWithTitle:[groups objectAtIndex:i]];
 
         if ([groups count]>0)
@@ -3312,11 +3314,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (NSArray*)find3DSettingsGroups;
 {
-	// path 1 : /OsirirX Data/CLUTs/
+	// path 1 : /Miele-LXIV Data/3DPRESETS/
 	NSMutableString *path1 = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
 	[path1 appendString:PRESETS_DIRECTORY];
 
-    // path 2 : /resources_bundle_path/CLUTs/
+    // path 2 : /resources_bundle_path/3DPRESETS/
 	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
 	[bundlePath appendString:PRESETS_DIRECTORY];
 
@@ -3333,7 +3335,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		{
 			NSArray *settingsFiles = [[NSFileManager defaultManager] subpathsAtPath:path];
 			
-			for (NSUInteger i=0; i<[settingsFiles count]; i++)
+			for (NSUInteger i=0; i<[settingsFiles count]; ++i)
 			{
 				NSString *filePath = [NSString stringWithFormat:@"%@%@", path, [settingsFiles objectAtIndex:i]];
 				if ([[filePath pathExtension] isEqualToString:@"plist"])
@@ -3364,11 +3366,11 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 
 - (NSArray*)find3DSettingsForGroupName:(NSString*)groupName;
 {
-	// path 1 : /OsirirX Data/CLUTs/
+	// path 1 : /Miele-LXIV Data/3DPRESETS/
 	NSMutableString *path1 = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
 	[path1 appendString:PRESETS_DIRECTORY];
 
-    // path 2 : /resources_bundle_path/CLUTs/
+    // path 2 : /resources_bundle_path/3DPRESETS/
 	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
 	[bundlePath appendString:PRESETS_DIRECTORY];
 
@@ -3383,7 +3385,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		if ([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 		{
 			NSArray *settingsFiles = [[NSFileManager defaultManager] subpathsAtPath:path];
-			for (int i=0; i<[settingsFiles count]; i++)
+			for (int i=0; i<[settingsFiles count]; ++i)
 			{
 				NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", path, [settingsFiles objectAtIndex:i]]];
                 
@@ -3419,7 +3421,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	[presetsGroupPopUpButton removeAllItems];
 	NSArray *groups = [self find3DSettingsGroups];
 	
-	for (NSUInteger i=0; i<[groups count]; i++)
+	for (NSUInteger i=0; i<[groups count]; ++i)
 		[presetsGroupPopUpButton addItemWithTitle:[groups objectAtIndex:i]];
 
 	if ([presetsGroupPopUpButton numberOfItems] < 1)
@@ -3532,7 +3534,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 			{
 				NSString *shadingName = [preset objectForKey:@"shading"];
 				NSArray	*shadings = [shadingsPresetsController arrangedObjects];
-				for (int i = 0; i < [shadings count]; i++)
+				for (int i = 0; i < [shadings count]; ++i)
 				{
 					NSDictionary *dict = [shadings objectAtIndex:i];
 					if ([[dict valueForKey:@"name"] isEqualToString:shadingName])
@@ -3573,7 +3575,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 				NSArray *convolutionFilters = [preset objectForKey:@"convolutionFilters"];
 				if ([convolutionFilters count]>0)
 				{
-					for (int i=0; i<[convolutionFilters count]; i++)
+					for (int i=0; i<[convolutionFilters count]; ++i)
 					{
 	//					[self prepareUndo];
 						[viewer2D ApplyConvString:[convolutionFilters objectAtIndex:i]];
@@ -3651,7 +3653,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
         [(VRPresetPreview*)[presetPreviewArray objectAtIndex:0] setSelected];
 }
 
-- (void)load3DSettingsDictionary:(NSDictionary*)preset forPreview:(VRPresetPreview*)preview;
+- (void)load3DSettingsDictionary:(NSDictionary*)preset forPreview:(VRPresetPreview*)preview
 {
 	// CLUT
 	NSString *aClutName = [preset objectForKey:@"CLUT"];
@@ -3664,15 +3666,15 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		if (aCLUT)
 		{
 			array = [aCLUT objectForKey:@"Red"];
-			for (NSUInteger i = 0; i < 256; i++)
+			for (NSUInteger i = 0; i < 256; ++i)
 				red[i] = [[array objectAtIndex: i] longValue];
 			
 			array = [aCLUT objectForKey:@"Green"];
-			for (NSUInteger i = 0; i < 256; i++)
+			for (NSUInteger i = 0; i < 256; ++i)
 				green[i] = [[array objectAtIndex: i] longValue];
 			
 			array = [aCLUT objectForKey:@"Blue"];
-			for (NSUInteger i = 0; i < 256; i++)
+			for (NSUInteger i = 0; i < 256; ++i)
 				blue[i] = [[array objectAtIndex: i] longValue];
 			
 			[preview setCLUT:red :green: blue];
@@ -3770,7 +3772,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		NSString *shadingName = [preset objectForKey:@"shading"];
 		NSArray *shadings = [[NSUserDefaults standardUserDefaults] arrayForKey:@"shadingsPresets"];
 		NSDictionary *selectedShading = nil;
-		for (NSUInteger i=0; i<[shadings count]; i++)
+		for (NSUInteger i=0; i<[shadings count]; ++i)
 		{
 			if ([[[shadings objectAtIndex:i] objectForKey:@"name"] isEqualToString:shadingName])
 			{
@@ -3822,7 +3824,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 //		NSArray *convolutionFilters = [preset objectForKey:@"convolutionFilters"];
 //		if ([convolutionFilters count]>0)
 //		{			
-//			for (i=0; i<[convolutionFilters count]; i++)
+//			for (i=0; i<[convolutionFilters count]; ++i)
 //			{
 //				[self prepareUndo];
 //				[viewer2D ApplyConvString:[convolutionFilters objectAtIndex:i]];
@@ -3833,13 +3835,13 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 //	}
 }
 
-- (void)setSelectedPresetPreview:(VRPresetPreview*)aPresetPreview;
+- (void)setSelectedPresetPreview:(VRPresetPreview*)aPresetPreview
 {
 	selectedPresetPreview = aPresetPreview;
 	[self updatePresetInfoPanel];
 }
 
-- (void)selectGroupWithName:(NSString*)name;
+- (void)selectGroupWithName:(NSString*)name
 {
 	presetPageNumber = 0;
 	
@@ -3851,21 +3853,21 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	[self displayPresetsForSelectedGroup:presetsGroupPopUpButton];
 }
 
-- (IBAction)nextPresetPage:(id)sender;
+- (IBAction)nextPresetPage:(id)sender
 {
 	presetPageNumber++;
 	presetPageNumber %= (presetPageMax+1);
 	[self displayPresetsForSelectedGroup];
 }
 
-- (IBAction)previousPresetPage:(id)sender;
+- (IBAction)previousPresetPage:(id)sender
 {
 	presetPageNumber--;
 	if (presetPageNumber<0) presetPageNumber += presetPageMax+1;
 	[self displayPresetsForSelectedGroup];
 }
 
-- (void)enablePresetPageButtons;
+- (void)enablePresetPageButtons
 {
 	if (presetPageMax==0)
 	{
@@ -3879,7 +3881,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	}
 }
 
-- (void)showPresetsPanel;
+- (void)showPresetsPanel
 {
 #ifndef NDEBUG
     NSLog(@"%s %d, view class: %@", __FUNCTION__, __LINE__, NSStringFromClass([view class]));
@@ -3905,7 +3907,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	[presetsPanel orderFront:self];
 }
 
-- (void)centerPresetsPanel;
+- (void)centerPresetsPanel
 {
 	NSRect viewer3DFrame = [[[self window] screen] frame];
 	
@@ -3965,7 +3967,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	
 	if ([filters count]>0)
 	{
-		for (NSUInteger i=0; i<(long)[filters count]-1; i++)
+		for (NSUInteger i=0; i<(long)[filters count]-1; ++i)
 		{
 			[convolutionFiltersString appendString:[filters objectAtIndex:i]];
 			[convolutionFiltersString appendString:@", "];
