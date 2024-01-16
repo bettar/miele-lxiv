@@ -2593,12 +2593,12 @@ typedef struct _xyzArray
 	switch (projectionMode)
 	{
 		case 0: // perspective
-			//aCamera->SetParallelProjection( false);
+			aCamera->SetParallelProjection( false);
 			aCamera->SetViewAngle( 30);
 		break;
 		
 		case 2: // endoscopy
-			//aCamera->SetParallelProjection( false);
+			aCamera->SetParallelProjection( false);
 			aCamera->SetViewAngle( 60);
 		break;
 		
