@@ -256,18 +256,11 @@
 		
 		image = [im retain];
 		
-#if 0 // deprecated
-		_dataEncapsulated = [[NSPropertyListSerialization dataFromPropertyList: dict
-                                                                        format: NSPropertyListXMLFormat_v1_0
-                                                              errorDescription: nil]
-                             retain];
-#else
         _dataEncapsulated = [[NSPropertyListSerialization dataWithPropertyList: dict
                                                                         format: NSPropertyListXMLFormat_v1_0
                                                                        options: 0 // TBC NSPropertyListWriteOptions
                                                                          error: nil]
                              retain];
-#endif
 	}
 	
 	return self;
@@ -484,18 +477,10 @@
 	@try
 	{
         dict =
-        
-#if 0 // deprecated
-        [NSPropertyListSerialization propertyListFromData: _dataEncapsulated
-                                         mutabilityOption: NSPropertyListImmutable
-                                                   format: nil
-                                         errorDescription: nil];
-#else
         [NSPropertyListSerialization propertyListWithData: _dataEncapsulated
                                                   options: NSPropertyListImmutable
                                                    format: NULL
                                                     error: NULL];
-#endif
 	}
 	@catch( NSException *e)
 	{

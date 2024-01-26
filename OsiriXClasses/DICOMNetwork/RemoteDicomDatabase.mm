@@ -910,18 +910,12 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	NSMutableData* request = [NSMutableData dataWithBytes:"NEWMS" length:6];
 
     NSData* data =
-    
-#if 0 // deprecated
-    [NSPropertyListSerialization dataFromPropertyList: message
-                                               format: NSPropertyListBinaryFormat_v1_0
-                                     errorDescription: nil];
-#else
     [NSPropertyListSerialization dataWithPropertyList: message
                                                format: NSPropertyListBinaryFormat_v1_0
                                               options: 0 // TBC NSPropertyListWriteOptions
                                                 error: NULL];
-#endif
-	[RemoteDicomDatabase _data:request appendInt:data.length];
+
+    [RemoteDicomDatabase _data:request appendInt:data.length];
 	[request appendData:data];
 	
 	return [self synchronousRequest:request urgent:YES];

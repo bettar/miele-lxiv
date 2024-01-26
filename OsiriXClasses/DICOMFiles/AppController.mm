@@ -1955,18 +1955,10 @@ static bool isGrantedNotificationAccess = false;
                 SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: [i completePathResolved]] autorelease];
                 
                 NSArray *viewers =
-#if 0 // deprecated
-                [NSPropertyListSerialization propertyListFromData: r.dataEncapsulated
-                                                 mutabilityOption: NSPropertyListImmutable
-                                                           format: nil
-                                                 errorDescription: nil];
-#else
                 [NSPropertyListSerialization propertyListWithData: r.dataEncapsulated
                                                           options: NSPropertyListImmutable
                                                            format: NULL
                                                             error: NULL];
-#endif
-                
                 if (viewers.count)
                 {
                     NSString *name = [[viewers lastObject] objectForKey: @"name"];
@@ -2008,18 +2000,10 @@ static bool isGrantedNotificationAccess = false;
     NSArray *state = [menuItem.representedObject objectForKey: @"windowsState"];
     
     NSData *windowsState =
-    
-#if 0 // deprecated
-    [NSPropertyListSerialization dataFromPropertyList: state
-                                               format: NSPropertyListXMLFormat_v1_0
-                                     errorDescription: nil];
-#else
     [NSPropertyListSerialization dataWithPropertyList: state
                                                format: NSPropertyListXMLFormat_v1_0
                                               options: 0 // TBC NSPropertyListWriteOptions
-                                                error: NULL];
-#endif
-    
+                                                error: NULL];    
     if (study && windowsState)
     {
         // Replace the current windows state of the study, with the content of the DICOM SR

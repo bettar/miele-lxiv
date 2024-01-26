@@ -711,22 +711,12 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     NSString* object = [self _stackReadString];
 
     NSDictionary* d =
-
-#if 0 // deprecated
-    (NSDictionary*)[NSPropertyListSerialization propertyListFromData: [NSData dataWithBytesNoCopy: (void*)object.UTF8String
-                                                                                           length: strlen(object.UTF8String)
-                                                                                     freeWhenDone: NO]
-                                                    mutabilityOption: NSPropertyListImmutable
-                                                              format: NULL
-                                                    errorDescription: NULL];
-#else
     [NSPropertyListSerialization propertyListWithData: [NSData dataWithBytesNoCopy: (void*)object.UTF8String
                                                                             length: strlen(object.UTF8String)
                                                                       freeWhenDone: NO]
                                               options: NSPropertyListImmutable
                                                format: NULL
                                                 error: NULL];
-#endif
     
     if (!d)
         [NSException raise:NSGenericException format:@"can't parse parameters"];
@@ -765,22 +755,12 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     NSString* object = [self _stackReadString];
     
     NSDictionary* d =
-    
-#if 0 // deprecated
-    (NSDictionary*)[NSPropertyListSerialization propertyListFromData: [NSData dataWithBytesNoCopy: (void*)object.UTF8String
-                                                                                           length: strlen(object.UTF8String)
-                                                                                     freeWhenDone: NO]
-                                                    mutabilityOption: NSPropertyListImmutable
-                                                              format: NULL
-                                                    errorDescription: NULL];
-#else
     [NSPropertyListSerialization propertyListWithData: [NSData dataWithBytesNoCopy: (void*)object.UTF8String
                                                                             length: strlen(object.UTF8String)
                                                                       freeWhenDone: NO]
                                               options: NSPropertyListImmutable
                                                format: NULL
                                                 error: NULL];
-#endif
     
     if (!d)
         [NSException raise:NSGenericException format:@"can't parse parameters"];
