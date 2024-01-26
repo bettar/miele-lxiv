@@ -9593,13 +9593,13 @@ public:
         
 		NSString *wwwlMenuString = nil;
 		hotKey = [hotKey lowercaseString];
-		unichar key = [hotKey characterAtIndex:0];
+		//unichar key = [hotKey characterAtIndex:0]; // value stored here is never read
 		
 		if ([[DCMView hotKeyDictionary] objectForKey:hotKey])
 		{
-			key = [[[DCMView hotKeyDictionary] objectForKey:hotKey] intValue];
+            unichar key = [[[DCMView hotKeyDictionary] objectForKey:hotKey] intValue];
 			id windowController = [[self window] windowController];
-			NSLog( @"hot key: %d", key);
+			//NSLog( @"hot key: %d", key);
 			
 			switch (key)
 			{

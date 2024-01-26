@@ -3593,7 +3593,7 @@ void info_callback(const char *msg, void *a) {
                             NSLog(@"%s:%i %s", __FILE__, __LINE__, MALLOC_ERROR_MESSAGE);
                     }
                     @catch (NSException *exception) {
-                        NSLog(@"%s $d, %@", __FUNCTION__, __LINE__, exception);
+                        NSLog(@"%s %d, %@", __FUNCTION__, __LINE__, exception);
                     }
                     @finally {
                         [subPool release];

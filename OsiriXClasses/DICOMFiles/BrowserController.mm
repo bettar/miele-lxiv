@@ -20165,11 +20165,13 @@ redoZIPpassword:
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Search", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Search", nil)];
 		[toolbarItem setView: searchView];
+#if 0 // deprecated
         {
             NSSize size = searchView.frame.size;
             size.width += 100;
             [toolbarItem setMaxSize: size];
         }
+#endif
     }
 	else if ([itemIdent isEqualToString: TimeIntervalToolbarItemIdentifier])
 	{

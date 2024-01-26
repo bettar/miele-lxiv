@@ -129,7 +129,7 @@
                 NSAlert *alert = [NSAlert new];
                 [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"%@ is not running", "AppleScript permission"), targetApp]];
                 [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Please start %@ and retry", "AppleScript permission"), targetApp]];
-                [alert addButtonWithTitle:@"OK"];
+                [alert addButtonWithTitle:NSLocalizedString(@"OK",nil)];
                 [alert setAlertStyle:NSAlertStyleInformational];
                 [alert runModal];
             }

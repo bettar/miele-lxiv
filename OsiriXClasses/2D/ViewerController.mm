@@ -7022,9 +7022,10 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Rate", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Change the frame rate", nil)];
         [toolbarItem setView: speedView];
+#if 0 // deprecated
         [toolbarItem setMinSize: NSMakeSize(100, NSHeight([speedView frame]))];
         [toolbarItem setMaxSize: NSMakeSize(200, NSHeight([speedView frame]))];
-
+#endif
         // By default, in text only mode, a custom items label will be shown as disabled text, but you can provide a
         // custom menu of your own by using <item> setMenuFormRepresentation]
         /*
@@ -7068,9 +7069,11 @@ static ViewerController *draggedController = nil;
         [toolbarItem setToolTip: NSLocalizedString(@"Next/Previous Patient", nil)];
         [toolbarItem setView: patientView];
 
+#if 0 // deprecated
         NSSize size = patientView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
     }
 	else if ([itemIdent isEqualToString: SubtractionToolbarItemIdentifier])
 	{
@@ -7088,10 +7091,12 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Modify WL/WW & CLUT", nil)];
         [toolbarItem setView: WLWWView];
+#if 0 // deprecated
         {
             NSSize size = WLWWView.frame.size;
             [toolbarItem setMaxSize: size];
         }
+#endif
 
         // Pulldown that doesn't change item
 //        [[wlwwPopup cell] setBezelStyle:NSSmallIconButtonBezelStyle];
@@ -7125,12 +7130,14 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Thick Slab", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Change Thick Slab mode and number", nil)];        
         [toolbarItem setView: FusionView];
+#if 0 // deprecated
         {
             NSSize size = FusionView.frame.size;
             [toolbarItem setMinSize: size];
             size.width += 200;
             [toolbarItem setMaxSize: size];
         }
+#endif
 	}
 	else if ([itemIdent isEqualToString: StatusToolbarItemIdentifier])
     {
@@ -7149,9 +7156,11 @@ static ViewerController *draggedController = nil;
         [toolbarItem setToolTip: NSLocalizedString(@"Fusion Mode and Percentage", nil)];
         [toolbarItem setView: BlendingView];
 
+#if 0 // deprecated
         NSSize size = BlendingView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
 	}
 	else if ([itemIdent isEqualToString: RGBFactorToolbarItemIdentifier])
     {
@@ -7182,9 +7191,11 @@ static ViewerController *draggedController = nil;
         [toolbarItem setToolTip: NSLocalizedString(@"Series Selection", nil)];
         [toolbarItem setView: seriesPopupView];
 
+#if 0 // deprecated
         NSSize size = seriesPopupView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
 	}
     else if ([itemIdent isEqualToString: WindowsTilingToolbarItemIdentifier])
     {
@@ -7193,9 +7204,11 @@ static ViewerController *draggedController = nil;
         [toolbarItem setToolTip: NSLocalizedString(@"Windows Tiling", nil)];
         [toolbarItem setView: windowsTiling];
 
+#if 0 // deprecated
         NSSize size = windowsTiling.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
 	}
     else if ([itemIdent isEqualToString: AnnotationsToolbarItemIdentifier])
     {
@@ -7203,9 +7216,11 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Annotations", nil)];
         [toolbarItem setView: annotations];
 
+#if 0 // deprecated
         NSSize size = annotations.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
 	}
 	else if ([itemIdent isEqualToString: ShutterToolbarItemIdentifier])
     {
@@ -7224,9 +7239,11 @@ static ViewerController *draggedController = nil;
         [toolbarItem setToolTip: NSLocalizedString(@"Propagate settings (WL/WW, zoom, ...)", nil)];
         [toolbarItem setView: propagateSettingsView];
 
+#if 0 // deprecated
         NSSize size = propagateSettingsView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
 	}
 	else if ([itemIdent isEqualToString: ReconstructionToolbarItemIdentifier])
     {
@@ -7235,9 +7252,11 @@ static ViewerController *draggedController = nil;
         [toolbarItem setToolTip: NSLocalizedString(@"2D/3D Reconstruction Tools", nil)];
         [toolbarItem setView: ReconstructionView];
 
+#if 0 // deprecated
         NSSize size = ReconstructionView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
 	}
 	else if ([itemIdent isEqualToString: KeyImagesToolbarItemIdentifier])
     {
@@ -7256,9 +7275,11 @@ static ViewerController *draggedController = nil;
         [toolbarItem setToolTip: NSLocalizedString(@"Change the mouse button function", nil)];
         [toolbarItem setView: toolsView];
 
+#if 0 // deprecated
         NSSize size = toolsView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
     }
 	else if ([itemIdent isEqualToString: FlipVerticalToolbarItemIdentifier])
     {

@@ -4724,7 +4724,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	int	TIF_NEWSUBFILETYPE = 0; // GJ: flag indicating whether image is "real" or thumbnail 
 	int	LENGTH2, TIF_STRIPOFFSETS; // GJ: Number of channels & offset containing file offset to image data
-	int	TIF_CZ_LSMINFO, TIF_COMPRESSION = 0; // GJ: Offset of additional data about image
+	int	TIF_CZ_LSMINFO = 0, TIF_COMPRESSION = 0; // GJ: Offset of additional data about image
 	/* No longer required as of 040609 pm with simplified reader
 	 int	LENGTH1, TIF_BITSPERSAMPLE_CHANNEL1, TIF_BITSPERSAMPLE_CHANNEL2, TIF_BITSPERSAMPLE_CHANNEL3;
 	 int	TIF_COMPRESSION, TIF_PHOTOMETRICINTERPRETATION, TIF_STRIPOFFSETS, TIF_SAMPLESPERPIXEL, TIF_STRIPBYTECOUNTS;
@@ -4733,7 +4733,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	 int	TIF_STRIPOFFSETS_ARRAY[3];
 	 */
 	// GJ: this will store the location of the data for this frame
-	int	imageDataOffsetForThisFrame;
+	int	imageDataOffsetForThisFrame=0;
 	int	goodFramesChecked=0;
 	
 	// do / while loop which iterates over each image in the directory

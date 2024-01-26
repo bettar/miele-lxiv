@@ -746,9 +746,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
         [toolbarItem setToolTip: NSLocalizedString(@"Export this series in a 3D file format",nil)];
         [toolbarItem setView: export3DView];
 
+#if 0 // deprecated
         NSSize size = export3DView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
     }
 	else if ([itemIdent isEqualToString: SRSettingsToolbarItemIdentifier])
     {
@@ -783,9 +785,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
         [toolbarItem setPaletteLabel:NSLocalizedString( @"Mouse button function",nil)];
         [toolbarItem setView: toolsView];
         
+#if 0 // deprecated
         NSSize size = toolsView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
     }
 	else if ([itemIdent isEqualToString: FlyThruToolbarItemIdentifier])
     {
@@ -813,7 +817,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Perspective",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Perspective Properties",nil)];
         [toolbarItem setView: perspectiveView];
+#if 0 // deprecated
         [toolbarItem setMinSize: perspectiveView.frame.size];
+#endif
     }
 	else if ([itemIdent isEqualToString: ROIManagerToolbarItemIdentifier])
     {
@@ -840,9 +846,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
         [toolbarItem setToolTip: NSLocalizedString(@"Background Color", nil)];
         [toolbarItem setView: BackgroundColorView];
         
+#if 0 // deprecated
         NSSize size = BackgroundColorView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
     }
 	else if ([itemIdent isEqualToString: OrientationsViewToolbarItemIdentifier])
     {
@@ -851,9 +859,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
         [toolbarItem setToolTip: NSLocalizedString(@"Orientations", nil)];        
         [toolbarItem setView: OrientationsView];
         
+#if 0 // deprecated
         NSSize size = OrientationsView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
     }
 	else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier])
     {

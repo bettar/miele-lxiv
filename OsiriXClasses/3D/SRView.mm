@@ -174,15 +174,15 @@ typedef struct _xyzArray
 	
 	if (inv)
 	{
-		orientationX = -vector[ 0] < 0 ? NSLocalizedString( @"R", @"R: Right")    : NSLocalizedString( @"L", @"L: Left");
-		orientationY = -vector[ 1] < 0 ? NSLocalizedString( @"A", @"A: Anterior") : NSLocalizedString( @"P", @"P: Posterior");
-		orientationZ = -vector[ 2] < 0 ? NSLocalizedString( @"I", @"I: Inferior") : NSLocalizedString( @"S", @"S: Superior");
+		orientationX = (-vector[ 0] < 0) ? NSLocalizedString( @"R", @"R: Right")    : NSLocalizedString( @"L", @"L: Left");
+		orientationY = (-vector[ 1] < 0) ? NSLocalizedString( @"A", @"A: Anterior") : NSLocalizedString( @"P", @"P: Posterior");
+		orientationZ = (-vector[ 2] < 0) ? NSLocalizedString( @"I", @"I: Inferior") : NSLocalizedString( @"S", @"S: Superior");
 	}
 	else
 	{
-		orientationX = vector[ 0] < 0 ? NSLocalizedString( @"R", @"R: Right")    : NSLocalizedString( @"L", @"L: Left");
-		orientationY = vector[ 1] < 0 ? NSLocalizedString( @"A", @"A: Anterior") : NSLocalizedString( @"P", @"P: Posterior");
-		orientationZ = vector[ 2] < 0 ? NSLocalizedString( @"I", @"I: Inferior") : NSLocalizedString( @"S", @"S: Superior");
+		orientationX = (vector[ 0]) < 0 ? NSLocalizedString( @"R", @"R: Right")    : NSLocalizedString( @"L", @"L: Left");
+		orientationY = (vector[ 1]) < 0 ? NSLocalizedString( @"A", @"A: Anterior") : NSLocalizedString( @"P", @"P: Posterior");
+		orientationZ = (vector[ 2]) < 0 ? NSLocalizedString( @"I", @"I: Inferior") : NSLocalizedString( @"S", @"S: Superior");
 	}
 	
 	float absX = fabs( vector[ 0]);

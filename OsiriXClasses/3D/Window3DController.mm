@@ -813,7 +813,7 @@ static float oldsetww, oldsetwl;
         if (FullScreenWindow != nil)
         {
             NSLog(@"Window was created");			
-            [FullScreenWindow setTitle: @"myWindow"];			
+            [FullScreenWindow setTitle: NSLocalizedString(@"myWindow", nil)];			
             [FullScreenWindow setReleasedWhenClosed: NO];
             [FullScreenWindow setLevel: NSScreenSaverWindowLevel - 1];
             [FullScreenWindow setBackgroundColor:[NSColor blackColor]];
