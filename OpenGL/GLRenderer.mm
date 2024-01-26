@@ -583,7 +583,7 @@ void renderer_drawTriangles_xy(NSArray *pArray, BOOL filled)
     int n=0;
     for (long i = 0; i < nPoints; i++) {
         glm::vec2 p;
-        [pArray[i] getValue:&p size:1];
+        [pArray[i] getValue:&p size:1*sizeof(glm::vec2)];
         vertex[n++] = p.x;
         vertex[n++] = p.y;
     }

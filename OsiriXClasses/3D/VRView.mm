@@ -4533,7 +4533,7 @@ public:
 					[point3DInfoPanel orderFront:self];
 					
 					float pos[3];
-					[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:pos size:3];
+					[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:pos size:3*sizeof(float)];
 					
 					int pix[3];
 					pix[0] = (int)[[[[[controller roi2DPointsArray] objectAtIndex:[self selected3DPointIndex]] points] objectAtIndex:0] x];
@@ -9190,7 +9190,7 @@ public:
 	{
 		// remove 2D Point
 		float position[3];
-		[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:position size:3];
+		[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:position size:3*sizeof(float)];
 		
 		[controller remove2DPoint: position[0] : position[1] : position[2]];
 		// remove 3D Point
@@ -9281,7 +9281,7 @@ public:
 	vtkSphereSource *sphereSource = vtkSphereSource::New();
 	sphereSource->SetRadius(radius*superSampling);
 	float center[3];
-	[[point3DPositionsArray objectAtIndex:index] getValue:center size:3];
+	[[point3DPositionsArray objectAtIndex:index] getValue:center size:3*sizeof(float)];
 	sphereSource->SetCenter(center[0],center[1],center[2]);
 	//Mapper
 	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
