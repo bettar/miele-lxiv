@@ -77,7 +77,6 @@
 	{
 		NSInteger indexOfSelectedItem = [type indexOfSelectedItem];
         
-        //[panel setRequiredFileType: [[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"extension"]];
         [panel setAllowedFileTypes: @[[[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"extension"]]];
         
 		[[NSUserDefaults standardUserDefaults] setObject: [[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"videoCodec"] forKey:@"selectedMenuAVFoundationExport"];

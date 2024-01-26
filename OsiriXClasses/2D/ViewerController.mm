@@ -1227,9 +1227,19 @@ return YES;
     //	[[NSFileManager defaultManager] removeItemAtPath: tmp error:nil];
     //	[state writeToFile: tmp atomically: YES];
         
-        NSData *windowsState = [NSPropertyListSerialization dataFromPropertyList: state  format: NSPropertyListXMLFormat_v1_0 errorDescription: nil];
+        NSData *windowsState = 
+#if 0 // deprecated
+        [NSPropertyListSerialization dataFromPropertyList: state
+                                                   format: NSPropertyListXMLFormat_v1_0
+                                         errorDescription: nil];
+#else // ok
+        [NSPropertyListSerialization dataWithPropertyList: state
+                                                   format: NSPropertyListXMLFormat_v1_0
+                                                  options: 0 // TBC NSPropertyListWriteOptions
+                                                    error: nil];
+#endif
         
-        NSMutableArray	*studiesArray = [NSMutableArray array];
+        NSMutableArray *studiesArray = [NSMutableArray array];
         
         for (ViewerController *win in displayedViewers)
         {
@@ -1386,7 +1396,7 @@ return YES;
 
 #pragma mark - 1. window and workplace
 
-+ (void) correctGangtryTilt: (ViewerController*) viewerController
++ (void) correctGantryTilt: (ViewerController*) viewerController
 {
     #ifdef MIELE_LIGHT
     N2LogStackTrace( @"Function NOT available in light version");
@@ -6350,10 +6360,19 @@ static ViewerController *draggedController = nil;
 	}
     else if ([[paste availableTypeFromArray: [NSArray arrayWithObject: DatabaseXID_DragType]] isEqualToString: DatabaseXID_DragType])
     {
-        NSArray* xids = [NSPropertyListSerialization propertyListFromData:[paste propertyListForType:DatabaseXID_DragType]
-                                                         mutabilityOption:NSPropertyListImmutable
-                                                                   format:NULL
-                                                         errorDescription:NULL];
+        NSArray* xids =
+        
+#if 0 // deprecated
+        [NSPropertyListSerialization propertyListFromData: [paste propertyListForType:DatabaseXID_DragType]
+                                         mutabilityOption: NSPropertyListImmutable
+                                                   format: NULL
+                                         errorDescription: NULL];
+#else
+        [NSPropertyListSerialization propertyListWithData: [paste propertyListForType:DatabaseXID_DragType]
+                                                  options: NSPropertyListImmutable
+                                                   format: NULL
+                                                    error: NULL];
+#endif
         NSMutableArray* items = [NSMutableArray array];
         for (NSString* xid in xids)
             [items addObject:[BrowserController.currentBrowser.database objectWithID:[NSManagedObject UidForXid:xid]]];
@@ -9513,7 +9532,18 @@ static int avoidReentryRefreshDatabase = 0;
                     if ([study valueForKey:@"windowsState"] &&
                         [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"])
                     {
-                        NSArray *viewers = [NSPropertyListSerialization propertyListFromData: [study valueForKey:@"windowsState"] mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
+                        NSArray *viewers =
+#if 0 // deprecated
+                        [NSPropertyListSerialization propertyListFromData: [study valueForKey:@"windowsState"]
+                                                         mutabilityOption: NSPropertyListImmutable
+                                                                   format: nil
+                                                         errorDescription: nil];
+#else // ok
+                        [NSPropertyListSerialization propertyListWithData: [study valueForKey:@"windowsState"]
+                                                                  options: NSPropertyListImmutable
+                                                                   format: NULL
+                                                                    error: NULL];
+#endif
                         
                         for (NSDictionary *dict in viewers)
                         {
@@ -11359,7 +11389,7 @@ static int avoidReentryRefreshDatabase = 0;
                                                     message);
         
         if (r == NSAlertDefaultReturn)
-            [ViewerController correctGangtryTilt: self];
+            [ViewerController correctGantryTilt: self];
 #endif
     }
 }

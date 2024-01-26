@@ -7284,8 +7284,18 @@ static NSConditionLock *threadLock = nil;
     [pboard setPropertyList:[NSArray arrayWithObject:@"dcm"]
                     forType:(__bridge NSString *)kPasteboardTypeFileURLPromise];
 
-    [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[pbItems valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL]
+#if 0 // deprecated
+    [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList: [pbItems valueForKey:@"XID"]
+                                                                       format: NSPropertyListBinaryFormat_v1_0
+                                                             errorDescription: NULL]
                     forType:DatabaseXID_DragType];
+#else
+    [pboard setPropertyList:[NSPropertyListSerialization dataWithPropertyList: [pbItems valueForKey:@"XID"]
+                                                                       format: NSPropertyListBinaryFormat_v1_0
+                                                                      options: 0 // TBC NSPropertyListWriteOptions
+                                                                        error: NULL]
+                    forType:DatabaseXID_DragType];
+#endif
 	
 	return YES;
 }
@@ -7900,7 +7910,19 @@ static NSConditionLock *threadLock = nil;
 		if ([currentStudy valueForKey:@"windowsState"] &&
             [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"])
 		{
-			NSArray *viewers = [NSPropertyListSerialization propertyListFromData: [currentStudy valueForKey:@"windowsState"] mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
+            NSArray *viewers =
+            
+#if 0 // deprecated
+			[NSPropertyListSerialization propertyListFromData: [currentStudy valueForKey:@"windowsState"]
+                                             mutabilityOption: NSPropertyListImmutable
+                                                       format: nil
+                                             errorDescription: nil];
+#else
+            [NSPropertyListSerialization propertyListWithData: [currentStudy valueForKey:@"windowsState"]
+                                                      options: NSPropertyListImmutable
+                                                       format: NULL
+                                                        error: NULL];
+#endif
 			
             // Check if this windowsState contains at least this study...
             
@@ -11944,7 +11966,20 @@ constrainSplitPosition:(CGFloat)proposedPosition
 		DicomAlbum* album = [albumArray objectAtIndex:row];
 		
 		NSPasteboard* pb = [info draggingPasteboard];
-		NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:DatabaseXID_DragType] mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
+        
+        NSArray* xids =
+        
+#if 0 // deprecated
+		[NSPropertyListSerialization propertyListFromData: [pb propertyListForType:DatabaseXID_DragType]
+                                         mutabilityOption: NSPropertyListImmutable
+                                                   format: NULL
+                                         errorDescription: NULL];
+#else
+        [NSPropertyListSerialization propertyListWithData: [pb propertyListForType: DatabaseXID_DragType]
+                                                  options: NSPropertyListImmutable
+                                                   format: NULL
+                                                    error: NULL];
+#endif
 		NSMutableArray* items = [NSMutableArray array];
 		for (NSString* xid in xids)
 			[items addObject:[_database objectWithID:[NSManagedObject UidForXid:xid]]];

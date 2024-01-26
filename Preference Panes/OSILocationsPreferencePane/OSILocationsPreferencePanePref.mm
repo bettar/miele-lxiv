@@ -666,7 +666,7 @@
 		{
 			/*NSString* err = nil;
 			NSData* data = [NSData dataWithContentsOfURL:url];
-			NSArray* arr = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:0 errorDescription:&err];
+			NSArray* arr = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:0 error:&err];
 			NSLog(@"Error: %@ - %@", err, arr);*/
 			
 			NSArray	*r = [NSArray arrayWithContentsOfURL: url];

@@ -2562,8 +2562,19 @@ static BOOL protectionAgainstReentry = NO;
                                         {
                                             @try {
                                                 SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: newFile] autorelease];
-                                                
-                                                NSArray *viewers = [NSPropertyListSerialization propertyListFromData: r.dataEncapsulated mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
+                                          
+                                                NSArray *viewers =
+#if 0 // deprecated
+                                                [NSPropertyListSerialization propertyListFromData: r.dataEncapsulated
+                                                                                 mutabilityOption: NSPropertyListImmutable
+                                                                                           format: nil
+                                                                                 errorDescription: nil];
+#else
+                                                [NSPropertyListSerialization propertyListWithData: r.dataEncapsulated
+                                                                                          options: NSPropertyListImmutable
+                                                                                           format: NULL
+                                                                                            error: NULL];
+#endif
                                                 
                                                 if (viewers.count > 0)
                                                 {

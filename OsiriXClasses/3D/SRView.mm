@@ -1296,7 +1296,8 @@ typedef struct _xyzArray
 	}
 	else
 	{
-		if ([theEvent clickCount] > 1 && (tool != t3Dpoint))
+		if ([theEvent clickCount] > 1 &&
+            (tool != t3Dpoint))
 		{
 			vtkWorldPointPicker *picker = vtkWorldPointPicker::New();
 			picker->Pick(mouseLocStart.x, mouseLocStart.y, 0.0, aRenderer);
@@ -1592,10 +1593,10 @@ typedef struct _xyzArray
 				{
 					NSPoint mouseLocationOnScreen = [[controller window] convertBaseToScreen:[theEvent locationInWindow]];
 					//[point3DInfoPanel setAlphaValue:0.8];
-					[point3DInfoPanel	setFrame:	NSMakeRect(	mouseLocationOnScreen.x - [point3DInfoPanel frame].size.width/2.0, 
-																mouseLocationOnScreen.y-[point3DInfoPanel frame].size.height-20.0,
-																[point3DInfoPanel frame].size.width,
-																[point3DInfoPanel frame].size.height)
+					[point3DInfoPanel setFrame:	NSMakeRect(	mouseLocationOnScreen.x - [point3DInfoPanel frame].size.width/2.0,
+                                                            mouseLocationOnScreen.y - [point3DInfoPanel frame].size.height-20.0,
+                                                            [point3DInfoPanel frame].size.width,
+                                                            [point3DInfoPanel frame].size.height)
 										display:YES animate: NO];
 					[point3DInfoPanel orderFront:self];
 				}
@@ -3142,7 +3143,7 @@ typedef struct _xyzArray
 	}
 }
 
-#pragma mark - modify 3D point appearence
+#pragma mark - modify 3D point appearance
 
 - (IBAction) IBSetSelected3DPointColor: (id) sender
 {

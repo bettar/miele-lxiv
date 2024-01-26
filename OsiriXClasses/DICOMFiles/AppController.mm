@@ -726,7 +726,7 @@ static bool isGrantedNotificationAccess = false;
         return NO;
     
     if (version.majorVersion == 14 &&
-        version.minorVersion > 2)
+        version.minorVersion > 3)
     {
         return NO;
     }
@@ -1954,7 +1954,18 @@ static bool isGrantedNotificationAccess = false;
             @try {
                 SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: [i completePathResolved]] autorelease];
                 
-                NSArray *viewers = [NSPropertyListSerialization propertyListFromData: r.dataEncapsulated mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
+                NSArray *viewers =
+#if 0 // deprecated
+                [NSPropertyListSerialization propertyListFromData: r.dataEncapsulated
+                                                 mutabilityOption: NSPropertyListImmutable
+                                                           format: nil
+                                                 errorDescription: nil];
+#else
+                [NSPropertyListSerialization propertyListWithData: r.dataEncapsulated
+                                                          options: NSPropertyListImmutable
+                                                           format: NULL
+                                                            error: NULL];
+#endif
                 
                 if (viewers.count)
                 {
@@ -1996,7 +2007,18 @@ static bool isGrantedNotificationAccess = false;
     DicomStudy *study = [menuItem.representedObject objectForKey: @"study"];
     NSArray *state = [menuItem.representedObject objectForKey: @"windowsState"];
     
-    NSData *windowsState = [NSPropertyListSerialization dataFromPropertyList: state  format: NSPropertyListXMLFormat_v1_0 errorDescription: nil];
+    NSData *windowsState =
+    
+#if 0 // deprecated
+    [NSPropertyListSerialization dataFromPropertyList: state
+                                               format: NSPropertyListXMLFormat_v1_0
+                                     errorDescription: nil];
+#else
+    [NSPropertyListSerialization dataWithPropertyList: state
+                                               format: NSPropertyListXMLFormat_v1_0
+                                              options: 0 // TBC NSPropertyListWriteOptions
+                                                error: NULL];
+#endif
     
     if (study && windowsState)
     {

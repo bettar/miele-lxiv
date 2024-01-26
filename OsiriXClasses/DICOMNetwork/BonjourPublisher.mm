@@ -696,7 +696,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     [self _requireDataSize:size];
 //    NSData* da = [self readData:size];
     
-//    NSDictionary* d = [NSPropertyListSerialization propertyListFromData:da mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
+//    NSDictionary* d = [NSPropertyListSerialization propertyListWithData:da options: NSPropertyListImmutable format: nil error: nil];
 //
 //    if (d)
 //    {
@@ -706,16 +706,30 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     _mode = DONE;
 }
 
-- (void)ADDAL {
+- (void)ADDAL
+{
     NSString* object = [self _stackReadString];
+
+    NSDictionary* d =
+
+#if 0 // deprecated
+    (NSDictionary*)[NSPropertyListSerialization propertyListFromData: [NSData dataWithBytesNoCopy: (void*)object.UTF8String
+                                                                                           length: strlen(object.UTF8String)
+                                                                                     freeWhenDone: NO]
+                                                    mutabilityOption: NSPropertyListImmutable
+                                                              format: NULL
+                                                    errorDescription: NULL];
+#else
+    [NSPropertyListSerialization propertyListWithData: [NSData dataWithBytesNoCopy: (void*)object.UTF8String
+                                                                            length: strlen(object.UTF8String)
+                                                                      freeWhenDone: NO]
+                                              options: NSPropertyListImmutable
+                                               format: NULL
+                                                error: NULL];
+#endif
     
-    NSDictionary* d = (NSDictionary*)[NSPropertyListSerialization
-                                      propertyListFromData:[NSData dataWithBytesNoCopy:(void*)object.UTF8String length:strlen(object.UTF8String) freeWhenDone:NO]
-                                      mutabilityOption:NSPropertyListImmutable
-                                      format:NULL
-                                      errorDescription:NULL];
-    
-    if (!d) [NSException raise:NSGenericException format:@"can't parse parameters"];
+    if (!d)
+        [NSException raise:NSGenericException format:@"can't parse parameters"];
     
     NSArray *studies = [d objectForKey:@"albumStudies"];
     NSString *albumUID = [d objectForKey:@"albumUID"];
@@ -750,13 +764,26 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 - (void)REMAL {
     NSString* object = [self _stackReadString];
     
-    NSDictionary* d = (NSDictionary*)[NSPropertyListSerialization
-                                      propertyListFromData:[NSData dataWithBytesNoCopy:(void*)object.UTF8String length:strlen(object.UTF8String) freeWhenDone:NO]
-                                      mutabilityOption:NSPropertyListImmutable
-                                      format:NULL
-                                      errorDescription:NULL];
+    NSDictionary* d =
     
-    if (!d) [NSException raise:NSGenericException format:@"can't parse parameters"];
+#if 0 // deprecated
+    (NSDictionary*)[NSPropertyListSerialization propertyListFromData: [NSData dataWithBytesNoCopy: (void*)object.UTF8String
+                                                                                           length: strlen(object.UTF8String)
+                                                                                     freeWhenDone: NO]
+                                                    mutabilityOption: NSPropertyListImmutable
+                                                              format: NULL
+                                                    errorDescription: NULL];
+#else
+    [NSPropertyListSerialization propertyListWithData: [NSData dataWithBytesNoCopy: (void*)object.UTF8String
+                                                                            length: strlen(object.UTF8String)
+                                                                      freeWhenDone: NO]
+                                              options: NSPropertyListImmutable
+                                               format: NULL
+                                                error: NULL];
+#endif
+    
+    if (!d)
+        [NSException raise:NSGenericException format:@"can't parse parameters"];
 
     NSArray *studies = [d objectForKey:@"albumStudies"];
     NSString *albumUID = [d objectForKey:@"albumUID"];

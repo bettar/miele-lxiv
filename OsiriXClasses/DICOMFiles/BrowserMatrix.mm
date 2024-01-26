@@ -175,7 +175,18 @@ PURPOSE.
 		for (int i = 0; i < [cells count]; i++)
 			[objects addObject:[[[BrowserController currentBrowser] matrixViewArray] objectAtIndex:[[cells objectAtIndex: i] tag]]];
 
-        [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[objects valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:DatabaseXID_DragType];
+#if 0 // deprecated
+        [pboard setPropertyList: [NSPropertyListSerialization dataFromPropertyList: [objects valueForKey:@"XID"]
+                                                                            format: NSPropertyListBinaryFormat_v1_0
+                                                                  errorDescription: NULL]
+                        forType: DatabaseXID_DragType];
+#else
+        [pboard setPropertyList: [NSPropertyListSerialization dataWithPropertyList: [objects valueForKey:@"XID"]
+                                                                            format: NSPropertyListBinaryFormat_v1_0
+                                                                           options: 0 // TBC NSPropertyListWriteOptions
+                                                                             error: NULL]
+                        forType: DatabaseXID_DragType];
+#endif
 		
 		[self dragImage:thumbnail
                      at:local_point

@@ -1093,7 +1093,19 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	NSData* output = [[[[[task standardError] fileHandleForReading] readDataToEndOfFile] retain] autorelease];
 	[task release];
 	
-	NSDictionary* result = [NSPropertyListSerialization propertyListFromData:output mutabilityOption:NSPropertyListImmutable format:0 errorDescription:NULL];
+    NSDictionary* result =
+    
+#if 0 // deprecated
+	[NSPropertyListSerialization propertyListFromData: output
+                                     mutabilityOption: NSPropertyListImmutable
+                                               format: 0
+                                     errorDescription: NULL];
+#else
+    [NSPropertyListSerialization propertyListWithData: output
+                                              options: NSPropertyListImmutable
+                                               format: NULL
+                                                error: NULL];
+#endif
 
 	if ([[result objectForKey:@"OpticalMediaType"] length] > 0) // is CD/DVD or other optical media
 		@try {
@@ -1307,10 +1319,18 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(BOOL)tableView:(NSTableView*)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
 	NSPasteboard* pb = [info draggingPasteboard];
-	NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:DatabaseXID_DragType] 
-													 mutabilityOption:NSPropertyListImmutable 
-															   format:NULL 
-													 errorDescription:NULL];
+    NSArray* xids =
+#if 0 // deprecated
+	[NSPropertyListSerialization propertyListFromData: [pb propertyListForType:DatabaseXID_DragType]
+                                     mutabilityOption: NSPropertyListImmutable
+                                               format: NULL
+                                     errorDescription: NULL];
+#else
+    [NSPropertyListSerialization propertyListWithData: [pb propertyListForType:DatabaseXID_DragType]
+                                              options: NSPropertyListImmutable
+                                               format: NULL
+                                                error: NULL];
+#endif
 	NSMutableArray* items = [NSMutableArray array];
 	for (NSString* xid in xids)
 		[items addObject:[_browser.database objectWithID:[NSManagedObject UidForXid:xid]]];
