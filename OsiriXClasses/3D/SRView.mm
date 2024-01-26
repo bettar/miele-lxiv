@@ -1209,8 +1209,9 @@ typedef struct _xyzArray
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    NSPoint		mouseLoc, mouseLocStart, mouseLocPre;
-	ToolMode	tool;
+    NSPoint mouseLoc, mouseLocStart, mouseLocPre;
+	ToolMode tool;
+    float sf = [[NSScreen mainScreen] backingScaleFactor];
 	
 	noWaitDialog = YES;
 	tool = currentTool;
@@ -1228,10 +1229,11 @@ typedef struct _xyzArray
 
 		
 	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
+    mouseLocStart = [self convertPointToBacking: mouseLocStart]; // Retina
 	_mouseLocStart = mouseLocStart;
 	
-	if (mouseLocStart.x < 10 &&
-        mouseLocStart.y < 10)
+	if (mouseLocStart.x < 10*sf &&
+        mouseLocStart.y < 10*sf)
 	{
 		_resizeFrame = YES;
 		return;

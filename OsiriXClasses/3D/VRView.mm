@@ -4096,11 +4096,8 @@ public:
 		if ([[controller style] isEqualToString: @"noNib"] == NO)
 			_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(startDrag:) userInfo:theEvent  repeats:NO] retain];
 	}
-#if 1 // original
+
     mouseLocPre = [self convertPointToBacking: [theEvent locationInWindow]];
-#else // tentative, no effect
-    mouseLocPre = [self convertPoint: [theEvent locationInWindow] fromView: nil];
-#endif
     _mouseLocStart = mouseLocPre;
 
 	int clickCount = 1;
