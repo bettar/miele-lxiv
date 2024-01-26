@@ -31,8 +31,10 @@
 	if (lastImage != nil)
 	{
 		NSPoint pt = [controlView convertPoint:[theEvent locationInWindow] fromView:nil];
-		NSSize	imageSize;
-		NSRect	imageFrame, cellFrameOut;
+        // TODO: convert location for retina ?
+
+        NSSize imageSize;
+		NSRect imageFrame, cellFrameOut;
         
 		imageSize = [lastImage size];
         

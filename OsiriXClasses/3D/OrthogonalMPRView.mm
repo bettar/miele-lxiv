@@ -1194,6 +1194,7 @@
 	short now, prev;
 	BOOL movie4Dmove = NO;
     NSPoint current = [self convertPoint: event.locationInWindow fromView: nil];
+    // TODO: retina ?
     
     if (scrollMode == MY_SCROLL_MODE_UNDEFINED)
     {
@@ -1249,6 +1250,7 @@
 - (void)mouseDraggedWindowLevel: (NSEvent *)event
 {
     NSPoint current = [self convertPoint: event.locationInWindow fromView: nil];
+    // TODO: retina ?
 
 	if (blendingView == nil)
 	{

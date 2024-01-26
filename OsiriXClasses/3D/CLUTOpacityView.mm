@@ -1059,6 +1059,7 @@ NSRect rect = drawingRect;
 {
 	NSPoint mousePositionInWindow = [theEvent locationInWindow];
 	NSPoint mousePositionInView = [self convertPoint:mousePositionInWindow fromView:nil];
+    // TODO: retina ?
 	
 	mouseDraggingStartPoint = mousePositionInView;
 	
@@ -1172,6 +1173,7 @@ NSRect rect = drawingRect;
 	
 	NSPoint mousePositionInWindow = [theEvent locationInWindow];
 	NSPoint mousePositionInView = [self convertPoint:mousePositionInWindow fromView:nil];
+    // TODO: retina ?
 
 	if([self clickInAddCurveButtonAtPosition:mouseDraggingStartPoint])
 	{
@@ -1389,6 +1391,7 @@ NSRect rect = drawingRect;
         return;
 	
 	NSPoint mousePositionInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    // TODO: retina ?
 	
 	if ( !NSPointInRect([NSEvent mouseLocation], [[self window] frame]))
 	{

@@ -6981,7 +6981,7 @@ static ViewerController *draggedController = nil;
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(displaySUV:)];
 	}
-	else if ( [itemIdent isEqualToString: ReportToolbarItemIdentifier])
+	else if ([itemIdent isEqualToString: ReportToolbarItemIdentifier])
 	{
         [toolbarItem setLabel: NSLocalizedString(@"Report", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Report", nil)];

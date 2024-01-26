@@ -56,6 +56,7 @@
 	if (curIndex != NSNotFound)
 	{
 		center = [self convertPoint:eventLocation fromView:nil];
+        // TODO: retina ?
 				
 		if (center.y < 0 ||
             center.y > [self bounds].size.height)
@@ -93,8 +94,9 @@
 	BOOL found = NO;
 	
     center = [self convertPoint:eventLocation fromView:nil];
-	
-	for (long i = 0; i < [ points count]; i++)
+    // TODO: retina ?
+    
+	for (long i = 0; i < [points count]; i++)
 	{
 		NSPoint curPt = NSPointFromString( [points objectAtIndex: i]);
 		

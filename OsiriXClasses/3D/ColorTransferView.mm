@@ -79,6 +79,7 @@
 	if (curIndex != NSNotFound)
 	{
 		center = [self convertPoint:eventLocation fromView:nil];
+        // TODO: retina ?
 		
 		if( center.x < 0) center.x = 0;
 		if( center.x > 512) center.x = 512;
@@ -108,6 +109,7 @@
 	BOOL found = NO;
 	
     center = [self convertPoint:eventLocation fromView:nil];
+    // TODO: retina ?
 	
 	for (long i = 0; i < [ points count]; i++)
 	{

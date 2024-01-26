@@ -284,6 +284,7 @@ extern int splitPosition[ 3];
 	if( view == self)
 	{
 		viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        // TODO: retina ?
 		
 		if (NSPointInRect(viewPoint, self.bounds) && curDCM.pwidth > 0)
 		{

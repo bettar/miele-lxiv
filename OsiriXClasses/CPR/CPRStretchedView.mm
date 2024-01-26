@@ -1069,8 +1069,9 @@ didGenerateVolume:(CPRVolumeData *)volume
         CGFloat distanceFromCenterline;
 		
 		viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        // TODO: retina ?
 		
-		if( NSPointInRect( viewPoint, [self bounds]) == NO)
+		if (NSPointInRect( viewPoint, [self bounds]) == NO)
 			return;
 		
 		pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
@@ -1202,6 +1203,8 @@ didGenerateVolume:(CPRVolumeData *)volume
     CGFloat distanceFromCenterline;
     
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
+    // TODO: retina ?
+    
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
     pixWidth = curDCM.pwidth;
     
@@ -1372,6 +1375,8 @@ didGenerateVolume:(CPRVolumeData *)volume
     CGFloat pixWidth;
     	
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
+    // TODO: retina ?
+    
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
     pixWidth = curDCM.pwidth;
     

@@ -163,7 +163,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 
 	try
 	{
-		NSLog(@"ChangeActor IN");
+		//NSLog(@"ChangeActor IN");
 		
 		// RESAMPLE IMAGE ?
 		
@@ -325,7 +325,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		
 		[self setNeedsDisplay:YES];
 		
-		NSLog(@"ChangeActor OUT");
+		//NSLog(@"ChangeActor OUT");
 	}
 	catch (...)
 	{
@@ -1538,7 +1538,12 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo:theEvent  repeats:NO] retain];
 	}
 	
-	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
+	mouseLocStart = 
+#if 0
+    [self convertPoint: [theEvent locationInWindow] fromView: nil];
+#else
+    [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 	_mouseLocStart = mouseLocStart;
 	
 	if( mouseLocStart.x < 10 && mouseLocStart.y < 10)
@@ -1590,11 +1595,16 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			int shiftDown = 0;
 			int controlDown = 1;
 			
-			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+			mouseLoc = 
+#if 0
+            [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+            [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 			// Added SilvanWidmer 10-08-09
 	
-				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
-				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
+            [self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+            [self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 			if (self.StereoVisionOn)
 			{
 				[rightView getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
@@ -1608,11 +1618,16 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			int shiftDown = 0;//([theEvent modifierFlags] & NSEventModifierFlagShift);
 			int controlDown = 0;//([theEvent modifierFlags] & NSEventModifierFlagControl);
 			
-			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+			mouseLoc = 
+#if 0
+            [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+            [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 			// Added SilvanWidmer 10-08-09
 			
-				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
-				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
+            [self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+            [self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 			if (self.StereoVisionOn)
 			{
 				[rightView getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
@@ -1625,11 +1640,16 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			int shiftDown = 1;
 			int controlDown = 0;
 			
-			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+			mouseLoc =
+#if 0
+            [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+            [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 			// Added SilvanWidmer 10-08-09
 			
-				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
-				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
+            [self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+            [self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 			
 			if (self.StereoVisionOn)
 			{
@@ -1644,7 +1664,12 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				int shiftDown = 0;
 				int controlDown = 1;
 				
-				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+				mouseLoc = 
+#if 0
+                [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+                [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[self getInteractor]->InvokeEvent(vtkCommand::RightButtonPressEvent,NULL);
 			
@@ -1658,8 +1683,12 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 			else
 			{
 				// vtkCamera
-				mouseLocPre = mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-				
+				mouseLocPre = mouseLocStart = 
+#if 0
+                [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+                [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 				//if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
 				//if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 				
@@ -1669,7 +1698,12 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		else if( tool == tCamera3D)
 		{
 			// vtkCamera
-			mouseLocPre = mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+			mouseLocPre = mouseLocStart = 
+#if 0
+            [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+            [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 			
 			//			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
 			//			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( 512 / 10);
@@ -1764,8 +1798,14 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
-	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];	
-	if (_tool == tZoom && ( projectionMode != 2)) {
+	NSPoint mouseLoc = 
+#if 0
+    [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+    [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
+
+    if (_tool == tZoom && ( projectionMode != 2)) {
 		int shiftDown = 0;
 		int controlDown = 1;
 		[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
@@ -1790,8 +1830,12 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	if (_resizeFrame){
 		NSRect	newFrame = [self frame];
 		NSRect	beforeFrame = [self frame];
-		NSPoint mouseLoc = [theEvent locationInWindow];	//[self convertPoint: [theEvent locationInWindow] fromView:nil];
-		
+		NSPoint mouseLoc = 
+#if 0
+        [theEvent locationInWindow];	//[self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+        [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 		if ([theEvent modifierFlags] & NSEventModifierFlagShift)
 		{
 			newFrame.size.width = [[[self window] contentView] frame].size.width - mouseLoc.x*2;
@@ -1831,7 +1875,13 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		int shiftDown;
 		int controlDown;
 		
-		NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];		
+		NSPoint mouseLoc = 
+#if 0
+        [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+        [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
+        
 		switch (_tool) {
 			case tRotate:
 				shiftDown  = 0;
@@ -1906,8 +1956,13 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	int shiftDown, controlDown;
 	float distance;
 	NSPoint mouseLoc, mouseLocPre;
-	mouseLocPre = mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-
+	mouseLocPre = mouseLoc = 
+#if 0
+    [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+    [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
+    
     switch (_tool) {
 		case tZoom:
 			if( projectionMode != 2){

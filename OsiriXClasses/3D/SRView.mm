@@ -1052,8 +1052,11 @@ typedef struct _xyzArray
     {
 		NSRect	newFrame = [self frame];
 		NSRect	beforeFrame = [self frame];
+#if 0 // original
 		NSPoint mouseLoc = [theEvent locationInWindow];	//[self convertPoint: [theEvent locationInWindow] fromView:nil];
-		
+#else
+        NSPoint mouseLoc = [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 		if ([theEvent modifierFlags] & NSEventModifierFlagShift)
 		{
 			newFrame.size.width = [[[self window] contentView] frame].size.width - mouseLoc.x*2;
@@ -1090,7 +1093,12 @@ typedef struct _xyzArray
 		int shiftDown;
 		int controlDown;
 		
-		NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];		
+#if 0 // original
+		NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+        mouseLoc = [self convertPointToBacking: mouseLoc]; // Retina
+#else
+        NSPoint mouseLoc = [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 		switch (_tool) {
 			case tRotate:
 				shiftDown  = 0;
@@ -1141,7 +1149,12 @@ typedef struct _xyzArray
 	int shiftDown, controlDown;
 	float distance;
 	NSPoint mouseLoc, mouseLocPre;
-	mouseLocPre = mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+	mouseLocPre = mouseLoc = 
+#if 0 // original
+    [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+    [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 	switch (_tool) {
 		case tZoom:
 			if (projectionMode != 2){
@@ -1198,7 +1211,12 @@ typedef struct _xyzArray
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
-	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];	
+	NSPoint mouseLoc = 
+#if 0 // original
+    [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+    [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 	if (_tool == tZoom && ( projectionMode != 2)) {
 		int shiftDown = 0;
 		int controlDown = 1;
@@ -1227,9 +1245,12 @@ typedef struct _xyzArray
                                                            repeats: NO] retain];
 	}
 
-		
+#if 0 // original
 	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
     mouseLocStart = [self convertPointToBacking: mouseLocStart]; // Retina
+#else
+    mouseLocStart = [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 	_mouseLocStart = mouseLocStart;
 	
 	if (mouseLocStart.x < 10*sf &&
@@ -1338,7 +1359,12 @@ typedef struct _xyzArray
 			int shiftDown = 0;
 			int controlDown = 1;
 
-			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+			mouseLoc = 
+#if 0 // original
+            [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+            [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 			[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 			
@@ -1371,7 +1397,12 @@ typedef struct _xyzArray
 			int shiftDown = 0;//([theEvent modifierFlags] & NSEventModifierFlagShift);
 			int controlDown = 0;//([theEvent modifierFlags] & NSEventModifierFlagControl);
 
-			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+			mouseLoc = 
+#if 0 // original
+            [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+            [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 			/*			
@@ -1404,7 +1435,12 @@ typedef struct _xyzArray
 			int shiftDown = 1;
 			int controlDown = 0;
 
-			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+			mouseLoc = 
+#if 0 // original
+            [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+            [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 			/*
@@ -1437,7 +1473,12 @@ typedef struct _xyzArray
 				int shiftDown = 0;
 				int controlDown = 1;
 
-				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+				mouseLoc = 
+#if 0 // original
+                [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+                [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[self getInteractor]->InvokeEvent(vtkCommand::RightButtonPressEvent,NULL);
 				/*
@@ -1468,8 +1509,12 @@ typedef struct _xyzArray
 			else
 			{
 				// vtkCamera
-				mouseLocPre = mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-				
+				mouseLocPre = mouseLocStart = 
+#if 0 // original
+                [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+                [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 				//if (volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
 				/*
 				do
@@ -1516,8 +1561,12 @@ typedef struct _xyzArray
 		else if (tool == tCamera3D)
 		{
 			// vtkCamera
-			mouseLocPre = mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-			
+			mouseLocPre = mouseLocStart = 
+#if 0 // original
+            [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+            [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 //			if (volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
 //			if (textureMapper) textureMapper->SetMaximumNumberOfPlanes( 512 / 10);
 			/*
@@ -2016,7 +2065,7 @@ typedef struct _xyzArray
 	
 	try
 	{
-	NSLog(@"ChangeActor IN");
+	//NSLog(@"ChangeActor IN");
 		
 	// RESAMPLE IMAGE ?
 	
@@ -2174,7 +2223,7 @@ typedef struct _xyzArray
                      :(BOOL) useSmooth
                      :(long) smoothVal
 {
-	NSLog(@"BLENDING ChangeActor IN");
+	//NSLog(@"BLENDING ChangeActor IN");
 //	[splash setCancel:YES];
 	
 	// RESAMPLE IMAGE ?
@@ -2590,7 +2639,7 @@ typedef struct _xyzArray
 
 -(IBAction) switchProjection:(id) sender
 {
-	NSLog(@"switchProjection");
+	//NSLog(@"switchProjection");
 	projectionMode = [[sender selectedCell] tag];
 	
 	switch (projectionMode)
@@ -3526,10 +3575,16 @@ typedef struct _xyzArray
             image = [self nsimage: NO];
             
         // Thumbnail image and position
+        float sf = [[NSScreen mainScreen] backingScaleFactor];
         NSPoint event_location = [event locationInWindow];
-        NSPoint local_point = [self convertPoint:event_location fromView:nil];
-        local_point.x -= 35;
-        local_point.y -= 35;
+        NSPoint local_point = 
+#if 0 // original
+        [self convertPoint:event_location fromView:nil];
+#else
+        [self convertPointToBacking: [event locationInWindow]];
+#endif
+        local_point.x -= 35*sf;
+        local_point.y -= 35*sf;
 
         NSSize originalSize = [image size];
         
@@ -3555,7 +3610,12 @@ typedef struct _xyzArray
             
         if ([event modifierFlags] & NSEventModifierFlagOption) {
             NSRect imageLocation;
-            local_point = [self convertPoint:event_location fromView:nil];
+            local_point = 
+#if 0 // original
+            [self convertPoint:event_location fromView:nil];
+#else
+            [self convertPointToBacking: [event locationInWindow]];
+#endif
             imageLocation.origin = local_point;
             imageLocation.size = NSMakeSize(32,32);
             [pboard setData:nil

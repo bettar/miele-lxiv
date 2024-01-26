@@ -1062,7 +1062,12 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	}
 	else 
 	{
-		NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+		NSPoint mouseLoc = 
+#if 0
+        [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+        [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 		float WWAdapter, endlevel, startlevel;
 		int shiftDown;
 		int controlDown;
@@ -1373,8 +1378,13 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 {
 	_hasChanged = YES;
 	[drawLock lock];
-	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-	float distance ;
+	NSPoint mouseLoc = 
+#if 0
+    [self convertPoint: [theEvent locationInWindow] fromView:nil];
+#else
+    [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
+	float distance;
 	
 	if (([theEvent deltaX] != 0 || [theEvent deltaY] != 0))
 	{

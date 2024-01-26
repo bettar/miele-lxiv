@@ -432,6 +432,7 @@
 		NSEvent *currentEvent = [[NSApplication sharedApplication] currentEvent];
 		NSPoint mouseLocationInWindow = [currentEvent locationInWindow];
 		NSPoint mouseLocationInView = [layoutView convertPoint:mouseLocationInWindow fromView:nil];
+        // TODO: convert location for retina ?
 		
 		float distanceToMouse[numberOfHighlightedPlaceHolders];
 		float placeHolderCenter;

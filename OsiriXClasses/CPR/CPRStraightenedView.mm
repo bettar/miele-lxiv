@@ -1037,6 +1037,7 @@ extern int splitPosition[ 3];
         CGFloat minDistance;
 		
 		viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        // TODO: retina ?
 		
 		if( NSPointInRect( viewPoint, [self bounds]) == NO)
 			return;
@@ -1149,6 +1150,8 @@ extern int splitPosition[ 3];
     CGFloat relativePosition;
     
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
+    // TODO: retina ?
+
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
     pixWidth = curDCM.pwidth;
     _clickedNode = NO;
@@ -1275,6 +1278,8 @@ extern int splitPosition[ 3];
 		return;
 	
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
+    // TODO: retina ?
+
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
     pixWidth = curDCM.pwidth;
     

@@ -147,9 +147,12 @@
     
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseDraggedNotification" object:self];
 	
+#if 0
 	NSPoint eventLocation = [theEvent locationInWindow];
 	NSPoint eventLocationInView = [self convertPoint:eventLocation fromView:nil];
-	
+#else
+    NSPoint eventLocationInView = [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 	float deltaX = eventLocationInView.x-mouseDownLocation.x;//[theEvent deltaX];
 	float deltaY = mouseDownLocation.y-eventLocationInView.y;//[theEvent deltaY];
 	float newX = [self frame].origin.x+deltaX;
@@ -186,8 +189,12 @@
         return;
     
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseDownNotification" object:self];
+#if 0
 	NSPoint eventLocation = [theEvent locationInWindow];
 	mouseDownLocation = [self convertPoint:eventLocation fromView:nil];
+#else
+    mouseDownLocation = [self convertPointToBacking: [theEvent locationInWindow]];
+#endif
 }
 
 - (NSPoint)mouseDownLocation;
@@ -203,7 +210,11 @@
 - (void)recomputeMouseDownLocation;
 {
 	NSPoint eventLocation = [[[NSApplication sharedApplication] currentEvent] locationInWindow];
+#if 0
 	mouseDownLocation = [self convertPoint:eventLocation fromView:nil];
+#else
+    mouseDownLocation = [self convertPointToBacking: eventLocation];
+#endif
 }
 
 - (void)mouseUp:(NSEvent *)theEvent

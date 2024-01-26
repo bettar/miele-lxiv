@@ -260,8 +260,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 - (void) checkForFrame
 {
 	NSRect frame = [self convertRectToBacking: [self frame]];
-	NSPoint o = [self convertPoint: NSZeroPoint
-                            toView: 0L];
+	NSPoint o = [self convertPoint: NSZeroPoint toView: 0L];
 	frame.origin = o;
 	
 	if (NSEqualRects( frame, [vrView frame]) == NO)
@@ -1820,6 +1819,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			else
 			{
 				NSPoint mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];
+                // TODO: retina ?
                 
 				CPRCurvedPathControlToken token = [curvedPath controlTokenNearPoint:mouseLocation transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])];
 				if ([CPRCurvedPath controlTokenIsNode:token])
@@ -2251,7 +2251,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		windowController.lowLOD = YES;
 		
 		NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
-		mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
+		mouseLocation.x *= curDCM.pixelSpacingX;
+        mouseLocation.y *= curDCM.pixelSpacingY;
 		angleMPR = [self angleBetween: mouseLocation center: [self centerLines]];
 		
 		angleMPR -= rotateLinesStartAngle;

@@ -198,8 +198,7 @@ unsigned int minimumStep;
 - (void) checkForFrame
 {
 	NSRect frame = [self convertRectToBacking: [self frame]];
-	NSPoint o = [self convertPoint: NSZeroPoint
-                            toView: 0L];
+	NSPoint o = [self convertPoint: NSZeroPoint toView: 0L]; // TODO: retina ?
 	frame.origin = o;
 	
 	if (NSEqualRects( frame, [vrView frame]) == NO)
@@ -2067,7 +2066,8 @@ unsigned int minimumStep;
 		windowController.lowLOD = YES;
 		
 		NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
-		mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
+		mouseLocation.x *= curDCM.pixelSpacingX;
+        mouseLocation.y *= curDCM.pixelSpacingY;
 		angleMPR = [self angleBetween: mouseLocation center: [self centerLines]];
 		
 		angleMPR -= rotateLinesStartAngle;
@@ -2081,8 +2081,9 @@ unsigned int minimumStep;
 	{
 		windowController.lowLOD = YES;
         
-        NSPoint point = [self convertPoint: [theEvent locationInWindow] fromView: nil]; // TODO
-        
+        NSPoint point = [self convertPoint: [theEvent locationInWindow] fromView: nil];
+        // TODO: retina ?
+
         point = [self convertPointToBacking: point];
         
         if (yFlipped)
