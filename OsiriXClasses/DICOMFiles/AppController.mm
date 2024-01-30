@@ -3735,9 +3735,9 @@ API_AVAILABLE(macos(10.14))
         }
     }
     
+#ifdef WITH_OS_VALIDATION
     if ([AppController validatedWithThisMacOS] == NO)
     {
-#ifdef WITH_OS_VALIDATION
         NSAlert *alert = [[NSAlert new] autorelease];
         [alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
         
@@ -3755,9 +3755,9 @@ API_AVAILABLE(macos(10.14))
         #endif
         if (button == NSAlertSecondButtonReturn)
             [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:upgradePage]];
-#endif
     }
-    
+#endif
+
     [self initTilingWindows];
     
     //if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // move temp & decompress to incoming
