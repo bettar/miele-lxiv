@@ -28,7 +28,7 @@
 
 #undef verify
 #include "dcmtk/dcmdata/dcdeftag.h"
-#include "dcmtk/dcmdata/dcvrpn.h" // for issue #91
+#include "dcmtk/dcmdata/dcvrpn.h" // for issue #115
 
 #define NUM_ENCODINGS        10
 
@@ -77,9 +77,9 @@
 		for (int i = 1; i < NUM_ENCODINGS; i++)
             myEncodings[i] = NSUTF8StringEncoding;
 		
-//		dataset ->print( COUT);
+//		dataset->print( COUT);
 		
-		if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
+		if (dataset->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
 		{
 			_specificCharacterSet = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 		
@@ -98,77 +98,86 @@
 			}
 		}
 		
-		if (dataset ->findAndGetString(DCM_StudyInstanceUID, string).good() && string != nil) 
+		if (dataset->findAndGetString(DCM_StudyInstanceUID, string).good() && string != nil) 
 			_uid = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			
-		if (dataset ->findAndGetString(DCM_StudyDescription, string).good() && string != nil) 
+		if (dataset->findAndGetString(DCM_StudyDescription, string).good() && string != nil) 
 			_theDescription = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
 		
-		if (dataset ->findAndGetString(DCM_PatientName, string).good() && string != nil)
+		if (dataset->findAndGetString(DCM_PatientName, string).good() && string != nil)
         {
-#if 1 // Issue #91
+            // issue #115
             OFString dicomPersonName(string);
-            OFString readablePersonName;
-            if (DcmPersonName::getFormattedNameFromString(dicomPersonName,
-                                                          readablePersonName,
-                                                          0 /*componentGroup*/
-                                                          ).good())
+            OFString formattedName;
+            OFString lastName, firstName, middleName, namePrefix, nameSuffix;
+            if (DcmPersonName::getNameComponentsFromString(dicomPersonName, lastName, firstName, middleName, namePrefix, nameSuffix).good())
             {
-                _name = [[NSString alloc] initWithUTF8String:readablePersonName.c_str()];
+                formattedName.clear();
+                if (!lastName.empty())
+                    formattedName += lastName;
+
+                if (!firstName.empty())
+                {
+                    if (!formattedName.empty())
+                        formattedName += ' ';
+
+                    formattedName += firstName;
+                }
+
+                _name = [[NSString alloc] initWithUTF8String:formattedName.c_str()];
             }
             else
-#endif
             {
                 _name = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
             }
         }
 		
-		if (dataset ->findAndGetString(DCM_PatientID, string).good() && string != nil)		
+		if (dataset->findAndGetString(DCM_PatientID, string).good() && string != nil)		
 			_patientID = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
 			
-		if (dataset ->findAndGetString(DCM_AccessionNumber, string).good() && string != nil)		
+		if (dataset->findAndGetString(DCM_AccessionNumber, string).good() && string != nil)		
 			_accessionNumber = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
 		
-		if (dataset ->findAndGetString(DCM_RETIRED_StudyComments, string).good() && string != nil)
+		if (dataset->findAndGetString(DCM_RETIRED_StudyComments, string).good() && string != nil)
 			_comments = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
 		
-        if (dataset ->findAndGetString(DCM_RETIRED_InterpretationStatusID, string).good() && string != nil)
+        if (dataset->findAndGetString(DCM_RETIRED_InterpretationStatusID, string).good() && string != nil)
 			_interpretationStatusID = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
         
-		if (dataset ->findAndGetString(DCM_ReferringPhysicianName, string).good() && string != nil)
+		if (dataset->findAndGetString(DCM_ReferringPhysicianName, string).good() && string != nil)
 			_referringPhysician = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
 		
-        if (dataset ->findAndGetString(DCM_PerformingPhysicianName, string).good() && string != nil)
+        if (dataset->findAndGetString(DCM_PerformingPhysicianName, string).good() && string != nil)
 			_performingPhysician = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
         
-		if (dataset ->findAndGetString(DCM_InstitutionName, string).good() && string != nil)		
+		if (dataset->findAndGetString(DCM_InstitutionName, string).good() && string != nil)		
 			_institutionName = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
 		
-		if (dataset ->findAndGetString(DCM_PatientBirthDate, string).good() && string != nil) {
+		if (dataset->findAndGetString(DCM_PatientBirthDate, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_birthdate = [[DCMCalendarDate dicomDate:dateString] retain];
 			[dateString release];
 		}
 
-		if (dataset ->findAndGetString(DCM_StudyDate, string).good() && string != nil) {
+		if (dataset->findAndGetString(DCM_StudyDate, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_date = [[DCMCalendarDate dicomDate:dateString] retain];
 			[dateString release];
 		}
 		
-		if (dataset ->findAndGetString(DCM_StudyTime, string).good() && string != nil) {
+		if (dataset->findAndGetString(DCM_StudyTime, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_time = [[DCMCalendarDate dicomTime:dateString] retain];
 			[dateString release];
 		}
 		
 
-		if (dataset ->findAndGetString(DCM_ModalitiesInStudy, string).good() && string != nil)	{
+		if (dataset->findAndGetString(DCM_ModalitiesInStudy, string).good() && string != nil)	{
 			_modality = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 		}
 		else
 		{
-			if (dataset ->findAndGetString(DCM_Modality, string).good() && string != nil)
+			if (dataset->findAndGetString(DCM_Modality, string).good() && string != nil)
 			{
 				_modality = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			}
@@ -189,13 +198,13 @@
 			*/
 		}
 		
-		if (dataset ->findAndGetString(DCM_NumberOfStudyRelatedInstances, string).good() && string != nil)
+		if (dataset->findAndGetString(DCM_NumberOfStudyRelatedInstances, string).good() && string != nil)
 		{
 			NSString	*numberString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_numberImages = [[NSNumber numberWithInt: [numberString intValue]] retain];
 			[numberString release];
 		}
-//		else if (dataset ->findAndGetString(DCM_ImageGroupLength, string).good() && string != nil)
+//		else if (dataset->findAndGetString(DCM_ImageGroupLength, string).good() && string != nil)
 //		{
 //			NSString	*numberString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 //			_numberImages = [[NSNumber numberWithInt: [numberString intValue]] retain];

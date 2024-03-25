@@ -1216,7 +1216,7 @@ extern BOOL forkedProcess;
                         dataset->putAndInsertString(DCM_NumberOfStudyRelatedSeries, value);
                     }
                     else
-                        dataset ->insertEmptyElement( key, OFTrue);
+                        dataset->insertEmptyElement( key, OFTrue);
                 }
             }
             @catch( NSException *e)
@@ -1310,7 +1310,7 @@ extern BOOL forkedProcess;
                             dataset->putAndInsertString( key, [self encodeString: [fetchedObject valueForKeyPath:@"series.study.comment"] image: image]);
                         }
                         else
-                            dataset ->insertEmptyElement( key, OFTrue);
+                            dataset->insertEmptyElement( key, OFTrue);
                     }
                     
                     else if (key == DCM_SeriesDescription && [fetchedObject valueForKeyPath: @"series.name"])
@@ -1470,7 +1470,7 @@ extern BOOL forkedProcess;
                     }
                     
                     else
-                        dataset ->insertEmptyElement( key, OFTrue);
+                        dataset->insertEmptyElement( key, OFTrue);
                 }
             }
             @catch( NSException *e)

@@ -226,13 +226,10 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
 	[mutable1 replaceOccurrencesOfString:@"\n"  withString:@""  options:0 range:mutable1.range];
 	[mutable1 replaceOccurrencesOfString:@"\""  withString:@"'" options:0 range:mutable1.range];
     [mutable1 replaceOccurrencesOfString:@"   " withString:@" " options:0 range:mutable1.range]; //triple space -> single space
-	[mutable1 replaceOccurrencesOfString:@"  "  withString:@" " options:0 range:mutable1.range];  //double space -> single space
+	[mutable1 replaceOccurrencesOfString:@"  "  withString:@" " options:0 range:mutable1.range]; //double space -> single space
 
-	NSUInteger i = [mutable1 length];
-	while ( --i > 0)
-        if ([mutable1 characterAtIndex: i]==' ')
-            [mutable1 deleteCharactersInRange: NSMakeRange( i, 1)];
-	
+    [mutable1 setString:[mutable1 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+    	
 	return mutable1;
 }
 

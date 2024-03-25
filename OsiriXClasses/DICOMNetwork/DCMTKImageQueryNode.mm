@@ -73,7 +73,7 @@
 		for (int i = 1; i < NUM_ENCODINGS; i++)
             myEncodings[i] = NSUTF8StringEncoding;
 		
-		if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
+		if (dataset->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
 		{
 			_specificCharacterSet = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			
@@ -92,25 +92,25 @@
 			}
 		}
 		
-		if (dataset ->findAndGetString(DCM_SOPInstanceUID, string).good() && string != nil) 
+		if (dataset->findAndGetString(DCM_SOPInstanceUID, string).good() && string != nil) 
 			_uid = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			
-		if (dataset ->findAndGetString(DCM_SeriesInstanceUID, string).good() && string != nil) 
+		if (dataset->findAndGetString(DCM_SeriesInstanceUID, string).good() && string != nil) 
 			_seriesInstanceUID = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 		
-		if (dataset ->findAndGetString(DCM_StudyInstanceUID, string).good() && string != nil) 
+		if (dataset->findAndGetString(DCM_StudyInstanceUID, string).good() && string != nil) 
 			_studyInstanceUID = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 		
-		if (dataset ->findAndGetString(DCM_InstanceNumber, string).good() && string != nil) 
+		if (dataset->findAndGetString(DCM_InstanceNumber, string).good() && string != nil) 
 			_name = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
 		
-		if (dataset ->findAndGetString(DCM_InstanceCreationDate, string).good() && string != nil) {
+		if (dataset->findAndGetString(DCM_InstanceCreationDate, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_date = [[DCMCalendarDate dicomDate:dateString] retain];
 			[dateString release];
 		}
 		
-		if (dataset ->findAndGetString(DCM_InstanceCreationTime, string).good() && string != nil) {
+		if (dataset->findAndGetString(DCM_InstanceCreationTime, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_time = [[DCMCalendarDate dicomTime:dateString] retain];
 			[dateString release];
