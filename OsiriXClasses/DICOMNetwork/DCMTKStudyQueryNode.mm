@@ -131,8 +131,13 @@
                 _name = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
             }
         }
-		
-		if (dataset->findAndGetString(DCM_PatientID, string).good() && string != nil)		
+        
+#if 0 // Would this be a good idea ?
+        if ([_name length] == 0)
+            _name = @"No name";
+#endif
+
+		if (dataset->findAndGetString(DCM_PatientID, string).good() && string != nil)
 			_patientID = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings replaceBadCharacters: NO] retain];
 			
 		if (dataset->findAndGetString(DCM_AccessionNumber, string).good() && string != nil)		

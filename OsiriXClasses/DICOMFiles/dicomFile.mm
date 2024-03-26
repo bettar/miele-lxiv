@@ -228,9 +228,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
     [mutable1 replaceOccurrencesOfString:@"   " withString:@" " options:0 range:mutable1.range]; //triple space -> single space
 	[mutable1 replaceOccurrencesOfString:@"  "  withString:@" " options:0 range:mutable1.range]; //double space -> single space
 
-    [mutable1 setString:[mutable1 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
-    	
-	return mutable1;
+    return [mutable1 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 }
 
 + (BOOL) checkForEscapeCharacter: (char *) strValue size:(size_t) strLength
