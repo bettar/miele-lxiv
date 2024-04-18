@@ -110,7 +110,8 @@
             OFString dicomPersonName(string);
             OFString formattedName;
             OFString lastName, firstName, middleName, namePrefix, nameSuffix;
-            if (DcmPersonName::getNameComponentsFromString(dicomPersonName, lastName, firstName, middleName, namePrefix, nameSuffix).good())
+            OFCondition status = DcmPersonName::getNameComponentsFromString(dicomPersonName, lastName, firstName, middleName, namePrefix, nameSuffix);
+            if (status.good())
             {
                 formattedName.clear();
                 if (!lastName.empty())
@@ -124,9 +125,11 @@
                     formattedName += firstName;
                 }
 
+                // It fails if 'ü' is "FC" (iso-ir-100) as opposed to "C3 BC" (UTF8)
                 _name = [[NSString alloc] initWithUTF8String:formattedName.c_str()];
             }
-            else
+
+            if (status.bad() || [_name length] == 0)
             {
                 _name = [[DicomFile stringWithBytes: (char*) string encodings: myEncodings] retain];
             }
@@ -134,7 +137,7 @@
         
 #if 0 // Would this be a good idea ?
         if ([_name length] == 0)
-            _name = @"No name";
+            _name = @"No patient name"; // No PatientName in dataset
 #endif
 
 		if (dataset->findAndGetString(DCM_PatientID, string).good() && string != nil)
