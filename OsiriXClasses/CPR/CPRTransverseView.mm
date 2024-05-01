@@ -589,7 +589,7 @@ extern int splitPosition[ 3];
 	{
 #ifdef WITH_OPENGL_32
         NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
-        // Issue #i22 ?
+        // Issue i22 ?
 #else
 		glLoadIdentity();
 		glScalef(2.0f / (xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width),

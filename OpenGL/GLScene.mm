@@ -17,7 +17,7 @@
 
 #import "GLScene.h"
 
-static GLScene *currentScene = nil;
+static GLScene *_currentScene = nil;
 
 @implementation GLScene
 
@@ -26,7 +26,7 @@ static GLScene *currentScene = nil;
 // Conceptually similar to '[[self openGLContext] makeCurrentContext]'
 + (void) setCurrentScene: (GLScene **) s
 {
-    currentScene = *s;
+    _currentScene = *s;
 
     renderer_setScene(s); // TODO: deprecate it, the renderer can get it from this class every time it needs it
 }
@@ -34,7 +34,7 @@ static GLScene *currentScene = nil;
 // Conceptually similar to '[NSOpenGLContext currentContext]'
 + (GLScene *) currentScene
 {
-    return currentScene;
+    return _currentScene;
 }
 
 #pragma mark - instance methods

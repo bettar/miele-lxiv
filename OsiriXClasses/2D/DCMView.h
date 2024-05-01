@@ -46,7 +46,7 @@ struct _points {
     GLint vertexAttribRGB;
     GLint vertexUniformProjection;
 };
-#endif // WITH_OPENGL_32
+#endif
 
 #pragma mark - Tools
 
@@ -223,8 +223,8 @@ typedef NS_ENUM(NSInteger, BlendingMode2DType) {
 	long			pixelMouseValueR, pixelMouseValueG, pixelMouseValueB;
     
 	float blendingMouseXPos, blendingMouseYPos;
-	float blendingPixelMouseValue;
-	long blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB;
+	float blendingPixelMouseValue; // grayscale
+	long blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB; // color
 	
     long			textureX, blendingTextureX;
     long			textureY, blendingTextureY;

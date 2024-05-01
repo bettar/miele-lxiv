@@ -8118,6 +8118,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries",
 					"$(BUILD_DIR)/$(CONFIGURATION)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_FAST_MATH = YES;
@@ -8643,6 +8644,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries",
 					"$(BUILD_DIR)/$(CONFIGURATION)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_FAST_MATH = YES;
@@ -9249,7 +9251,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries",
 					"$(BUILD_DIR)/$(CONFIGURATION)",
-					"\"$(SRCROOT)/Binaries/GLEW\"",
+					"$(PROJECT_DIR)",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -9260,6 +9262,7 @@
 					"$(inherited)",
 					OSIRIX_VIEWER,
 					WITH_GLM,
+					WITH_VTK_GLEW,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;

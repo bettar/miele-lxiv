@@ -659,7 +659,7 @@
 
 - (void) drawRect:(NSRect)aRect
 {
-// GitHub issue #45
+// Issue g45
 //    if (isEmpty) {
 //		[[NSColor blackColor] set];
 //		NSRectFill(aRect);
@@ -671,7 +671,7 @@
 
 //	if (isEmpty)
 //	{
-//		// trick to "hide" content of the vr view
+//		// trick to "hide" content of the VR view
 //		if (![self shading])
 //			[self activateShading:YES];
 //		[self setShadingValues: 0.0 :0.0 :0.0 :0.0];

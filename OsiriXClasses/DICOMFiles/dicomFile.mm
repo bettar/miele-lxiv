@@ -543,7 +543,7 @@ char* replaceBadChars(char* str, NSStringEncoding encoding)
     
     @try
     {
-        // Issue #g97
+        // Issue g97
         if ([DCMObject isDICOM:[NSData dataWithContentsOfFile: file]] == NO)
             return NO;
         

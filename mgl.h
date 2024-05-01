@@ -12,16 +12,16 @@
 #define mgl_h
 
 #define WITH_OPENGL_32 // core profile
-//#define WITH_GLEW
 
-#pragma mark -
-
-//#import <vtk_glew.h>
+#ifdef WITH_VTK_GLEW
+#include "vtk_glew.h"
+#endif
 
 #ifdef WITH_GLEW
-#import <GLEW/glew.h>
-#else
+#import <GL/glew.h>
+#endif
 
+#if !defined(WITH_GLEW) && !defined(WITH_VTK_GLEW)
 #define GL_GLEXT_WUNDEF_SUPPORT // see glext.h
 
 #ifdef WITH_OPENGL_32
@@ -36,7 +36,7 @@
 //#import <OpenGL/glext.h>
 #endif
 
-#endif // WITH_GLEW
+#endif // no WITH_GLEW, no WITH_VTK_GLEW
 
 #import <OpenGL/CGLContext.h> // for (*cgl_ctx->disp.delete_textures)
 

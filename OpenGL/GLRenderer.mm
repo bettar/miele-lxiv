@@ -270,7 +270,12 @@ bool checkExtension(const char* ext)
     if (!ext)
         return false;
 
-#if !defined( WITH_GLEW) && !defined(WITH_OPENGL_32)
+#if defined(WITH_GLEW) || defined(WITH_VTK_GLEW)
+    //return glewGetExtension(ext); // until GLEW 1.3.0
+    return glewIsSupported(ext);    // since GLEW 1.3.0
+#endif
+    
+#if !defined(WITH_GLEW) && !defined(WITH_VTK_GLEW) && !defined(WITH_OPENGL_32)
     //[[NSOpenGLContext currentContext] makeCurrentContext];
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 #endif
@@ -280,7 +285,7 @@ bool checkExtension(const char* ext)
         const GLubyte *strExtension = glGetString(GL_EXTENSIONS);
         return strstr((const char *)strExtension, ext) ? true : false;
     }
-    
+        
 #ifdef WITH_OPENGL_32
     // New API since OpenGL 3.0
     GLint nExt = 0;
@@ -383,7 +388,9 @@ GLuint loadShaders(NSString *vertex, NSString *geometry, NSString *fragment)
     // Attach the shaders
     auto programId = glCreateProgram();
 
-    //NSLog(@"%s %d, vertex:%u (geometry:%u) fragment:%u program:%u", __FUNCTION__, __LINE__, vs, gs, fs, programId);
+#ifdef DEBUG_RENDERER_CALLS
+    NSLog(@"%s %d, %@ vertex:%u (geometry:%u) fragment:%u program:%u", __FUNCTION__, __LINE__, [vertex lastPathComponent], vs, gs, fs, programId);
+#endif
 
     glAttachShader(programId, vs);
     if (geometry.length > 0) glAttachShader(programId, gs);
@@ -498,7 +505,7 @@ void renderer_enable_blend_smooth()
         return;
 #endif
     
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
 
     glEnable(GL_LINE_SMOOTH);

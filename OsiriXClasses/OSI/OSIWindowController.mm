@@ -18,6 +18,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "mgl.h"
+
 #import "OSIWindowController.h"
 #import "ToolbarPanel.h"
 #import "ThumbnailsListPanel.h"

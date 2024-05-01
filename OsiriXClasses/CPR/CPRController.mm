@@ -203,7 +203,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     self.straightenedCPRAngle = self.straightenedCPRAngle + 0.1; // To force the update...
 }
 
-// TBC related to issue #g93 ?
+// TBC related to issue g93 ?
 - (instancetype)initWithDCMPixList:(NSMutableArray*)pix
                          filesList:(NSMutableArray*)files
                         volumeData:(NSData*)volume

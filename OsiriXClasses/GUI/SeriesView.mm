@@ -396,8 +396,8 @@
 {
 	for (DCMView *view in imageViews)
 	{
-		if( bC)
-			[view setBlending: [bC imageView]];			
+        if (bC)
+            [view setBlending: [bC imageView]];
 		else
 			[view setBlending: nil];
 		

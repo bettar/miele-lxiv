@@ -2887,7 +2887,7 @@ static BOOL initialized = NO;
                 NSLog(@"OpenJPEG %d.%d.%d", OPJ_VERSION_MAJOR, OPJ_VERSION_MINOR, OPJ_VERSION_BUILD);
                 // To read the OpenGL version we need a context. Too early here.
                 
-#ifdef WITH_GLEW
+#if defined( WITH_GLEW) || defined( WITH_VTK_GLEW)
                 NSLog(@"GLEW %s", glewGetString(GLEW_VERSION));
 #endif
 #ifdef WITH_OPENSSL

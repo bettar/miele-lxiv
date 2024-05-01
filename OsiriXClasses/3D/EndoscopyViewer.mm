@@ -779,7 +779,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 }
 
 // Keep the top and bottom vertical splits aligned
-// GitHub issue #51: now this functionality is achieved with a constraint
+// Issue g51: now this functionality is achieved with a constraint
 // in IB to keep the two left subviews with the same width
 - (void)splitViewDidResizeSubviews:(NSNotification *)aNotification
 {

@@ -31,7 +31,7 @@ vtkStandardNewMacro(vtkMieleFixedPointVolumeRayCastMapper);
 
 vtkMieleFixedPointVolumeRayCastMapper::vtkMieleFixedPointVolumeRayCastMapper()
 {
-    // Issue #e27
+    // Issue e27
     this->MIPHelper = vtkMieleFixedPointVolumeRayCastMIPHelper::New();
 }
 
@@ -47,7 +47,7 @@ void vtkMieleFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume 
       return;
     }
 
-    // AVERAGE_INTENSITY_BLEND not supported (Issue #e27)
+    // AVERAGE_INTENSITY_BLEND not supported (Issue e27)
     if (this->GetBlendMode() != vtkVolumeMapper::COMPOSITE_BLEND &&
       this->GetBlendMode() != vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND &&
       this->GetBlendMode() != vtkVolumeMapper::MINIMUM_INTENSITY_BLEND &&
@@ -145,7 +145,7 @@ void vtkMieleFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume 
 #endif
 
 #ifdef WITH_OPENGL_32
-    this->DisplayRenderedImage(ren, vol); // Issue #i18, #g93 ?
+    this->DisplayRenderedImage(ren, vol); // Issue i18, g93 ?
 #endif
 
     this->Timer->StopTimer();

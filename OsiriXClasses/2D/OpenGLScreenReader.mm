@@ -236,7 +236,7 @@
 // Use this routine if you want to read only a portion of the screen pixels
 - (void) readPartialScreenToBuffer: (size_t) width bufferHeight:(size_t) height bufferBaseAddress: (void *) baseAddress
 {
-#ifndef WITH_GLEW
+#if !defined( WITH_GLEW) && !defined( WITH_VTK_GLEW)
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 #endif
     // select front buffer as our source for pixel data

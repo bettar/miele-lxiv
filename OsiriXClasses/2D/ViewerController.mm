@@ -18,6 +18,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "mgl.h"
+
 #import "options.h"
 #import "mieleTypes.h"
 
@@ -13540,18 +13542,16 @@ long				x, y;
         [imageView sendSyncMessage:0];
         
         blendingController = bC;
-        
         if (blendingController)
         {
-            NSLog( @"Blending Activated!");
+            NSLog(@"Blending Activated!");
             
             if ([blendingController blendingController] == self)	// NO cross blending !
                 [blendingController ActivateBlending: nil];
         
             if ([imageView.studyObj.studyInstanceUID isEqualToString: blendingController.imageView.studyObj.studyInstanceUID])
             {
-                // By default, re-activate 'propagate settings'
-                
+                // By default, re-activate 'propagate settings'                
                 [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"COPYSETTINGS"];
             }
             
@@ -13621,7 +13621,7 @@ long				x, y;
             }
             
             if (proceed)
-            {		
+            {
                 [imageView setBlending: [blendingController imageView]];
                 [blendingSlider setEnabled:YES];
                 [blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) ([blendingSlider floatValue] + 256.) / 5.12]];
@@ -13645,7 +13645,6 @@ long				x, y;
                 
                 [seriesView ActivateBlending:blendingController blendingFactor:[blendingSlider floatValue]];
             }
-            
             [backCurCLUTMenu release];
             backCurCLUTMenu = 0L;
             
@@ -13677,7 +13676,7 @@ long				x, y;
         
         [self ApplyCLUTString:curCLUTMenu];
         [self refreshMenus];
-        }
+    }
     @catch ( NSException *e) {
         N2LogException( e);
     }

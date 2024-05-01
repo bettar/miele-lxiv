@@ -1378,7 +1378,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         int endLine = [[dict valueForKey:@"end"] intValue];
                         
                         int ii = (endLine - startLine) * [o pwidth];
-                        unsigned char	*dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
+                        unsigned char *dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
                         float *src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
                         float from = [o wl] - [o ww]/2.;
                         float ratio = 4096. / [o ww];
@@ -6276,7 +6276,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     }
     
     self.SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"]; // 0008,0016
-    self.modalityString = [dcmObject attributeValueWithName:@"Modality"]; // 0008,0060 issue #i45
+    self.modalityString = [dcmObject attributeValueWithName:@"Modality"]; // 0008,0060 issue i45
     self.referencedSOPInstanceUID = [dcmObject attributeValueWithName:@"ReferencedSOPInstanceUID"];
     //-----------------------common---------------------------------------------
     

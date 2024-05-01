@@ -18,6 +18,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "mgl.h"
+
 #import "NavigatorWindowController.h"
 #import "ViewerController.h"
 #import "AppController.h"

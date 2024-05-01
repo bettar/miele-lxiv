@@ -18,7 +18,8 @@ void main()
 {
 #if 0
     // Listing 11.23 of SuperBible
-    vec4 input_color = vec4(texture( uTextureS2D, UV ).rgb, 1.0 );
+    //vec4 input_color = vec4(texture( uTextureS2D, UV ).rgb, 1.0 ); // no fusion blending
+    vec4 input_color = vec4(texture( uTextureS2D, UV ).rgba );
     vec4 transformed_color = uColorCorrectionM * input_color;
     final_color = transformed_color / transformed_color.w;
 #else

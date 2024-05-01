@@ -98,7 +98,7 @@
         const int srcStride = 4;
         int dstStride = *spp;
 
-#ifndef WITH_GLEW
+#if !defined(WITH_GLEW) && !defined(WITH_VTK_GLEW)
         CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 #endif
 		

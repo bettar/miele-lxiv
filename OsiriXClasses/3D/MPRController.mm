@@ -85,7 +85,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	return [emptyPix autorelease];
 }
 
-// TBC related to issue #g93 ?
+// TBC related to issue g93 ?
 - (id)initWithDCMPixList:(NSMutableArray*)pix
                filesList:(NSMutableArray*)files
               volumeData:(NSData*)volume
@@ -457,7 +457,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     //NSDisableScreenUpdates();
     
 #if 0
-    // GitHub issue #22: with the following code commented in the window becomes impossible to resize
+    // Issue g22: with the following code commented in the window becomes impossible to resize
     [verticalSplit setTranslatesAutoresizingMaskIntoConstraints: YES];
     [horizontalSplit setTranslatesAutoresizingMaskIntoConstraints: YES];
 #endif

@@ -106,7 +106,7 @@
     return self;
 }
 
-// Issue #g56
+// Issue g56
 - (bool) automationConsent: (NSString *)bundleID
 {
     bool consentResult = true;
@@ -171,7 +171,7 @@
 
 - (void)runScript:(NSString *)txt
 {
-    // Issue #g56
+    // Issue g56
     if (![self automationConsent:@"com.apple.Photos"])
         return;
 

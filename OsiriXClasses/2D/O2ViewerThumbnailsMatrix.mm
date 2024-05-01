@@ -18,6 +18,8 @@
  PURPOSE.
  =========================================================================*/
 
+#import "mgl.h"
+
 #import "O2ViewerThumbnailsMatrix.h"
 #import "DicomStudy.h"
 #import "BrowserController.h"

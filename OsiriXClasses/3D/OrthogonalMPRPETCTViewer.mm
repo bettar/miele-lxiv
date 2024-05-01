@@ -385,7 +385,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 
 - (void) setWLWW:(float) iwl :(float) iww :(id) sender
 {
-    // Issue #i19
+    // Issue i19
     NSLog(@"%s %d, self class:%@, viewer class:%@", __FUNCTION__, __LINE__,
           NSStringFromClass([self class]),
           NSStringFromClass([viewer class]));

@@ -2948,7 +2948,7 @@ static BOOL protectionAgainstReentry = NO;
                                             }
                                             else if ([[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"] == NO)
                                             {
-                                                // @@@ Issue #g97 D
+                                                // Issue g97 D
                                                 // All other non-DICOM files if allowed in the Preferences
                                                 [copiedFiles addObject: dstPath];
                                             }

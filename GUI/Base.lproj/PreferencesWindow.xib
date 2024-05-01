@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22505" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22505"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -24,23 +24,23 @@
             <rect key="contentRect" x="114" y="455" width="583" height="397"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <view key="contentView" id="21">
-                <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
+                <rect key="frame" x="0.0" y="0.0" width="583" height="373"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="754" customClass="SFAuthorizationView">
-                        <rect key="frame" x="583" y="100" width="0.0" height="297"/>
+                        <rect key="frame" x="583" y="100" width="0.0" height="273"/>
                     </customView>
                     <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="715">
-                        <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
+                        <rect key="frame" x="0.0" y="0.0" width="583" height="373"/>
                         <clipView key="contentView" id="0tL-TD-8IP">
-                            <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
+                            <rect key="frame" x="0.0" y="0.0" width="583" height="373"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="718">
-                                    <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="568" height="358"/>
                                     <subviews>
                                         <customView translatesAutoresizingMaskIntoConstraints="NO" id="757" customClass="PreferencesView">
-                                            <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="583" height="373"/>
                                         </customView>
                                     </subviews>
                                     <constraints>

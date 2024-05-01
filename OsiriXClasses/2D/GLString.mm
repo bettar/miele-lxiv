@@ -266,7 +266,7 @@
 
             glGenTextures(1, &textureID);
 			
-#if !defined( WITH_OPENGL_32) || defined( WITH_GLEW)
+#if !defined( WITH_OPENGL_32) || defined( WITH_GLEW) || defined( WITH_VTK_GLEW)
 			glTexParameterf(target, GL_TEXTURE_PRIORITY, 1.0f);
 #endif
 			glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
@@ -496,7 +496,7 @@
     GLenum target = GL_TEXTURE_RECTANGLE_EXT;
 #endif
     
-    glDisable (GL_DEPTH_TEST); // ensure text is not removed by depth buffer test.
+    glDisable(GL_DEPTH_TEST); // ensure text is not removed by depth buffer test.
     
 #ifdef DEBUG_TEXTURE_WITH_SHADER
     glDisable(GL_BLEND);

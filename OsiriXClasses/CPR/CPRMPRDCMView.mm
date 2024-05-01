@@ -735,7 +735,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 	if (thickness > 2)
 	{
-        // Issue #i23 ?
+        // Issue i23 ?
         [self setShaderProgramForLineWidth: 2.0 * self.window.backingScaleFactor];
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: 0];
 		
@@ -3046,7 +3046,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 @implementation DCMView (CPRAdditions)
 
-// TBC relevant to issue #g93 ?
+// TBC relevant to issue g93 ?
 - (N3AffineTransform)viewToPixTransform // converts coordinates in the NSView's space to coordinates on a DCMPix object in "Slice Coordinates"
 {
     // since there is no way to get matrix values directly for this transformation, we will figure out how the basis vectors get transformed, and construct the matrix from these values

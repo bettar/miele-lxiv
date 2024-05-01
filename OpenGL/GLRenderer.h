@@ -8,10 +8,11 @@
 #ifndef GLRenderer_hpp
 #define GLRenderer_hpp
 
-#import <AppKit/AppKit.h>
-#import "glm/glm.hpp"
+#import "mgl.h"  // include first. For WITH_OPENGL_32
 
-#import "mgl.h" // for WITH_OPENGL_32
+#import <AppKit/AppKit.h>
+
+#import "glm/glm.hpp"
 
 @class GLScene;
 

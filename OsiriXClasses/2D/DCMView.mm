@@ -93,7 +93,7 @@ const char *stringCRSpaces = "\n                                                
 //#define new_loupe
 
 #if defined(WITH_OPENGL_32)
-#define WITH_SWIZZLE_MASK // to fix issue E20
+//#define WITH_SWIZZLE_MASK // to fix issue e20
 #endif
 
 SynchroType syncro = SYNCHRO_POSITION_ABS;
@@ -442,7 +442,7 @@ static long GetNextTextureSize (long textureDimension,
                                 Boolean textureRectangle)
 {
 #ifdef WITH_OPENGL_32
-    textureRectangle = true;  // workaround for issue #i21
+    textureRectangle = true;  // workaround for issue i21
 #endif
 	long targetTextureSize = maxTextureSize; // start at max texture size
 	if (textureRectangle)
@@ -593,7 +593,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 }
 @end
 
-#pragma mark -
+#pragma mark - private stuff
 
 @interface DCMView ()
 {
@@ -637,6 +637,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 - (void) drawKeyViewBox;
 - (void) drawKeyViewBox2;
 - (void) drawKeyViewBox3: (NSRect) rr;
+
+- (void) resetImageCCM;
+- (void) setImageCCM_forWLWW;
+- (void) setImageCCM_grayFromRed;
 @end
 
 #pragma mark -
@@ -2074,7 +2078,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             
             [stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 			stringTex = [[StringTexture alloc] initWithString:str withAttributes:stanStringAttrib];
-//            [stringTex setAntiAliasing: YES]; // One possible fix for issue #i43
+//            [stringTex setAntiAliasing: YES]; // One possible fix for issue i43
 			[stringTex genTextureWithBackingScaleFactor:self.window.backingScaleFactor];
 			[stringTextureDic setObject:stringTex forKey:str];
 			[stringTex release];
@@ -2761,8 +2765,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #ifdef WITH_OPENGL_32
             //NSLog(@"%s %d, TODO: OpenGL Core", __FUNCTION__, __LINE__);
             renderer_setProgram(0, __LINE__);
-            fontListGL = FONT_TYPE_INVALID; // issue #g79
-            labelFontListGL = FONT_TYPE_INVALID; // issue #g79
+            fontListGL = FONT_TYPE_INVALID; // issue g79
+            labelFontListGL = FONT_TYPE_INVALID; // issue g79
 #else
             if (fontListGL)
                 glDeleteLists(fontListGL, NUM_DISPLAY_LISTS);
@@ -3464,10 +3468,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		}
         else
         {
-#ifndef NDEBUG
-			NSLog(@"%s %d: %d", __FUNCTION__, __LINE__, c);
-#endif
-			
+			//NSLog(@"%s %d: %d", __FUNCTION__, __LINE__, c);
 			if ([self actionForHotKey:[event characters]] == NO)
                 [super keyDown:event];
         }
@@ -4341,7 +4342,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                         pixelMouseValueB = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +3];
                     }
                     else
+                    {
                         pixelMouseValue = [curDCM getPixelValueX: xPos Y:yPos];
+                    }
 
                     if (cmouseXPos != mouseXPos || cmouseYPos != mouseYPos)
                     {
@@ -4443,7 +4446,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                             blendingPixelMouseValueB = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +3];
                         }
                         else
+                        {
                             blendingPixelMouseValue = [[blendingView curDCM] getPixelValueX: xPos Y:yPos];
+                        }
                     }
                 }
             }
@@ -4538,18 +4543,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 {
     if (n.object != self)
     {
-        float	cpixelMouseValueR = pixelMouseValueR, cpixelMouseValueG = pixelMouseValueG, cpixelMouseValueB = pixelMouseValueB;
-        float	cmouseXPos = mouseXPos, cmouseYPos = mouseYPos;
-        float	cpixelMouseValue = pixelMouseValue;
+        float cpixelMouseValueR = pixelMouseValueR;
+        float cpixelMouseValueG = pixelMouseValueG;
+        float cpixelMouseValueB = pixelMouseValueB;
+        float cmouseXPos = mouseXPos;
+        float cmouseYPos = mouseYPos;
+        float cpixelMouseValue = pixelMouseValue;
         
-        pixelMouseValueR = pixelMouseValueG = pixelMouseValueB = mouseXPos = mouseYPos = pixelMouseValue = 0;
+        pixelMouseValueR = pixelMouseValueG = pixelMouseValueB = 0;
+        mouseXPos = mouseYPos = 0;
+        pixelMouseValue = 0;
         
-        float	cblendingMouseXPos = blendingMouseXPos, cblendingMouseYPos = blendingMouseYPos;
-        float	cblendingPixelMouseValue = blendingPixelMouseValue, cblendingPixelMouseValueR = blendingPixelMouseValueR, cblendingPixelMouseValueG = blendingPixelMouseValueG, cblendingPixelMouseValueB = blendingPixelMouseValueB;
+        float cblendingMouseXPos = blendingMouseXPos;
+        float cblendingMouseYPos = blendingMouseYPos;
+        float cblendingPixelMouseValue = blendingPixelMouseValue;
+        float cblendingPixelMouseValueR = blendingPixelMouseValueR;
+        float cblendingPixelMouseValueG = blendingPixelMouseValueG;
+        float cblendingPixelMouseValueB = blendingPixelMouseValueB;
         
-        blendingMouseXPos = blendingMouseYPos = blendingPixelMouseValue = blendingPixelMouseValueR = blendingPixelMouseValueG = blendingPixelMouseValueB = 0;
+        blendingMouseXPos = blendingMouseYPos = 0;
+        blendingPixelMouseValue = 0;
+        blendingPixelMouseValueR = blendingPixelMouseValueG = blendingPixelMouseValueB = 0;
         
         BOOL needUpdate = NO;
+
         // This code is redundantly duplicated by the code posting the notification
         if (cpixelMouseValueR != pixelMouseValueR) needUpdate = YES;
         if (cpixelMouseValueG != pixelMouseValueG) needUpdate = YES;
@@ -8375,14 +8392,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         return;
 #endif
 
-#ifdef WITH_GLEW // 20191122 added
 #ifdef GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT
-    if (checkExtension("GL_EXT_texture_rectangle")) {
+    if (checkExtension("GL_EXT_texture_rectangle"))
+    {
         glGetIntegerv(GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT, &NPOTDMaxTextureSize);
         if (NPOTDMaxTextureSize < _minMaxNOPTDTextureSize)
             _minMaxNOPTDTextureSize = NPOTDMaxTextureSize;
     }
-#endif
 #endif
     
     // Compare capabilities based on extension string and GL version
@@ -10657,9 +10673,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         }
         
 		glEnable(GL_LINE_SMOOTH);
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_BLEND);
-        [self setShaderProgramOverlayLine]; // Issue #i23 ?
+        [self setShaderProgramOverlayLine]; // Issue i23 ?
         renderer_drawLine_xy([pArray copy], GL_LINES);
 	}
 	
@@ -10895,7 +10911,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                 bblue = PETblueTable;
             }
             else
+            {
                 [blendingView getCLUT:&bred :&bgreen :&bblue];
+            }
             
             //heighthalf = 0; // ??? TODO:
         
@@ -11698,7 +11716,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE); checkOpenGLErrors(__LINE__);
 #ifdef WITH_OPENGL_32
     // TODO:
-    #ifdef WITH_GLEW
+    #if defined( WITH_GLEW) || defined( WITH_VTK_GLEW)
     if (checkExtension("GL_EXT_texture_rectangle") &&   // for GL_TEXTURE_RECTANGLE_EXT
         checkExtension("GL_APPLE_texture_range") &&     // for GL_TEXTURE_STORAGE_HINT_APPLE
         checkExtension("GL_APPLE_vertex_array_range"))  // for GL_STORAGE_CACHED_APPLE
@@ -12097,7 +12115,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         // ( 1, 1) ------> (width,height)
 		glViewport(0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height);
 
-#ifndef NDEBUG
+#if 0 //ndef NDEBUG
         glClearColor(0.0f, 0.0f, 0.5f, 1.0f); // ok dark blue
 #else
         if (self.whiteBackground)
@@ -12108,7 +12126,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         
 		glClear(GL_COLOR_BUFFER_BIT);
 
-#ifdef WITH_OPENGL_32 // TBC is this related to issue #g93 ?
+#ifdef WITH_OPENGL_32 // TBC is this related to issue g93 ?
 //  #ifdef WITH_GLM
 //        // Send our transformation to the currently bound shader,
 //        // in the "MVP" uniform
@@ -12119,33 +12137,41 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		
 		if (dcmPixList && curImage > -1)
 		{
-			if (blendingView != nil &&
+            glBlendFunc(GL_ONE, GL_ONE);    checkOpenGLErrors(__LINE__);
+
+            if (blendingView != nil &&
                 syncOnLocationImpossible == NO)// && ctx!=_alternateContext)
 			{
-				glBlendFunc(GL_ONE, GL_ONE);    checkOpenGLErrors(__LINE__);
-				glEnable( GL_BLEND);
+				glEnable(GL_BLEND);
 			}
 			else
 			{
-				glBlendFunc(GL_ONE, GL_ONE);    checkOpenGLErrors(__LINE__);
-				glDisable( GL_BLEND);
+				glDisable(GL_BLEND);
 			}
             
             checkOpenGLErrors(__LINE__);
 
             // Draw DICOM image (or waveform)
-#ifdef WITH_WAVEFORM_SUPPORT
-			if (curDCM.waveform) // [DCMAbstractSyntaxUID isWaveform:curDCM.SOPClassUID]
-                [self drawWaveform];
-            else
-#endif
-                [self drawRectIn:drawingFrameRect
-                                :pTextureName
-                                :offset
-                                :textureX
-                                :textureY
-                                :textureWidth
-                                :textureHeight];
+//#ifdef WITH_WAVEFORM_SUPPORT
+//			if (curDCM.waveform) // [DCMAbstractSyntaxUID isWaveform:curDCM.SOPClassUID]
+//                [self drawWaveform];
+//            else
+//#endif
+            
+            // Issue g116
+            if (blendingView &&
+                [self class] == [DCMView class]) // to be conservative, not breaking derived classes
+            {
+                [self setImageCCM_forWLWW];
+            }
+
+            [self drawRectIn:drawingFrameRect
+                            :pTextureName
+                            :offset
+                            :textureX
+                            :textureY
+                            :textureWidth
+                            :textureHeight];
 
 			BOOL noBlending = NO;
 			
@@ -12161,19 +12187,27 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			{
 				glBlendEquation(GL_FUNC_ADD);
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				
+
 				if (blendingTextureName)
-					[blendingView drawRectIn:drawingFrameRect
+                {
+                    // Issue g116
+                    if ([self class] == [DCMView class]) // to be conservative, not breaking derived classes
+                        [self resetImageCCM];
+
+                    [blendingView drawRectIn:drawingFrameRect
                                             :blendingTextureName
                                             :offset
                                             :blendingTextureX
                                             :blendingTextureY
                                             :blendingTextureWidth
                                             :blendingTextureHeight];
+                }
 				else
-					NSLog( @"blendingTextureName == nil");
+                {
+                    NSLog( @"blendingTextureName == nil");
+                }
 				
-				glDisable( GL_BLEND);
+				glDisable(GL_BLEND);
 			}
 			
 			if (is2DViewer)
@@ -15079,7 +15113,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
      resampledBaseAddrSize: (int*) rBAddrSize
 {
 #ifdef DEBUG_ISSUE_G93
-    NSLog(@"\n--- --- ---\n=== DCMView.mm %d loadTextureIn >>> START\n\t\t %@ %p", __LINE__, NSStringFromClass([self class]), self);
+    NSLog(@"\n--- --- ---\n=== DCMView.mm %d loadTextureIn >>> START\n\t\t %@ %p, mod: %@, blending %d", __LINE__, NSStringFromClass([self class]), self, self.imageObj.modality, blending);
 #endif
     checkOpenGLErrors(__LINE__);
 
@@ -15108,7 +15142,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		intFULL32BITPIPELINE = NO;
 	
 #ifdef DEBUG_ISSUE_E4
-    NSLog(@"loadTextureIn %d, intFULL32BITPIPELINE:%d", __LINE__, intFULL32BITPIPELINE);
+    NSLog(@"loadTextureIn %d, intFULL32BITPIPELINE:%d, %@", __LINE__, intFULL32BITPIPELINE, self.imageObj.modality);
 #endif
 
     if (!blending)
@@ -15140,7 +15174,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		texture = nil;
 	}
 	
-    if (curDCM == nil) {	// No image
+    if (curDCM == nil) { // No image
         NSLog(@"DCMView.mm:%d loadTextureIn: !curDCM, %@ %p", __LINE__, NSStringFromClass([self class]), self);
 		return texture;	// == nil
     }
@@ -15172,7 +15206,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		intFULL32BITPIPELINE = NO;
 		
 #ifdef DEBUG_ISSUE_E4
-    NSLog(@"loadTextureIn %d, intFULL32BITPIPELINE:%d, isRGB:%d", __LINE__, intFULL32BITPIPELINE, isRGB);
+    NSLog(@"loadTextureIn %d, intFULL32BITPIPELINE:%d, isRGB:%d, %@", __LINE__, intFULL32BITPIPELINE, isRGB, self.imageObj.modality);
 #endif
 
 	if (curDCM.needToCompute8bitRepresentation && !intFULL32BITPIPELINE)
@@ -15333,12 +15367,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                        0);
 		}
 		else
+        {
             vImageTableLookUp_ARGB8888(&dest8, &dest8,
                                        (Pixel_8*) currentAlphaTable,
                                        (Pixel_8*) rT,
                                        (Pixel_8*) gT,
                                        (Pixel_8*) bT,
                                        0);
+        }
 	}
 
     // End of color table lookups
@@ -15558,7 +15594,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	*tX = GetTextureNumFromTextureDim( *tW, _minMaxTextureSize, false, ef.EXT_texture_rectangle );
 	*tY = GetTextureNumFromTextureDim( *tH, _minMaxTextureSize, false, ef.EXT_texture_rectangle );
     //NSLog(@"DCMView.mm %d loadTextureIn, total tiles:(%li,%li)", __LINE__, *tX, *tY);
-
+    
 	if (*tX * *tY == 0)
 		NSLog(@"****** *tX * *tY == 0");
 	
@@ -15573,12 +15609,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     checkOpenGLErrors(__LINE__);
     
     // Make a single memory mapping for all of the textures used by the application:
-#ifdef WITH_GLEW
-    NSLog(@"%s %d, GLEW_APPLE_texture_range %d", __FILE__, __LINE__, GLEW_APPLE_texture_range);
-    if (GLEW_APPLE_texture_range)
-#else
     if (checkExtension("GL_APPLE_texture_range"))
-#endif
     {
         glTextureRangeAPPLE(_textRectMode, (*tW) * (*tH) * 4, baseAddr);
         checkOpenGLErrors(__LINE__);
@@ -15704,12 +15735,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #ifdef DEBUG_ISSUE_E4
                         NSLog(@"loadTextureIn %d, isRGB (case A)", __LINE__);
 #endif
-#ifdef WITH_OPENGL_32
-                        // Fix issue E4
-                        glm::mat4 CCM = glm::mat4(1.0);
-                        [scene.imageProgram Bind];
-                        [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
-#endif
+                        [self resetImageCCM]; // Issue e4
                         // case CC
                         glTexImage2D(_textRectMode, 0,
                                       GL_RGBA,
@@ -15722,13 +15748,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #ifdef DEBUG_ISSUE_E4
                         NSLog(@"loadTextureIn %d, NOT isRGB (case B)", __LINE__);
 #endif
-#ifdef WITH_OPENGL_32
-                        glm::mat4 CCM = glm::mat4(1.0);
-                        [scene.imageProgram Bind];
-                        [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
-#endif
-                        // case DD issue e20
+                        // Issue g116
+                        if (!blending &&
+                            [self class] == [DCMView class]) // to be conservative, not breaking derived classes
+                        {
+                            [self resetImageCCM];
+                        }
+
+                        // Issue e20
                         // grayscale image with LUT
+                        // case DD
                         glTexImage2D(_textRectMode, 0,
                                       GL_RGBA,
                                       currWidth, currHeight, 0,
@@ -15746,15 +15775,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #ifdef DEBUG_ISSUE_E4
                             NSLog(@"loadTextureIn %d, NOT isRGB, NOT intFULL32BITPIPELINE (case C1)", __LINE__);
 #endif
+                            // We don't use WW/WL in this case
 #ifdef WITH_OPENGL_32
-                            { // issue #e4, issue #i45
-                                [self setShaderProgramImage];
-                                // We don't use WW/WL in this case, so reset the CCM
-                                glm::mat4 CCM = glm::mat4(1.0);
-                                // Set the CCM so we get grayscale from red
-                                CCM[0].g =CCM[0].b = 1;
-                                [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
-                            }
+                            // Issue e4, Issue i45
+                            [self setImageCCM_grayFromRed];
+                            
                             GLenum target = GL_TEXTURE_2D;
                             GLint internalFormat = GL_R32F;//GL_R8;//GL_RGBA
                             GLenum format = GL_RED;
@@ -15776,24 +15801,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #ifdef DEBUG_ISSUE_E4
                             NSLog(@"loadTextureIn %d, NOT isRGB, intFULL32BITPIPELINE (case C2)", __LINE__);
 #endif
-							float min = curWL - curWW / 2;
-							float max = curWL + curWW / 2;
-							if (max-min == 0)
-							{
+
+#ifdef WITH_OPENGL_32
+                            [self setImageCCM_forWLWW]; // Issue i30
+#else
+                            float min = curWL - curWW / 2;
+                            float max = curWL + curWW / 2;
+                            if (max-min == 0)
+                            {
                                 // Calculate the max and min from the actual pixel values
-								min = [curDCM fullwl] - [curDCM fullww] / 2;
-								max = [curDCM fullwl] + [curDCM fullww] / 2;
-							}
+                                min = [curDCM fullwl] - [curDCM fullww] / 2;
+                                max = [curDCM fullwl] + [curDCM fullww] / 2;
+                            }
 
                             // Window width and level is implemented here
-#ifdef WITH_OPENGL_32
-                            scene.bias = -min; // Issue i30
-                            scene.scale = 1./(max-min);
-
-                            [self setShaderProgramImage];
-                            [self applyColorCorrectionMatrix: scene.bias
-                                                            : scene.scale];
-#else
                             glPixelTransferf( GL_RED_BIAS, -min/(max-min));
                             glPixelTransferf( GL_RED_SCALE, 1./(max-min));
                             checkOpenGLErrors(__LINE__);
@@ -15801,15 +15822,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
                             if (checkExtension("GL_APPLE_float_pixels"))
                             {
-            #ifdef WITH_OPENGL_32
+#ifdef WITH_OPENGL_32
                                 GLenum target = GL_TEXTURE_RECTANGLE;
                                 GLint internalFormat = GL_R8;
                                 GLenum format = GL_RED;
-            #else
+#else
                                 GLenum target = _textRectMode;
                                 GLint internalFormat = GL_LUMINANCE_FLOAT32_APPLE;  // deprecated rendering engine ?
                                 GLenum format = GL_LUMINANCE;
-            #endif
+#endif
                                 // case FF
                                 glTexImage2D(target, 0,
                                              internalFormat,
@@ -15819,32 +15840,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                             }
 #ifdef WITH_OPENGL_32
                             else
-  #ifdef WITH_SWIZZLE_MASK
-                                if (checkExtension("GL_ARB_texture_swizzle"))
-  #endif
                             {
-                                GLenum target = _textRectMode;
-  #ifdef WITH_SWIZZLE_MASK
-                                GLint swizzleMask[] = {GL_RED, GL_RED, GL_RED, GL_ONE};
-                                //glBindTexture(target, texture[k++]);
-                                glTexParameteriv(target, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask); checkOpenGLErrors(__LINE__);
-  #endif
-                                // case GG issue e20
-                                // Give the image to OpenGL
-                                glTexImage2D(target, 0,  // preview, 2D view, Opacity "linear table"
-                                             GL_R32F, //GL_RGBA,
+                                // case GG
+                                glTexImage2D(GL_TEXTURE_2D, 0,  // preview, 2D view, Opacity "linear table"
+                                             GL_RGBA,
                                              currWidth, currHeight, 0,
                                              GL_RED, GL_FLOAT,
                                              pBuffer);
-                                checkOpenGLErrors(__LINE__);
                             }
-  #ifdef WITH_SWIZZLE_MASK
-                            else {
-                                [NSException raise:NSGenericException
-                                            format:@"Line %i, no GL_APPLE_float_pixels, _textRectMode:0x%x", __LINE__, _textRectMode];
-                            }
-  #endif
-#endif // WITH_OPENGL_32
+#endif
                             checkOpenGLErrors(__LINE__);
 
 #ifdef WITH_OPENGL_32
@@ -15965,7 +15969,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     [[self openGLContext] makeCurrentContext];
 
 #ifdef WITH_OPENGL_32
-    labelFontListGL = FONT_TYPE_ROI; // Issue #g79
+    labelFontListGL = FONT_TYPE_ROI; // Issue g79
 #else
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if (cgl_ctx == nil)
@@ -16007,7 +16011,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         [[self openGLContext] makeCurrentContext];
 
 #ifdef WITH_OPENGL_32
-        fontListGL = FONT_TYPE_2D_VIEW; // issue #g79
+        fontListGL = FONT_TYPE_2D_VIEW; // issue g79
 #else
         CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
         if (cgl_ctx == nil)
@@ -16076,13 +16080,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		pTextureName = [self loadTextureIn: pTextureName
                                   blending: NO
                                   colorBuf: &colorBuf
-                                  textureX: &textureX
-                                  textureY: &textureY
+                                  textureX: &textureX // out parameter
+                                  textureY: &textureY // out parameter
                                   redTable: redTable
                                 greenTable: greenTable
                                  blueTable: blueTable
                               textureWidth: &textureWidth // out parameter
-                             textureHeight: &textureHeight
+                             textureHeight: &textureHeight // out parameter
                          resampledBaseAddr: &resampledBaseAddr
                      resampledBaseAddrSize: &resampledBaseAddrSize];
         
@@ -16390,9 +16394,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                                options:NSKeyValueObservingOptionNew
                                                context:nil];
 
-#if 1  //ndef WITH_OPENGL_32 issue #g67 ?
+#if 1 //ndef WITH_OPENGL_32
+    // issue g67 ?
     [self setWantsBestResolutionOpenGLSurface:YES]; // Retina https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
-#endif // WITH_OPENGL_32
+#endif
     
     drawingFrameRect = [self convertRectToBacking: [self frame]]; // Retina
     
@@ -16495,7 +16500,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     [[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
     checkOpenGLErrors(__LINE__);
 
-#ifdef WITH_GLEW
+#if defined( WITH_GLEW) || defined( WITH_VTK_GLEW)
     #if defined(WITH_OPENGL_32)
     glewExperimental = true; // Needed for core profile
     #endif
@@ -17949,5 +17954,47 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
 }
 #endif // #ifdef WITH_OPENGL_32
+
+- (void) setImageCCM_forWLWW
+{
+#ifdef WITH_OPENGL_32
+    float min = curWL - curWW / 2;
+    float max = curWL + curWW / 2;
+    if (max-min == 0)
+    {
+        // Calculate the max and min from the actual pixel values
+        min = [curDCM fullwl] - [curDCM fullww] / 2;
+        max = [curDCM fullwl] + [curDCM fullww] / 2;
+    }
+
+    // Window width and level is implemented here
+    scene.bias = -min;
+    scene.scale = 1./(max-min);
+
+    [self setShaderProgramImage];
+    [self applyColorCorrectionMatrix: scene.bias
+                                    : scene.scale];
+#endif
+}
+
+- (void) setImageCCM_grayFromRed
+{
+#ifdef WITH_OPENGL_32
+    [self setShaderProgramImage];
+
+    glm::mat4 CCM = glm::mat4(1.0);
+    CCM[0].g = CCM[0].b = 1; // Set the CCM so we get grayscale from red
+    [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
+#endif
+}
+
+- (void) resetImageCCM
+{
+#ifdef WITH_OPENGL_32
+    glm::mat4 CCM = glm::mat4(1.0);
+    [scene.imageProgram Bind];
+    [scene.imageProgram setUniformMatrix:glm::value_ptr(CCM) name:"uColorCorrectionM"];
+#endif
+}
 
 @end

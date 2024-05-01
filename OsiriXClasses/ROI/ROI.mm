@@ -5353,7 +5353,7 @@ static const CGFloat armScale = 1.2f; // tOvalAngle looks like a clock :-)
     checkOpenGLErrors(__LINE__);
 
 //    glEnable(GL_BLEND);
-//    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     long xc = xx - 2*curView.window.backingScaleFactor;
     long yc = yy - [sT texSize].height;

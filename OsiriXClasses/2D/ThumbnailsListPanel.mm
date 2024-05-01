@@ -18,6 +18,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "mgl.h"
+
 #import "ThumbnailsListPanel.h"
 #import "ViewerController.h"
 #import "AppController.h"

@@ -392,7 +392,7 @@
             glPixelStorei(GL_UNPACK_ROW_LENGTH, bitmap.pixelsWide);
 
             glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
-#if defined( WITH_OPENGL_32) && !defined( WITH_GLEW)
+#if defined( WITH_OPENGL_32) && !defined( WITH_GLEW) && !defined( WITH_VTK_GLEW)
             // TODO:
 #else
             // The cached hint specifies to cache texture data in video memory.
@@ -470,9 +470,9 @@
         glDisable(GL_BLEND);
 #endif
 #if 0 // No difference. Originally not here
-        glDisable (GL_DEPTH_TEST); // ensure text is not removed by depth buffer test.
-        glEnable (GL_BLEND); // for text fading
-        glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // ditto
+        glDisable(GL_DEPTH_TEST); // ensure text is not removed by depth buffer test.
+        glEnable(GL_BLEND); // for text fading
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // ditto
 #endif
 
         checkOpenGLErrors(__LINE__);

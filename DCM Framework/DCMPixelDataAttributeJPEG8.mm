@@ -445,7 +445,7 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 						
 			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"])
 			{
-                theCInfo.jpeg_color_space = JCS_RGB; // FIX issue #e30
+                theCInfo.jpeg_color_space = JCS_RGB; // Issue e30
 			}
 			else
 			{
