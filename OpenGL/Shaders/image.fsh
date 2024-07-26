@@ -29,6 +29,6 @@ void main()
         discard;
 
     vec4 transformed_color = uColorCorrectionM * input_color;
-    final_color = transformed_color;  // ok
+    final_color = transformed_color;
 #endif
 }
