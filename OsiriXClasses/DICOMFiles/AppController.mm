@@ -3580,10 +3580,10 @@ API_AVAILABLE(macos(10.14))
     
     [NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector(checkForRestartStoreSCPOrder:) userInfo: nil repeats: YES];
     
-    [DicomDatabase initializeDicomDatabaseClass];
+    [DicomDatabase initializeDicomDatabaseClass:self];
     [BrowserController initializeBrowserControllerClass];
 #ifndef MIELE_LIGHT
-    [WebPortal initializeWebPortalClass];
+    [WebPortal initializeWebPortalClass:self];
     _bonjourPublisher = [[BonjourPublisher alloc] init];
 #endif
     
