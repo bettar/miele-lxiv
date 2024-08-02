@@ -131,7 +131,7 @@
 
     for (int i = 0; i < [self length]; i++) {
         temp[0] = temp[1] = temp[2] = 0;
-        (void)sprintf(temp, "%02x", bytes[i]);
+        (void)snprintf(temp, 3, "%02x", bytes[i]);
         [hex appendString:[NSString stringWithUTF8String:temp]];
     }
 

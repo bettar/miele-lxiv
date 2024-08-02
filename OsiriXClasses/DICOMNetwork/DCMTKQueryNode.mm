@@ -2160,7 +2160,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
                                                userInfo:nil] raise];
 					}
 					
-					if (EC_Normal != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
+					if (EC_Normal != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat, TSP_Profile_BCP_195_RFC_8996))
 					{
 						[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)"
                                                  reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile]

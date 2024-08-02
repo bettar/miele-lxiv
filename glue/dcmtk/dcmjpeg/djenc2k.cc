@@ -73,7 +73,7 @@ void DJEncoder2K::createDerivationDescription(
  
   derivationDescription =  "Lossy compression with JPEG 2K ";
   derivationDescription += ", quality factor ";
-  sprintf(buf, "%u", rp->getQuality());
+  snprintf(buf, 64, "%u", rp->getQuality());
   derivationDescription += buf;
   derivationDescription += ", compression ratio ";
   appendCompressionRatio(derivationDescription, ratio);

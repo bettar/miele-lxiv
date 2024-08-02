@@ -29,7 +29,7 @@
 //#include "dcmtk/dcmdata/dcdeftag.h"
 
 #include "DcmQueryRetrieveGetOurContext.h"
-#import "dcmtk/dcmnet/dimse.h"       // for getTransferSyntax
+#import "dcmtk/dcmnet/dimse.h"       // for getTransferSyntax, dcmnet library
 #import "dcmtk/dcmnet/diutil.h"
 
 #if 1 //def ON_THE_FLY_COMPRESSION

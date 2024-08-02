@@ -1508,7 +1508,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
                         [localException raise];
                     }
                     
-                    if (EC_Normal != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat))
+                    if (EC_Normal != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], keyFileFormat, TSP_Profile_BCP_195_RFC_8996))
                     {
                         localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil] retain];
                         [localException raise];
@@ -1603,7 +1603,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
         /* Figure out the presentation addresses and copy the */
         /* corresponding values into the association parameters.*/
         gethostname(localHost, sizeof(localHost) - 1);
-        sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
+        snprintf(peerHost, sizeof peerHost, "%s:%d", opt_peer, (int)opt_port);
         //NSLog(@"peer host: %s", peerHost);
         ASC_setPresentationAddresses(params, localHost, peerHost);
         

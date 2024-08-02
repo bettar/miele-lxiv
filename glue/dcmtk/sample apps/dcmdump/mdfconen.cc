@@ -72,7 +72,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
 {
     char rcsid[200];
     // print application header
-    sprintf(rcsid, "$dcmtk: %s v%s %s $", application_name, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE);
+    snprintf(rcsid, 200, "$dcmtk: %s v%s %s $", application_name, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE);
 
     // the next lines describe commandline arguments/options
     app = new OFConsoleApplication(application_name, "Modify DICOM files", rcsid);

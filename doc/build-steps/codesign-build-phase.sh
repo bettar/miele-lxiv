@@ -29,6 +29,7 @@ function cse {
 #cs  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/libpng16.16.37.0.dylib"
 #cs  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/libjpeg.9.dylib"
 #cse  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/libiconv.2.dylib"
+cse  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/libtiff.6.dylib"
 
 # We link with static libraries instead of the following two:
 #cs  "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/libcrypto.1.1.dylib" # It gets codesigned on copy. Check with `codesign -vv -d <file>`

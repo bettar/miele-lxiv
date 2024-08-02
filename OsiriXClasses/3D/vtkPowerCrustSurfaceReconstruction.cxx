@@ -3191,7 +3191,7 @@ void construct_face(simplex *s, short k)
                 plane[numedges][2]=prevs->vv[2];
             }
 
-            sprintf(indface[numedges],"%ld ",prevs->poleindex);
+            snprintf(indface[numedges],32,"%ld ",prevs->poleindex);
             /*   strcat(cface,tempface);*/
             numedges++;
             /* find edgenumber k of nexts for this edge */
@@ -3266,7 +3266,7 @@ void construct_face(simplex *s, short k)
         plane[numedges][2]=prevs->vv[2];
         
     }
-    sprintf(indface[numedges],"%ld ",prevs->poleindex);
+    snprintf(indface[numedges],32,"%ld ",prevs->poleindex);
      
     numedges++;
 
@@ -6051,13 +6051,13 @@ void off_out(point *v, int vdim, FILE *Fin, int amble) {
 
         fprintf(F, "    OFF\n");
     
-        sprintf(comst, "wc %s", tmpfilenam);
+        snprintf(comst, 100, "wc %s", tmpfilenam);
         G = epopen(comst, "r");
         fscanf(G, "%d", &i);
         fprintf(F, " %d", i);
         pclose(G);
     
-        sprintf(comst, "wc %s", offfilenam);
+        snprintf(comst, 100, "wc %s", offfilenam);
         G = epopen(comst, "r");
         fscanf(G, "%d", &i);
         fprintf(F, " %d", i);
@@ -6075,11 +6075,8 @@ void off_out(point *v, int vdim, FILE *Fin, int amble) {
         while (fgets(buf, sizeof(buf), G)) fprintf(F, "%s", buf);
         efclose(G);
     }
-
     */
 }
-
-
 
 void mp_out(point *v, int vdim, FILE *Fin, int amble) {
 

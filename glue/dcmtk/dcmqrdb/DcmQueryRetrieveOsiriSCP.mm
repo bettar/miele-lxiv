@@ -138,7 +138,7 @@ void DcmQueryRetrieveOsiriSCP::writeErrorMessage( const char *str)
 OFCondition DcmQueryRetrieveOsiriSCP::handleAssociation(T_ASC_Association * assoc, OFBool correctUIDPadding)
 {
     index = 0;
-    return DcmQueryRetrieveSCP::handleAssociation(assoc, correctUIDPadding);
+    return DcmQueryRetrieveSCP::handleAssociation(&assoc, correctUIDPadding);
 }
 
 // See DCMTK sources: dcmqrsrv.cc:280

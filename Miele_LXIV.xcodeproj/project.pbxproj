@@ -79,6 +79,8 @@
 		4356C82D1AC23F7A00653B32 /* OsiriXDB_Previous_DataModel2.5.mom in Resources */ = {isa = PBXBuildFile; fileRef = 4356C82C1AC23F7A00653B32 /* OsiriXDB_Previous_DataModel2.5.mom */; };
 		4356C82F1AC2A0D600653B32 /* CircleAngle.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 4356C82E1AC2A0D600653B32 /* CircleAngle.pdf */; };
 		4356C8311AC2A13300653B32 /* Ball.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 4356C8301AC2A13300653B32 /* Ball.pdf */; };
+		436396ED2C5B679F007851A1 /* dicom.dic in Resources */ = {isa = PBXBuildFile; fileRef = 436396EC2C5B679F007851A1 /* dicom.dic */; };
+		436396F92C5B96F9007851A1 /* libtiff.6.0.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 436396F82C5B96F9007851A1 /* libtiff.6.0.2.dylib */; };
 		4365FC361B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4365FC341B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm */; };
 		4366150029D43BC200FF50F9 /* libpng16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436614FF29D43BC200FF50F9 /* libpng16.a */; };
 		437002F921CD3CD700C91D62 /* DICOMPrint in Copy Executables */ = {isa = PBXBuildFile; fileRef = CEDF6DD00B46FE99008B45B8 /* DICOMPrint */; };
@@ -719,7 +721,6 @@
 		ABB7ADCB148CDDF2007D3C3F /* 2DMPRverticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB7ADC6148CDDF2007D3C3F /* 2DMPRverticalPosition.tif */; };
 		ABBA8DA0065AB90200A1F89C /* VR Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBA8D9A065AB90200A1F89C /* VR Bones.plist */; };
 		ABBA8DA1065AB90200A1F89C /* VR Red Vessels.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */; };
-		ABBB63A80635874E00D9531F /* dicom.dic in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639E0635874D00D9531F /* dicom.dic */; };
 		ABBB64AD063587B200D9531F /* 2DBlending.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB647B063587B200D9531F /* 2DBlending.tif */; };
 		ABBB64AE063587B200D9531F /* 3D.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB647C063587B200D9531F /* 3D.tif */; };
 		ABBB64B2063587B200D9531F /* Axial.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6480063587B200D9531F /* Axial.tif */; };
@@ -1572,6 +1573,8 @@
 		4356C82E1AC2A0D600653B32 /* CircleAngle.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = CircleAngle.pdf; sourceTree = "<group>"; };
 		4356C8301AC2A13300653B32 /* Ball.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Ball.pdf; sourceTree = "<group>"; };
 		435DC8382A4ED799006DBE5E /* PDFKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PDFKit.framework; path = System/Library/Frameworks/PDFKit.framework; sourceTree = SDKROOT; };
+		436396EC2C5B679F007851A1 /* dicom.dic */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dicom.dic; path = "../../../../../../install/project68/20230320_UB/dcmtk-3.6.8/share/dcmtk-3.6.8/dicom.dic"; sourceTree = "<group>"; };
+		436396F82C5B96F9007851A1 /* libtiff.6.0.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtiff.6.0.2.dylib; path = "../../../install/project68/20230320_UB/tiff-4.6.0/lib/libtiff.6.0.2.dylib"; sourceTree = "<group>"; };
 		4365FC331B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DcmQueryRetrieveGetOurContext.h; sourceTree = "<group>"; };
 		4365FC341B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DcmQueryRetrieveGetOurContext.mm; sourceTree = "<group>"; };
 		4365FC371B01C4F100380C25 /* DcmQueryRetrieveOsiriSCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DcmQueryRetrieveOsiriSCP.h; sourceTree = "<group>"; };
@@ -2620,7 +2623,6 @@
 		ABBA8D9A065AB90200A1F89C /* VR Bones.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "VR Bones.plist"; sourceTree = "<group>"; };
 		ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "VR Red Vessels.plist"; sourceTree = "<group>"; };
 		ABBB639D0635874D00D9531F /* dcmdump */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmdump; sourceTree = "<group>"; };
-		ABBB639E0635874D00D9531F /* dicom.dic */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = dicom.dic; path = ../share/dcmtk/dicom.dic; sourceTree = "<group>"; };
 		ABBB647B063587B200D9531F /* 2DBlending.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 2DBlending.tif; sourceTree = "<group>"; };
 		ABBB647C063587B200D9531F /* 3D.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3D.tif; sourceTree = "<group>"; };
 		ABBB6480063587B200D9531F /* Axial.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Axial.tif; sourceTree = "<group>"; };
@@ -3118,6 +3120,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4341DF8729C9C075003E0332 /* libxml2.a in Frameworks */,
+				436396F92C5B96F9007851A1 /* libtiff.6.0.2.dylib in Frameworks */,
 				4366150029D43BC200FF50F9 /* libpng16.a in Frameworks */,
 				43A5D42A2407D68E0063416A /* UserNotifications.framework in Frameworks */,
 				430D9F102199FB37006EA1B1 /* OpenGL.framework in Frameworks */,
@@ -3290,6 +3293,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				436396F82C5B96F9007851A1 /* libtiff.6.0.2.dylib */,
 				435DC8382A4ED799006DBE5E /* PDFKit.framework */,
 				436614FF29D43BC200FF50F9 /* libpng16.a */,
 				4341DF8A29C9C094003E0332 /* libz.a */,
@@ -4793,10 +4797,10 @@
 		ABBB639A0635874D00D9531F /* DCMTK */ = {
 			isa = PBXGroup;
 			children = (
+				436396EC2C5B679F007851A1 /* dicom.dic */,
 				4341DF7C29C9BD87003E0332 /* echoscu */,
 				84B5EA4211A2BC0900193FDB /* dsr2html */,
 				ABBB639D0635874D00D9531F /* dcmdump */,
-				ABBB639E0635874D00D9531F /* dicom.dic */,
 			);
 			name = DCMTK;
 			path = Binaries/DCMTK/bin;
@@ -5665,7 +5669,6 @@
 				596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */,
 				43A02C5B219D883100E788B6 /* Plot.xib in Resources */,
 				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,
-				ABBB63A80635874E00D9531F /* dicom.dic in Resources */,
 				ABBB64AD063587B200D9531F /* 2DBlending.tif in Resources */,
 				43A02C9A219D889700E788B6 /* CustomIntervalPanel.xib in Resources */,
 				CE902EA3181C034E00CC4B88 /* pages2pages09.applescript in Resources */,
@@ -5988,6 +5991,7 @@
 				CE9E11D013DBB5DD008B2848 /* OsiriX.sdef in Resources */,
 				59C447E21451705900D71580 /* Eject_gray.pdf in Resources */,
 				59C447E41451705900D71580 /* Eject_lightgray.pdf in Resources */,
+				436396ED2C5B679F007851A1 /* dicom.dic in Resources */,
 				43A02C4E219D883100E788B6 /* PluginManager.xib in Resources */,
 				848CE28F145AC9AE00BEB249 /* curvedPath.icns in Resources */,
 				CEE75F701470698F00A83306 /* DefaultBanner.png in Resources */,
@@ -8072,7 +8076,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240501;
+				CURRENT_PROJECT_VERSION = 20240801;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8173,7 +8177,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 9.40.142;
+				MARKETING_VERSION = 9.41.144;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8241,8 +8245,8 @@
 					"$(SRCROOT)/Binaries/VTK/lib/libVTK.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
-					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
 					"$(SRCROOT)/Binaries/zlib/lib/libz.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
@@ -8274,7 +8278,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 9.40.142;
+				MARKETING_VERSION = 9.41.144;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -8602,7 +8606,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20240501;
+				CURRENT_PROJECT_VERSION = 20240801;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8701,7 +8705,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 9.40.142;
+				MARKETING_VERSION = 9.41.144;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8769,8 +8773,8 @@
 					"$(SRCROOT)/Binaries/VTK/lib/libVTK.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
-					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
 					"$(SRCROOT)/Binaries/zlib/lib/libz.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
@@ -8802,7 +8806,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 9.40.142;
+				MARKETING_VERSION = 9.41.144;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9124,7 +9128,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = "LXIV Launcher/Info.plist";
-				MARKETING_VERSION = 9.40.142;
+				MARKETING_VERSION = 9.41.144;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
@@ -9307,7 +9311,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 9.40.142;
+				MARKETING_VERSION = 9.41.144;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -9374,8 +9378,8 @@
 					"$(SRCROOT)/Binaries/VTK/lib/libVTK.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
-					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
 					"$(SRCROOT)/Binaries/zlib/lib/libz.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
@@ -9413,7 +9417,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
-				CURRENT_PROJECT_VERSION = 20240501;
+				CURRENT_PROJECT_VERSION = 20240801;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -9486,7 +9490,7 @@
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
-					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
 					"-lpthread",
 					"-lm",
 				);
@@ -9573,7 +9577,7 @@
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
-					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.a",
+					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
 					"$(SRCROOT)/Binaries/libpng/lib/libpng.a",
 					"-lpthread",
 					"-lm",

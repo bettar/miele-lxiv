@@ -571,7 +571,7 @@ OFCondition AYPrintManager::negotiateAssociation(
     }
     
     ASC_setAPTitles(params, myAEtitle, peerAEtitle, NULL);
-    sprintf(dnpeerHost, "%s:%d", peerHost, peerPort);
+    snprintf(dnpeerHost, sizeof dnpeerHost, "%s:%d", peerHost, peerPort);
     ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), dnpeerHost);
     
     /* presentation contexts */

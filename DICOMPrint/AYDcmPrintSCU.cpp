@@ -31,7 +31,7 @@ static OFString
 intToString(int i)
 {
     char numbuf[32];
-    sprintf(numbuf, "%d", i);
+    snprintf(numbuf, 32, "%d", i);
     return numbuf;
 }
 
@@ -136,7 +136,7 @@ OFCondition AYDcmPrintSCU::sendPrintjob(std::list<std::string>& images)
     
     // (2000, 0010)
     char buf[20];
-    sprintf(buf, "%lu", printerNumberOfCopies);
+    snprintf(buf, 20, "%lu", printerNumberOfCopies);
     e = new DcmIntegerString(DCM_NumberOfCopies);
     e->putString(buf);
     attrs.insert(e);
