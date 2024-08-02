@@ -1071,10 +1071,11 @@ return YES;
         [toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
         [toolbarItem setView: toolsView];
-        
+#if 0 // deprecated
         NSSize size = toolsView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
     }
     else if ([itemIdent isEqualToString: ThickSlabToolbarItemIdentifier])
     {
@@ -1165,10 +1166,11 @@ return YES;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"WL/WW & CLUT", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Modify WL/WW & CLUT", nil)];
 		[toolbarItem setView: WLWWView];
-        
+#if 0 // deprecated
         NSSize size = WLWWView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
 
 		[[wlwwPopup cell] setUsesItemFromMenu:YES];
 	}
@@ -1178,10 +1180,11 @@ return YES;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"4D Player", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"4D Series Controller", nil)];        
         [toolbarItem setView: movieView];
-        
+#if 0 // deprecated
         NSSize size = movieView.frame.size;
         [toolbarItem setMinSize:size];
         [toolbarItem setMaxSize:size];
+#endif
     }
     else if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier])
     {

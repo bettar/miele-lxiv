@@ -27,18 +27,18 @@
 #import "Notifications.h"
 
 // Height of the toolbar window
-#define FIXED_HEIGTH    92  // 97
+#define FIXED_HEIGHT    97  // was 92
 
 @implementation ToolbarPanelController
 
 // Move up the toolbar so that its title is hidden under the system menu bar
 // and there is more room to display other windows
 + (int) hiddenHeight {
-    return 20;
+    return 20; // The window title "2D Toolbar" nicely disappears off the top of the screen.
 }
 
 + (int) exposedHeight {
-	return FIXED_HEIGTH - [ToolbarPanelController hiddenHeight];
+	return FIXED_HEIGHT - [ToolbarPanelController hiddenHeight];
 }
 
 + (void) checkForValidToolbar
@@ -60,7 +60,7 @@
 	NSRect screenRect = [self.viewer.window.screen visibleFrame];
 	
 	NSRect dstframe;
-	dstframe.size.height = FIXED_HEIGTH;
+	dstframe.size.height = FIXED_HEIGHT;
 	dstframe.size.width = screenRect.size.width;
 	dstframe.origin.x = NSMinX(screenRect);
 	dstframe.origin.y = NSMaxY(screenRect) - dstframe.size.height + [ToolbarPanelController hiddenHeight];
