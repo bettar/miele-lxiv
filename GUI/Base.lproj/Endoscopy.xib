@@ -716,7 +716,7 @@ Specular: 0.6, 2.0</string>
                     </textFieldCell>
                 </textField>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="281">
-                    <rect key="frame" x="3" y="0.0" width="55" height="21"/>
+                    <rect key="frame" x="2" y="-1" width="57" height="23"/>
                     <buttonCell key="cell" type="squareTextured" title="Edit" bezelStyle="texturedSquare" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="542">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="label" size="9"/>
