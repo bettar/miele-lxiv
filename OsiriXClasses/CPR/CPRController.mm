@@ -3984,36 +3984,24 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setLabel: NSLocalizedString(@"Reformation Type",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Reformation Type",nil)];
 		[toolbarItem setView: tbCPRType];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbCPRType.frame.size];
-#endif
     }
     else if ([itemIdent isEqualToString: @"tbCPRPathMode"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Path Mode",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Path Mode",nil)];
 		[toolbarItem setView: tbCPRPathMode];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbCPRPathMode.frame.size];
-#endif
     }
     else if ([itemIdent isEqualToString: @"tbViewsPosition"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Views",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Views",nil)];
 		[toolbarItem setView: tbViewsPosition];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbViewsPosition.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString: @"tbStraightenedCPRAngle"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Curved MPR Angle",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Curved MPR Angle",nil)];
 		[toolbarItem setView: tbStraightenedCPRAngle];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbStraightenedCPRAngle.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString: @"Reset.pdf"])
 	{
@@ -4071,32 +4059,18 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setLabel: NSLocalizedString(@"Thick Slab",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Thick Slab",nil)];
 		[toolbarItem setView: tbThickSlab];
-#if 0 // deprecated
-        {
-            NSSize size = tbThickSlab.frame.size;
-            [toolbarItem setMinSize:size];
-            size.width *= 2;
-            [toolbarItem setMaxSize: size];
-        }
-#endif
     }
 	else if ([itemIdent isEqualToString: @"tbWLWW"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"WL & WW",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"WL & WW",nil)];
 		[toolbarItem setView: tbWLWW];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbWLWW.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString: @"tbTools"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Tools",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Tools",nil)];
 		[toolbarItem setView: tbTools];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbTools.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString: @"tbPathAssistant"])
 	{
@@ -4104,18 +4078,12 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Path Assistant",nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"Automatically finds a path between two points", nil)];
 		[toolbarItem setView: tbPathAssistant];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbPathAssistant.frame.size];
-#endif
     }
     else if ([itemIdent isEqualToString: @"tbHighRes"])
     {
 		[toolbarItem setLabel: NSLocalizedString(@"Resolution",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Resolution",nil)];
 		[toolbarItem setView: tbHighResolution];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbHighResolution.frame.size];
-#endif
     }
 #if 0 // Horos original
     else if ([itemIdent isEqualToString: @"tbInterpolationMode"])
@@ -4141,9 +4109,6 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setLabel: NSLocalizedString(@"Axis Colors",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Axis Colors",nil)];
 		[toolbarItem setView: tbAxisColors];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbAxisColors.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString:@"AxisShowHide"])
 	{
@@ -4189,9 +4154,6 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setLabel: NSLocalizedString(@"Sync Zoom",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Sync Zoom",nil)];		
 		[toolbarItem setView: tbSyncZoomLevel];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbSyncZoomLevel.frame.size];
-#endif
     }
 	else
 	{

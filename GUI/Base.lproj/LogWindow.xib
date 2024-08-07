@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21225" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21225"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -20,7 +20,7 @@
         <window title="Network Logs" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" frameAutosaveName="Network Logs Window" animationBehavior="default" id="5" userLabel="Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="1135" height="498"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="1135" height="498"/>
@@ -221,7 +221,7 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
                                         </scrollView>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="138" translatesAutoresizingMaskIntoConstraints="NO" id="343">
+                                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="138" translatesAutoresizingMaskIntoConstraints="NO" id="343">
                                             <rect key="frame" x="316" y="433" width="142" height="13"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="138" id="TZl-aq-RQX"/>
@@ -244,7 +244,7 @@
                                                 </binding>
                                             </connections>
                                         </textField>
-                                        <searchField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="628">
+                                        <searchField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="628">
                                             <rect key="frame" x="17" y="431" width="294" height="19"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="294" id="Lfc-VV-PVW"/>
@@ -287,8 +287,8 @@
                                                 </binding>
                                             </connections>
                                         </searchField>
-                                        <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="1201">
-                                            <rect key="frame" x="1054" y="428" width="64" height="27"/>
+                                        <button tag="1" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1201">
+                                            <rect key="frame" x="1055" y="428" width="63" height="27"/>
                                             <buttonCell key="cell" type="push" title="Export" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1202">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="smallSystem"/>
@@ -512,7 +512,7 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
                                         </scrollView>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="138" translatesAutoresizingMaskIntoConstraints="NO" id="349">
+                                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="138" translatesAutoresizingMaskIntoConstraints="NO" id="349">
                                             <rect key="frame" x="316" y="435" width="142" height="13"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="138" id="viX-W7-TZ3"/>
@@ -535,7 +535,7 @@
                                                 </binding>
                                             </connections>
                                         </textField>
-                                        <searchField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="819">
+                                        <searchField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="819">
                                             <rect key="frame" x="17" y="433" width="294" height="19"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="294" id="zEv-BG-Ga2"/>
@@ -578,7 +578,7 @@
                                                 </binding>
                                             </connections>
                                         </searchField>
-                                        <button verticalHuggingPriority="750" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="1203">
+                                        <button tag="2" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1203">
                                             <rect key="frame" x="1056" y="431" width="61" height="28"/>
                                             <buttonCell key="cell" type="push" title="Export" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1204">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -800,7 +800,7 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
                                         </scrollView>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="138" translatesAutoresizingMaskIntoConstraints="NO" id="355">
+                                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="138" translatesAutoresizingMaskIntoConstraints="NO" id="355">
                                             <rect key="frame" x="316" y="435" width="142" height="13"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="138" id="hyX-rl-zG9"/>
@@ -823,7 +823,7 @@
                                                 </binding>
                                             </connections>
                                         </textField>
-                                        <searchField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="437">
+                                        <searchField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="437">
                                             <rect key="frame" x="17" y="433" width="294" height="19"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="294" id="AQa-Xl-TQE"/>
@@ -866,7 +866,7 @@
                                                 </binding>
                                             </connections>
                                         </searchField>
-                                        <button verticalHuggingPriority="750" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="1205">
+                                        <button tag="3" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1205">
                                             <rect key="frame" x="1056" y="431" width="61" height="28"/>
                                             <buttonCell key="cell" type="push" title="Export" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1206">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1047,7 +1047,7 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
                                         </scrollView>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="138" translatesAutoresizingMaskIntoConstraints="NO" id="322">
+                                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="138" translatesAutoresizingMaskIntoConstraints="NO" id="322">
                                             <rect key="frame" x="316" y="435" width="142" height="13"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="138" id="KLp-Sd-JPZ"/>
@@ -1070,7 +1070,7 @@
                                                 </binding>
                                             </connections>
                                         </textField>
-                                        <searchField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="839">
+                                        <searchField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="839">
                                             <rect key="frame" x="17" y="433" width="294" height="19"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="294" id="OIe-H6-8KB"/>
@@ -1113,7 +1113,7 @@
                                                 </binding>
                                             </connections>
                                         </searchField>
-                                        <button verticalHuggingPriority="750" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="1207">
+                                        <button tag="4" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1207">
                                             <rect key="frame" x="1056" y="431" width="61" height="28"/>
                                             <buttonCell key="cell" type="push" title="Export" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1208">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>

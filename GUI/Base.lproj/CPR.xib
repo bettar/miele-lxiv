@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22154" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -968,9 +968,8 @@ Gw
             </constraints>
             <point key="canvasLocation" x="835" y="529"/>
         </box>
-        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="659" userLabel="tb Thick Slab">
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="659" userLabel="tb Thick Slab">
             <rect key="frame" x="0.0" y="0.0" width="225" height="40"/>
-            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="NZO-Mh-2Rl">
                 <rect key="frame" x="0.0" y="0.0" width="225" height="40"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -984,8 +983,8 @@ Gw
                             <binding destination="342" name="value" keyPath="selection.clippingRangeThickness" id="746"/>
                         </connections>
                     </slider>
-                    <popUpButton verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="660">
-                        <rect key="frame" x="45" y="23" width="173" height="16"/>
+                    <popUpButton horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="660">
+                        <rect key="frame" x="41" y="23" width="181" height="16"/>
                         <popUpButtonCell key="cell" type="push" title="MIP - Max Intensity Projection" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" tag="1" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="671" id="667">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="miniSystem"/>
@@ -1001,8 +1000,8 @@ Gw
                             <binding destination="342" name="selectedTag" keyPath="selection.clippingRangeMode" id="745"/>
                         </connections>
                     </popUpButton>
-                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="661">
-                        <rect key="frame" x="8" y="26" width="32" height="11"/>
+                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="661">
+                        <rect key="frame" x="5" y="26" width="32" height="11"/>
                         <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Mode:" id="666">
                             <font key="font" metaFont="miniSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1037,22 +1036,24 @@ Gw
                 <constraint firstItem="661" firstAttribute="leading" secondItem="659" secondAttribute="leading" constant="7" id="6fZ-yP-qW9"/>
                 <constraint firstItem="663" firstAttribute="leading" secondItem="1636" secondAttribute="trailing" constant="10" id="Cgg-CC-zHb"/>
                 <constraint firstItem="1636" firstAttribute="top" secondItem="660" secondAttribute="bottom" constant="2" id="FQA-TX-Dce"/>
+                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="350" id="UO7-6o-9Hu"/>
                 <constraint firstItem="660" firstAttribute="trailing" secondItem="663" secondAttribute="trailing" id="fkA-jC-xcz"/>
                 <constraint firstItem="660" firstAttribute="top" secondItem="659" secondAttribute="top" constant="2" id="hKz-4O-rlT"/>
                 <constraint firstItem="1636" firstAttribute="leading" secondItem="659" secondAttribute="leading" constant="1" id="iEa-Jg-LP1"/>
                 <constraint firstItem="660" firstAttribute="baseline" secondItem="661" secondAttribute="baseline" id="lZr-H0-ziN"/>
                 <constraint firstItem="1636" firstAttribute="top" secondItem="663" secondAttribute="top" id="o4a-c9-nCP"/>
+                <constraint firstAttribute="bottom" secondItem="1636" secondAttribute="bottom" constant="6" id="qsf-41-TWj"/>
             </constraints>
+            <point key="canvasLocation" x="735" y="-213"/>
         </box>
-        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="672" userLabel="tb WLWW">
-            <rect key="frame" x="0.0" y="0.0" width="155" height="64"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="672" userLabel="tb WLWW">
+            <rect key="frame" x="0.0" y="0.0" width="157" height="41"/>
             <view key="contentView" id="huC-qh-0kk">
-                <rect key="frame" x="0.0" y="0.0" width="155" height="64"/>
+                <rect key="frame" x="0.0" y="0.0" width="157" height="41"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="678">
-                        <rect key="frame" x="51" y="44" width="104" height="16"/>
+                        <rect key="frame" x="97" y="26" width="60" height="16"/>
                         <popUpButtonCell key="cell" type="push" title="WL/WW" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="681" id="679">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="miniSystem"/>
@@ -1064,12 +1065,9 @@ Gw
                                 </items>
                             </menu>
                         </popUpButtonCell>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="99" id="ULc-9d-ThP"/>
-                        </constraints>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="677">
-                        <rect key="frame" x="51" y="30" width="104" height="16"/>
+                        <rect key="frame" x="97" y="12" width="60" height="16"/>
                         <popUpButtonCell key="cell" type="push" title="CLUT" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="686" id="684">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="miniSystem"/>
@@ -1081,12 +1079,9 @@ Gw
                                 </items>
                             </menu>
                         </popUpButtonCell>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="99" id="8hd-7X-tYx"/>
-                        </constraints>
                     </popUpButton>
                     <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="676">
-                        <rect key="frame" x="13" y="47" width="42" height="11"/>
+                        <rect key="frame" x="59" y="29" width="42" height="11"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="WL/WW:" id="689">
                             <font key="font" metaFont="miniSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1094,7 +1089,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="675">
-                        <rect key="frame" x="24" y="33" width="31" height="11"/>
+                        <rect key="frame" x="70" y="15" width="31" height="11"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="CLUT:" id="690">
                             <font key="font" metaFont="miniSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1102,7 +1097,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="674">
-                        <rect key="frame" x="14" y="18" width="41" height="11"/>
+                        <rect key="frame" x="60" y="0.0" width="41" height="11"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Opacity:" id="691">
                             <font key="font" metaFont="miniSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1110,7 +1105,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="673">
-                        <rect key="frame" x="51" y="16" width="104" height="16"/>
+                        <rect key="frame" x="97" y="-2" width="60" height="16"/>
                         <popUpButtonCell key="cell" type="push" title="Opacity" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" enabled="NO" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="694" id="692">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="miniSystem"/>
@@ -1122,24 +1117,23 @@ Gw
                                 </items>
                             </menu>
                         </popUpButtonCell>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="99" id="3jK-Ve-cB5"/>
-                        </constraints>
                     </popUpButton>
                 </subviews>
             </view>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="678" secondAttribute="trailing" constant="3" id="0fo-J0-cSn"/>
+                <constraint firstAttribute="bottom" secondItem="673" secondAttribute="bottom" id="2DB-hr-6iu"/>
                 <constraint firstItem="676" firstAttribute="baseline" secondItem="678" secondAttribute="baseline" id="MY4-tC-dRa"/>
                 <constraint firstItem="675" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="672" secondAttribute="leading" constant="5" id="Ngh-5R-M1K"/>
                 <constraint firstItem="675" firstAttribute="trailing" secondItem="676" secondAttribute="trailing" id="NuD-a5-St1"/>
                 <constraint firstItem="678" firstAttribute="trailing" secondItem="677" secondAttribute="trailing" id="Syr-hX-8Mv"/>
                 <constraint firstItem="678" firstAttribute="leading" secondItem="676" secondAttribute="trailing" id="U45-Nw-bYh"/>
                 <constraint firstItem="677" firstAttribute="leading" secondItem="678" secondAttribute="leading" id="XSf-es-aYn"/>
-                <constraint firstItem="674" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="672" secondAttribute="leading" constant="5" id="Yo8-GP-JxI"/>
+                <constraint firstItem="674" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="672" secondAttribute="leading" constant="19" id="Yo8-GP-JxI"/>
                 <constraint firstItem="674" firstAttribute="trailing" secondItem="675" secondAttribute="trailing" id="Zcz-0d-UAC"/>
+                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="250" id="bAv-NH-zG1"/>
                 <constraint firstItem="677" firstAttribute="baseline" secondItem="675" secondAttribute="baseline" id="cfc-9j-HDf"/>
-                <constraint firstItem="678" firstAttribute="top" secondItem="672" secondAttribute="top" constant="5" id="hz1-cL-90s"/>
+                <constraint firstItem="678" firstAttribute="top" secondItem="672" secondAttribute="top" id="hz1-cL-90s"/>
                 <constraint firstItem="677" firstAttribute="leading" secondItem="673" secondAttribute="leading" id="k7h-Fn-1xE"/>
                 <constraint firstItem="673" firstAttribute="top" secondItem="677" secondAttribute="bottom" constant="1" id="lYp-TC-2yl"/>
                 <constraint firstItem="674" firstAttribute="top" secondItem="675" secondAttribute="bottom" constant="4" id="mWY-p0-8RT"/>
@@ -1147,9 +1141,10 @@ Gw
                 <constraint firstItem="677" firstAttribute="trailing" secondItem="673" secondAttribute="trailing" id="sZp-Ux-vnF"/>
                 <constraint firstItem="677" firstAttribute="top" secondItem="678" secondAttribute="bottom" constant="1" id="v1p-nP-5fz"/>
             </constraints>
+            <point key="canvasLocation" x="435" y="231"/>
         </box>
         <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="697" userLabel="tb Tools">
-            <rect key="frame" x="0.0" y="6" width="261" height="43"/>
+            <rect key="frame" x="0.0" y="0.0" width="261" height="43"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="Ws2-WY-k63">
                 <rect key="frame" x="0.0" y="0.0" width="261" height="43"/>
@@ -1313,7 +1308,7 @@ Gw
         </box>
         <userDefaultsController representsSharedInstance="YES" id="753"/>
         <customView id="816" userLabel="tb Axis Colors">
-            <rect key="frame" x="0.0" y="-4" width="58" height="44"/>
+            <rect key="frame" x="0.0" y="0.0" width="58" height="44"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <colorWell translatesAutoresizingMaskIntoConstraints="NO" id="819">
@@ -1411,7 +1406,7 @@ Gw
                     </textFieldCell>
                 </textField>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="849">
-                    <rect key="frame" x="140" y="4" width="34" height="19"/>
+                    <rect key="frame" x="139" y="3" width="36" height="21"/>
                     <buttonCell key="cell" type="squareTextured" title="Play" bezelStyle="texturedSquare" alignment="center" controlSize="small" borderStyle="border" inset="2" id="850">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="miniSystem"/>
@@ -1529,7 +1524,7 @@ Gw
         </customView>
         <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1105" userLabel="tb Sync Zoom">
             <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
             <view key="contentView" id="45s-m5-579">
                 <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1547,10 +1542,12 @@ Gw
                 </subviews>
             </view>
             <constraints>
+                <constraint firstAttribute="bottom" secondItem="1140" secondAttribute="bottom" constant="7" id="6qn-vO-fn3"/>
                 <constraint firstAttribute="trailing" secondItem="1140" secondAttribute="trailing" constant="-4" id="DAv-2P-Wsh"/>
                 <constraint firstItem="1140" firstAttribute="top" secondItem="1105" secondAttribute="top" constant="1" id="SCc-72-2DT"/>
                 <constraint firstItem="1140" firstAttribute="leading" secondItem="1105" secondAttribute="leading" constant="-2" id="r98-ZL-NJv"/>
             </constraints>
+            <point key="canvasLocation" x="41" y="-606"/>
         </box>
         <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1163" userLabel="tbStraightenedCPRAngle">
             <rect key="frame" x="0.0" y="0.0" width="120" height="35"/>
@@ -1601,10 +1598,11 @@ Gw
                 <constraint firstItem="1166" firstAttribute="top" secondItem="1164" secondAttribute="bottom" id="aPU-VH-dVd"/>
                 <constraint firstItem="1164" firstAttribute="leading" secondItem="1163" secondAttribute="leading" constant="-2" id="kzf-M7-scJ"/>
             </constraints>
+            <point key="canvasLocation" x="530" y="-509"/>
         </box>
         <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1403" userLabel="tbCPRType">
             <rect key="frame" x="0.0" y="0.0" width="100" height="44"/>
-            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
             <view key="contentView" id="bDT-a1-kEy">
                 <rect key="frame" x="0.0" y="0.0" width="100" height="44"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1639,6 +1637,7 @@ Gw
             <constraints>
                 <constraint firstItem="1425" firstAttribute="top" secondItem="1403" secondAttribute="top" id="AAa-if-QJX"/>
                 <constraint firstItem="1425" firstAttribute="centerX" secondItem="1403" secondAttribute="centerX" id="CeN-bx-NaH"/>
+                <constraint firstAttribute="bottom" secondItem="1425" secondAttribute="bottom" constant="12" id="aDn-5k-s1T"/>
                 <constraint firstAttribute="trailing" secondItem="1425" secondAttribute="trailing" constant="2" id="tDw-BR-TwX"/>
                 <constraint firstItem="1425" firstAttribute="leading" secondItem="1403" secondAttribute="leading" constant="2" id="y77-QE-QiN"/>
             </constraints>
@@ -1683,7 +1682,7 @@ Gw
         </box>
         <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1440" userLabel="tbCPRPathMode">
             <rect key="frame" x="0.0" y="0.0" width="122" height="44"/>
-            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
             <view key="contentView" id="mov-Xa-aaf">
                 <rect key="frame" x="0.0" y="0.0" width="122" height="44"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1719,6 +1718,7 @@ Gw
                 <constraint firstItem="1441" firstAttribute="leading" secondItem="1440" secondAttribute="leading" constant="7" id="8p7-sk-Eoz"/>
                 <constraint firstAttribute="trailing" secondItem="1441" secondAttribute="trailing" constant="8" id="i0r-Da-XOu"/>
                 <constraint firstItem="1441" firstAttribute="top" secondItem="1440" secondAttribute="top" id="q0i-lq-3nd"/>
+                <constraint firstAttribute="bottom" secondItem="1441" secondAttribute="bottom" constant="12" id="wcc-rg-rA0"/>
             </constraints>
             <point key="canvasLocation" x="-360" y="-156"/>
         </box>

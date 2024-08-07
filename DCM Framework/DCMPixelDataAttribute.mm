@@ -2959,195 +2959,189 @@ void info_callback(const char *msg, void *a) {
    uint8_t b;
    uint8_t c;
    
-  switch (isPlanar)
+  if (!isPlanar) // all pixels stored one after the other
   {
-    case 0 : // all pixels stored one after the other
       if ([theKind isEqualToString:@"YBR_FULL"])
       {
           // loop on the pixels of the image
           for (loop = 0, pYBR = (unsigned char *)[ybrData bytes]; loop < size; loop++, pYBR += 3)
           {
-            // get the Y, B and R channels from the original image
-//            y = (int) pYBR [0];
-//            b = (int) pYBR [1];
-//            r = (int) pYBR [2];
-
+              // get the Y, B and R channels from the original image
+              //            y = (int) pYBR [0];
+              //            b = (int) pYBR [1];
+              //            r = (int) pYBR [2];
+              
               a = (int) pYBR [0];
               b = (int) pYBR [1];
               c = (int) pYBR [2];
-
-             R = 38142 *(a-16) + 52298 *(c -128);
-             G = 38142 *(a-16) - 26640 *(c -128) - 12845 *(b -128);
-             B = 38142 *(a-16) + 66093 *(b -128);
-
-             R = (R+16384)>>15;
-             G = (G+16384)>>15;
-             B = (B+16384)>>15;
-
-             if (R < 0)   R = 0;
-             if (G < 0)   G = 0;
-             if (B < 0)   B = 0;
-             if (R > 255) R = 255;
-             if (G > 255) G = 255;
-             if (B > 255) B = 255;
-
-
-            // red
-            *pRGB = R;	//(unsigned char) (y + (1.402 *  r));
-            pRGB++;	// move the ptr to the Green
-            
-            // green
-            *pRGB = G;	//(unsigned char) (y - (0.344 * b) - (0.714 * r));
-            pRGB++;	// move the ptr to the Blue
-            
-            // blue
-            *pRGB = B;	//(unsigned char) (y + (1.772 * b));
-            pRGB++;	// move the ptr to the next Red
-            
-			} // for ...loop on the elements of the image to convert
-		}
-		else if ([theKind isEqualToString:@"YBR_FULL_422"])
-		{
-         // loop on the pixels of the image
-		  pYBR = (unsigned char *) [ybrData bytes];
-
-		  for (int yy = 0; yy < _rows; yy++)	//_rows/2
-		  {
-			unsigned char	*rr = pRGB;
-//			unsigned char	*rr2 = pRGB+3*_columns;
-			
-			for (int x = 0; x < _columns; x++)
-			{
-				y  = (int) pYBR [0];
-				b = (int) pYBR [1];
-				r = (int) pYBR [2];
-				
-				*(rr) = y;
-				*(rr+1) = b;
-				*(rr+2) = r;
-				
-//				*(rr2) = y;
-//				*(rr2+1) = b;
-//				*(rr2+2) = r;
-				
-				pYBR += 3;
-				rr += 3;
-//				rr2 += 3;
-			}
-			
-//			pRGB += 2*_columns*3;
-			pRGB += _columns*3;
-		  }
-		}
-        else if ([theKind isEqualToString:@"YBR_PARTIAL_422"])
-        {
+              
+              R = 38142 *(a-16) + 52298 *(c -128);
+              G = 38142 *(a-16) - 26640 *(c -128) - 12845 *(b -128);
+              B = 38142 *(a-16) + 66093 *(b -128);
+              
+              R = (R+16384)>>15;
+              G = (G+16384)>>15;
+              B = (B+16384)>>15;
+              
+              if (R < 0)   R = 0;
+              if (G < 0)   G = 0;
+              if (B < 0)   B = 0;
+              if (R > 255) R = 255;
+              if (G > 255) G = 255;
+              if (B > 255) B = 255;
+              
+              
+              // red
+              *pRGB = R;	//(unsigned char) (y + (1.402 *  r));
+              pRGB++;	// move the ptr to the Green
+              
+              // green
+              *pRGB = G;	//(unsigned char) (y - (0.344 * b) - (0.714 * r));
+              pRGB++;	// move the ptr to the Blue
+              
+              // blue
+              *pRGB = B;	//(unsigned char) (y + (1.772 * b));
+              pRGB++;	// move the ptr to the next Red
+              
+          } // for ...loop on the elements of the image to convert
+      }
+      else if ([theKind isEqualToString:@"YBR_FULL_422"])
+      {
+          // loop on the pixels of the image
+          pYBR = (unsigned char *) [ybrData bytes];
+          
+          for (int yy = 0; yy < _rows; yy++)	//_rows/2
+          {
+              unsigned char	*rr = pRGB;
+              //			unsigned char	*rr2 = pRGB+3*_columns;
+              
+              for (int x = 0; x < _columns; x++)
+              {
+                  y  = (int) pYBR [0];
+                  b = (int) pYBR [1];
+                  r = (int) pYBR [2];
+                  
+                  *(rr) = y;
+                  *(rr+1) = b;
+                  *(rr+2) = r;
+                  
+                  //				*(rr2) = y;
+                  //				*(rr2+1) = b;
+                  //				*(rr2+2) = r;
+                  
+                  pYBR += 3;
+                  rr += 3;
+                  //				rr2 += 3;
+              }
+              
+              //			pRGB += 2*_columns*3;
+              pRGB += _columns*3;
+          }
+      }
+      else if ([theKind isEqualToString:@"YBR_PARTIAL_422"])
+      {
           // loop on the pixels of the image
           for (loop = 0, pYBR = (unsigned char *)[ybrData bytes]; loop < (size / 2); loop++)
           {
-            // get the Y, B and R channels from the original image
-            y  = (int) pYBR [0];
-            y1 = (int) pYBR [1];
-            // the Cb and Cr values are sampled horizontally at half the Y rate
-            b = (int) pYBR [2];
-            r = (int) pYBR [3];
-            
-            // ***** first pixel *****
-            // red 1
-            *pRGB = (unsigned char) ((1.1685 * y) + (0.0389 * b) + (1.596 * r));
-            pRGB++;	// move the ptr to the Green
-            
-            // green 1
-            *pRGB = (unsigned char) ((1.1685 * y) - (0.401 * b) - (0.813 * r));
-            pRGB++;	// move the ptr to the Blue
-            
-            // blue 1
-            *pRGB = (unsigned char) ((1.1685 * y) + (2.024 * b));
-            pRGB++;	// move the ptr to the next Red
-            
-            
-            // ***** second pixel *****
-            // red 2
-            *pRGB = (unsigned char) ((1.1685 * y1) + (0.0389 * b) + (1.596 * r));
-            pRGB++;	// move the ptr to the Green
-            
-            // green 2
-            *pRGB = (unsigned char) ((1.1685 * y1) - (0.401 * b) - (0.813 * r));
-            pRGB++;	// move the ptr to the Blue
-            
-            // blue 2
-            *pRGB = (unsigned char) ((1.1685 * y1) + (2.024 * b));
-            pRGB++;	// move the ptr to the next Red
-
-            // the Cb and Cr values are sampled horizontally at half the Y rate
-            pYBR += 4;
-            
-          } // for ...loop on the elements of the image to convert                
-		}  //YBR 422
-    //  } // switch ...kind of YBR
-	break;
-
-    case 1 : // each plane is stored separately (only allowed for YBR_FULL)
-    {
+              // get the Y, B and R channels from the original image
+              y  = (int) pYBR [0];
+              y1 = (int) pYBR [1];
+              // the Cb and Cr values are sampled horizontally at half the Y rate
+              b = (int) pYBR [2];
+              r = (int) pYBR [3];
+              
+              // ***** first pixel *****
+              // red 1
+              *pRGB = (unsigned char) ((1.1685 * y) + (0.0389 * b) + (1.596 * r));
+              pRGB++;	// move the ptr to the Green
+              
+              // green 1
+              *pRGB = (unsigned char) ((1.1685 * y) - (0.401 * b) - (0.813 * r));
+              pRGB++;	// move the ptr to the Blue
+              
+              // blue 1
+              *pRGB = (unsigned char) ((1.1685 * y) + (2.024 * b));
+              pRGB++;	// move the ptr to the next Red
+              
+              
+              // ***** second pixel *****
+              // red 2
+              *pRGB = (unsigned char) ((1.1685 * y1) + (0.0389 * b) + (1.596 * r));
+              pRGB++;	// move the ptr to the Green
+              
+              // green 2
+              *pRGB = (unsigned char) ((1.1685 * y1) - (0.401 * b) - (0.813 * r));
+              pRGB++;	// move the ptr to the Blue
+              
+              // blue 2
+              *pRGB = (unsigned char) ((1.1685 * y1) + (2.024 * b));
+              pRGB++;	// move the ptr to the next Red
+              
+              // the Cb and Cr values are sampled horizontally at half the Y rate
+              pYBR += 4;
+              
+          } // for ...loop on the elements of the image to convert
+      }
+  }
+  else // each plane is stored separately (only allowed for YBR_FULL)
+  {
       unsigned char *pY, *pB, *pR;	// ptr to Y, Cb and Cr channels of the original image
-//      NSLog(@"YBR FULL and planar");  
+      //NSLog(@"YBR FULL and planar");
       // points to the beginning of each channel in memory
       pY = (unsigned char *)[ybrData bytes];
       pB = (unsigned char *) (pY + size);
       pR = (unsigned char *) (pB + size);
-        
+      
       // loop on the pixels of the image
       for (loop = 0; loop < size; loop++, pY++, pB++, pR++)
       {
-        a = (int) *pY;
-		b = (int) *pB;
-		c = (int) *pR;
-
-         R = 38142 *(a-16) + 52298 *(c -128);
-         G = 38142 *(a-16) - 26640 *(c -128) - 12845 *(b -128);
-         B = 38142 *(a-16) + 66093 *(b -128);
-
-         R = (R+16384)>>15;
-         G = (G+16384)>>15;
-         B = (B+16384)>>15;
-
-         if (R < 0)   R = 0;
-         if (G < 0)   G = 0;
-         if (B < 0)   B = 0;
-         if (R > 255) R = 255;
-         if (G > 255) G = 255;
-         if (B > 255) B = 255;
-	  
-	  
-        // red
-        *pRGB = R;	//(unsigned char) ((int) *pY + (1.402 *  (int) *pR) - 179.448);
-        pRGB++;	// move the ptr to the Green
-            
-        // green
-        *pRGB = G;	//(unsigned char) ((int) *pY - (0.344 * (int) *pB) - (0.714 * (int) *pR) + 135.45);
-        pRGB++;	// move the ptr to the Blue
-            
-        // blue
-        *pRGB = B;	//(unsigned char) ((int) *pY + (1.772 * (int) *pB) - 226.8);
-        pRGB++;	// move the ptr to the next Red
-            
-
-//        // red
-//        *pRGB = (unsigned char) ((int) *pY + (1.402 *  (int) *pR) - 179.448);
-//        pRGB++;	// move the ptr to the Green
-//            
-//        // green
-//        *pRGB = (unsigned char) ((int) *pY - (0.344 * (int) *pB) - (0.714 * (int) *pR) + 135.45);
-//        pRGB++;	// move the ptr to the Blue
-//            
-//        // blue
-//        *pRGB = (unsigned char) ((int) *pY + (1.772 * (int) *pB) - 226.8);
-//        pRGB++;	// move the ptr to the next Red
-//            
+          a = (int) *pY;
+          b = (int) *pB;
+          c = (int) *pR;
+          
+          R = 38142 *(a-16) + 52298 *(c -128);
+          G = 38142 *(a-16) - 26640 *(c -128) - 12845 *(b -128);
+          B = 38142 *(a-16) + 66093 *(b -128);
+          
+          R = (R+16384)>>15;
+          G = (G+16384)>>15;
+          B = (B+16384)>>15;
+          
+          if (R < 0)   R = 0;
+          if (G < 0)   G = 0;
+          if (B < 0)   B = 0;
+          if (R > 255) R = 255;
+          if (G > 255) G = 255;
+          if (B > 255) B = 255;
+          
+          
+          // red
+          *pRGB = R;	//(unsigned char) ((int) *pY + (1.402 *  (int) *pR) - 179.448);
+          pRGB++;	// move the ptr to the Green
+          
+          // green
+          *pRGB = G;	//(unsigned char) ((int) *pY - (0.344 * (int) *pB) - (0.714 * (int) *pR) + 135.45);
+          pRGB++;	// move the ptr to the Blue
+          
+          // blue
+          *pRGB = B;	//(unsigned char) ((int) *pY + (1.772 * (int) *pB) - 226.8);
+          pRGB++;	// move the ptr to the next Red
+          
+          
+          //        // red
+          //        *pRGB = (unsigned char) ((int) *pY + (1.402 *  (int) *pR) - 179.448);
+          //        pRGB++;	// move the ptr to the Green
+          //
+          //        // green
+          //        *pRGB = (unsigned char) ((int) *pY - (0.344 * (int) *pB) - (0.714 * (int) *pR) + 135.45);
+          //        pRGB++;	// move the ptr to the Blue
+          //
+          //        // blue
+          //        *pRGB = (unsigned char) ((int) *pY + (1.772 * (int) *pB) - 226.8);
+          //        pRGB++;	// move the ptr to the next Red
+          //
       } // for ...loop on the elements of the image to convert
-    } // case 1
-	break;
-  
-  } // switch
+  }
     
   return rgbData;
 }

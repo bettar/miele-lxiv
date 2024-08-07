@@ -560,7 +560,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 
 #pragma mark - VR Viewer methods
 
-- (int) engine
+- (EngineType) engine
 {
     return vrController.view.engine;
 }
@@ -1023,9 +1023,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Level of Detail",nil)];
 		[toolbarItem setToolTip:NSLocalizedString( @"Change Level of Detail",nil)];		
 		[toolbarItem setView: LODView];
-#if 0 // deprecated
-        [toolbarItem setMinSize: LODView.frame.size];
-#endif
 		//[[wlwwPopup cell] setUsesItemFromMenu:YES];
     }
 	else if ([itemIdent isEqualToString:PathAssistantToolbarItemIdentifier])

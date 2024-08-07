@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -27,7 +27,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="600" y="677" width="542" height="270"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
             <value key="minSize" type="size" width="213" height="113"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="542" height="270"/>
@@ -75,7 +75,7 @@
                                                 <binding destination="54" name="value" keyPath="arrangedObjects.properties.name" id="59"/>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="volume" width="80.941890000000001" minWidth="10" maxWidth="1000" id="11">
+                                        <tableColumn identifier="volume" width="81" minWidth="10" maxWidth="1000" id="11">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="volume">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -90,7 +90,7 @@
                                                 <binding destination="54" name="value" keyPath="arrangedObjects.properties.volume" id="60"/>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="texture" width="57.058109999999999" minWidth="10" maxWidth="1000" id="72">
+                                        <tableColumn identifier="texture" width="57" minWidth="10" maxWidth="1000" id="72">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="texture">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -143,7 +143,7 @@
                                                 <binding destination="54" name="value" keyPath="arrangedObjects.properties.blue" id="63"/>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="opacity" width="65" minWidth="27.058109999999999" maxWidth="1000" id="74">
+                                        <tableColumn identifier="opacity" width="36" minWidth="27.058109999999999" maxWidth="1000" id="74">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="opacity">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -208,6 +208,7 @@
                 <string>properties.opacity</string>
                 <string>properties.texture</string>
             </declaredKeys>
+            <classReference key="objectClass" className="ROIVolume"/>
             <connections>
                 <binding destination="52" name="contentArray" keyPath="selection.roiVolumes" id="58"/>
             </connections>

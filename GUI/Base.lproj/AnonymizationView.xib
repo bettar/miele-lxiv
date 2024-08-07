@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -24,9 +24,6 @@
             <subviews>
                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="104">
                     <rect key="frame" x="16" y="248" width="158" height="22"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="150" id="NES-az-Kls"/>
-                    </constraints>
                     <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="113" id="109">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
@@ -38,29 +35,32 @@
                             </items>
                         </menu>
                     </popUpButtonCell>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="150" id="NES-az-Kls"/>
+                    </constraints>
                 </popUpButton>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="105">
-                    <rect key="frame" x="280" y="244" width="102" height="27"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="90" id="7gh-2b-B9p"/>
-                    </constraints>
+                    <rect key="frame" x="280" y="245" width="102" height="27"/>
                     <buttonCell key="cell" type="push" title="Delete" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="108">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="90" id="7gh-2b-B9p"/>
+                    </constraints>
                     <connections>
                         <action selector="deleteTemplateAction:" target="-2" id="134"/>
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="106">
-                    <rect key="frame" x="182" y="244" width="102" height="27"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="90" id="HeQ-d2-9mE"/>
-                    </constraints>
+                    <rect key="frame" x="182" y="245" width="102" height="27"/>
                     <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="107">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="90" id="HeQ-d2-9mE"/>
+                    </constraints>
                     <connections>
                         <action selector="saveTemplateAction:" target="-2" id="133"/>
                         <binding destination="-2" name="enabled" keyPath="formatsAreOk" id="140"/>
@@ -69,11 +69,11 @@
                 <box autoresizesSubviews="NO" borderType="line" title="Templates" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="103" customClass="N2AdaptiveBox">
                     <rect key="frame" x="17" y="40" width="466" height="206"/>
                     <view key="contentView" id="zU0-RW-njp">
-                        <rect key="frame" x="3" y="3" width="460" height="200"/>
+                        <rect key="frame" x="4" y="5" width="458" height="198"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="114" customClass="AnonymizationTagsView">
-                                <rect key="frame" x="16" y="20" width="428" height="160"/>
+                                <rect key="frame" x="16" y="20" width="426" height="158"/>
                                 <connections>
                                     <outlet property="anonymizationViewController" destination="-2" id="130"/>
                                 </connections>

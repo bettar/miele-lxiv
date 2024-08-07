@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -35,39 +35,39 @@
                     </imageView>
                     <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="35">
                         <rect key="frame" x="75" y="42" width="31" height="33"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="25" id="8Gi-fE-NXf"/>
-                        </constraints>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSRemoveTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="36">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="8Gi-fE-NXf"/>
+                        </constraints>
                         <connections>
                             <action selector="changePosition:" target="-2" id="46"/>
                         </connections>
                     </button>
                     <button tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="29">
                         <rect key="frame" x="116" y="85" width="31" height="27"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="25" id="Hkq-Vv-8Wt"/>
-                        </constraints>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSAddTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="30">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system" size="10"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="Hkq-Vv-8Wt"/>
+                        </constraints>
                         <connections>
                             <action selector="changePosition:" target="-2" id="45"/>
                         </connections>
                     </button>
                     <button tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="31">
                         <rect key="frame" x="116" y="3" width="31" height="33"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="25" id="7Od-74-Ppg"/>
-                        </constraints>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSRemoveTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="32">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system" size="10"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="7Od-74-Ppg"/>
+                        </constraints>
                         <connections>
                             <action selector="changePosition:" target="-2" id="48"/>
                         </connections>
@@ -82,26 +82,26 @@
                     </imageView>
                     <button tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="37">
                         <rect key="frame" x="236" y="85" width="31" height="27"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="25" id="1p2-mq-Wmb"/>
-                        </constraints>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSAddTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="40">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system" size="10"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="1p2-mq-Wmb"/>
+                        </constraints>
                         <connections>
                             <action selector="changePosition:" target="-2" id="49"/>
                         </connections>
                     </button>
                     <button tag="5" translatesAutoresizingMaskIntoConstraints="NO" id="38">
                         <rect key="frame" x="236" y="2" width="31" height="33"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="25" id="PUg-5U-ssa"/>
-                        </constraints>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSRemoveTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="39">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system" size="10"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="PUg-5U-ssa"/>
+                        </constraints>
                         <connections>
                             <action selector="changePosition:" target="-2" id="50"/>
                         </connections>
@@ -137,52 +137,52 @@
                     </matrix>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="33">
                         <rect key="frame" x="158" y="42" width="31" height="33"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="25" id="8p9-17-u0e"/>
-                        </constraints>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSAddTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="34">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system" size="10"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="8p9-17-u0e"/>
+                        </constraints>
                         <connections>
                             <action selector="changePosition:" target="-2" id="47"/>
                         </connections>
                     </button>
                     <button tag="7" translatesAutoresizingMaskIntoConstraints="NO" id="79">
                         <rect key="frame" x="195" y="42" width="31" height="33"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="25" id="CKW-EV-5c8"/>
-                        </constraints>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSRemoveTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="80">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system" size="10"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="CKW-EV-5c8"/>
+                        </constraints>
                         <connections>
                             <action selector="changePosition:" target="-2" id="83"/>
                         </connections>
                     </button>
                     <button tag="6" translatesAutoresizingMaskIntoConstraints="NO" id="78">
                         <rect key="frame" x="278" y="42" width="31" height="33"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="25" id="jiq-gj-hPR"/>
-                        </constraints>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSAddTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="81">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system" size="10"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="jiq-gj-hPR"/>
+                        </constraints>
                         <connections>
                             <action selector="changePosition:" target="-2" id="84"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="74">
                         <rect key="frame" x="161" y="91" width="64" height="15"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="SAB-RW-sJQ"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Reset" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="75">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="miniSystem"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="SAB-RW-sJQ"/>
+                        </constraints>
                         <connections>
                             <action selector="reset:" target="-2" id="82"/>
                         </connections>
