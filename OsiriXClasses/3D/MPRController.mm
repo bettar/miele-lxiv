@@ -2993,9 +2993,6 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setLabel: NSLocalizedString(@"LOD",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"LOD",nil)];		
 		[toolbarItem setView: tbLOD];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbLOD.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString: @"Reset.pdf"])
 	{
@@ -3035,72 +3032,48 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setLabel: NSLocalizedString(@"Fusion",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
 		[toolbarItem setView: tbBlending];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbBlending.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString: @"tbThickSlab"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Thick Slab",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Thick Slab",nil)];
 		[toolbarItem setView: tbThickSlab];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbThickSlab.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString: @"tbWLWW"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"WL & WW",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"WL & WW",nil)];
 		[toolbarItem setView: tbWLWW];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbWLWW.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString: @"tbTools"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Tools",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Tools",nil)];
 		[toolbarItem setView: tbTools];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbTools.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString: @"tbMovie"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"4D Player",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"4D Player",nil)];
 		[toolbarItem setView: tbMovie];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbMovie.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString: @"tbShading"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Shadings",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Shadings",nil)];
 		[toolbarItem setView: tbShading];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbShading.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString:@"AxisColors"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Axis Colors",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Axis Colors",nil)];
 		[toolbarItem setView: tbAxisColors];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbAxisColors.frame.size];
-#endif
     }
     else if ([itemIdent isEqualToString:@"ViewsPosition"] && tbViewsPosition)
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Views",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Views",nil)];
 		[toolbarItem setView: tbViewsPosition];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbViewsPosition.frame.size];
-#endif
     }
 	else if ([itemIdent isEqualToString:@"AxisShowHide"])
 	{
@@ -3133,9 +3106,6 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setLabel: NSLocalizedString(@"Sync Zoom",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Sync Zoom",nil)];
 		[toolbarItem setView: tbSyncZoomLevel];
-#if 0 // deprecated
-        [toolbarItem setMinSize: tbSyncZoomLevel.frame.size];
-#endif
     }
 	else
 	{

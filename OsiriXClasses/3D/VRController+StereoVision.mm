@@ -245,12 +245,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Engine",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Engine",nil)];
 		[toolbarItem setView: engineView];
-
-#if 0 // deprecated
-        NSSize size = engineView.frame.size;
-        [toolbarItem setMinSize:size];
-        [toolbarItem setMaxSize:size];
-#endif
     }
 	else if ([itemIdent isEqualToString: PerspectiveToolbarItemIdentifier]) {
 		[toolbarItem setLabel: NSLocalizedString(@"Perspective",nil)];
