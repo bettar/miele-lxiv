@@ -16,7 +16,7 @@
         <window title="2D Toolbar" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="none" toolbarStyle="expanded" id="188" userLabel="Panel" customClass="ToolBarNSWindow">
             <windowStyleMask key="styleMask" titled="YES" nonactivatingPanel="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="1280" height="0.0"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <view key="contentView" hidden="YES" id="187">
                 <rect key="frame" x="0.0" y="0.0" width="1280" height="0.0"/>
                 <autoresizingMask key="autoresizingMask"/>

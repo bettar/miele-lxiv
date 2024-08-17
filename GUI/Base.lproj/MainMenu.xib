@@ -2021,7 +2021,7 @@ CA
         <window title="Local DICOM Database" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" toolbarStyle="expanded" id="885" userLabel="Database Window" customClass="N2OpenGLViewWithSplitsWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="1043" height="674"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
             <value key="minSize" type="size" width="600" height="600"/>
             <value key="maxSize" type="size" width="9000" height="9000"/>
             <view key="contentView" id="896">
@@ -2348,7 +2348,7 @@ CA
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <outlineView focusRingType="exterior" verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" emptySelection="NO" autosaveColumns="NO" headerView="13469" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="958" id="966" customClass="MyOutlineView">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="2726" height="219"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="2730" height="219"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -2368,7 +2368,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="caseInsensitiveCompare:" sortKey="name"/>
                                                                             <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="reportURL" editable="NO" width="100.5" minWidth="55" maxWidth="120" id="12364">
+                                                                        <tableColumn identifier="reportURL" editable="NO" width="101" minWidth="55" maxWidth="120" id="12364">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Report">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -2381,7 +2381,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="reportURL"/>
                                                                             <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="lockedStudy" width="49.5" minWidth="45" maxWidth="55" id="13047">
+                                                                        <tableColumn identifier="lockedStudy" width="50" minWidth="45" maxWidth="55" id="13047">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Lock">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -2458,7 +2458,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="modality"/>
                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="id" editable="NO" width="60.5" minWidth="60" maxWidth="100" id="11577">
+                                                                        <tableColumn identifier="id" editable="NO" width="61" minWidth="60" maxWidth="100" id="11577">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="ID">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2545,7 +2545,7 @@ CA
                                                                             </textFieldCell>
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="dateAdded"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="dateOpened" editable="NO" width="130.5" minWidth="130" maxWidth="180" id="1592">
+                                                                        <tableColumn identifier="dateOpened" editable="NO" width="131" minWidth="130" maxWidth="180" id="1592">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Date Opened">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2570,7 +2570,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="referringPhysician"/>
                                                                             <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="performingPhysician" editable="NO" width="120.5" minWidth="40" maxWidth="400" id="11709">
+                                                                        <tableColumn identifier="performingPhysician" editable="NO" width="121" minWidth="40" maxWidth="400" id="11709">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Performing Physician">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2583,7 +2583,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="performingPhysician"/>
                                                                             <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="institutionName" editable="NO" width="119.5" minWidth="40" maxWidth="400" id="11710">
+                                                                        <tableColumn identifier="institutionName" editable="NO" width="120" minWidth="40" maxWidth="400" id="11710">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Institution">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2596,7 +2596,7 @@ CA
                                                                             <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="institutionName"/>
                                                                             <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="albumsNames" editable="NO" width="120.5" minWidth="40" maxWidth="200" id="13662">
+                                                                        <tableColumn identifier="albumsNames" editable="NO" width="121" minWidth="40" maxWidth="200" id="13662">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Albums">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2633,7 +2633,7 @@ CA
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
                                                                         </tableColumn>
-                                                                        <tableColumn identifier="comment2" width="100.5" minWidth="100" maxWidth="300" id="14132">
+                                                                        <tableColumn identifier="comment2" width="101" minWidth="100" maxWidth="300" id="14132">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Comments 2">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -2702,7 +2702,7 @@ CA
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <tableHeaderView key="headerView" wantsLayer="YES" id="13469">
-                                                            <rect key="frame" x="0.0" y="0.0" width="2726" height="17"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="2730" height="17"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </tableHeaderView>
                                                     </scrollView>
@@ -2720,7 +2720,7 @@ CA
                                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                     <tableColumns>
-                                                                        <tableColumn identifier="Cell" editable="NO" width="367.5" minWidth="48" maxWidth="4000" id="14725">
+                                                                        <tableColumn identifier="Cell" editable="NO" width="368" minWidth="48" maxWidth="4000" id="14725">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="History">
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
@@ -3069,7 +3069,7 @@ CA
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="11237" userLabel="URL">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="640" height="99"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="213" height="20"/>
             <view key="contentView" id="11238">
                 <rect key="frame" x="0.0" y="0.0" width="640" height="99"/>
@@ -3516,7 +3516,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="11675" userLabel="newAlbum">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="418" height="107"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="11676">
                 <rect key="frame" x="0.0" y="0.0" width="418" height="107"/>
@@ -3575,7 +3575,7 @@ Gw
         <window title="Password" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="11804" userLabel="passwordAlbum">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="348" height="124"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="11805">
                 <rect key="frame" x="0.0" y="0.0" width="348" height="124"/>
@@ -3800,7 +3800,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="12366" userLabel="subSampling">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="537" height="273"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <view key="contentView" autoresizesSubviews="NO" id="12367">
                 <rect key="frame" x="0.0" y="0.0" width="537" height="273"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4083,7 +4083,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="12799" userLabel="subOpen">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="727" height="353"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="12800">
                 <rect key="frame" x="0.0" y="0.0" width="727" height="353"/>
@@ -4282,7 +4282,7 @@ Gw
         <window title="CD/DVD Password" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" animationBehavior="default" id="13805" userLabel="Password">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="508" height="149"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <view key="contentView" id="13806">
                 <rect key="frame" x="0.0" y="0.0" width="508" height="149"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -4367,7 +4367,7 @@ Gw
         <window title="CD/DVD Password" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" animationBehavior="default" id="13843" userLabel="ZIPPassword">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="554" height="127"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <view key="contentView" id="13844">
                 <rect key="frame" x="0.0" y="0.0" width="554" height="127"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -4449,7 +4449,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" animationBehavior="default" id="13869" userLabel="Notification">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="813" height="462"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="813" height="372"/>
             <value key="maxSize" type="size" width="813" height="1000"/>
             <view key="contentView" id="13870">
@@ -4737,7 +4737,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" animationBehavior="default" id="13928" userLabel="AddStudiesToUser">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="813" height="372"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="813" height="372"/>
             <value key="maxSize" type="size" width="813" height="1000"/>
             <view key="contentView" id="13929">
@@ -4954,7 +4954,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="14365" userLabel="rebuild">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="493" height="216"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="14366">
                 <rect key="frame" x="0.0" y="0.0" width="493" height="216"/>

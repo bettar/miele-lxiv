@@ -955,7 +955,7 @@ static NSHost *currentHost = nil;
 
     [defaultValuesDic setObject:@YES forKey:@"DELETEFILELISTENER"];
     
-    [defaultValuesDic setObject:@"1" forKey:@"UseFloatingThumbnailsList"];
+    [defaultValuesDic setObject:@NO forKey:@"UseFloatingThumbnailsList"]; // Issue 122
     [defaultValuesDic setObject:@"0.2" forKey: @"MinimumTitledGantryTolerance"]; // in degrees
 
     long pVRAM_MB = 0L;
