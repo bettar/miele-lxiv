@@ -3007,20 +3007,20 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
         
-		/********** Orientation submenu ************/ 
+		/* ********* Orientation submenu ************/
 		
 		menu = [[[[AppController sharedAppController] orientationMenu] copy] autorelease];
 		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Orientation", nil) action: nil keyEquivalent:@""] autorelease];
 		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
 
-		/*************Export submenu**************/
+		/* ************Export submenu**************/
 		menu = [[[[AppController sharedAppController] exportMenu] copy] autorelease];
 		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil keyEquivalent:@""] autorelease];
 		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
 		
-        /*************Workspace submenu**************/
+        /* ************Workspace submenu**************/
         if ([[AppController sharedAppController] workspaceMenu]) {
             [contextualMenu addItem: [NSMenuItem separatorItem]];
             [contextualMenu addItemWithTitle: NSLocalizedString(@"Save Workspace State", nil) action: @selector(saveWindowsState:) keyEquivalent:@""];
@@ -3234,8 +3234,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (IBAction) SetWindowsTiling:(NSPopUpButton*) menu
 {
     int tag = [menu selectedTag];
-    int rows    = tag / TILING_DIMENSION;
-    int columns = tag % TILING_DIMENSION;
+    int rows    = tag / WIN_TILING_BASE;
+    int columns = tag % WIN_TILING_BASE;
     
     columns *= [[[AppController sharedAppController] viewerScreens] count];
     
@@ -24301,8 +24301,8 @@ static BOOL viewerControllerPlaying = NO;
 
 - (void)setImageRows:(int)rows columns:(int)columns rescale: (BOOL) rescale
 {
-	if (rows > 8) rows = 8; // why 8 ? use TILING_DIMENSION ?
-	if (columns > 8) columns = 8;
+	if (rows > IMG_TILING_BASE) rows = IMG_TILING_BASE; // was 8
+	if (columns > IMG_TILING_BASE) columns = IMG_TILING_BASE;
 
 	if (rows < 1) rows = 1;
 	if (columns < 1) columns = 1;
@@ -24330,10 +24330,10 @@ static BOOL viewerControllerPlaying = NO;
         tag = [(NSMenuItem *)sender tag];
     }
 	
-	if (tag < MAX_TILING_TAG)
+	if (tag < IMG_MAX_TILING_TAG)
 	{
-		rows = (tag / TILING_DIMENSION) + 1;
-		columns = (tag % TILING_DIMENSION) + 1;
+		rows = (tag / IMG_TILING_BASE) + 1;
+		columns = (tag % IMG_TILING_BASE) + 1;
 	}
 
 	[self setImageRows: rows columns: columns rescale: NO];

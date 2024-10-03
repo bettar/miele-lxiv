@@ -90,9 +90,9 @@ NSString* const CurrentDatabaseVersion = @"2.6";
 
 @implementation DicomDatabase
 
-+(void)initializeDicomDatabaseClass:(id)observer
++(void)initializeDicomDatabaseClass
 {
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:observer forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:[DicomDatabase class]];
+    [NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:[DicomDatabase class]];
 }
 
 +(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context

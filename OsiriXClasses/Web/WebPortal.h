@@ -58,7 +58,7 @@
 }
 
 // called from AppController
-+(void)initializeWebPortalClass:(id)observer;
++(void)initializeWebPortalClass;
 +(void)finalizeWebPortalClass;
 
 +(WebPortal*)defaultWebPortal;

@@ -1053,8 +1053,12 @@ enum
 * columns =  (tag % 5) + 1;
 * - (void)setImageRows:(int)rows columns:(int)columns then called
 */
-#define TILING_DIMENSION        5
-#define MAX_TILING_TAG          (TILING_DIMENSION * TILING_DIMENSION)
+#define IMG_TILING_BASE        5 // was TILING_DIMENSION
+#define WIN_TILING_BASE        10
+
+#define IMG_MAX_TILING_TAG      (IMG_TILING_BASE * IMG_TILING_BASE)
+#define WIN_MAX_TILING_TAG      (WIN_TILING_BASE * WIN_TILING_BASE)
+
 - (IBAction)setImageTiling: (id)sender;
 
 #pragma mark - Calcium scoring

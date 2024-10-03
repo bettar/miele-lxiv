@@ -722,11 +722,11 @@ static bool isGrantedNotificationAccess = false;
     BOOL ok = (ver <= MAC_OS_X_VERSION_MAX_ALLOWED); // MAC_OS_VERSION_14_0
     return ok;
 #else
-    if (version.majorVersion > 14)
+    if (version.majorVersion > 15)
         return NO;
     
-    if (version.majorVersion == 14 &&
-        version.minorVersion > 4)
+    if (version.majorVersion == 15 &&
+        version.minorVersion > 0)
     {
         return NO;
     }
@@ -3578,12 +3578,16 @@ API_AVAILABLE(macos(10.14))
     [self initDCMTK];
     [self restartSTORESCP];
     
-    [NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector(checkForRestartStoreSCPOrder:) userInfo: nil repeats: YES];
+    [NSTimer scheduledTimerWithTimeInterval: 2
+                                     target: self
+                                   selector: @selector(checkForRestartStoreSCPOrder:)
+                                   userInfo: nil
+                                    repeats: YES];
     
-    [DicomDatabase initializeDicomDatabaseClass:self];
+    [DicomDatabase initializeDicomDatabaseClass];
     [BrowserController initializeBrowserControllerClass];
 #ifndef MIELE_LIGHT
-    [WebPortal initializeWebPortalClass:self];
+    [WebPortal initializeWebPortalClass];
     _bonjourPublisher = [[BonjourPublisher alloc] init];
 #endif
     
@@ -3698,12 +3702,12 @@ API_AVAILABLE(macos(10.14))
     previousDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
     showRestartNeeded = YES;
         
-    [[NSNotificationCenter defaultCenter]    addObserver: self
-                                               selector: @selector(preferencesUpdated:)
-                                                   name: NSUserDefaultsDidChangeNotification
-                                                 object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(preferencesUpdated:)
+                                                 name: NSUserDefaultsDidChangeNotification
+                                               object: nil];
     
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"SAMESTUDY"];
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"SAMESTUDY"];
         
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"hasMacOSXSnowLeopard"];  // At least
     
@@ -3711,7 +3715,8 @@ API_AVAILABLE(macos(10.14))
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseOpenJpegForJPEG2000"];
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useDCMTKForJP2K"]; // deprecated
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] count] < SetKeyImageAction) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] count] < SetKeyImageAction)
+    {
         NSMutableDictionary *d = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] mutableCopy] autorelease];
         
         BOOL f = NO;
@@ -5320,7 +5325,10 @@ displayThumbnailsList: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseF
         [[win window] makeKeyAndOrderFront: self];
 }
 
-- (void) tileWindows:(id)sender windows: (NSMutableArray*) viewersList display2DViewerToolbar: (BOOL) display2DViewerToolbar displayThumbnailsList: (BOOL) displayThumbnailsList
+- (void) tileWindows: (id)sender
+             windows: (NSMutableArray*) viewersList
+display2DViewerToolbar: (BOOL) display2DViewerToolbar
+displayThumbnailsList: (BOOL) displayThumbnailsList
 {
 	BOOL origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
 	NSRect screenRect = screenFrame();

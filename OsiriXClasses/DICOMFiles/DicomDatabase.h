@@ -58,7 +58,7 @@ extern NSString* const O2ScreenCapturesSeriesName;
     volatile BOOL _deallocating;
 }
 
-+(void)initializeDicomDatabaseClass:(id)observer;
++(void)initializeDicomDatabaseClass;
 +(void)recomputePatientUIDsInContext:(NSManagedObjectContext*)context;
 
 +(NSString*)defaultBaseDirPath;
