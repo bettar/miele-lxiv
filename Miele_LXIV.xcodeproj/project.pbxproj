@@ -59,7 +59,7 @@
 		433DA138215A5B2600D5A70B /* BrowserController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 433DA136215A5B2500D5A70B /* BrowserController.mm */; };
 		433F9A801A1B18A500E52C6C /* vtkMieleView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A7E1A1B18A500E52C6C /* vtkMieleView.mm */; };
 		433F9A891A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A871A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.cxx */; };
-		4341DF7E29C9BDD5003E0332 /* echoscu in Copy Executables */ = {isa = PBXBuildFile; fileRef = 4341DF7C29C9BD87003E0332 /* echoscu */; };
+		4341DF7E29C9BDD5003E0332 /* echoscu in Copy Executables */ = {isa = PBXBuildFile; fileRef = 4341DF7C29C9BD87003E0332 /* echoscu */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		4341DF8529C9C04C003E0332 /* libming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8329C9C045003E0332 /* libming.a */; };
 		4341DF8729C9C075003E0332 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8629C9C075003E0332 /* libxml2.a */; };
 		4341DF8829C9C075003E0332 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8629C9C075003E0332 /* libxml2.a */; };
