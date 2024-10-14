@@ -59,7 +59,6 @@
 		433DA138215A5B2600D5A70B /* BrowserController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 433DA136215A5B2500D5A70B /* BrowserController.mm */; };
 		433F9A801A1B18A500E52C6C /* vtkMieleView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A7E1A1B18A500E52C6C /* vtkMieleView.mm */; };
 		433F9A891A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A871A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.cxx */; };
-		4341DF7E29C9BDD5003E0332 /* echoscu in Copy Executables */ = {isa = PBXBuildFile; fileRef = 4341DF7C29C9BD87003E0332 /* echoscu */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		4341DF8529C9C04C003E0332 /* libming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8329C9C045003E0332 /* libming.a */; };
 		4341DF8729C9C075003E0332 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8629C9C075003E0332 /* libxml2.a */; };
 		4341DF8829C9C075003E0332 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4341DF8629C9C075003E0332 /* libxml2.a */; };
@@ -95,6 +94,8 @@
 		4384743021AC842200FA56C2 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		43879B7721D64C7600DEF6A9 /* AYDcmPrintSCU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43879B7621D64C7600DEF6A9 /* AYDcmPrintSCU.cpp */; };
 		43879B7921D64CB500DEF6A9 /* AYPrintManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43879B7821D64CB500DEF6A9 /* AYPrintManager.cpp */; };
+		438F759E2CB41D87009D5C1B /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = 438F759D2CB41D87009D5C1B /* echoscu */; };
+		438F75A12CB41DF7009D5C1B /* echoscu in Copy Executables */ = {isa = PBXBuildFile; fileRef = 438F759D2CB41D87009D5C1B /* echoscu */; };
 		43977C2E23D340920044054B /* loupe.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 43977C2D23D340920044054B /* loupe.vsh */; };
 		43977C3023D340AF0044054B /* loupe.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43977C2F23D340AF0044054B /* loupe.fsh */; };
 		4398390B23DD7F2C0019B0A8 /* GLProgram.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4398390A23DD7F2C0019B0A8 /* GLProgram.mm */; };
@@ -1125,7 +1126,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				4341DF7E29C9BDD5003E0332 /* echoscu in Copy Executables */,
+				438F75A12CB41DF7009D5C1B /* echoscu in Copy Executables */,
 				437B656621ED0F4F00A9A548 /* dcmdump in Copy Executables */,
 				437002FA21CD47CA00C91D62 /* Decompress in Copy Executables */,
 				437002F921CD3CD700C91D62 /* DICOMPrint in Copy Executables */,
@@ -1553,7 +1554,6 @@
 		433F9A7F1A1B18A500E52C6C /* vtkMieleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkMieleView.h; sourceTree = "<group>"; };
 		433F9A871A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vtkMieleFixedPointVolumeRayCastMapper.cxx; sourceTree = "<group>"; };
 		433F9A881A1B7C1C00E52C6C /* vtkMieleFixedPointVolumeRayCastMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkMieleFixedPointVolumeRayCastMapper.h; sourceTree = "<group>"; };
-		4341DF7C29C9BD87003E0332 /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = "../../../../../../install/project68/20230320_UB/DCMTK-3.6.7/bin/echoscu"; sourceTree = "<group>"; };
 		4341DF8329C9C045003E0332 /* libming.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libming.a; path = "../../../install/project68/20230320_UB/ming-0_4_8/lib/libming.a"; sourceTree = "<group>"; };
 		4341DF8629C9C075003E0332 /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../../install/project68/20230320_UB/libxml2-v2.9.13/lib/libxml2.a"; sourceTree = "<group>"; };
 		4341DF8A29C9C094003E0332 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = "../../../install/project68/20230320_UB/zlib-1.2.12/lib/libz.a"; sourceTree = "<group>"; };
@@ -1588,6 +1588,8 @@
 		438AE1AA21B51E1400C5E98F /* miele-lxiv-Development.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "miele-lxiv-Development.entitlements"; sourceTree = "<group>"; };
 		438AE1AB21B5651B00C5E98F /* LXIV Launcher-Deployment.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Deployment.entitlements"; path = "LXIV Launcher/LXIV Launcher-Deployment.entitlements"; sourceTree = "<group>"; };
 		438AE1AC21B5651C00C5E98F /* LXIV Launcher-Distribution.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Distribution.entitlements"; path = "LXIV Launcher/LXIV Launcher-Distribution.entitlements"; sourceTree = "<group>"; };
+		438F759D2CB41D87009D5C1B /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = echoscu; sourceTree = "<group>"; };
+		438F759F2CB41DD9009D5C1B /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = "../../../install/project68/20230320_UB/dcmtk-3.6.8/bin/echoscu"; sourceTree = "<group>"; };
 		43953FD52AB2E03A0080F497 /* thickSlabTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = thickSlabTypes.h; sourceTree = "<group>"; };
 		43977C2D23D340920044054B /* loupe.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = loupe.vsh; sourceTree = "<group>"; };
 		43977C2F23D340AF0044054B /* loupe.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = loupe.fsh; sourceTree = "<group>"; };
@@ -3207,6 +3209,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				438F759F2CB41DD9009D5C1B /* echoscu */,
 				43BF4BB02387069200CE2294 /* OpenGL */,
 				438AE1AA21B51E1400C5E98F /* miele-lxiv-Development.entitlements */,
 				438AE1A921B5177700C5E98F /* miele-lxiv-Deployment.entitlements */,
@@ -4799,8 +4802,8 @@
 		ABBB639A0635874D00D9531F /* DCMTK */ = {
 			isa = PBXGroup;
 			children = (
+				438F759D2CB41D87009D5C1B /* echoscu */,
 				436396EC2C5B679F007851A1 /* dicom.dic */,
-				4341DF7C29C9BD87003E0332 /* echoscu */,
 				84B5EA4211A2BC0900193FDB /* dsr2html */,
 				ABBB639D0635874D00D9531F /* dcmdump */,
 			);
@@ -5935,6 +5938,7 @@
 				43A02C99219D889700E788B6 /* LogWindow.xib in Resources */,
 				43A02BD3219D809500E788B6 /* OSIWebSharingPreferencePanePref.xib in Resources */,
 				8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */,
+				438F759E2CB41D87009D5C1B /* echoscu in Resources */,
 				AB9693C00E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
 				43BF4BB92387071900CE2294 /* overlay.fsh in Resources */,
 				CE03A3CC0EA2AE0300951EF4 /* iPhone.tif in Resources */,
@@ -8256,7 +8260,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-5.2",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.3",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
 				);
 				USE_HEADERMAP = NO;
@@ -8785,7 +8789,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-5.2",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.3",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
 				);
 				USE_HEADERMAP = NO;
@@ -9389,7 +9393,7 @@
 				PRODUCT_NAME = "miele-lxiv";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-5.2",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.3",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
 				);
 				USE_HEADERMAP = NO;
