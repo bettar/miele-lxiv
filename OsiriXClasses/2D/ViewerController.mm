@@ -14871,7 +14871,7 @@ long				x, y;
     [oPanel setAllowsMultipleSelection:YES];
     [oPanel setCanChooseDirectories:NO];
     [oPanel setAllowedFileTypes: @[@"roi", @"rois_series", @"xml"]];
-    if ([oPanel runModal] == NSOKButton)
+    if ([oPanel runModal] == NSModalResponseOK)
     {
 		if ([[[[oPanel filenames] lastObject] pathExtension] isEqualToString:@"xml"])
 			[imageView roiLoadFromXMLFiles: [oPanel filenames]];

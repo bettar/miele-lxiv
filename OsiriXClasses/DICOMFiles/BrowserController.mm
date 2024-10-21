@@ -1623,7 +1623,7 @@ static NSConditionLock *threadLock = nil;
     NSOpenPanel *oPanel = [NSOpenPanel openPanel];
     [oPanel setAllowsMultipleSelection:YES];
     [oPanel setCanChooseDirectories:YES];
-    if ([oPanel runModal] == NSOKButton)
+    if ([oPanel runModal] == NSModalResponseOK)
 	{
 		[self subSelectFilesAndFoldersToAdd: [oPanel filenames]]; // TODO: deprecated, Use URLs instead.
 	}
@@ -19004,7 +19004,7 @@ redoZIPpassword:
 	
 	[openPanel setMessage:NSLocalizedString(@"Choose file containing raw data:", nil)];
 	
-	if ([openPanel runModalForTypes:nil] == NSOKButton)
+	if ([openPanel runModalForTypes:nil] == NSModalResponseOK)
 	{
 		NSData *data = [NSData dataWithContentsOfFile:[openPanel filename]];
 		if (data)

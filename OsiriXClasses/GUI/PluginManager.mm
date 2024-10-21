@@ -1630,7 +1630,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
                                      nil,
                                      [messageDictionary objectForKey:@"body"]);
 			
-		if (NSOKButton == button)
+		if (NSModalResponseOK == button)
 		{
 			startedUpdateProcess = YES;
 			PluginManagerController *pluginManagerController = [[BrowserController currentBrowser] pluginManagerController];

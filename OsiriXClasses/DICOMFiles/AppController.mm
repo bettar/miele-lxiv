@@ -746,7 +746,7 @@ static bool isGrantedNotificationAccess = false;
     ver *= 100;
     ver += version.patchVersion;
     //assert(MAC_OS_X_VERSION_MIN_REQUIRED == MAC_OS_X_VERSION_10_13);
-    return (ver >= MAC_OS_X_VERSION_MIN_REQUIRED); // 101300
+    return (ver >= MAC_OS_X_VERSION_MIN_REQUIRED); // 101400
 }
 
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // __deprecated
@@ -2916,6 +2916,8 @@ static BOOL initialized = NO;
                 NSLog(@"Application Support dir: %@", NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject);
                 NSLog(@"Shared Public dir______: %@", NSSearchPathForDirectoriesInDomains(NSSharedPublicDirectory, NSUserDomainMask, YES).firstObject);
                 //NSLog(@"Preference Panes Dir___: %@", NSSearchPathForDirectoriesInDomains(NSPreferencePanesDirectory, NSUserDomainMask, YES).firstObject);
+                NSLog(@"MAC_OS_X_VERSION_MAX_ALLOWED: %i", MAC_OS_X_VERSION_MAX_ALLOWED); // MAC_OS_VERSION_14_0
+                NSLog(@"MAC_OS_X_VERSION_MIN_REQUIRED: %i", MAC_OS_X_VERSION_MIN_REQUIRED); // MAC_OS_X_VERSION_10_14
 #endif
                 NSString *bundleIdentifier = [d objectForKey:@"CFBundleIdentifier"];
                 NSLog(@"Defaults file__________: %@/Preferences/%@.plist",
@@ -3864,7 +3866,7 @@ API_AVAILABLE(macos(10.14))
                                      NSLocalizedString( @"Download", nil),
                                      nil);
 	
-		if (NSCancelButton == button)
+		if (NSModalResponseCancel == button)
 			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_MAC_APP_STORE]];
 	}
 	@catch (NSException * e)
@@ -4671,7 +4673,7 @@ static BOOL firstCall = YES;
                                      NSLocalizedString( @"Continue", nil),
                                      nil);
 		
-		if (NSOKButton == button)
+		if (NSModalResponseOK == button)
 			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_UPDATE]];
 	}
 	

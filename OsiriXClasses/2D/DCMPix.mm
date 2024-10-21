@@ -3855,10 +3855,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 }
 
 // TODO: figure out this identical function with slightly different name
-- (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ
-{
-	return [self initWithData: im :pixelSize :xDim :yDim :xSpace :ySpace :oX :oY :oZ :NO];
-}
+//- (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ
+//{
+//	return [self initWithData: im :pixelSize :xDim :yDim :xSpace :ySpace :oX :oY :oZ :NO];
+//}
 
 + (id) dcmPixWithImageObj: (Dicom_Image*) image
 {

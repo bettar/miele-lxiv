@@ -323,7 +323,7 @@ int main(int argc, char** argv)
                                          NSLocalizedString( @"Download", nil),
                                          nil);
         
-            if (NSCancelButton == button)
+            if (NSModalResponseCancel == button)
                 [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_MAC_APP_STORE]];
         }
         @catch (NSException * e)

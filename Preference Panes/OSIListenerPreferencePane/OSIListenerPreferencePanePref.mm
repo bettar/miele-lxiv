@@ -304,7 +304,7 @@
 		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedString(@"Cancel", nil)];
 		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedString( @"Choose a certificate from the following list.", nil)];
 		
-		if(clickedButton==NSOKButton)
+		if(clickedButton==NSModalResponseOK)
 		{
 			SecIdentityRef identity = [[SFChooseIdentityPanel sharedChooseIdentityPanel] identity];
 			if(identity)
@@ -313,7 +313,7 @@
 				[self getTLSCertificate];
 			}
 		}
-		else if(clickedButton==NSCancelButton)
+		else if (clickedButton==NSModalResponseCancel)
 			return;
 	}
 	else
@@ -324,7 +324,7 @@
                                                           NSLocalizedString(@"Cancel", nil),
                                                           nil);
 		
-		if(clickedButton==NSOKButton)
+		if(clickedButton==NSModalResponseOK)
 		{
 			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_DOC_SECURITY]];
 		}

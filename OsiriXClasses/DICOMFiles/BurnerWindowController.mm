@@ -618,7 +618,7 @@
         
         [bsp setDelegate: self];
         
-        if ([bsp runSetupPanel] == NSOKButton)
+        if ([bsp runSetupPanel] == NSModalResponseOK)
         {
             DRBurnProgressPanel *bpp = [DRBurnProgressPanel progressPanel];
             [bpp setDelegate: self];

@@ -115,7 +115,7 @@
 			[oPanel setAllowsMultipleSelection:NO];
 			[oPanel setCanChooseDirectories:NO];
             [oPanel setAllowedFileTypes: @[@"xml"]];
-			if ([oPanel runModal] == NSOKButton)
+			if ([oPanel runModal] == NSModalResponseOK)
 			{	
 				[self resetCameras:self];
 				NSDictionary* stepsDictionary = [[NSDictionary alloc] initWithContentsOfFile: [[oPanel filenames] objectAtIndex:0]];

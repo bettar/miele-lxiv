@@ -513,7 +513,7 @@
     [oPanel setCanChooseFiles:NO];
     [oPanel setCanChooseDirectories:YES];
 	long result = [oPanel runModal];
-    if (result == NSOKButton)
+    if (result == NSModalResponseOK)
 	{
 #ifdef MACAPPSTORE
         {

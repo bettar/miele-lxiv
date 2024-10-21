@@ -94,7 +94,6 @@
 		4384743021AC842200FA56C2 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		43879B7721D64C7600DEF6A9 /* AYDcmPrintSCU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43879B7621D64C7600DEF6A9 /* AYDcmPrintSCU.cpp */; };
 		43879B7921D64CB500DEF6A9 /* AYPrintManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43879B7821D64CB500DEF6A9 /* AYPrintManager.cpp */; };
-		438F759E2CB41D87009D5C1B /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = 438F759D2CB41D87009D5C1B /* echoscu */; };
 		438F75A12CB41DF7009D5C1B /* echoscu in Copy Executables */ = {isa = PBXBuildFile; fileRef = 438F759D2CB41D87009D5C1B /* echoscu */; };
 		43977C2E23D340920044054B /* loupe.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 43977C2D23D340920044054B /* loupe.vsh */; };
 		43977C3023D340AF0044054B /* loupe.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43977C2F23D340AF0044054B /* loupe.fsh */; };
@@ -5938,7 +5937,6 @@
 				43A02C99219D889700E788B6 /* LogWindow.xib in Resources */,
 				43A02BD3219D809500E788B6 /* OSIWebSharingPreferencePanePref.xib in Resources */,
 				8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */,
-				438F759E2CB41D87009D5C1B /* echoscu in Resources */,
 				AB9693C00E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
 				43BF4BB92387071900CE2294 /* overlay.fsh in Resources */,
 				CE03A3CC0EA2AE0300951EF4 /* iPhone.tif in Resources */,
