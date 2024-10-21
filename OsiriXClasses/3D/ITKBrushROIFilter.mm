@@ -62,7 +62,7 @@ void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 
 // Erosion
 typedef itk::BinaryErodeImageFilter<ImageType,ImageType,StucturingElementType> ErodeFilterType;
-// Dilatation
+// Dilation
 typedef itk::BinaryDilateImageFilter<ImageType,ImageType,StucturingElementType> DilateFilterType;
 
 ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int bufferWidth, int bufferHeight)
@@ -227,7 +227,7 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 //		
 //		// buffer to ITK image : 2 s
 //		ImageType::Pointer inputROI = CreateImagePointerFromBuffer(buff, bufferWidth, bufferHeight);
-//		// dilatation filter
+//		// dilation filter
 //		DilateFilterType::Pointer binaryDilate = DilateFilterType::New();
 //		// structuring Element
 //		StucturingElementType structuringElement;

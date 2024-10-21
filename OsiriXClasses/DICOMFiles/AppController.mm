@@ -141,27 +141,27 @@ static BOOL canDisplay12Bit = NO;
 static NSInvocation *fill12BitBufferInvocation = nil;
 //static NSString *appStartingDate = nil;
 
-BOOL					NEEDTOREBUILD = NO;
-BOOL					COMPLETEREBUILD = NO;
-BOOL					USETOOLBARPANEL = NO;
-short					Altivec = 1;
-short                   Use_kdu_IfAvailable = 0;
-AppController			*appController = nil;
+BOOL NEEDTOREBUILD = NO;
+BOOL COMPLETEREBUILD = NO;
+BOOL USETOOLBARPANEL = NO;
+short Altivec = 1;
+short Use_kdu_IfAvailable = 0;
 
-DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil;
-DCMTKQueryRetrieveSCP   *dcmtkQRSCPTLS = nil;
+AppController *appController = nil;
+AppController *MieleLXIV = nil;
 
-NSRecursiveLock			*Papyrus_Lock = nil;            // Papyrus is NOT thread-safe
-NSRecursiveLock         *STORESCP_Lock = nil;
-NSRecursiveLock         *STORESCPTLS_Lock = nil;
+DCMTKQueryRetrieveSCP *dcmtkQRSCP = nil;
+DCMTKQueryRetrieveSCP *dcmtkQRSCPTLS = nil;
 
-NSMutableArray			*accumulateAnimationsArray = nil;
-NSMutableArray          *recentStudies = nil;
+NSRecursiveLock *Papyrus_Lock = nil;            // Papyrus is NOT thread-safe
+NSRecursiveLock *STORESCP_Lock = nil;
+NSRecursiveLock *STORESCPTLS_Lock = nil;
 
-NSMutableDictionary     *recentStudiesAlbums = nil;
-BOOL					accumulateAnimations = NO;
+NSMutableArray *accumulateAnimationsArray = nil;
+NSMutableArray *recentStudies = nil;
 
-AppController* OsiriX = nil;
+NSMutableDictionary *recentStudiesAlbums = nil;
+BOOL accumulateAnimations = NO;
 
 extern int delayedTileWindows;
 extern NSString* getMacAddress(void);
@@ -2766,7 +2766,7 @@ static bool isGrantedNotificationAccess = false;
     @try
     {
         self = [super init];
-        OsiriX = appController = self;
+        MieleLXIV = appController = self;
         
 #ifndef MIELE_LIGHT
         [DICOMTLS eraseKeys];
@@ -5346,9 +5346,10 @@ displayThumbnailsList: (BOOL) displayThumbnailsList
 	NSMutableArray	*cWindows = [NSMutableArray arrayWithArray: viewersList];
 	
 	// Only the visible windows
-	for (int i = (long) [cWindows count]-1; i >= 0; i--)
+	for (int i = [cWindows count]-1; i >= 0; i--)
 	{
-		if ([[[cWindows objectAtIndex: i] window] isVisible] == NO) [cWindows removeObjectAtIndex: i];
+		if ([[[cWindows objectAtIndex: i] window] isVisible] == NO)
+            [cWindows removeObjectAtIndex: i];
 	}
 	
 	NSMutableArray* screens = [[[self viewerScreens] mutableCopy] autorelease];

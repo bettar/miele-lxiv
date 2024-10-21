@@ -89,7 +89,7 @@ extern "C"
 
 @class AppController, ToolbarPanelController, ThumbnailsListPanel, BonjourPublisher;
 
-extern AppController* OsiriX;
+extern AppController* MieleLXIV;
 
 #pragma mark -
 

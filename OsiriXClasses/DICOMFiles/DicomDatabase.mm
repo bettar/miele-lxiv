@@ -3258,7 +3258,7 @@ static BOOL protectionAgainstReentry = NO;
 			
             if (filesArray.count && !activityFeedbackShown && showGUI.boolValue) {
 				[ThreadsManager.defaultManager addThreadAndStart:thread];
-                [OsiriX setReceivingIcon];
+                [MieleLXIV setReceivingIcon];
                 activityFeedbackShown = YES;
             }
             
@@ -3540,7 +3540,7 @@ static BOOL protectionAgainstReentry = NO;
     {
 		[_importFilesFromIncomingDirLock unlock];
         if (activityFeedbackShown)
-            [OsiriX unsetReceivingIcon];
+            [MieleLXIV unsetReceivingIcon];
 	}
     
     if (enumer.nextObject) // there is more data

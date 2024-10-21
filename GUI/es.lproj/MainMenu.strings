@@ -547,7 +547,7 @@
 /* Class = "NSMenuItem"; title = "Convert Between Polygon / Brush ROIs"; ObjectID = "12390"; */
 "12390.title" = "Convertir entre polígonos / ROIs de cepillos";
 
-/* Class = "NSMenuItem"; title = "Dilatation"; ObjectID = "12391"; */
+/* Class = "NSMenuItem"; title = "Dilation"; ObjectID = "12391"; */
 "12391.title" = "Dilatación";
 
 /* Class = "NSMenuItem"; title = "Closing"; ObjectID = "12403"; */

@@ -4624,7 +4624,7 @@ public:
 					
 					[itkSegmentation release];
 					
-					// Dilatation
+					// Dilation
 					
 					[[controller viewer2D] applyMorphology: [roiList2 valueForKey:@"roi"] action:@"dilate" radius: 10 sendNotification:NO];
 					[[controller viewer2D] applyMorphology: [roiList2 valueForKey:@"roi"] action:@"erode" radius: 6 sendNotification:NO];
