@@ -22,6 +22,7 @@
 #import "CIADICOMField.h"
 #import "NSPreferencePane+OsiriX.h"
 #import "OSICustomImageAnnotations.h"
+#import "alertTransition.h"
 
 @implementation CIALayoutController
 
@@ -573,7 +574,7 @@
 		if ([[[prefPane dicomGroupTextField] stringValue] isEqualToString:@""] ||
             [[[prefPane dicomElementTextField] stringValue] isEqualToString:@""])
 		{
-			NSRunAlertPanel(NSLocalizedString( @"Custom DICOM Field", nil),
+			NSRunAlertPanel2(NSLocalizedString( @"Custom DICOM Field", nil),
                             NSLocalizedString( @"Please provide a value for both \"Group\" and \"Element\" fields.", nil),
                             NSLocalizedString( @"OK", nil),
                             nil,
@@ -1070,13 +1071,13 @@
 	{
 		if (![[annotationsArray objectAtIndex:a] placeHolder])
 		{
-			int r = NSRunAlertPanel(NSLocalizedString( @"Saving Annotations", nil),
+			int r = NSRunAlertPanel2(NSLocalizedString( @"Saving Annotations", nil),
                                     NSLocalizedString( @"Any Annotation left outside the place holders will be lost.", nil),
                                     NSLocalizedString( @"OK", nil),
                                     NSLocalizedString( @"Cancel", nil),
                                     nil);
             
-			if (r==NSAlertDefaultReturn)
+			if (r==NSAlertDefaultReturn2)
 				return YES;
 			else
 				return NO;
@@ -1111,8 +1112,8 @@
 
 	if (!check || [annotationsArray count]==0)
 	{
-//		int r = NSRunAlertPanel(NSLocalizedString( @"Annotation Content", nil), NSLocalizedString( @"Some token have no content. Token such as 'DICOM_', 'DB_', 'Special_' will not be displayed.", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
-//		if (r==NSAlertDefaultReturn)
+//		int r = NSRunAlertPanel2(NSLocalizedString( @"Annotation Content", nil), NSLocalizedString( @"Some token have no content. Token such as 'DICOM_', 'DB_', 'Special_' will not be displayed.", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
+//		if (r==NSAlertDefaultReturn2)
 //			return YES;
 //		else
 //		{
@@ -1142,8 +1143,8 @@
 
 	if (!check || [content count]==0)
 	{
-//		int r = NSRunAlertPanel(NSLocalizedString( @"Annotation Content", nil), NSLocalizedString( @"Some token have no content. Token such as 'DICOM_', 'DB_', 'Special_' will not be displayed.", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
-//		if (r==NSAlertDefaultReturn)
+//		int r = NSRunAlertPanel2(NSLocalizedString( @"Annotation Content", nil), NSLocalizedString( @"Some token have no content. Token such as 'DICOM_', 'DB_', 'Special_' will not be displayed.", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
+//		if (r==NSAlertDefaultReturn2)
 //			return YES;
 //		else
 //			return NO;

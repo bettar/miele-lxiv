@@ -88,7 +88,7 @@
 //#import "vtkConfigure.h" // ok in 9.2 no longer available in 9.3
 #import "vtkMath.h"
 #import "thickSlabTypes.h"
-
+#import "alertTransition.h"
 
 #define MAXDYNAMICVALUE 32000.
 
@@ -1013,12 +1013,13 @@ public:
         
         if (vramMB <= 512)
         {
-            NSRunCriticalAlertPanel(NSLocalizedString(@"GPU Rendering", nil), // title
-                                    NSLocalizedString(@"Your graphic board has only %lu MB of VRAM. Performances will be very limited with large dataset.", nil), // msg format
+            NSString* msg = [NSString stringWithFormat:NSLocalizedString(@"Your graphic board has only %lu MB of VRAM. Performances will be very limited with large dataset.", nil),
+                             vramMB];
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"GPU Rendering", nil),
+                                    msg,
                                     NSLocalizedString(@"OK", nil), // default button
                                     nil,
-                                    nil,
-                                        vramMB);
+                                    nil);
         }
     }
     
@@ -1417,7 +1418,7 @@ public:
 		
 		f = [exportDCM writeDCMFile: nil];
 		if (f == nil)
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
                                     NSLocalizedString(@"Error during the creation of the DICOM File!", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
@@ -1657,7 +1658,7 @@ public:
 {
 	if (exportDCMWindow == nil)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Not available", nil),
+		NSRunAlertPanel2(NSLocalizedString(@"Not available", nil),
                         NSLocalizedString(@"This function is not available for this window.", nil),
                         NSLocalizedString(@"OK", nil),
                         nil,
@@ -1886,7 +1887,7 @@ public:
 {
 	if (export3DVRWindow == nil)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Not available", nil),
+		NSRunAlertPanel2(NSLocalizedString(@"Not available", nil),
                         NSLocalizedString(@"This function is not available for this window.", nil),
                         NSLocalizedString(@"OK", nil),
                         nil,
@@ -1902,7 +1903,7 @@ public:
 {
 	if (export3DWindow == nil)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Not available", nil),
+		NSRunAlertPanel2(NSLocalizedString(@"Not available", nil),
                         NSLocalizedString(@"This function is not available for this window.", nil),
                         NSLocalizedString(@"OK", nil),
                         nil,
@@ -1914,12 +1915,12 @@ public:
 //	if ([[[self window] windowController] movieFrames] > 1)
 	if ([controller movieFrames] > 1)
 	{
-		if (NSRunInformationalAlertPanel(NSLocalizedString(@"Quicktime Export", nil),
+		if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Quicktime Export", nil),
                                          NSLocalizedString(@"Should I export the temporal series or the 3D scene?", nil),
                                          NSLocalizedString(@"3D Scene", nil),
                                          NSLocalizedString(@"Temporal Series", nil),
                                          nil
-                                         ) == NSAlertDefaultReturn)
+                                         ) == NSAlertDefaultReturn2)
 		{
 			[NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 		}
@@ -2404,12 +2405,12 @@ public:
     
     NSLog(@"C++ Exception during drawRect... not enough memory?");
     NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-    if (NSRunAlertPanel(@"", //NSLocalizedString(@"32-bit",nil),
+    if (NSRunAlertPanel2(@"", //NSLocalizedString(@"32-bit",nil),
                         NSLocalizedString(@"Cannot use the 3D engine.",nil),
                         NSLocalizedString(@"OK", nil),
                         bundleName,
                         nil
-                        ) == NSAlertAlternateReturn)
+                        ) == NSAlertAlternateReturn2)
     {
         //[[AppController sharedAppController] osirix64bit: self];
     }
@@ -4683,7 +4684,7 @@ public:
 				[[controller viewer2D] needsDisplayUpdate];
 			}
 			else
-                NSRunAlertPanel(NSLocalizedString(@"Bone Removing", nil),
+                NSRunAlertPanel2(NSLocalizedString(@"Bone Removing", nil),
                                 NSLocalizedString(@"Failed to detect a high density voxel to start growing region.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,
@@ -5637,7 +5638,7 @@ public:
 		
 		if (roiPts->GetNumberOfPoints() < 3)
 		{
-			NSRunAlertPanel(NSLocalizedString(@"3D Cut", nil),
+			NSRunAlertPanel2(NSLocalizedString(@"3D Cut", nil),
                             NSLocalizedString(@"Draw an ROI on the 3D image and then press Return (include) or Delete (exclude) keys.", nil),
                             NSLocalizedString(@"OK", nil),
                             nil,
@@ -5646,7 +5647,7 @@ public:
 		else if (c == NSTabCharacter &&
                  [[controller viewer2D] postprocessed] == YES)
 		{
-			NSRunAlertPanel(NSLocalizedString(@"Restore", nil),
+			NSRunAlertPanel2(NSLocalizedString(@"Restore", nil),
                             NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot restore it.", nil),
                             NSLocalizedString(@"OK", nil),
                             nil,
@@ -8207,12 +8208,12 @@ public:
 	switch (tag)
 	{
 		case 2:
-            if (NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil),
+            if (NSRunAlertPanel2(NSLocalizedString(@"3D Scissor State", nil),
                                 NSLocalizedString(@"Are you sure you want to delete this 3D state? You cannot undo this operation.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 NSLocalizedString(@"Cancel", nil),
                                 nil
-                                ) == NSAlertDefaultReturn)
+                                ) == NSAlertDefaultReturn2)
             {
                 [[NSFileManager defaultManager] removeItemAtPath: str error: nil];
             }
@@ -8237,7 +8238,7 @@ public:
                             cropcallback->Execute(croppingBox, 0, nil);
                     }
                     else
-                        NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil),
+                        NSRunAlertPanel2(NSLocalizedString(@"3D Scissor State", nil),
                                         NSLocalizedString(@"No saved data are available.", nil),
                                         NSLocalizedString(@"OK", nil),
                                         nil,
@@ -8246,14 +8247,14 @@ public:
                     [volumeData release];
                 }
                 else
-                    NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil),
+                    NSRunAlertPanel2(NSLocalizedString(@"3D Scissor State", nil),
                                     NSLocalizedString(@"No saved data are available.", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
                                     nil);
             }
 			else
-                NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil),
+                NSRunAlertPanel2(NSLocalizedString(@"3D Scissor State", nil),
                                 NSLocalizedString(@"No saved data are available.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,
@@ -8263,12 +8264,12 @@ public:
 		case 0:	// Save
             
             if (([[NSFileManager defaultManager] fileExistsAtPath: str] &&
-                 NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil),
+                 NSRunAlertPanel2(NSLocalizedString(@"3D Scissor State", nil),
                                  NSLocalizedString(@"A 3D Scissor State already exists. Do you want to replace it with curent state?", nil),
                                  NSLocalizedString(@"OK", nil),
                                  NSLocalizedString(@"Cancel", nil),
                                  nil
-                                 ) == NSAlertDefaultReturn) ||
+                                 ) == NSAlertDefaultReturn2) ||
                 [[NSFileManager defaultManager] fileExistsAtPath: str] == NO)
             {
                 waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Saving 3D object...", nil)];

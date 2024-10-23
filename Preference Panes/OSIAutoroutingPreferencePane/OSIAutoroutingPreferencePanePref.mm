@@ -26,6 +26,7 @@
 
 #import "tmp_locations.h"
 #import "url.h"
+#import "alertTransition.h"
 
 #define CURRENTVERSION      1
 
@@ -101,13 +102,15 @@
             }
 		}
 		
-		if (found == NO)
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Unknown Server", nil),
-                                    NSLocalizedString(@"This server doesn't exist in the Locations list: %@", nil),
+        if (found == NO) {
+            NSString* msg = [NSString stringWithFormat:NSLocalizedString(@"This server doesn't exist in the Locations list: %@", nil),
+                             [[routesArray objectAtIndex: i] valueForKey:@"server"]];
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"Unknown Server", nil),
+                                    msg,
                                     NSLocalizedString(@"OK", nil),
                                     nil,
-                                    nil,
-                                    [[routesArray objectAtIndex: i] valueForKey:@"server"]);
+                                    nil);
+        }
 	}
 }
 
@@ -209,7 +212,7 @@ static BOOL newRouteMode = NO;
     
     if ([serversArray count] == 0)
     {
-        NSRunCriticalAlertPanel(NSLocalizedString(@"New Route", nil),
+        NSRunCriticalAlertPanel2(NSLocalizedString(@"New Route", nil),
                                 NSLocalizedString( @"No destination servers exist. Create at least one destination in the Locations preferences.", nil),
                                 NSLocalizedString( @"OK", nil),
                                 nil,
@@ -256,12 +259,13 @@ static BOOL newRouteMode = NO;
             
             if (count > 1)
             {
-                NSRunCriticalAlertPanel(NSLocalizedString(@"Multiples Servers", nil),
-                                        NSLocalizedString(@"Warning, multiples destination servers have the same name: %@. Each destination should have a unique name.", nil),
+                NSString* msg = [NSString stringWithFormat:NSLocalizedString(@"Warning, multiples destination servers have the same name: %@. Each destination should have a unique name.", nil),
+                                 [selectedRoute valueForKey: @"server"]];
+                NSRunCriticalAlertPanel2(NSLocalizedString(@"Multiples Servers", nil),
+                                        msg,
                                         NSLocalizedString(@"OK", nil),
                                         nil,
-                                        nil,
-                                        [selectedRoute valueForKey: @"server"]);
+                                        nil);
             }
             
             [self selectServer: serverPopup];

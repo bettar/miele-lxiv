@@ -35,6 +35,7 @@
 #import "DDKeychain.h"
 #import "url.h"
 #import "tmp_locations.h"
+#import "alertTransition.h"
 
 @interface SecondsToMinutesTransformer: NSValueTransformer {}
 @end
@@ -69,13 +70,13 @@
 {
     WebPortalUser *user = [notification object];
     
-    if( user == [[userArrayController selectedObjects] lastObject])
-        NSRunInformationalAlertPanel(NSLocalizedString(@"User's name", nil),
-                                     NSLocalizedString(@"User's name changed. The password has been reset to a new password: %@", nil),
+    if ( user == [[userArrayController selectedObjects] lastObject])
+        NSRunInformationalAlertPanel2(NSLocalizedString(@"User's name", nil),
+                                      [NSString stringWithFormat: NSLocalizedString(@"User's name changed. The password has been reset to a new password: %@", nil),
+                                       user.password],
                                      NSLocalizedString(@"OK", nil),
                                      nil,
-                                     nil,
-                                        user.password);
+                                     nil);
 }
 
 - (id) initWithBundle:(NSBundle *)bundle
@@ -152,13 +153,13 @@
 	}
 	else
 	{
-		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedString(@"No Valid Certificate", nil),
+		NSInteger clickedButton = NSRunCriticalAlertPanel2(NSLocalizedString(@"No Valid Certificate", nil),
                                                           NSLocalizedString(@"Your Keychain does not contain any valid certificate.", nil),
                                                           NSLocalizedString(@"Help", nil),  // default button
                                                           NSLocalizedString(@"Cancel", nil),
                                                           nil);
 
-		if(clickedButton==NSModalResponseOK)
+		if (clickedButton==NSAlertDefaultReturn2)
 		{
 			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_DOC_SECURITY]];
 		}
@@ -245,7 +246,7 @@
 			[BrowserController currentBrowser].testPredicate = [DicomDatabase predicateForSmartAlbumFilter: [[[userArrayController selectedObjects] lastObject] valueForKey: @"studyPredicate"]];
 			[[BrowserController currentBrowser] outlineViewRefresh];
 			[BrowserController currentBrowser].testPredicate = nil;
-			NSRunInformationalAlertPanel(NSLocalizedString(@"Study Filter", nil),
+			NSRunInformationalAlertPanel2(NSLocalizedString(@"Study Filter", nil),
                                          NSLocalizedString(@"The result is now displayed in the Database Window.", nil),
                                          NSLocalizedString(@"OK", nil),
                                          nil,
@@ -253,12 +254,13 @@
 		}
 		@catch (NSException * e)
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
-                                    NSLocalizedString(@"This filter is NOT working: %@", nil),
+            NSString* msg = [NSString stringWithFormat:NSLocalizedString(@"This filter is NOT working: %@", nil),
+                             e];
+			NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
+                                    msg,
                                     NSLocalizedString(@"OK", nil),
                                     nil,
-                                    nil,
-                                        e);
+                                    nil);
 		}
 	}
 }

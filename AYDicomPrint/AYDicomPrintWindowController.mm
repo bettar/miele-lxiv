@@ -30,6 +30,7 @@
 #import "N2Debug.h"
 #import "AppController.h"
 #import "tmp_locations.h"
+#import "alertTransition.h"
 
 #define VERSIONNUMBERSTRING	@"v1.00.000"
 #define ECHOTIMEOUT 5
@@ -189,7 +190,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	// show dialog if no printers are configured OR open modal print dialog
 	if ([printers count] == 0)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"DICOM Print", nil),
+		NSRunAlertPanel2(NSLocalizedString(@"DICOM Print", nil),
                         NSLocalizedString(@"No DICOM printers were found, please add a dicom printer in the preferences.", nil),
                         NSLocalizedString(@"OK", nil),
                         nil,
@@ -291,13 +292,12 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	if ([m_pages intValue] > 10 &&
         [[m_ImageSelection selectedCell] tag] == eAllImages)
 	{
-		if (NSRunInformationalAlertPanel(NSLocalizedString(@"DICOM Print", nil),
-                                         NSLocalizedString(@"Are you really sure you want to print %d pages?", nil),
+		if (NSRunInformationalAlertPanel2(NSLocalizedString(@"DICOM Print", nil),
+                                          [NSString stringWithFormat: NSLocalizedString(@"Are you really sure you want to print %d pages?", nil),
+                                           [m_pages intValue]],
                                          NSLocalizedString(@"OK", nil),
                                          NSLocalizedString(@"Cancel", nil),
-                                         nil,
-                                         [m_pages intValue]
-                                         ) != NSAlertDefaultReturn)
+                                         nil) != NSAlertDefaultReturn2)
         {
             return;
         }
@@ -658,12 +658,11 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 
 - (void) errorMessage:(NSArray*) msg
 {
-	NSRunCriticalAlertPanel([msg objectAtIndex: 0],
-                            @"%@",
+	NSRunCriticalAlertPanel2([msg objectAtIndex: 0],
+                            [msg objectAtIndex: 1],
                             [msg objectAtIndex: 2],
                             nil,
-                            nil,
-                            [msg objectAtIndex: 1]) ;
+                            nil) ;
 }
 
 // It runs in a separate thread

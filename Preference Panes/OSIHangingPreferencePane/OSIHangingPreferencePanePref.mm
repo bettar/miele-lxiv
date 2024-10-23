@@ -24,6 +24,7 @@
 #import <NSPreferencePane+OsiriX.h>
 #import "Notifications.h"
 #import "AppController.h"
+#import "alertTransition.h"
 
 @implementation OSIHangingPreferencePanePref
 
@@ -119,7 +120,7 @@
     {        
         if( WLnew == nil || WWnew == nil)
         {
-            NSRunCriticalAlertPanel(NSLocalizedString( @"WL / WW Error", nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString( @"WL / WW Error", nil),
                                     NSLocalizedString( @"Provide values for WL and WW.", nil),
                                     NSLocalizedString( @"OK", nil),
                                     nil,
@@ -140,12 +141,12 @@
             
             if( [presetsDict valueForKey: self.WLWWNewName])
             {
-                if( NSRunInformationalAlertPanel(NSLocalizedString( @"WL / WW", 0L),
+                if( NSRunInformationalAlertPanel2(NSLocalizedString( @"WL / WW", 0L),
                                                  NSLocalizedString( @"Another WL/WW setting with this name already exists. Are you sure you want to replace it with this one?", 0L),
                                                  NSLocalizedString(@"OK", nil),
                                                  NSLocalizedString(@"Cancel", nil),
                                                  nil
-                                                 ) != NSAlertDefaultReturn)
+                                                 ) != NSAlertDefaultReturn2)
                 {
                     return;
                 }
@@ -174,7 +175,11 @@
         }
         else
         {
-            NSRunCriticalAlertPanel( NSLocalizedString( @"WL / WW Error", nil), NSLocalizedString( @"Provide a name for this setting.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+            NSRunCriticalAlertPanel2(NSLocalizedString( @"WL / WW Error", nil),
+                                     NSLocalizedString( @"Provide a name for this setting.", nil),
+                                     NSLocalizedString( @"OK", nil),
+                                     nil,
+                                     nil);
             return;
         }
     }
@@ -332,7 +337,7 @@
            {
                if( [[d valueForKey: @"Study Description"] isEqualToString: NSLocalizedString( @"Default", nil)] == NO && [[d valueForKey: @"Study Description"] isEqualToString: @"Default"] == NO)
                {
-                   NSRunCriticalAlertPanel(NSLocalizedString( @"Default Protocol", nil),
+                   NSRunCriticalAlertPanel2(NSLocalizedString( @"Default Protocol", nil),
                                            NSLocalizedString( @"Default protocol cannot be renamed", nil),
                                            NSLocalizedString( @"OK", nil),
                                            nil,
@@ -393,12 +398,12 @@
 
 - (void) deleteSelectedRow:(NSTableView*)sender
 {
-    if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Protocol", 0L),
+    if( NSRunInformationalAlertPanel2(NSLocalizedString(@"Delete Protocol", 0L),
                                      NSLocalizedString(@"Are you sure you want to delete the selected protocol?", 0L),
                                      NSLocalizedString(@"OK", nil),
                                      NSLocalizedString(@"Cancel", nil),
                                      nil
-                                     ) == NSAlertDefaultReturn)
+                                     ) == NSAlertDefaultReturn2)
     {
         [self willChangeValueForKey: @"currentHangingProtocol"];
         [[hangingProtocols objectForKey:modalityForHangingProtocols] removeObjectAtIndex: sender.selectedRow];
@@ -479,7 +484,7 @@
         if( [self selectedRow] > 0)
             [(OSIHangingPreferencePanePref*)[self delegate] deleteSelectedRow: self];
         else
-            NSRunCriticalAlertPanel(NSLocalizedString( @"Delete Protocol", 0L),
+            NSRunCriticalAlertPanel2(NSLocalizedString( @"Delete Protocol", 0L),
                                     NSLocalizedString( @"You cannot delete the default protocol", nil),
                                     NSLocalizedString( @"OK", nil),
                                     nil,

@@ -35,6 +35,7 @@
 #import "N2Debug.h"
 #import "AppDefaults.h"
 #import "url.h"
+#import "alertTransition.h"
 
 static NSString* 	MIP_ToolbarIdentifier				= @"SR Toolbar Identifier";
 
@@ -172,7 +173,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
             testInterval = NO;
             
             if (sliceThickness > 0) {
-                NSRunCriticalAlertPanel(NSLocalizedString(@"Slice interval",nil),
+                NSRunCriticalAlertPanel2(NSLocalizedString(@"Slice interval",nil),
                                         NSLocalizedString(@"I'm not able to find the slice interval. Slice interval will be equal to slice thickness.",nil),
                                         NSLocalizedString(@"OK",nil),
                                         nil,
@@ -180,7 +181,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
             }
             else
             {
-                NSRunCriticalAlertPanel(NSLocalizedString(@"Slice interval/thickness",nil),
+                NSRunCriticalAlertPanel2(NSLocalizedString(@"Slice interval/thickness",nil),
                                         NSLocalizedString(@"Problems with slice thickness/interval to do a 3D reconstruction.",nil),
                                         NSLocalizedString(@"OK",nil),
                                         nil,
@@ -209,7 +210,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 
         if (err)
         {
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Images size",nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"Images size",nil),
                                     NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil),
                                     NSLocalizedString(@"OK",nil),
                                     nil,
@@ -229,7 +230,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 //		}
 //		if (err)
 //		{
-//			if (NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distort the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return nil;
+//			if (NSRunCriticalAlertPanel2( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distort the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn2) return nil;
 //			err = 0;
 //		}
 //	}

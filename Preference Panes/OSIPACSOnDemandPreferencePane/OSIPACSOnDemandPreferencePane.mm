@@ -24,6 +24,7 @@
 #import "DicomAlbum.h"
 #import "N2Debug.h"
 #import "BrowserController.h"
+#import "alertTransition.h"
 
 static NSMatrix *gDateMatrix = nil;
 
@@ -198,12 +199,12 @@ static NSMatrix *gDateMatrix = nil;
             if ([[d objectForKey: @"date"] intValue] == 0 &&
                 [[d objectForKey: @"modality"] count] == 0)
             {
-                NSRunInformationalAlertPanel(NSLocalizedString( @"Filter", nil),
-                                             NSLocalizedString( @"The Smart Album filter (%@) needs to have at least one parameter defined to be activated: date or modality.", nil),
+                NSRunInformationalAlertPanel2(NSLocalizedString( @"Filter", nil),
+                                              [NSString stringWithFormat: NSLocalizedString( @"The Smart Album filter (%@) needs to have at least one parameter defined to be activated: date or modality.", nil),
+                                               [d objectForKey: @"name"]],
                                              NSLocalizedString( @"OK", nil),
                                              nil,
-                                             nil,
-                                                [d objectForKey: @"name"]);
+                                             nil);
                 
                 [self willChangeValueForKey: @"smartAlbumsArray"];
                 [d setValue: @NO forKey: @"activated"];
@@ -395,7 +396,7 @@ static NSMatrix *gDateMatrix = nil;
 {
     if ([smartAlbumsArray count] == 0)
     {
-        NSRunCriticalAlertPanel(NSLocalizedString(@"New Route", nil),
+        NSRunCriticalAlertPanel2(NSLocalizedString(@"New Route", nil),
                                 NSLocalizedString(@"No smart album exists.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,

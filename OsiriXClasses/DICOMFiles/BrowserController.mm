@@ -145,6 +145,7 @@
 #include <IOKit/storage/IODVDMedia.h>
 
 #import "Reports.h" // for ReportType
+#import "alertTransition.h"
 
 static BrowserController *browserWindow = nil;
 
@@ -1107,14 +1108,15 @@ static NSConditionLock *threadLock = nil;
                 
                 @catch( NSException *ne)
                 {
-                    NSRunAlertPanel(NSLocalizedString(@"Routing Filter Error", nil),
-                                    NSLocalizedString(@"Syntax error in this routing filter: %@\r\r%@\r\r%@", nil),
+                    NSString* msg = [NSString stringWithFormat:NSLocalizedString(@"Syntax error in this routing filter: %@\r\r%@\r\r%@", nil),
+                                     [routingRule objectForKey:@"name"],
+                                     [routingRule objectForKey:@"filter"],
+                                     [ne description]];
+                    NSRunAlertPanel2(NSLocalizedString(@"Routing Filter Error", nil),
+                                    msg,
                                     nil,
                                     nil,
-                                    nil,
-                                    [routingRule objectForKey:@"name"],
-                                    [routingRule objectForKey:@"filter"],
-                                    [ne description]);
+                                    nil);
                     
                     [AppController printStackTrace: ne];
                 }
@@ -1337,12 +1339,12 @@ static NSConditionLock *threadLock = nil;
 
 - (IBAction) regenerateAutoComments:(id) sender;
 {
-	if (NSRunInformationalAlertPanel(NSLocalizedString(@"Regenerate Auto Comments", nil),
+	if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Regenerate Auto Comments", nil),
 									 NSLocalizedString(@"Are you sure you want to regenerate the comments field? It will delete the existing comments of studies and series.", nil),
 									 NSLocalizedString(@"OK",nil),
 									 NSLocalizedString(@"Cancel",nil),
 									 nil
-                                     ) == NSAlertDefaultReturn)
+                                     ) == NSAlertDefaultReturn2)
 	{
         NSArray *studiesArray = nil;
         
@@ -1560,7 +1562,7 @@ static NSConditionLock *threadLock = nil;
 		
 		if ([result count] == 0)
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"URL Error",nil),
+			NSRunCriticalAlertPanel2(NSLocalizedString(@"URL Error",nil),
                                     NSLocalizedString(@"I'm not able to download this file.",nil),
                                     NSLocalizedString( @"OK",nil),
                                     nil,
@@ -2349,21 +2351,21 @@ static NSConditionLock *threadLock = nil;
                 break;
 				
 			case COPY_DB_ASK_USER:
-				switch (NSRunInformationalAlertPanel(
+				switch (NSRunInformationalAlertPanel2(
 													 NSLocalizedString(@"OsiriX Database", nil),
 													 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?", nil),
 													 NSLocalizedString(@"Copy Files", nil), // def
 													 NSLocalizedString(@"Cancel", nil),     // alt
 													 NSLocalizedString(@"Copy Links", nil))) // other
                 {
-                    case NSAlertDefaultReturn:
+                    case NSAlertDefaultReturn2:
                         break;
                         
-                    case NSAlertOtherReturn:
+                    case NSAlertOtherReturn2:
                         copyFiles = NO;
                         break;
                         
-                    case NSAlertAlternateReturn:
+                    case NSAlertAlternateReturn2:
                         [filesInput removeAllObjects];		// zero the array before it is returned.
                         return;
                         break;
@@ -2664,12 +2666,11 @@ static NSConditionLock *threadLock = nil;
 
 - (void) autoCleanDatabaseFreeSpaceWarning: (NSString*) message
 {
-	NSRunCriticalAlertPanel(NSLocalizedString(@"Warning", nil),
-                            @"%@",
+	NSRunCriticalAlertPanel2(NSLocalizedString(@"Warning", nil),
+                            message,
                             NSLocalizedString(@"OK",nil),
                             nil,
-                            nil,
-                                message);
+                            nil);
 }
 
 - (void) autoCleanDatabaseFreeSpace: (id)sender __deprecated
@@ -5472,13 +5473,13 @@ static NSConditionLock *threadLock = nil;
 
 - (void) mergeSeriesExecute:(NSArray*) seriesArray
 {
-	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Series", nil),
+	NSInteger result = NSRunInformationalAlertPanel2(NSLocalizedString(@"Merge Series", nil),
                                                     NSLocalizedString(@"Are you sure you want to merge the selected series? It cannot be cancelled.\r\rWARNING! If you merge multiple patients, the Patient Name and ID will be identical.", nil),
                                                     NSLocalizedString(@"OK",nil),
                                                     NSLocalizedString(@"Cancel",nil),
                                                     nil);
 	
-	if (result != NSAlertDefaultReturn)
+	if (result != NSAlertDefaultReturn2)
         return;
 
     NSManagedObjectContext	*context = self.database.managedObjectContext;
@@ -5572,21 +5573,21 @@ static NSConditionLock *threadLock = nil;
     DicomStudy *destStudy = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
     if ([[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO) destStudy = [destStudy valueForKey:@"study"];
     
-	NSInteger result = NSRunInformationalAlertPanel([NSString stringWithFormat: NSLocalizedString(@"Unify Patient Identity to: %@", nil), destStudy.name], [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to unify the patient identity of the selected studies? It cannot be cancelled. You can choose to modify the database fields only, or also change the DICOM files headers with the new values.\r\rWARNING! The Patient Name and ID will be identical for all these studies to the last selected study (%@ - %@).\r\rThe original Patient Name and Patient ID will be saved in the OtherPatientNames and OtherPatientIDs DICOM fields.", nil), destStudy.name, destStudy.patientID],
+	NSInteger result = NSRunInformationalAlertPanel2([NSString stringWithFormat: NSLocalizedString(@"Unify Patient Identity to: %@", nil), destStudy.name],
+                                                     [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to unify the patient identity of the selected studies? It cannot be cancelled. You can choose to modify the database fields only, or also change the DICOM files headers with the new values.\r\rWARNING! The Patient Name and ID will be identical for all these studies to the last selected study (%@ - %@).\r\rThe original Patient Name and Patient ID will be saved in the OtherPatientNames and OtherPatientIDs DICOM fields.", nil), destStudy.name, destStudy.patientID],
                                                     NSLocalizedString(@"Database & DICOM",nil),
                                                     NSLocalizedString(@"Database only",nil),
-                                                    NSLocalizedString(@"Cancel",nil),
-                                                    nil);
+                                                    NSLocalizedString(@"Cancel",nil));
 	
-	if (result != NSAlertDefaultReturn &&
-        result != NSAlertAlternateReturn)
+	if (result != NSAlertDefaultReturn2 &&
+        result != NSAlertAlternateReturn2)
     {
         return;
     }
 
     NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
     
-    if (result == NSAlertDefaultReturn)
+    if (result == NSAlertDefaultReturn2)
     {
         // Now modify the DICOM files
         for (NSInteger x = 0; x < [selectedRows count] ; x++)
@@ -5602,19 +5603,19 @@ static NSConditionLock *threadLock = nil;
             {
                 if ([[study valueForKey:@"type"] isEqualToString: @"Study"])
                 {
-                    NSInteger confirm = NSRunInformationalAlertPanel(
-                         NSLocalizedString(@"Unify Patient Identity", nil),
-                         NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identity:\r\r%@ / %@ / %@\r\rto this new identity:\r\r%@ / %@ ?", nil),
-                         NSLocalizedString(@"OK",nil),
-                         NSLocalizedString(@"Cancel",nil),
-                         nil,
-                             study.name,
-                             study.patientID,
-                             study.studyName,
-                             destStudy.name,
-                             destStudy.patientID);
+                    NSInteger confirm = NSRunInformationalAlertPanel2(
+                        NSLocalizedString(@"Unify Patient Identity", nil),
+                        [NSString stringWithFormat: NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identity:\r\r%@ / %@ / %@\r\rto this new identity:\r\r%@ / %@ ?", nil),
+                         study.name,
+                         study.patientID,
+                         study.studyName,
+                         destStudy.name,
+                         destStudy.patientID],
+                        NSLocalizedString(@"OK",nil),
+                        NSLocalizedString(@"Cancel",nil),
+                        nil);
                     
-                    if (confirm == NSAlertDefaultReturn)
+                    if (confirm == NSAlertDefaultReturn2)
                     {
                         WaitRendering *wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Updating files...", nil)] autorelease];
                         [wait showWindow:self];
@@ -5681,7 +5682,7 @@ static NSConditionLock *threadLock = nil;
                         {
                             [wait close];
                             
-                            NSRunCriticalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil),
+                            NSRunCriticalAlertPanel2(NSLocalizedString(@"Unify Patient Identity", nil),
                                                     NSLocalizedString( @"Failed to change the DICOM files", nil),
                                                     NSLocalizedString(@"OK",nil),
                                                     nil,
@@ -5707,21 +5708,22 @@ static NSConditionLock *threadLock = nil;
         {
             if ([[study valueForKey:@"type"] isEqualToString: @"Study"])
             {
-                NSInteger confirm = NSAlertDefaultReturn;
+                NSInteger confirm = NSAlertDefaultReturn2;
                 
-                if (result == NSAlertAlternateReturn)
-                    confirm = NSRunInformationalAlertPanel(
-                           NSLocalizedString(@"Unify Patient Identity", nil),
-                           NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identity:\r\r%@ / %@ / %@\r\rto this new identity:\r\r%@ / %@ ?", nil),
-                           NSLocalizedString(@"OK",nil),
-                           NSLocalizedString(@"Cancel",nil), nil,
-                               study.name,
-                               study.patientID,
-                               study.studyName,
-                               destStudy.name,
-                               destStudy.patientID);
+                if (result == NSAlertAlternateReturn2)
+                    confirm = NSRunInformationalAlertPanel2(
+                        NSLocalizedString(@"Unify Patient Identity", nil),
+                        [NSString stringWithFormat: NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identity:\r\r%@ / %@ / %@\r\rto this new identity:\r\r%@ / %@ ?", nil),
+                         study.name,
+                         study.patientID,
+                         study.studyName,
+                         destStudy.name,
+                         destStudy.patientID],
+                        NSLocalizedString(@"OK",nil),
+                        NSLocalizedString(@"Cancel",nil),
+                        nil);
                 
-                if (confirm == NSAlertDefaultReturn)
+                if (confirm == NSAlertDefaultReturn2)
                 {
                     [study setValue: destStudy.patientID forKey: @"patientID"];
                     [study setValue: [destStudy valueForKey:@"patientUID"]  forKey: @"patientUID"];
@@ -5777,20 +5779,21 @@ static NSConditionLock *threadLock = nil;
     
 	NSString *nameAndStudy = [NSString stringWithFormat: @"%@ / %@", destStudy.name, destStudy.studyName];
 	
-	NSInteger result = NSRunInformationalAlertPanel(
+	NSInteger result = NSRunInformationalAlertPanel2(
         NSLocalizedString(@"Merge Studies", nil),
         [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to merge the selected studies to: \r\r%@\r\rIt cannot be cancelled.\r\rWARNING! If you merge multiple different patients, the Patient Name, ID and Study Description will be identical.\r\rYou can choose to modify the database fields only, or also change the DICOM files headers with the new values.", nil), nameAndStudy],
         NSLocalizedString(@"Database & DICOM",nil),
         NSLocalizedString(@"Database only",nil),
-        NSLocalizedString(@"Cancel",nil), nil);
+        NSLocalizedString(@"Cancel",nil));
 	
-	if (result == NSAlertDefaultReturn || result == NSAlertAlternateReturn)
+	if (result == NSAlertDefaultReturn2 ||
+        result == NSAlertAlternateReturn2)
 	{
 		NSManagedObjectContext *context = self.database.managedObjectContext;
 		
 		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
-        if (result == NSAlertDefaultReturn)
+        if (result == NSAlertDefaultReturn2)
         {
             // Now modify the DICOM files
             for (NSInteger x = 0; x < [selectedRows count] ; x++)
@@ -5805,16 +5808,16 @@ static NSConditionLock *threadLock = nil;
                 {
                     if ([[study valueForKey:@"type"] isEqualToString: @"Study"])
                     {
-                        NSInteger confirm = NSRunInformationalAlertPanel(
-                             NSLocalizedString(@"Merge Studies", nil),
-                             NSLocalizedString(@"Do you confirm to DEFINITIVELY change this study identity to this new identity:\r\r%@ / %@ ?", nil),
-                             NSLocalizedString(@"OK",nil),
-                             NSLocalizedString(@"Cancel",nil),
-                             nil,
-                                destStudy.name,
-                                destStudy.studyName);
+                        NSInteger confirm = NSRunInformationalAlertPanel2(
+                            NSLocalizedString(@"Merge Studies", nil),
+                            [NSString stringWithFormat: NSLocalizedString(@"Do you confirm to DEFINITIVELY change this study identity to this new identity:\r\r%@ / %@ ?", nil),
+                             destStudy.name,
+                             destStudy.studyName],
+                            NSLocalizedString(@"OK",nil),
+                            NSLocalizedString(@"Cancel",nil),
+                            nil);
                         
-                        if (confirm == NSAlertDefaultReturn)
+                        if (confirm == NSAlertDefaultReturn2)
                         {
                             NSMutableArray *params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
                             
@@ -5880,7 +5883,7 @@ static NSConditionLock *threadLock = nil;
                                 }
                             }
                             else
-                                NSRunCriticalAlertPanel(NSLocalizedString(@"Unify Study Identity", nil),
+                                NSRunCriticalAlertPanel2(NSLocalizedString(@"Unify Study Identity", nil),
                                                         NSLocalizedString( @"Failed to change the DICOM files", nil),
                                                         NSLocalizedString(@"OK",nil),
                                                         nil,
@@ -6121,7 +6124,7 @@ static NSConditionLock *threadLock = nil;
     
     if ([lockedImages count] == [objectsToDelete count] && [lockedImages count] > 0)
     {
-        NSRunAlertPanel(NSLocalizedString(@"Locked Studies", nil),
+        NSRunAlertPanel2(NSLocalizedString(@"Locked Studies", nil),
                         NSLocalizedString(@"These images are stored in locked studies. First, unlock these studies to delete them.", nil),
                         nil,
                         nil,
@@ -6135,7 +6138,7 @@ static NSConditionLock *threadLock = nil;
         {
             [objectsToDelete removeObjectsInArray: lockedImages];
             
-            NSRunInformationalAlertPanel(NSLocalizedString(@"Locked Studies", nil),
+            NSRunInformationalAlertPanel2(NSLocalizedString(@"Locked Studies", nil),
                                          NSLocalizedString(@"Some images are stored in locked studies. Only unlocked images will be deleted.", nil),
                                          NSLocalizedString(@"OK",nil),
                                          nil,
@@ -6151,18 +6154,17 @@ static NSConditionLock *threadLock = nil;
                 
                 if ([albumedImages count])
                 {
-                    result = NSRunInformationalAlertPanel(NSLocalizedString(@"Images in Albums", nil),
+                    result = NSRunInformationalAlertPanel2(NSLocalizedString(@"Images in Albums", nil),
                                                           NSLocalizedString(@"Some or all of these images are stored in albums. Do you really want to delete these images, stored in albums?\r\rDelete all images or only those not stored in an album?", nil),
                                                           NSLocalizedString(@"All",nil),
                                                           NSLocalizedString(@"Cancel",nil),
                                                           NSLocalizedString(@"Only if not stored in an album",nil));
                     
-                    if (result == NSAlertOtherReturn)
+                    if (result == NSAlertOtherReturn2)
                     {
                         [objectsToDelete removeObjectsInArray: albumedImages];
                     }
-                    
-                    if (result == NSAlertAlternateReturn)
+                    else if (result == NSAlertAlternateReturn2)
                         cancelled = YES;
                 }
             }
@@ -6193,7 +6195,7 @@ static NSConditionLock *threadLock = nil;
                 
                 NSLog(@"non-local images : %d", (int) [nonLocalImagesPath count]);
                 
-                result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove images", nil),
+                result = NSRunInformationalAlertPanel2(NSLocalizedString(@"Delete/Remove images", nil),
                                                       NSLocalizedString(@"Some of the selected images are not stored in the Database folder. Do you want to only remove the links of these images from the database or also delete the original files?", nil),
                                                       NSLocalizedString(@"Remove the links",nil),
                                                       NSLocalizedString(@"Cancel",nil),
@@ -6202,20 +6204,20 @@ static NSConditionLock *threadLock = nil;
                 [wait.window makeKeyAndOrderFront: self];
             }
             else
-                result = NSAlertDefaultReturn;
+                result = NSAlertDefaultReturn2;
             
             @try
             {
-                if (result == NSAlertAlternateReturn)
+                if (result == NSAlertAlternateReturn2)
                 {
                     NSLog( @"Cancel");
                 }
                 else
                 {
-                    if (result == NSAlertDefaultReturn || result == NSAlertOtherReturn)
+                    if (result == NSAlertDefaultReturn2 || result == NSAlertOtherReturn2)
                         [self proceedDeleteObjects:objectsToDelete tree:treeObjs];
                     
-                    if (result == NSAlertOtherReturn)
+                    if (result == NSAlertOtherReturn2)
                     {
                         for (NSString *path in nonLocalImagesPath)
                         {
@@ -6276,7 +6278,7 @@ static NSConditionLock *threadLock = nil;
 	
 //	if (DICOMDIRCDMODE)
 //	{
-//		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+//		NSRunInformationalAlertPanel2(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 //		return;
 //	}*/
 	
@@ -6328,7 +6330,7 @@ static NSConditionLock *threadLock = nil;
         
         if (onlyDistantStudy)
         {
-            NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil),
+            NSRunInformationalAlertPanel2(NSLocalizedString(@"Delete images", nil),
                                          NSLocalizedString(@"These studies are not stored locally, you cannot delete them", nil),
                                          NSLocalizedString(@"OK",nil),
                                          nil,
@@ -6346,35 +6348,36 @@ static NSConditionLock *threadLock = nil;
 		NSManagedObject	*album = [albumArray objectAtIndex: albumTable.selectedRow];
 		
 		if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
-			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove images", nil),
-                                                  NSLocalizedString(@"Do you want to only remove the selected images from the current album or delete them from the database? (%@)", nil),
+			result = NSRunInformationalAlertPanel2(NSLocalizedString(@"Delete/Remove images", nil),
+                                                   [NSString stringWithFormat: NSLocalizedString(@"Do you want to only remove the selected images from the current album or delete them from the database? (%@)", nil), level],
                                                   NSLocalizedString(@"Delete",nil),
                                                   NSLocalizedString(@"Cancel",nil),
-                                                  NSLocalizedString(@"Remove from current album",nil), level);
+                                                  NSLocalizedString(@"Remove from current album",
+                                                  nil));
 		else
 		{
-			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil),
-                                                  NSLocalizedString(@"Are you sure you want to delete the selected images? (%@)", nil),
+			result = NSRunInformationalAlertPanel2(NSLocalizedString(@"Delete images", nil),
+                                                   [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete the selected images? (%@)", nil),
+                                                    level],
                                                   NSLocalizedString(@"OK",nil),
                                                   NSLocalizedString(@"Cancel",nil),
-                                                  nil,
-                                                    level);
+                                                  nil);
 		}
 	}
 	else
 	{
-		result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil),
-                                              NSLocalizedString(@"Are you sure you want to delete the selected images? (%@)", nil),
+		result = NSRunInformationalAlertPanel2(NSLocalizedString(@"Delete images", nil),
+                                               [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete the selected images? (%@)", nil),
+                                                level],
                                               NSLocalizedString(@"OK",nil),
                                               NSLocalizedString(@"Cancel",nil),
-                                              nil,
-                                                level);
+                                              nil);
 	}
     
     [context retain];
 	[context lock];
     
-	if (result == NSAlertOtherReturn)	// REMOVE FROM CURRENT ALBUMS, BUT DON'T DELETE IT FROM THE DATABASE
+	if (result == NSAlertOtherReturn2)	// REMOVE FROM CURRENT ALBUMS, BUT DON'T DELETE IT FROM THE DATABASE
 	{
 		NSIndexSet* selectedRows = [databaseOutline selectedRowIndexes];
 		if (selectedRows.count)
@@ -6434,7 +6437,7 @@ static NSConditionLock *threadLock = nil;
         [context release];
 		[context unlock];
         
-		NSRunAlertPanel(NSLocalizedString(@"Distant Database", nil),
+		NSRunAlertPanel2(NSLocalizedString(@"Distant Database", nil),
                         NSLocalizedString(@"You cannot modify a Distant Database.", nil),
                         nil,
                         nil,
@@ -6445,7 +6448,7 @@ static NSConditionLock *threadLock = nil;
 		return;
 	}
 	
-	if (result == NSAlertDefaultReturn)	// REMOVE AND DELETE IT FROM THE DATABASE
+	if (result == NSAlertDefaultReturn2)	// REMOVE AND DELETE IT FROM THE DATABASE
 	{
 		NSMutableArray *objectsToDelete = [NSMutableArray array];
 		NSMutableSet *objectsToDeleteTree = [NSMutableSet set];
@@ -7240,7 +7243,7 @@ static NSConditionLock *threadLock = nil;
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 				
 				NSTimeInterval fourSeconds = [NSDate timeIntervalSinceReferenceDate] + 4.0;
-				while ([[d objectForKey: @"result"] count] == 0 && [NSDate timeIntervalSinceReferenceDate] < fourSeconds)
+				while ([[d objectForKey: @"result"] count] == NSAlertAlternateReturn2 && [NSDate timeIntervalSinceReferenceDate] < fourSeconds)
 					[NSThread sleepForTimeInterval: 0.1];
 				
 				@synchronized( d)
@@ -7349,7 +7352,7 @@ static NSConditionLock *threadLock = nil;
 			
 			if ([[NSWorkspace sharedWorkspace] openFile: filePath withApplication:@"VLC" andDeactivate: YES] == NO)
 			{
-				NSRunAlertPanel(NSLocalizedString( @"MPEG-2 File", nil),
+				NSRunAlertPanel2(NSLocalizedString( @"MPEG-2 File", nil),
                                 NSLocalizedString( @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil),
                                 nil,
                                 nil,
@@ -7454,12 +7457,12 @@ static NSConditionLock *threadLock = nil;
         // RTSTRUCT
         if ([[[im valueForKey:@"modality"] lowercaseString] isEqualToString:@"rtstruct"])
 		{
-			if (NSRunInformationalAlertPanel(NSLocalizedString(@"RTSTRUCT", nil),
+			if (NSRunInformationalAlertPanel2(NSLocalizedString(@"RTSTRUCT", nil),
                                              NSLocalizedString(@"This series contains RTSTRUCT ROIs. Should I generate the corresponding ROIs on the images series?", nil),
                                              NSLocalizedString(@"OK",nil),
                                              NSLocalizedString(@"Cancel",nil),
                                              nil
-                                             ) == NSAlertDefaultReturn)
+                                             ) == NSAlertDefaultReturn2)
             {
                 DCMObject *dcmObj = [DCMObject objectWithContentsOfFile: im.completePathResolved decodingPixelData: NO];
                 
@@ -10194,17 +10197,21 @@ static BOOL withReset = NO;
 			int r;
 			
             if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
-                r = NSAlertDefaultReturn;
-            else
-                r = NSRunAlertPanel(NSLocalizedString(@"Corrupted files", nil),
-                                    NSLocalizedString(@"A corrupted study crashed OsiriX:\r\r%@ / %@\r\rThis file will be deleted.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study? (Highly recommended)", nil),
+            {
+                r = NSAlertDefaultReturn2;
+            }
+            else {
+                NSString* msg = [NSString stringWithFormat:NSLocalizedString(@"A corrupted study crashed OsiriX:\r\r%@ / %@\r\rThis file will be deleted.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study? (Highly recommended)", nil),
+                                 [studyObject valueForKey:@"name"],
+                                 [studyObject valueForKey:@"studyName"]];
+                r = NSRunAlertPanel2(NSLocalizedString(@"Corrupted files", nil),
+                                    msg,
                                     NSLocalizedString(@"OK", nil),
                                     NSLocalizedString(@"Cancel", nil),
-                                    nil,
-                                        [studyObject valueForKey:@"name"],
-                                        [studyObject valueForKey:@"studyName"]);
+                                    nil);
+            }
             
-            if (r == NSAlertDefaultReturn)
+            if (r == NSAlertDefaultReturn2)
 			{
 				[context lock];
 				
@@ -11585,13 +11592,12 @@ constrainSplitPosition:(CGFloat)proposedPosition
 
 -(void)removeAlbumObject:(DicomAlbum*)album {
     if ((album.smartAlbum.boolValue == NO && album.studies.count == 0) ||
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Album", nil),
-                                     NSLocalizedString(@"Are you sure you want to delete the album named %@?", nil),
+        NSRunInformationalAlertPanel2(NSLocalizedString(@"Delete Album", nil),
+                                      [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete the album named %@?", nil),
+                                       album.name],
                                      NSLocalizedString(@"OK",nil),
                                      NSLocalizedString(@"Cancel",nil),
-                                     nil,
-                                        album.name
-                                     ) == NSAlertDefaultReturn)
+                                     nil) == NSAlertDefaultReturn2)
     {
         [self.database lock];
         @try
@@ -12538,11 +12544,11 @@ constrainSplitPosition:(CGFloat)proposedPosition
                 toOpenArray = keyImagesToOpenArray;
 			else
 			{
-				if (NSRunInformationalAlertPanel(NSLocalizedString( @"Key Images", nil),
+				if (NSRunInformationalAlertPanel2(NSLocalizedString( @"Key Images", nil),
                                                  NSLocalizedString(@"No key images in these images.", nil),
                                                  NSLocalizedString(@"All Images",nil),
                                                  NSLocalizedString(@"Cancel",nil),
-                                                 nil) == NSAlertAlternateReturn)
+                                                 nil) == NSAlertAlternateReturn2)
 					return nil;
 			}
 		}
@@ -12568,7 +12574,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
             {
                 if ([r.lastObject isKindOfClass: [Dicom_Image class]] == NO)
                 {
-                    NSRunInformationalAlertPanel(NSLocalizedString(@"Loading", nil),
+                    NSRunInformationalAlertPanel2(NSLocalizedString(@"Loading", nil),
                                                  NSLocalizedString(@"Failed to load the series.", nil),
                                                  NSLocalizedString(@"All Images",nil),
                                                  NSLocalizedString(@"OK",nil),
@@ -12580,8 +12586,8 @@ constrainSplitPosition:(CGFloat)proposedPosition
 		
 		//  (2) Compute Required Memory
 		
-		BOOL	enoughMemory = NO;
-		long	subSampling = 1;
+		BOOL enoughMemory = NO;
+		long subSampling = 1;
 		unsigned long mem = 0;
 		
 		while (enoughMemory == NO)
@@ -12700,7 +12706,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
                 enoughMemory = YES;
 		} //end while
 		
-		int result = NSAlertDefaultReturn;
+		int result = NSAlertDefaultReturn2;
 		
 		if (subSampling != 1)
 		{
@@ -12710,19 +12716,19 @@ constrainSplitPosition:(CGFloat)proposedPosition
 					[win deminiaturize:self];
 			}
 			
-			result = NSRunInformationalAlertPanel(@"", //NSLocalizedString(@"32-bit", nil),
-                                                  NSLocalizedString(@"This 32-bit version cannot load this series, but I can load a subset of the series: 1 on %d images.", nil),
+			result = NSRunInformationalAlertPanel2(@"", //NSLocalizedString(@"32-bit", nil),
+                                                   [NSString stringWithFormat: NSLocalizedString(@"This 32-bit version cannot load this series, but I can load a subset of the series: 1 on %d images.", nil),
+                                                    (int)subSampling],
                                                   NSLocalizedString(@"OK",nil),
                                                   NSLocalizedString(@"Cancel",nil),
-                                                  nil,
-                                                    subSampling);
+                                                  nil);
 		}
 		
 		//  (3) Load Images (memory allocation)
 		
 		BOOL notEnoughMemory = NO;
 		
-		if (result == NSAlertDefaultReturn && toOpenArray != nil)
+		if (result == NSAlertDefaultReturn2 && toOpenArray != nil)
 		{
 			if (movieViewer == NO)
 			{
@@ -12740,7 +12746,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 //						}
 //					}
 //					
-//					NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series",@"Your computer doesn't have enough RAM to load this series"), NSLocalizedString(@"OK",nil), nil, nil);
+//					NSRunCriticalAlertPanel2( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series",@"Your computer doesn't have enough RAM to load this series"), NSLocalizedString(@"OK",nil), nil, nil);
 //					notEnoughMemory = YES;
 //				}
 //
@@ -12770,12 +12776,12 @@ constrainSplitPosition:(CGFloat)proposedPosition
 				if (notEnoughMemory)
 				{
                     NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-					if (NSRunCriticalAlertPanel(@"", //NSLocalizedString(@"32-bit", nil),
+					if (NSRunCriticalAlertPanel2(@"", //NSLocalizedString(@"32-bit", nil),
                                                 NSLocalizedString(@"Cannot load this series", nil),
                                                 NSLocalizedString(@"OK",nil),
                                                 bundleName,
                                                 nil
-                                                ) == NSAlertAlternateReturn)
+                                                ) == NSAlertAlternateReturn2)
                     {
                         //[[AppController sharedAppController] osirix64bit: self];
                     }
@@ -12906,17 +12912,23 @@ constrainSplitPosition:(CGFloat)proposedPosition
 							[[viewerPix[0] objectAtIndex: i] setID: i];
 							[[viewerPix[0] objectAtIndex: i] setTot: [viewerPix[0] count]];
 						}
-						if ( [viewerPix[0] count] == 0)
-							NSRunCriticalAlertPanel(NSLocalizedString(@"Files not available (readable)", nil),
-                                                    NSLocalizedString(@"No files available (readable) in this series.", nil),
-                                                    NSLocalizedString(@"Continue",nil),
-                                                    nil,
-                                                    nil);
-						else
-							NSRunCriticalAlertPanel(NSLocalizedString(@"Not all files available (readable)", nil),
-                                                    NSLocalizedString(@"Not all files are available (readable) in this series.\r%@ are missing.", nil),
-                                                    NSLocalizedString(@"Continue",nil), nil, nil,
-                                                    N2LocalizedSingularPluralCount( [loadList3 count] - [viewerPix[0] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil)));
+
+                        if ( [viewerPix[0] count] == 0) {
+                            NSRunCriticalAlertPanel2(NSLocalizedString(@"Files not available (readable)", nil),
+                                                     NSLocalizedString(@"No files available (readable) in this series.", nil),
+                                                     NSLocalizedString(@"Continue",nil),
+                                                     nil,
+                                                     nil);
+                        }
+                        else {
+                            NSString* msg = [NSString stringWithFormat:NSLocalizedString(@"Not all files are available (readable) in this series.\r%@ are missing.", nil),
+                                             N2LocalizedSingularPluralCount( [loadList3 count] - [viewerPix[0] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
+                            NSRunCriticalAlertPanel2(NSLocalizedString(@"Not all files available (readable)", nil),
+                                                     msg,
+                                                     NSLocalizedString(@"Continue",nil),
+                                                     nil,
+                                                     nil);
+                        }
 					}
 					//opening images referred to in viewerPix[0] in the adequate viewer
 					
@@ -13034,13 +13046,14 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	@catch( NSException *e)
 	{
         N2LogExceptionWithStackTrace(e);
-		NSRunAlertPanel( NSLocalizedString(@"Opening Error", nil),
-                        NSLocalizedString(@"Opening Error : %@\r\r%@", nil),
+        NSString* msg = [NSString stringWithFormat:NSLocalizedString(@"Opening Error : %@\r\r%@", nil),
+                         e,
+                         [AppController printStackTrace: e]];
+		NSRunAlertPanel2( NSLocalizedString(@"Opening Error", nil),
+                        msg,
                         nil,
                         nil,
-                        nil,
-                            e,
-                            [AppController printStackTrace: e]);
+                        nil);
 	}
     @finally {
         [wait invalidate];
@@ -13199,7 +13212,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 		
 		if ([toOpenArray count] == 1)
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"4D Player",@"4D Player"),
+			NSRunCriticalAlertPanel2(NSLocalizedString(@"4D Player",@"4D Player"),
                                     NSLocalizedString(@"To see an animated series, you have to select multiple series of the same area at different times: e.g. a cardiac CT", nil),
                                     NSLocalizedString(@"OK",nil),
                                     nil,
@@ -13208,12 +13221,13 @@ constrainSplitPosition:(CGFloat)proposedPosition
 		}
 		else if ([toOpenArray count] > MAX4D)
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"4D Player",@"4D Player"),
-                                    NSLocalizedString(@"4D Player is limited to a maximum number of %d series.", nil),
+            NSString* msg = [NSString stringWithFormat:NSLocalizedString(@"4D Player is limited to a maximum number of %d series.", nil),
+                             MAX4D];
+			NSRunCriticalAlertPanel2(NSLocalizedString(@"4D Player",@"4D Player"),
+                                    msg,
                                     NSLocalizedString(@"OK",nil),
                                     nil,
-                                    nil,
-                                    MAX4D);
+                                    nil);
 			movieError = YES;
 		}
 		else
@@ -13228,8 +13242,8 @@ constrainSplitPosition:(CGFloat)proposedPosition
 				}
 				else if ([[toOpenArray objectAtIndex: x] count] != numberImages)
 				{
-					NSRunCriticalAlertPanel(NSLocalizedString(@"4D Player",@"4D Player"),
-                                            NSLocalizedString(@"In the current version, all series must contain the same number of images.",@"In the current version, all series must contain the same number of images."),
+					NSRunCriticalAlertPanel2(NSLocalizedString(@"4D Player",@"4D Player"),
+                                            NSLocalizedString(@"In the current version, all series must contain the same number of images.", @"In the current version, all series must contain the same number of images."),
                                             NSLocalizedString(@"OK",nil),
                                             nil,
                                             nil);
@@ -13699,13 +13713,12 @@ constrainSplitPosition:(CGFloat)proposedPosition
 								{
 									openAllWindows = NO;
 									
-									if (NSRunInformationalAlertPanel(NSLocalizedString(@"Series Opening", nil),
-                                                                     NSLocalizedString(@"Are you sure you want to open %d windows? It's a lot of windows for this screen...", nil),
+									if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Series Opening", nil),
+                                                                      [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to open %d windows? It's a lot of windows for this screen...", nil),
+                                                                       [[splittedSeries objectAtIndex: 0] count]],
                                                                      NSLocalizedString(@"Yes", nil),
                                                                      NSLocalizedString(@"Cancel", nil),
-                                                                     nil,
-                                                                        [[splittedSeries objectAtIndex: 0] count]
-                                                                     ) == NSAlertDefaultReturn)
+                                                                     nil) == NSAlertDefaultReturn2)
 										openAllWindows = YES;
 								}
 								
@@ -13902,13 +13915,14 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	@catch (NSException *e)
 	{
         N2LogExceptionWithStackTrace(e);
-		NSRunAlertPanel( NSLocalizedString(@"Opening Error", nil),
-                        NSLocalizedString(@"Opening Error : %@\r\r%@", nil),
+        NSString* msg = [NSString stringWithFormat:NSLocalizedString(@"Opening Error : %@\r\r%@", nil),
+                         e,
+                         [AppController printStackTrace: e]];
+		NSRunAlertPanel2( NSLocalizedString(@"Opening Error", nil),
+                        msg,
                         nil,
                         nil,
-                        nil,
-                            e,
-                            [AppController printStackTrace: e]);
+                        nil);
 	}
 	
 	[_database unlock];
@@ -14034,7 +14048,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 	}
 	else
 	{
-		NSRunInformationalAlertPanel(NSLocalizedString(@"ROIs Images", nil),
+		NSRunInformationalAlertPanel2(NSLocalizedString(@"ROIs Images", nil),
                                      NSLocalizedString(@"No images containing ROIs are found in this selection.", nil),
                                      NSLocalizedString(@"OK",nil),
                                      nil,
@@ -14344,7 +14358,7 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 	}
 	
-	NSRunCriticalAlertPanel(NSLocalizedString(@"Search", nil),
+	NSRunCriticalAlertPanel2(NSLocalizedString(@"Search", nil),
                             NSLocalizedString(@"The search field is currently not displayed in the toolbar. Customize your toolbar to add it.", nil),
                             NSLocalizedString(@"OK", nil),
                             nil,
@@ -14402,7 +14416,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		if ([DCMPix isRunOsiriXInProtectedModeActivated])
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Protected Mode", nil),
+			NSRunCriticalAlertPanel2(NSLocalizedString(@"Protected Mode", nil),
                                     NSLocalizedString(@"OsiriX is now running in Protected Mode (shift + option keys at startup): no images are displayed, allowing you to delete crashing or corrupted images/studies.", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
@@ -15033,12 +15047,11 @@ static NSArray*	openSubSeriesArray = nil;
                                  [ne description],
                                  [AppController printStackTrace: ne]];
             
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Error",nil),
-                                    @"%@",
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"Error",nil),
+                                    message,
                                     NSLocalizedString(@"OK",nil),
                                     nil,
-                                    nil,
-                                        message);
+                                    nil);
             
             exit( 0);
         }
@@ -15385,12 +15398,12 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if ([SendController sendControllerObjects] > 0)
 	{
-		if (NSRunInformationalAlertPanel(NSLocalizedString(@"DICOM Sending - STORE", nil),
+		if (NSRunInformationalAlertPanel2(NSLocalizedString(@"DICOM Sending - STORE", nil),
                                          NSLocalizedString(@"Files are currently being sent to a DICOM node. Are you sure you want to quit now? The sending will be stopped.", nil),
                                          NSLocalizedString(@"No", nil),
                                          NSLocalizedString(@"Quit", nil),
                                          nil
-                                         ) == NSAlertDefaultReturn)
+                                         ) == NSAlertDefaultReturn2)
             return NO;
 	}
 	
@@ -16656,7 +16669,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[_database initiateCompressFilesAtPaths:result];
 	}
 	else
-        NSRunInformationalAlertPanel( NSLocalizedString(@"Non-Local Database", nil),
+        NSRunInformationalAlertPanel2( NSLocalizedString(@"Non-Local Database", nil),
                                       NSLocalizedString(@"Cannot compress images in a distant database.", nil),
                                       NSLocalizedString(@"OK",nil),
                                       nil,
@@ -16692,7 +16705,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[_database initiateDecompressFilesAtPaths:result];
 	}
 	else
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Non-Local Database", nil),
+        NSRunInformationalAlertPanel2(NSLocalizedString(@"Non-Local Database", nil),
                                      NSLocalizedString(@"Cannot decompress images in a distant database.", nil),
                                      NSLocalizedString(@"OK",nil),
                                      nil,
@@ -16917,13 +16930,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				if (first)
 				{
-					if (NSRunInformationalAlertPanel(NSLocalizedString(@"Export", nil),
-                                                     NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil),
+					if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Export", nil),
+                                                      [NSString stringWithFormat:NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil),
+                                                       [tempPath lastPathComponent]],
                                                      NSLocalizedString(@"Replace", nil),
                                                      NSLocalizedString(@"Cancel", nil),
-                                                     nil,
-                                                        [tempPath lastPathComponent]
-                                                     ) == NSAlertDefaultReturn)
+                                                     nil) == NSAlertDefaultReturn2)
 					{
 						[[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
 						[[NSFileManager defaultManager] createDirectoryAtPath: tempPath
@@ -17384,13 +17396,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				if (i == 0)
 				{
-					if (NSRunInformationalAlertPanel(NSLocalizedString(@"Export", nil),
-                                                     NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil),
+					if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Export", nil),
+                                                      [NSString stringWithFormat:NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil),
+                                                       [tempPath lastPathComponent]],
                                                      NSLocalizedString(@"Replace", nil),
                                                      NSLocalizedString(@"Cancel", nil),
-                                                     nil,
-                                                        [tempPath lastPathComponent]
-                                                     ) == NSAlertDefaultReturn)
+                                                     nil) == NSAlertDefaultReturn2)
 					{
 						[[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
 						[[NSFileManager defaultManager] createDirectoryAtPath: tempPath
@@ -17530,7 +17541,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		if ([[notificationEmailArrayController selectedObjects] count] == 0)
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString( @"Error", nil),
+			NSRunCriticalAlertPanel2(NSLocalizedString( @"Error", nil),
                                     NSLocalizedString( @"No user(s) selected, no studies will be added.", nil),
                                     NSLocalizedString( @"OK", nil),
                                     nil,
@@ -17616,7 +17627,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		if ([[notificationEmailArrayController selectedObjects] count] == 0 && [temporaryNotificationEmail length] <= 3)
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString( @"Error", nil),
+			NSRunCriticalAlertPanel2(NSLocalizedString( @"Error", nil),
                                     NSLocalizedString( @"Select one or more users.", nil),
                                     NSLocalizedString( @"OK", nil),
                                     nil,
@@ -17635,7 +17646,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					if ([temporaryNotificationEmail rangeOfString: @"@"].location == NSNotFound)
 					{
-						NSRunCriticalAlertPanel(NSLocalizedString( @"Error", nil),
+						NSRunCriticalAlertPanel2(NSLocalizedString( @"Error", nil),
                                                 NSLocalizedString( @"Is the user email correct? the @ character is not found.", nil),
                                                 NSLocalizedString( @"OK", nil),
                                                 nil,
@@ -17648,7 +17659,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						
 						if ([name length] < 2)
 						{
-							NSRunCriticalAlertPanel(NSLocalizedString( @"Error", nil),
+							NSRunCriticalAlertPanel2(NSLocalizedString( @"Error", nil),
                                                     NSLocalizedString( @"Name needs to be at least 2 characters.", nil),
                                                     NSLocalizedString( @"OK", nil),
                                                     nil,
@@ -17866,7 +17877,7 @@ redoZIPpassword:
         NSString *msgFormat = [NSString stringWithFormat:@"%@ %d",
                                NSLocalizedString(@"The script failed:", @"Message on script failure window."),
                                scriptResult];
-        NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."),
+        NSRunAlertPanel2(NSLocalizedString(@"Script Failure", @"Title on script failure window."),
                         msgFormat,
                         NSLocalizedString(@"OK", @""),
                         nil,
@@ -17967,12 +17978,11 @@ redoZIPpassword:
 
 - (void) runInformationAlertPanel:(NSMutableDictionary*) dict
 {
-	int a = NSRunInformationalAlertPanel([dict objectForKey: @"title"],
-                                         @"%@",
-                                         [dict objectForKey: @"button1"],
-                                         [dict objectForKey: @"button2"],
-                                         [dict objectForKey: @"button3"],
-                                            [dict objectForKey: @"message"]);
+	int a = NSRunInformationalAlertPanel2([dict objectForKey: @"title"],
+                                          [dict objectForKey: @"message"],
+                                          [dict objectForKey: @"button1"],
+                                          [dict objectForKey: @"button2"],
+                                          [dict objectForKey: @"button3"]);
 	
 	[dict setObject: [NSNumber numberWithInt: a] forKey: @"result"];
 }
@@ -18095,9 +18105,9 @@ redoZIPpassword:
 						if ([options objectForKey: @"result"])
 							a = [[options objectForKey: @"result"] intValue];
 						else
-                            a = NSAlertAlternateReturn; // Cancel
+                            a = NSAlertAlternateReturn2; // Cancel
 						
-						if (a == NSAlertDefaultReturn)
+						if (a == NSAlertDefaultReturn2)
 						{
 							[[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
 							[[NSFileManager defaultManager] createDirectoryAtPath: tempPath
@@ -18105,7 +18115,7 @@ redoZIPpassword:
                                                                        attributes: nil
                                                                             error: nil];
 						}
-						else if (a == NSAlertOtherReturn)
+						else if (a == NSAlertOtherReturn2)
 						{
 							// Merge
 						}
@@ -18724,7 +18734,7 @@ redoZIPpassword:
 	{
 		if ([[win windowController] isKindOfClass:[BurnerWindowController class]])
 		{
-			NSRunInformationalAlertPanel(NSLocalizedString(@"Burn", nil),
+			NSRunInformationalAlertPanel2(NSLocalizedString(@"Burn", nil),
                                          NSLocalizedString(@"A burn session is already open. Close it to burn a new study.", nil),
                                          NSLocalizedString(@"OK", nil),
                                          nil,
@@ -18778,7 +18788,7 @@ redoZIPpassword:
 	
 	if (dicomFiles2Anonymize.count == 0)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Anonymize Error", nil),
+		NSRunAlertPanel2(NSLocalizedString(@"Anonymize Error", nil),
                         NSLocalizedString(@"No DICOM files in this selection.", nil),
                         nil,
                         nil,
@@ -18862,7 +18872,7 @@ redoZIPpassword:
 	
 	if (attempts == maxAttempts)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Failed", nil),
+		NSRunCriticalAlertPanel2(NSLocalizedString(@"Failed", nil),
                                 NSLocalizedString(@"Unable to unmount this disk. This disk is probably in used by another application.", nil),
                                 NSLocalizedString(@"OK",nil),
                                 nil,
@@ -18891,7 +18901,7 @@ redoZIPpassword:
 	if ([objects count] > 0)
         [SendController sendFiles: objects];
 	else
-        NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),
+        NSRunCriticalAlertPanel2(NSLocalizedString(@"DICOM Send",nil),
                                 NSLocalizedString( @"No files are selected...",nil),
                                 NSLocalizedString( @"OK",nil),
                                 nil,
@@ -18918,7 +18928,7 @@ redoZIPpassword:
 {
 //	if (DICOMDIRCDMODE)
 //	{
-//		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+//		NSRunInformationalAlertPanel2(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 //		return;
 //	}
 	
@@ -18950,7 +18960,7 @@ redoZIPpassword:
 {
 //	if (DICOMDIRCDMODE)
 //	{
-//		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+//		NSRunInformationalAlertPanel2(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 //		return;
 //	}
 
@@ -19388,13 +19398,13 @@ redoZIPpassword:
 			else
 				studySelected = [item valueForKey:@"study"];
 			
-			long result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete report", nil),
+			long result = NSRunInformationalAlertPanel2(NSLocalizedString(@"Delete report", nil),
                                                        NSLocalizedString(@"Are you sure you want to delete the selected report?", nil),
                                                        NSLocalizedString(@"OK",nil),
                                                        NSLocalizedString(@"Cancel",nil),
                                                        nil);
 			
-			if (result == NSAlertDefaultReturn)
+			if (result == NSAlertDefaultReturn2)
 			{
 				if ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == REPORT_TYPE_PLUGIN)
 				{
@@ -19412,7 +19422,7 @@ redoZIPpassword:
 					}
 					else
 					{
-						NSRunAlertPanel(NSLocalizedString(@"Report Error", nil),
+						NSRunAlertPanel2(NSLocalizedString(@"Report Error", nil),
                                         NSLocalizedString(@"Report Plugin not available.", nil),
                                         nil,
                                         nil,
@@ -19464,7 +19474,7 @@ redoZIPpassword:
         if (reportsMode == REPORT_TYPE_MS_WORD &&
             [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Microsoft Word"] == nil) // Would absolutePathForAppBundleWithIdentifier be better here? (DDP)
 		{
-			NSRunAlertPanel(NSLocalizedString(@"Report Error", nil),
+			NSRunAlertPanel2(NSLocalizedString(@"Report Error", nil),
                             NSLocalizedString(@"Microsoft Word is required to open/generate '.doc' reports. You can change it to TextEdit in the Preferences.", nil),
                             nil,
                             nil,
@@ -19519,7 +19529,7 @@ redoZIPpassword:
 				}
 				else
 				{
-					NSRunAlertPanel(NSLocalizedString(@"Report Error", nil),
+					NSRunAlertPanel2(NSLocalizedString(@"Report Error", nil),
                                     NSLocalizedString(@"Report Plugin not available.", nil),
                                     nil,
                                     nil,
@@ -19595,12 +19605,12 @@ redoZIPpassword:
 						{
 							NSLog( @"***** reportURL contains a path, but file doesn't exist.");
 							
-							if (NSRunInformationalAlertPanel(NSLocalizedString(@"Report", nil),
+							if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Report", nil),
                                                              NSLocalizedString(@"Report file is not found... Should I create a new one?", nil),
                                                              NSLocalizedString(@"OK",nil),
                                                              NSLocalizedString(@"Cancel",nil),
                                                              nil
-                                                             ) == NSAlertDefaultReturn)
+                                                             ) == NSAlertDefaultReturn2)
                             {
                                 localReportFile = nil;
                             }
@@ -20558,7 +20568,7 @@ redoZIPpassword:
 	}
 	else
 	{
-		NSRunInformationalAlertPanel(NSLocalizedString(@"ROIs Images", nil),
+		NSRunInformationalAlertPanel2(NSLocalizedString(@"ROIs Images", nil),
                                      NSLocalizedString(@"No images containing ROIs or Key Images are found in this selection.", nil),
                                      NSLocalizedString(@"OK",nil),
                                      nil,
@@ -20892,7 +20902,7 @@ redoZIPpassword:
     @catch (NSException* e)
     {
 		N2LogExceptionWithStackTrace(e);
-		NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil),
+		NSRunAlertPanel2(NSLocalizedString(@"OsiriX Database", nil),
                         NSLocalizedString(@"OsiriX cannot read/create this file/folder. Permissions error?", nil),
                         nil,
                         nil,
@@ -20916,7 +20926,7 @@ redoZIPpassword:
 	
 	if (filter == nil)
 	{
-		NSRunAlertPanel(NSLocalizedString( @"Plugins Error", nil),
+		NSRunAlertPanel2(NSLocalizedString( @"Plugins Error", nil),
                         NSLocalizedString( @"OsiriX cannot launch the selected plugin.", nil),
                         nil,
                         nil,
@@ -20931,7 +20941,7 @@ redoZIPpassword:
     
 	if (result)
     {
-		NSRunAlertPanel(NSLocalizedString( @"Plugins Error", nil),
+		NSRunAlertPanel2(NSLocalizedString( @"Plugins Error", nil),
                         NSLocalizedString( @"OsiriX cannot launch the selected plugin.", nil),
                         nil,
                         nil,
@@ -20972,7 +20982,7 @@ redoZIPpassword:
 //	
 //	if (fixedDocumentsDirectory == nil)
 //	{
-//		NSRunAlertPanel( NSLocalizedString(@"Database Location Error", nil), NSLocalizedString(@"Cannot locate Database path.", nil), nil, nil, nil);
+//		NSRunAlertPanel2( NSLocalizedString(@"Database Location Error", nil), NSLocalizedString(@"Cannot locate Database path.", nil), nil, nil, nil);
 //		exit(0);
 //	}
 //	

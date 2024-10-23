@@ -71,6 +71,7 @@
 #import "NSFileManager+N2.h"
 #import <QuartzCore/QuartzCore.h>
 #import "DCMUSRegion.h"
+#import "alertTransition.h"
 
 #ifndef NDEBUG
 #import "PreviewView.h"
@@ -1668,7 +1669,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		}
 	}
 	else
-		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Save Error",nil),
+		NSRunCriticalAlertPanel2(NSLocalizedString(@"ROIs Save Error",nil),
                                 NSLocalizedString(@"No ROI(s) selected to save!",nil),
                                 NSLocalizedString(@"OK",nil),
                                 nil,
@@ -5217,7 +5218,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 					
 					if ([roiArray count] == 0 || distance == 0)
 					{
-						NSRunCriticalAlertPanel(NSLocalizedString(@"Repulsor",nil),
+						NSRunCriticalAlertPanel2(NSLocalizedString(@"Repulsor",nil),
                                                 NSLocalizedString(@"The Repulsor tool works only if ROIs (Length ROI, Opened and Closed Polygon ROI and Pencil ROI) are on the image.",nil),
                                                 NSLocalizedString(@"OK",nil),
                                                 nil,
@@ -10310,13 +10311,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 				{
 					if (exceptionDisplayed == NO)
 					{
-						NSRunCriticalAlertPanel(NSLocalizedString(@"Annotations Error",nil),
-                                                @"%@\r\r%@",
+                        NSString* msg = [NSString stringWithFormat:@"%@\r\r%@", e, annot];
+						NSRunCriticalAlertPanel2(NSLocalizedString(@"Annotations Error",nil),
+                                                msg,
                                                 NSLocalizedString(@"OK",nil),
                                                 nil,
-                                                nil,
-                                                e,
-                                                annot);
+                                                nil);
 					
 						NSLog( @"draw custom annotation exception: %@\r\r%@", e, annot);
 						exceptionDisplayed = YES;
@@ -14395,7 +14395,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		
 		f = [exportDCM writeDCMFile: nil withExportDCM: dcmExportPlugin];
 		if (f == nil)
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
                                     NSLocalizedString(@"Error during the creation of the DICOM File!", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
@@ -16319,7 +16319,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
         NSLog(@"DCMView.mm:%d %s OPENGL ERROR %@", __LINE__, __PRETTY_FUNCTION__, NSStringFromClass([self class]));
         [NSException raise:NSGenericException
                     format:NSLocalizedString(@"Not able to run Quartz Extreme: OpenGL+Quartz. Update your video hardware!",nil)];
-//        NSRunCriticalAlertPanel(NSLocalizedString(@"OPENGL ERROR",nil),
+//        NSRunCriticalAlertPanel2(NSLocalizedString(@"OPENGL ERROR",nil),
 //                                NSLocalizedString(@"Not able to run Quartz Extreme: OpenGL+Quartz. Update your video hardware!",nil),
 //                                NSLocalizedString(@"OK",nil),
 //                                nil,
@@ -16887,7 +16887,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 {
 	if (curDCM.pixelSpacingX == 0 || curDCM.pixelSpacingY == 0)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil),
+		NSRunCriticalAlertPanel2(NSLocalizedString(@"Actual Size Error",nil),
                                 NSLocalizedString(@"This image is not calibrated.",nil),
                                 NSLocalizedString( @"OK",nil),
                                 nil,
@@ -16909,7 +16909,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			}
 			else
 			{
-				NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil),
+				NSRunCriticalAlertPanel2(NSLocalizedString(@"Actual Size Error",nil),
                                         NSLocalizedString(@"Displayed pixels are non-squared pixel. Images cannot be displayed at actual size.",nil),
                                         NSLocalizedString( @"OK",nil),
                                         nil,
@@ -16917,7 +16917,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 			}
 		}
 		else
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil),
+			NSRunCriticalAlertPanel2(NSLocalizedString(@"Actual Size Error",nil),
                                     NSLocalizedString(@"This screen doesn't support this function.",nil),
                                     NSLocalizedString( @"OK",nil),
                                     nil,

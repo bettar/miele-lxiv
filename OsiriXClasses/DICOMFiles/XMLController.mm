@@ -43,6 +43,7 @@
 #import <DCM/DCMAttributeTag.h>
 #import "DicomDatabase.h"
 #import "PluginManager.h"
+#import "alertTransition.h"
 
 static NSString* 	XML_ToolbarIdentifier					= @"XML Toolbar Identifier";
 
@@ -341,7 +342,7 @@ extern int delayedTileWindows;
 		}
 		else
 		{
-			NSRunAlertPanel(NSLocalizedString( @"Add DICOM Field", nil),
+			NSRunAlertPanel2(NSLocalizedString( @"Add DICOM Field", nil),
                             NSLocalizedString( @"Illegal group / element values", nil),
                             NSLocalizedString( @"OK", nil),
                             nil,
@@ -693,12 +694,12 @@ extern int delayedTileWindows;
 {
     if (editingActivated == YES && modifiedValues.count > 0)
     {
-        if (NSRunInformationalAlertPanel(NSLocalizedString( @"Cancel modifications", nil),
+        if (NSRunInformationalAlertPanel2(NSLocalizedString( @"Cancel modifications", nil),
                                          NSLocalizedString(@"Are you sure you want to close the window? The modifications to DICOM fields have not been applied. The DICOM files will NOT be modified.", nil),
                                          NSLocalizedString(@"Close Window", nil),
                                          NSLocalizedString(@"Continue Editing", nil),
                                          nil
-                                         ) == NSAlertDefaultReturn)
+                                         ) == NSAlertDefaultReturn2)
         {
             return YES;
         }
@@ -1031,7 +1032,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     {
         if ([[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] == NO)
         {
-            NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"DICOM Editing", nil),
                                     NSLocalizedString(@"This file is not editable. It is a read-only file.", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
@@ -1040,7 +1041,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         }
         else if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO)
         {
-            NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"DICOM Editing", nil),
                                     NSLocalizedString(@"DICOM editing is deactivated.\r\rSee General - Preferences to activate it.", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
@@ -1049,7 +1050,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         }
         else if (isDICOM == NO)
         {
-            NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"DICOM Editing", nil),
                                     NSLocalizedString(@"DICOM editing is allowed only on DICOM files.", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
@@ -1087,12 +1088,12 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     }
     else if (editingActivated == YES && modifiedValues.count > 0)
     {
-        if (NSRunInformationalAlertPanel(NSLocalizedString(@"Cancel modifications", nil),
+        if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Cancel modifications", nil),
                                          NSLocalizedString(@"Are you sure you want to stop editing the fields? The modifications have not been applied. The DICOM files will NOT be modified.", nil),
                                          NSLocalizedString(@"Cancel Modifications", nil),
                                          NSLocalizedString(@"Continue Editing", nil),
                                          nil
-                                         ) == NSAlertDefaultReturn)
+                                         ) == NSAlertDefaultReturn2)
 		{
             [modificationsToApplyArray removeAllObjects];
             [modifiedValues removeAllObjects];
@@ -1266,7 +1267,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 	if ([[tableColumn identifier] isEqualToString: @"stringValue"] == NO)
 	{
 		if ([previousValue isEqual: object] == NO)
-			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil),
+			NSRunCriticalAlertPanel2(NSLocalizedString(@"DICOM Editing", nil),
                                     NSLocalizedString(@"You can only edit the 'Content' column.", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
@@ -1285,13 +1286,13 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 		else
 		{
 			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO || self.editingActivated == NO)
-				NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil),
+				NSRunCriticalAlertPanel2(NSLocalizedString(@"DICOM Editing", nil),
                                         NSLocalizedString(@"Activate DICOM editing to change the values.", nil),
                                         NSLocalizedString(@"OK", nil),
                                         nil,
                                         nil);
 			else
-				NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil),
+				NSRunCriticalAlertPanel2(NSLocalizedString(@"DICOM Editing", nil),
                                         NSLocalizedString(@"DICOM editing not possible for this file.", nil),
                                         NSLocalizedString(@"OK", nil),
                                         nil,
@@ -1309,7 +1310,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 {
 	if (isDICOM == NO)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Validator", nil),
+		NSRunCriticalAlertPanel2(NSLocalizedString(@"DICOM Validator", nil),
                                 NSLocalizedString(@"DICOM Validator requires a DICOM file.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,
@@ -1367,7 +1368,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 	
 	if ([selectedRowIndexes count] != 1)
 	{
-		NSRunAlertPanel(NSLocalizedString( @"Sort Series Images", nil) ,
+		NSRunAlertPanel2(NSLocalizedString( @"Sort Series Images", nil) ,
                         NSLocalizedString( @"Select an element to use to sort the images of the series.", nil),
                         NSLocalizedString( @"OK", nil),
                         nil,
@@ -1380,12 +1381,12 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 	
 	if (index > 0 && item && [[item attributeForName:@"group"] objectValue] && [[item attributeForName:@"element"] objectValue])
 	{
-		if (NSRunInformationalAlertPanel(NSLocalizedString(@"Sort Series Images", nil),
+		if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Sort Series Images", nil),
                                          NSLocalizedString(@"Are you sure you want to re-sort the series images according to this field?", nil),
                                          NSLocalizedString(@"OK", nil),
                                          NSLocalizedString(@"Cancel", nil),
                                          nil
-                                         ) == NSAlertDefaultReturn)
+                                         ) == NSAlertDefaultReturn2)
 		{
 			unsigned gr = 0, el = 0;
 			
@@ -1406,7 +1407,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 			@catch( NSException *e)
 			{
 				NSLog( @"%@", e);
-				NSRunAlertPanel(NSLocalizedString( @"Sort Series Images", nil),
+				NSRunAlertPanel2(NSLocalizedString( @"Sort Series Images", nil),
                                 NSLocalizedString( @"Select an element to use to sort the images of the series.", nil),
                                 NSLocalizedString( @"OK", nil),
                                 nil,
@@ -1417,7 +1418,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 		}
 	}
 	else
-        NSRunAlertPanel(NSLocalizedString( @"Sort Series Images", nil),
+        NSRunAlertPanel2(NSLocalizedString( @"Sort Series Images", nil),
                         NSLocalizedString( @"Select an element to use to sort the images of the series.", nil),
                         NSLocalizedString( @"OK", nil),
                         nil,
@@ -1437,12 +1438,12 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         isDICOM &&
         (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey))
 	{
-		if (NSRunInformationalAlertPanel(NSLocalizedString(@"DICOM Editing", nil),
+		if (NSRunInformationalAlertPanel2(NSLocalizedString(@"DICOM Editing", nil),
                                          NSLocalizedString(@"Are you sure you want to delete selected field(s)?", nil),
                                          NSLocalizedString(@"OK", nil),
                                          NSLocalizedString(@"Cancel", nil),
                                          nil
-                                         ) == NSAlertDefaultReturn)
+                                         ) == NSAlertDefaultReturn2)
 		{
 			NSIndexSet* selectedRowIndexes = [table selectedRowIndexes];
 			NSInteger index;

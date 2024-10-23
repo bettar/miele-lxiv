@@ -33,6 +33,7 @@
 #import "PluginManager.h"
 #import "AppDefaults.h"
 #import "url.h"
+#import "alertTransition.h"
 
 static NSString* 	PETCT_ToolbarIdentifier						= @"PETCT Viewer Toolbar Identifier";
 
@@ -2364,7 +2365,7 @@ return YES;
 		
 		f = [exportDCM writeDCMFile: nil];
 		if (f == nil)
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
+			NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
                                     NSLocalizedString(@"Error during the creation of the DICOM File!", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,

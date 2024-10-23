@@ -8,6 +8,7 @@
 #import "AYDicomPrintPref.h"
 #import <SecurityInterface/SFAuthorizationView.h>
 #import "AYDicomPrintWindowController.h"
+#import "alertTransition.h"
 
 @implementation AYDicomPrintPref
 
@@ -86,12 +87,11 @@
     if (!r)
         return;
     
-    if ( NSRunInformationalAlertPanel(NSLocalizedString(@"Load printers", nil),
+    if ( NSRunInformationalAlertPanel2(NSLocalizedString(@"Load printers", nil),
                                       NSLocalizedString(@"Should I add or replace the printer list? If you choose 'replace', the current list will be deleted.", nil),
                                       NSLocalizedString(@"Add", nil),
                                       NSLocalizedString(@"Replace", nil),
-                                      nil
-                                      ) != NSAlertDefaultReturn)
+                                      nil) != NSAlertDefaultReturn2)
     {
         [m_PrinterController removeObjects: [m_PrinterController arrangedObjects]];
     }

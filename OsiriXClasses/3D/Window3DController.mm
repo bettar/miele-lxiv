@@ -32,6 +32,7 @@
 
 #import "url.h"
 #import "tmp_locations.h"
+#import "alertTransition.h"
 
 @implementation Window3DController
 
@@ -556,7 +557,7 @@ static float oldsetww, oldsetwl;
 			}
 			else
 			{
-				NSRunAlertPanel(NSLocalizedString(@"Error", nil),
+				NSRunAlertPanel2(NSLocalizedString(@"Error", nil),
                                 NSLocalizedString(@"Only CLUT created in OsiriX 1.3.1 or higher can be edited...", nil),
                                 nil,
                                 nil,

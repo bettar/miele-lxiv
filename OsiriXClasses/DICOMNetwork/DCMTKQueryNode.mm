@@ -75,6 +75,8 @@
 #include "openssl/ssl.h"
 #endif
 
+#import "alertTransition.h"
+
 #define OFFIS_CONSOLE_APPLICATION "DCMTKQueryNode"
 
 //static OFLogger findscuLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
@@ -1793,12 +1795,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         
         avoidErrorMessageReentry = YES;
         if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
-            NSRunCriticalAlertPanel([msg objectAtIndex: 0],
-                                    @"%@",
+            NSRunCriticalAlertPanel2([msg objectAtIndex: 0],
+                                    [msg objectAtIndex: 1],
                                     [msg objectAtIndex: 2],
                                     nil,
-                                    nil,
-                                        [msg objectAtIndex: 1]);
+                                    nil);
         
         avoidErrorMessageReentry = NO;
     }

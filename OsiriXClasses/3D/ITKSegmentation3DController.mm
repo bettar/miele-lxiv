@@ -31,6 +31,7 @@
 #import "Notifications.h"
 
 #import "ITKSegmentation3DController.h"
+#import "alertTransition.h"
 
 enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neighborhoodSegmentationType, confidenceSegmentationType};
 
@@ -344,7 +345,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	
 	if (!parametersProvided)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Segmentation Error", nil),
+		NSRunCriticalAlertPanel2(NSLocalizedString(@"Segmentation Error", nil),
                                 NSLocalizedString(@"Please provide a value for each parameter.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,
@@ -354,7 +355,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	
 	if ( startingPoint.x == 0 && startingPoint.y == 0)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Segmentation Error", nil),
+		NSRunCriticalAlertPanel2(NSLocalizedString(@"Segmentation Error", nil),
                                 NSLocalizedString(@"Select a starting point by clicking in the image.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,

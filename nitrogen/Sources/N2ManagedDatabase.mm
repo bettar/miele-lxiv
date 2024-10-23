@@ -27,6 +27,7 @@
 #import "DCMTKQueryNode.h"
 #endif
 //#import "DicomDatabase.h" // for debug purposes, REMOVE
+#import "alertTransition.h"
 
 static int gTotalN2ManagedObjectContext = 0;
 
@@ -354,28 +355,31 @@ static int gTotalN2ManagedObjectContext = 0;
                         if (!pStore && i == 1)
                         {
                             NSLog(@"Error: [N2ManagedDatabase contextAtPath:] %@", [err description]);
-                            if ([NSThread isMainThread]) {
-                                NSInteger result = NSRunCriticalAlertPanel(
+                            if ([NSThread isMainThread])
+                            {
+                                NSString* msg = [NSString stringWithFormat:@"%@\r\r%@\r\r%@", err.localizedDescription,
+                                                 sqlFilePath,
+                                                 NSLocalizedString(@"I could delete the SQL index file to reset it.", nil)];
+                                NSInteger result = NSRunCriticalAlertPanel2(
                                         [NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]], // title
-                                        @"%@\r\r%@\r\r%@", // msg format
+                                        msg,
                                         NSLocalizedString(@"Continue", nil), // default button
                                         NSLocalizedString(@"Delete the SQL index", nil), // alternate button
-                                        nil, // other button
-                                        err.localizedDescription,
-                                        sqlFilePath,
-                                        NSLocalizedString(@"I could delete the SQL index file to reset it.", nil));
+                                        nil // other button
+                                        );
                                 
-                                if( result == NSAlertAlternateReturn) {
-                                    NSInteger result = NSRunCriticalAlertPanel(
-                                        [NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]],
-                                        @"%@\r\r%@",
+                                if (result == NSAlertAlternateReturn2)
+                                {
+                                    NSInteger result = NSRunCriticalAlertPanel2(
+                                        [NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]], // title
+                                        [NSString stringWithFormat:@"%@\r\r%@",
+                                         NSLocalizedString( @"Do you confirm to delete this index file? This operation cannot be undone.", nil),
+                                         sqlFilePath],
                                         NSLocalizedString(@"Cancel", nil),
                                         NSLocalizedString(@"Delete", nil),
-                                        nil,
-                                        NSLocalizedString( @"Do you confirm to delete this index file? This operation cannot be undone.", nil),
-                                        sqlFilePath);
+                                        nil);
                                     
-                                    if( result == NSAlertAlternateReturn) {
+                                    if( result == NSAlertAlternateReturn2) {
                                         [NSFileManager.defaultManager removeItemAtPath:sqlFilePath error: nil];
                                         i = 0;
                                     }

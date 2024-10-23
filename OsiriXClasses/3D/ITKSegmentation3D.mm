@@ -74,6 +74,7 @@
 #import "OSIVoxel.h"
 #import "AppController.h"
 #import "ITKSegmentation3D.h"
+#import "alertTransition.h"
 
 /**
  * This function will connect the given itk::VTKImageExport filter to
@@ -813,12 +814,12 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                 else
                 {
                     NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-                    if (NSRunAlertPanel(@"regionGrowing3D", //NSLocalizedString(@"32-bit",nil),
+                    if (NSRunAlertPanel2(@"regionGrowing3D", //NSLocalizedString(@"32-bit",nil),
                                         @"Casting filter error", //NSLocalizedString(@"Upgrade to OsiriX 64-bit to solve this issue.",nil),
                                         NSLocalizedString(@"OK", nil),
                                         bundleName,
                                         nil
-                                        ) == NSAlertAlternateReturn)
+                                        ) == NSAlertAlternateReturn2)
                     {
                         //[[AppController sharedAppController] osirix64bit: self];
                     }

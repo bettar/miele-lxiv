@@ -73,6 +73,8 @@
 #import "Window3DController+StereoVision.h"
 #import "SRFlyThruAdapter+StereoVision.h"
 
+#import "alertTransition.h"
+
 // They must match sender tags
 typedef NS_ENUM(NSUInteger, MyStereoMode) {
     STEREO_MODE_OFF = 0,
@@ -330,12 +332,12 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	catch (...)
 	{
         NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-		if (NSRunAlertPanel(@"", //NSLocalizedString(@"32-bit",nil),
+		if (NSRunAlertPanel2(@"", //NSLocalizedString(@"32-bit",nil),
                             NSLocalizedString(@"Cannot use the 3D engine.",nil),
                             NSLocalizedString(@"OK", nil),
                             bundleName,
                             nil
-                            ) == NSAlertAlternateReturn)
+                            ) == NSAlertAlternateReturn2)
         {
 			//[[AppController sharedAppController] osirix64bit: self];
         }

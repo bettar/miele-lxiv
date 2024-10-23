@@ -21,6 +21,7 @@
 #import "OSICustomImageAnnotations.h"
 #import "PreferencesWindowController+DCMTK.h"
 #import <NSPreferencePane+OsiriX.h>
+#import "alertTransition.h"
 
 NSComparisonResult  compareViewTags(id firstView, id secondView, void * context);
 NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
@@ -112,12 +113,12 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 			
 			if( cur)
 			{
-				if( NSRunInformationalAlertPanel(NSLocalizedString(@"Settings", nil),
+				if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Settings", nil),
                                                  NSLocalizedString( @"Are you really sure you want to replace current settings? It will delete the current settings.", nil),
                                                  NSLocalizedString(@"OK", nil),
                                                  NSLocalizedString(@"Cancel", nil),
                                                  0L
-                                                 ) == NSAlertDefaultReturn)
+                                                 ) == NSAlertDefaultReturn2)
 				{
 					NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
 				
@@ -132,12 +133,11 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction) reset: (id) sender
 {
-	if( NSRunInformationalAlertPanel(NSLocalizedString(@"Settings", nil),
+	if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Settings", nil),
                                      NSLocalizedString( @"Are you really sure you want to reset the current default settings? It will delete the current settings.", nil),
                                      NSLocalizedString(@"OK", nil),
                                      NSLocalizedString(@"Cancel", nil),
-                                     0L
-                                     ) == NSAlertDefaultReturn)
+                                     nil) == NSAlertDefaultReturn2)
 	{
 		NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
 		
@@ -314,12 +314,12 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 	if(state)
 	{
-		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Default", nil),
+		if( NSRunInformationalAlertPanel2(NSLocalizedString(@"Default", nil),
                                          NSLocalizedString( @"Are you really sure you want to replace current settings with the default settings? It will delete the current settings.", nil),
                                          NSLocalizedString(@"OK", nil),
                                          NSLocalizedString(@"Cancel", nil),
                                          0L
-                                         ) == NSAlertDefaultReturn)
+                                         ) == NSAlertDefaultReturn2)
         {
 			[layoutController loadAnnotationLayoutForModality:@"Default"];
         }

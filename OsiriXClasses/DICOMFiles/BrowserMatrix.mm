@@ -27,6 +27,7 @@ PURPOSE.
 #import "N2Debug.h"
 
 #import "tmp_locations.h"
+#import "alertTransition.h"
 
 @implementation BrowserMatrix
 
@@ -232,7 +233,7 @@ PURPOSE.
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 				
 				NSTimeInterval fourSeconds = [NSDate timeIntervalSinceReferenceDate] + 4.0;
-				while( [[d objectForKey: @"result"] count] == 0 && [NSDate timeIntervalSinceReferenceDate] < fourSeconds)
+				while( [[d objectForKey: @"result"] count] == NSAlertAlternateReturn2 && [NSDate timeIntervalSinceReferenceDate] < fourSeconds)
 					[NSThread sleepForTimeInterval: 0.1];
 				
 				@synchronized( d)

@@ -45,6 +45,7 @@
 
 #import "N3BezierPath.h"
 #import "N3Geometry.h"
+#import "alertTransition.h"
 
 extern unsigned int minimumStep;
 
@@ -1151,12 +1152,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 - (void) deleteCurrentCurvedPath
 {
     if (curvedPath.nodes.count > 0) {
-        if (NSRunInformationalAlertPanel(NSLocalizedString(@"Delete the Curve", nil),
+        if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Delete the Curve", nil),
                                          NSLocalizedString(@"Are you sure you want to delete the entire curve?", nil),
                                          NSLocalizedString(@"OK",nil),
                                          NSLocalizedString(@"Cancel",nil),
-                                         nil
-                                         ) == NSAlertDefaultReturn)
+                                         nil) == NSAlertDefaultReturn2)
         {
             [self sendWillEditCurvedPath];
             [curvedPath clearPath];

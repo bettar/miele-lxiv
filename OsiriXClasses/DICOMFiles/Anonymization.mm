@@ -40,6 +40,7 @@
 #import "DicomFileDCMTKCategory.h"
 #import "XMLControllerDCMTKCategory.h"
 #import "N2Debug.h"
+#import "alertTransition.h"
 
 static NSString *templateDicomFile = nil;
 
@@ -309,12 +310,11 @@ static NSString *templateDicomFile = nil;
 
 + (void) error: (NSString*) s
 {
-    NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
-                            @"%@",
+    NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
+                            s,
                             NSLocalizedString(@"OK", nil),
                             nil,
-                            nil,
-                            s);
+                            nil);
 }
 
 +(NSDictionary*)anonymizeFiles:(NSArray*)files dicomImages: (NSArray*) dicomImages toPath:(NSString*)dirPath withTags:(NSArray*)intags

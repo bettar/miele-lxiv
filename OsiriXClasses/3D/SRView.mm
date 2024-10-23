@@ -68,6 +68,8 @@
 #include "vtkRendererCollection.h"
 #endif
 
+#import "alertTransition.h"
+
 //static SRView *snSRView = nil;
 
 typedef struct _xyzArray
@@ -610,7 +612,7 @@ typedef struct _xyzArray
 				
 				NSString *f = [exportDCM writeDCMFile: nil];
 				if (f == nil)
-                    NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
+                    NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
                                             NSLocalizedString( @"Error during the creation of the DICOM File!", nil),
                                             NSLocalizedString(@"OK", nil),
                                             nil,
@@ -1966,12 +1968,11 @@ typedef struct _xyzArray
 	{
 		NSLog( @"Exception during drawRect... not enough memory?");
         NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-		if (NSRunAlertPanel(@"", //NSLocalizedString(@"32-bit",nil),
+		if (NSRunAlertPanel2(@"", //NSLocalizedString(@"32-bit",nil),
                             NSLocalizedString(@"Cannot use the 3D engine.",nil),
                             NSLocalizedString(@"OK", nil),
                             bundleName,
-                            nil
-                            ) == NSAlertAlternateReturn)
+                            nil) == NSAlertAlternateReturn2)
         {
 			//[[AppController sharedAppController] osirix64bit: self];
         }
@@ -2199,12 +2200,12 @@ typedef struct _xyzArray
 	catch (...)
 	{
         NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-		if (NSRunAlertPanel(@"", //NSLocalizedString(@"32-bit",nil),
+		if (NSRunAlertPanel2(@"", //NSLocalizedString(@"32-bit",nil),
                             NSLocalizedString(@"Cannot use the 3D engine.",nil),
                             NSLocalizedString(@"OK", nil),
                             bundleName,
                             nil
-                            ) == NSAlertAlternateReturn)
+                            ) == NSAlertAlternateReturn2)
         {
 			//[[AppController sharedAppController] osirix64bit: self];
         }

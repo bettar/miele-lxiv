@@ -149,7 +149,7 @@
         
         if (sameAddress)
         {
-            if( [NSThread isMainThread] && showError)
+            if ([NSThread isMainThread] && showError)
             {
                 NSAlert *alert = [NSAlert alertWithMessageText: NSLocalizedString( @"Query Error", nil)
                                                  defaultButton:@"OK"

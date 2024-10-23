@@ -32,6 +32,7 @@
 
 #import "url.h"
 #import "tmp_locations.h"
+#import "alertTransition.h"
 
 static NSMutableDictionary *installedPlugins = nil; // the actual plugin objects
 static NSMutableDictionary *installedPluginsInfoDict = nil; // info about plugins: menu titles, toolbar name
@@ -600,12 +601,11 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                 
                 message = [message stringByAppendingFormat:@"\r\r%@", [name lastPathComponent]];
                 
-                NSRunAlertPanel(NSLocalizedString(@"Plugins", nil),
-                                @"%@" ,
+                NSRunAlertPanel2(NSLocalizedString(@"Plugins", nil),
+                                message,
                                 nil,
                                 nil,
-                                nil,
-                                message);
+                                nil);
             }
         }
         else
@@ -832,14 +832,14 @@ pluginDone:
         {
             NSString *pluginCrashPath = [NSString stringWithContentsOfFile: pluginCrash encoding: NSUTF8StringEncoding error: nil];
             
-            int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Miele-LXIV crashed", nil),
-                                                      NSLocalizedString(@"Previous crash is maybe related to a plugin.\r\rShould I remove this plugin (%@)?", nil),
+            int result = NSRunInformationalAlertPanel2(NSLocalizedString(@"Miele-LXIV crashed", nil),
+                                                       [NSString stringWithFormat: NSLocalizedString(@"Previous crash is maybe related to a plugin.\r\rShould I remove this plugin (%@)?", nil),
+                                                        [pluginCrashPath lastPathComponent]],
                                                       NSLocalizedString(@"Delete Plugin",nil),
                                                       NSLocalizedString(@"Continue",nil),
-                                                      nil,
-                                                        [pluginCrashPath lastPathComponent]);
+                                                      nil);
             
-            if (result == NSAlertDefaultReturn) // Delete Plugin
+            if (result == NSAlertDefaultReturn2) // Delete Plugin
             {
                 NSError *error = nil;
                 [[NSFileManager defaultManager] removeItemAtPath: pluginCrashPath error: &error];
@@ -1099,7 +1099,7 @@ pluginDone:
 	}
     
     if (!gPluginsAlertAlreadyDisplayed)
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""),
+        NSRunInformationalAlertPanel2(NSLocalizedString(@"Plugins", @""),
                                      NSLocalizedString( @"Restart OsiriX to apply the changes to the plugins.", @""),
                                      NSLocalizedString(@"OK", @""),
                                      nil,
@@ -1140,7 +1140,7 @@ pluginDone:
 	}
     
     if (!gPluginsAlertAlreadyDisplayed)
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""),
+        NSRunInformationalAlertPanel2(NSLocalizedString(@"Plugins", @""),
                                      NSLocalizedString(@"Restart OsiriX to apply the changes to the plugins.", @""),
                                      NSLocalizedString(@"OK", @""),
                                      nil,
@@ -1155,7 +1155,7 @@ pluginDone:
 #if 0 //def MACAPPSTORE
     if ([availability isEqualTo:[availabilities objectAtIndex:0]] == NO)  // not user
     {
-        NSRunCriticalAlertPanel(NSLocalizedString(@"Plugin",nil),
+        NSRunCriticalAlertPanel2(NSLocalizedString(@"Plugin",nil),
                                 NSLocalizedString(@"You cannot move the plugin to another location with this version of OsiriX.", nil),
                                 NSLocalizedString(@"OK",nil),
                                 nil,
@@ -1385,7 +1385,7 @@ pluginDone:
 	}
 	
     if (!gPluginsAlertAlreadyDisplayed)
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""),
+        NSRunInformationalAlertPanel2(NSLocalizedString(@"Plugins", @""),
                                      NSLocalizedString( @"Restart OsiriX to apply the changes to the plugins.", @""),
                                      NSLocalizedString(@"OK", @""),
                                      nil,
@@ -1623,14 +1623,13 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
-		int button = NSRunAlertPanel([messageDictionary objectForKey:@"title"],
-                                     @"%@",
+		int button = NSRunAlertPanel2([messageDictionary objectForKey:@"title"],
+                                      [messageDictionary objectForKey:@"body"],
                                      NSLocalizedString(@"Download", @""),
                                      NSLocalizedString( @"Cancel", @""),
-                                     nil,
-                                     [messageDictionary objectForKey:@"body"]);
+                                     nil);
 			
-		if (NSModalResponseOK == button)
+		if (NSAlertDefaultReturn2 == button)
 		{
 			startedUpdateProcess = YES;
 			PluginManagerController *pluginManagerController = [[BrowserController currentBrowser] pluginManagerController];
@@ -1671,7 +1670,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	else
 	{
         if (!gPluginsAlertAlreadyDisplayed)
-            NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""),
+            NSRunInformationalAlertPanel2(NSLocalizedString(@"Plugin Update Completed", @""),
                                          NSLocalizedString(@"All your plugins are now up to date. Restart OsiriX to use the new or updated plugins.", @""),
                                          NSLocalizedString(@"OK", @""),
                                          nil,

@@ -126,6 +126,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "alertTransition.h"
+
 #define BUILTIN_DCMTK_SERVER    YES
 #define MAXSCREENS              10
 
@@ -849,17 +851,17 @@ static bool isGrantedNotificationAccess = false;
 	if (lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*5)
 	{
         NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-        int result = NSRunCriticalAlertPanel(
+        int result = NSRunCriticalAlertPanel2(
                         NSLocalizedString( @"Important Notice", nil),
                         NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device for primary diagnostic imaging.", nil),
                         bundleName,                             // default
                         NSLocalizedString( @"I agree", nil),    // alternate
                         NSLocalizedString( @"Quit", nil));      // other
 		
-		if (result == NSAlertDefaultReturn)
+		if (result == NSAlertDefaultReturn2)
 			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_VENDOR_NOTICE]];
 			
-		else if (result == NSAlertOtherReturn)
+		else if (result == NSAlertOtherReturn2)
 			[[AppController sharedAppController] terminate: self];
 	}
 	
@@ -1078,13 +1080,12 @@ static bool isGrantedNotificationAccess = false;
 	if ([replacingPlugins length] > 0)
 		msg = [NSString stringWithFormat:@"%@\n\n%@", msg, replacingPlugins];
 	
-	NSInteger res = NSRunAlertPanel(NSLocalizedString(@"Plugins Installation", @""),
-                                    @"%@",
+	NSInteger res = NSRunAlertPanel2(NSLocalizedString(@"Plugins Installation", @""),
+                                    msg,
                                     NSLocalizedString(@"OK", @""),
                                     NSLocalizedString(@"Cancel", @""),
-                                    nil,
-                                    msg);
-	if (res)
+                                    nil);
+	if (res == NSAlertDefaultReturn2)
 	{
 		for (NSString *path in pluginsArray)
             [PluginManager installPluginFromPath: path];
@@ -1472,7 +1473,7 @@ static bool isGrantedNotificationAccess = false;
             if (showRestartNeeded)
             {
                 showRestartNeeded = NO;
-                NSRunAlertPanel(NSLocalizedString( @"DICOM Listener", nil),
+                NSRunAlertPanel2(NSLocalizedString( @"DICOM Listener", nil),
                                 NSLocalizedString( @"Restart OsiriX to apply these changes.", nil),
                                 NSLocalizedString( @"OK", nil),
                                 nil,
@@ -2294,7 +2295,7 @@ static bool isGrantedNotificationAccess = false;
 					[STORESCP_Lock unlock];
 				}
 				else
-                    NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Listener Error", nil),
+                    NSRunCriticalAlertPanel2(NSLocalizedString(@"DICOM Listener Error", nil),
                                             NSLocalizedString(@"Cannot start DICOM Listener. Another thread is already running. Restart OsiriX.", nil),
                                             NSLocalizedString(@"OK", nil),
                                             nil,
@@ -2318,7 +2319,7 @@ static bool isGrantedNotificationAccess = false;
 				[STORESCPTLS_Lock unlock];
 			}
 			else
-                NSRunCriticalAlertPanel(NSLocalizedString( @"DICOM TLS Listener Error", nil),
+                NSRunCriticalAlertPanel2(NSLocalizedString( @"DICOM TLS Listener Error", nil),
                                         NSLocalizedString( @"Cannot start DICOM TLS Listener. Another thread is already running. Restart OsiriX.", nil),
                                         NSLocalizedString( @"OK", nil),
                                         nil,
@@ -2329,12 +2330,11 @@ static bool isGrantedNotificationAccess = false;
 		N2LogExceptionWithStackTrace(e);
         
         if ([NSThread isMainThread])
-            NSRunAlertPanel(NSLocalizedString( @"Database", nil),
-                            @"%@",
+            NSRunAlertPanel2(NSLocalizedString( @"Database", nil),
+                            e.reason,
                             NSLocalizedString( @"OK", nil),
                             nil,
-                            nil,
-                            e.reason);
+                            nil);
 	}
 	
 	[BonjourDICOMService stop];
@@ -2350,12 +2350,11 @@ static bool isGrantedNotificationAccess = false;
 
 -(void) displayError: (NSString*) err
 {
-	NSRunCriticalAlertPanel(NSLocalizedString( @"Error", nil),
-                            @"%@",
+	NSRunCriticalAlertPanel2(NSLocalizedString( @"Error", nil),
+                            err,
                             NSLocalizedString( @"OK", nil),
                             nil,
-                            nil,
-                                err);
+                            nil);
 }
 
 -(void) displayListenerError: (NSString*) err // the DiscPublishing plugin swizzles this method, do not rename it
@@ -2464,13 +2463,13 @@ static bool isGrantedNotificationAccess = false;
 	{
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"httpXMLRPCServer"] == NO)
 		{
-			int result = NSRunInformationalAlertPanel(NSLocalizedString(@"URL scheme", nil),
+			int result = NSRunInformationalAlertPanel2(NSLocalizedString(@"URL scheme", nil),
                                                       NSLocalizedString(@"OsiriX URL scheme (osirix://) is currently not activated!\r\rShould I activate it now? Restart is necessary.", nil),
                                                       NSLocalizedString(@"No",nil),
                                                       NSLocalizedString(@"Activate & Restart",nil),
                                                       nil);
 			
-			if (result == NSAlertAlternateReturn)
+			if (result == NSAlertAlternateReturn2)
 			{
 				[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"httpXMLRPCServer"];
 				[[NSUserDefaults standardUserDefaults] synchronize];
@@ -2792,12 +2791,11 @@ static bool isGrantedNotificationAccess = false;
     }
     @catch (NSException * e)
     {
-        NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
-                                @"%@",
+        NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
+                                 e.reason,
                                 NSLocalizedString(@"OK", nil),
                                 nil,
-                                nil,
-                                    e.reason);
+                                nil);
         
         N2LogExceptionWithStackTrace(e);
     }
@@ -2851,7 +2849,7 @@ static BOOL initialized = NO;
 				Altivec = HasAltiVec();
 				//	if (Altivec == 0)
 				//	{
-				//		NSRunCriticalAlertPanel(@"Hardware Info", @"This application is optimized for Altivec - Velocity Engine unit, available only on G4/G5 processors.", @"OK", nil, nil);
+				//		NSRunCriticalAlertPanel2(@"Hardware Info", @"This application is optimized for Altivec - Velocity Engine unit, available only on G4/G5 processors.", @"OK", nil, nil);
 				//		exit(0);
 				//	}
                 
@@ -2918,7 +2916,9 @@ static BOOL initialized = NO;
                 //NSLog(@"Preference Panes Dir___: %@", NSSearchPathForDirectoriesInDomains(NSPreferencePanesDirectory, NSUserDomainMask, YES).firstObject);
                 NSLog(@"MAC_OS_X_VERSION_MAX_ALLOWED: %i", MAC_OS_X_VERSION_MAX_ALLOWED); // MAC_OS_VERSION_14_0
                 NSLog(@"MAC_OS_X_VERSION_MIN_REQUIRED: %i", MAC_OS_X_VERSION_MIN_REQUIRED); // MAC_OS_X_VERSION_10_14
+                NSLog(@"NSAppKitVersionNumber: %f", NSAppKitVersionNumber); // 2566.000000
 #endif
+                NSLog(@"NSAppKitVersionNumber: %f", NSAppKitVersionNumber);
                 NSString *bundleIdentifier = [d objectForKey:@"CFBundleIdentifier"];
                 NSLog(@"Defaults file__________: %@/Preferences/%@.plist",
                       NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES).firstObject,
@@ -2959,14 +2959,14 @@ static BOOL initialized = NO;
                 if ([BrowserController _currentModifierFlags] & NSEventModifierFlagCommand &&
                     [BrowserController _currentModifierFlags] & NSEventModifierFlagOption)
                 {
-                    NSInteger result = NSRunInformationalAlertPanel(
+                    NSInteger result = NSRunInformationalAlertPanel2(
                                             NSLocalizedString(@"Reset Preferences", nil),
                                             NSLocalizedString(@"Are you sure you want to reset ALL preferences of OsiriX? All the preferences will be reset to their default values.", nil),
                                             NSLocalizedString(@"Cancel",nil),
                                             NSLocalizedString(@"OK",nil),
                                             nil);
                     
-                    if (result == NSAlertAlternateReturn)
+                    if (result == NSAlertAlternateReturn2)
                     {
                         for (NSString *k in [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys])
                             [[NSUserDefaults standardUserDefaults] removeObjectForKey: k];
@@ -3287,20 +3287,19 @@ static BOOL initialized = NO;
                         }
                         else
                         {
-                            int result = NSRunInformationalAlertPanel(
+                            int result = NSRunInformationalAlertPanel2(
                                 NSLocalizedString(@"OsiriX crashed during last startup", nil),
                                 NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", nil),
                                 NSLocalizedString(@"Continue normally",nil),
                                 NSLocalizedString(@"Protected Mode",nil),
                                 NSLocalizedString(@"Rebuild Database",nil));
                             
-                            if (result == NSAlertOtherReturn)
+                            if (result == NSAlertOtherReturn2)
                             {
                                 NEEDTOREBUILD = YES;
                                 COMPLETEREBUILD = YES;
                             }
-                            
-                            if (result == NSAlertAlternateReturn)
+                            else if (result == NSAlertAlternateReturn2)
                                 [DCMPix setRunOsiriXInProtectedMode: YES];
                         }
                     }
@@ -3652,13 +3651,13 @@ API_AVAILABLE(macos(10.14))
     
     if (startCount == 0) // Replaces FIRSTTIME.
     {
-        switch (NSRunInformationalAlertPanel(NSLocalizedString( @"OsiriX Updates", nil),
+        switch (NSRunInformationalAlertPanel2(NSLocalizedString( @"OsiriX Updates", nil),
                                              NSLocalizedString( @"Would you like to activate automatic checking for updates?", nil),
                                              NSLocalizedString( @"Yes", nil),
                                              NSLocalizedString( @"No", nil),
                                              nil))
         {
-            case 0:
+            case NSAlertAlternateReturn2:
                 [[NSUserDefaults standardUserDefaults] setObject: @"NO" forKey: @"Check4Updates"];
             break;
         }
@@ -3669,9 +3668,9 @@ API_AVAILABLE(macos(10.14))
         {
 //            if ([[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT2"] > 20)
 //            {
-//                switch( NSRunInformationalAlertPanel(@"OsiriX", @"Thank you for using OsiriX!\rDo you agree to answer a small survey to improve OsiriX?", @"Yes, sure!", @"Maybe next time", nil))
+//                switch( NSRunInformationalAlertPanel2(@"OsiriX", @"Thank you for using OsiriX!\rDo you agree to answer a small survey to improve OsiriX?", @"Yes, sure!", @"Maybe next time", nil))
 //                {
-//                    case 1:
+//                    case NSAlertDefaultReturn2:
 //                    {
 //                        Survey *survey = [[Survey alloc] initWithWindowNibName:@"Survey"];
 //                        [[survey window] center];
@@ -3860,13 +3859,13 @@ API_AVAILABLE(macos(10.14))
 #ifdef MIELE_LIGHT
 	@try
 	{
-		long button = NSRunAlertPanel(NSLocalizedString( @"Miele-LXIV Lite", nil),
+		long button = NSRunAlertPanel2(NSLocalizedString( @"Miele-LXIV Lite", nil),
                                      NSLocalizedString( @"This is the Lite version of OsiriX: many functions are not available. You can download the full version of OsiriX on the Internet.", nil),
                                      NSLocalizedString( @"Continue", nil),
                                      NSLocalizedString( @"Download", nil),
                                      nil);
 	
-		if (NSModalResponseCancel == button)
+		if (NSAlertAlternateReturn2 == button)
 			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_MAC_APP_STORE]];
 	}
 	@catch (NSException * e)
@@ -4008,7 +4007,7 @@ API_AVAILABLE(macos(10.14))
         NSLog( @"SecStaticCodeCheckValidity: %d", (int) status);
         NSLog( @"%@", errors);
         
-        NSRunCriticalAlertPanel(NSLocalizedString( @"Code signing and Certificate", nil),
+        NSRunCriticalAlertPanel2(NSLocalizedString( @"Code signing and Certificate", nil),
                                 NSLocalizedString( @"Invalid code signing or certificate. You should re-download Miele-LXIV from the web site\r\rAre you using an utility such as CleanMyMac or CCleaner? Turn it off for Miele-LXIV.", nil),
                                 NSLocalizedString( @"Continue", nil),
                                 nil,
@@ -4025,12 +4024,11 @@ API_AVAILABLE(macos(10.14))
         int verMajor = MAC_OS_X_VERSION_MIN_REQUIRED / 10000;
         int verMinor = (MAC_OS_X_VERSION_MIN_REQUIRED/100) % 100;
         NSString *msgFormat = [NSString stringWithFormat:NSLocalizedString(@"This app requires macOS %d.%d or higher. Please update your OS: Apple Menu - Software Update...", nil), verMajor, verMinor];
-        NSRunCriticalAlertPanel(NSLocalizedString(@"macOS version", nil),
-                                @"%@", // msgFormat
+        NSRunCriticalAlertPanel2(NSLocalizedString(@"macOS version", nil),
+                                msgFormat,
                                 NSLocalizedString(@"Quit", nil),
                                 nil,
-                                nil,
-                                    msgFormat);
+                                nil);
         exit( 0);
     }
     
@@ -4629,7 +4627,7 @@ static BOOL firstCall = YES;
 	
 	if ([msg isEqualToString:@"LISTENER"])
 	{
-		NSRunAlertPanel(NSLocalizedString( @"DICOM Listener Error", nil),
+		NSRunAlertPanel2(NSLocalizedString( @"DICOM Listener Error", nil),
                         NSLocalizedString( @"OsiriX listener cannot start. Is the Port valid? Is there another process using this Port?\r\rSee Listener - Preferences.", nil),
                         NSLocalizedString( @"OK", nil),
                         nil,
@@ -4638,7 +4636,7 @@ static BOOL firstCall = YES;
 	
 	if ([msg isEqualToString:@"UPTODATE"])
 	{
-		NSRunAlertPanel(NSLocalizedString( @"OsiriX is up-to-date", nil),
+		NSRunAlertPanel2(NSLocalizedString( @"OsiriX is up-to-date", nil),
                         NSLocalizedString( @"You have the most recent version of OsiriX.", nil),
                         NSLocalizedString( @"OK", nil),
                         nil,
@@ -4647,7 +4645,7 @@ static BOOL firstCall = YES;
 	
 	if ([msg isEqualToString:@"ERROR"])
 	{
-		NSRunAlertPanel(NSLocalizedString( @"No Internet connection", nil),
+		NSRunAlertPanel2(NSLocalizedString( @"No Internet connection", nil),
                         NSLocalizedString( @"Unable to check latest version available.", nil),
                         NSLocalizedString( @"OK", nil),
                         nil,
@@ -4656,7 +4654,7 @@ static BOOL firstCall = YES;
 	
     if ([msg isEqualToString: @"UPDATECRASH"])
     {
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Miele-LXIV crashed", nil),
+        NSRunInformationalAlertPanel2(NSLocalizedString(@"Miele-LXIV crashed", nil),
                                      NSLocalizedString(@"OsiriX crashed... You are running an outdated version of OsiriX ! This bug is probably corrected in the last version !", nil),
                                      NSLocalizedString(@"OK",nil),
                                      nil,
@@ -4667,7 +4665,7 @@ static BOOL firstCall = YES;
     
 	if ([msg isEqualToString:@"UPDATE"])
 	{
-		int button = NSRunAlertPanel(NSLocalizedString( @"New Version Available", nil),
+		int button = NSRunAlertPanel2(NSLocalizedString( @"New Version Available", nil),
                                      NSLocalizedString( @"A new version of the application is available. Would you like to download it now?", nil),
                                      NSLocalizedString( @"Download", nil),
                                      NSLocalizedString( @"Continue", nil),
@@ -4755,7 +4753,7 @@ static BOOL firstCall = YES;
 //- (void) URL: (NSURL*) sender resourceDidFailLoadingWithReason: (NSString*) reason
 //{
 //    if (verboseUpdateCheck)
-//        NSRunAlertPanel( NSLocalizedString( @"No connection available", nil), @"%@", NSLocalizedString( @"OK", nil), nil, nil, reason);
+//        NSRunAlertPanel2( NSLocalizedString( @"No connection available", nil), reason, NSLocalizedString( @"OK", nil), nil, nil);
 //}
 
 #pragma mark -

@@ -54,6 +54,8 @@
 #define PRESETS_DIRECTORY   @"/3DPRESETS/"
 #define CLUTDATABASE        @"/CLUTs/"
 
+#import "alertTransition.h"
+
 //#define FIX_CPR_WORKAROUND
 
 static NSString *MPRPlaneObservationContext = @"MPRPlaneObservationContext";
@@ -149,12 +151,12 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
             if (succeed == NO)
             {
                 NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-                if ( NSRunAlertPanel(@"", //NSLocalizedString(@"32-bit",nil),
+                if ( NSRunAlertPanel2(@"", //NSLocalizedString(@"32-bit",nil),
                                      NSLocalizedString(@"Cannot compute the high resolution data.",nil),
                                      NSLocalizedString(@"OK", nil),
                                      bundleName,
                                      nil
-                                     ) == NSAlertAlternateReturn)
+                                     ) == NSAlertAlternateReturn2)
                 {
                     //[[AppController sharedAppController] osirix64bit: self];
                 }
@@ -227,7 +229,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		
 		if ([originalPix isRGB])
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"RGB", nil),
+			NSRunCriticalAlertPanel2(NSLocalizedString(@"RGB", nil),
                                     NSLocalizedString(@"RGB images are not supported.", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
@@ -1274,7 +1276,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
             }
             else if (err == ERROR_NOENOUGHMEM)
             {
-                NSRunAlertPanel(@"", //NSLocalizedString(@"32-bit", nil),
+                NSRunAlertPanel2(@"", //NSLocalizedString(@"32-bit", nil),
                                 NSLocalizedString(@"Path Assistant can not allocate enough memory, try to increase the resample voxel size in the settings.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,
@@ -1282,7 +1284,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
             }
             else if (err == ERROR_CANNOTFINDPATH)
             {
-                NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil),
+                NSRunAlertPanel2(NSLocalizedString(@"Can't find path", nil),
                                 NSLocalizedString(@"Path Assistant can not find a path from A to B.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,
@@ -1312,7 +1314,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
                 }
                 if (err==ERROR_CANNOTFINDPATH)
                 {
-                    NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil),
+                    NSRunAlertPanel2(NSLocalizedString(@"Can't find path", nil),
                                     NSLocalizedString(@"Path Assistant can not find a path from current location.", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
@@ -1322,7 +1324,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
                 }
                 else if (err==ERROR_DISTTRANSNOTFINISH)
                 {
-                    NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil),
+                    NSRunAlertPanel2(NSLocalizedString(@"Unexpected error", nil),
                                     NSLocalizedString(@"Path Assistant failed to initialize!", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
@@ -2906,7 +2908,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 					f = [dicomExport writeDCMFile: nil];
                     if (f == nil)
 					{
-                        NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
+                        NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
                                                 NSLocalizedString( @"Error during the creation of the DICOM File!", nil),
                                                 NSLocalizedString(@"OK", nil),
                                                 nil,
@@ -3020,13 +3022,14 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
                                 f = [dicomExport writeDCMFile: nil];
                                 if (f == nil)
                                 {
-                                    NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
+                                    NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
                                                             NSLocalizedString( @"Error during the creation of the DICOM File!", nil),
                                                             NSLocalizedString(@"OK", nil),
                                                             nil,
                                                             nil);
                                     break;
                                 }
+
                                 [producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
                             }
                         }
@@ -3153,13 +3156,14 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
                             f = [dicomExport writeDCMFile: nil];
                             if (f == nil)
 							{
-                                NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
+                                NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
                                                         NSLocalizedString( @"Error during the creation of the DICOM File!", nil),
                                                         NSLocalizedString(@"OK", nil),
                                                         nil,
                                                         nil);
                                 break;
                             }
+ 
                             [producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
                         }
 						@catch (NSException *e) {
@@ -3219,13 +3223,14 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
                             f = [dicomExport writeDCMFile: nil];
                             if (f == nil)
                             {
-                                NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
+                                NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
                                                         NSLocalizedString( @"Error during the creation of the DICOM File!", nil),
                                                         NSLocalizedString(@"OK", nil),
                                                         nil,
                                                         nil);
                                 break;
                             }
+                            
                             [producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
                         }
                     }
@@ -4837,7 +4842,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		
 		f = [dicomExport writeDCMFile: nil];
 		if (f == nil)
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
                                     NSLocalizedString( @"Error during the creation of the DICOM File!", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
@@ -5208,7 +5213,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     if ([curvedPath.nodes count] > 1 && [curvedPath.nodes count] <= 5)
         [self assistedCurvedPath:nil];
     else
-         NSRunAlertPanel(NSLocalizedString(@"Path Assistant error", nil),
+         NSRunAlertPanel2(NSLocalizedString(@"Path Assistant error", nil),
                          NSLocalizedString(@"Path Assistant requires at least 2 points, and no more than 5 points. Use the Curved Path tool to define at least two points.", nil),
                          NSLocalizedString(@"OK", nil),
                          nil,

@@ -23,6 +23,7 @@
 #import <AppController.h>
 #import "AppDefaults.h"
 #import <N2Debug.h>
+#import "alertTransition.h"
 
 static NSArray *languagesToMoveWhenQuitting = nil;
 
@@ -164,12 +165,13 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 
 - (IBAction) resetPreferences: (id) sender
 {
-	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Reset Preferences", nil),
+	NSInteger result = NSRunInformationalAlertPanel2(NSLocalizedString(@"Reset Preferences", nil),
                                                     NSLocalizedString(@"Are you sure you want to reset ALL preferences of OsiriX? All the preferences will be reset to their default values.", nil),
                                                     NSLocalizedString(@"Cancel",nil),
-                                                    NSLocalizedString(@"OK",nil),  nil);
+                                                    NSLocalizedString(@"OK",nil),
+                                                    nil);
 	
-	if (result == NSAlertAlternateReturn)
+	if (result == NSAlertAlternateReturn2)
 	{
 		for( NSString *k in [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys])
 			[[NSUserDefaults standardUserDefaults] removeObjectForKey: k];
@@ -204,12 +206,13 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 
 + (void) errorMessage:(NSURL*) url
 {
-    NSRunAlertPanel(NSLocalizedString( @"Preferences", nil),
-                    NSLocalizedString( @"Failed to download and synchronize preferences from this URL: %@", nil),
+    NSString* msg = [NSString stringWithFormat:NSLocalizedString( @"Failed to download and synchronize preferences from this URL: %@", nil),
+                     url.absoluteString];
+    NSRunAlertPanel2(NSLocalizedString( @"Preferences", nil),
+                    msg,
                     NSLocalizedString( @"OK", nil),
                     nil,
-                    nil,
-                    url.absoluteString);
+                    nil);
 }
 
 + (void) addPreferencesFromURL: (NSURL*) url
@@ -260,19 +263,19 @@ static NSArray *languagesToMoveWhenQuitting = nil;
     [[[self mainView] window] makeFirstResponder: nil];
     
     if ([NSURL URLWithString: [[NSUserDefaults standardUserDefaults] stringForKey: @"SyncPreferencesURL"]] == nil)
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Sync Preferences", nil),
+        NSRunInformationalAlertPanel2(NSLocalizedString(@"Sync Preferences", nil),
                                      NSLocalizedString(@"The provided URL doesn't seem correct. Check its validity.", nil),
                                      NSLocalizedString(@"OK",nil),
                                      nil,
                                      nil);
     else
     {
-        NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Sync Preferences", nil),
+        NSInteger result = NSRunInformationalAlertPanel2(NSLocalizedString(@"Sync Preferences", nil),
                                                         NSLocalizedString(@"Are you sure you want to replace  current preferences with the preferences stored at this URL? You cannot undo this operation.", nil),
                                                         NSLocalizedString(@"Cancel",nil),
                                                         NSLocalizedString(@"OK",nil),  nil);
         
-        if (result == NSAlertAlternateReturn)
+        if (result == NSAlertAlternateReturn2)
             [NSThread detachNewThreadSelector: @selector( addPreferencesFromURL:) toTarget: [OSIGeneralPreferencePanePref class] withObject: [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] stringForKey: @"SyncPreferencesURL"]]];
     }
 }
@@ -291,12 +294,12 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 	
     if ([open runModal] == NSModalResponseOK)
     {
-        NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Load Preferences", nil),
+        NSInteger result = NSRunInformationalAlertPanel2(NSLocalizedString(@"Load Preferences", nil),
                                                         NSLocalizedString(@"Are you sure you want to replace  current preferences with the preferences stored in this file? You cannot undo this operation.", nil),
                                                         NSLocalizedString(@"Cancel",nil),
                                                         NSLocalizedString(@"OK",nil),  nil);
         
-        if (result == NSAlertAlternateReturn)
+        if (result == NSAlertAlternateReturn2)
             [OSIGeneralPreferencePanePref addPreferencesFromURL: open.URL];
     }
     

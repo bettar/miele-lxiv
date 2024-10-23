@@ -26,6 +26,7 @@
 #import "Notifications.h"
 
 #import "MyPoint.h"
+#import "alertTransition.h"
 
 @implementation ROIWindow
 
@@ -371,19 +372,19 @@
 
 - (IBAction) exportData:(id) sender
 {
-	if([curROI type]==tPlain)
+	if ([curROI type]==tPlain)
 	{
-		NSInteger confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Export to XML", @""),
+		NSInteger confirm = NSRunInformationalAlertPanel2(NSLocalizedString(@"Export to XML", @""),
                                                          NSLocalizedString(@"Exporting this kind of ROI to XML will only export the contour line.", @""),
                                                          NSLocalizedString(@"OK", @""),
                                                          NSLocalizedString(@"Cancel", @""),
                                                          nil);
-		if(!confirm)
+		if (confirm == NSAlertAlternateReturn2)
             return;
 	}
-	else if([curROI type]==tLayerROI)
+	else if ([curROI type]==tLayerROI)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Export to XML", @""),
+		NSRunAlertPanel2(NSLocalizedString(@"Export to XML", @""),
                         NSLocalizedString(@"This kind of ROI can not be exported to XML.", @""),
                         NSLocalizedString(@"OK", @""),
                         nil,
@@ -457,7 +458,7 @@
 			[roiWin showWindow:self];
 		}
 		else
-            NSRunAlertPanel(NSLocalizedString(@"Error", nil),
+            NSRunAlertPanel2(NSLocalizedString(@"Error", nil),
                             NSLocalizedString(@"Cannot create a histogram from this ROI.", nil),
                             nil,
                             nil,

@@ -46,6 +46,7 @@
 #import "DicomDatabase+DCMTK.h"
 
 #import "tmp_locations.h"
+#import "alertTransition.h"
 
 @implementation BurnerWindowController
 
@@ -304,7 +305,7 @@
                     
                     if (writeVolumePath == nil)
                     {
-                        NSRunCriticalAlertPanel(NSLocalizedString( @"USB Writing", nil),
+                        NSRunCriticalAlertPanel2(NSLocalizedString( @"USB Writing", nil),
                                                 NSLocalizedString( @"No destination selected.", nil),
                                                 NSLocalizedString( @"OK", nil),
                                                 nil,
@@ -316,16 +317,15 @@
                         return;
                     }
                     
-                    NSInteger result = NSRunCriticalAlertPanel(
+                    NSString* msg = [NSString stringWithFormat:NSLocalizedString( @"The ENTIRE content of the selected media (%@) will be deleted, before writing the new data. Do you confirm?", nil), writeVolumePath];
+                    NSInteger result = NSRunCriticalAlertPanel2(
                            NSLocalizedString( @"USB Writing", nil),
-                           NSLocalizedString( @"The ENTIRE content of the selected media (%@) will be deleted, before writing the new data. Do you confirm?", nil),
+                           msg,
                            NSLocalizedString( @"OK", nil),
                            NSLocalizedString( @"Cancel", nil),
-                           nil,
-                                                               writeVolumePath,
-                                                               nil);  // TODO: We don't need this
+                           nil);
                     
-                    if (result != NSAlertDefaultReturn)
+                    if (result != NSAlertDefaultReturn2)
                     {
                         self.buttonsDisabled = NO;
                         runBurnAnimation = NO;
@@ -687,12 +687,11 @@
 		NSDictionary*	errorStatus = [burnStatus objectForKey:DRErrorStatusKey];
 		NSString*		errorString = [errorStatus objectForKey:DRErrorStatusErrorStringKey];
 		
-		NSRunCriticalAlertPanel(NSLocalizedString( @"Burning failed", nil),
-                                @"%@",
+		NSRunCriticalAlertPanel2(NSLocalizedString( @"Burning failed", nil),
+                                errorString,
                                 NSLocalizedString( @"OK", nil),
                                 nil,
-                                nil,
-                                    errorString);
+                                nil);
 	}
 	else
     {

@@ -22,6 +22,7 @@
 #import "N2Debug.h"
 #import "url.h"
 #import "AppDefaults.h"
+#import "alertTransition.h"
 
 //#import "DDKeychain.h"
 
@@ -487,14 +488,13 @@
 	[NSData dataWithContentsOfURL: url options: 0 error: &error];
 	
 	if (error)
-		NSRunCriticalAlertPanel(NSLocalizedString( @"URL download Error", nil),
-                                @"%@",
+		NSRunCriticalAlertPanel2(NSLocalizedString( @"URL download Error", nil),
+                                [error localizedDescription],
                                 NSLocalizedString( @"OK", nil),
                                 nil,
-                                nil,
-                                    [error localizedDescription]);
+                                nil);
 	else
-		NSRunInformationalAlertPanel(NSLocalizedString( @"URL download Succeeded", nil),
+		NSRunInformationalAlertPanel2(NSLocalizedString( @"URL download Succeeded", nil),
                                      NSLocalizedString( @"It works !", nil),
                                      NSLocalizedString( @"OK", nil),
                                      nil,
@@ -579,14 +579,14 @@
             [osiriXServers addObjects: r];
         }
         else
-            NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L),
+            NSRunInformationalAlertPanel2(NSLocalizedString(@"URL Invalid", 0L),
                                          NSLocalizedString(@"Cannot download data from this URL.", 0L),
                                          NSLocalizedString(@"OK", nil),
                                          nil,
                                          nil);
     }
     else
-        NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L),
+        NSRunInformationalAlertPanel2(NSLocalizedString(@"URL Invalid", 0L),
                                      NSLocalizedString(@"This URL is invalid. Check syntax.", 0L),
                                      NSLocalizedString(@"OK", nil),
                                      nil,
@@ -606,12 +606,12 @@
 		NSArray	*r = [NSArray arrayWithContentsOfFile: [sPanel filename]];
 		if (r)
 		{
-			if (NSRunInformationalAlertPanel(NSLocalizedString(@"Load locations", 0L),
+			if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Load locations", 0L),
                                              NSLocalizedString(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", 0L),
                                              NSLocalizedString(@"Add", nil),
                                              NSLocalizedString(@"Replace", nil),
                                              nil
-                                             ) == NSAlertDefaultReturn)
+                                             ) == NSAlertDefaultReturn2)
 			{
 				
 			}
@@ -677,14 +677,14 @@
 				[dicomNodes addObjects: r];
 			}
 			else
-                NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L),
+                NSRunInformationalAlertPanel2(NSLocalizedString(@"URL Invalid", 0L),
                                              NSLocalizedString(@"Cannot download data from this URL.", 0L),
                                              NSLocalizedString(@"OK", nil),
                                              nil,
                                              nil);
 		}
 		else
-            NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L),
+            NSRunInformationalAlertPanel2(NSLocalizedString(@"URL Invalid", 0L),
                                          NSLocalizedString(@"This URL is invalid. Check syntax.", 0L),
                                          NSLocalizedString(@"OK", nil),
                                          nil,
@@ -704,12 +704,12 @@
 		NSArray	*r = [NSArray arrayWithContentsOfFile: [sPanel filename]];
 		if (r)
 		{
-			if (NSRunInformationalAlertPanel(NSLocalizedString(@"Load locations", 0L),
+			if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Load locations", 0L),
                                              NSLocalizedString(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", 0L),
                                              NSLocalizedString(@"Add", nil),
                                              NSLocalizedString(@"Replace", nil),
                                              nil
-                                             ) == NSAlertDefaultReturn)
+                                             ) == NSAlertDefaultReturn2)
 			{
 				
 			}
@@ -1025,13 +1025,13 @@
 	}
 	else
 	{
-		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedString( @"No Valid Certificate", nil),
+		NSInteger clickedButton = NSRunCriticalAlertPanel2(NSLocalizedString( @"No Valid Certificate", nil),
                                                           NSLocalizedString( @"Your Keychain does not contain any valid certificate.", nil),
                                                           NSLocalizedString( @"Help", nil), // default button
                                                           NSLocalizedString( @"Cancel", nil),
                                                           nil);
 		
-		if (clickedButton==NSModalResponseOK)
+		if (clickedButton==NSAlertDefaultReturn2)
 		{
 			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_DOC_SECURITY]];
 		}

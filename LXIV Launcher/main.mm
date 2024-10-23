@@ -317,13 +317,14 @@ int main(int argc, char** argv)
     {
         @try
         {
-            long button = NSRunAlertPanel(NSLocalizedString( @"Miele-LXIV Lite", nil),
-                                         NSLocalizedString( @"You can download the full version of Miele-LXIV on the Internet.", nil),
-                                         NSLocalizedString( @"Continue", nil),
-                                         NSLocalizedString( @"Download", nil),
-                                         nil);
-        
-            if (NSModalResponseCancel == button)
+            NSAlert *alert = [NSAlert new];
+            [alert setMessageText:NSLocalizedString(@"Miele-LXIV Lite", nil)];
+            [alert setInformativeText:NSLocalizedString(@"You can download the full version of Miele-LXIV on the Internet.", nil)];
+            [alert addButtonWithTitle:NSLocalizedString(@"Continue", nil)];
+            [alert addButtonWithTitle:NSLocalizedString(@"Download", nil)];
+            long button = [alert runModal];
+
+            if (NSAlertSecondButtonReturn == button)
                 [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_MIELE_MAC_APP_STORE]];
         }
         @catch (NSException * e)

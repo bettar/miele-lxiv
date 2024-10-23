@@ -28,6 +28,7 @@
 #import "DicomDatabase.h"
 #import "N2Debug.h"
 #import "AppDefaults.h"
+#import "alertTransition.h"
 
 static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 
@@ -687,7 +688,7 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
     
     if (templatePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:templatePath])
     {
-        NSRunCriticalAlertPanel(NSLocalizedString( @"Microsoft Word", nil),
+        NSRunCriticalAlertPanel2(NSLocalizedString( @"Microsoft Word", nil),
                                 NSLocalizedString(@"I cannot find the OsiriX Word Template doc file.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,
@@ -934,7 +935,7 @@ static BOOL Pages5orHigher = FALSE;
                                                  error: nil];
     }
     else {
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Pages", nil),
+		NSRunCriticalAlertPanel2(NSLocalizedString(@"Pages", nil),
                                 NSLocalizedString(@"Failed to create the report with Pages.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,
@@ -943,7 +944,7 @@ static BOOL Pages5orHigher = FALSE;
 	}
     
 	if ([[NSFileManager defaultManager] fileExistsAtPath:aPath] == NO) {
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Pages", nil),
+		NSRunCriticalAlertPanel2(NSLocalizedString(@"Pages", nil),
                                 NSLocalizedString(@"Failed to create the report with Pages.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,
@@ -1021,7 +1022,7 @@ static BOOL Pages5orHigher = FALSE;
 
         if ([[NSFileManager defaultManager] fileExistsAtPath:indexFilePath] == NO)
         {
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Pages", nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"Pages", nil),
                                     NSLocalizedString(@"OsiriX requires templates files in Pages '09 format. Open your template in Pages, select File menu and Export to Pages '09 format.", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,

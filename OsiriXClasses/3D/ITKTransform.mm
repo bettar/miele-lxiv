@@ -39,6 +39,7 @@
 #import "N2Debug.h"
 
 #import "options.h"
+#import "alertTransition.h"
 
 typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 
@@ -396,11 +397,11 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	else
 	{
         NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-		if (NSRunCriticalAlertPanel(@"", //NSLocalizedString(@"32-bit", nil),
+		if (NSRunCriticalAlertPanel2(@"", //NSLocalizedString(@"32-bit", nil),
                                     NSLocalizedString(@"Cannot complete the operation.", nil),
                                     NSLocalizedString(@"OK", nil),
                                     bundleName,
-                                    nil) == NSAlertAlternateReturn)
+                                    nil) == NSAlertAlternateReturn2)
         {
             //[[AppController sharedAppController] osirix64bit: self];
         }

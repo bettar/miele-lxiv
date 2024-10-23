@@ -29,6 +29,7 @@
 #import "NSString+N2.h"
 
 #import "tmp_locations.h"
+#import "alertTransition.h"
 
 @interface NSURLRequest (DummyInterface)
 + (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host;
@@ -44,12 +45,11 @@
     NSString *alertSuppress = @"hideListenerError";
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
-        NSRunCriticalAlertPanel([msg objectAtIndex: 0],
-                                @"%@",
+        NSRunCriticalAlertPanel2([msg objectAtIndex: 0],
+                                 [msg objectAtIndex: 1],
                                 [msg objectAtIndex: 2],
                                 nil,
-                                nil,
-                                    [msg objectAtIndex: 1]);
+                                nil);
     else
         NSLog( @"*** listener error (not displayed - hideListenerError): %@ %@ %@", [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2]);
 }

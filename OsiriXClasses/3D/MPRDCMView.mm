@@ -39,6 +39,7 @@
 #import "OSIVolumeWindow.h"
 #import "vtkMath.h"
 #import "OSIGeometry.h"
+#import "alertTransition.h"
 
 // TODO: consolidate
 static BOOL arePlanesParallel( float *Pn1, float *Pn2)
@@ -336,14 +337,14 @@ unsigned int minimumStep;
             [self updateViewMPR];
         }
         else
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"Actual Size Error",nil),
                                     NSLocalizedString(@"Displayed pixels are non-squared pixel. Images cannot be displayed at actual size.",nil),
                                     NSLocalizedString( @"OK",nil),
                                     nil,
                                     nil);
     }
     else
-        NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil),
+        NSRunCriticalAlertPanel2(NSLocalizedString(@"Actual Size Error",nil),
                                 NSLocalizedString(@"This screen doesn't support this function.",nil),
                                 NSLocalizedString( @"OK",nil),
                                 nil,

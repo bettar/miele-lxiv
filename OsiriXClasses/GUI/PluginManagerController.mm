@@ -28,6 +28,7 @@
 
 #import "url.h"
 #import "tmp_locations.h"
+#import "alertTransition.h"
 
 #ifdef SUBMIT_PLUGIN_WITH_MAIL_APP
 #import <Message/NSMailDelivery.h>
@@ -111,7 +112,7 @@ static NSDate *CachedPluginsListDate = nil;
 {
     if ([AppController isFDACleared])
     {
-        NSRunCriticalAlertPanel(NSLocalizedString( @"Important Notice", nil),
+        NSRunCriticalAlertPanel2(NSLocalizedString( @"Important Notice", nil),
                                 NSLocalizedString( @"Plugins are not certified for primary diagnosis in medical imaging, unless specifically written by the plugin author(s).", nil),
                                 NSLocalizedString( @"OK", nil),
                                 nil,
@@ -164,12 +165,12 @@ static NSDate *CachedPluginsListDate = nil;
 
 - (IBAction)delete:(id)sender;
 {
-	if (NSRunInformationalAlertPanel(NSLocalizedString(@"Delete a plugin", nil),
+	if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Delete a plugin", nil),
                                      NSLocalizedString(@"Are you sure you want to delete the selected plugin?", nil),
                                      NSLocalizedString(@"OK",nil),
                                      NSLocalizedString(@"Cancel",nil),
                                      nil
-                                     ) == NSAlertDefaultReturn)
+                                     ) == NSAlertDefaultReturn2)
 	{
 		NSArray *pluginsList = [pluginsArrayController arrangedObjects];
 		NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"name"];
@@ -521,12 +522,11 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	[statusTextField setHidden:NO];
 	[statusTextField setStringValue:NSLocalizedString(@"Download failed", nil)];
      
-    NSRunCriticalAlertPanel(NSLocalizedString(@"Download failed", nil),
-                            @"%@",
+    NSRunCriticalAlertPanel2(NSLocalizedString(@"Download failed", nil),
+                             [error localizedDescription],
                             NSLocalizedString(@"OK", nil),
                             nil,
-                            nil,
-                                [error localizedDescription]);
+                            nil);
     
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];

@@ -29,6 +29,7 @@
 //#import "VRControllerVPRO.h"
 #import "Notifications.h"
 #import "DicomDatabase.h"
+#import "alertTransition.h"
 
 @implementation FlyThruController
 
@@ -186,26 +187,28 @@
 - (IBAction) flyThruCompute:(id) sender
 {
 	int minSteps = (flyThru.loop)?2:3; // for the spline, 3 points are needed. (in the case of a loop, the 3rd point is added in the 'computePath' method of the FlyThru)
-	int userChoice = 1;
 	
 	if( [flyThru.steps count] < 2)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Error",nil),
+		NSRunAlertPanel2(NSLocalizedString(@"Error",nil),
                         NSLocalizedString(@"Add at least 2 frames for a Fly Thru.",nil),
                         nil,
                         nil,
                         nil);
 		return;
 	}
-	
-	if ([flyThru interpolationMethod] == 1 && [flyThru.steps count] < minSteps)
+
+    int userChoice = NSAlertDefaultReturn2;
+
+	if ([flyThru interpolationMethod] == 1 &&
+        [flyThru.steps count] < minSteps)
 	{
-		userChoice = NSRunAlertPanel(NSLocalizedString(@"Spline Interpolation Error", nil),
+		userChoice = NSRunAlertPanel2(NSLocalizedString(@"Spline Interpolation Error", nil),
                                      NSLocalizedString(@"The Spline Interpolation needs at least 3 points to be run.", nil),
                                      NSLocalizedString(@"Use Linear Interpolation", nil),
                                      NSLocalizedString(@"Cancel", nil),
                                      nil);
-		if(userChoice == 1)
+		if (userChoice == NSAlertDefaultReturn2)
 		{
 			flyThru.interpolationMethod = 2; // changing the method
 			// selection of the right radio button
@@ -214,7 +217,7 @@
 		}
 	}
 	
-	if(userChoice == 1)
+	if (userChoice == NSAlertDefaultReturn2)
 	{
 		int v = [numberOfFramesTextField intValue];
 		

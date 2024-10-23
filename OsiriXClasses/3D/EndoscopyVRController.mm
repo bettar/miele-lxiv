@@ -26,6 +26,7 @@
 #import "BrowserController.h"
 #import "Notifications.h"
 #import "AppDefaults.h"
+#import "alertTransition.h"
 
 @implementation EndoscopyVRController
 
@@ -68,14 +69,14 @@
 		testInterval = NO;
 		
 		if (sliceThickness > 0)
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Slice interval",nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"Slice interval",nil),
                                     NSLocalizedString( @"I'm not able to find the slice interval. Slice interval will be equal to slice thickness.",nil),
                                     NSLocalizedString(@"OK",nil),
                                     nil,
                                     nil);
 		else
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval/thickness",nil),
+			NSRunCriticalAlertPanel2(NSLocalizedString( @"Slice interval/thickness",nil),
                                     NSLocalizedString( @"Problems with slice thickness/interval to do a 3D reconstruction.",nil),
                                     NSLocalizedString( @"OK",nil),
                                     nil,
@@ -97,7 +98,7 @@
     }
     if (err)
     {
-        NSRunCriticalAlertPanel(NSLocalizedString( @"Images size",nil),
+        NSRunCriticalAlertPanel2(NSLocalizedString( @"Images size",nil),
                                 NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil),
                                 NSLocalizedString( @"OK",nil),
                                 nil,

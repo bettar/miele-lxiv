@@ -43,6 +43,8 @@
 #import "vtkMath.h"
 #import "vtkPolyData.h"
 
+#import "alertTransition.h"
+
 @implementation ROIVolumeView
 
 -(void) coView:(id) sender
@@ -234,7 +236,7 @@
 		
 		NSString *f = [exportDCM writeDCMFile: nil];
 		if ( f == nil)
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
                                     NSLocalizedString(@"Error during the creation of the DICOM File!", nil),
                                     NSLocalizedString(@"OK", nil),
                                     nil,
@@ -368,12 +370,11 @@
         if( error == nil)
             error = NSLocalizedString( @"Not possible to compute a volume!", nil);
         
-        NSRunCriticalAlertPanel(NSLocalizedString( @"ROIs", nil),
-                                @"%@",
+        NSRunCriticalAlertPanel2(NSLocalizedString( @"ROIs", nil),
+                                 error,
                                 NSLocalizedString( @"OK", nil),
                                 nil,
-                                nil,
-                                    error);
+                                nil);
         return nil;
     }
     

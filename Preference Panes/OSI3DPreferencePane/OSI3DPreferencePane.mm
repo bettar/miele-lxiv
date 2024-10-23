@@ -27,6 +27,8 @@
 #import "vtkMieleView.h"
 #endif
 
+#import "alertTransition.h"
+
 @implementation OSI3DPreferencePanePref
 
 - (id) initWithBundle:(NSBundle *)bundle
@@ -68,12 +70,13 @@
     
     if (vramMB <= 512)
     {
-        NSRunCriticalAlertPanel(NSLocalizedString(@"GPU Rendering", nil),
-                                NSLocalizedString( @"Your graphic board has only %ld MB of VRAM. Performances will be very limited with large dataset.", nil),
+        NSString* msg = [NSString stringWithFormat:NSLocalizedString( @"Your graphic board has only %ld MB of VRAM. Performances will be very limited with large dataset.", nil),
+                         vramMB];
+        NSRunCriticalAlertPanel2(NSLocalizedString(@"GPU Rendering", nil),
+                                msg,
                                 NSLocalizedString( @"OK", nil),
                                 nil,
-                                nil,
-                                vramMB);
+                                nil);
     }
 }
 

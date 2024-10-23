@@ -21,6 +21,7 @@
 #import "LogWindowController.h"
 #import "BrowserController.h"
 #import "DicomDatabase.h"
+#import "alertTransition.h"
 
 @implementation LogWindowController
 
@@ -108,11 +109,11 @@
 	
 	if ([[BrowserController currentBrowser] isNetworkLogsActive] == NO)
 	{
-		if (NSRunInformationalAlertPanel(NSLocalizedString( @"Network Logs", nil),
+		if (NSRunInformationalAlertPanel2(NSLocalizedString( @"Network Logs", nil),
                                          NSLocalizedString( @"Network Logs are currently off. Do you want to activate them?\r\rYou can activate or de-activate them in the Preferences - Listener window.", nil),
                                          NSLocalizedString( @"Activate", nil),
                                          NSLocalizedString( @"Cancel", nil),
-                                         nil) == NSAlertDefaultReturn)
+                                         nil) == NSAlertDefaultReturn2)
 		{
 			[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NETWORKLOGS"];
 			[[BrowserController currentBrowser] setNetworkLogs];

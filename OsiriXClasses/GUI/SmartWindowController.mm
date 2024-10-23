@@ -27,6 +27,7 @@
 
 #import "tmp_locations.h"
 #import "url.h"
+#import "alertTransition.h"
 
 @implementation SmartWindowController
 
@@ -162,21 +163,19 @@
         
         NSString* message = NSLocalizedString(@"This filter works: the result is now displayed in the Database Window.", nil);
         
-        NSRunInformationalAlertPanel(NSLocalizedString(@"It works!",nil),
-                                     @"%@",
+        NSRunInformationalAlertPanel2(NSLocalizedString(@"It works!",nil),
+                                      message,
                                      nil,
                                      nil,
-                                     nil,
-                                        message);
+                                     nil);
     }
     @catch (NSException* e) {
 //        N2LogExceptionWithStackTrace(e);
-        NSRunCriticalAlertPanel(NSLocalizedString(@"Error",nil),
-                                @"%@",
+        NSRunCriticalAlertPanel2(NSLocalizedString(@"Error",nil),
+                                 [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), e],
                                 nil,
                                 nil,
-                                nil,
-                                    [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), e]);
+                                nil);
     }
 }
 

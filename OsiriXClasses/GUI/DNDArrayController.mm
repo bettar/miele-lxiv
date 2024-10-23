@@ -6,6 +6,7 @@
 //  The original version of this file had no header
 
 #import "DNDArrayController.h"
+#import "alertTransition.h"
 
 NSString *MovedRowsType = @"MOVED_ROWS_TYPE";
 NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
@@ -32,12 +33,12 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 {
 	if (_authView == nil || [_authView authorizationState] == SFAuthorizationViewUnlockedState)
 	{
-		if (NSRunInformationalAlertPanel(NSLocalizedString(@"Delete", nil),
+		if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Delete", nil),
                                          NSLocalizedString(@"Are you sure you want to delete the selected item?", nil),
                                          NSLocalizedString(@"OK",nil),
                                          NSLocalizedString(@"Cancel",nil),
                                          nil
-                                         ) == NSAlertDefaultReturn)
+                                         ) == NSAlertDefaultReturn2)
 		{
 			[self removeObjectAtArrangedObjectIndex: [tableView selectedRow]];
 		}

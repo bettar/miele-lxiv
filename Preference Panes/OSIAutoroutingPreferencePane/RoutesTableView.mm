@@ -20,6 +20,7 @@
 
 #import "RoutesTableView.h"
 #import "OSIAutoroutingPreferencePanePref.h"
+#import "alertTransition.h"
 
 @implementation RoutesTableView
 
@@ -33,12 +34,12 @@
         [self selectedRow] >= 0 &&
         [self numberOfRows] > 0)
 	{
-		if( NSRunInformationalAlertPanel(NSLocalizedString( @"Delete Route", 0L),
+		if (NSRunInformationalAlertPanel2(NSLocalizedString( @"Delete Route", 0L),
                                          NSLocalizedString( @"Are you sure you want to delete the selected route?", 0L),
                                          NSLocalizedString(@"OK", nil),
                                          NSLocalizedString(@"Cancel", nil),
                                          nil
-                                         ) == NSAlertDefaultReturn)
+                                         ) == NSAlertDefaultReturn2)
         {
 			[(OSIAutoroutingPreferencePanePref*) [self delegate] deleteSelectedRow:self];
         }

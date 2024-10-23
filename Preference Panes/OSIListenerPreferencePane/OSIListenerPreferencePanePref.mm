@@ -34,6 +34,7 @@
 #include <arpa/inet.h>
 
 #import "url.h"
+#import "alertTransition.h"
 
 //char *GetPrivateIP()
 //{
@@ -265,7 +266,7 @@
 		[[NSUserDefaults standardUserDefaults] setObject:self.TLSStoreSCPAETITLE forKey:@"TLSStoreSCPAETITLE"];
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:self.TLSStoreSCPAETITLEIsDefaultAET] forKey:@"TLSStoreSCPAETITLEIsDefaultAET"];
 		
-		NSRunAlertPanel(NSLocalizedString( @"DICOM Listener", nil),
+		NSRunAlertPanel2(NSLocalizedString( @"DICOM Listener", nil),
                         NSLocalizedString( @"Restart OsiriX to apply these changes.", nil),
                         NSLocalizedString( @"OK", nil),
                         nil,
@@ -318,7 +319,7 @@
 	}
 	else
 	{
-		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedString(@"No Valid Certificate", nil),
+		NSInteger clickedButton = NSRunCriticalAlertPanel2(NSLocalizedString(@"No Valid Certificate", nil),
                                                           NSLocalizedString(@"Your Keychain does not contain any valid certificate.", nil),
                                                           NSLocalizedString(@"Help", nil),  // default button
                                                           NSLocalizedString(@"Cancel", nil),
@@ -419,12 +420,11 @@
 			
 			NSString *msg = [NSString stringWithFormat:NSLocalizedString( @"The port %d is already use by the standard DICOM Listener. The port %d was automatically chosen instead.", nil), submittedPort, newPort];
 
-            NSRunAlertPanel(NSLocalizedString(@"Port already in use", nil),
-                            @"%@",
+            NSRunAlertPanel2(NSLocalizedString(@"Port already in use", nil),
+                             msg,
                             NSLocalizedString(@"OK", nil),
                             nil,
-                            nil,
-                            msg);
+                            nil);
 		}
 	}
 }

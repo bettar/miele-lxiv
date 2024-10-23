@@ -35,6 +35,7 @@
 #import "DicomImage.h"
 #import "DicomDatabase.h"
 #import "PluginManager.h"
+#import "alertTransition.h"
 
 #define	NAVIGATORMODE_BASIC 1
 #define NAVIGATORMODE_2POINT 2
@@ -1154,7 +1155,7 @@ return YES;
 			
 			NSString *f = [exportDCM writeDCMFile: nil];
 			if (f == nil)
-                NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil),
+                NSRunCriticalAlertPanel2(NSLocalizedString(@"Error", nil),
                                         NSLocalizedString( @"Error during the creation of the DICOM File!", nil),
                                         NSLocalizedString(@"OK", nil),
                                         nil,
@@ -1344,7 +1345,7 @@ return YES;
 	}
 	else if (err == ERROR_NOENOUGHMEM)
 	{
-		NSRunAlertPanel(@"", //NSLocalizedString(@"32-bit", nil),
+		NSRunAlertPanel2(@"", //NSLocalizedString(@"32-bit", nil),
                         NSLocalizedString(@"Path Assistant can not allocate enough memory, try to increase the resample voxel size in the settings.", nil),
                         NSLocalizedString(@"OK", nil),
                         nil,
@@ -1352,7 +1353,7 @@ return YES;
 	}
 	else if (err == ERROR_CANNOTFINDPATH)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil),
+		NSRunAlertPanel2(NSLocalizedString(@"Can't find path", nil),
                         NSLocalizedString(@"Path Assistant can not find a path from A to B.", nil),
                         NSLocalizedString(@"OK", nil),
                         nil,
@@ -1374,7 +1375,7 @@ return YES;
 		[waiting autorelease];
 		if (err==ERROR_CANNOTFINDPATH)
 		{
-			NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil),
+			NSRunAlertPanel2(NSLocalizedString(@"Can't find path", nil),
                             NSLocalizedString(@"Path Assistant can not find a path from current location.", nil),
                             NSLocalizedString(@"OK", nil),
                             nil,
@@ -1383,7 +1384,7 @@ return YES;
 		}
 		else if (err==ERROR_DISTTRANSNOTFINISH)
 		{
-			NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil),
+			NSRunAlertPanel2(NSLocalizedString(@"Unexpected error", nil),
                             NSLocalizedString(@"Path Assistant failed to initialize!", nil),
                             NSLocalizedString(@"OK", nil),
                             nil,
@@ -1567,7 +1568,7 @@ return YES;
 		[assistant setCenterlineResampleStepLength:centerlineResampleStepLength];
 	}
 	else {
-		NSRunAlertPanel(@"", //NSLocalizedString(@"32-bit", nil),
+		NSRunAlertPanel2(@"", //NSLocalizedString(@"32-bit", nil),
                         NSLocalizedString(@"Path Assistant can not allocate enough memory, try to increase the resample voxel size in the settings.", nil),
                         NSLocalizedString(@"OK", nil),
                         nil,
@@ -1642,7 +1643,7 @@ return YES;
 		[waiting autorelease];
 	}
 	else {
-		NSRunAlertPanel(@"", //NSLocalizedString(@"32-bit", nil),
+		NSRunAlertPanel2(@"", //NSLocalizedString(@"32-bit", nil),
                         NSLocalizedString(@"Path Assistant can not allocate enough memory, try to increase the resample voxel size in the settings.", nil),
                         NSLocalizedString(@"OK", nil),
                         nil,
@@ -1677,8 +1678,7 @@ return YES;
 		int err= [assistant caculateNextPositionFrom:pt Towards:dir];
 		if (err==ERROR_NOENOUGHMEM)
 		{
-			NSRunAlertPanel(@"",
-                            NSLocalizedString(@"32-bit", nil),
+			NSRunAlertPanel2(NSLocalizedString(@"32-bit", nil),
                             NSLocalizedString(@"Path Assistant can not allocate enough memory, try to increase the resample voxel size in the settings.", nil),
                             NSLocalizedString(@"OK", nil),
                             nil,
@@ -1687,7 +1687,7 @@ return YES;
 		}		
 		else if (err==ERROR_CANNOTFINDPATH)
 		{
-			NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil),
+			NSRunAlertPanel2(NSLocalizedString(@"Can't find path", nil),
                             NSLocalizedString(@"Path Assistant can not find a path from current location.", nil),
                             NSLocalizedString(@"OK", nil),
                             nil,
@@ -1710,7 +1710,7 @@ return YES;
 			[waiting autorelease];
 			if (err==ERROR_CANNOTFINDPATH)
 			{
-				NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil),
+				NSRunAlertPanel2(NSLocalizedString(@"Can't find path", nil),
                                 NSLocalizedString(@"Path Assistant can not find a path from current location.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,
@@ -1720,7 +1720,7 @@ return YES;
             
 			if (err==ERROR_DISTTRANSNOTFINISH)
 			{
-				NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil),
+				NSRunAlertPanel2(NSLocalizedString(@"Unexpected error", nil),
                                 NSLocalizedString(@"Path Assistant failed to initialize!", nil),
                                 NSLocalizedString(@"OK", nil),
                                 nil,

@@ -63,6 +63,7 @@
 
 #import "url.h"
 #import "tmp_locations.h"
+#import "alertTransition.h"
 
 #define GENERATED_BY_APP_KEY    @"generatedByOsiriX"
 
@@ -596,12 +597,11 @@ static DicomDatabase* activeLocalDatabase = nil;
         N2LogExceptionWithStackTrace( e);
         
         if ([NSThread isMainThread])
-            NSRunAlertPanel(NSLocalizedString( @"Database", nil),
-                            @"%@",
+            NSRunAlertPanel2(NSLocalizedString( @"Database", nil),
+                             e.reason,
                             NSLocalizedString( @"OK", nil),
                             nil,
-                            nil,
-                                e.reason);
+                            nil);
         
         [self autorelease];
         return nil;
@@ -3827,20 +3827,20 @@ static BOOL protectionAgainstReentry = NO;
         
         if (![NSFileManager.defaultManager fileExistsAtPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:oldModelFilename]])
         {
-            int r = NSAlertDefaultReturn;
+            int r = NSAlertDefaultReturn2;
             
             if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
             {
-                r = NSAlertDefaultReturn;
+                r = NSAlertDefaultReturn2;
             }
             else
-                r = NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil),
+                r = NSRunAlertPanel2(NSLocalizedString(@"OsiriX Database", nil),
                                     NSLocalizedString(@"OsiriX cannot understand the model of current saved database... The database index will be deleted and reconstructed (no images are lost).", nil),
                                     NSLocalizedString(@"OK", nil),
                                     NSLocalizedString(@"Quit", nil),
                                     nil);
             
-            if (r == NSAlertAlternateReturn)
+            if (r == NSAlertAlternateReturn2)
             {
                 [NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil]; // to avoid the crash message during next startup
                 [NSApp terminate:self];
@@ -4197,20 +4197,23 @@ static BOOL protectionAgainstReentry = NO;
         [newAlbumsNames release];
         newAlbumsNames = nil;
 		
-		if (upgradeProblems.count)
-			NSRunAlertPanel(NSLocalizedString(@"Database Upgrade", nil),
-                            NSLocalizedString(@"The upgrade encountered %lu errors. These corrupted studies have been removed: %@", nil),
+        if (upgradeProblems.count) {
+            NSString* msg = [NSString stringWithFormat:NSLocalizedString(@"The upgrade encountered %lu errors. These corrupted studies have been removed: %@", nil),
+                             (unsigned long)upgradeProblems.count,
+                             [upgradeProblems componentsJoinedByString:@", "]];
+            NSRunAlertPanel2(NSLocalizedString(@"Database Upgrade", nil),
+                            msg,
                             nil,
                             nil,
-                            nil,
-                                (unsigned long)upgradeProblems.count,
-                                [upgradeProblems componentsJoinedByString:@", "]);
+                            nil);
+        }
 		
 		return YES;
-	} @catch (NSException* e) {
+	}
+    @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 		
-		NSRunAlertPanel(NSLocalizedString(@"Database Update", nil),
+		NSRunAlertPanel2(NSLocalizedString(@"Database Update", nil),
                         NSLocalizedString(@"Database updating failed... The database SQL index file is probably corrupted... The database will be reconstructed.", nil),
                         nil,
                         nil,
@@ -4219,7 +4222,8 @@ static BOOL protectionAgainstReentry = NO;
 		[self rebuild:YES];
 		
 		return NO;
-	} @finally {
+	}
+    @finally {
 		[oldContext reset];
 		[oldContext release];
 		[oldPersistentStoreCoordinator release];

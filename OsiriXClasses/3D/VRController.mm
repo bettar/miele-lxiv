@@ -53,6 +53,8 @@
 #define PRESETS_DIRECTORY   @"/3DPRESETS/"
 #define CLUTDATABASE        @"/CLUTs/"
 
+#import "alertTransition.h"
+
 static NSString* 	VRStandard_ToolbarIdentifier = @"VR Toolbar Identifier";
 static NSString* 	VRPanel_ToolbarIdentifier = @"VRPanel Toolbar Identifier";
 
@@ -451,14 +453,14 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         (maximumValue - minimumValue) > 8192 &&
         computeMinMaxDepth == 1)
 	{
-        NSInteger result = NSRunCriticalAlertPanel(
+        NSInteger result = NSRunCriticalAlertPanel2(
                NSLocalizedString( @"High Dynamic Values", nil),
                NSLocalizedString( @"Voxel values have a very high dynamic range (>8192). Two options are available to use the 3D engine: clip values above 7168 and below -1024 or resample the values.", nil),
                NSLocalizedString( @"Clip", nil),
                NSLocalizedString( @"Resample", nil),
                nil);
         
-        if (result == NSAlertDefaultReturn)
+        if (result == NSAlertDefaultReturn2)
         {
             NSLog( @"-- modality is CT && pixel dynamic > 8192 -> clip values to -1024 && +7168");
             
@@ -518,12 +520,12 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
             if (testPtr == nil)
             {
                 NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-                if (NSRunAlertPanel(@"", //NSLocalizedString(@"32-bit",nil),
+                if (NSRunAlertPanel2(@"", //NSLocalizedString(@"32-bit",nil),
                                     NSLocalizedString(@"Cannot use the 3D engine.",nil),
                                     NSLocalizedString(@"OK", nil),
                                     bundleName,
                                     nil
-                                    ) == NSAlertAlternateReturn)
+                                    ) == NSAlertAlternateReturn2)
                 {
                     //[[AppController sharedAppController] osirix64bit: self];
                 }
@@ -548,7 +550,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 //
 //        if ([ViewerController resampleDataFromPixArray:pix fileArray:f inPixArray:newPix fileArray:newFiles data:&newData withXFactor:2 yFactor:2 zFactor:2] == NO)
 //        {
-//            NSRunCriticalAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+//            NSRunCriticalAlertPanel2( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.",nil), NSLocalizedString(@"OK",nil), nil, nil);
 //            return nil;
 //        }
 //        else
@@ -591,14 +593,14 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
             testInterval = NO;
             
             if (sliceThickness > 0)
-                NSRunCriticalAlertPanel(NSLocalizedString(@"Slice interval",nil),
+                NSRunCriticalAlertPanel2(NSLocalizedString(@"Slice interval",nil),
                                         NSLocalizedString( @"I'm not able to find the slice interval. Slice interval will be equal to slice thickness.",nil),
                                         NSLocalizedString(@"OK",nil),
                                         nil,
                                         nil);
             else
             {
-                NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval/thickness",nil),
+                NSRunCriticalAlertPanel2(NSLocalizedString( @"Slice interval/thickness",nil),
                                         NSLocalizedString( @"Problems with slice thickness/interval to do a 3D reconstruction.",nil),
                                         NSLocalizedString( @"OK",nil),
                                         nil,
@@ -620,7 +622,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         
         if (invalidSize)
         {
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Images size",nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString(@"Images size",nil),
                                     NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil),
                                     NSLocalizedString(@"OK",nil),
                                     nil,
@@ -639,7 +641,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 //		}
 //		if (err)
 //		{
-//			if (NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distort the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return nil;
+//			if (NSRunCriticalAlertPanel2( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distort the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn2) return nil;
 //			err = 0;
 //		}
 //	}
@@ -683,12 +685,12 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         if (err)
         {
             NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-            if (NSRunAlertPanel(@"", //NSLocalizedString(@"32-bit",nil),
+            if (NSRunAlertPanel2(@"", //NSLocalizedString(@"32-bit",nil),
                                 NSLocalizedString(@"Cannot use the 3D engine.",nil),
                                 NSLocalizedString(@"OK", nil),
                                 bundleName,
                                 nil
-                                ) == NSAlertAlternateReturn)
+                                ) == NSAlertAlternateReturn2)
             {
                 //[[AppController sharedAppController] osirix64bit: self];
             }

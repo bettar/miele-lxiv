@@ -30,6 +30,7 @@
 #import "Reports.h" // for ReportType
 #import "AppDefaults.h"
 #import "url.h"
+#import "alertTransition.h"
 
 @implementation OSIDatabasePreferencePanePref
 
@@ -62,7 +63,7 @@
         {
             if ([[NSUserDefaults standardUserDefaults] boolForKey: @"eraseEntireDBAtStartup"])
             {
-                NSRunCriticalAlertPanel(NSLocalizedString( @"Erase Entire Database", nil),
+                NSRunCriticalAlertPanel2(NSLocalizedString( @"Erase Entire Database", nil),
                                         NSLocalizedString( @"Warning! With this option, each time OsiriX is restarted, the entire database will be erased. All studies will be deleted. This cannot be undone.", nil),
                                         NSLocalizedString( @"OK", nil),
                                         nil,
@@ -72,7 +73,7 @@
         
         if ([keyPath isEqualToString:@"values.horizontalHistory" ])
         {
-            NSRunCriticalAlertPanel(NSLocalizedString( @"Restart", nil),
+            NSRunCriticalAlertPanel2(NSLocalizedString( @"Restart", nil),
                                     NSLocalizedString( @"Restart OsiriX to apply this change.", nil),
                                     NSLocalizedString( @"OK", nil),
                                     nil,
@@ -155,7 +156,7 @@
     
     if (self.newUsePatientBirthDateForUID == NO && self.newUsePatientNameForUID == NO && self.newUsePatientIDForUID == NO)
     {
-        NSRunCriticalAlertPanel(NSLocalizedString( @"Patient UID", nil),
+        NSRunCriticalAlertPanel2(NSLocalizedString( @"Patient UID", nil),
                                 NSLocalizedString( @"At least one parameter has to be selected to generate a valid Patient UID. Patient ID will be used.", nil),
                                 NSLocalizedString( @"OK", nil),
                                 nil,
@@ -476,7 +477,7 @@
 			if (![[NSFileManager defaultManager] fileExistsAtPath: [[NSUserDefaults standardUserDefaults] stringForKey:DefaultDbLocationUrl_s_KEY]
                                                       isDirectory: &isDir])
 			{
-				NSRunAlertPanel(@"Miele-LXIV Database Location",
+				NSRunAlertPanel2(@"Miele-LXIV Database Location",
                                 @"This location is not valid. Select another location.",
                                 @"OK",
                                 nil,
