@@ -610,8 +610,7 @@
                                              NSLocalizedString(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", 0L),
                                              NSLocalizedString(@"Add", nil),
                                              NSLocalizedString(@"Replace", nil),
-                                             nil
-                                             ) == NSAlertDefaultReturn2)
+                                             nil) == NSAlertDefaultReturn2)
 			{
 				
 			}
@@ -708,8 +707,7 @@
                                              NSLocalizedString(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", 0L),
                                              NSLocalizedString(@"Add", nil),
                                              NSLocalizedString(@"Replace", nil),
-                                             nil
-                                             ) == NSAlertDefaultReturn2)
+                                             nil) == NSAlertDefaultReturn2)
 			{
 				
 			}

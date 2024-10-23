@@ -155,8 +155,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
                                      NSLocalizedString(@"Cannot compute the high resolution data.",nil),
                                      NSLocalizedString(@"OK", nil),
                                      bundleName,
-                                     nil
-                                     ) == NSAlertAlternateReturn2)
+                                     nil) == NSAlertAlternateReturn2)
                 {
                     //[[AppController sharedAppController] osirix64bit: self];
                 }

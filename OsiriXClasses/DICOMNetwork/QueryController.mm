@@ -2645,8 +2645,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                                                     NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil),
                                                     NSLocalizedString(@"OK", nil),
                                                     NSLocalizedString(@"Cancel", nil),
-                                                    nil
-                                                    ) == NSAlertDefaultReturn2)
+                                                    nil) == NSAlertDefaultReturn2)
                         {
                             [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
                             [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
@@ -2682,8 +2681,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                                                     NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil),
                                                     NSLocalizedString(@"OK", nil),
                                                     NSLocalizedString(@"Cancel", nil),
-                                                    nil
-                                                    ) == NSAlertDefaultReturn2)
+                                                    nil) == NSAlertDefaultReturn2)
                         {
                             [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
                             [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
@@ -2714,8 +2712,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                                                     NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil),
                                                     NSLocalizedString(@"OK", nil),
                                                     NSLocalizedString(@"Cancel", nil),
-                                                    nil
-                                                    ) == NSAlertDefaultReturn2)
+                                                    nil) == NSAlertDefaultReturn2)
                         {
                             [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
                             [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
@@ -2746,8 +2743,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                                                     NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil),
                                                     NSLocalizedString(@"OK", nil),
                                                     NSLocalizedString(@"Cancel", nil),
-                                                    nil
-                                                    ) == NSAlertDefaultReturn2)
+                                                    nil) == NSAlertDefaultReturn2)
                         {
                             [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
                             [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
@@ -2778,8 +2774,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                                                     NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil),
                                                     NSLocalizedString(@"OK", nil),
                                                     NSLocalizedString(@"Cancel", nil),
-                                                    nil
-                                                    ) == NSAlertDefaultReturn2)
+                                                    nil) == NSAlertDefaultReturn2)
                         {
                             [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
                             [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
@@ -2875,8 +2870,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                                                     NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil),
                                                     NSLocalizedString(@"OK", nil),
                                                     NSLocalizedString(@"Cancel", nil),
-                                                    nil
-                                                    ) == NSAlertDefaultReturn2)
+                                                    nil) == NSAlertDefaultReturn2)
                         {
                             [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
                             [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
@@ -2907,8 +2901,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                                                     NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil),
                                                     NSLocalizedString(@"OK", nil),
                                                     NSLocalizedString(@"Cancel", nil),
-                                                    nil
-                                                    ) == NSAlertDefaultReturn2)
+                                                    nil) == NSAlertDefaultReturn2)
                         {
                             [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
                             [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];

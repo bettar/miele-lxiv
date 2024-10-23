@@ -402,8 +402,7 @@
                                      NSLocalizedString(@"Are you sure you want to delete the selected protocol?", 0L),
                                      NSLocalizedString(@"OK", nil),
                                      NSLocalizedString(@"Cancel", nil),
-                                     nil
-                                     ) == NSAlertDefaultReturn2)
+                                     nil) == NSAlertDefaultReturn2)
     {
         [self willChangeValueForKey: @"currentHangingProtocol"];
         [[hangingProtocols objectForKey:modalityForHangingProtocols] removeObjectAtIndex: sender.selectedRow];

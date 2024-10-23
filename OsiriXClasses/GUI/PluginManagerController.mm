@@ -169,8 +169,7 @@ static NSDate *CachedPluginsListDate = nil;
                                      NSLocalizedString(@"Are you sure you want to delete the selected plugin?", nil),
                                      NSLocalizedString(@"OK",nil),
                                      NSLocalizedString(@"Cancel",nil),
-                                     nil
-                                     ) == NSAlertDefaultReturn2)
+                                     nil) == NSAlertDefaultReturn2)
 	{
 		NSArray *pluginsList = [pluginsArrayController arrangedObjects];
 		NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"name"];

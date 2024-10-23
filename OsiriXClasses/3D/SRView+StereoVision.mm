@@ -336,8 +336,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
                             NSLocalizedString(@"Cannot use the 3D engine.",nil),
                             NSLocalizedString(@"OK", nil),
                             bundleName,
-                            nil
-                            ) == NSAlertAlternateReturn2)
+                            nil) == NSAlertAlternateReturn2)
         {
 			//[[AppController sharedAppController] osirix64bit: self];
         }

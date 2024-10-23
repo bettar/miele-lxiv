@@ -1343,8 +1343,7 @@ static NSConditionLock *threadLock = nil;
 									 NSLocalizedString(@"Are you sure you want to regenerate the comments field? It will delete the existing comments of studies and series.", nil),
 									 NSLocalizedString(@"OK",nil),
 									 NSLocalizedString(@"Cancel",nil),
-									 nil
-                                     ) == NSAlertDefaultReturn2)
+									 nil) == NSAlertDefaultReturn2)
 	{
         NSArray *studiesArray = nil;
         
@@ -7461,8 +7460,7 @@ static NSConditionLock *threadLock = nil;
                                              NSLocalizedString(@"This series contains RTSTRUCT ROIs. Should I generate the corresponding ROIs on the images series?", nil),
                                              NSLocalizedString(@"OK",nil),
                                              NSLocalizedString(@"Cancel",nil),
-                                             nil
-                                             ) == NSAlertDefaultReturn2)
+                                             nil) == NSAlertDefaultReturn2)
             {
                 DCMObject *dcmObj = [DCMObject objectWithContentsOfFile: im.completePathResolved decodingPixelData: NO];
                 
@@ -12780,8 +12778,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
                                                 NSLocalizedString(@"Cannot load this series", nil),
                                                 NSLocalizedString(@"OK",nil),
                                                 bundleName,
-                                                nil
-                                                ) == NSAlertAlternateReturn2)
+                                                nil) == NSAlertAlternateReturn2)
                     {
                         //[[AppController sharedAppController] osirix64bit: self];
                     }
@@ -15373,12 +15370,12 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if (/* newFilesInIncoming ||*/ [[ThreadsManager defaultManager] threadsCount] > 0)
 	{
-		NSAlert* w = [NSAlert alertWithMessageText: NSLocalizedString( @"Background Threads", NULL)
-									 defaultButton: NSLocalizedString( @"Cancel", NULL) 
-								   alternateButton: NSLocalizedString( @"Quit", NULL)
-									   otherButton: NULL
-						 informativeTextWithFormat: NSLocalizedString( @"Background threads are currently running. Are you sure you want to quit now? These threads will be cancelled.", NULL)];
-		
+        NSAlert *w = [NSAlert new];
+        [w setMessageText:NSLocalizedString( @"Background Threads", NULL)];
+        [w setInformativeText:NSLocalizedString( @"Background threads are currently running. Are you sure you want to quit now? These threads will be cancelled.", NULL)];
+        [w addButtonWithTitle:NSLocalizedString( @"Cancel", NULL)];
+        [w addButtonWithTitle:NSLocalizedString( @"Quit", NULL)];
+
 		NSTimer *t = [NSTimer timerWithTimeInterval: 0.3 target:self selector:@selector(shouldTerminateCallback:) userInfo: w repeats:YES];
 		
 		[[NSRunLoop currentRunLoop] addTimer: t forMode:NSModalPanelRunLoopMode];
@@ -15389,7 +15386,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		if (/*newFilesInIncoming ||*/ [[ThreadsManager defaultManager] threadsCount] > 0)
 		{
-			if (r == NSAlertDefaultReturn)
+			if (r == NSAlertFirstButtonReturn)
 				return NO;
 		}
         
@@ -15402,8 +15399,7 @@ static NSArray*	openSubSeriesArray = nil;
                                          NSLocalizedString(@"Files are currently being sent to a DICOM node. Are you sure you want to quit now? The sending will be stopped.", nil),
                                          NSLocalizedString(@"No", nil),
                                          NSLocalizedString(@"Quit", nil),
-                                         nil
-                                         ) == NSAlertDefaultReturn2)
+                                         nil) == NSAlertDefaultReturn2)
             return NO;
 	}
 	
@@ -19609,8 +19605,7 @@ redoZIPpassword:
                                                              NSLocalizedString(@"Report file is not found... Should I create a new one?", nil),
                                                              NSLocalizedString(@"OK",nil),
                                                              NSLocalizedString(@"Cancel",nil),
-                                                             nil
-                                                             ) == NSAlertDefaultReturn2)
+                                                             nil) == NSAlertDefaultReturn2)
                             {
                                 localReportFile = nil;
                             }

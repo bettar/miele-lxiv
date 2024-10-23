@@ -698,13 +698,12 @@ extern int delayedTileWindows;
                                          NSLocalizedString(@"Are you sure you want to close the window? The modifications to DICOM fields have not been applied. The DICOM files will NOT be modified.", nil),
                                          NSLocalizedString(@"Close Window", nil),
                                          NSLocalizedString(@"Continue Editing", nil),
-                                         nil
-                                         ) == NSAlertDefaultReturn2)
+                                         nil) == NSAlertDefaultReturn2)
         {
             return YES;
         }
-        else
-            return NO;
+        
+        return NO;
     }
     
     return YES;
@@ -1092,8 +1091,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                                          NSLocalizedString(@"Are you sure you want to stop editing the fields? The modifications have not been applied. The DICOM files will NOT be modified.", nil),
                                          NSLocalizedString(@"Cancel Modifications", nil),
                                          NSLocalizedString(@"Continue Editing", nil),
-                                         nil
-                                         ) == NSAlertDefaultReturn2)
+                                         nil) == NSAlertDefaultReturn2)
 		{
             [modificationsToApplyArray removeAllObjects];
             [modifiedValues removeAllObjects];
@@ -1385,8 +1383,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                                          NSLocalizedString(@"Are you sure you want to re-sort the series images according to this field?", nil),
                                          NSLocalizedString(@"OK", nil),
                                          NSLocalizedString(@"Cancel", nil),
-                                         nil
-                                         ) == NSAlertDefaultReturn2)
+                                         nil) == NSAlertDefaultReturn2)
 		{
 			unsigned gr = 0, el = 0;
 			
@@ -1442,8 +1439,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                                          NSLocalizedString(@"Are you sure you want to delete selected field(s)?", nil),
                                          NSLocalizedString(@"OK", nil),
                                          NSLocalizedString(@"Cancel", nil),
-                                         nil
-                                         ) == NSAlertDefaultReturn2)
+                                         nil) == NSAlertDefaultReturn2)
 		{
 			NSIndexSet* selectedRowIndexes = [table selectedRowIndexes];
 			NSInteger index;

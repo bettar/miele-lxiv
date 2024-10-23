@@ -151,11 +151,9 @@
         {
             if ([NSThread isMainThread] && showError)
             {
-                NSAlert *alert = [NSAlert alertWithMessageText: NSLocalizedString( @"Query Error", nil)
-                                                 defaultButton:@"OK"
-                                               alternateButton:nil
-                                                   otherButton:nil
-                                     informativeTextWithFormat:@"%@", NSLocalizedString( @"OsiriX cannot generate a DICOM query on itself.", nil)];
+                NSAlert *alert = [NSAlert new];
+                [alert setMessageText:NSLocalizedString( @"Query Error", nil)];
+                [alert setInformativeText:NSLocalizedString( @"OsiriX cannot generate a DICOM query on itself.", nil)];
                 [alert runModal];
             }
         }
@@ -243,15 +241,14 @@
     }
     @catch (NSException * e)
     {	
-        if( [NSThread isMainThread] && showError)
+        if ([NSThread isMainThread] && showError)
         {
-            NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error"
-                                             defaultButton:@"OK"
-                                           alternateButton:nil
-                                               otherButton:nil
-                                 informativeTextWithFormat:@"%@", @"Query Failed"];
+            NSAlert *alert = [NSAlert new];
+            [alert setMessageText:@"Query Error"];
+            [alert setInformativeText:@"Query Failed"];
             [alert runModal];
         }
+
         N2LogExceptionWithStackTrace( e);
 	}
 	
@@ -266,8 +263,8 @@
 - (NSDictionary *)parameters
 {
 	NSMutableDictionary *params = [NSMutableDictionary dictionary];
-	@try {
-		
+	@try
+    {
 		[params setObject:@1 forKey:@"debugLevel"];
 		[params setObject:callingAET forKey:@"callingAET"];
 		[params setObject:calledAET forKey:@"calledAET"];
@@ -276,17 +273,18 @@
 		
 		[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];		//
 		[params setObject:[DCMAbstractSyntaxUID  studyRootQueryRetrieveInformationModelFind] forKey:@"affectedSOPClassUID"];
-	} @catch( NSException *localException) {
-		NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" 
-                                         defaultButton:@"OK"
-                                       alternateButton:nil
-                                           otherButton:nil
-                             informativeTextWithFormat:@"%@", @"Unable to perform Q/R. There was a missing parameter. Make sure you have AE Titles, IP addresses and ports for the queried computer"];
-	
+	}
+    @catch( NSException *localException)
+    {
+        NSAlert *alert = [NSAlert new];
+        [alert setMessageText:@"Query Error"];
+        [alert setInformativeText:@"Unable to perform Q/R. There was a missing parameter. Make sure you have AE Titles, IP addresses and ports for the queried computer"];	
 		[alert runModal];
+        
 		NSLog(@"Missing parameter for Query/retrieve: %@", [localException name]);
 		params = nil;
 	}
-	return params;
+
+    return params;
 }
 @end

@@ -818,8 +818,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                                         @"Casting filter error", //NSLocalizedString(@"Upgrade to OsiriX 64-bit to solve this issue.",nil),
                                         NSLocalizedString(@"OK", nil),
                                         bundleName,
-                                        nil
-                                        ) == NSAlertAlternateReturn2)
+                                        nil) == NSAlertAlternateReturn2)
                     {
                         //[[AppController sharedAppController] osirix64bit: self];
                     }

@@ -238,18 +238,6 @@ NSInteger NSRunAlertPanel2(NSString *title,
                            NSString *otherButton)
 {
     NSAlert *alert = getAlertPanel2(title, msgFormat, defaultButton, alternateButton, otherButton);
-//    [alert setMessageText:title];
-//    [alert setInformativeText:msgFormat];
-//    
-//    if (defaultButton)
-//        [alert addButtonWithTitle:defaultButton];
-//    
-//    if (alternateButton)
-//        [alert addButtonWithTitle:alternateButton];
-//    
-//    if (otherButton)
-//        [alert addButtonWithTitle:otherButton];
-    
     return [alert runModal];
 }
 
@@ -260,21 +248,7 @@ NSInteger NSRunInformationalAlertPanel2(NSString *title,
                            NSString *otherButton)
 {
     NSAlert *alert = getAlertPanel2(title, msgFormat, defaultButton, alternateButton, otherButton);
-//    NSAlert *alert = [NSAlert new];
-//    [alert setMessageText:title];
-//    [alert setInformativeText:msgFormat];
-//    
-//    if (defaultButton)
-//        [alert addButtonWithTitle:defaultButton];
-//    
-//    if (alternateButton)
-//        [alert addButtonWithTitle:alternateButton];
-//    
-//    if (otherButton)
-//        [alert addButtonWithTitle:otherButton];
-    
     [alert setAlertStyle:NSAlertStyleInformational];
-    
     return [alert runModal];
 }
 
@@ -285,21 +259,7 @@ NSInteger NSRunCriticalAlertPanel2(NSString *title,
                            NSString *otherButton)
 {
     NSAlert *alert = getAlertPanel2(title, msgFormat, defaultButton, alternateButton, otherButton);
-//    NSAlert *alert = [NSAlert new];
-//    [alert setMessageText:title];
-//    [alert setInformativeText:msgFormat];
-//    
-//    if (defaultButton)
-//        [alert addButtonWithTitle:defaultButton];
-//    
-//    if (alternateButton)
-//        [alert addButtonWithTitle:alternateButton];
-//    
-//    if (otherButton)
-//        [alert addButtonWithTitle:otherButton];
-
     [alert setAlertStyle:NSAlertStyleCritical];
-
     return [alert runModal];
 }
 
@@ -2700,8 +2660,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                                 NSLocalizedString(@"Warning! Slice interval/thickness is varying, it can create distortion in 3D.", nil),
                                 NSLocalizedString(@"Cancel", nil),
                                 NSLocalizedString(@"Continue", nil),
-                                nil
-                                ) == NSAlertDefaultReturn2)
+                                nil) == NSAlertDefaultReturn2)
                 return;
         }
         else
@@ -7870,8 +7829,7 @@ return YES;
                                      NSLocalizedString(@"Are you sure you want to reset the entire CLUT list to the default list?", nil),
                                      NSLocalizedString(@"OK", nil),
                                      NSLocalizedString(@"Cancel", nil),
-                                     nil
-                                     ) == NSAlertDefaultReturn2)
+                                     nil) == NSAlertDefaultReturn2)
 	{
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"CLUT"];
 		[[NSUserDefaults standardUserDefaults] setObject: [[AppDefaults getDefaults] objectForKey: @"CLUT"] forKey: @"CLUT"];
@@ -10327,8 +10285,7 @@ static int avoidReentryRefreshDatabase = 0;
                             NSLocalizedString(@"Cannot complete the resampling.", nil),
                             NSLocalizedString(@"OK", nil),
                             bundleName,
-                            nil
-                            ) == NSAlertAlternateReturn2)
+                            nil) == NSAlertAlternateReturn2)
         {
 			//[[AppController sharedAppController] osirix64bit: self];
         }
@@ -22546,9 +22503,10 @@ static BOOL viewerControllerPlaying = NO;
                                 NSLocalizedString(@"Warning! Slice interval/thickness is varying, it can create distortion in 3D.", nil),
                                 NSLocalizedString(@"Cancel", nil),
                                 NSLocalizedString(@"Continue", nil),
-                                nil
-                                ) == NSAlertDefaultReturn2)
+                                nil) == NSAlertDefaultReturn2)
+            {
                 return;
+            }
         }
         else
         {
@@ -22798,9 +22756,10 @@ static BOOL viewerControllerPlaying = NO;
                                 NSLocalizedString(@"Warning! Slice interval/thickness is varying, it can create distortion in 3D.", nil),
                                 NSLocalizedString(@"Cancel", nil),
                                 NSLocalizedString(@"Continue", nil),
-                                nil
-                                ) == NSAlertDefaultReturn2)
+                                nil) == NSAlertDefaultReturn2)
+            {
                 return;
+            }
         }
         else
         {
@@ -22832,8 +22791,7 @@ static BOOL viewerControllerPlaying = NO;
                                          NSLocalizedString(@"Should I apply current convolution filter on raw data? 2D/3D post-processing viewers can only display raw data.", nil),
                                          NSLocalizedString(@"OK", nil),
                                          NSLocalizedString(@"Cancel", nil),
-                                         nil
-                                         ) == NSAlertDefaultReturn2)
+                                         nil) == NSAlertDefaultReturn2)
         {
             [self applyConvolutionOnSource: self];
         }
@@ -22933,8 +22891,7 @@ static BOOL viewerControllerPlaying = NO;
                                 NSLocalizedString(@"Warning! Slice interval/thickness is varying, it can create distortion in 3D.", nil),
                                 NSLocalizedString(@"Cancel", nil),
                                 NSLocalizedString(@"Continue", nil),
-                                nil
-                                ) == NSAlertDefaultReturn2)
+                                nil) == NSAlertDefaultReturn2)
             {
                 return;
             }
@@ -23126,8 +23083,7 @@ static BOOL viewerControllerPlaying = NO;
                                 NSLocalizedString(@"Warning! Slice interval/thickness is varying, it can create distortion in 3D.", nil),
                                 NSLocalizedString(@"Cancel", nil),
                                 NSLocalizedString(@"Continue", nil),
-                                nil
-                                ) == NSAlertDefaultReturn2)
+                                nil) == NSAlertDefaultReturn2)
             {
                 return;
             }
@@ -23231,8 +23187,7 @@ static BOOL viewerControllerPlaying = NO;
                                 NSLocalizedString(@"Warning! Slice interval/thickness is varying, it can create distortion in 3D.", nil),
                                 NSLocalizedString(@"Cancel", nil),
                                 NSLocalizedString(@"Continue", nil),
-                                nil
-                                ) == NSAlertDefaultReturn2)
+                                nil) == NSAlertDefaultReturn2)
             {
                 return;
             }

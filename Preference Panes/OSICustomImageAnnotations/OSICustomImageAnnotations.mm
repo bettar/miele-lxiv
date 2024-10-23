@@ -117,8 +117,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
                                                  NSLocalizedString( @"Are you really sure you want to replace current settings? It will delete the current settings.", nil),
                                                  NSLocalizedString(@"OK", nil),
                                                  NSLocalizedString(@"Cancel", nil),
-                                                 0L
-                                                 ) == NSAlertDefaultReturn2)
+                                                 nil) == NSAlertDefaultReturn2)
 				{
 					NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
 				
@@ -318,8 +317,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
                                          NSLocalizedString( @"Are you really sure you want to replace current settings with the default settings? It will delete the current settings.", nil),
                                          NSLocalizedString(@"OK", nil),
                                          NSLocalizedString(@"Cancel", nil),
-                                         0L
-                                         ) == NSAlertDefaultReturn2)
+                                         nil) == NSAlertDefaultReturn2)
         {
 			[layoutController loadAnnotationLayoutForModality:@"Default"];
         }

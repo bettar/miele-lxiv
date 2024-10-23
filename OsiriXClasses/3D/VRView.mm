@@ -1919,8 +1919,7 @@ public:
                                          NSLocalizedString(@"Should I export the temporal series or the 3D scene?", nil),
                                          NSLocalizedString(@"3D Scene", nil),
                                          NSLocalizedString(@"Temporal Series", nil),
-                                         nil
-                                         ) == NSAlertDefaultReturn2)
+                                         nil) == NSAlertDefaultReturn2)
 		{
 			[NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 		}
@@ -2409,8 +2408,7 @@ public:
                         NSLocalizedString(@"Cannot use the 3D engine.",nil),
                         NSLocalizedString(@"OK", nil),
                         bundleName,
-                        nil
-                        ) == NSAlertAlternateReturn2)
+                        nil) == NSAlertAlternateReturn2)
     {
         //[[AppController sharedAppController] osirix64bit: self];
     }
@@ -5539,8 +5537,8 @@ public:
 		NSLog( @"360 degree rotation - Result in [s]: %f", -[now timeIntervalSinceNow]);
 		
 		[[AppController sharedAppController] f: NSLocalizedString( @"Performance Test", nil)
-                                            description: [NSString stringWithFormat: NSLocalizedString(@"360 degree rotation - 100 images\rResult in [s] : %f", nil), -[now timeIntervalSinceNow]]
-                                                   name: @"result"];
+                                   description: [NSString stringWithFormat: NSLocalizedString(@"360 degree rotation - 100 images\rResult in [s] : %f", nil), -[now timeIntervalSinceNow]]
+                                          name: @"result"];
 	}
 	else if (c == 27 && currentTool == t3DCut)
 	{
@@ -8212,8 +8210,7 @@ public:
                                 NSLocalizedString(@"Are you sure you want to delete this 3D state? You cannot undo this operation.", nil),
                                 NSLocalizedString(@"OK", nil),
                                 NSLocalizedString(@"Cancel", nil),
-                                nil
-                                ) == NSAlertDefaultReturn2)
+                                nil) == NSAlertDefaultReturn2)
             {
                 [[NSFileManager defaultManager] removeItemAtPath: str error: nil];
             }
@@ -8268,8 +8265,7 @@ public:
                                  NSLocalizedString(@"A 3D Scissor State already exists. Do you want to replace it with curent state?", nil),
                                  NSLocalizedString(@"OK", nil),
                                  NSLocalizedString(@"Cancel", nil),
-                                 nil
-                                 ) == NSAlertDefaultReturn2) ||
+                                 nil) == NSAlertDefaultReturn2) ||
                 [[NSFileManager defaultManager] fileExistsAtPath: str] == NO)
             {
                 waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Saving 3D object...", nil)];

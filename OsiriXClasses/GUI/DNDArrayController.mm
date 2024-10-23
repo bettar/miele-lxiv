@@ -37,8 +37,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
                                          NSLocalizedString(@"Are you sure you want to delete the selected item?", nil),
                                          NSLocalizedString(@"OK",nil),
                                          NSLocalizedString(@"Cancel",nil),
-                                         nil
-                                         ) == NSAlertDefaultReturn2)
+                                         nil) == NSAlertDefaultReturn2)
 		{
 			[self removeObjectAtArrangedObjectIndex: [tableView selectedRow]];
 		}
