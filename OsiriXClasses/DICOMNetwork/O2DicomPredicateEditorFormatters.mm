@@ -90,7 +90,7 @@
         id obj = nil;
         NSString* err = nil;
         if (![self.monoFormatter getObjectValue:&obj forString:part errorDescription:&err]) {
-            *error = [NSString stringWithFormat:NSLocalizedString(@"On component %d: %@", nil), i+1, err];
+            *error = [NSString stringWithFormat:NSLocalizedString(@"On component %zu: %@", nil), i+1, err];
             return NO;
         }
     }

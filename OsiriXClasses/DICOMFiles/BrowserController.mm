@@ -9898,7 +9898,7 @@ static BOOL withReset = NO;
                 else if ([fileType isEqualToString: @"DICOMMPEG2"])
                 {
                     long count = [[curFile valueForKey:@"noFiles"] intValue];
-                    [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"MPEG-2 Series\r%@\r%d Images", nil), name, count]];
+                    [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"MPEG-2 Series\r%@\r%ld Images", nil), name, count]];
                     img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"mpeg2"]];
                 }
                 else if ([[curFile valueForKey:@"type"] isEqualToString: @"Series"])
@@ -9940,11 +9940,11 @@ static BOOL withReset = NO;
                 else if ([[curFile valueForKey:@"type"] isEqualToString: @"Image"])
                 {
                     if ([DCMAbstractSyntaxUID isStructuredReport: seriesSOPClassUID] || [DCMAbstractSyntaxUID isPDF: seriesSOPClassUID])
-                        [cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Page %d", nil), i+1]];
+                        [cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Page %ld", nil), i+1]];
                     else if ([[curFile valueForKey: @"sliceLocation"] floatValue])
-                        [cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d\r%.2f", nil), i+1, [[curFile valueForKey: @"sliceLocation"] floatValue]]];
+                        [cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %ld\r%.2f", nil), i+1, [[curFile valueForKey: @"sliceLocation"] floatValue]]];
                     else
-                        [cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d", nil), i+1]];
+                        [cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %ld", nil), i+1]];
                 }
                 
                 [cell setButtonType:NSPushOnPushOffButton];

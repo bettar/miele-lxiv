@@ -1378,13 +1378,19 @@ static NSRecursiveLock *dbModifyLock = nil;
                 if (days < 0)
                     return @"";
 
-                return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
+                return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), static_cast<int>(days)];
             }
 
-            return [NSString stringWithFormat: @"%d%@", (int) months, NSLocalizedString( @" m", @"m = month")];
+            return [NSString stringWithFormat: @"%d%@",
+                    (int)months,
+                    NSLocalizedString( @" m", @"m = month")];
         }
 
-        return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), (int) months, NSLocalizedString( @" m", @"m = month")];
+        return [NSString stringWithFormat: @"%d%@ %d%@",
+                (int) years,
+                NSLocalizedString( @" y", @"y = year"),
+                (int)months,
+                NSLocalizedString( @" m", @"m = month")];
     }
 
     return [NSString stringWithFormat: @"%d%@", (int) years, NSLocalizedString( @" y", @"y = year")];
@@ -1416,7 +1422,7 @@ static NSRecursiveLock *dbModifyLock = nil;
                 if (days < 0)
                     return @"";
 
-                return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
+                return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), (int)days];
             }
 
             return [NSString stringWithFormat: @"%d%@", (int) months, NSLocalizedString( @" m", @"m = month")];

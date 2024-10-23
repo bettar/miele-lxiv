@@ -327,7 +327,7 @@
 }
 
 - (int)valueMultiplicity{
-	return [_values count];
+	return (int)[_values count];
 }
 
 - (NSString *)vrStringValue{

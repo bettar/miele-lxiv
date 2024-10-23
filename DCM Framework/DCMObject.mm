@@ -741,7 +741,7 @@ PixelRepresentation
 		DCMDataContainer *dicomData = [data retain];
 			
         *byteOffset = [self readDataSet:dicomData
-                           lengthToRead:lengthToRead
+                           lengthToRead:(int)lengthToRead
                              byteOffset:byteOffset];
 		
 		if (*byteOffset == 0xFFFFFFFF)

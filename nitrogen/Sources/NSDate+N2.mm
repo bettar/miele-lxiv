@@ -27,13 +27,15 @@
     if (datestr.length < 8)
         return nil;
     
-    if( datestr.length != 8)
+    if (datestr.length != 8)
         datestr = [datestr stringByReplacingOccurrencesOfString:@"." withString:@""];
     
-    if(timestr.length >= 6)
-        return [[[NSCalendarDate alloc] initWithString: [datestr stringByAppendingString: timestr] calendarFormat:@"%Y%m%d%H%M%S"] autorelease];
+    if (timestr.length >= 6)
+        return [[[NSCalendarDate alloc] initWithString: [datestr stringByAppendingString: timestr]
+                                        calendarFormat: @"%Y%m%d%H%M%S"] autorelease];
     
-    return [[[NSCalendarDate alloc] initWithString: datestr calendarFormat:@"%Y%m%d%H%M"] autorelease];
+    return [[[NSCalendarDate alloc] initWithString: datestr
+                                    calendarFormat: @"%Y%m%d%H%M"] autorelease];
     
     
 //	NSDateComponents* dc = [NSDateComponents new];

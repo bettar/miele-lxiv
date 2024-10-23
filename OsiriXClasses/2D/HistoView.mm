@@ -179,21 +179,21 @@
 		index += bin-1;
 	}
 	
-	if( curMousePosition != -1)
+	if (curMousePosition != -1)
 	{
 		long ss, ee;
 		
 		ss = minV + ((curMousePosition) * (maxV-minV)) / dataSize;
 		ee = minV + ((curMousePosition+bin) * (maxV-minV)) / dataSize;
         
-        if( curMousePosition > 0)
+        if (curMousePosition > 0)
             ss++;
         
-		trace = [NSString stringWithFormat:NSLocalizedString(@"Total Pixels: %d\n\nRange:%d/%d\n\nPixels for\nthis range:%d", nil), pixels, ss, ee, noAtMouse];
+		trace = [NSString stringWithFormat:NSLocalizedString(@"Total Pixels: %ld\n\nRange:%ld/%ld\n\nPixels for\nthis range:%d", nil), pixels, ss, ee, noAtMouse];
 	}
 	else
 	{
-		trace = [NSString stringWithFormat:NSLocalizedString(@"Total Pixels: %d", nil), pixels];
+		trace = [NSString stringWithFormat:NSLocalizedString(@"Total Pixels: %ld", nil), pixels];
 	}
 	
 	NSRect dstRect = boundsRect;

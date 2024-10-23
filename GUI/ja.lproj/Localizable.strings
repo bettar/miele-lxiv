@@ -2186,7 +2186,7 @@
 "From:" = "から:";
 
 /* No special characters for this string, only ASCII characters. */
-"From: %d %% (%0.2f) to: %d %% (%0.2f)" = "%1$d %%(%2$.2f)から、%3$d %%(%4$.2f)まで";
+"From: %ld %% (%0.2f) to: %ld %% (%0.2f)" = "%1$ld %% (%2$.2f)から、%3$ld %% (%4$.2f)まで";
 
 /* No comment provided by engineer. */
 "Full dynamic" = "フルダイナミック";
@@ -2366,7 +2366,7 @@
 "Image" = "画像";
 
 /* No comment provided by engineer. */
-"Image %d" = "画像 %d";
+"Image %ld" = "画像 %ld";
 
 /* No comment provided by engineer. */
 "image added" = "画像追加";
@@ -3173,7 +3173,7 @@
 "OK !" = "OK !";
 
 /* No comment provided by engineer. */
-"On component %d: %@" = "コンポーネント%1 $ d:%2 $ @";
+"On component %zu: %@" = "コンポーネント%1 $ d:%2 $ @";
 
 /* Panel in preferences window */
 "On-Demand" = "オンデマンド";
@@ -3371,7 +3371,7 @@
 "Page" = "ページ";
 
 /* No comment provided by engineer. */
-"Page %d" = "ページ %d";
+"Page %ld" = "ページ %ld";
 
 /* No comment provided by engineer. */
 "Pages" = "ページ";
@@ -5051,10 +5051,10 @@
 "Total" = "総計";
 
 /* No comment provided by engineer. */
-"Total Pixels: %d" = "ピクセル総計: %d";
+"Total Pixels: %ld" = "ピクセル総計: %ld";
 
 /* No comment provided by engineer. */
-"Total Pixels: %d\n\nRange:%d/%d\n\nPixels for\nthis range:%d" = "ピクセル総計: %1$d\n\n範囲:%2$d/%3$d\n\nこの範囲の\nピクセル:%4$d";
+"Total Pixels: %ld\n\nRange:%ld/%ld\n\nPixels for\nthis range:%d" = "ピクセル総計: %1$ld\n\n範囲:%2$ld/%3$ld\n\nこの範囲の\nピクセル:%4$d";
 
 /* No comment provided by engineer. */
 "Transferring database index..." = "データベース索引を転送中...";

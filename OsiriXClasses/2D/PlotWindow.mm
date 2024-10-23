@@ -60,7 +60,7 @@
 //	}
 //	else
 	
-	[maxX setStringValue: [NSString stringWithFormat:NSLocalizedString(@"%d pixels", nil), dataSize]]; 
+	[maxX setStringValue: [NSString stringWithFormat:NSLocalizedString(@"%d pixels", nil), (int)dataSize]]; 
 	
 	[plot setData: data :dataSize]; 
 }

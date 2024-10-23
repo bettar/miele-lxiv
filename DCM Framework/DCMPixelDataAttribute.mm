@@ -1126,7 +1126,7 @@ void info_callback(const char *msg, void *a) {
 //#endif
 				{
 					unsigned short *shortsToSwap = (unsigned short *) [data mutableBytes];
-					unsigned int length = [data length]/2;
+					unsigned long length = [data length]/2;
 					while (length--) {
 						*shortsToSwap = NSSwapShort(*shortsToSwap);
 						shortsToSwap++;
@@ -1143,7 +1143,7 @@ void info_callback(const char *msg, void *a) {
 				{
 					unsigned long *longsToSwap = (unsigned long *) [data mutableBytes];
 					//signed short *signedShort = [data mutableBytes];
-					unsigned int length = [data length]/4;
+					unsigned long length = [data length]/4;
 					for ( unsigned int i = 0; i < length; i++ ) {
 						longsToSwap[i] = NSSwapLong(longsToSwap[i]);
 					}
@@ -2359,7 +2359,7 @@ void info_callback(const char *msg, void *a) {
 
 - (void)findMinAndMax:(NSMutableData *)data
 {
-	int length;
+	long length;
 	DCMAttributeTag *signedTag = [DCMAttributeTag tagWithName:@"PixelRepresentation"];
 	DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[signedTag stringValue]];
 	BOOL isSigned = [[signedAttr value] boolValue];
@@ -3361,8 +3361,8 @@ void info_callback(const char *msg, void *a) {
 			}
 			else
 			{
-				int currentOffset = [[offsetTable objectAtIndex:index] longValue];
-				int currentLength = 0;
+				long currentOffset = [[offsetTable objectAtIndex:index] longValue];
+				long currentLength = 0L;
 				if (index < _numberOfFrames - 1 &&
                     index < [offsetTable count] - 1)
                 {
@@ -3384,7 +3384,7 @@ void info_callback(const char *msg, void *a) {
 				*/
 				int combinedLength = 0;
 				int startingItem = 0;
-				int dataLength = 0;
+				long dataLength = 0L;
 				int endItem = 0;
 				while (combinedLength < currentOffset && startingItem < [values count]) {
 					combinedLength += ([(NSData *)[values objectAtIndex:startingItem] length] + 8);
@@ -3473,9 +3473,9 @@ void info_callback(const char *msg, void *a) {
             {
 				NSData *offsetData = [_values objectAtIndex:0];
 				unsigned long *offsets = (unsigned long *)[offsetData bytes];
-				int numberOfOffsets = [offsetData length]/4;
-				for (int i = 0; i < numberOfOffsets; i++) {
-					if ( transferSyntax.isLittleEndian ) 
+				long numberOfOffsets = [offsetData length]/4;
+				for (long i = 0; i < numberOfOffsets; i++) {
+					if ( transferSyntax.isLittleEndian )
 						offset = NSSwapLittleLongToHost(offsets[i]);
 					else
 						offset = offsets[i];
@@ -3507,10 +3507,10 @@ void info_callback(const char *msg, void *a) {
 					subData = [values objectAtIndex:i];
 				
 				// Need to figure out where the data starts and ends
-				else{
+				else {
 				
-					int currentOffset = [[offsetTable objectAtIndex:i] longValue];
-					int currentLength = 0;
+					long currentOffset = [[offsetTable objectAtIndex:i] longValue];
+					long currentLength = 0L;
 					if (i < _numberOfFrames - 1)
 						currentLength = [[offsetTable objectAtIndex:i + 1] longValue] - currentOffset;
 					else {
@@ -3527,7 +3527,7 @@ void info_callback(const char *msg, void *a) {
 					*/
 					int combinedLength = 0;
 					int startingItem = 0;
-					int dataLength = 0;
+					long dataLength = 0L;
 					int endItem = 0;
 					while (combinedLength < currentOffset && startingItem < [values count]) {
 						combinedLength += ([(NSData *)[values objectAtIndex:startingItem] length] + 8);

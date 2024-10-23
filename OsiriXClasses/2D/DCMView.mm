@@ -10147,7 +10147,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 								{
 									float min = lwl - lww/2, max = lwl + lww/2;
 									
-									[tempString2 appendFormat: NSLocalizedString( @"From: %d %% (%0.2f) to: %d %% (%0.2f)", @"No special characters for this string, only ASCII characters."), (long) (min * 100. / curDCM.maxValueOfSeries), lwl - lww/2, (long) (max * 100. / curDCM.maxValueOfSeries), lwl + lww/2];
+									[tempString2 appendFormat: NSLocalizedString( @"From: %ld %% (%0.2f) to: %ld %% (%0.2f)", @"No special characters for this string, only ASCII characters."),
+                                     (long) (min * 100. / curDCM.maxValueOfSeries),
+                                     lwl - lww/2,
+                                     (long) (max * 100. / curDCM.maxValueOfSeries),
+                                     lwl + lww/2];
 								}
 							}
 						}

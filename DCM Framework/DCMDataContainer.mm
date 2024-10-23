@@ -1172,7 +1172,7 @@ void signal_EXC(int sig_num)
 		NSArray *objects = [NSArray arrayWithObjects:
                             [NSNumber numberWithInt:position],
                             [NSNumber numberWithInt:elementLength],
-                            [NSNumber numberWithInt:[dicomData length]],
+                            [NSNumber numberWithInt:(int)[dicomData length]],
                             nil];
 	
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
@@ -1203,7 +1203,7 @@ void signal_EXC(int sig_num)
 
 - (unsigned)length
 {
-	return [dicomData length];
+	return (unsigned)[dicomData length];
 }
 
 - (void)startReadingMetaHeader

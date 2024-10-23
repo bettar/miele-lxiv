@@ -159,7 +159,7 @@ METHODDEF(boolean)
 fill_input_buffer (j_decompress_ptr cinfo)
 {
     data16_src_ptr src = (data16_src_ptr) cinfo->src;
-    size_t nbytes = readFromData16(src->data, src->buffer, src->currentPosition, INPUT_BUF_SIZE);
+    size_t nbytes = readFromData16(src->data, src->buffer, (int)src->currentPosition, INPUT_BUF_SIZE);
     //nbytes = JFREAD(src->infile, src->buffer, INPUT_BUF_SIZE);
 
     if (nbytes <= 0) {

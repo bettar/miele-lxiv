@@ -61,7 +61,7 @@
 
 +(NSString*)sizeString:(unsigned long long)size { // from http://snippets.dzone.com/posts/show/3038 with slight modifications
     if (size<1023)
-        return [NSString stringWithFormat:NSLocalizedString(@"%i bytes", nil), size];
+        return [NSString stringWithFormat:NSLocalizedString(@"%i bytes", nil), (int)size];
     float floatSize = float(size) / 1024;
     if (floatSize<1023)
         return [NSString stringWithFormat:NSLocalizedString(@"%1.2f KB", @"KB = kilo bytes"), floatSize];

@@ -2186,7 +2186,7 @@
 "From:" = "Von:";
 
 /* No special characters for this string, only ASCII characters. */
-"From: %d %% (%0.2f) to: %d %% (%0.2f)" = "Von:%1$d% (%2$.2f) bis:%3$d% (%4$. 2f)";
+"From: %ld %% (%0.2f) to: %ld %% (%0.2f)" = "Von: %1$ld %% (%2$.2f) bis: %3$ld %% (%4$.2f)";
 
 /* No comment provided by engineer. */
 "Full dynamic" = "Volle Dynamik";
@@ -2366,7 +2366,7 @@
 "Image" = "Bild";
 
 /* No comment provided by engineer. */
-"Image %d" = "Bild%d";
+"Image %ld" = "Bild %ld";
 
 /* No comment provided by engineer. */
 "image added" = "Bild hinzugefügt";
@@ -3173,7 +3173,7 @@
 "OK !" = "Okay!";
 
 /* No comment provided by engineer. */
-"On component %d: %@" = "Auf Komponente%1$d:%2$@";
+"On component %zu: %@" = "Auf Komponente%1$d:%2$@";
 
 /* Panel in preferences window */
 "On-Demand" = "Zugriffe";
@@ -3371,7 +3371,7 @@
 "Page" = "Seite";
 
 /* No comment provided by engineer. */
-"Page %d" = "Seite %d";
+"Page %ld" = "Seite %ld";
 
 /* No comment provided by engineer. */
 "Pages" = "Seiten";
@@ -5051,10 +5051,10 @@
 "Total" = "Gesamt";
 
 /* No comment provided by engineer. */
-"Total Pixels: %d" = "Gesamtpixeln:%d";
+"Total Pixels: %ld" = "Gesamtpixeln:%ld";
 
 /* No comment provided by engineer. */
-"Total Pixels: %d\n\nRange:%d/%d\n\nPixels for\nthis range:%d" = "Total Pixels:%1$d\n\nRange:%2$d/%3$d\n\n Pixels for\nthis range:%4$d";
+"Total Pixels: %ld\n\nRange:%ld/%ld\n\nPixels for\nthis range:%d" = "Total Pixels:%1$ld\n\nRange:%2$ld/%3$ld\n\n Pixels for\nthis range:%4$d";
 
 /* No comment provided by engineer. */
 "Transferring database index..." = "Datenbankindex übertragen ...";

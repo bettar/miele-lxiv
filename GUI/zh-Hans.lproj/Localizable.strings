@@ -2186,7 +2186,7 @@
 "From:" = "从:";
 
 /* No special characters for this string, only ASCII characters. */
-"From: %d %% (%0.2f) to: %d %% (%0.2f)" = "从: %1$d% (% 21.2 f) 到: %3$d% (% 41.2 f)";
+"From: %ld %% (%0.2f) to: %ld %% (%0.2f)" = "从: %1$ld %% (%2$.2f) 到: %3$ld %% (%4$.2f)";
 
 /* No comment provided by engineer. */
 "Full dynamic" = "全动态";
@@ -2366,7 +2366,7 @@
 "Image" = "图片";
 
 /* No comment provided by engineer. */
-"Image %d" = "图片 %d";
+"Image %ld" = "图片 %ld";
 
 /* No comment provided by engineer. */
 "image added" = "已添加图像";
@@ -3173,7 +3173,7 @@
 "OK !" = "还行！";
 
 /* No comment provided by engineer. */
-"On component %d: %@" = "在组件 %1$d:%2$@";
+"On component %zu: %@" = "在组件 %1$d:%2$@";
 
 /* Panel in preferences window */
 "On-Demand" = "按需";
@@ -3371,7 +3371,7 @@
 "Page" = "页面";
 
 /* No comment provided by engineer. */
-"Page %d" = "第%d页";
+"Page %ld" = "第%ld页";
 
 /* No comment provided by engineer. */
 "Pages" = "页面";
@@ -5051,10 +5051,10 @@
 "Total" = "总计";
 
 /* No comment provided by engineer. */
-"Total Pixels: %d" = "总像素: %d";
+"Total Pixels: %ld" = "总像素: %ld";
 
 /* No comment provided by engineer. */
-"Total Pixels: %d\n\nRange:%d/%d\n\nPixels for\nthis range:%d" = "总像素:%1$d\n\n范围:%2$d/%3$d\n\n此范围\n的像素数:%4$d";
+"Total Pixels: %ld\n\nRange:%ld/%ld\n\nPixels for\nthis range:%d" = "总像素:%1$ld\n\n范围:%2$ld/%3$ld\n\n此范围\n的像素数:%4$d";
 
 /* No comment provided by engineer. */
 "Transferring database index..." = "正在传输数据库索引...";
