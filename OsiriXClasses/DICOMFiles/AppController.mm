@@ -2889,7 +2889,7 @@ static BOOL initialized = NO;
                 NSLog(@"GLEW %s", glewGetString(GLEW_VERSION));
 #endif
 #ifdef WITH_OPENSSL
-                NSLog(@"%s", OpenSSL_version(OPENSSL_VERSION));
+                NSLog(@"%s", OpenSSL_version(OPENSSL_VERSION)); // OPENSSL_VERSION_TEXT
 #endif
 #ifdef WITH_ZLIB
                 NSLog(@"ZLIB %s", zlibVersion());
