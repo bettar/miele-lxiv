@@ -308,7 +308,7 @@ getCallback(void *callbackData, T_DIMSE_C_GetRQ *request,
 //    else if (cond != EC_Normal)
 //    {
 //        errmsg("DIMSE Failure (aborting sub-association):\n");
-//        DimseCondition::dump(cond);
+//        DimseCondition::dump(temp_str, cond);
 //        /* some kind of error so abort the association */
 //        cond = ASC_abortAssociation(*subAssoc);
 //    }
@@ -1929,6 +1929,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
                 DcmTLSTransportLayer *tLayer = (DcmTLSTransportLayer*) [[dict objectForKey: @"tLayer"] pointerValue];
 #endif
                 OFCondition cond;
+                OFString temp_str;
                 
                 // CLEANUP
                 
@@ -1938,7 +1939,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
                 {
                     cond = ASC_destroyAssociation(&assoc);
                     if (cond.bad())
-                        DimseCondition::dump(cond); 
+                        DimseCondition::dump(temp_str, cond); 
                 }
                 
                 /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
@@ -1947,7 +1948,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
                 {
                     cond = ASC_dropNetwork(&net);
                     if (cond.bad())
-                        DimseCondition::dump(cond);
+                        DimseCondition::dump(temp_str, cond);
                 }
                 
 #ifdef WITH_OPENSSL
@@ -2082,7 +2083,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			if (cond.bad())
 			{
                 if (_verbose)
-                    DimseCondition::dump(cond);
+                    DimseCondition::dump(temp_str, cond);
 
                 [[NSException exceptionWithName:@"DICOM Network Failure (query)"
                                          reason:[NSString stringWithFormat: @"ASC_initializeNetwork - %04x:%04x %s", cond.module(), cond.code(), cond.text()]
@@ -2198,7 +2199,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 				if (cond.bad())
 				{
                     if (_verbose)
-                        DimseCondition::dump(cond);
+                        DimseCondition::dump(temp_str, cond);
 
                     [[NSException exceptionWithName:@"DICOM Network Failure (TLS query)"
                                              reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()]
@@ -2209,10 +2210,10 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			
 		/* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
 			cond = ASC_createAssociationParameters(&params, _maxReceivePDULength);
-	//		DimseCondition::dump(cond);
+	//		DimseCondition::dump(temp_str, cond);
 			if (cond.bad()) {
                 if (_verbose)
-                    DimseCondition::dump(cond);
+                    DimseCondition::dump(temp_str, cond);
 				[[NSException exceptionWithName:@"DICOM Network Failure (query)"
                                          reason:[NSString stringWithFormat: @"ASC_createAssociationParameters - %04x:%04x %s", cond.module(), cond.code(), cond.text()]
                                        userInfo:nil] raise];
@@ -2228,7 +2229,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			cond = ASC_setTransportLayerType(params, _secureConnection);
 			if (cond.bad()) {
                 if (_verbose)
-                    DimseCondition::dump(cond);
+                    DimseCondition::dump(temp_str, cond);
 				[[NSException exceptionWithName:@"DICOM Network Failure (query)"
                                          reason:[NSString stringWithFormat: @"ASC_setTransportLayerType - %04x:%04x %s", cond.module(), cond.code(), cond.text()]
                                        userInfo:nil] raise];
@@ -2254,7 +2255,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			if (cond.bad())
 			{
                 if (_verbose)
-                    DimseCondition::dump(cond);
+                    DimseCondition::dump(temp_str, cond);
 
                 [[NSException exceptionWithName:@"DICOM Network Failure (query)"
                                          reason:[NSString stringWithFormat: @"addPresentationContext - %04x:%04x %s", cond.module(), cond.code(), cond.text()]
@@ -2608,7 +2609,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 //		{
 //			cond = ASC_destroyAssociation(&assoc);
 //			if (cond.bad())
-//				DimseCondition::dump(cond); 
+//				DimseCondition::dump(temp_str, cond); 
 //		}
 //		
 //		/* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
@@ -2617,7 +2618,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 //		{
 //			cond = ASC_dropNetwork(&net);
 //			if (cond.bad())
-//				DimseCondition::dump(cond);
+//				DimseCondition::dump(temp_str, cond);
 //		}
 //
 //	#ifdef WITH_OPENSSL

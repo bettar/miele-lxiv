@@ -191,20 +191,21 @@ static int numberOfActiveAssociations = 0;
     
     T_ASC_Association *assoc = (T_ASC_Association*) [[dict valueForKey: @"assoc"] pointerValue];
     OFCondition cond = EC_Normal;
+    OFString temp_str;
     
     /* the child will handle the association, we can drop it */
     cond = ASC_dropAssociation(assoc);
     if (cond.bad())
     {
         //DcmQueryRetrieveOptions::errmsg("Cannot Drop Association:");
-        DimseCondition::dump(cond);
+        DimseCondition::dump(temp_str, cond);
     }
     
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad())
     {
         //DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
-        DimseCondition::dump(cond);
+        DimseCondition::dump(temp_str, cond);
     }
     
 	[pool release];
@@ -230,14 +231,15 @@ static int numberOfActiveAssociations = 0;
         if( assoc && scp)
         {
             OFCondition cond = scp->handleAssociation(assoc, YES);
+            OFString temp_str;
             
             cond = ASC_dropAssociation(assoc);
             if (cond.bad())
-                DimseCondition::dump(cond);
+                DimseCondition::dump(temp_str, cond);
             
             cond = ASC_destroyAssociation(&assoc);
             if (cond.bad())
-                DimseCondition::dump(cond);
+                DimseCondition::dump(temp_str, cond);
         }
     }
     @catch (NSException *e) {

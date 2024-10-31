@@ -499,7 +499,8 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
 		cond = ASC_setTransportLayer(options.net_, tLayer, 0);
 		if (cond.bad())
 		{
-			DimseCondition::dump(cond);
+            OFString temp_str;
+			DimseCondition::dump(temp_str, cond);
 			NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : ASC_setTransportLayer - %04x:%04x %s. You can turn OFF TLS Listener in Preferences->Listener.", cond.module(), cond.code(), cond.text()];
 			[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:)
                                                                   withObject: errMessage

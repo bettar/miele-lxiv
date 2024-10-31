@@ -1432,7 +1432,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 		cond = ASC_initializeNetwork(NET_REQUESTOR, 0, opt_acse_timeout, &net);
 		if (cond.bad())
 		{
-			DimseCondition::dump(cond);
+			DimseCondition::dump(temp_str, cond);
 			localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)"
                                                       reason:[NSString stringWithFormat: @"ASC_initializeNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()]
                                                     userInfo:nil] retain];
@@ -1559,7 +1559,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
                 cond = ASC_setTransportLayer(net, tLayer, 0);
                 if (cond.bad())
                 {
-                    DimseCondition::dump(cond);
+                    DimseCondition::dump(temp_str, cond);
                     localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)"
                                                               reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()]
                                                             userInfo:nil] retain];
@@ -1574,7 +1574,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
         cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
         if (cond.bad())
         {
-            DimseCondition::dump(cond);
+            DimseCondition::dump(temp_str, cond);
             localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)"
                                                       reason:[NSString stringWithFormat: @"ASC_createAssociationParameters %04x:%04x %s", cond.module(), cond.code(), cond.text()]
                                                     userInfo:nil] retain];
@@ -1592,7 +1592,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
         cond = ASC_setTransportLayerType(params, _secureConnection);
         if (cond.bad())
         {
-            DimseCondition::dump(cond);
+            DimseCondition::dump(temp_str, cond);
             localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)"
                                                       reason:[NSString stringWithFormat: @"ASC_setTransportLayerType %04x:%04x %s", cond.module(), cond.code(), cond.text()]
                                                     userInfo:nil] retain];
@@ -1613,7 +1613,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
         cond = addStoragePresentationContexts(params, sopClassUIDList);
         if (cond.bad())
         {
-            DimseCondition::dump(cond);
+            DimseCondition::dump(temp_str, cond);
             localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)"
                                                       reason:[NSString stringWithFormat: @"addStoragePresentationContexts %04x:%04x %s", cond.module(), cond.code(), cond.text()]
                                                     userInfo:nil] retain];
@@ -1793,7 +1793,8 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 		cond = ASC_destroyAssociation(&assoc);
 		if (cond.bad())
 		{
-			DimseCondition::dump(cond);
+            OFString temp_str;
+			DimseCondition::dump(temp_str, cond);
 			localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"ASC_destroyAssociation %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 		}
 	}
@@ -1806,7 +1807,8 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 		cond = ASC_dropNetwork(&net);
 		if (cond.bad())
 		{
-			DimseCondition::dump(cond);
+            OFString temp_str;
+			DimseCondition::dump(temp_str, cond);
 			localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"ASC_dropNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 		}
 	}
