@@ -2869,8 +2869,12 @@ static BOOL initialized = NO;
                       numCPU,
                       (unsigned long)[[NSProcessInfo processInfo] processorCount],
                       (unsigned long)[[NSProcessInfo processInfo] activeProcessorCount]);
+                
+                int iArch = [[NSRunningApplication currentApplication] executableArchitecture];
+                NSLog(@"CPU architecture: %@", (iArch == NSBundleExecutableArchitectureX86_64) ? @"x86_64" : @"arm64");
+
                 NSLog(@"Number of screens: %d", (int) [[NSScreen screens] count]);
-				NSLog(@"Main screen backingScaleFactor: %f", (float) [[NSScreen mainScreen] backingScaleFactor]);
+                NSLog(@"Main screen backingScaleFactor: %f", (float) [[NSScreen mainScreen] backingScaleFactor]);
                 NSDictionary *d = [[NSBundle mainBundle] infoDictionary];
                 NSLog(@"%@ %@ %@ (%@), for macOS %@ or better",
                       [d objectForKey:@"CFBundleName"],
@@ -3504,6 +3508,11 @@ API_AVAILABLE(macos(10.14))
 }
 
 #pragma mark - NSApplicationDelegate
+
+- (BOOL)applicationSupportsSecureRestorableState:(NSApplication *)app
+{
+    return YES;
+}
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
