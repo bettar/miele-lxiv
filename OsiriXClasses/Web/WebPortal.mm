@@ -164,7 +164,10 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWadoServiceEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
     
 	// last because this starts the listener
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self
+                                                          forValuesKey:OsirixWebPortalEnabledDefaultsKey
+                                                               options:NSKeyValueObservingOptionInitial
+                                                               context:self.defaultWebPortal];
 
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalNotificationsEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
@@ -203,7 +206,6 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	}
 
     WebPortal* webPortal = (id)context;
-
     if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalEnabledDefaultsKey)])
     {
         if (NSUserDefaults.webPortalEnabled)
@@ -285,11 +287,11 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	static WebPortal* defaultWebPortal = NULL;
     
     if (DefaultWebPortalDatabasePath == nil)
-        return nil;
+        [WebPortal initialize:nil]; // issue 134
     
 	if (!defaultWebPortal)
-		defaultWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath
-                                                  dicomDatabase:[DicomDatabase defaultDatabase]];
+		defaultWebPortal = [[self alloc] initWithDatabaseAtPath: DefaultWebPortalDatabasePath
+                                                  dicomDatabase: [DicomDatabase defaultDatabase]];
 	
 	return defaultWebPortal;
 }
@@ -298,7 +300,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	static WebPortal* wadoOnlyWebPortal = NULL;
     
     if (DefaultWebPortalDatabasePath == nil)
-        return nil;
+        [WebPortal initialize:nil]; // issue 134
     
 	if (!wadoOnlyWebPortal)
 		wadoOnlyWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath
@@ -323,7 +325,9 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 @synthesize weasisEnabled;
 @synthesize flashEnabled, runLoops, runLoopsLoad;
 
--(id)initWithDatabase:(WebPortalDatabase*)db dicomDatabase:(DicomDatabase*)dd; {
+-(id)initWithDatabase:(WebPortalDatabase*)db
+        dicomDatabase:(DicomDatabase*)dd
+{
 	self = [super init];
 	
 	sessions = [[NSMutableArray alloc] initWithCapacity:64];
@@ -349,7 +353,8 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 -(id)initWithDatabaseAtPath:(NSString*)sqlFilePath
               dicomDatabase:(DicomDatabase*)dd;
 {
-	return [self initWithDatabase:[[[WebPortalDatabase alloc] initWithPath:DefaultWebPortalDatabasePath] autorelease] dicomDatabase:dd];
+	return [self initWithDatabase: [[[WebPortalDatabase alloc] initWithPath: DefaultWebPortalDatabasePath] autorelease]
+                    dicomDatabase:dd];
 }
 
 - (NSThread*) threadForRunLoopRef: (CFRunLoopRef) runloopref
@@ -439,12 +444,10 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 // This is the main thread for the socket connections,
 // then, the connections are distributed in our thread pool
 - (void) startServerThread
-{	
+{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-    [NSThread currentThread].name = @"WebPortal server thread";
+    [NSThread currentThread].name = @"WebPortal server";
     
-	// Start threads
 	for (uint i = 0; i < THREAD_POOL_SIZE; i++)
 	{
 		[NSThread detachNewThreadSelector: @selector(connectionsThread:)
@@ -483,49 +486,49 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 
 -(void)startAcceptingConnections
 {
-	if (!isAcceptingConnections) {
-		@try {
-			// Initialize an array to reference all the threads
-			runLoops = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
-			
-			// Initialize an array to hold the number of connections being processed for each thread
-			runLoopsLoad = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
-			
-			httpThreads = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
-			
-			server = [[WebPortalServer alloc] init];
-			server.portal = self;
-			
-			server.connectionClass = [WebPortalConnection class];
-			
-			if (self.usesSSL)
-				server.type = @"_https._tcp.";
-			else
-                server.type = @"_http._tcp.";
-			
-			server.TXTRecordDictionary = [NSDictionary dictionaryWithObject:@"OsiriX" forKey:@"ServerType"];
-			server.port = self.portNumber;
-			server.documentRoot = [NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]];
-			
-			if (serverThread)
-				[serverThread release];
-				
-			serverThread = [[NSThread alloc] initWithTarget: self selector: @selector(startServerThread) object: nil];
-			
-			[serverThread start];
-			
-		}
-        @catch (NSException * e) {
-			NSLog(@"Exception: [WebPortal startAcceptingConnections] %@", e);
-		}
-	}
+	if (isAcceptingConnections)
+        return;
+    
+    @try {
+        // Initialize an array to reference all the threads
+        runLoops = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
+        
+        // Initialize an array to hold the number of connections being processed for each thread
+        runLoopsLoad = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
+        
+        httpThreads = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
+        
+        server = [[WebPortalServer alloc] init];
+        server.portal = self;
+        
+        server.connectionClass = [WebPortalConnection class];
+        
+        if (self.usesSSL)
+            server.type = @"_https._tcp.";
+        else
+            server.type = @"_http._tcp.";
+        
+        server.TXTRecordDictionary = [NSDictionary dictionaryWithObject:@"OsiriX" forKey:@"ServerType"];
+        server.port = self.portNumber;
+        server.documentRoot = [NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]];
+        
+        if (serverThread)
+            [serverThread release];
+            
+        serverThread = [[NSThread alloc] initWithTarget: self selector: @selector(startServerThread) object: nil];
+        
+        [serverThread start];
+        
+    }
+    @catch (NSException * e) {
+        NSLog(@"Exception: [WebPortal startAcceptingConnections] %@", e);
+    }
 }
 
 -(void)connectionsThread:(id)obj
 {
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    
-    [NSThread currentThread].name = @"WebPortal connection thread";
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    [NSThread currentThread].name = [NSString stringWithFormat:@"WebPortal connection %@", obj];
     
 	@try
     {
@@ -537,7 +540,12 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		}
 		
 		isAcceptingConnections = YES;
-		[NSRunLoop.currentRunLoop addTimer:[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector(ignore:) userInfo:NULL repeats:NO] forMode: NSDefaultRunLoopMode];
+		[NSRunLoop.currentRunLoop addTimer:[NSTimer scheduledTimerWithTimeInterval:DBL_MAX
+                                                                            target:self
+                                                                          selector:@selector(ignore:)
+                                                                          userInfo:NULL
+                                                                           repeats:NO]
+                                   forMode: NSDefaultRunLoopMode];
 
         while (!NSThread.currentThread.isCancelled)
 		{
@@ -557,30 +565,32 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 
 -(void)stopAcceptingConnections
 {
-	if (isAcceptingConnections) {
-		isAcceptingConnections = NO;
-//		@try 
+    NSLog(@"%s %d, %d", __FUNCTION__, __LINE__, isAcceptingConnections);
+	if (!isAcceptingConnections)
+        return;
+    
+    isAcceptingConnections = NO;
+//		@try
 //		{
 //			[serverThread cancel];
 //			[NSThread sleepForTimeInterval: 5];
-//			
+//
 //			for (NSThread *thread in httpThreads)
 //				[thread cancel];
-//			
+//
 //		} @catch (NSException* e) {
 //			NSLog(@"Exception: [WebPortal stopAcceptingConnections] %@", e);
 //		}
-        
-        [notificationsTimer invalidate];
-        [notificationsTimer release];
-        notificationsTimer = nil;
-        
-        [temporaryUsersTimer invalidate];
-        [temporaryUsersTimer release];
-        temporaryUsersTimer = nil;
-        
-		NSLog( @"----- cannot stop web server -> you have to restart OsiriX");
-	}
+    
+    [notificationsTimer invalidate];
+    [notificationsTimer release];
+    notificationsTimer = nil;
+    
+    [temporaryUsersTimer invalidate];
+    [temporaryUsersTimer release];
+    temporaryUsersTimer = nil;
+    
+    NSLog( @"----- cannot stop web server -> you have to restart the app");
 }
 
 -(NSData*)dataForPath:(NSString*)file {
