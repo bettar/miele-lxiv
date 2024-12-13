@@ -127,8 +127,8 @@
     [self setShaderProgramForLineWidth: 1.0 * self.window.backingScaleFactor];
     renderer_set_rgb(1.0f, 0.0f, 1.0f); // magenta
 
-    float cfocalShiftX = focalShiftX;
-    float cfocalShiftY = focalShiftY;
+    float cfocalShiftX = focalShiftX;// TODO: * self.window.backingScaleFactor;
+    float cfocalShiftY = focalShiftY;// TODO: * self.window.backingScaleFactor;
     
     if (xFlipped)
         cfocalShiftX *= -1.0;
@@ -282,8 +282,10 @@
 	if (yFlipped)
 		sY *= -1.0;
 	
-	if ((mouseLocStart.x > crossPositionX+sX*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.x < crossPositionX+sX*normalizationFactor/scaleFactor+near/scaleFactor) &&
-		(mouseLocStart.y > crossPositionY+sY*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.y < crossPositionY+sY*normalizationFactor/scaleFactor+near/scaleFactor) )		//
+	if ((mouseLocStart.x > crossPositionX+sX*normalizationFactor/scaleFactor-near/scaleFactor &&
+         mouseLocStart.x < crossPositionX+sX*normalizationFactor/scaleFactor+near/scaleFactor) &&
+		(mouseLocStart.y > crossPositionY+sY*normalizationFactor/scaleFactor-near/scaleFactor &&
+         mouseLocStart.y < crossPositionY+sY*normalizationFactor/scaleFactor+near/scaleFactor))
 	{
 		return YES;
 	}
@@ -362,8 +364,10 @@
 	if (yFlipped)
 		sY *= -1.0;
 	
-	if ((mouseLocStart.x > crossPositionX+sX*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.x < crossPositionX+sX*normalizationFactor/scaleFactor+near/scaleFactor) &&
-		(mouseLocStart.y > crossPositionY+sY*normalizationFactor/scaleFactor-near/scaleFactor && mouseLocStart.y < crossPositionY+sY*normalizationFactor/scaleFactor+near/scaleFactor) )		//
+	if ((mouseLocStart.x > crossPositionX+sX*normalizationFactor/scaleFactor-near/scaleFactor &&
+         mouseLocStart.x < crossPositionX+sX*normalizationFactor/scaleFactor+near/scaleFactor) &&
+		(mouseLocStart.y > crossPositionY+sY*normalizationFactor/scaleFactor-near/scaleFactor &&
+         mouseLocStart.y < crossPositionY+sY*normalizationFactor/scaleFactor+near/scaleFactor))
 	{
 		BOOL keepOn = YES;
 		while (keepOn)
@@ -644,7 +648,8 @@
 			[self getWLWW:&cwl :&cww];
 			[exportDCM setDefaultWWWL: cww :cwl];
 			
-			[exportDCM setPixelSpacing: [curPix1 pixelSpacingX] / [self scaleValue] :[curPix1 pixelSpacingX] / [self scaleValue]];
+			[exportDCM setPixelSpacing: [curPix1 pixelSpacingX] / [self scaleValue]
+                                      : [curPix1 pixelSpacingX] / [self scaleValue]];
 				
 			[exportDCM setSliceThickness: [curPix1 sliceThickness]];
 			[exportDCM setSlicePosition: [curPix1 sliceLocation]];

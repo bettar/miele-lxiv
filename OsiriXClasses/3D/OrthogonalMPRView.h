@@ -33,7 +33,7 @@
 
 @interface OrthogonalMPRView : DCMView
 {
-	float crossPositionX, crossPositionY; // coordinate x and Y of the cross
+	float crossPositionX, crossPositionY; // coordinate X and Y of the cross
 	OrthogonalMPRController *controller;
 	long displayResliceAxes;
 	float savedScaleValue;

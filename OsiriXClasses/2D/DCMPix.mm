@@ -1326,7 +1326,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	@autoreleasepool
 	{
-        [NSThread currentThread].name = @"Compute Pixels thread";
+        [NSThread currentThread].name = @"Compute Pixels";
         
         NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
         

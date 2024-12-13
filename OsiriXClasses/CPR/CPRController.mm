@@ -872,7 +872,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     [bottomTransverseView setCurrentTool:toolIndex];
 }
 
-- (IBAction) setTool:(id)sender;
+- (IBAction) setTool:(id)sender
 {
 	int toolIndex = 0;
 	
@@ -1746,7 +1746,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	}
 }
 
-- (void)ApplyWLWW:(id)sender;
+- (void)ApplyWLWW:(id)sender
 {
 	NSString *menuString = [sender title];
 	
@@ -3713,7 +3713,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     }
 }
 
-- (IBAction) loadBezierPath: (id) sender;
+- (IBAction) loadBezierPath: (id) sender
 {
     NSOpenPanel *oPanel = [NSOpenPanel openPanel];
     [oPanel setAllowedFileTypes: @[@"curvedPath"]];
@@ -3815,7 +3815,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 
 #pragma mark - Shadings
 
-- (IBAction)switchShading:(id)sender;
+- (IBAction)switchShading:(id)sender
 {
 	[hiddenVRView switchShading:sender];
 	
@@ -3833,7 +3833,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	
 }
 
-- (IBAction)applyShading:(id)sender;
+- (IBAction)applyShading:(id)sender
 {
 	NSDictionary *dict = [[shadingsPresetsController selectedObjects] lastObject];
 	
@@ -3869,7 +3869,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	}
 }
 
-- (void)findShadingPreset:(id)sender;
+- (void)findShadingPreset:(id)sender
 {
 	float ambient, diffuse, specular, specularpower;
 	
@@ -3890,7 +3890,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	}
 }
 
-- (IBAction)editShadingValues:(id)sender;
+- (IBAction)editShadingValues:(id)sender
 {
 	[shadingPanel makeKeyAndOrderFront: self];
 	[self findShadingPreset: self];
@@ -4271,7 +4271,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 
 #pragma mark - Axis / Mouse Position : Show / Hide
 
-- (void)toogleCPRAxisVisibility:(id) sender;
+- (void)toogleCPRAxisVisibility:(id) sender
 {
     cprView.displayCrossLines = !cprView.displayCrossLines;
 
@@ -4288,7 +4288,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 }
 
 
-- (void)toogleAxisVisibility:(id) sender;
+- (void)toogleAxisVisibility:(id) sender
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSEventModifierFlagShift)
 	{
@@ -4308,7 +4308,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[self updateToolbarItems];
 }
 
-- (void)toogleMousePositionVisibility:(id) sender;
+- (void)toogleMousePositionVisibility:(id) sender
 {
 	self.displayMousePosition = !self.displayMousePosition;
 	
@@ -5207,7 +5207,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[self delayedFullLODRendering: CPRMPRDCMView];
 }
 
-- (IBAction)runFlyAssistant:(id)sender;
+- (IBAction)runFlyAssistant:(id)sender
 {
     if ([curvedPath.nodes count] > 1 && [curvedPath.nodes count] <= 5)
         [self assistedCurvedPath:nil];

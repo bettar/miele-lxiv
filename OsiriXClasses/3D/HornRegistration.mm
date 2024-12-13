@@ -184,10 +184,10 @@
 		
 		for (u = 0; u < numberOfPoint; u++)
 		{
-			[[modelPoints objectAtIndex:u] getValue: pt3D];
+            [[modelPoints objectAtIndex:u] getValue: pt3D size:3*sizeof(double)];
 			modelPts->SetPoint( u, pt3D);
 			
-			[[sensorPoints objectAtIndex:u] getValue: pt3D];
+			[[sensorPoints objectAtIndex:u] getValue: pt3D size:3*sizeof(double)];
 			sensorPts->SetPoint( u, pt3D);
 		}
 		

@@ -168,7 +168,7 @@
 	}
 }
 
-- (IBAction)viewTLSCertificate:(id)sender;
+- (IBAction)viewTLSCertificate:(id)sender
 {
 	NSString *label = [self UniqueLabelForSelectedServer];
 	[DDKeychain openCertificatePanelForLabel:label];

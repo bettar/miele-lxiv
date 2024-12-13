@@ -87,7 +87,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 #pragma mark - Magnetic Windows & Tiling
 
 #ifndef MIELE_LIGHT
-- (IBAction) paste:(id) sender;
+- (IBAction) paste:(id) sender
 {
 	if ([[self pixList] count])
 	{

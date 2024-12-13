@@ -318,11 +318,15 @@ OFCondition mainStoreSCP(T_ASC_Association * assoc,
         options.maxPDU_ = overrideMaxPDU;
 
 #if 0
+    // disable the DCMDICTPATH dictionary by unsetting the environment variable
+    int ret = setenv(DCM_DICT_ENVIRONMENT_VARIABLE, "", 1 /* overwrite */);
+#endif
+#if 0
     // It turns out that at this point the DICOM dictionary:
     //      is already loaded for the "non sandboxed" build
     //      is not loaded for the "sandboxed" build
     // in either case DCMDICTPATH is null
-    NSLog(@"%s line %i, isDictionaryLoaded:%d", __FUNCTION__ , __LINE__, dcmDataDict.isDictionaryLoaded());
+    //NSLog(@"%s line %i, isDictionaryLoaded:%d", __FUNCTION__ , __LINE__, dcmDataDict.isDictionaryLoaded());
     const char* env = NULL;
     env = getenv(DCM_DICT_ENVIRONMENT_VARIABLE);
     fprintf(stderr, "DCM_DICT_ENVIRONMENT_VARIABLE: %s=%s\n", DCM_DICT_ENVIRONMENT_VARIABLE, env);

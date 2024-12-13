@@ -590,7 +590,7 @@ void renderer_drawTriangles_xy(NSArray *pArray, BOOL filled)
     int n=0;
     for (long i = 0; i < nPoints; i++) {
         glm::vec2 p;
-        [pArray[i] getValue:&p size:1*sizeof(glm::vec2)];
+        [pArray[i] getValue:&p size:sizeof(glm::vec2)];
         vertex[n++] = p.x;
         vertex[n++] = p.y;
     }
@@ -705,7 +705,7 @@ void renderer_drawQuads_xyz(NSArray *pArray)
     int nv=0;
     glm::vec3 p;
     for (long i = 0; i < nPoints; i++) {
-        [pArray[idx[i]] getValue:&p];
+        [pArray[idx[i]] getValue:&p size:sizeof(glm::vec3)];
         vertex[nv++] = p.x;
         vertex[nv++] = p.y;
         vertex[nv++] = p.z;
@@ -793,7 +793,7 @@ void renderer_drawLine_xy(NSArray *pArray, GLenum lineMode)
     int n=0;
     for (long i = 0; i < nPoints; i++) {
         glm::vec2 p;
-        [pArray[i] getValue:&p];
+        [pArray[i] getValue:&p size:sizeof(glm::vec2)];
         vertex[n++] = p.x;
         vertex[n++] = p.y;
     }
@@ -873,7 +873,7 @@ void renderer_drawPoints(NSArray *pArray, BOOL rounded)
     int nv=0;
     for (long i = 0; i < nPoints; i++) {
         glm::vec2 p;
-        [pArray[i] getValue:&p];
+        [pArray[i] getValue:&p size:sizeof(glm::vec2)];
         pointVertex[nv++] = p.x;
         pointVertex[nv++] = p.y;
     }
@@ -958,7 +958,7 @@ void renderer_drawTriangleFan_xyz_uv_uv(NSArray *pArray)
 
     for (long i = 0; i < nPoints; i++) {
         Point_xyz_uv_uv pt;
-        [pArray[i] getValue:&pt];
+        [pArray[i] getValue:&pt size:sizeof(Point_xyz_uv_uv)];
         vertex_buffer_data[i*dimV] = pt.p.x;
         vertex_buffer_data[i*dimV+1] = pt.p.y;
         vertex_buffer_data[i*dimV+2] = pt.p.z;
@@ -1083,7 +1083,7 @@ void renderer_draw_xyz_uv(NSArray *pArray, GLenum mode)
 #endif
     for (long i = 0; i < nPoints; i++) {
         Point_xyz_uv pt;
-        [pArray[i] getValue:&pt];
+        [pArray[i] getValue:&pt size:sizeof(Point_xyz_uv)];
         vertex_buffer_data[i*dimV] = pt.p.x;
         vertex_buffer_data[i*dimV+1] = pt.p.y;
         vertex_buffer_data[i*dimV+2] = pt.p.z;
@@ -1209,7 +1209,7 @@ void renderer_drawQuad_xyuv(NSArray *pArray)
     int nv=0;
     glm::vec4 p;
     for (int i=0; i < nPoints; i++) {
-        [pArray[idx[i]] getValue:&p];
+        [pArray[idx[i]] getValue:&p size:sizeof(glm::vec4)];
         pointVertex[nv++] = p.x;
         pointVertex[nv++] = p.y;
         pointVertex[nv++] = p.p;
@@ -1320,7 +1320,7 @@ void renderer_drawQuadStrip_xyuv(NSArray *pArray)
     int nv=0;
     glm::vec4 pc;
     for (int i=0; i < nPoints; i++) {
-        [pArray[idx[i]] getValue:&pc];
+        [pArray[idx[i]] getValue:&pc size:sizeof(glm::vec4)];
         pointVertex[nv++] = pc.x;
         pointVertex[nv++] = pc.y;
         pointVertex[nv++] = pc.p;
@@ -1410,7 +1410,7 @@ static void renderer_draw_xy_rgb(NSArray *pArray, GLenum mode)
     {
         NSValue *value = pArray[i];
         Point_xy_rgb pc;
-        [value getValue:&pc];
+        [value getValue:&pc size:sizeof(Point_xy_rgb)];
         
         pointVertex[nv++] = pc.p.x;
         pointVertex[nv++] = pc.p.y;
@@ -1511,7 +1511,7 @@ void renderer_drawLineStrip_xy_rgba(NSArray *pArray)
     int nv=0;
     for (long i = 0; i < nPoints; i++) {
         Point_xy_rgba pc;
-        [pArray[i] getValue:&pc];
+        [pArray[i] getValue:&pc size:sizeof(Point_xy_rgba)];
         pointVertex[nv++] = pc.p.x;
         pointVertex[nv++] = pc.p.y;
 
@@ -1589,7 +1589,7 @@ void renderer_drawPolygon(NSArray *pArray)
     int nv=0;
     for (long i = 0; i < nPoints; i++) {
         glm::vec2 p;
-        [pArray[i] getValue:&p];
+        [pArray[i] getValue:&p size:sizeof(glm::vec2)];
         pointVertex[nv++] = p.x;
         pointVertex[nv++] = p.y;
     }

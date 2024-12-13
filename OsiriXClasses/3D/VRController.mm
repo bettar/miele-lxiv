@@ -55,6 +55,8 @@
 
 #import "alertTransition.h"
 
+//#define HOROS_WAY
+
 static NSString* 	VRStandard_ToolbarIdentifier = @"VR Toolbar Identifier";
 static NSString* 	VRPanel_ToolbarIdentifier = @"VRPanel Toolbar Identifier";
 
@@ -891,8 +893,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
             [[self window] setFrameUsingName:@"3D Panel"];
         }
         
-#if 0
-        [shadingsPresetsController setWindowController: self];      
+#ifndef HOROS_WAY
+        [shadingsPresetsController setWindowController: self];
 #else // Horos
 		[shadingsPresetsController addObserver:self
                                     forKeyPath:@"selectedObjects"
@@ -910,7 +912,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     return self;
 }
 
-#if 1 // Horos
+#ifdef HOROS_WAY
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
                         change:(NSDictionary<NSKeyValueChangeKey,id> *)change
@@ -1222,7 +1224,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) dealloc
 {
-#if 1 // Horos
+#ifdef HOROS_WAY
     [shadingsPresetsController removeObserver:self
                                    forKeyPath:@"selectedObjects"
                                       context:VRController.class];
@@ -2864,7 +2866,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	return clutOpacityDrawer;
 }
 
-- (IBAction)showCLUTOpacityPanel:(id)sender;
+- (IBAction)showCLUTOpacityPanel:(id)sender
 {
 	[clutOpacityView setVolumePointer:[[pixList[0] objectAtIndex: 0] fImage]
                                 width:[[pixList[0] objectAtIndex: 0] pwidth]
@@ -2890,7 +2892,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[OpacityPopup setEnabled:NO];
 }
 
-- (void)loadAdvancedCLUTOpacity:(id)sender;
+- (void)loadAdvancedCLUTOpacity:(id)sender
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSEventModifierFlagShift)
     {
@@ -3096,7 +3098,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	return presetDictionary;
 }
 
-- (IBAction)save3DSettings:(id)sender;
+- (IBAction)save3DSettings:(id)sender
 {
     if (panelInstantiated == NO)
         [self showPresetsPanel];
@@ -3210,7 +3212,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
 }
 
-- (IBAction)enable3DSettingsSaveButton:(id)sender;
+- (IBAction)enable3DSettingsSaveButton:(id)sender
 {
 	BOOL condition = [[settingsNameTextField stringValue] length] > 0;
 	if (![settingsNewGroupNameTextField isHidden]) condition &= [[settingsNewGroupNameTextField stringValue] length] > 0;
@@ -3221,7 +3223,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[settingsSaveButton setEnabled:NO];
 }
 
-- (IBAction)show3DSettingsNewGroupTextField:(id)sender;
+- (IBAction)show3DSettingsNewGroupTextField:(id)sender
 {
 	if ([[sender title] isEqualToString:NSLocalizedString(@"New group", nil)])
 	{
@@ -3237,7 +3239,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[self enable3DSettingsSaveButton:self];
 }
 
-- (IBAction)close3DSettingsSavePanel:(id)sender;
+- (IBAction)close3DSettingsSavePanel:(id)sender
 {
 	[save3DSettingsWindow orderOut:sender];
 	[NSApp endSheet:save3DSettingsWindow];
@@ -3394,7 +3396,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	[self load3DSettings:self];
 }
 
-- (IBAction)load3DSettings:(id)sender;
+- (IBAction)load3DSettings:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setObject:[presetsGroupPopUpButton titleOfSelectedItem] forKey:@"LAST_3D_PRESET"];
 	
@@ -3550,7 +3552,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	}
 }
 
-- (IBAction)displayPresetsForSelectedGroup:(id)sender;
+- (IBAction)displayPresetsForSelectedGroup:(id)sender
 {
 	presetPageNumber = 0;
 	[self displayPresetsForSelectedGroup];
@@ -3962,7 +3964,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	[infoProjectionTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Projection: %@", nil), projectionName]];
 }
 
-- (IBAction)showPresetInfoPanel:(id)sender;
+- (IBAction)showPresetInfoPanel:(id)sender
 {
 	[self updatePresetInfoPanel];
 	[presetsInfoPanel orderFront:self];

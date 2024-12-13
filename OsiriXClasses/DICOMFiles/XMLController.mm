@@ -1299,7 +1299,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 	}
 }
 
-- (IBAction) validatorWebSite:(id) sender;
+- (IBAction) validatorWebSite:(id) sender
 {
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.dclunie.com/dicom3tools/dciodvfy.html"]];
 }

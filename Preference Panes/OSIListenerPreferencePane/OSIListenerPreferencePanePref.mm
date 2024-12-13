@@ -194,7 +194,7 @@
 
 #pragma mark - TLS
 
-- (IBAction)editTLS:(id)sender;
+- (IBAction)editTLS:(id)sender
 {
 	NSArray *selectedCipherSuites = [[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPCipherSuites"];
 	
@@ -274,29 +274,29 @@
 	}
 }
 
-- (IBAction)cancel:(id)sender;
+- (IBAction)cancel:(id)sende
 {
 	[NSApp abortModal];
 }
 
-- (IBAction)ok:(id)sender;
+- (IBAction)ok:(id)sender
 {
 	[NSApp stopModal];
 }
 
-- (IBAction)selectAllSuites:(id)sender;
+- (IBAction)selectAllSuites:(id)sender
 {
 	for( NSMutableDictionary *suite in self.TLSSupportedCipherSuite)
 		[suite setObject: @YES forKey: @"Supported"];
 }
 
-- (IBAction)deselectAllSuites:(id)sender;
+- (IBAction)deselectAllSuites:(id)sender
 {
 	for( NSMutableDictionary *suite in self.TLSSupportedCipherSuite)
 		[suite setObject: @NO forKey: @"Supported"];
 }
 
-- (IBAction)chooseTLSCertificate:(id)sender;
+- (IBAction)chooseTLSCertificate:(id)sender
 {
 	NSArray *certificates = [DDKeychain KeychainAccessCertificatesList];
 
@@ -334,7 +334,7 @@
 	}
 }
 
-- (IBAction)viewTLSCertificate:(id)sender;
+- (IBAction)viewTLSCertificate:(id)sender
 {
 	[DDKeychain openCertificatePanelForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER];
 }
@@ -360,7 +360,7 @@
 	self.TLSAuthenticationCertificate = name;
 }
 
-- (IBAction)useSameAETitleForTLSListener:(id)sender;
+- (IBAction)useSameAETitleForTLSListener:(id)sender
 {
 	NSString *aet;
 	if ([sender state] == NSOnState)
@@ -371,7 +371,7 @@
 	}
 }
 
-- (IBAction)activateDICOMTLSListenerAction:(id)sender;
+- (IBAction)activateDICOMTLSListenerAction:(id)sender
 {
 	[self updateTLSStoreSCPAETITLEIsDefaultAETButton];
 }

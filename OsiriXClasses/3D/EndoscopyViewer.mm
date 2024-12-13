@@ -1296,12 +1296,12 @@ return YES;
 
 #pragma mark - Path Assistant
 
-- (IBAction)showPathAssistantPanel:(id)sender;
+- (IBAction)showPathAssistantPanel:(id)sender
 {
 	[pathAssistantPanel makeKeyAndOrderFront: self];
 }
 
-- (IBAction)pathAssistantSetPointA:(id)sender;
+- (IBAction)pathAssistantSetPointA:(id)sender
 {
 	isLookingBackwards=NO;
 	[pathAssistantLookBackButton setState:NSOffState];
@@ -1315,7 +1315,7 @@ return YES;
 	pointA.z = [[mprController originalView] curImage];
 }
 
-- (IBAction)pathAssistantSetPointB:(id)sender;
+- (IBAction)pathAssistantSetPointB:(id)sender
 {
 	isLookingBackwards=NO;
 	[pathAssistantLookBackButton setState:NSOffState];
@@ -1394,7 +1394,7 @@ return YES;
 	}
 }
 
-- (IBAction)pathAssistantLockPath:(id)sender;
+- (IBAction)pathAssistantLockPath:(id)sender
 {
 	isLookingBackwards=NO;
 	[pathAssistantLookBackButton setState:NSOffState];
@@ -1409,7 +1409,7 @@ return YES;
 	[self flyThruAssistantGoForward:nil];	
 }
 
-- (IBAction)pathAssistantDeletePath:(id)sender;
+- (IBAction)pathAssistantDeletePath:(id)sender
 {
 	isLookingBackwards=NO;
 	[pathAssistantLookBackButton setState:NSOffState];
@@ -1421,7 +1421,7 @@ return YES;
 	flyAssistantPositionIndex=0;	
 }
 
-- (IBAction)pathAssistantBasicModeButtonAction:(id)sender;
+- (IBAction)pathAssistantBasicModeButtonAction:(id)sender
 {
 	if ([[pathAssistantBasicModeButton title] isEqualToString:@"Lock Path"])
 	{
@@ -1435,7 +1435,7 @@ return YES;
 	}
 }
 
-- (IBAction)pathAssistantChangeMode:(id)sender;
+- (IBAction)pathAssistantChangeMode:(id)sender
 {
 	if ([sender selectedRow]==0)
 	{
@@ -1462,7 +1462,7 @@ return YES;
 	
 }
 
-- (IBAction)pathAssistantExportToFlyThru:(id)sender;
+- (IBAction)pathAssistantExportToFlyThru:(id)sender
 {
 	[self flyThruControllerInit:sender];	
 	

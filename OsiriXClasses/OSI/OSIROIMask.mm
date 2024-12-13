@@ -1174,7 +1174,7 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 {
 	OSIROIMaskRun run;
     assert(strcmp([self objCType], @encode(OSIROIMaskRun)) == 0);
-    [self getValue:&run];
+    [self getValue:&run size:sizeof(OSIROIMaskRun)];
     return run;
 }	
 
@@ -1187,7 +1187,7 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 {
 	OSIROIMaskIndex index;
     assert(strcmp([self objCType], @encode(OSIROIMaskIndex)) == 0);
-    [self getValue:&index];
+    [self getValue:&index size:sizeof(OSIROIMaskIndex)];
     return index;
 }
 

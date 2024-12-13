@@ -1464,31 +1464,31 @@ NSRect rect = drawingRect;
 
 #pragma mark - GUI
 
-- (IBAction)computeHistogram:(id)sender;
+- (IBAction)computeHistogram:(id)sender
 {
 	[self callComputeHistogram];
 	[self updateView];
 }
 
-- (IBAction)setHistogramOpacity:(id)sender;
+- (IBAction)setHistogramOpacity:(id)sender
 {
 	histogramOpacity = [sender floatValue];
 	[self updateView];
 }
 
-- (IBAction)newCurve:(id)sender;
+- (IBAction)newCurve:(id)sender
 {
 	[self newCurve];
 }
 
 // Accessor
-- (IBAction)setLineWidth:(id)sender;
+- (IBAction)setLineWidth:(id)sender
 {
 	lineWidth = [sender floatValue];
 	[self updateView];
 }
 
-- (IBAction)setPointDiameter:(id)sender;
+- (IBAction)setPointDiameter:(id)sender
 {
 	pointDiameter = [sender floatValue];
 	[self updateView];
@@ -1520,12 +1520,12 @@ NSRect rect = drawingRect;
 	}
 }
 
-- (IBAction)niceDisplay:(id)sender;
+- (IBAction)niceDisplay:(id)sender
 {
 	[self niceDisplay];
 }
 
-- (IBAction)sendToBack:(id)sender;
+- (IBAction)sendToBack:(id)sender
 {
 	int curveIndex = -1;
 
@@ -1560,20 +1560,20 @@ NSRect rect = drawingRect;
 	}
 }
 
-- (IBAction)setZoomFator:(id)sender;
+- (IBAction)setZoomFator:(id)sender
 {
 	zoomFactor = [sender floatValue];
 	[self updateView];
 }
 
-- (IBAction)scroll:(id)sender;
+- (IBAction)scroll:(id)sender
 {
 //	zoomFixedPoint = [sender floatValue] / [sender maxValue] * [self bounds].size.width;
 zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.width;
 	[self updateView];
 }
 
-- (IBAction)removeAllCurves:(id)sender;
+- (IBAction)removeAllCurves:(id)sender
 {
 	[curves removeAllObjects];
 	[self updateView];
@@ -1813,7 +1813,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 #pragma mark - Copy / Paste
 
-- (IBAction)copy:(id)sender;
+- (IBAction)copy:(id)sender
 {
 	int curveIndex = [self selectedCurveIndex];
 	
@@ -1855,7 +1855,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	}
 }
 
-- (IBAction)paste:(id)sender;
+- (IBAction)paste:(id)sender
 {
 	NSPasteboard* pasteboard = [NSPasteboard generalPasteboard];
 	NSString* type = [pasteboard availableTypeFromArray:[NSArray arrayWithObjects:
@@ -1920,7 +1920,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	}
 }
 
-- (IBAction)delete:(id)sender;
+- (IBAction)delete:(id)sender
 {
 	int curveIndex = [self selectedCurveIndex];
 	
@@ -1960,13 +1960,13 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	}
 }
 
-- (IBAction)cut:(id)sender;
+- (IBAction)cut:(id)sender
 {
 	[self copy:self];
 	[self delete:self];
 }
 
-- (IBAction)undo:(id)sender;
+- (IBAction)undo:(id)sender
 {
 	if([undoManager canUndo])
 	{
@@ -1977,7 +1977,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	}
 }
 
-- (IBAction)redo:(id)sender;
+- (IBAction)redo:(id)sender
 {
 	if([undoManager canRedo])
 	{
@@ -1992,7 +1992,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 #define CLUTDATABASE @"/CLUTs/"
 
-- (void)chooseNameAndSave:(id)sender;
+- (void)chooseNameAndSave:(id)sender
 {
 	if(isSaveButtonHighlighted)
 	{
@@ -2003,7 +2003,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[chooseNameAndSaveWindow orderFront:self];
 }
 
-- (IBAction)save:(id)sender;
+- (IBAction)save:(id)sender
 {
 	if([sender tag]==1)
 	{

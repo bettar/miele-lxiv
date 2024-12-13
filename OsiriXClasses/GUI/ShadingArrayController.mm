@@ -63,7 +63,7 @@
 	[self setSelectionIndex:[[self arrangedObjects] indexOfObject:object]];
 }
 
-- (void)setWindowController:(OSIWindowController*) ctrl;
+- (void)setWindowController:(OSIWindowController*) ctrl
 {
 	winController = ctrl;
 }

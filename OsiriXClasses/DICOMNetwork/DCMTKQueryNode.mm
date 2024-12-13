@@ -920,7 +920,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 #ifndef NDEBUG
     NSLog( @"--- WADO CFIND Start");
 #endif
-    [NSThread currentThread].name = @"WADO C-FIND Thread";
+    [NSThread currentThread].name = @"WADO C-FIND";
     
     DcmDataset dataset;
     
@@ -1866,7 +1866,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-    [NSThread currentThread].name = @"CFind Thread";
+    [NSThread currentThread].name = @"CFind";
     
 	T_ASC_Association *assoc = (T_ASC_Association*) [[dict objectForKey: @"assoc"] pointerValue];
 	DcmDataset *dataset = (DcmDataset*) [[dict objectForKey: @"dataset"] pointerValue];

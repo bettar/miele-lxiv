@@ -96,7 +96,7 @@ NSInteger DDRangeCompare(DDRangePointer pDDRange1, DDRangePointer pDDRange2)
 - (DDRange)ddrangeValue
 {
 	DDRange result;
-	[self getValue:&result];
+    [self getValue:&result size:sizeof(DDRange)];
 	return result;
 }
 

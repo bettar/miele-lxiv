@@ -141,8 +141,13 @@
 
 -(void) dealloc
 {
-    while( yCacheQueue.operationCount > 0)
-        [NSThread sleepForTimeInterval: 0.1];
+    if (@available(macOS 10.15, *)) {
+        while (yCacheQueue.progress.completedUnitCount > 0)
+            [NSThread sleepForTimeInterval: 0.1];
+    } else {
+        while (yCacheQueue.operationCount > 0)
+            [NSThread sleepForTimeInterval: 0.1];
+    }
 
     [yCacheQueue release];
 	if (Ycache)

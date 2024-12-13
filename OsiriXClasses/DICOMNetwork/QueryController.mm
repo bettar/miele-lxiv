@@ -2320,7 +2320,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         [outlineView setNeedsDisplay: YES];
 }
 
-- (IBAction) selectModality: (id) sender;
+- (IBAction) selectModality: (id) sender
 {
 	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
 	

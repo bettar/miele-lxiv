@@ -57,6 +57,8 @@
 //	NSMutableDictionary *seriesForUsersCache;
 }
 
++(void)initialize:(id)observer;
+
 // called from AppController
 +(void)initializeWebPortalClass;
 +(void)finalizeWebPortalClass;

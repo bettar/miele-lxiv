@@ -186,12 +186,12 @@
             [BrowserController currentBrowser].timeIntervalType = TIME_INTERVAL_CUSTOM;
     }
 }
-- (IBAction) nowFrom:(id)sender;
+- (IBAction) nowFrom:(id)sender
 {
     self.fromDate = [NSDate date];
 }
 
-- (IBAction) nowTo:(id) sender;
+- (IBAction) nowTo:(id) sender
 {
      self.toDate = [NSDate date];
 }

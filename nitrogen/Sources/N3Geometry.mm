@@ -1158,7 +1158,7 @@ N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixf(float *f) // f better b
 {
     N3Vector vector;
     assert(strcmp([self objCType], @encode(N3Vector)) == 0);
-    [self getValue:&vector];
+    [self getValue:&vector size:sizeof(N3Vector)];
     return vector;
 }
 
@@ -1171,7 +1171,7 @@ N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixf(float *f) // f better b
 {
 	N3Line line;
     assert(strcmp([self objCType], @encode(N3Line)) == 0);
-    [self getValue:&line];
+    [self getValue:&line size:sizeof(N3Line)];
     return line;
 }	
 
@@ -1185,7 +1185,7 @@ N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixf(float *f) // f better b
 {
 	N3Plane plane;
     assert(strcmp([self objCType], @encode(N3Plane)) == 0);
-    [self getValue:&plane];
+    [self getValue:&plane size:sizeof(N3Plane)];
     return plane;
 }	
 
@@ -1198,7 +1198,7 @@ N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixf(float *f) // f better b
 {
     N3AffineTransform transform;
     assert(strcmp([self objCType], @encode(N3AffineTransform)) == 0);
-    [self getValue:&transform];
+    [self getValue:&transform size:sizeof(N3AffineTransform)];
     return transform;
 }
 

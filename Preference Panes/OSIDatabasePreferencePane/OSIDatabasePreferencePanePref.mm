@@ -416,7 +416,7 @@
     self.currentCommentsAutoFill = currentCommentsAutoFill;
 }
 
-- (IBAction) setDICOMFieldMenu: (id) sender;
+- (IBAction) setDICOMFieldMenu: (id) sender
 {
 	[commentsGroup setStringValue: [[[sender selectedItem] title] substringWithRange: NSMakeRange( 1, 6)]];
 	[commentsElement setStringValue: [[[sender selectedItem] title] substringWithRange: NSMakeRange( 8, 6)]];

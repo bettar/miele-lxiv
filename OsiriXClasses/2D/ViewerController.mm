@@ -6249,7 +6249,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self showCurrentThumbnail: self];
 }
 
-- (void) showCurrentThumbnail:(id) sender;
+- (void) showCurrentThumbnail:(id) sender
 {
 	NSUInteger index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
 		
@@ -9777,7 +9777,7 @@ static int avoidReentryRefreshDatabase = 0;
 //{
 //	@autoreleasepool
 //    {
-//        [NSThread currentThread].name = @"Load Image Data Sub Thread";
+//        [NSThread currentThread].name = @"Load Image Data Sub";
 //        
 //        NSThread *mainLoadingThread = [dict objectForKey: @"loadingThread"];
 //        NSArray *p = [dict objectForKey: @"pixList"];
@@ -10273,7 +10273,7 @@ static int avoidReentryRefreshDatabase = 0;
 
 #pragma mark - resample image
 
-- (IBAction)resampleDataBy2:(id)sender;
+- (IBAction)resampleDataBy2:(id)sender
 {
 	id waitWindow = [self startWaitWindow: NSLocalizedString( @"Resampling data...", nil)];
 	BOOL isResampled = [self resampleDataBy2];
@@ -14827,7 +14827,7 @@ long				x, y;
 	[self createLayerROIFromROI:[self selectedROI]];
 }
 
-- (IBAction)createLayerROIFromSelectedROI:(id)sender;
+- (IBAction)createLayerROIFromSelectedROI:(id)sender
 {
 	[self createLayerROIFromSelectedROI];
 }
@@ -16521,7 +16521,7 @@ long				x, y;
 //	}
 }
 
-//- (IBAction)exportAsDICOMSR:(id)sender;
+//- (IBAction)exportAsDICOMSR:(id)sender
 //{
 //	SRAnnotationController *srController = [[SRAnnotationController alloc] initWithViewerController:self];
 //	[srController beginSheet];
@@ -16643,12 +16643,12 @@ long				x, y;
 	[self setSelectedROIsGrouped:NO];
 }
 
-- (IBAction)groupSelectedROIs:(id)sender;
+- (IBAction)groupSelectedROIs:(id)sender
 {
 	[self groupSelectedROIs];
 }
 
-- (IBAction)ungroupSelectedROIs:(id)sender;
+- (IBAction)ungroupSelectedROIs:(id)sender
 {
 	[self ungroupSelectedROIs];
 }
@@ -16666,17 +16666,17 @@ long				x, y;
 	}
 }
 
-- (IBAction)lockSelectedROIs:(id)sender;
+- (IBAction)lockSelectedROIs:(id)sender
 {
 	[self setSelectedROIsLocked: YES];
 }
 
-- (IBAction)unlockSelectedROIs:(id)sender;
+- (IBAction)unlockSelectedROIs:(id)sender
 {
 	[self setSelectedROIsLocked: NO];
 }
 
-- (IBAction) makeSelectedROIsUnselectable:(id)sender;
+- (IBAction) makeSelectedROIsUnselectable:(id)sender
 {
 	[self addToUndoQueue: @"roi"];
 	
@@ -16689,7 +16689,7 @@ long				x, y;
 	}
 }
 
-- (IBAction) makeAllROIsSelectable:(id)sender;
+- (IBAction) makeAllROIsSelectable:(id)sender
 {
 	[self addToUndoQueue: @"roi"];
 	
@@ -24221,14 +24221,14 @@ static BOOL viewerControllerPlaying = NO;
 
 #pragma mark - report
 
-- (IBAction)deleteReport:(id)sender;
+- (IBAction)deleteReport:(id)sender
 {
 	[[BrowserController currentBrowser] deleteReport:sender];
 	[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 }
 
 #ifndef MIELE_LIGHT
-- (IBAction)generateReport:(id)sender;
+- (IBAction)generateReport:(id)sender
 {
 	[[BrowserController currentBrowser] generateReport:sender];
 	[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
@@ -24427,7 +24427,7 @@ static BOOL viewerControllerPlaying = NO;
 
 #pragma mark - 12 Bit
 
--(IBAction)enable12Bit:(id)sender;
+-(IBAction)enable12Bit:(id)sender
 {
 	BOOL t12Bit = ([[sender selectedCell] tag]==0);
 	[imageView setIsLUT12Bit:t12Bit];
@@ -24445,7 +24445,7 @@ static BOOL viewerControllerPlaying = NO;
 
 #pragma mark - Navigator
 
-- (IBAction)navigator:(id)sender;
+- (IBAction)navigator:(id)sender
 {
 	if ([[[self imageView] curDCM] isRGB])
 	{
@@ -24497,7 +24497,7 @@ static BOOL viewerControllerPlaying = NO;
         [[NavigatorWindowController navigatorWindowController] setViewer:self];
 }
 
-- (IBAction)threeDPanel:(id)sender;
+- (IBAction)threeDPanel:(id)sender
 {
 	if ([ThreeDPositionController threeDPositionController] == nil)
 	{
@@ -24530,7 +24530,7 @@ static BOOL viewerControllerPlaying = NO;
         [[ThreeDPositionController threeDPositionController] setViewer:self];
 }
 
-- (void)updateNavigator;
+- (void)updateNavigator
 {
 	[[ThreeDPositionController threeDPositionController] setViewer:self];
 	

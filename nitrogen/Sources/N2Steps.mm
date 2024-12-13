@@ -139,7 +139,7 @@ NSString* N2StepsNotificationStep = @"N2StepsNotificationStep";
 		[_delegate steps:self valueChanged:sender];
 }
 
--(IBAction)reset:(id)sender; {
+-(IBAction)reset:(id)sender {
 	for (unsigned i = 0; i < [[self content] count]; ++i)
 		[[[self content] objectAtIndex:i] setDone:NO];
 	

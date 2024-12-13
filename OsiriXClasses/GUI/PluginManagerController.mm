@@ -144,7 +144,7 @@ static NSDate *CachedPluginsListDate = nil;
 	return [PluginManager availabilities];
 }
 
-- (IBAction)modifiyActivation:(id)sender;
+- (IBAction)modifiyActivation:(id)sender
 {
 	NSArray *pluginsList = [pluginsArrayController arrangedObjects];
 	NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable clickedRow]] objectForKey:@"name"];
@@ -163,7 +163,7 @@ static NSDate *CachedPluginsListDate = nil;
 	[pluginTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [pluginTable clickedRow]] byExtendingSelection:NO];
 }
 
-- (IBAction)delete:(id)sender;
+- (IBAction)delete:(id)sender
 {
 	if (NSRunInformationalAlertPanel2(NSLocalizedString(@"Delete a plugin", nil),
                                      NSLocalizedString(@"Are you sure you want to delete the selected plugin?", nil),
@@ -184,7 +184,7 @@ static NSDate *CachedPluginsListDate = nil;
 	}
 }
 
-- (IBAction)modifiyAvailability:(id)sender;
+- (IBAction)modifiyAvailability:(id)sender
 {
 	NSArray *pluginsList = [pluginsArrayController arrangedObjects];
 	NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable clickedRow]] objectForKey:@"name"];
@@ -194,7 +194,7 @@ static NSDate *CachedPluginsListDate = nil;
 	[self refreshPluginList]; // needed to restore the availability menu in case the user did provided a good admin password
 }
 
-- (IBAction)loadPlugins:(id)sender;
+- (IBAction)loadPlugins:(id)sender
 {
 	[PluginManager setMenus:filtersMenu :roisMenu :othersMenu :dbMenu];
 }
@@ -213,7 +213,7 @@ static NSDate *CachedPluginsListDate = nil;
     }
 }
 
-- (IBAction)showWindow:(id)sender;
+- (IBAction)showWindow:(id)sender
 {    
 	if ([[self availableRemotePlugins] count] < 1)
 	{
@@ -392,7 +392,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	}  // for
 }
 
-- (IBAction)changeWebView:(id)sender;
+- (IBAction)changeWebView:(id)sender
 {
 	[self setURLforPluginWithName:[sender title]];
 }
@@ -433,7 +433,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
     [pool release];
 }
 
-- (IBAction)download:(id)sender;
+- (IBAction)download:(id)sender
 {
     NSString *path = [downloadUrlDict valueForKey:@"path"];
     NSString *lastComponent = [[path lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];

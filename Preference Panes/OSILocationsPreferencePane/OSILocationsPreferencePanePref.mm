@@ -554,7 +554,7 @@
 	}
 }
 
-- (IBAction) OsiriXDBsaveAs:(id) sender;
+- (IBAction) OsiriXDBsaveAs:(id) sender
 {
     NSSavePanel *sPanel = [NSSavePanel savePanel];
     [sPanel setNameFieldStringValue: @"DB.plist"];
@@ -593,7 +593,7 @@
                                      nil);
 }
 
-- (IBAction) OsiriXDBloadFrom:(id) sender;
+- (IBAction) OsiriXDBloadFrom:(id) sender
 {
 	NSOpenPanel *sPanel	= [NSOpenPanel openPanel];
 	
@@ -643,7 +643,7 @@
 	}
 }
 
-- (IBAction) saveAs:(id) sender;
+- (IBAction) saveAs:(id) sender
 {
     [self resetTest];
 
@@ -691,7 +691,7 @@
 	}
 }
 
-- (IBAction) loadFrom:(id) sender;
+- (IBAction) loadFrom:(id) sender
 {
 	NSOpenPanel *sPanel = [NSOpenPanel openPanel];
 	
@@ -1038,7 +1038,7 @@
 	}
 }
 
-- (IBAction)viewTLSCertificate:(id)sender;
+- (IBAction)viewTLSCertificate:(id)sender
 {
 	NSString *label = [self DICOMTLSUniqueLabelForSelectedServer];
 	[DDKeychain openCertificatePanelForLabel:label];
@@ -1074,13 +1074,13 @@
                                          AETitle: [aServer valueForKey:@"AETitle"]];
 }
 
-- (IBAction)selectAllSuites:(id)sender;
+- (IBAction)selectAllSuites:(id)sender
 {
 	for (NSMutableDictionary *suite in self.TLSSupportedCipherSuite)
 		[suite setObject: @YES forKey: @"Supported"];
 }
 
-- (IBAction)deselectAllSuites:(id)sender;
+- (IBAction)deselectAllSuites:(id)sender
 {
 	for (NSMutableDictionary *suite in self.TLSSupportedCipherSuite)
 		[suite setObject: @NO forKey: @"Supported"];

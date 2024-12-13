@@ -221,7 +221,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[DICOMFieldsPopUpButton removeAllItems];
 }
 
-- (IBAction)addAnnotation:(id)sender;
+- (IBAction)addAnnotation:(id)sender
 {
 	[layoutController addAnnotation:sender];
 	
@@ -231,7 +231,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[addSpecialFieldButton setEnabled:YES];
 }
 
-- (IBAction)removeAnnotation:(id)sender;
+- (IBAction)removeAnnotation:(id)sender
 {
 	[layoutController removeAnnotation:sender];
 	[titleTextField setStringValue:@""];
@@ -242,12 +242,12 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[addSpecialFieldButton setEnabled:NO];
 }
 
-- (IBAction)setTitle:(id)sender;
+- (IBAction)setTitle:(id)sender
 {
 	[layoutController setTitle:sender];
 }
 
-- (IBAction)addFieldToken:(id)sender;
+- (IBAction)addFieldToken:(id)sender
 {
 	if(sender==addCustomDICOMFieldButton || sender==addDICOMFieldButton || sender==addDatabaseFieldButton || sender==addSpecialFieldButton)
 	{
@@ -257,12 +257,12 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[layoutController addFieldToken:sender];
 }
 
-- (IBAction)validateTokenTextField:(id)sender;
+- (IBAction)validateTokenTextField:(id)sender
 {
 	[layoutController validateTokenTextField:sender];
 }
 
-- (IBAction)saveAnnotationLayout:(id)sender;
+- (IBAction)saveAnnotationLayout:(id)sender
 {
 	[layoutController saveAnnotationLayoutForModality:[[modalitiesPopUpButton selectedItem] title]];
 }
@@ -285,29 +285,29 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[addSpecialFieldButton setEnabled:NO];
 }
 
-- (CIALayoutController*)layoutController; {return layoutController;}
+- (CIALayoutController*)layoutController {return layoutController;}
 
-- (NSTextField*)titleTextField; {return titleTextField;}
-- (NSTokenField*)contentTokenField; {return contentTokenField;}
-- (NSTextField*)dicomNameTokenField; {return dicomNameTokenField;}
+- (NSTextField*)titleTextField {return titleTextField;}
+- (NSTokenField*)contentTokenField {return contentTokenField;}
+- (NSTextField*)dicomNameTokenField {return dicomNameTokenField;}
 - (NSTextField*)dicomGroupTextField {return dicomGroupTextField;}
-- (NSTextField*)dicomElementTextField; {return dicomElementTextField;}
-- (NSTextField*)groupLabel; {return groupLabel;}
-- (NSTextField*)elementLabel; {return elementLabel;}
-- (NSTextField*)nameLabel; {return nameLabel;}
-- (NSButton*)addCustomDICOMFieldButton; {return addCustomDICOMFieldButton;}
-- (NSButton*)addDICOMFieldButton; {return addDICOMFieldButton;}
-- (NSButton*)addDatabaseFieldButton; {return addDatabaseFieldButton;}
-- (NSButton*)addSpecialFieldButton; {return addSpecialFieldButton;}
-- (NSPopUpButton*)DICOMFieldsPopUpButton; {return DICOMFieldsPopUpButton;}
-- (NSPopUpButton*)databaseFieldsPopUpButton; {return databaseFieldsPopUpButton;}
-- (NSPopUpButton*)specialFieldsPopUpButton; {return specialFieldsPopUpButton;}
-- (NSBox*)contentBox; {return contentBox;}
-- (NSButton*)sameAsDefaultButton; {return sameAsDefaultButton;}
-- (NSButton*)resetDefaultButton; {return resetDefaultButton;}
-- (NSPopUpButton*)modalitiesPopUpButton; {return modalitiesPopUpButton;}
+- (NSTextField*)dicomElementTextField {return dicomElementTextField;}
+- (NSTextField*)groupLabel {return groupLabel;}
+- (NSTextField*)elementLabel {return elementLabel;}
+- (NSTextField*)nameLabel {return nameLabel;}
+- (NSButton*)addCustomDICOMFieldButton {return addCustomDICOMFieldButton;}
+- (NSButton*)addDICOMFieldButton {return addDICOMFieldButton;}
+- (NSButton*)addDatabaseFieldButton {return addDatabaseFieldButton;}
+- (NSButton*)addSpecialFieldButton {return addSpecialFieldButton;}
+- (NSPopUpButton*)DICOMFieldsPopUpButton {return DICOMFieldsPopUpButton;}
+- (NSPopUpButton*)databaseFieldsPopUpButton {return databaseFieldsPopUpButton;}
+- (NSPopUpButton*)specialFieldsPopUpButton {return specialFieldsPopUpButton;}
+- (NSBox*)contentBox {return contentBox;}
+- (NSButton*)sameAsDefaultButton {return sameAsDefaultButton;}
+- (NSButton*)resetDefaultButton {return resetDefaultButton;}
+- (NSPopUpButton*)modalitiesPopUpButton {return modalitiesPopUpButton;}
 
-- (IBAction)setSameAsDefault:(id)sender;
+- (IBAction)setSameAsDefault:(id)sender
 {
 	BOOL state = [sameAsDefaultButton state]==NSOnState;
 
@@ -342,9 +342,12 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[orientationWidgetButton setEnabled:!state];
 }
 
-- (NSButton*)orientationWidgetButton; {return orientationWidgetButton;}
+- (NSButton*)orientationWidgetButton
+{
+    return orientationWidgetButton;
+}
 
-- (IBAction)toggleOrientationWidget:(id)sender;
+- (IBAction)toggleOrientationWidget:(id)sender
 {
 	BOOL state = [orientationWidgetButton state]==NSOnState;
 

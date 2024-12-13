@@ -1,5 +1,5 @@
 //
-//  ©Alex Bettarini -- all rights reserved
+//  ï¿½Alex Bettarini -- all rights reserved
 //  License GPLv3.0 -- see License File
 //
 //  At the end of 2014 the project was forked from OsiriX to become Miele-LXIV
@@ -21,7 +21,7 @@
 #import <Cocoa/Cocoa.h>
 #import "DCMPix.h"
 
-/** \brief Reslcie volume sagittally and Coronally */
+/** \brief Reslice volume Sagittally and Coronally */
 
 @interface OrthogonalReslice : NSObject {
 	NSMutableArray		*originalDCMPixList, *xReslicedDCMPixList, *yReslicedDCMPixList;

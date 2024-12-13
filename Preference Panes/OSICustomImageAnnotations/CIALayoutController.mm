@@ -219,7 +219,7 @@
 	[super dealloc];
 }
 
-- (IBAction)addAnnotation:(id)sender;
+- (IBAction)addAnnotation:(id)sender
 {
 	BOOL check = YES;
 	if (selectedAnnotation)
@@ -244,7 +244,7 @@
 	}
 }
 
-- (IBAction)removeAnnotation:(id)sender;
+- (IBAction)removeAnnotation:(id)sender
 {
 	if (selectedAnnotation)
 	{
@@ -295,7 +295,7 @@
 	[super keyDown:theEvent];
 }
 
-- (IBAction)setTitle:(id)sender;
+- (IBAction)setTitle:(id)sender
 {
 	if (selectedAnnotation)
 	{
@@ -509,7 +509,7 @@
 	return selectedAnnotation;
 }
 
-- (IBAction)addFieldToken:(id)sender;
+- (IBAction)addFieldToken:(id)sender
 {
 	NSMenuItem *selectedItem;
 	if ([sender isEqualTo:[prefPane DICOMFieldsPopUpButton]] ||
@@ -675,7 +675,7 @@
 	[[prefPane contentTokenField] setNeedsDisplay:YES];
 }
 
-- (IBAction)validateTokenTextField:(id)sender;
+- (IBAction)validateTokenTextField:(id)sender
 {
 	[[selectedAnnotation content] setArray:[[prefPane contentTokenField] objectValue]];
 }
@@ -1277,7 +1277,7 @@
 	[[NSUserDefaults standardUserDefaults] setObject:annotationsLayoutDictionary forKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
 }
 
-- (IBAction)switchModality:(id)sender;
+- (IBAction)switchModality:(id)sender
 {
 	return [self switchModality: sender save: YES];
 }
