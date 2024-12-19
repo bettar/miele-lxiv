@@ -593,7 +593,8 @@ static NSString* DefaultWebPortalDatabasePath = nil;
     NSLog( @"----- cannot stop web server -> you have to restart the app");
 }
 
--(NSData*)dataForPath:(NSString*)file {
+-(NSData*)dataForPath:(NSString*)file
+{
 	NSMutableArray* dirsToScanForFile = [[self.dirsToScanForFiles mutableCopy] autorelease];
 	
 	const NSString* const DefaultLanguage = @"English";
