@@ -212,8 +212,8 @@
 		{
 			flyThru.interpolationMethod = 2; // changing the method
 			// selection of the right radio button
-			//[[methodChooser cellWithTag:1] setState: NSOffState]; 
-			//[[methodChooser cellWithTag:2] setState: NSOnState];
+			//[[methodChooser cellWithTag:1] setState: NSControlStateValueOff]; 
+			//[[methodChooser cellWithTag:2] setState: NSControlStateValueOn];
 		}
 	}
 	

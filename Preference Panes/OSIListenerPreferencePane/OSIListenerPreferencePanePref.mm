@@ -363,7 +363,7 @@
 - (IBAction)useSameAETitleForTLSListener:(id)sender
 {
 	NSString *aet;
-	if ([sender state] == NSOnState)
+	if ([sender state] == NSControlStateValueOn)
 	{
 		aet = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
 		self.TLSStoreSCPAETITLE = aet;
@@ -380,14 +380,14 @@
 {
 	// default state
 	[TLSStoreSCPAETITLEIsDefaultAETButton setEnabled:NO];
-	[TLSStoreSCPAETITLEIsDefaultAETButton setState:NSOffState];
+	[TLSStoreSCPAETITLEIsDefaultAETButton setState:NSControlStateValueOff];
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCP"]
 		&& [[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"]
 		&& ![[TLSAETitleTextField stringValue] isEqualToString:[[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]])
 	{
 		[TLSStoreSCPAETITLEIsDefaultAETButton setEnabled:YES];
-		NSInteger state = ([[NSUserDefaults standardUserDefaults] boolForKey:@"TLSStoreSCPAETITLEIsDefaultAET"]) ? NSOnState : NSOffState;
+		NSInteger state = ([[NSUserDefaults standardUserDefaults] boolForKey:@"TLSStoreSCPAETITLEIsDefaultAET"]) ? NSControlStateValueOn : NSControlStateValueOff;
 		[TLSStoreSCPAETITLEIsDefaultAETButton setState:state];
 	}	
 }

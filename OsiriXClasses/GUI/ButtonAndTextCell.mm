@@ -49,7 +49,7 @@
 		buttonCell = [[NSButtonCell alloc] initImageCell:nil];
 		[buttonCell setButtonType:NSSwitchButton];
 		[buttonCell  setControlSize:NSControlSizeMini];
-		[buttonCell setState:NSOnState];
+		[buttonCell setState:NSControlStateValueOn];
 		
 		//textCell = [[NSTextFieldCell alloc] initTextCell:@""];
 		[self setBezeled:YES];
@@ -90,7 +90,7 @@
 
 - (IBAction) peformAction:(id)sender{
 /*
-	if ([self state] == NSOnState)
+	if ([self state] == NSControlStateValueOn)
 		[textCell setEnabled:YES];
 	else
 		[textCell setEnabled:NO];
@@ -101,7 +101,7 @@
 /*
 - (void)setState:(int)value{
 	[super setState:value];
-	if ([self state] == NSOnState)
+	if ([self state] == NSControlStateValueOn)
 		[textCell setEnabled:YES];
 	else
 		[textCell setEnabled:NO];

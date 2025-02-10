@@ -194,7 +194,7 @@
     [menu addItem:[NSMenuItem separatorItem]];
     
     mi = [menu addItemWithTitle:NSLocalizedString(@"Use this screen for viewers", nil) action:@selector(_toggleViewersOnScreen:) keyEquivalent:@""];
-    mi.state = [viewerScreens containsObject:record.screen] ? NSOnState : NSOffState;
+    mi.state = [viewerScreens containsObject:record.screen] ? NSControlStateValueOn : NSControlStateValueOff;
     mi.representedObject = record;
     mi.target = self;
     

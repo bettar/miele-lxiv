@@ -493,7 +493,7 @@
 
 - (IBAction) setAnonymizedCheck: (id) sender
 {
-	if ([anonymizedCheckButton state] == NSOnState)
+	if ([anonymizedCheckButton state] == NSControlStateValueOn)
 	{
 		if ([[nameField stringValue] isEqualToString: [self defaultTitle]])
 		{

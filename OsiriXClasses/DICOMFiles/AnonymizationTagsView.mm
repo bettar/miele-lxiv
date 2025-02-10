@@ -61,7 +61,7 @@
 
 -(void)addButtonAction:(NSButton*)sender {
 	[anonymizationViewController addTag:dcmTagsPopUpButton.selectedTag];
-	[[anonymizationViewController.tagsView checkBoxForObject:dcmTagsPopUpButton.selectedTag] setState:NSOnState];
+	[[anonymizationViewController.tagsView checkBoxForObject:dcmTagsPopUpButton.selectedTag] setState:NSControlStateValueOn];
 	[self.window makeFirstResponder:[anonymizationViewController.tagsView textFieldForObject:dcmTagsPopUpButton.selectedTag]];
 	[dcmTagsPopUpButton setSelectedTag:NULL];
 }

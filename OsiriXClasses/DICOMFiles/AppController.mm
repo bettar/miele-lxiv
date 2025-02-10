@@ -682,7 +682,7 @@ static void dumpLSArchitecturesForX86_64()
                             [alert setShowsSuppressionButton:YES ];
                             [alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
                             [alert runModal];
-                            if ([[alert suppressionButton] state] == NSOnState)
+                            if ([[alert suppressionButton] state] == NSControlStateValueOn)
                                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideAlertRunIn32bit"];
                         }
                     }
@@ -728,7 +728,7 @@ static bool isGrantedNotificationAccess = false;
         return NO;
     
     if (version.majorVersion == 15 &&
-        version.minorVersion > 1)
+        version.minorVersion > 2)
     {
         return NO;
     }
@@ -5191,16 +5191,16 @@ static BOOL firstCall = YES;
             if (study == nil || study.isDeleted)
             {
                 [item setEnabled: NO];
-                [item setState: NSOffState];
+                [item setState: NSControlStateValueOff];
             }
             else
             {
                 [item setEnabled: YES];
                 
                 if ([[[[ViewerController getDisplayed2DViewers] valueForKey: @"currentStudy"] valueForKey: @"objectID"] containsObject: item.representedObject])
-                    [item setState: NSOnState];
+                    [item setState: NSControlStateValueOn];
                 else
-                    [item setState: NSOffState];
+                    [item setState: NSControlStateValueOff];
             }
         }
         return YES;
@@ -5210,9 +5210,9 @@ static BOOL firstCall = YES;
 		if ([item action] == @selector(setFixedTilingColumns:))
 		{
 		   if ([item tag] == lastColumns && [item tag] <= [[ViewerController getDisplayed2DViewers] count])
-				[item setState: NSOnState];
+				[item setState: NSControlStateValueOn];
 			else
-				[item setState: NSOffState];
+				[item setState: NSControlStateValueOff];
 		}
 		
 		if ([item action] == @selector(autoQueryRefresh:))
@@ -5228,9 +5228,9 @@ static BOOL firstCall = YES;
 		if ([item action] == @selector(setFixedTilingRows:))
 		{
 			if ([item tag] == lastRows && [item tag] <= [[ViewerController getDisplayed2DViewers] count])
-				[item setState: NSOnState];
+				[item setState: NSControlStateValueOn];
 			else
-			   [item setState: NSOffState];
+			   [item setState: NSControlStateValueOff];
 		}
 		
 		if ([item tag] > [[ViewerController getDisplayed2DViewers] count])

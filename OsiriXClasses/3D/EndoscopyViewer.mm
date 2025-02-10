@@ -1118,7 +1118,7 @@ return YES;
 - (IBAction) setExportAllViews: (id) sender
 {
 	if ([[sender class] isEqual:[NSButton class]])
-		exportAllViews = ([sender state] == NSOnState); // for the fly thru: it's a check box
+		exportAllViews = ([sender state] == NSControlStateValueOn); // for the fly thru: it's a check box
 	else
 		exportAllViews = ([sender selectedTag] == 0); // for the DICOM export sheet: it's a matrix with 2 radio buttons
 }
@@ -1304,7 +1304,7 @@ return YES;
 - (IBAction)pathAssistantSetPointA:(id)sender
 {
 	isLookingBackwards=NO;
-	[pathAssistantLookBackButton setState:NSOffState];
+	[pathAssistantLookBackButton setState:NSControlStateValueOff];
 	[pathAssistantSetPointBButton setEnabled:YES];
 	[pathAssistantExportToFlyThruButton setEnabled:NO];
 	
@@ -1318,7 +1318,7 @@ return YES;
 - (IBAction)pathAssistantSetPointB:(id)sender
 {
 	isLookingBackwards=NO;
-	[pathAssistantLookBackButton setState:NSOffState];
+	[pathAssistantLookBackButton setState:NSControlStateValueOff];
 	[pathAssistantExportToFlyThruButton setEnabled:YES];
 	
 	if (!pointB)
@@ -1397,7 +1397,7 @@ return YES;
 - (IBAction)pathAssistantLockPath:(id)sender
 {
 	isLookingBackwards=NO;
-	[pathAssistantLookBackButton setState:NSOffState];
+	[pathAssistantLookBackButton setState:NSControlStateValueOff];
 	[pathAssistantExportToFlyThruButton setEnabled:YES];
 	
 	isFlyPathLocked = YES;
@@ -1412,7 +1412,7 @@ return YES;
 - (IBAction)pathAssistantDeletePath:(id)sender
 {
 	isLookingBackwards=NO;
-	[pathAssistantLookBackButton setState:NSOffState];
+	[pathAssistantLookBackButton setState:NSControlStateValueOff];
 	[pathAssistantExportToFlyThruButton setEnabled:NO];
 	
 	isFlyPathLocked = NO;
@@ -1603,7 +1603,7 @@ return YES;
 	isLookingBackwards=NO;
 	isShowCenterLine=YES;
 	
-	[pathAssistantLookBackButton setState:NSOffState];
+	[pathAssistantLookBackButton setState:NSControlStateValueOff];
 	[pathAssistantLookBackButton setEnabled:NO];
 	[pathAssistantCameraOrFocalOnPathMatrix setEnabled:NO];
 	[pathAssistantExportToFlyThruButton setEnabled:NO];
@@ -1675,7 +1675,7 @@ return YES;
 		dir.y = [(EndoscopyMPRView*)[mprController originalView] focalShiftY];
 		dir.z = -[(EndoscopyMPRView*)[mprController xReslicedView] focalShiftY];
 		
-		int err= [assistant caculateNextPositionFrom:pt Towards:dir];
+		int err= [assistant calculateNextPositionFrom:pt Towards:dir];
 		if (err==ERROR_NOENOUGHMEM)
 		{
 			NSRunAlertPanel2(NSLocalizedString(@"32-bit", nil),
@@ -1702,7 +1702,7 @@ return YES;
 			for(int i=0; i<5; i++)
 			{
 				sleep(2);
-				err= [assistant caculateNextPositionFrom:pt Towards:dir];
+				err= [assistant calculateNextPositionFrom:pt Towards:dir];
 				if (err!=ERROR_DISTTRANSNOTFINISH)
 					break;
 			}
@@ -1875,22 +1875,24 @@ return YES;
 
 - (IBAction) showOrHideCenterlines:(id) sender
 {
-	if ([sender state]==NSOnState)
+	if ([sender state]==NSControlStateValueOn)
 		isShowCenterLine=YES;
 	else {
 		isShowCenterLine=NO;
 	}
+    
 	[self updateCenterlineInMPRViews];
 
 		
 }
 - (IBAction)lookBackwards:(id)sender
 {
-	if ([sender state]==NSOnState)
+	if ([sender state]==NSControlStateValueOn)
 		isLookingBackwards=YES;
 	else {
 		isLookingBackwards=NO;
 	}
+    
 	[self flyThruAssistantGoBackward:nil];
 }
 

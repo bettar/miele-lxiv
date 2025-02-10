@@ -1165,7 +1165,7 @@
                                               @"TopLeft", @"TopMiddle", @"TopRight", nil];
 	NSMutableDictionary *layoutViewDict = [NSMutableDictionary dictionary];
 	
-	if ([[prefPane sameAsDefaultButton] state]==NSOnState)
+	if ([[prefPane sameAsDefaultButton] state]==NSControlStateValueOn)
 	{
 		[layoutViewDict setObject:@"1" forKey:@"sameAsDefault"];
 	}
@@ -1349,7 +1349,7 @@
 					if ([[[anAnnotation content] objectAtIndex:0] isEqualToString:@"Special_Orientation"])
 					{
 						[anAnnotation setIsOrientationWidget:YES];
-						[[prefPane orientationWidgetButton] setState:NSOnState];
+						[[prefPane orientationWidgetButton] setState:NSControlStateValueOn];
 					}
 			
 			[anAnnotation setPlaceHolder:placeHolder];
@@ -1373,7 +1373,7 @@
 	if (n==0 && ![modality isEqualTo:@"Default"])
 	{
 		[self loadAnnotationLayoutForModality:@"Default"];
-		[[prefPane sameAsDefaultButton] setState:NSOnState];
+		[[prefPane sameAsDefaultButton] setState:NSControlStateValueOn];
 		[layoutView setEnabled:NO];
 		[[prefPane orientationWidgetButton] setEnabled:NO];
 	}

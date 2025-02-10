@@ -405,7 +405,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 			isToken = NO;
 		
 		if (isToken) {
-			// we have 2 eventual token delimiters, what's in between?
+			// we have 2 candidate token delimiters, what's in between?
 			NSString* tokenStr = [string substringWithRange:NSMakeRange(occ.location+1, occ2.location-occ.location-1)];
 			NSMutableDictionary* dict = [[localtokens mutableCopy] autorelease];
 			

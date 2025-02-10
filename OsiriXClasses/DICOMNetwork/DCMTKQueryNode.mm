@@ -2209,7 +2209,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 #endif
 			
 		/* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
-			cond = ASC_createAssociationParameters(&params, _maxReceivePDULength);
+			cond = ASC_createAssociationParameters(&params, _maxReceivePDULength, dcmConnectionTimeout.get());
 	//		DimseCondition::dump(temp_str, cond);
 			if (cond.bad()) {
                 if (_verbose)

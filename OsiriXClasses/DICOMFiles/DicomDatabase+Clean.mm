@@ -435,7 +435,7 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
                 [[PreferencesWindowController sharedPreferencesWindowController] setCurrentContextWithResourceName: @"OSIDatabasePreferencePanePref"];
             }
             
-            if ([[alert suppressionButton] state] == NSOnState)
+            if ([[alert suppressionButton] state] == NSControlStateValueOn)
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideCleanForFreeSpaceLimitSoonReachedWarning"];
             
             _errorCurrentlyDisplayed = NO;

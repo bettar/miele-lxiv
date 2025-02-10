@@ -561,13 +561,12 @@
     return 0;
 }
 
-- (int) caculateNextPositionFrom: (Point3D*) pt Towards:(Point3D*)dir;
-
-{	
-
+- (int) calculateNextPositionFrom: (Point3D*) pt Towards:(Point3D*)dir
+{
 	if(	!distmap )
 		return ERROR_NOENOUGHMEM;
-	//convert to resampled coordinate
+
+    //convert to resampled coordinate
 	[self converPoint2ResampleCoordinate:pt];
 	[self converPoint2ResampleCoordinate:dir];
 	if (!isDistanceTransformFinished) {
@@ -595,7 +594,7 @@
 	Point3D* newpos;
 	Point3D* newdir = [Point3D point];
 	float steplen;
-	Point3D* currentcenter = [self caculateNextCenterPointFrom:pt Towards:dir WithStepLength:0];
+	Point3D* currentcenter = [self calculateNextCenterPointFrom:pt Towards:dir WithStepLength:0];
 	if (!currentcenter) {
 		currentcenter=pt;
 	}
@@ -607,7 +606,7 @@
 	int ii;
 	for (ii=0; ii<20; ii++)
 	{
-		Point3D* nextcenter = [self caculateNextCenterPointFrom:pt Towards:dir WithStepLength:steplen+steplen*0.1*ii];
+		Point3D* nextcenter = [self calculateNextCenterPointFrom:pt Towards:dir WithStepLength:steplen+steplen*0.1*ii];
 		if (!nextcenter)
 			break;
 
@@ -639,7 +638,7 @@
 	}
 
 	for (; ii<10; ii++) {
-		Point3D* nextcenter = [self caculateNextCenterPointFrom:newpos Towards:newdir WithStepLength:steplen];
+		Point3D* nextcenter = [self calculateNextCenterPointFrom:newpos Towards:newdir WithStepLength:steplen];
 		if (!nextcenter)
 			break;
 
@@ -661,7 +660,7 @@
 //	y = y/i + dir.y*0.5;
 //	z = z/i + dir.z*0.5;
 
-	newpos = [self caculateNextCenterPointFrom:pt Towards:dir WithStepLength:steplen];
+	newpos = [self calculateNextCenterPointFrom:pt Towards:dir WithStepLength:steplen];
 	if (!newpos)
 		return ERROR_CANNOTFINDPATH;
 
@@ -700,7 +699,7 @@
 //		
 //		pt.x = newpos.x; pt.y = newpos.y; pt.z = newpos.z; 
 //		
-//		newpos = [assistant caculateNextPositionFrom:pt Towards:newdir];
+//		newpos = [assistant calculateNextPositionFrom:pt Towards:newdir];
 //		//[newpos retain];
 //		newdir.x = newpos.x - pt.x; newdir.y = newpos.y - pt.y; newdir.z = newpos.z - pt.z;
 //		//[newpos release];
@@ -712,7 +711,7 @@
 //	newdir.z = cpos.z + z*6;
 }
 
-- (Point3D*) caculateNextCenterPointFrom: (Point3D*) pt Towards:(Point3D*)dir WithStepLength:(float)steplen
+- (Point3D*) calculateNextCenterPointFrom: (Point3D*) pt Towards:(Point3D*)dir WithStepLength:(float)steplen
 {
 	if(	!distmap )
 		return nil;

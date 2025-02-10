@@ -2084,13 +2084,13 @@ return YES;
 	BOOL valid = YES;
     
     if ([item action] == @selector( syncSeriesScopeAction:))    {
-        [item setState: ([OrthogonalMPRViewer syncSeriesScope] == [item tag] ? NSOnState : NSOffState)];
+        [item setState: ([OrthogonalMPRViewer syncSeriesScope] == [item tag] ? NSControlStateValueOn : NSControlStateValueOff)];
     }
     else if ([item action] == @selector(syncSeriesBehaviorAction:))   {
-        [item setState: (syncSeriesBehavior == [item tag] ? NSOnState : NSOffState)];
+        [item setState: (syncSeriesBehavior == [item tag] ? NSControlStateValueOn : NSControlStateValueOff)];
     }
     else if ([item action] == @selector(syncSeriesStateAction:))   {
-        [item setState: (syncSeriesState == [item tag] ? NSOnState : NSOffState)];
+        [item setState: (syncSeriesState == [item tag] ? NSControlStateValueOn : NSControlStateValueOff)];
     }
     else
         valid = [super validateMenuItem: item];

@@ -778,11 +778,11 @@ static NSMutableArray *recentNonces;
 	}
 	else
 	{
-		// Write the header response
+		// Write the header of the HTTP response
 		NSData *responseData = [self preprocessResponse:response];
 		[asyncSocket writeData:responseData withTimeout:WRITE_HEAD_TIMEOUT tag:HTTP_PARTIAL_RESPONSE_HEADER];
 		
-		// Now we need to send the body of the response
+		// Now we need to send the body of the HTTP response
 		if (!isRangeRequest)
 		{
 			// Regular request

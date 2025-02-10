@@ -765,7 +765,7 @@ return YES;
     else if ([item action] == @selector( useVOILUT:))
     {
         if (imageView.curDCM.VOILUTApplied)
-            [item setState: NSOnState];
+            [item setState: NSControlStateValueOn];
         else
             [item setState: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseVOILUT"]];
         
@@ -1013,9 +1013,9 @@ return YES;
 		int tag = ((rows - 1) * 5) + (columns - 1);
 		
 		if ([item tag] == tag)
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 	}
 	else if ([item action] == @selector(SyncSeries:))
 	{
@@ -1051,9 +1051,9 @@ return YES;
 		}
 		
 		if ([item tag] == [imageView currentTool])
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 		
 		if ([item image] == nil)
 		{
@@ -1066,27 +1066,27 @@ return YES;
 		valid = YES;
 		
 		if ([[item title] isEqualToString: curCLUTMenu])
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 	}
 	else if ([item action] == @selector(ApplyConv:))
 	{
 		valid = YES;
 		
 		if ([[item title] isEqualToString: curConvMenu])
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 	}
 	else if ([item action] == @selector(ApplyOpacity:))
 	{
 		valid = YES;
 		
 		if ([[item title] isEqualToString: curOpacityMenu])
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 	}
 	else if ([item action] == @selector(ApplyWLWW:))
 	{
@@ -1101,9 +1101,9 @@ return YES;
 		@catch (NSException * e) {}
 		
 		if ([str isEqualToString: curWLWWMenu] || [[item title] isEqualToString: curWLWWMenu])
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 	}
 	else
         valid = YES;
@@ -2620,7 +2620,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			[self checkEverythingLoaded];
 			[self computeInterval];
-			if (previousFusionActivated == NSOnState)
+			if (previousFusionActivated == NSControlStateValueOn)
 				[self setFusionMode: previousFusion];
             
 			[popFusion selectItemWithTag:previousFusion];
@@ -5709,7 +5709,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [cell setFont:[NSFont boldSystemFontOfSize: [[BrowserController currentBrowser] fontSize: @"dbSmallMatrixFont"]]];
                 [cell setButtonType: NSMomentaryPushInButton];
                 [cell setEnabled: YES];
-                [cell setState: NSOffState];
+                [cell setState: NSControlStateValueOff];
                 [cell setHighlighted: NO];
                 [cell setTarget: self];
                 [cell setBordered: YES];
@@ -7748,7 +7748,7 @@ return YES;
 	
 	NSRect shutterRect = NSZeroRect;
 
-	if ([shutterOnOff state] == NSOnState) // NSControlStateValueOn
+	if ([shutterOnOff state] == NSControlStateValueOn) // NSControlStateValueOn
 	{
 		// Find the first ROI selected for the current frame and copy the rectangle in shutterRect
         ROI *selectedROI = nil;
@@ -7791,7 +7791,7 @@ return YES;
                     shutterRect.size.height = p.pheight - shutterRect.origin.y;
                 
 				p.shutterRect = shutterRect;
-				p.shutterEnabled = NSOnState;
+				p.shutterEnabled = NSControlStateValueOn;
 			}
 		}
 		else
@@ -7799,7 +7799,7 @@ return YES;
 			//using stored shutterRect?
 			if ((curPix5.shutterRect.size.width == 0 || (curPix5.shutterRect.size.width == [curPix5 pwidth] && curPix5.shutterRect.size.height == [curPix5 pheight])) && curPix5.shutterPolygonal == nil)
 			{
-				[shutterOnOff setState:NSOffState];
+				[shutterOnOff setState:NSControlStateValueOff];
 				
 				NSRunCriticalAlertPanel2(NSLocalizedString(@"Shutter", nil),
                                         NSLocalizedString(@"Please first define a rectangle with a rectangular ROI.", nil),
@@ -7810,14 +7810,14 @@ return YES;
 			else //reuse preconfigured shutterRect
 			{
 				for (DCMPix *p in [imageView dcmPixList])
-                    p.shutterEnabled = NSOnState;
+                    p.shutterEnabled = NSControlStateValueOn;
 			}
 		}
 	}
 	else
 	{
 		for (DCMPix *p in [imageView dcmPixList])
-            p.shutterEnabled = NSOffState;
+            p.shutterEnabled = NSControlStateValueOff;
 	}
 
     [imageView setIndex: imageView.curImage]; //refresh viewer only
@@ -9034,7 +9034,7 @@ static int avoidReentryRefreshDatabase = 0;
 				
 				[self ActivateBlending: nil];
 				[self clear8bitRepresentations];
-				[shutterOnOff setState:NSOffState];
+				[shutterOnOff setState:NSControlStateValueOff];
                 
 				[self setFusionMode: 0];
 				
@@ -9155,12 +9155,12 @@ static int avoidReentryRefreshDatabase = 0;
 						[slider setEnabled:YES];
 					}
 					
-					[subCtrlOnOff setState: NSOffState];
+					[subCtrlOnOff setState: NSControlStateValueOff];
 					[convPopup selectItemAtIndex:0];
 					[stacksFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 					[sliderFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 					[sliderFusion setEnabled:NO];
-					[activatedFusion setState: NSOffState];
+					[activatedFusion setState: NSControlStateValueOff];
 
 					[movieRateSlider setEnabled: NO];
 					[moviePosSlider setEnabled: NO];
@@ -10683,7 +10683,7 @@ static int avoidReentryRefreshDatabase = 0;
                         nil,
                         nil,
                         nil);
-		[subCtrlOnOff setState: NSOffState];
+		[subCtrlOnOff setState: NSControlStateValueOff];
 	}
 }
 
@@ -10718,7 +10718,7 @@ static int avoidReentryRefreshDatabase = 0;
 		subCtrlMinMax.x = subCtrlMin;
 		subCtrlMinMax.y = subCtrlMax;
 		
-		[subCtrlOnOff setState: NSOnState]; //"on"
+		[subCtrlOnOff setState: NSControlStateValueOn]; //"on"
 		[self subCtrlOnOff: subCtrlOnOff];//subtracts
 	}
 }
@@ -10728,7 +10728,7 @@ static int avoidReentryRefreshDatabase = 0;
 	if (!enableSubtraction)
         return;
     
-    if ([subCtrlOnOff state] == NSOnState) //only when in subtraction mode
+    if ([subCtrlOnOff state] == NSControlStateValueOn) //only when in subtraction mode
     {
         subCtrlOffset = [[[imageView dcmPixList] objectAtIndex:[imageView curImage]] subPixOffset];
         
@@ -10824,157 +10824,157 @@ static int avoidReentryRefreshDatabase = 0;
 	// On stronger than Off
 	//-------------------------------------------------------------------------- y=-2
 	case 0:// x=-2 (On On Off)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOffState];	//Off
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];	//On
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];	//On
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOff];	//Off
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];	//On
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];	//On
             break;
             
 	case 1:// x=-1 (On Off Off)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOffState];	[sc9 setState: NSOffState];
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOff];	[sc9 setState: NSControlStateValueOff];
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];
             break;
             
 	case 4:// x=0 (Off Off Off)
-			[sc7 setState: NSOffState];	[sc8 setState: NSOffState];	[sc9 setState: NSOffState];
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOff];	[sc8 setState: NSControlStateValueOff];	[sc9 setState: NSControlStateValueOff];
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];
             break;
             
 	case 2:// x=1
-			[sc7 setState: NSOffState];	[sc8 setState: NSOffState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOff];	[sc8 setState: NSControlStateValueOff];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];
             break;
             
 	case 3:// x=2 
-			[sc7 setState: NSOffState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOff];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];
             break;
             
     //-------------------------------------------------------------------------- y=-1
 	case 5:// x=-2 (On On Off)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOffState];	//Off
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOffState];	//Off
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];	//On
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOff];	//Off
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOff];	//Off
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];	//On
             break;
             
 	case 6:// x=-1 (On Off Off)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOffState];	[sc9 setState: NSOffState];
-			[sc4 setState: NSOnState];	[sc5 setState: NSOffState];	[sc6 setState: NSOffState];
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOff];	[sc9 setState: NSControlStateValueOff];
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOff];	[sc6 setState: NSControlStateValueOff];
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];
             break;
             
 	case 9:// x=0 (Off Off Off)
-			[sc7 setState: NSOffState];	[sc8 setState: NSOffState];	[sc9 setState: NSOffState];
-			[sc4 setState: NSOffState];	[sc5 setState: NSOffState];	[sc6 setState: NSOffState];
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOff];	[sc8 setState: NSControlStateValueOff];	[sc9 setState: NSControlStateValueOff];
+			[sc4 setState: NSControlStateValueOff];	[sc5 setState: NSControlStateValueOff];	[sc6 setState: NSControlStateValueOff];
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];
             break;
             
 	case 7:// x=1 y=-1
-			[sc7 setState: NSOffState];	[sc8 setState: NSOffState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOffState];	[sc5 setState: NSOffState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOff];	[sc8 setState: NSControlStateValueOff];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOff];	[sc5 setState: NSControlStateValueOff];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];
             break;
             
 	case 8:// x=2 y=-1
-			[sc7 setState: NSOffState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOffState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOff];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOff];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];
             break;
             
     //--------------------------------------------------------------------------------y=0
 	case 20:// x=-2 (On On Off)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOffState];	//Off
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOffState];	//Off
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOffState];	//Off
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOff];	//Off
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOff];	//Off
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOff];	//Off
             break;
             
 	case 21:// x=-1 (On Off Off)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOffState];	[sc9 setState: NSOffState];
-			[sc4 setState: NSOnState];	[sc5 setState: NSOffState];	[sc6 setState: NSOffState];
-			[sc1 setState: NSOnState];	[sc2 setState: NSOffState];	[sc3 setState: NSOffState];
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOff];	[sc9 setState: NSControlStateValueOff];
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOff];	[sc6 setState: NSControlStateValueOff];
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOff];	[sc3 setState: NSControlStateValueOff];
             break;
             
 	case 24:// x=0 (Off Off Off)
-			[sc7 setState: NSOffState];	[sc8 setState: NSOffState];	[sc9 setState: NSOffState];
-			[sc4 setState: NSOffState];	[sc5 setState: NSOffState];	[sc6 setState: NSOffState];
-			[sc1 setState: NSOffState];	[sc2 setState: NSOffState];	[sc3 setState: NSOffState];
+			[sc7 setState: NSControlStateValueOff];	[sc8 setState: NSControlStateValueOff];	[sc9 setState: NSControlStateValueOff];
+			[sc4 setState: NSControlStateValueOff];	[sc5 setState: NSControlStateValueOff];	[sc6 setState: NSControlStateValueOff];
+			[sc1 setState: NSControlStateValueOff];	[sc2 setState: NSControlStateValueOff];	[sc3 setState: NSControlStateValueOff];
             break;
             
 	case 22:// x=1 (Off Off On)
-			[sc7 setState: NSOffState];	[sc8 setState: NSOffState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOffState];	[sc5 setState: NSOffState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOffState];	[sc2 setState: NSOffState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOff];	[sc8 setState: NSControlStateValueOff];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOff];	[sc5 setState: NSControlStateValueOff];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOff];	[sc2 setState: NSControlStateValueOff];	[sc3 setState: NSControlStateValueOn];
             break;
             
 	case 23:// x=2 (Off On On)
-			[sc7 setState: NSOffState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOffState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOffState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOff];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOff];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOff];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];
             break;
             
     //-------------------------------------------------------------------------------y=1
 	case 10:// x=-2 (On On Off)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];	//On
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOffState];	//Off
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOffState];	//Off
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];	//On
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOff];	//Off
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOff];	//Off
             break;
             
 	case 11:// x=-1 (On Off Off)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOnState];	[sc5 setState: NSOffState];	[sc6 setState: NSOffState];
-			[sc1 setState: NSOnState];	[sc2 setState: NSOffState];	[sc3 setState: NSOffState];
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOff];	[sc6 setState: NSControlStateValueOff];
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOff];	[sc3 setState: NSControlStateValueOff];
             break;
             
 	case 14:// x=0 (Off Off Off)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOffState];	[sc5 setState: NSOffState];	[sc6 setState: NSOffState];
-			[sc1 setState: NSOffState];	[sc2 setState: NSOffState];	[sc3 setState: NSOffState];
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOff];	[sc5 setState: NSControlStateValueOff];	[sc6 setState: NSControlStateValueOff];
+			[sc1 setState: NSControlStateValueOff];	[sc2 setState: NSControlStateValueOff];	[sc3 setState: NSControlStateValueOff];
             break;
             
 	case 12:// x=1 (Off Off On)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOffState];	[sc5 setState: NSOffState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOffState];	[sc2 setState: NSOffState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOff];	[sc5 setState: NSControlStateValueOff];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOff];	[sc2 setState: NSControlStateValueOff];	[sc3 setState: NSControlStateValueOn];
             break;
             
 	case 13:// x=2 (Off On On)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOffState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOffState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOff];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOff];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];
             break;
             
     //------------------------------------------------------------------------------ y=2
 	case 15:// x=-2 (On On Off)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];	//On
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];	//On
-			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOffState];	//Off
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];	//On
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];	//On
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOff];	//Off
             break;
             
 	case 16:// x=-1 (On Off Off)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOnState];	[sc2 setState: NSOffState];	[sc3 setState: NSOffState];
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOn];	[sc2 setState: NSControlStateValueOff];	[sc3 setState: NSControlStateValueOff];
             break;
             
 	case 19:// x=0 (Off Off Off)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOffState];	[sc2 setState: NSOffState];	[sc3 setState: NSOffState];
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOff];	[sc2 setState: NSControlStateValueOff];	[sc3 setState: NSControlStateValueOff];
             break;
             
 	case 17:// x=1 (Off Off On)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOffState];	[sc2 setState: NSOffState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOff];	[sc2 setState: NSControlStateValueOff];	[sc3 setState: NSControlStateValueOn];
             break;
             
 	case 18:// x=2 (Off On On)
-			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
-			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
-			[sc1 setState: NSOffState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+			[sc7 setState: NSControlStateValueOn];	[sc8 setState: NSControlStateValueOn];	[sc9 setState: NSControlStateValueOn];
+			[sc4 setState: NSControlStateValueOn];	[sc5 setState: NSControlStateValueOn];	[sc6 setState: NSControlStateValueOn];
+			[sc1 setState: NSControlStateValueOff];	[sc2 setState: NSControlStateValueOn];	[sc3 setState: NSControlStateValueOn];
             break;
 	}
 }
@@ -10983,7 +10983,7 @@ static int avoidReentryRefreshDatabase = 0;
 {
 	if (enableSubtraction)
 	{
-		if ([subCtrlOnOff state] == NSOnState) //only when in subtraction mode
+		if ([subCtrlOnOff state] == NSControlStateValueOn) //only when in subtraction mode
 		{
 			float	cwl, cww;
 			[imageView getWLWW:&cwl :&cww];
@@ -11039,7 +11039,7 @@ static int avoidReentryRefreshDatabase = 0;
 	
 	if ([subCtrlSum intValue] <= 1)
 	{
-		[activatedFusion setState: NSOffState];
+		[activatedFusion setState: NSControlStateValueOff];
 		[sliderFusion setEnabled:NO];
 	}
 	
@@ -11053,7 +11053,7 @@ static int avoidReentryRefreshDatabase = 0;
 	if ([sender tag] == 30)
         [subCtrlSharpenButton setState: ![subCtrlSharpenButton state]];
     
-	if ([subCtrlSharpenButton state] == NSOnState)
+	if ([subCtrlSharpenButton state] == NSControlStateValueOn)
         [self ApplyConvString:@"Sharpen 5x5"];
 	else
         [self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
@@ -11254,7 +11254,7 @@ static int avoidReentryRefreshDatabase = 0;
 	
 	[imageView sendSyncMessage: 0];
 	
-	if (activatedFusionState == NSOnState)
+	if (activatedFusionState == NSControlStateValueOn)
 		[self setFusionMode: previousFusion];
 	
 	imageView.drawing = YES;
@@ -13348,12 +13348,12 @@ long				x, y;
 	
 	if (m == 0)
 	{
-		[activatedFusion setState: NSOffState];
+		[activatedFusion setState: NSControlStateValueOff];
 		[sliderFusion setEnabled:NO];
 	}
 	else
 	{
-		[activatedFusion setState: NSOnState];
+		[activatedFusion setState: NSControlStateValueOn];
 		[sliderFusion setEnabled:YES];
 	}
 	
@@ -13368,7 +13368,7 @@ long				x, y;
 
 - (IBAction) activateFusion:(id) sender
 {
-	if ([sender state] == NSOffState)
+	if ([sender state] == NSControlStateValueOff)
 		[self setFusionMode: 0];
 	else
 		[self setFusionMode: [[popFusion selectedItem] tag]];
@@ -15385,10 +15385,10 @@ long				x, y;
 	
 	float minValue = -FLT_MAX;
 	float maxValue = FLT_MAX;
-	if ([checkMaxValue state] == NSOnState) maxValue = [maxValueText floatValue];
-	if ([checkMinValue state] == NSOnState) minValue = [minValueText floatValue];
+	if ([checkMaxValue state] == NSControlStateValueOn) maxValue = [maxValueText floatValue];
+	if ([checkMinValue state] == NSControlStateValueOn) minValue = [minValueText floatValue];
 
-	BOOL propagateIn4D = [setROI4DSeries state] == NSOnState;
+	BOOL propagateIn4D = [setROI4DSeries state] == NSControlStateValueOn;
 	
 	float newValue = [newValueText floatValue];
 	BOOL revertToSaved = [newValueMatrix selectedTag];
@@ -16861,7 +16861,7 @@ long				x, y;
 
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...",nil)];
 		[wait showWindow:self];
-		if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
+		if ([brushROIFilterOptionsAllWithSameName state]==NSControlStateValueOff)
 		{
 			[self applyMorphology: [NSArray arrayWithObject: selectedROI] action:morphoFunction radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
 		}
@@ -18783,7 +18783,7 @@ long				x, y;
 		else
             val += direction;
 		
-		if ([loopButton state] == NSOnState)
+		if ([loopButton state] == NSControlStateValueOn)
 		{
 			if (val < 0)
                 val = (long)[pixList[ curMovieIndex] count] - 1;
@@ -19780,19 +19780,19 @@ static BOOL viewerControllerPlaying = NO;
 		[printLayout selectItemWithTitle: [p valueForKey: @"layout"]];
         
 		if ([p valueForKey: @"comments"])
-            [[printSettings cellWithTag: 2] setState: NSOnState];
+            [[printSettings cellWithTag: 2] setState: NSControlStateValueOn];
 		else
-            [[printSettings cellWithTag: 2] setState: NSOffState];
+            [[printSettings cellWithTag: 2] setState: NSControlStateValueOff];
 		
 		if ([p valueForKey: @"patientInfo"])
-            [[printSettings cellWithTag: 0] setState: NSOnState];
+            [[printSettings cellWithTag: 0] setState: NSControlStateValueOn];
 		else
-            [[printSettings cellWithTag: 0] setState: NSOffState];
+            [[printSettings cellWithTag: 0] setState: NSControlStateValueOff];
         
 		if ([p valueForKey: @"studyInfo"])
-            [[printSettings cellWithTag: 1] setState: NSOnState];
+            [[printSettings cellWithTag: 1] setState: NSControlStateValueOn];
 		else
-            [[printSettings cellWithTag: 1] setState: NSOffState];
+            [[printSettings cellWithTag: 1] setState: NSControlStateValueOff];
 		
         if (imageView.whiteBackground ||
             ([[p valueForKey: @"backgroundColor"] boolValue] &&
@@ -19800,10 +19800,10 @@ static BOOL viewerControllerPlaying = NO;
              [[p valueForKey: @"backgroundColorG"] floatValue] == 1 &&
              [[p valueForKey: @"backgroundColorB"] floatValue] == 1))
         {
-            [[printSettings cellWithTag: 3] setState: NSOnState];
+            [[printSettings cellWithTag: 3] setState: NSControlStateValueOn];
         }
         else
-            [[printSettings cellWithTag: 3] setState: NSOffState];
+            [[printSettings cellWithTag: 3] setState: NSControlStateValueOff];
         
 		[printFormat selectCellWithTag: [[p valueForKey: @"format"] intValue]];
 		[printInterval setIntValue: [[p valueForKey: @"interval"] intValue]];
@@ -20166,7 +20166,7 @@ static BOOL viewerControllerPlaying = NO;
 
 - (void) exportQuicktime:(id) sender
 {
-	[quicktimeAllViewers setState: NSOffState];
+	[quicktimeAllViewers setState: NSControlStateValueOff];
 	
     int ROICount = 0;
     for (NSArray *r in self.roiList)
@@ -20766,7 +20766,7 @@ static BOOL viewerControllerPlaying = NO;
 
 - (IBAction) exportDICOMAllViewers:(id) sender
 {
-	if ([dcmAllViewers state] == NSOnState)
+	if ([dcmAllViewers state] == NSControlStateValueOn)
 	{
 		[dcmFormat selectCellWithTag: 1];	// Always screen capture
 		[dcmFormat setEnabled: NO];
@@ -20826,7 +20826,7 @@ static BOOL viewerControllerPlaying = NO;
 - (void) exportDICOMFile:(id) sender
 {
 	[dcmFormat setEnabled: YES];
-	[dcmAllViewers setState: NSOffState];
+	[dcmAllViewers setState: NSControlStateValueOff];
 	
 	if ([[imageView curDCM] isRGB] || [self subtractionActivated])
 	{
@@ -20968,7 +20968,7 @@ static BOOL viewerControllerPlaying = NO;
     NSEvent *event = nil;
 	[imageView flagsChanged: event];	// If shift key was pressed, hiding the ROI data	apple-shift-E
 
-	[imageAllViewers setState: NSOffState];
+	[imageAllViewers setState: NSControlStateValueOff];
 	
 	if ([[ViewerController getDisplayed2DViewers] count] > 1)
         [imageAllViewers setEnabled: YES];
@@ -24068,9 +24068,9 @@ static BOOL viewerControllerPlaying = NO;
 	
 	// Update Key Image check box
 	if ([imageView curImage] >= 0 && [[[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] valueForKey:@"isKeyImage"] boolValue] == YES)
-		[keyImageCheck setState: NSOnState];
+		[keyImageCheck setState: NSControlStateValueOn];
 	else
-		[keyImageCheck setState: NSOffState];
+		[keyImageCheck setState: NSControlStateValueOff];
 }
 
 - (BOOL)isKeyImage:(int)index
@@ -24374,7 +24374,7 @@ static BOOL viewerControllerPlaying = NO;
 	{
         NSArray *menuItems = [[sender menu] itemArray];
         for (item in menuItems)
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
         
         tag = [(NSMenuItem *)sender tag];
     }

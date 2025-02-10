@@ -556,7 +556,7 @@ OFCondition AYPrintManager::negotiateAssociation(
     // See DCMTK dvpspr.cc line 488
     cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
     if (cond.good())
-        cond = ASC_createAssociationParameters(&params, peerMaxPDU);
+        cond = ASC_createAssociationParameters(&params, peerMaxPDU, dcmConnectionTimeout.get());
 
     if (tlayer && cond.good())
     {

@@ -187,7 +187,7 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 	[self didChangeValueForKey:@"title"];
 
 	for (NSMenuItem* item in self.itemArray) {
-		item.state = NSOffState;
+		item.state = NSControlStateValueOff;
 		if (item.hasSubmenu)
 			for (NSMenuItem* subitem in item.submenu.itemArray)
 				subitem.state = tag && [subitem.representedObject isEqual:tag];
@@ -216,9 +216,9 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 	}
 	
 	if( found)
-		[menuItem setState: NSOnState];
+		[menuItem setState: NSControlStateValueOn];
 	else
-		[menuItem setState: NSOffState];
+		[menuItem setState: NSControlStateValueOff];
 	
 	return YES;
 }

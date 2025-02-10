@@ -103,7 +103,7 @@
 						
 						[alert runModal];
 						
-						if ([[alert suppressionButton] state] == NSOnState)
+						if ([[alert suppressionButton] state] == NSControlStateValueOn)
 							[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"HideSameAETitleAlert"];
 						
 						i = [serverList count];
@@ -134,7 +134,7 @@
                         
                         [alert runModal];
                         
-                        if ([[alert suppressionButton] state] == NSOnState)
+                        if ([[alert suppressionButton] state] == NSControlStateValueOn)
                             [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"HideSameNameAlert"];
                         
                         i = [serverList count];

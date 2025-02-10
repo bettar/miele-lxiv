@@ -123,7 +123,7 @@
 	[alert setInformativeText: message];
 	[alert setShowsSuppressionButton:YES];
 	[alert runModal];
-	if ([[alert suppressionButton] state] == NSOnState)
+	if ([[alert suppressionButton] state] == NSControlStateValueOn)
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"ShowErrorMessagesForAutorouting"];
 }
 

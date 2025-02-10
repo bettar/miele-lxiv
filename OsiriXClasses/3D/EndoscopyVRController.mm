@@ -316,9 +316,9 @@
 	}
 	
 	if ([view shading])
-        [shadingCheck setState: NSOnState];
+        [shadingCheck setState: NSControlStateValueOn];
 	else
-        [shadingCheck setState: NSOffState];
+        [shadingCheck setState: NSControlStateValueOff];
 	
 	float ambient = 0.12;
 	float diffuse = 0.62;

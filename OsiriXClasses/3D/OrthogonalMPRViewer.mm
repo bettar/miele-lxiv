@@ -527,7 +527,7 @@ static SyncSeriesScope globalSyncSeriesScope;
 
 - (IBAction) activateThickSlab : (id) sender
 {
-	if ([thickSlabActivated state] == NSOnState)
+	if ([thickSlabActivated state] == NSControlStateValueOn)
 	{
 		[self setThickSlabMode: thickSlabPopup];
 	}
@@ -539,7 +539,7 @@ static SyncSeriesScope globalSyncSeriesScope;
 
 -(IBAction) setThickSlabMode : (id) sender
 {
-	if ([thickSlabActivated state] == NSOffState)
+	if ([thickSlabActivated state] == NSControlStateValueOff)
 	{
 		[thickSlabSlider setEnabled:NO];
 		[controller setThickSlab: 0];
@@ -850,34 +850,34 @@ return YES;
 	{
 		valid = YES;
 		if ([item tag] == [controller currentTool])
-            [item setState: NSOnState];
+            [item setState: NSControlStateValueOn];
 		else
-            [item setState: NSOffState];
+            [item setState: NSControlStateValueOff];
 	}
 	else if ([item action] == @selector(ApplyCLUT:))
 	{
 		valid = YES;
 		
 		if ([[item title] isEqualToString: curCLUTMenu])
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 	}
 //	else if ([item action] == @selector(ApplyConv:))
 //	{
 //		valid = YES;
 //		
-//		if ([[item title] isEqualToString: curConvMenu]) [item setState:NSOnState];
-//		else [item setState:NSOffState];
+//		if ([[item title] isEqualToString: curConvMenu]) [item setState:NSControlStateValueOn];
+//		else [item setState:NSControlStateValueOff];
 //	}
 	else if ([item action] == @selector(ApplyOpacity:))
 	{
 		valid = YES;
 		
 		if ([[item title] isEqualToString: curOpacityMenu])
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 	}
 	else if ([item action] == @selector(ApplyWLWW:))
 	{
@@ -893,21 +893,21 @@ return YES;
 		@catch (NSException * e) {}
 		
 		if ([str isEqualToString: curWLWWMenu] || [[item title] isEqualToString: curWLWWMenu])
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 	}
     else if ([item action] == @selector(syncSeriesScopeAction:))    {
         valid = YES;
-        [item setState: (globalSyncSeriesScope == [item tag] ? NSOnState : NSOffState)];
+        [item setState: (globalSyncSeriesScope == [item tag] ? NSControlStateValueOn : NSControlStateValueOff)];
     }
     else if ([item action] == @selector(syncSeriesBehaviorAction:))   {
         valid = YES;
-        [item setState: (syncSeriesBehavior == [item tag] ? NSOnState : NSOffState)];
+        [item setState: (syncSeriesBehavior == [item tag] ? NSControlStateValueOn : NSControlStateValueOff)];
     }
     else if ([item action] == @selector(syncSeriesStateAction:))   {
         valid = YES;
-        [item setState: (syncSeriesState == [item tag] ? NSOnState : NSOffState)];
+        [item setState: (syncSeriesState == [item tag] ? NSControlStateValueOn : NSControlStateValueOff)];
     }
     else
         valid = YES;

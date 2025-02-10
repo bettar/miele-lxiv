@@ -2733,11 +2733,11 @@ static NSConditionLock *threadLock = nil;
 		[searchField setTextColor: [NSColor textColor]];
 
 	for (long i = 0; i < [[sender menu] numberOfItems]; i++)
-        [[[sender menu] itemAtIndex: i] setState: NSOffState];
+        [[[sender menu] itemAtIndex: i] setState: NSControlStateValueOff];
 	
     [[searchField cell] setPlaceholderString: [[[sender menu] itemWithTag: [sender tag]] title]];
     
-	[[[sender menu] itemWithTag: [sender tag]] setState: NSOnState];
+	[[[sender menu] itemWithTag: [sender tag]] setState: NSControlStateValueOn];
 	[toolbarSearchItem setLabel: [NSString stringWithFormat: NSLocalizedString(@"Search by %@", nil), [sender title]]];
 	searchType = (browserSearchTags)[sender tag];
     
@@ -5266,7 +5266,7 @@ static NSConditionLock *threadLock = nil;
                         for (NSButtonCell *cell in oMatrix.cells)
                         {
                             NSInteger row, column;
-                            if (cell.state == NSOnState && cell.isTransparent == NO && [oMatrix getRow: &row column: &column ofCell: cell])
+                            if (cell.state == NSControlStateValueOn && cell.isTransparent == NO && [oMatrix getRow: &row column: &column ofCell: cell])
                             {
                                 if (cell.representedObject)
                                 {
@@ -5334,14 +5334,14 @@ static NSConditionLock *threadLock = nil;
                         {
                             for (NSCell *cell in [oMatrix cells])
                             {
-                                [cell setState: NSOffState];
+                                [cell setState: NSControlStateValueOff];
                                 [cell setHighlighted: NO];
                             }
                             
                             for (NSDictionary *d in selectedRowColumns)
                             {
                                 NSCell *cell = [oMatrix cellAtRow: [[d objectForKey: @"row"] intValue] column: [[d objectForKey: @"column"] intValue]];
-                                [cell setState: NSOnState];
+                                [cell setState: NSControlStateValueOn];
                                 [cell setHighlighted: YES];
                             }
                         }
@@ -5363,7 +5363,7 @@ static NSConditionLock *threadLock = nil;
                                     }
                                     else {
                                         [cell setHighlighted: YES];
-                                        [cell setState: NSOnState];
+                                        [cell setState: NSControlStateValueOn];
                                     }
                                 }
                             }
@@ -6338,7 +6338,7 @@ static NSConditionLock *threadLock = nil;
         }
     }
     
-	[animationCheck setState: NSOffState];
+	[animationCheck setState: NSControlStateValueOff];
 		
 	NSArray *albumArray = self.albumArray;
 	
@@ -6506,17 +6506,17 @@ static NSConditionLock *threadLock = nil;
 		if ([ro isEqualToString:@"name"])
 		{
 			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HIDEPATIENTNAME"])
-				[mi setState: NSOffState];
+				[mi setState: NSControlStateValueOff];
 			else
-                [mi setState: NSOnState];
+                [mi setState: NSControlStateValueOn];
 		}
 		else
 		{
             NSInteger index = [columnIdentifiers indexOfObject:ro];
 			if (index != NSNotFound && ![[cols objectAtIndex:index] isHidden])
-                [mi setState: NSOnState];
+                [mi setState: NSControlStateValueOn];
 			else
-                [mi setState: NSOffState];
+                [mi setState: NSControlStateValueOff];
 		}
     }
 }
@@ -6573,7 +6573,7 @@ static NSConditionLock *threadLock = nil;
 				
 					[databaseOutline setColumnWithIdentifier:identifier visible: [[columnsDatabase valueForKey: key] intValue]];
 					
-					if ([[columnsDatabase valueForKey: key] intValue] == NSOnState)
+					if ([[columnsDatabase valueForKey: key] intValue] == NSControlStateValueOn)
 					{
 						[databaseOutline scrollColumnToVisible: [databaseOutline columnWithIdentifier: identifier]];
 					}
@@ -9650,7 +9650,7 @@ static BOOL withReset = NO;
         return;
     
 //	if (bonjourDownloading) return;
-	if (animationCheck.state == NSOffState)
+	if (animationCheck.state == NSControlStateValueOff)
         return;
 	
     if (self.window.isKeyWindow == NO)
@@ -15876,9 +15876,9 @@ static NSArray*	openSubSeriesArray = nil;
 	else if ([menuItem action] == @selector(annotMenu:))
 	{
 		if ([menuItem tag] == [[NSUserDefaults standardUserDefaults] integerForKey:ANNOTATIONS_KEY])
-            [menuItem setState: NSOnState];
+            [menuItem setState: NSControlStateValueOn];
 		else
-            [menuItem setState: NSOffState];
+            [menuItem setState: NSControlStateValueOff];
 	}
 	return YES;
 #endif // EXPORTTOOLBARITEM
@@ -16122,7 +16122,7 @@ static NSArray*	openSubSeriesArray = nil;
 			[alert setShowsSuppressionButton:YES ];
 			[alert addButtonWithTitle: NSLocalizedString(@"OK", nil)];
 			
-			if ([[alert suppressionButton] state] == NSOnState)
+			if ([[alert suppressionButton] state] == NSControlStateValueOn)
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:alertSuppress];
 		}
 		else
@@ -16299,7 +16299,7 @@ static NSArray*	openSubSeriesArray = nil;
 				else
 					[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"deleteZIPfile"];
 				
-				if ([[alert suppressionButton] state] == NSOnState)
+				if ([[alert suppressionButton] state] == NSControlStateValueOn)
 					[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"HideZIPSuppressionMessage"];
 			}
 			

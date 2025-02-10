@@ -88,7 +88,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction) loadsave:(id) sender
 {
-	if( [sameAsDefaultButton state] == NSOnState)
+	if( [sameAsDefaultButton state] == NSControlStateValueOn)
         return;
 	
 	if( [sender selectedSegment] == 0)		// Save
@@ -275,9 +275,9 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 - (IBAction)switchModality:(id)sender save:(BOOL) save;
 {
 	[layoutController switchModality:sender save: save];
-	[addAnnotationButton setEnabled:[sameAsDefaultButton state]==NSOffState];
-	[removeAnnotationButton setEnabled:[sameAsDefaultButton state]==NSOffState];
-	[loadsaveButton setEnabled:[sameAsDefaultButton state]==NSOffState];
+	[addAnnotationButton setEnabled:[sameAsDefaultButton state]==NSControlStateValueOff];
+	[removeAnnotationButton setEnabled:[sameAsDefaultButton state]==NSControlStateValueOff];
+	[loadsaveButton setEnabled:[sameAsDefaultButton state]==NSControlStateValueOff];
 	
 	[addCustomDICOMFieldButton setEnabled:NO];
 	[addDICOMFieldButton setEnabled:NO];
@@ -309,7 +309,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction)setSameAsDefault:(id)sender
 {
-	BOOL state = [sameAsDefaultButton state]==NSOnState;
+	BOOL state = [sameAsDefaultButton state]==NSControlStateValueOn;
 
 	if(state)
 	{
@@ -323,7 +323,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
         }
 		else
 		{
-			[sameAsDefaultButton setState: NSOffState];
+			[sameAsDefaultButton setState: NSControlStateValueOff];
 			return;
 		}
 	}
@@ -349,7 +349,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction)toggleOrientationWidget:(id)sender
 {
-	BOOL state = [orientationWidgetButton state]==NSOnState;
+	BOOL state = [orientationWidgetButton state]==NSControlStateValueOn;
 
 	[layoutController setOrientationWidgetEnabled:state];
 }

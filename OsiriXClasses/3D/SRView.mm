@@ -3225,7 +3225,7 @@ typedef struct _xyzArray
 
 - (IBAction) IBPropagate3DPointsSettings: (id) sender
 {
-	if ([sender state] == NSOnState) {
+	if ([sender state] == NSControlStateValueOn) {
 		[self setAll3DPointsRadius: [point3DRadiusSlider floatValue]];
 		[self setAll3DPointsColor: [[point3DColorWell color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace]];
         [self IBSetSelected3DPointAnnotation: point3DDisplayPositionButton];

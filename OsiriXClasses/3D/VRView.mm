@@ -1843,7 +1843,7 @@ public:
 
 -(IBAction) switchShading:(id) sender
 {
-	if ([sender state] == NSOnState)
+	if ([sender state] == NSControlStateValueOn)
 	{
 		volumeProperty->ShadeOn();
 		
@@ -6844,7 +6844,7 @@ public:
                     [alert setShowsSuppressionButton:YES ];
                     [alert addButtonWithTitle: NSLocalizedString( @"Continue", nil)];
                     [alert runModal];
-                    if ([[alert suppressionButton] state] == NSOnState)
+                    if ([[alert suppressionButton] state] == NSControlStateValueOn)
                         [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideVRAMAlert"];
                 }
             }
@@ -9227,7 +9227,7 @@ public:
 
 - (IBAction) IBPropagate3DPointsSettings: (id) sender
 {
-	if ([sender state]==NSOnState)
+	if ([sender state]==NSControlStateValueOn)
 	{
 		[self setAll3DPointsRadius: [point3DRadiusSlider floatValue]];
 		[self setAll3DPointsColor: [[point3DColorWell color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace]];

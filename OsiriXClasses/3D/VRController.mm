@@ -1065,9 +1065,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         }
         
         if ([view shading])
-            [shadingCheck setState: NSOnState];
+            [shadingCheck setState: NSControlStateValueOn];
         else
-            [shadingCheck setState: NSOffState];
+            [shadingCheck setState: NSControlStateValueOff];
         
         float ambient, diffuse, specular, specularpower;
         
@@ -1350,9 +1350,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		valid = YES;
 		
 		if ([item tag] == [view currentTool])
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 	}
 	else
         valid = YES;
@@ -3499,17 +3499,17 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 					}
 				}
 				[self applyShading:self];
-				if ([shadingCheck state]==NSOffState)
+				if ([shadingCheck state]==NSControlStateValueOff)
 				{
-					[shadingCheck setState:NSOnState];
+					[shadingCheck setState:NSControlStateValueOn];
 					[view switchShading:shadingCheck];
 				}
 			}
 			else
 			{
-				if ([shadingCheck state]==NSOnState)
+				if ([shadingCheck state]==NSControlStateValueOn)
 				{
-					[shadingCheck setState:NSOffState];
+					[shadingCheck setState:NSControlStateValueOff];
 					[view switchShading:shadingCheck];
 				}
 			}

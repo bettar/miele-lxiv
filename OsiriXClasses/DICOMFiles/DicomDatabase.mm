@@ -3331,7 +3331,7 @@ static BOOL protectionAgainstReentry = NO;
                                  
                                  ---
                                  
-                                 We assume that neither the eventual preamble nor the boundary contain "--"
+                                 We assume that neither the preamble nor the boundary contain "--"
                                  */
                                 
                                 unsigned short dash = 0x2D2D;

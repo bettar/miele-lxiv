@@ -315,9 +315,9 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 										: startingPoint
 										: algo //[[params cellAtIndex: 1] floatValue]
 										: parametersArray //[[params cellAtIndex: 2] floatValue]
-										: [[pixelsSet cellWithTag:0] state]==NSOnState
+										: [[pixelsSet cellWithTag:0] state]==NSControlStateValueOn
 										: [[pixelsValue cellWithTag:0] floatValue]
-										: [[pixelsSet cellWithTag:1] state]==NSOnState
+										: [[pixelsSet cellWithTag:1] state]==NSControlStateValueOn
 										: [[pixelsValue cellWithTag:1] floatValue]
 										: (ToolMode)[[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
 										: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
@@ -397,7 +397,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 						resultsViewer = [self duplicateCurrent2DViewerWindow];
 						[[viewer imageView] setIndex:currentImageIndex];
 						
-						if( [[pixelsSet cellWithTag:1] state] == NSOnState)	// FILL THE IMAGE WITH THE VALUE
+						if( [[pixelsSet cellWithTag:1] state] == NSControlStateValueOn)	// FILL THE IMAGE WITH THE VALUE
 						{
 							float *dstImage, value = [[pixelsValue cellWithTag:1] floatValue];
 							
@@ -431,9 +431,9 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 										: startingPoint
 										: algo //[[params cellAtIndex: 1] floatValue]
 										: parametersArray //[[params cellAtIndex: 2] floatValue]
-										: [[pixelsSet cellWithTag:0] state]==NSOnState
+										: [[pixelsSet cellWithTag:0] state]==NSControlStateValueOn
 										: [[pixelsValue cellWithTag:0] floatValue]
-										: [[pixelsSet cellWithTag:1] state]==NSOnState
+										: [[pixelsSet cellWithTag:1] state]==NSControlStateValueOn
 										: [[pixelsValue cellWithTag:1] floatValue]
 										: (ToolMode)[[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
 										: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]

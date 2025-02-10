@@ -83,25 +83,25 @@
 		valid = YES;
 		
 		if ([[item title] isEqualToString: curCLUTMenu])
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 	}
 //	else if ([item action] == @selector(ApplyConv:))
 //	{
 //		valid = YES;
 //		
-//		if ([[item title] isEqualToString: curConvMenu]) [item setState:NSOnState];
-//		else [item setState:NSOffState];
+//		if ([[item title] isEqualToString: curConvMenu]) [item setState:NSControlStateValueOn];
+//		else [item setState:NSControlStateValueOff];
 //	}
 	else if ([item action] == @selector(ApplyOpacity:))
 	{
 		valid = YES;
 		
 		if ([[item title] isEqualToString: curOpacityMenu])
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 	}
 	else if ([item action] == @selector(ApplyWLWW:))
 	{
@@ -117,9 +117,9 @@
 		@catch (NSException * e) {}
 		
 		if ([str isEqualToString: curWLWWMenu] || [[item title] isEqualToString: curWLWWMenu])
-            [item setState:NSOnState];
+            [item setState:NSControlStateValueOn];
 		else
-            [item setState:NSOffState];
+            [item setState:NSControlStateValueOff];
 	}
 	else if ([item action] == @selector(showCLUTOpacityPanel:))
 	{

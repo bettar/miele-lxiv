@@ -1609,9 +1609,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	{
 		valid = YES;
 		if ([item tag] == syncro)
-            [item setState: NSOnState];
+            [item setState: NSControlStateValueOn];
 		else
-            [item setState: NSOffState];
+            [item setState: NSControlStateValueOff];
 	}
 	else if ([item action] == @selector(mergeFusedImages:))
 	{
@@ -1622,17 +1622,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 	{
 		valid = YES;
 		if ([item tag] == [[NSUserDefaults standardUserDefaults] integerForKey:ANNOTATIONS_KEY])
-            [item setState: NSOnState];
+            [item setState: NSControlStateValueOn];
 		else
-            [item setState: NSOffState];
+            [item setState: NSControlStateValueOff];
 	}
 	else if ([item action] == @selector(barMenu:))
 	{
 		valid = YES;
 		if ([item tag] == [[NSUserDefaults standardUserDefaults] integerForKey:CLUTBARS_KEY])
-            [item setState: NSOnState];
+            [item setState: NSControlStateValueOn];
 		else
-            [item setState: NSOffState];
+            [item setState: NSControlStateValueOff];
 	}
 	else
         valid = YES;
@@ -7708,10 +7708,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 - (IBAction) alwaysSyncMenu:(id) sender
 {
-	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"SAMESTUDY"] == NSOnState)
-		[[NSUserDefaults standardUserDefaults] setInteger: NSOnState forKey:@"SAMESTUDY"];
+	if ([[NSUserDefaults standardUserDefaults] integerForKey:@"SAMESTUDY"] == NSControlStateValueOn)
+		[[NSUserDefaults standardUserDefaults] setInteger: NSControlStateValueOn forKey:@"SAMESTUDY"];
 	else
-        [[NSUserDefaults standardUserDefaults] setInteger: NSOffState forKey:@"SAMESTUDY"];
+        [[NSUserDefaults standardUserDefaults] setInteger: NSControlStateValueOff forKey:@"SAMESTUDY"];
 }
 
 -(void) setSyncOnLocationImpossible:(BOOL) v

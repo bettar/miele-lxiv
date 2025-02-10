@@ -778,7 +778,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     if (menu == _tagsPopUp.contextualMenu) {
         for (NSMenuItem* mi in menu.itemArray) {
             mi.enabled = (mi.tag != _tagsSortKey);
-            mi.state = (mi.tag == _tagsSortKey)? NSOnState : NSOffState;
+            mi.state = (mi.tag == _tagsSortKey)? NSControlStateValueOn : NSControlStateValueOff;
         }
     }
 }

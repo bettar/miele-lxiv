@@ -1571,7 +1571,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 #endif
             
          /* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
-        cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
+        cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength, dcmConnectionTimeout.get());
         if (cond.bad())
         {
             DimseCondition::dump(temp_str, cond);
