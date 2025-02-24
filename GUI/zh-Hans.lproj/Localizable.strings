@@ -2711,7 +2711,7 @@
 "macOS version" = "macos 版本";
 
 /* No comment provided by engineer. */
-"Made with <a href='http://www.osirix-viewer.com' target='_blank'>OsiriX</a><br />Requires <a href='http://www.apple.com/quicktime/' target='_blank'>QuickTime</a> to display some of the images" = "用 < a href = ' HTTP://www.Miele-LXIV-viewer.com ' target = _ black ' > Miele-LXIV </a> < br/> 需要 < a href = ' HTTP://www.apple.com/quicktime/' target = _ black ' > 快速时间 </a> 显示一些图像";
+"Made with <a href='http://www.osirix-viewer.com' target='_blank'>OsiriX</a><br />Requires <a href='http://www.apple.com/quicktime/' target='_blank'>QuickTime</a> to display some of the images" = "用 < a href='https://dicom.3utilities.com' target=_black'> Miele-LXIV</a><br/> 需要 <a href='http://www.apple.com/quicktime/' target=_black'> 快速时间</a> 显示一些图像";
 
 /* No comment provided by engineer. */
 "Magnify" = "放大";
@@ -2891,7 +2891,7 @@
 "Movie Export" = "电影导出";
 
 /* No comment provided by engineer. */
-"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/" = "MPEG-2 DICOM 文件需要 vlc 应用程序。这里免费提供: HTTP://www.videolan.org/vlc/";
+"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/" = "MPEG-2 DICOM 文件需要 vlc 应用程序。这里免费提供: https://www.videolan.org/vlc/";
 
 /* No comment provided by engineer. */
 "MPEG-2 File" = "MPEG-2 文件";
@@ -4739,7 +4739,7 @@
 "The provided URL doesn't seem correct. Check its validity." = "提供的 URL 似乎不正确。检查其有效性。";
 
 /* No comment provided by engineer. */
-"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?" = "无法在当前字符集中对查询进行编码。我是否应该切换到 utf-8 (iso _ ir 192) 编码？";
+"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?" = "无法在当前字符集中对查询进行编码。我是否应该切换到 UTF-8 (ISO_IR 192) 编码？";
 
 /* No comment provided by engineer. */
 "The Repulsor tool works only if ROIs (Length ROI, Opened and Closed Polygon ROI and Pencil ROI) are on the image." = "只有在 ROI (长度 ROI、打开和关闭的多边形 ROI 和铅笔 ROI) 位于图像上时, repp尔点工具才有效。";

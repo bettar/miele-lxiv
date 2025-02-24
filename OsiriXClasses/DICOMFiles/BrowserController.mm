@@ -7352,7 +7352,7 @@ static NSConditionLock *threadLock = nil;
 			if ([[NSWorkspace sharedWorkspace] openFile: filePath withApplication:@"VLC" andDeactivate: YES] == NO)
 			{
 				NSRunAlertPanel2(NSLocalizedString( @"MPEG-2 File", nil),
-                                NSLocalizedString( @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil),
+                                NSLocalizedString( @"MPEG-2 DICOM files require the VLC application. Available for free here: https://www.videolan.org/vlc/", nil),
                                 nil,
                                 nil,
                                 nil);
@@ -19622,18 +19622,19 @@ redoZIPpassword:
 							if ([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])
                                 [report setTemplateName:[[sender selectedItem] title]];
 							
-							if (![_database isLocal])
-								[report createNewReport: studySelected
-                                            destination: [NSString stringWithFormat: @"%@/%@/", [self documentsDirectory], TEMP_PATH]
-                                                   type: reportsMode];
-							else
-								[report createNewReport: studySelected
-                                            destination: [NSString stringWithFormat: @"%@/", [self.database reportsDirPath]]
-                                                   type: reportsMode];
-							
+                            NSString * path;
+                            if (![_database isLocal])
+                                path = [NSString stringWithFormat: @"%@/%@/", [self documentsDirectory], TEMP_PATH];
+                            else
+                                path = [NSString stringWithFormat: @"%@/", [self.database reportsDirPath]];
+
+                            [report createNewReport: studySelected
+                                        destination: path
+                                               type: reportsMode];
+
 							localReportFile = [studySelected valueForKey: @"reportURL"];
 							
-							[report release];
+                            // [report release]; // issue #138
 						}
 					}
 					

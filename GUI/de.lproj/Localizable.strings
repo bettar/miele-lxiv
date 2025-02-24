@@ -2711,7 +2711,7 @@
 "macOS version" = "MacOS-Version";
 
 /* No comment provided by engineer. */
-"Made with <a href='http://www.osirix-viewer.com' target='_blank'>OsiriX</a><br />Requires <a href='http://www.apple.com/quicktime/' target='_blank'>QuickTime</a> to display some of the images" = "Made with <a href='http://www.dicom-viewer.com' target='_ blank'>Miele-LXIV</a><br />Requires <a href='http://www.apple.com/quicktime/' target='_ blank'>QuickTime</a> um einige der Bilder anzuzeigen";
+"Made with <a href='http://www.osirix-viewer.com' target='_blank'>OsiriX</a><br />Requires <a href='http://www.apple.com/quicktime/' target='_blank'>QuickTime</a> to display some of the images" = "Made with <a href='https://dicom.3utilities.com' target='_ blank'>Miele-LXIV</a><br />Requires <a href='http://www.apple.com/quicktime/' target='_ blank'>QuickTime</a> um einige der Bilder anzuzeigen";
 
 /* No comment provided by engineer. */
 "Magnify" = "Vergrößern";
@@ -2891,7 +2891,7 @@
 "Movie Export" = "Film Export";
 
 /* No comment provided by engineer. */
-"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/" = "MPEG-2 DICOM-Dateien benötigen die VLC-Anwendung. Kostenlos hier: http://www.videolan.org/vlc/";
+"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/" = "MPEG-2 DICOM-Dateien benötigen die VLC-Anwendung. Kostenlos hier: https://www.videolan.org/vlc/";
 
 /* No comment provided by engineer. */
 "MPEG-2 File" = "MPEG-2-Datei";

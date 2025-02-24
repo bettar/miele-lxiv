@@ -2711,7 +2711,7 @@
 "macOS version" = "macOS バージョン";
 
 /* No comment provided by engineer. */
-"Made with <a href='http://www.osirix-viewer.com' target='_blank'>OsiriX</a><br />Requires <a href='http://www.apple.com/quicktime/' target='_blank'>QuickTime</a> to display some of the images" = "<a href='http://www.osirix-viewer.com' target='_blank'>Miele-LXIV</a>で作った<br />いくつかの画像を表示するには<a href='http://www.apple.com/quicktime/' target='_blank'>QuickTime</a>が必要です";
+"Made with <a href='http://www.osirix-viewer.com' target='_blank'>OsiriX</a><br />Requires <a href='http://www.apple.com/quicktime/' target='_blank'>QuickTime</a> to display some of the images" = "<a href='https://dicom.3utilities.com' target='_blank'>Miele-LXIV</a>で作った<br />いくつかの画像を表示するには<a href='https://www.apple.com/quicktime/' target='_blank'>QuickTime</a>が必要です";
 
 /* No comment provided by engineer. */
 "Magnify" = "ズーム";
@@ -2891,7 +2891,7 @@
 "Movie Export" = "ムービー書き出し";
 
 /* No comment provided by engineer. */
-"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/" = "MPEG-2 DICOM ファイルには、VLC が必要です。ここで無料で利用できます:http://www.videolan.org/vlc/";
+"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/" = "MPEG-2 DICOM ファイルには、VLC が必要です。ここで無料で利用できます:https://www.videolan.org/vlc/";
 
 /* No comment provided by engineer. */
 "MPEG-2 File" = "MPEG-2 ファイル";

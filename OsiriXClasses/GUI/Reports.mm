@@ -312,8 +312,16 @@ static NSString *templatePrefix = @"OsiriX ";  // TODO: change to "Bundle-ID "
 			
 			[rtf release];
 			[study setValue: destinationFile forKey:@"reportURL"];
-			
+#if 1
+            NSArray* urls = [NSArray arrayWithObject: [NSURL fileURLWithPath:destinationFile]];
+            NSURL *appUrl = [NSURL fileURLWithPath: @"/System/Applications/TextEdit.app"];
+            [[NSWorkspace sharedWorkspace] openURLs: urls
+                               withApplicationAtURL: appUrl
+                                      configuration: [NSWorkspaceOpenConfiguration configuration]
+                                  completionHandler: nil];
+#else
 			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"TextEdit" andDeactivate: YES];
+#endif
 			[NSThread sleepForTimeInterval: 1];
 		}
             break;
