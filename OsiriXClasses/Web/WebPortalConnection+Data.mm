@@ -3084,7 +3084,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 -(void)processImage
 {
-    return [self processImageAsScreenCapture: NO];
+    [self processImageAsScreenCapture: NO];
 }
 
 -(void)processMovie
