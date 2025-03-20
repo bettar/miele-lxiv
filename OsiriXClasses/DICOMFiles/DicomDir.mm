@@ -49,7 +49,7 @@
             ddir.addImageSupport(&imagePlugin);
             
             OFList<OFString> fileNames;
-            OFStandard::searchDirectoryRecursively("", fileNames, NULL, path.fileSystemRepresentation); // +r +id burnFolder
+            OFStandard::searchDirectoryRecursively(OFString(), fileNames, NULL, path.fileSystemRepresentation); // +r +id burnFolder
             
             NSString* dicomdirPath = [path stringByAppendingPathComponent:[NSString stringWithUTF8String:DEFAULT_DICOMDIR_NAME]];
             OFCondition result = ddir.createNewDicomDir(DicomDirInterface::AP_USBandFlashJPEG, [dicomdirPath fileSystemRepresentation], DEFAULT_FILESETID); // -Pfl

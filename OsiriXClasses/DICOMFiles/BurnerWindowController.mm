@@ -963,12 +963,22 @@
                withIntermediateDirectories: YES
                                 attributes: nil
                                      error: nil];
-        
-        if (![manager fileExistsAtPath:dicomdirPath])
-            [manager copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"DICOMDIR" ofType:nil]
-                             toPath:dicomdirPath
-                              error:nil];
-            
+#if 0
+        // Without the @try block it creates empty DICOM directory.
+        // With the try block it gets an exception saying that the path is nil.
+        // What's the use of this anyway ? DCMTK will create it nicely with DicomDirInterface
+        @try {
+            if (![manager fileExistsAtPath:dicomdirPath])
+                [manager copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"DICOMDIR" ofType:nil]
+                                 toPath:dicomdirPath
+                                  error:nil];
+
+        }
+        @catch (NSException * e)
+        {
+            NSLog( @"%s %d, exception: %@", __FUNCTION__, __LINE__, e);
+         }
+#endif
         NSMutableArray *newFiles = [NSMutableArray array];
         NSMutableArray *compressedArray = [NSMutableArray array];
         NSMutableArray *bigEndianFilesToConvert = [NSMutableArray array];
