@@ -579,16 +579,14 @@
         [alert runModal];
     });
 #else
-    NSLog(@"%s Erase volume : %@", __FUNCTION__, writeVolumePath);
-    
+    //NSLog(@"%s Erase volume : %@", __FUNCTION__, writeVolumePath);
     for ( NSString *path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: writeVolumePath error: nil])
     {
         [[NSFileManager defaultManager] removeItemAtPath: [writeVolumePath stringByAppendingPathComponent: path] error: nil];
     }
         
-    NSLog(@"%s copy contents from : %@", __FUNCTION__, [self folderToBurn]);
-    BOOL ok = [[NSFileManager defaultManager] copyItemAtPath: [self folderToBurn] toPath: writeVolumePath byReplacingExisting: YES error: nil];
-    NSLog(@"%s Result : %d", __FUNCTION__, ok);
+    //NSLog(@"%s copy contents from : %@", __FUNCTION__, [self folderToBurn]);
+    [[NSFileManager defaultManager] copyItemAtPath: [self folderToBurn] toPath: writeVolumePath byReplacingExisting: YES error: nil];
     
     // Now all the files have been copied to destination.
     // Next, rename the disk.
