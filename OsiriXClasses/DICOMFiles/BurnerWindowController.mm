@@ -52,14 +52,11 @@
 
 @synthesize password, buttonsDisabled, selectedUSB;
 
+// It runs in a worker thread
 - (void) createDMG:(NSString*) imagePath withSource:(NSString*) directoryPath
 {
 	[[NSFileManager defaultManager] removeItemAtPath:imagePath error:nil];
-	
-	NSTask* makeImageTask = [[[NSTask alloc] init] autorelease];
-
-	[makeImageTask setLaunchPath: @"/bin/sh"];
-	
+		
 	imagePath = [imagePath stringByReplacingOccurrencesOfString: @"\"" withString: @"\\\""];
 	directoryPath = [directoryPath stringByReplacingOccurrencesOfString: @"\"" withString: @"\\\""];
 	
@@ -67,12 +64,24 @@
 													  imagePath,
 													  directoryPath];
 
+#ifdef MACAPPSTORE
+    // Equivalent CLI command
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSAlert *alert = [NSAlert new];
+        [alert setMessageText:cmdString];
+        [alert setInformativeText:@"Sandbox prevents doing this automatically.\nPlease run this in Terminal"];
+        [alert runModal];
+    });
+#else
 	NSArray *args = [NSArray arrayWithObjects: @"-c", cmdString, nil];
 
+    NSTask* makeImageTask = [[[NSTask alloc] init] autorelease];
+    [makeImageTask setLaunchPath: @"/bin/sh"];
 	[makeImageTask setArguments:args];
 	[makeImageTask launch];
-    while( [makeImageTask isRunning])
+    while ([makeImageTask isRunning])
         [NSThread sleepForTimeInterval: 0.1];
+#endif
     
     //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 }
@@ -545,16 +554,45 @@
     return array;
 }
 
+// It runs in a worker thread
 - (void) saveOnVolume
 {
+#ifdef MACAPPSTORE
+    NSString *newName1 = cdName;
+    
+    NSString *newName2 = cdName; // MS-DOS FAT support
+    newName2 = [newName2 uppercaseString];
+    if (newName2.length > 10)
+        newName2 = [newName2 substringToIndex: 10];
+    
+    NSString *newName3 = @"DICOM";
+    
+    // Equivalent CLI commands
+    NSString* cmd1 = [NSString stringWithFormat: @"rm -f -r %@", writeVolumePath];
+    NSString* cmd2 = [NSString stringWithFormat: @"cp -r \"%@/\" %@/", [self folderToBurn], writeVolumePath];
+    NSString* cmd3 = [NSString stringWithFormat: @"diskutil rename %@ %@", writeVolumePath, newName1];
+    NSString* cmdString = [NSString stringWithFormat: @"%@\n\n%@\n\n\%@", cmd1, cmd2, cmd3];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSAlert *alert = [NSAlert new];
+        [alert setMessageText:cmdString];
+        [alert setInformativeText:@"Sandbox prevents doing this automatically.\nPlease run the 3 commands above in Terminal"];
+        [alert runModal];
+    });
+#else
     NSLog(@"%s Erase volume : %@", __FUNCTION__, writeVolumePath);
     
-    for( NSString *path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: writeVolumePath error: nil])
+    for ( NSString *path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: writeVolumePath error: nil])
+    {
         [[NSFileManager defaultManager] removeItemAtPath: [writeVolumePath stringByAppendingPathComponent: path] error: nil];
+    }
+        
+    NSLog(@"%s copy contents from : %@", __FUNCTION__, [self folderToBurn]);
+    BOOL ok = [[NSFileManager defaultManager] copyItemAtPath: [self folderToBurn] toPath: writeVolumePath byReplacingExisting: YES error: nil];
+    NSLog(@"%s Result : %d", __FUNCTION__, ok);
     
-    
-    [[NSFileManager defaultManager] copyItemAtPath: [self folderToBurn] toPath: writeVolumePath byReplacingExisting: YES error: nil];
-    
+    // Now all the files have been copied to destination.
+    // Next, rename the disk.
+
     NSString *newName = cdName;
     
     NSTask *t = [NSTask launchedTaskWithLaunchPath: @"/usr/sbin/diskutil" arguments: [NSArray arrayWithObjects: @"rename", writeVolumePath, newName, nil]];
@@ -599,6 +637,7 @@
     [[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath: [[writeVolumePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: newName]];
     
     NSLog( @"Ejecting new DICOM Volume: %@", newName);
+#endif
 }
 
 - (void)burnCD:(id)object
@@ -633,7 +672,6 @@
     burning = NO;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 
 - (BOOL) validateMenuItem:(id)sender
@@ -723,7 +761,7 @@
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: [compressionMode selectedTag] forKey:@"Compression Mode for Burning"];
 	
-	NSLog(@"%s", __FUNCTION__);
+	//NSLog(@"%s", __FUNCTION__);
 	
 	[[self window] setDelegate: nil];
 	
@@ -737,15 +775,19 @@
 
 - (BOOL)windowShouldClose:(id)sender
 {
-	NSLog(@"%s", __FUNCTION__);
+	//NSLog(@"%s", __FUNCTION__);
 	
 	if (isExtracting || isSettingUpBurn || burning)
 		return NO;
 
     NSString *pathBurnAnonymized = [NSTemporaryDirectory() stringByAppendingPathComponent:@"burnAnonymized"];
+#ifdef MACAPPSTORE
+    // Don't cleanup this stuff in temporary directory, as the user is prompted to use it from CLI:
+#else
     [[NSFileManager defaultManager] removeItemAtPath: [self folderToBurn] error:nil];
     [[NSFileManager defaultManager] removeItemAtPath: [NSString stringWithFormat:@"%@", pathBurnAnonymized] error:nil];
-    
+#endif
+
     [filesToBurn release];
     filesToBurn = nil;
     [files release];
