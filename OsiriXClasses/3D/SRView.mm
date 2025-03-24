@@ -2633,6 +2633,28 @@ typedef struct _xyzArray
                 aRenderer->AddActor2D( oText[ i]);
 		}
 	}
+    
+    if (outlineRect) // discussion #140
+    {
+        static int outlineRectSM = 0;
+        switch (outlineRectSM)
+        {
+            case 0:
+                outlineRect->VisibilityOn();
+                break;
+            case 1:
+                break;
+            case 2:
+                outlineRect->VisibilityOff();
+                break;
+            case 3:
+                break;
+        }
+
+        outlineRectSM++;
+        if (outlineRectSM > 3)
+            outlineRectSM = 0;
+    }
 	
 	[self setNeedsDisplay:YES];
 }
