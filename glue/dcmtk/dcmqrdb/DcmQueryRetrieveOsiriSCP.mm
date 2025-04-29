@@ -103,8 +103,9 @@ DcmQueryRetrieveOsiriSCP::DcmQueryRetrieveOsiriSCP(
                                                    const DcmQueryRetrieveConfig& config,
                                                    const DcmQueryRetrieveOptions& options,
                                                    const DcmQueryRetrieveDatabaseHandleFactory& factory,
-                                                   const DcmAssociationConfiguration& associationConfiguration)
-: DcmQueryRetrieveSCP(config, options, factory, associationConfiguration)
+                                                   const DcmAssociationConfiguration& associationConfiguration,
+                                                   DcmTLSOptions& tlsOptions)
+: DcmQueryRetrieveSCP(config, options, factory, associationConfiguration, tlsOptions)
 {
     index=0;
 //    DCM_dcmdataLogger.setLogLevel(OFLogger::WARN_LOG_LEVEL);

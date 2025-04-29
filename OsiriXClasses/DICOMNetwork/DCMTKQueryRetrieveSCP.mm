@@ -83,6 +83,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/dcmtls/tlsopt.h"
 
 #ifdef WITH_SQL_DATABASE
 #include "dcmtk/dcmqrdbx/dcmqrdbq.h"
@@ -531,7 +532,8 @@ DcmQueryRetrieveConfig config;
     DcmAssociationConfiguration asccfg;
     // TODO: init asccfg from configuration file
 
-	DcmQueryRetrieveOsiriSCP *localSCP = new DcmQueryRetrieveOsiriSCP(config, options, factory, asccfg);
+    DcmTLSOptions tlsOptions(NET_ACCEPTORREQUESTOR);
+	DcmQueryRetrieveOsiriSCP *localSCP = new DcmQueryRetrieveOsiriSCP(config, options, factory, asccfg, tlsOptions);
     scp = localSCP;
 	
     localSCP->setDatabaseFlags(OFFalse, OFFalse);

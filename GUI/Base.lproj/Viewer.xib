@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23727" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23727"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -215,7 +215,7 @@
                     <rect key="frame" x="-1" y="0.0" width="115" height="259"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="eJk-1X-Cq8">
                         <rect key="frame" x="0.0" y="0.0" width="100" height="259"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <matrix identifier="O2ViewerThumbnailsMatrix" verticalHuggingPriority="750" fixedFrame="YES" selectionByRect="NO" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BFG-iu-aJ0" customClass="O2ViewerThumbnailsMatrix">
                                 <rect key="frame" x="0.0" y="-2" width="0.0" height="0.0"/>
@@ -405,7 +405,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <popUpButtonCell key="cell" type="disclosureTriangle" bezelStyle="disclosure" imagePosition="only" borderStyle="border" transparent="YES" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="odG-BV-hTy" id="2113">
                         <behavior key="behavior" pushIn="YES" changeBackground="YES" changeGray="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="message"/>
                         <menu key="menu" title="OtherViews" id="577">
                             <items>
                                 <menuItem hidden="YES" id="590"/>
@@ -2443,7 +2443,7 @@ Gw
                     <rect key="frame" x="-1" y="0.0" width="50" height="37"/>
                     <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="right" alignment="center" controlSize="small" lineBreakMode="clipping" borderStyle="borderAndBezel" imageScaling="proportionallyUpOrDown" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="741" id="2197">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="message"/>
                         <menu key="menu" title="OtherViews" id="742">
                             <items>
                                 <menuItem image="3D" hidden="YES" id="741"/>
@@ -3152,7 +3152,7 @@ DQ
                         <rect key="frame" x="63" y="14" width="228" height="25"/>
                         <popUpButtonCell key="cell" type="push" title="Select the plug-in method" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="874" id="2238">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="message"/>
                             <menu key="menu" title="OtherViews" id="876">
                                 <items>
                                     <menuItem title="Select the plug-in method" hidden="YES" id="874"/>
@@ -4942,7 +4942,7 @@ Gw
                     <rect key="frame" x="-8" y="5" width="63" height="35"/>
                     <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="1712" id="2338">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="message"/>
                         <menu key="menu" title="OtherViews" id="1711">
                             <items>
                                 <menuItem image="page.tif" hidden="YES" id="1712"/>
@@ -5052,7 +5052,7 @@ Gw
                     <rect key="frame" x="-15" y="0.0" width="57" height="32"/>
                     <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="1754" id="2340">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="message"/>
                         <menu key="menu" title="OtherViews" id="1753">
                             <items>
                                 <menuItem hidden="YES" id="1754"/>
@@ -5129,7 +5129,7 @@ Gw
                     <rect key="frame" x="3" y="1" width="64" height="46"/>
                     <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2553">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="message"/>
                         <menu key="menu" title="OtherViews" id="2554">
                             <items>
                                 <menuItem image="Tiling1x1" tag="11" id="2555"/>
@@ -5177,7 +5177,7 @@ Gw
                     <rect key="frame" x="3" y="1" width="64" height="46"/>
                     <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2624">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="menu"/>
+                        <font key="font" metaFont="message"/>
                         <menu key="menu" title="OtherViews" id="2625">
                             <items>
                                 <menuItem title="Item" id="2641">
@@ -5271,7 +5271,7 @@ Gw
                         <rect key="frame" x="75" y="240" width="183" height="25"/>
                         <popUpButtonCell key="cell" type="push" title="1x1 (1 per pages)" bezelStyle="rounded" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" tag="1" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1850" id="2342">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="message"/>
                             <menu key="menu" title="OtherViews" id="1848">
                                 <items>
                                     <menuItem title="1x1 (1 per pages)" state="on" tag="1" id="1850">

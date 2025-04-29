@@ -19,7 +19,8 @@ public:
                         const DcmQueryRetrieveConfig& config,
                         const DcmQueryRetrieveOptions& options,
                         const DcmQueryRetrieveDatabaseHandleFactory& factory,
-                        const DcmAssociationConfiguration& associationConfiguration);
+                        const DcmAssociationConfiguration& associationConfiguration,
+                        DcmTLSOptions& tlsOptions);
     
     void writeErrorMessage( const char *str);
     OFCondition handleAssociation(T_ASC_Association * assoc, OFBool correctUIDPadding);
