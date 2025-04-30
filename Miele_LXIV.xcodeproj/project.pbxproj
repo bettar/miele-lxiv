@@ -1574,7 +1574,7 @@
 		4356C82E1AC2A0D600653B32 /* CircleAngle.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = CircleAngle.pdf; sourceTree = "<group>"; };
 		4356C8301AC2A13300653B32 /* Ball.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Ball.pdf; sourceTree = "<group>"; };
 		435DC8382A4ED799006DBE5E /* PDFKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PDFKit.framework; path = System/Library/Frameworks/PDFKit.framework; sourceTree = SDKROOT; };
-		436396EC2C5B679F007851A1 /* dicom.dic */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dicom.dic; path = "../../../../../../install/project68/20230320_UB/dcmtk-3.6.8/share/dcmtk-3.6.8/dicom.dic"; sourceTree = "<group>"; };
+		436396EC2C5B679F007851A1 /* dicom.dic */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dicom.dic; path = "../../../../../../install/project68/20230320_UB/dcmtk-3.6.9/share/dcmtk-3.6.9/dicom.dic"; sourceTree = "<group>"; };
 		4365FC331B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DcmQueryRetrieveGetOurContext.h; sourceTree = "<group>"; };
 		4365FC341B01C3A300380C25 /* DcmQueryRetrieveGetOurContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DcmQueryRetrieveGetOurContext.mm; sourceTree = "<group>"; };
 		4365FC371B01C4F100380C25 /* DcmQueryRetrieveOsiriSCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DcmQueryRetrieveOsiriSCP.h; sourceTree = "<group>"; };
