@@ -8140,7 +8140,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					OSIRIX_VIEWER,
-					WITH_VTK_GLEW,
+					WITH_GLEW,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -8155,8 +8155,9 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.4",
 					"$(SRCROOT)/Binaries/DCMTK/include",
+					"$(SRCROOT)/Binaries/GLEW/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
 					"$(SRCROOT)",
@@ -8190,7 +8191,7 @@
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 					"-DNDEBUG",
 				);
 				OTHER_LDFLAGS = (
@@ -8251,6 +8252,7 @@
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/ITK/lib/libITK.a",
 					"$(SRCROOT)/Binaries/VTK/lib/libVTK.a",
+					"$(SRCROOT)/Binaries/GLEW/lib/libGLEW.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
@@ -8262,8 +8264,8 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-5.3",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.4",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.4",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -8291,7 +8293,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 					"-DNDEBUG",
 				);
 				OTHER_LDFLAGS = (
@@ -8346,7 +8348,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 					"-DNDEBUG",
 					"-fPIC",
 				);
@@ -8450,7 +8452,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 					"-DNDEBUG",
 				);
 				OTHER_LDFLAGS = (
@@ -8577,7 +8579,7 @@
 				MARKETING_VERSION = 8.23.108;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 					"-DNDEBUG",
 					"-fPIC",
 				);
@@ -8675,7 +8677,7 @@
 					"$(inherited)",
 					OSIRIX_VIEWER,
 					WITH_CODE_SIGNING,
-					WITH_VTK_GLEW,
+					WITH_GLEW,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -8690,8 +8692,9 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.4",
 					"$(SRCROOT)/Binaries/DCMTK/include",
+					"$(SRCROOT)/Binaries/GLEW/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
 					"$(SRCROOT)",
@@ -8725,7 +8728,7 @@
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 					"-DNDEBUG",
 				);
 				OTHER_LDFLAGS = (
@@ -8786,6 +8789,7 @@
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/ITK/lib/libITK.a",
 					"$(SRCROOT)/Binaries/VTK/lib/libVTK.a",
+					"$(SRCROOT)/Binaries/GLEW/lib/libGLEW.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
@@ -8797,8 +8801,8 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-5.3",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.4",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.4",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -8826,7 +8830,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 					"-DNDEBUG",
 				);
 				OTHER_LDFLAGS = (
@@ -8881,7 +8885,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 					"-DNDEBUG",
 					"-fPIC",
 				);
@@ -8986,7 +8990,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 					"-DNDEBUG",
 				);
 				OTHER_LDFLAGS = (
@@ -9113,7 +9117,7 @@
 				MARKETING_VERSION = 8.23.108;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 					"-DNDEBUG",
 					"-fPIC",
 				);
@@ -9153,7 +9157,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
@@ -9205,7 +9209,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
@@ -9290,7 +9294,7 @@
 					"$(inherited)",
 					OSIRIX_VIEWER,
 					WITH_GLM,
-					WITH_VTK_GLEW,
+					WITH_GLEW,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -9305,8 +9309,9 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.4",
 					"$(SRCROOT)/Binaries/DCMTK/include",
+					"$(SRCROOT)/Binaries/GLEW/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
 					"$(SRCROOT)",
@@ -9339,7 +9344,7 @@
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
@@ -9399,6 +9404,7 @@
 					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
 					"$(SRCROOT)/Binaries/ITK/lib/libITK.a",
 					"$(SRCROOT)/Binaries/VTK/lib/libVTK.a",
+					"$(SRCROOT)/Binaries/GLEW/lib/libGLEW.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
@@ -9409,8 +9415,8 @@
 				PRODUCT_NAME = "miele-lxiv";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYSTEM_HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Binaries/ITK/include/ITK-5.3",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.3",
+					"$(SRCROOT)/Binaries/ITK/include/ITK-5.4",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.4",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -9507,7 +9513,7 @@
 				MARKETING_VERSION = 8.23.108;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
@@ -9569,7 +9575,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-stdlib=libc++",
-					"-std=gnu++14",
+					"-std=gnu++17",
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
