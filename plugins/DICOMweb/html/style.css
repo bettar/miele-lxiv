@@ -1,0 +1,32 @@
+body {
+	font: 12px "Lucida Grande";
+}
+
+#plugin_icon {
+	float: none;
+	margin-right: 20px;
+	position: fixed;
+	z-index: -1;
+	top: -15px;
+	left: -30px;
+	opacity: 0.75;
+}
+
+h1 {
+	margin-left: 20px;
+	margin-top: 40px;
+}
+
+#text {
+	float: none;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+.title {
+	font-weight: bold;
+}
+
+#screenshot {
+	text-align: center;
+}

@@ -36,5 +36,22 @@
 		<key>version</key>
 		<string>3.1</string>
 	</dict>
+	<dict>
+		<key>download_url</key>
+		<dict>
+			<key>scheme</key>
+			<string>https</string>
+			<key>host</key>
+			<string>bettar.github.io</string>
+			<key>path</key>
+			<string>/miele-lxiv/plugins/DICOMweb/html/DICOMwebFilter.mieleplugin.zip</string>
+		</dict>
+		<key>name</key>
+		<string>DICOMweb</string>
+		<key>url</key>
+		<string>http://bettar.github.io/miele-lxiv/plugins/DICOMweb/html/index.html</string>
+		<key>version</key>
+		<string>0.7.36</string>
+	</dict>
 </array>
 </plist>
