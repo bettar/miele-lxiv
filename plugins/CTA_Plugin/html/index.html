@@ -18,16 +18,23 @@
 		<p><span class="title">Version:</span> 2.2 - <b>WARNING This plugin requires host application Miele-LXIV 9.47 or higher</b></p>
 		<p><span class="title">Description:</span> This plug-in was designed on a core function called “virtual contrast injection” algorithm [1] [2] [3], which aims to separate different contrast filled structures or other high intensity structures from each other using the connectivity of the contrast in the vessel lumen. Unlike most conventional segmentation algorithm, this algorithm doesn’t focus on defining the exact edge of the vessels, which means there will be some soft tissue surrounding the vessels in the segment results. The task of classifying different components of different intensity is left to some conventional visualization techniques such as maximum intensity projection (MIP) or volume rendering (VRT). The centerlines of all visible branches will be extracted automatically after the segmentation with a new algorithm also based on the connectedness theory. Some general visualization techniques, such as multiplanar reformatting (MPR), curved plane reformatting (CPR) and VRT, are also included in this plug-in. 3D paths for CPR and masks(brush ROI) for segmental VRT can also be defined manually which allow users to access those general visualization function without using our segmentation and skeletonization algorithm.
 		</p>
-		<p><span class="title">Main Features:</span> arbitrary angle 2D Orthogonal MPR - arbitrary angle 2D curved MPR and straightened CPR - Interactive vessel segmentation - Automatic centerline extraction - Segmental Volume Rendering
+		<p><span class="title">Main Features:</span>
+			<ul>
+				<li>Arbitrary angle 2D Orthogonal MPR</li>
+				<li>Arbitrary angle 2D curved MPR and straightened CPR</li>
+				<li>Interactive vessel segmentation</li>
+				<li>Automatic centerline extraction</li>
+				<li>Segmental Volume Rendering</li>
+			</ul>
 		</p>
-		<p><span class="title">Learn how to use it:</span> To have a quick look at how this plugin works go to "Quick <a href="../quickguide.htm">Guide of CMIV CTA Plug-in</a>" or watch "<a href="../sample1.mov">Learn coronary CTA image processing in 5 minutes</a>" (QuickTime video). Get the full version user manual <a href="usermanual.pdf">here</a>.
+		<p><span class="title">Learn how to use it:</span> To have a quick look at how this plugin works go to "Quick <a href="../quickguide.htm">Guide of CMIV CTA Plug-in</a>" or watch "<a href="../sample1.mov">Learn coronary CTA image processing in 5 minutes</a>" (QuickTime video). Get the full version user manual <a href="usermanual.pdf">here</a>
 		
-		<p><span class="title">Copyright:</span> This plug-in is distributed as an open source software under GNU-GPL (<a href="https://www.gnu.org/copyleft/gpl.html">https://www.gnu.org/copyleft/gpl.html</a>).</p>
+		<p><span class="title">Copyright:</span> This plug-in is distributed as an <a href="https://github.com/bettar/CMIV_CTA_TOOLS">open source</a> software, under <a href="https://www.gnu.org/copyleft/gpl.html">GNU-GPL</a></p>
 		<p><span class="title">Feedback:</span> Please send feedback, bug reports and comments to: Chunliang&nbsp;Wang&nbsp;(<a href="mailto:wcl_sd@yahoo.com.cn">wcl_sd@yahoo.com.cn</a>)</p>
 		
 		<p><span class="title">Screenshots:</span></p>
-		<p><div id="screenshot"><img src="image016.jpg" border="1" width="400" /></div></p>
-		<p><div id="screenshot"><img src="image012.jpg" border="1" width="400" /></div></p>
+		<p><div id="screenshot"><img src="image016.jpg" width="400" /></div></p>
+		<p><div id="screenshot"><img src="image012.jpg" width="400" /></div></p>
 		</div>
 		
 		<p><a id="footnote1" class="footnote">[1] Tizon X, Smedby &Ouml;. Segmentation with gray-scale connectedness can separate arteries and veins in MRA. J Magn Reson Imaging 2002;15(4):438-45.</a></p>
