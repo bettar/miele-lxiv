@@ -939,7 +939,7 @@
 		duOutput = [[fromPipe fileHandleForReading] availableData];
 		[duOutput getBytes:aBuffer];
 		
-		size = [NSString stringWithCString:aBuffer];
+		size = [NSString stringWithCString:aBuffer encoding:NSUTF8StringEncoding];
 		stringComponents = [size pathComponents];
 		
 		size = [stringComponents objectAtIndex:0];

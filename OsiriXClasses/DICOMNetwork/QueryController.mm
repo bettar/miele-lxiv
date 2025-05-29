@@ -1646,7 +1646,9 @@ extern "C"
             {
                 NSArray *children = [item children];
                 
-                if (children.count > 0 && [[children lastObject] isKindOfClass: [DCMTKStudyQueryNode class]] == NO && [[children lastObject] isKindOfClass: [DCMTKSeriesQueryNode class]] == NO)
+                if (children.count > 0 &&
+                    [[children lastObject] isKindOfClass: [DCMTKStudyQueryNode class]] == NO &&
+                    [[children lastObject] isKindOfClass: [DCMTKSeriesQueryNode class]] == NO)
                 {
                     [item purgeChildren];
                     children = [item children];
@@ -1724,7 +1726,9 @@ extern "C"
             {
                 NSArray *children = [item children];
                 
-                if (children.count > 0 && [[children lastObject] isKindOfClass: [DCMTKStudyQueryNode class]] == NO && [[children lastObject] isKindOfClass: [DCMTKSeriesQueryNode class]] == NO)
+                if (children.count > 0 &&
+                    [[children lastObject] isKindOfClass: [DCMTKStudyQueryNode class]] == NO &&
+                    [[children lastObject] isKindOfClass: [DCMTKSeriesQueryNode class]] == NO)
                     [item purgeChildren];
                 
                 if (![item children])
@@ -2635,7 +2639,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
                     
                     DcmTag tag( [dicomField group], [dicomField element]);
                     
-                    currentQueryKey = [NSString stringWithCString: tag.getTagName()];
+                    currentQueryKey = [NSString stringWithCString:tag.getTagName()
+                                                         encoding:NSUTF8StringEncoding];
                     
                     NSLog( @"DICOM Q&R with custom field: %@ : %@", currentQueryKey, customValue);
                     
@@ -5098,7 +5103,8 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 	{
 		serversArray = [[[DCMNetServiceDelegate DICOMServersList] mutableCopy] autorelease];
 		
-		NSString *ip = [NSString stringWithCString:GetPrivateIP()];
+		NSString *ip = [NSString stringWithCString:GetPrivateIP()
+                                          encoding:NSUTF8StringEncoding];
 		[sendToPopup addItemWithTitle: [NSString stringWithFormat: NSLocalizedString( @"This Computer - %@/%@:%d", nil),
                                         [NSUserDefaults defaultAETitle],
                                         ip,
@@ -5468,7 +5474,7 @@ onlyIfNotAvailable: (BOOL) onlyIfNotAvailable
 	[buttonCell setAction: @selector(retrieveClick:)];
 	[buttonCell setControlSize: NSControlSizeMini];
 	[buttonCell setImage: [NSImage imageNamed:@"InArrow.tif"]];
-	[buttonCell setBezelStyle: NSRoundRectBezelStyle]; // was NSRegularSquareBezelStyle
+	[buttonCell setBezelStyle: NSBezelStyleAccessoryBarAction]; // was NSRoundRectBezelStyle
 	[tableColumn setDataCell: buttonCell];
 }
 

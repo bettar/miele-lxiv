@@ -274,7 +274,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			char buffer[256];
 			if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
 			{
-				if ([[NSString stringWithCString:buffer] isEqualToString:[asyncSocket connectedHost]]) // TODO: this may fail because of comparaisons between ipv6 and ipv4 addys
+				if ([[NSString stringWithCString:buffer encoding:NSUTF8StringEncoding] isEqualToString:[asyncSocket connectedHost]]) // TODO: this may fail because of comparaisons between ipv6 and ipv4 addys
 				{
 					DLog( @"\tFound! %@:%d", [asyncSocket connectedHost], dicomNodePort);
 					return dicomNodePort;
@@ -502,7 +502,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
         BOOL handledByPlugin = NO;
         @try
         {
-            // Maybe a plugin has an answer ?
+            // Maybe a plugin has an answer ? For example DICOMweb
             if (pluginWithHTTPResponses == nil) // empty array
             {
                 pluginWithHTTPResponses = [[NSMutableArray alloc] init];

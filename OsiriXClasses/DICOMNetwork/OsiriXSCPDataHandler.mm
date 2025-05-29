@@ -196,7 +196,7 @@ extern BOOL forkedProcess;
 			
 			@try
 			{
-				c = [[NSString stringWithCString: scs] componentsSeparatedByString:@"\\"];
+				c = [[NSString stringWithCString: scs encoding:NSUTF8StringEncoding] componentsSeparatedByString:@"\\"];
 			
 				if ([c count] > 0)
 					specificCharacterSet = [[c objectAtIndex: 0] retain];

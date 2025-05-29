@@ -68,7 +68,7 @@
         
         [exportSeriesUID release];
         exportSeriesUID = nil;
-        for( DicomSeries *series in iDicomImage.series.study.series)
+        for (DicomSeries *series in iDicomImage.series.study.series)
         {
             if (series.id.intValue == exportSeriesNumber)
                 exportSeriesUID = [series.seriesDICOMUID copy];

@@ -101,8 +101,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	return [NSArray arrayWithObject:obj];
 }
 
-- (DicomStudy*) studyForStudyInstanceUID: (NSString*) uid server: (NSDictionary*)
-ss
+- (DicomStudy*) studyForStudyInstanceUID: (NSString*) uid server: (NSDictionary*) ss
 {
     DicomStudy *returnedStudy = nil;
     
@@ -2598,7 +2597,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     
     NSMutableArray *imageObjects = [NSMutableArray array];
     
-    for( DicomSeries *serie in series)
+    for (DicomSeries *serie in series)
         [imageObjects addObjectsFromArray: serie.images.allObjects];
     
     NSMutableArray *imagePaths = [NSMutableArray arrayWithArray: [imageObjects valueForKey:@"completePath"]];

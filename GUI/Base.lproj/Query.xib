@@ -53,8 +53,8 @@
             <rect key="contentRect" x="0.0" y="0.0" width="920" height="672"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="920" height="370"/>
-            <view key="contentView" id="145">
-                <rect key="frame" x="0.0" y="0.0" width="920" height="648"/>
+            <view key="contentView" misplaced="YES" id="145">
+                <rect key="frame" x="0.0" y="0.0" width="920" height="672"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1170" customClass="SFAuthorizationView">
@@ -594,7 +594,7 @@
                                                     <rect key="frame" x="5" y="4" width="357" height="133"/>
                                                     <clipView key="contentView" id="Gmi-iM-SZh">
                                                         <rect key="frame" x="1" y="1" width="355" height="120"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" multipleSelection="NO" emptySelection="NO" autosaveName="srcsTable" headerView="VCg-wO-Khi" id="691" customClass="sourcesTableView">
                                                                 <rect key="frame" x="0.0" y="0.0" width="401" height="97"/>
@@ -608,7 +608,7 @@
                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                                         </tableHeaderCell>
-                                                                        <buttonCell key="dataCell" type="check" bezelStyle="regularSquare" imagePosition="only" alignment="center" controlSize="small" inset="2" id="707">
+                                                                        <buttonCell key="dataCell" type="check" bezelStyle="regularSquare" imagePosition="only" alignment="center" controlSize="small" lineBreakMode="truncatingTail" inset="2" id="707">
                                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                             <font key="font" metaFont="cellTitle"/>
                                                                             <connections>
@@ -955,7 +955,7 @@
                                         <rect key="frame" x="21" y="38" width="905" height="356"/>
                                         <clipView key="contentView" id="YTi-kc-ru4">
                                             <rect key="frame" x="1" y="1" width="903" height="343"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" alternatingRowBackgroundColors="YES" emptySelection="NO" headerView="780" id="319" customClass="QueryOutlineView">
                                                     <rect key="frame" x="0.0" y="0.0" width="1596" height="320"/>

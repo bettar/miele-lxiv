@@ -62,5 +62,8 @@
 -(void)processImageAsScreenCapture: (BOOL) asDisplayed;
 -(void)processMovie;
 
+-(NSArray*)studyList_requestedStudies:(NSString**)title;
+-(id)objectWithXID:(NSString*)xid;
+-(DicomStudy*) studyForStudyInstanceUID: (NSString*) uid server: (NSDictionary*) ss;
 @end
 

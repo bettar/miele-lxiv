@@ -1204,7 +1204,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     
     @try
     {
-        if ([[dict valueForKey: @"retrieveMode"] intValue] == WADORetrieveMode && retrieveMode == WADORetrieveMode)
+        if ([[dict valueForKey: @"retrieveMode"] intValue] == WADORetrieveMode &&
+            retrieveMode == WADORetrieveMode)
         {
             [self WADORetrieve: [dict valueForKey: @"study"]];
         }
@@ -1244,7 +1245,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                             
                             DicomStudy *localStudy = [[context executeFetchRequest: request error: &error] lastObject];
                             
-                            for( DicomSeries *s in [localStudy valueForKey: @"series"])
+                            for (DicomSeries *s in [localStudy valueForKey: @"series"])
                                 [localObjectUIDs addObjectsFromArray: [[[s images] valueForKey: @"sopInstanceUID"] allObjects]];
                         }
                         @catch (NSException* e)
@@ -2735,7 +2736,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 		{
 			NSString *response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", _calledAET, _hostname, _port];
 			
-			response = [response stringByAppendingString: [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus)]];
+			response = [response stringByAppendingString: [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus) encoding:NSUTF8StringEncoding]];
 			
 			 if (statusDetail != NULL)
 			 {
@@ -2781,7 +2782,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
         DCMNET_ERROR("Find Failed" << OFendl
                      <<" Condition: " << DimseCondition::dump(temp_str, cond));
         if (_verbose)
-            NSLog(@"Dimse Status: %@", [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus)]);
+            NSLog(@"Dimse Status: %@", [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus) encoding:NSUTF8StringEncoding]);
     }
 
     /* dump status detail information if there is some */
@@ -2947,7 +2948,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
                     [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:)
                                                      withObject:[NSArray arrayWithObjects:
                                                                  NSLocalizedString(@"Move Failed", nil),
-                                                                 [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)],
+                                                                 [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus) encoding:NSUTF8StringEncoding],
                                                                  NSLocalizedString(@"Continue", nil),
                                                                  nil]
                                                   waitUntilDone: NO];
@@ -2966,7 +2967,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
                 [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:)
                                                  withObject:[NSArray arrayWithObjects:
                                                              NSLocalizedString(@"Move Failed", nil),
-                                                             [NSString stringWithCString: cond.text()],
+                                                             [NSString stringWithCString: cond.text() encoding:NSUTF8StringEncoding],
                                                              NSLocalizedString(@"Continue", nil),
                                                              nil]
                                               waitUntilDone: NO];
@@ -3070,7 +3071,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
                 [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:)
                                                  withObject:[NSArray arrayWithObjects:
                                                              NSLocalizedString(@"Get Failed", nil),
-                                                             [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)],
+                                                             [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus) encoding:NSUTF8StringEncoding],
                                                              NSLocalizedString(@"Continue", nil),
                                                              nil]
                                               waitUntilDone:NO];
@@ -3091,7 +3092,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
             [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:)
                                              withObject:[NSArray arrayWithObjects:
                                                          NSLocalizedString(@"Get Failed", nil),
-                                                         [NSString stringWithCString: cond.text()],
+                                                         [NSString stringWithCString: cond.text() encoding:NSUTF8StringEncoding],
                                                          NSLocalizedString(@"Continue", nil),
                                                          nil]
                                           waitUntilDone:NO];

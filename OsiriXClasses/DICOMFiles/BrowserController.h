@@ -20,8 +20,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-#include <ctime>
-#include "dcmtk/dcmnet/dcompat.h"    /* compatibility routines */
+//#include <ctime>
+//#include "dcmtk/dcmnet/dcompat.h"    /* compatibility routines */
 
 #import <Accelerate/Accelerate.h>
 
@@ -200,7 +200,7 @@ extern NSString * const SeriesViewer_DragType;
 	IBOutlet NSSearchField			*searchField;
     IBOutlet NSButton               *searchInEntireDBResult;
 	NSToolbarItem					*toolbarSearchItem;
-	browserSearchTags				searchType;
+	enum browserSearchTags				searchType;
 	
 	IBOutlet NSMenu					*imageTileMenu;
 	IBOutlet NSWindow				*urlWindow, *CDpasswordWindow, *ZIPpasswordWindow;
@@ -346,7 +346,7 @@ extern NSString * const SeriesViewer_DragType;
 @property (nonatomic) NSTimeInterval databaseLastModification __deprecated;
 @property(readonly) NSMutableDictionary *databaseIndexDictionary;
 @property(readonly) PluginManagerController *pluginManagerController;
-@property browserSearchTags distantSearchType;
+@property enum browserSearchTags distantSearchType;
 
 +(void)initializeBrowserControllerClass;
 + (unsigned int)_currentModifierFlags;

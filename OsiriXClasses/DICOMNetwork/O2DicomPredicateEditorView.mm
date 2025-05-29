@@ -255,7 +255,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         // tags pop-up
         
         _tagsPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
-        _tagsPopUp.bezelStyle = NSRoundRectBezelStyle;
+        _tagsPopUp.bezelStyle = NSBezelStyleAccessoryBarAction;
         [_tagsPopUp.cell setControlSize:NSControlSizeSmall];
         _tagsPopUp.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         _tagsPopUp.autoenablesItems = NO;
@@ -349,7 +349,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         // operators pop-up
         
         _operatorsPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
-        _operatorsPopUp.bezelStyle = NSRoundRectBezelStyle;
+        _operatorsPopUp.bezelStyle = NSBezelStyleAccessoryBarAction;
         [_operatorsPopUp.cell setControlSize:NSControlSizeSmall];
         _operatorsPopUp.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         _operatorsPopUp.autoenablesItems = NO;
@@ -439,7 +439,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         // within pop-up
         
         _withinPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
-        _withinPopUp.bezelStyle = NSRoundRectBezelStyle;
+        _withinPopUp.bezelStyle = NSBezelStyleAccessoryBarAction;
         [_withinPopUp.cell setControlSize:NSControlSizeSmall];
         _withinPopUp.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         _withinPopUp.autoenablesItems = NO;
@@ -473,7 +473,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         // code string (CS) pop-up
         
         _codeStringPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
-        _codeStringPopUp.bezelStyle = NSRoundRectBezelStyle;
+        _codeStringPopUp.bezelStyle = NSBezelStyleAccessoryBarAction;
         [_codeStringPopUp.cell setControlSize:NSControlSizeSmall];
         _codeStringPopUp.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         _codeStringPopUp.autoenablesItems = NO;

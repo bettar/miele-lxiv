@@ -118,7 +118,7 @@
 
 - (void)performQuery: (BOOL) showError
 {
-    NSLog(@"%s", __FUNCTION__);
+    //NSLog(@"%s", __FUNCTION__);
 
 	if (queryLock == nil)
         queryLock = [[NSLock alloc] init];

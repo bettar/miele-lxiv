@@ -1078,7 +1078,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 				
 				if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != nil)
 				{
-					NSArray	*c = [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"];
+					NSArray	*c = [[NSString stringWithCString:string encoding:NSUTF8StringEncoding] componentsSeparatedByString:@"\\"];
 
 					if ([c count] >= NUM_ENCODINGS)
                         NSLog( @"Encoding number >= %d ???", NUM_ENCODINGS);
