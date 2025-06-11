@@ -44,7 +44,7 @@
 			<key>host</key>
 			<string>bettar.github.io</string>
 			<key>path</key>
-			<string>/miele-lxiv/plugins/DICOMweb/html/DICOMwebFilter.mieleplugin.zip</string>
+			<string>/miele-lxiv/plugins/DICOMweb/html/DICOMweb.mieleplugin.zip</string>
 		</dict>
 		<key>name</key>
 		<string>DICOMweb</string>
