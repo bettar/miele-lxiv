@@ -1233,8 +1233,8 @@ PixelRepresentation
                     {
                         if (vl != 0xFFFFFFFFL) // DCM_UndefinedLength
                             [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]];
-                        else
-                            [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]];
+//                        else
+//                            [dicomData setTransferSyntaxForDataset:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]];
                     }
 #endif
                     // Factory method
