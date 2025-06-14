@@ -98,7 +98,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 		NSArray *v2Tokens = [v2 componentsSeparatedByString: @"."];
 		int maxLen;
 		
-		if ( [v1Tokens count] > [v2Tokens count])
+		if ([v1Tokens count] > [v2Tokens count])
 			maxLen = [v1Tokens count];
 		else
 			maxLen = [v2Tokens count];
@@ -112,30 +112,25 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 			if (i < [v1Tokens count])
 				n1 = [[v1Tokens objectAtIndex: i] intValue];
 			
-			if (n1 <= 0)
-				[NSException raise: @"compareVersion raised" format: @"compareVersion raised"];
-			
 			if (i < [v2Tokens count])
 				n2 = [[v2Tokens objectAtIndex: i] intValue];
 			
-			if (n2 <= 0)
-				[NSException raise: @"compareVersion raised" format: @"compareVersion raised"];
+//			if ((n1 <= 0) || (n2 <= 0))
+//				[NSException raise: @"compareVersion raised" format: @"compareVersion raised"];
 			
 			if (n1 > n2)
-				return 1;
+				return 1; // local version is higher
 
             if (n1 < n2)
-				return -1;
+				return -1; // update needed
 		}
-		
-		return 0;
 	}
 	@catch (NSException *e)
 	{
-		return -1;
+        NSLog(@"%s %@", __FUNCTION__, e.reason);
 	}
 
-    return -1;
+    return 0; // same version
 }
 
 + (BOOL) isComPACS
@@ -1605,7 +1600,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 				{
 					[message appendFormat:@"%@, ", [plugin objectForKey:@"name"]];
 				}
-				message = [NSMutableString stringWithString:[message substringToIndex:[message length]-2]];
+				message = [NSMutableString stringWithString:[message substringToIndex:[message length]-2]]; // remove trailing ", "
 			}
 								
 			NSDictionary *messageDictionary = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:title, message, pluginsToUpdate, nil] forKeys:[NSArray arrayWithObjects:@"title", @"body", @"plugins", nil]];
