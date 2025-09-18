@@ -724,11 +724,11 @@ static bool isGrantedNotificationAccess = false;
     BOOL ok = (ver <= MAC_OS_X_VERSION_MAX_ALLOWED); // MAC_OS_VERSION_14_0
     return ok;
 #else
-    if (version.majorVersion > 15)
+    if (version.majorVersion > 26)
         return NO;
     
-    if (version.majorVersion == 15 &&
-        version.minorVersion > 5)
+    if (version.majorVersion == 26 &&
+        version.minorVersion > 0)
     {
         return NO;
     }
