@@ -265,6 +265,8 @@
 	<string>NSApplication</string>
 	<key>OSAScriptingDefinition</key>
 	<string>OsiriX.sdef</string>
+	<key>UIDesignRequiresCompatibility</key>
+	<true/>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>

@@ -122,7 +122,7 @@ static const DB_FindAttr TbFindAttr [] = {
 
     DB_FindAttr( DCM_RETIRED_OtherPatientIDs,               PATIENT_LEVEL,  OPTIONAL_KEY ),
     DB_FindAttr( DCM_OtherPatientNames,                     PATIENT_LEVEL,  OPTIONAL_KEY ),
-    DB_FindAttr( DCM_EthnicGroup,                           PATIENT_LEVEL,  OPTIONAL_KEY ),
+    DB_FindAttr( DCM_RETIRED_EthnicGroup,                   PATIENT_LEVEL,  OPTIONAL_KEY ),
     DB_FindAttr( DCM_PatientComments,                       PATIENT_LEVEL,  OPTIONAL_KEY ),
     DB_FindAttr( DCM_IssuerOfPatientID,                     PATIENT_LEVEL,  OPTIONAL_KEY ),
 //    DB_FindAttr( DCM_NumberOfPatientRelatedStudies,         PATIENT_LEVEL,  OPTIONAL_KEY ),

@@ -372,7 +372,7 @@ static DicomDatabase* activeLocalDatabase = nil;
     if (ldb != self.activeLocalDatabase) {
 		[activeLocalDatabase release];
 		activeLocalDatabase = [ldb retain];
-		[NSNotificationCenter.defaultCenter postNotificationName:OsirixActiveLocalDatabaseDidChangeNotification object:nil];
+		[NSNotificationCenter.defaultCenter postNotificationName: OsirixActiveLocalDatabaseDidChangeNotification object:nil];
 	}
 }
 
@@ -632,6 +632,7 @@ static DicomDatabase* activeLocalDatabase = nil;
             found = YES;
         }
     }
+    
     if (found == NO)
         N2LogStackTrace( @"*************** WTF");
     
@@ -661,7 +662,8 @@ static DicomDatabase* activeLocalDatabase = nil;
         [temp unlock];
         [temp release];
     }
-    else {
+    else
+    {
         [_importFilesFromIncomingDirLock release];
         [_processFilesLock release];
         [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:nil object:self];
@@ -678,8 +680,6 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[super dealloc];
     
     [databasesDictionaryLock lock]; //We will be unlocked from -(oneway void) release
-    
-    return;
 }
 
 -(void)observeIndependentDatabaseNotification:(NSNotification*)notification

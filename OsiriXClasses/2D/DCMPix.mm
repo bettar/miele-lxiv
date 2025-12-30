@@ -10598,7 +10598,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	[self CheckLoad]; 
 	
-	if (newWW !=0 || newWL != 0)   // new values to be applied
+	if (newWW != 0 || newWL != 0)   // new values to be applied
 	{
 		if (fullww > 256)
 		{

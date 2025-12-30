@@ -334,7 +334,8 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 
 @implementation NSThread (ModalForWindow)
 
--(ThreadModalForWindowController*)startModalForWindow:(NSWindow*)window {
+-(ThreadModalForWindowController*)startModalForWindow:(NSWindow*)window
+{
 //	if ([[self threadDictionary] objectForKey:ThreadIsCurrentlyModal])
 //		return nil;
 //	[[self threadDictionary] setObject:@YES forKey:ThreadIsCurrentlyModal];
@@ -348,7 +349,8 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	return nil;
 }
 
--(ThreadModalForWindowController*)modalForWindowController {
+-(ThreadModalForWindowController*)modalForWindowController
+{
     @synchronized( self)
     {
         return [self.threadDictionary objectForKey:NSThreadModalForWindowControllerKey];

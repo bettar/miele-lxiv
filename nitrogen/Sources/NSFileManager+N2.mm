@@ -321,10 +321,12 @@
 }
 
 -(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path {
-	return [self destinationOfAliasOrSymlinkAtPath:path resolved:NULL]; // NULL ? Should it be FALSE ?
+	return [self destinationOfAliasOrSymlinkAtPath:path
+                                          resolved:NULL]; // no output parameter
 }
 
--(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path resolved:(BOOL*)r
+-(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path
+                                     resolved:(BOOL*)r // output parameter
 {
 	//if (![self fileExistsAtPath:path]) {
     NSString* temp = [self destinationOfAliasAtPath:path];

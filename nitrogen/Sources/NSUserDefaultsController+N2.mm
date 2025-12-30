@@ -158,7 +158,8 @@ CF_EXTERN_C_END
 	[self bind:binding toObject:observable withKeyPath:valuesKeyPath(key) options:options];
 }
 
--(void)addObserver:(id)observer forValuesKey:(NSString*)key options:(NSKeyValueObservingOptions)options context:(void*)context {
+-(void)addObserver:(id)observer forValuesKey:(NSString*)key options:(NSKeyValueObservingOptions)options context:(void*)context
+{
 	[self addObserver:observer forKeyPath:valuesKeyPath(key) options:options context:context];
 }
 

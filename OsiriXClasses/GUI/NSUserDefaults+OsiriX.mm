@@ -30,13 +30,15 @@
 
 NSString* const OsirixDateTimeFormatDefaultsKey = @"DBDateFormat2";
 
-+(NSString*)dateTimeFormat {
++(NSString*)dateTimeFormat
+{
 	NSString* r = [NSUserDefaultsController.sharedUserDefaultsController stringForKey:OsirixDateTimeFormatDefaultsKey];
 	if (!r) r = [[[[NSDateFormatter alloc] init] autorelease] dateFormat];
 	return r;
 }
 
-+(NSDateFormatter*)dateTimeFormatter {
++(NSDateFormatter*)dateTimeFormatter
+{
 	static NSDateFormatter* formatter = NULL;
 	if (!formatter)
 		formatter = [[NSDateFormatter alloc] init];
@@ -53,13 +55,15 @@ NSString* const OsirixDateTimeFormatDefaultsKey = @"DBDateFormat2";
 
 NSString* const OsirixDateFormatDefaultsKey = @"DBDateOfBirthFormat2";
 
-+(NSString*)dateFormat {
++(NSString*)dateFormat
+{
 	NSString* r = [NSUserDefaultsController.sharedUserDefaultsController stringForKey:OsirixDateFormatDefaultsKey];
 	if (!r) r = [[[[NSDateFormatter alloc] init] autorelease] dateFormat];
 	return r;
 }
 
-+(NSDateFormatter*)dateFormatter {
++(NSDateFormatter*)dateFormatter
+{
 	static NSDateFormatter* formatter = NULL;
 	if (!formatter)
 		formatter = [[NSDateFormatter alloc] init];

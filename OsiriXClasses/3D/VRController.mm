@@ -1930,6 +1930,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Reset",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Reset to initial 3D view",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: ResetToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+    [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(resetImage:)];
     }
@@ -2005,6 +2008,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Cropping Cube",nil)];
 	[toolbarItem setToolTip:NSLocalizedString(@"Show and manipulate cropping cube",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: CroppingToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+    [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(showCropCube:)];
     }
@@ -2023,6 +2029,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Best Rendering",nil)];
     [toolbarItem setToolTip: NSLocalizedString(@"Render this image at the best resolution",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: CaptureToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+    [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(bestRendering:)];
     }
@@ -2103,6 +2112,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[toolbarItem setToolTip: NSLocalizedString(@"Fly Thru Set up",nil)];
 	
 		[toolbarItem setImage: [NSImage imageNamed: FlyThruToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(flyThruControllerInit:)];
     }

@@ -813,6 +813,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"ROI Manager",nil)];
     [toolbarItem setToolTip: NSLocalizedString(@"ROI Manager",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: ROIManagerToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+    [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(roiGetManager:)];
     }

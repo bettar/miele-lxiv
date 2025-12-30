@@ -153,7 +153,7 @@
     if (![NSThread isMainThread])
     {
         if( [thread isExecuting] == NO && [thread isFinished] == NO)
-            [thread start]; // We want to start it immediately: subAddThread must add it on main thread: the main thread is maybe locked.
+            [thread start]; // We want to start it immediately: subAddThread must add it on main thread: the main thread maybe locked.
         [self performSelectorOnMainThread:@selector(subAddThread:) withObject:thread waitUntilDone: NO];
     }
     else

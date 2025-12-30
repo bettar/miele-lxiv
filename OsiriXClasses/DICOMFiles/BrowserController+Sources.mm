@@ -200,8 +200,8 @@ enum {
     
 	if (database.isLocal)
 		return [LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:database.baseDirPath];
-	else
-        return [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:[(RemoteDicomDatabase*)database address] port:[(RemoteDicomDatabase*)database port] description:nil dictionary:nil];
+
+    return [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:[(RemoteDicomDatabase*)database address] port:[(RemoteDicomDatabase*)database port] description:nil dictionary:nil];
 }
 
 -(int)rowForDatabase:(DicomDatabase*)database
@@ -298,7 +298,8 @@ enum {
 	}
 }
 
--(void)_complain:(NSArray*)why { // if 1st obj in array is a number then execute this after the delay specified by that number, with the rest of the array
+-(void)_complain:(NSArray*)why // if 1st obj in array is a number then execute this after the delay specified by that number, with the rest of the array
+{
 	if ([[why objectAtIndex:0] isKindOfClass:[NSNumber class]])
 		[self performSelector:@selector(_complain:) withObject:[why subarrayWithRange:NSMakeRange(1, (long)why.count-1)] afterDelay:[[why objectAtIndex:0] floatValue]];
 	else
@@ -563,7 +564,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                          context:[[args objectAtIndex:3] pointerValue]];
 }
 
-+ (BOOL)host:(NSHost*)h1 isEqualToHost:(NSHost*)h2 {
++ (BOOL)host:(NSHost*)h1 isEqualToHost:(NSHost*)h2
+{
 #define MAC_CONCURRENT_ISEQUALTOHOST 10
     static dispatch_semaphore_t sid = 0;
     if (!sid)
@@ -1277,7 +1279,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[bs willDisplayCell:cell];
 }
 
-
 -(NSDragOperation)tableView:(NSTableView*)tableView
                validateDrop:(id<NSDraggingInfo>)info
                 proposedRow:(NSInteger)row
@@ -1328,7 +1329,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)tableViewSelectionDidChange:(NSNotification*)notification
 {
-    if( dontListenToSourcesChanges == NO)
+    if ( dontListenToSourcesChanges == NO)
     {
         NSInteger row = [(NSTableView*)notification.object selectedRow];
         DataNodeIdentifier* bs = [_browser sourceIdentifierAtRow:row];
@@ -1346,7 +1347,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 {
 	static DefaultLocalDatabaseNodeIdentifier* identifier = nil;
 	if (!identifier)
-		identifier = [[[self class] localDatabaseNodeIdentifierWithPath:DicomDatabase.defaultDatabase.baseDirPath] retain];
+		identifier = [[[self class] localDatabaseNodeIdentifierWithPath: DicomDatabase.defaultDatabase.baseDirPath] retain];
 	return identifier;
 }
 

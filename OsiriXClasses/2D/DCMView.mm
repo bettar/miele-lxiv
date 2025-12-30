@@ -13741,7 +13741,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                 }
                 else
 				{
-                    // Flip it vertically: proceeed swapping rows
+                    // Flip it vertically: proceed swapping rows
 					for (long i = 0; i < *height/2; i++ )
 					{
 						memcpy(tempBuf,

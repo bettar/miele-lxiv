@@ -8155,9 +8155,8 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.4",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.5",
 					"$(SRCROOT)/Binaries/DCMTK/include",
-					"$(SRCROOT)/Binaries/GLEW/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
 					"$(SRCROOT)",
@@ -8249,15 +8248,15 @@
 					"$(SRCROOT)/Binaries/openssl/lib/libssl.a",
 					"$(SRCROOT)/Binaries/openssl/lib/libcrypto.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
-					"$(SRCROOT)/Binaries/ITK/lib/libITK.a",
-					"$(SRCROOT)/Binaries/VTK/lib/libVTK.a",
-					"$(SRCROOT)/Binaries/GLEW/lib/libGLEW.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
+					"$(SRCROOT)/Binaries/ITK/libC/libITK.a",
+					"$(SRCROOT)/Binaries/VTK/libC/libVTK.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 					"$(SRCROOT)/Binaries/zlib/lib/libz.a",
+					"$(SRCROOT)/Binaries/GLEW/lib/libGLEW.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "miele-lxiv";
@@ -8265,7 +8264,8 @@
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.4",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.4",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.5",
+					"$(SRCROOT)/Binaries/GLEW/include",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -8353,7 +8353,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"-framework",
 					Accelerate,
@@ -8481,7 +8481,7 @@
 					"-framework",
 					DCM,
 					"$(SRCROOT)/Binaries/libming/lib/libming.a",
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
 					"-lpng",
@@ -8534,7 +8534,7 @@
 					Foundation,
 					"-framework",
 					AppKit,
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
 					"$(SRCROOT)/Binaries/zlib/lib/libz.a",
@@ -8584,7 +8584,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
@@ -8692,9 +8692,8 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.4",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.5",
 					"$(SRCROOT)/Binaries/DCMTK/include",
-					"$(SRCROOT)/Binaries/GLEW/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
 					"$(SRCROOT)",
@@ -8786,15 +8785,15 @@
 					"$(SRCROOT)/Binaries/openssl/lib/libssl.a",
 					"$(SRCROOT)/Binaries/openssl/lib/libcrypto.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
-					"$(SRCROOT)/Binaries/ITK/lib/libITK.a",
-					"$(SRCROOT)/Binaries/VTK/lib/libVTK.a",
-					"$(SRCROOT)/Binaries/GLEW/lib/libGLEW.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
+					"$(SRCROOT)/Binaries/ITK/libC/libITK.a",
+					"$(SRCROOT)/Binaries/VTK/libC/libVTK.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 					"$(SRCROOT)/Binaries/zlib/lib/libz.a",
+					"$(SRCROOT)/Binaries/GLEW/lib/libGLEW.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "miele-lxiv";
@@ -8802,7 +8801,8 @@
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.4",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.4",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.5",
+					"$(SRCROOT)/Binaries/GLEW/include",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -8890,7 +8890,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"-framework",
 					Accelerate,
@@ -9019,7 +9019,7 @@
 					"-framework",
 					DCM,
 					"$(SRCROOT)/Binaries/libming/lib/libming.a",
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 					"-lpng",
@@ -9072,7 +9072,7 @@
 					Foundation,
 					"-framework",
 					AppKit,
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
 					"$(SRCROOT)/Binaries/zlib/lib/libz.a",
@@ -9122,7 +9122,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
@@ -9213,7 +9213,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"-framework",
 					Accelerate,
@@ -9295,6 +9295,7 @@
 					OSIRIX_VIEWER,
 					WITH_GLM,
 					WITH_GLEW,
+					FIXUP_TB_ITEM_SIZE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -9309,9 +9310,8 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.4",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.5",
 					"$(SRCROOT)/Binaries/DCMTK/include",
-					"$(SRCROOT)/Binaries/GLEW/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
 					"$(SRCROOT)",
@@ -9401,22 +9401,23 @@
 					"$(SRCROOT)/Binaries/openssl/lib/libssl.a",
 					"$(SRCROOT)/Binaries/openssl/lib/libcrypto.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
-					"$(SRCROOT)/Binaries/ITK/lib/libITK.a",
-					"$(SRCROOT)/Binaries/VTK/lib/libVTK.a",
-					"$(SRCROOT)/Binaries/GLEW/lib/libGLEW.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
+					"$(SRCROOT)/Binaries/ITK/libC/libITK.a",
+					"$(SRCROOT)/Binaries/VTK/libC/libVTK.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 					"$(SRCROOT)/Binaries/zlib/lib/libz.a",
+					"$(SRCROOT)/Binaries/GLEW/lib/libGLEW.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "miele-lxiv";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.4",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.4",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.5",
+					"$(SRCROOT)/Binaries/GLEW/include",
 				);
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "-no-pedantic";
@@ -9517,7 +9518,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"$(SRCROOT)/Binaries/libjpeg/lib/libjpeg.a",
 					"$(SRCROOT)/Binaries/libtiff/lib/libtiff.dylib",
@@ -9603,7 +9604,7 @@
 					"-framework",
 					DCM,
 					"$(SRCROOT)/Binaries/libming/lib/libming.a",
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
 					"$(SRCROOT)/Binaries/openjpeg/lib/libopenjp2.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
@@ -9659,7 +9660,7 @@
 					Foundation,
 					"-framework",
 					AppKit,
-					"$(SRCROOT)/Binaries/DCMTK/lib/libDCMTK.a",
+					"$(SRCROOT)/Binaries/DCMTK/libC/libDCMTK.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libiconv.a",
 					"$(SRCROOT)/Binaries/libiconv/lib/libcharset.a",
 					"$(SRCROOT)/Binaries/zlib/lib/libz.a",

@@ -4643,7 +4643,7 @@
 "Synchronizing database..." = "正在同步数据库...";
 
 /* No comment provided by engineer. */
-"Syncronize slice position" = "同步切片位置";
+"Synchronize slice position" = "同步切片位置";
 
 /* No comment provided by engineer. */
 "Syntax error in study predicate filter: %@" = "研究谓词筛选器中的语法错误: %@";

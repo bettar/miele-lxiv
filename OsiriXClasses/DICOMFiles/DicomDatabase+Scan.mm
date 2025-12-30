@@ -199,7 +199,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
     return nil;
 }
 
--(NSMutableArray*)_itemsInRecord:(DcmDirectoryRecord*)record context:(NSMutableArray*)context basePath:(NSString*)basepath {
+-(NSMutableArray*)_itemsInRecord:(DcmDirectoryRecord*)record context:(NSMutableArray*)context basePath:(NSString*)basepath
+{
 //	NSString* tabs = [NSString stringByRepeatingString:@" " times:context.count*4];
 	NSMutableArray* items = [NSMutableArray array];
 	NSMutableDictionary* elements = [NSMutableDictionary dictionary];
@@ -379,7 +380,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	return [self _itemsInRecord:record context:[NSMutableArray array] basePath:basepath];
 }
 
--(NSString*)_fixedPathForPath:(NSString*)path withPaths:(NSArray*)allpaths { // path was listed in DICOMDIR and [NSFileManager.defaultManager fileExistsAtPath:path] says NO
+-(NSString*)_fixedPathForPath:(NSString*)path withPaths:(NSArray*)allpaths
+{ // path was listed in DICOMDIR and [NSFileManager.defaultManager fileExistsAtPath:path] says NO
 	NSString* cutpath = [path stringByDeletingPathExtension];
 	NSString* returnString = nil;
     
@@ -409,7 +411,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
     return YES;
 }
 
--(NSArray*)scanDicomdirAt:(NSString*)path withPaths:(NSArray*)allpaths pathsToScanAnyway:(NSMutableArray*)pathsToScanAnyway {
+-(NSArray*)scanDicomdirAt:(NSString*)path withPaths:(NSArray*)allpaths pathsToScanAnyway:(NSMutableArray*)pathsToScanAnyway
+{
 	NSThread* thread = [NSThread currentThread];
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
@@ -497,7 +500,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
     }
     
     NSArray* objectIDs = nil;
-    if (items.count) {
+    if (items.count)
+    {
         thread.status = [NSString stringWithFormat:NSLocalizedString(@"Importing %@...", nil), N2LocalizedSingularPluralCount(items.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
         objectIDs = [self addFilesDescribedInDictionaries:items
                                         postNotifications:NO
@@ -510,7 +514,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
     return [self objectsWithIDs:objectIDs];
 }
 
-+(NSString*)_findDicomdirIn:(NSArray*)allpaths  {
++(NSString*)_findDicomdirIn:(NSArray*)allpaths
+{
 	NSString* candidate = nil;
 	
 	for (NSString* path in allpaths) {
@@ -753,7 +758,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
             while (copyFilesTh1.isExecuting)
                 [NSThread sleepForTimeInterval:0.1];
             
-            if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"] && ![copyFilesTh1 isCancelled]) {
+            if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"] && ![copyFilesTh1 isCancelled])
+            {
                 thread.status = NSLocalizedString(@"Ejecting...", nil);
                 thread.progress = -1;
                 
@@ -826,11 +832,13 @@ static NSString* _dcmElementKey(DcmElement* element) {
 
 @implementation _DicomDatabaseScanDcmElement
 
-+(id)elementWithElement:(DcmElement*)element {
++(id)elementWithElement:(DcmElement*)element
+{
 	return [[[[self class] alloc] initWithElement:element] autorelease];
 }
 
--(id)initWithElement:(DcmElement*)element {
+-(id)initWithElement:(DcmElement*)element
+{
 	if ((self = [super init])) {
 		_element = element; // new DcmElement(element)
 	}

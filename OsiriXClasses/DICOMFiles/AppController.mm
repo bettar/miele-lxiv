@@ -728,7 +728,7 @@ static bool isGrantedNotificationAccess = false;
         return NO;
     
     if (version.majorVersion == 26 &&
-        version.minorVersion > 0)
+        version.minorVersion > 2)
     {
         return NO;
     }
@@ -3084,7 +3084,8 @@ static BOOL initialized = NO;
                         NSModalSession session = [NSApp beginModalSessionForWindow:dialog];
                         
                         NSTimeInterval endTime = [NSDate timeIntervalSinceReferenceDate]+10*60; // if ignored, the dialog stays up for 10 minutes
-                        for (;;) {
+                        for (;;)
+                        {
                             NSInteger r = [NSApp runModalSession:session];
                             if (r == NSAlertDefaultReturn) // default button says Quit
                                 exit(0);
@@ -3293,7 +3294,7 @@ static BOOL initialized = NO;
                         {
                             int result = NSRunInformationalAlertPanel2(
                                 NSLocalizedString(@"OsiriX crashed during last startup", nil),
-                                NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", nil),
+                                NSLocalizedString(@"Previous crash maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", nil),
                                 NSLocalizedString(@"Continue normally",nil),
                                 NSLocalizedString(@"Protected Mode",nil),
                                 NSLocalizedString(@"Rebuild Database",nil));

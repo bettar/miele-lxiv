@@ -234,7 +234,8 @@ static int gTotalN2ManagedObjectContext = 0;
 	return _managedObjectContext;
 }
 
--(void)setManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
+-(void)setManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
+{
 	if (managedObjectContext != _managedObjectContext) {
         [self willChangeValueForKey:@"managedObjectContext"];
         
@@ -278,7 +279,9 @@ static int gTotalN2ManagedObjectContext = 0;
 
 - (void) renewManagedObjectContext
 {
-    self.managedObjectContext = self.isMainDatabase? [self contextAtPath: self.sqlFilePath] : [self.mainDatabase contextAtPath: self.sqlFilePath];
+    self.managedObjectContext = self.isMainDatabase ?
+            [self contextAtPath: self.sqlFilePath] :
+            [self.mainDatabase contextAtPath: self.sqlFilePath];
 }
 
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath
@@ -289,15 +292,17 @@ static int gTotalN2ManagedObjectContext = 0;
         return nil;
     
     N2ManagedObjectContext* moc = [[[N2ManagedObjectContext alloc] initWithDatabase: self] autorelease];
-    //	NSLog(@"---------- NEW %@ at %@", moc, sqlFilePath);
+#ifndef NDEBUG
+	NSLog(@"---------- NEW %@ at %@", moc, sqlFilePath);
+#endif
 	moc.undoManager = nil;
 	
     //	NSMutableDictionary* persistentStoreCoordinatorsDictionary = self.persistentStoreCoordinatorsDictionary;
 	
     @try {
         @synchronized (self) {
-    //        if (self.managedObjectContext.hasChanges)
-    //            [self save];
+//        if (self.managedObjectContext.hasChanges)
+//            [self save];
             
             if ([sqlFilePath isEqualToString:self.sqlFilePath] &&
                 [NSFileManager.defaultManager fileExistsAtPath:sqlFilePath])
@@ -305,8 +310,9 @@ static int gTotalN2ManagedObjectContext = 0;
                 moc.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
             }
             
-            if (!moc.persistentStoreCoordinator) {
-                //			moc.persistentStoreCoordinator = [persistentStoreCoordinatorsDictionary objectForKey:sqlFilePath];
+            if (!moc.persistentStoreCoordinator)
+            {
+                //moc.persistentStoreCoordinator = [persistentStoreCoordinatorsDictionary objectForKey:sqlFilePath];
                 
                 BOOL isNewFile = ![NSFileManager.defaultManager fileExistsAtPath:sqlFilePath];
                 if (isNewFile)
@@ -379,7 +385,7 @@ static int gTotalN2ManagedObjectContext = 0;
                                         NSLocalizedString(@"Delete", nil),
                                         nil);
                                     
-                                    if( result == NSAlertAlternateReturn2) {
+                                    if ( result == NSAlertAlternateReturn2) {
                                         [NSFileManager.defaultManager removeItemAtPath:sqlFilePath error: nil];
                                         i = 0;
                                     }
@@ -404,8 +410,9 @@ static int gTotalN2ManagedObjectContext = 0;
                     [moc save:NULL];
                     NSLog(@"New database file created at %@", sqlFilePath);
                 }
-                
-            } else {
+            }
+            else
+            {
                 if (self.mainDatabase)
                     N2LogStackTrace(@"****************************: creating independent context from already independent database");
                 
@@ -413,7 +420,6 @@ static int gTotalN2ManagedObjectContext = 0;
                 // Warning: our independentContext will NOT receive changes from the main DicomDatabase context: add it by yourself if needed (see WebPortalConnection.mm)
                 [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:moc];
             }
-            
         }
     }
     @catch (NSException *exception) {
@@ -423,7 +429,8 @@ static int gTotalN2ManagedObjectContext = 0;
     return moc;
 }
 
--(void)mergeChangesFromContextDidSaveNotification:(NSNotification*)n {
+-(void)mergeChangesFromContextDidSaveNotification:(NSNotification*)n
+{
     NSManagedObjectContext* moc = [n object];
     
     if (self.managedObjectContext.persistentStoreCoordinator != moc.persistentStoreCoordinator)
@@ -461,7 +468,8 @@ static int gTotalN2ManagedObjectContext = 0;
     return NO;
 }
 
--(void)lock {
+-(void)lock
+{
 	[self.managedObjectContext lock];
 }
 
@@ -473,7 +481,8 @@ static int gTotalN2ManagedObjectContext = 0;
 	[self.managedObjectContext unlock];
 }
 
--(id)initWithPath:(NSString*)p {
+-(id)initWithPath:(NSString*)p
+{
 	return [self initWithPath:p context:nil mainDatabase:nil];
 }
 

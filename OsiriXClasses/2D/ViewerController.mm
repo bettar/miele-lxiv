@@ -6893,6 +6893,9 @@ static ViewerController *draggedController = nil;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Movie Export", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Export this series in a Movie file", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: QTSaveToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportQuicktime:)];
     }
@@ -6902,6 +6905,9 @@ static ViewerController *draggedController = nil;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Print",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Print selected study/series to a DICOM printer",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: PrintToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(printDICOM:)];
     }
@@ -6912,6 +6918,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setToolTip: NSLocalizedString(@"Export this image to Photos", nil)];
         
         [toolbarItem setImage: [NSImage imageNamed: @"Photos"]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(export2iPhoto:)];
     }
@@ -6921,6 +6930,9 @@ static ViewerController *draggedController = nil;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Email", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Email this image", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(sendMail:)];
 	}
@@ -6939,6 +6951,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Export as DICOM File", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Export this image/series in a DICOM file", nil)];
         [toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(exportDICOMFile:)];
     }
@@ -6948,6 +6963,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Send", nil)];
             [toolbarItem setToolTip: NSLocalizedString(@"Send this series to a DICOM node", nil)];
         [toolbarItem setImage: [NSImage imageNamed: Send2PACSToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(export2PACS:)];
     }
@@ -6957,6 +6975,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Meta-Data", nil)];
             [toolbarItem setToolTip: NSLocalizedString(@"View meta-data of this image", nil)];
         [toolbarItem setImage: [NSImage imageNamed: XMLToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(viewXML:)];
     }
@@ -6966,33 +6987,38 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Browse", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Browse this series", nil)];
         [toolbarItem setImage: [NSImage imageNamed: PlayToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(PlayStop:)];
-    } 
+    }
 	else if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier])
     {
-        [toolbarItem setTarget: self];
-        [toolbarItem setAction: @selector(SyncSeries:)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Syncronize slice position", nil)];
-        if (SYNCSERIES)
-        {
-            [toolbarItem setLabel: NSLocalizedString(@"Sync", nil)];
-            [toolbarItem setPaletteLabel: NSLocalizedString(@"Sync", nil)];
+        if (SYNCSERIES) {
             [toolbarItem setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
         }
-        else
-        {
-            [toolbarItem setLabel: NSLocalizedString(@"Sync", nil)];
-            [toolbarItem setPaletteLabel: NSLocalizedString(@"Sync", nil)];
+        else {
             [toolbarItem setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
         }
-    } 
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
+        [toolbarItem setLabel: NSLocalizedString(@"Sync", nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Sync", nil)];
+        [toolbarItem setTarget: self];
+        [toolbarItem setAction: @selector(SyncSeries:)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Synchronize slice position", nil)];
+    }
 	else if ([itemIdent isEqualToString: ResetToolbarItemIdentifier])
     {
         [toolbarItem setLabel: NSLocalizedString(@"Reset", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Reset", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Reset image to original view", nil)];
         [toolbarItem setImage: [NSImage imageNamed: ResetToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(resetImage:)];
     } 
@@ -7002,6 +7028,9 @@ static ViewerController *draggedController = nil;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Revert", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Revert series by re-loading images from disk", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: RevertToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(revertSeries:)];
     } 
@@ -7011,6 +7040,9 @@ static ViewerController *draggedController = nil;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Flip", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Flip series", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: FlipDataToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(flipDataSeries:)];
     } 
@@ -7020,6 +7052,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Database", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Close viewers and open Database window", nil)];
         [toolbarItem setImage: [NSImage imageNamed: DatabaseWindowToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(databaseWindow:)];
     }
@@ -7028,6 +7063,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"ROI Manager", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"ROI Manager", nil)];
         [toolbarItem setImage: [NSImage imageNamed: ROIManagerToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(roiGetManager:)];
 	}
@@ -7037,6 +7075,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"SUV", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Display SUVbw values", nil)];
         [toolbarItem setImage: [NSImage imageNamed: SUVToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(displaySUV:)];
 	}
@@ -7046,6 +7087,10 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Report", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Create/Open a report for selected study", nil)];
         [self setToolbarReportIconForItem:toolbarItem];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+        [[toolbarItem view] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(generateReport:)];
     }
@@ -7055,6 +7100,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Tile", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Tile Windows", nil)];
         [toolbarItem setImage: [NSImage imageNamed: TileWindowsToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: [AppController sharedAppController]];
         [toolbarItem setAction: @selector(tileWindows:)];
     }
@@ -7064,7 +7112,7 @@ static ViewerController *draggedController = nil;
 	[toolbarItem setLabel: NSLocalizedString(@"iChat", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"iChat", nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"iChat", nil)];
-//	[toolbarItem setImage: [NSImage imageNamed: iChatBroadCastToolbarItemIdentifier]]; //	/Applications/iChat/Contents/Resources/Prefs_Camera.icns is maybe a better image...
+//	[toolbarItem setImage: [NSImage imageNamed: iChatBroadCastToolbarItemIdentifier]]; //	/Applications/iChat/Contents/Resources/Prefs_Camera.icns maybe a better image...
 	NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iChat"];
 	[toolbarItem setImage: [[NSWorkspace sharedWorkspace] iconForFile:path]];
 //	[toolbarItem setImage: [NSImage imageNamed:NSImageNameIChatTheaterTemplate]];
@@ -7253,6 +7301,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Flip Vertical", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Flip image vertically", nil)];
         [toolbarItem setImage: [NSImage imageNamed: FlipVerticalToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: nil];
         [toolbarItem setAction: @selector(flipVertical:)];
 	}
@@ -7262,6 +7313,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Set Pixels", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Set Pixels Values to...", nil)];
         [toolbarItem setImage: [NSImage imageNamed: SetPixelValueItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: nil];
         [toolbarItem setAction: @selector(roiSetPixelsSetup:)];
 	}
@@ -7271,6 +7325,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Growing", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Growing Region", nil)];
         [toolbarItem setImage: [NSImage imageNamed: GrowingRegionItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: nil];
         [toolbarItem setAction: @selector(segmentationTest:)];
 	}
@@ -7279,6 +7336,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"3D Panel", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel", nil)];
         [toolbarItem setImage: [NSImage imageNamed: VRPanelToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: nil];
         [toolbarItem setAction: @selector(Panel3D:)];
     } 
@@ -7288,6 +7348,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Flip Horizontal", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Flip image horizontallly", nil)];
         [toolbarItem setImage: [NSImage imageNamed: FlipHorizontalToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: nil];
         [toolbarItem setAction: @selector(flipHorizontal:)];
     }
@@ -7304,6 +7367,9 @@ static ViewerController *draggedController = nil;
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Cobb", nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"Cobb's Angle", nil)];
 		[toolbarItem setImage:[NSImage imageNamed:@"CobbAngle.tif"]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		[toolbarItem setTarget: nil];
 		[toolbarItem setAction:@selector(switchCobbAngle:)];
     }
@@ -7312,6 +7378,9 @@ static ViewerController *draggedController = nil;
 		[toolbarItem setLabel:NSLocalizedString(@"3D Pos", nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"3D Pos", nil)];
 		[toolbarItem setImage:[NSImage imageNamed:@"OrientationWidget.tif"]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		[toolbarItem setTarget:nil];
 		[toolbarItem setAction:@selector(threeDPanel:)];
     }
@@ -7320,6 +7389,9 @@ static ViewerController *draggedController = nil;
 		[toolbarItem setLabel:NSLocalizedString(@"Navigator", nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Navigator", nil)];
 		[toolbarItem setImage:[NSImage imageNamed:NavigatorToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		[toolbarItem setTarget:nil];
 		[toolbarItem setAction:@selector(navigator:)];
     }
@@ -7344,7 +7416,9 @@ static ViewerController *draggedController = nil;
                 image = [[NSWorkspace sharedWorkspace] iconForFile: [bundle bundlePath]];
             
 			[toolbarItem setImage: image];
-			
+#ifdef FIXUP_TB_ITEM_SIZE
+            [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 			[toolbarItem setTarget: self];
 			[toolbarItem setAction: @selector(executeFilterFromToolbar:)];
 		}

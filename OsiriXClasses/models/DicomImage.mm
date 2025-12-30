@@ -1164,8 +1164,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
                     break;
 			}
 		}
-		
-	}	
+	}
+    
 	[pool release];
 	 return graphicAnnotationSequence;
 }

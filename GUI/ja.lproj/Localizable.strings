@@ -4643,7 +4643,7 @@
 "Synchronizing database..." = "データベースを同期中...";
 
 /* No comment provided by engineer. */
-"Syncronize slice position" = "スライス位置を同期";
+"Synchronize slice position" = "スライス位置を同期";
 
 /* No comment provided by engineer. */
 "Syntax error in study predicate filter: %@" = "調査フィルタにシンタックス エラー: %@";

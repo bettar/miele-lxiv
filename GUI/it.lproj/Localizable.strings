@@ -4643,7 +4643,7 @@
 "Synchronizing database..." = "Sincronizzazione del database...";
 
 /* No comment provided by engineer. */
-"Syncronize slice position" = "Sincronizzare la posizione della sezione";
+"Synchronize slice position" = "Sincronizzare la posizione della sezione";
 
 /* No comment provided by engineer. */
 "Syntax error in study predicate filter: %@" = "Errore di sintassi nel filtro predicato dello studio: %@";

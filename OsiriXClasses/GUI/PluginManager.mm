@@ -828,7 +828,7 @@ pluginDone:
             NSString *pluginCrashPath = [NSString stringWithContentsOfFile: pluginCrash encoding: NSUTF8StringEncoding error: nil];
             
             int result = NSRunInformationalAlertPanel2(NSLocalizedString(@"Miele-LXIV crashed", nil),
-                                                       [NSString stringWithFormat: NSLocalizedString(@"Previous crash is maybe related to a plugin.\r\rShould I remove this plugin (%@)?", nil),
+                                                       [NSString stringWithFormat: NSLocalizedString(@"Previous crash maybe related to a plugin.\r\rShould I remove this plugin (%@)?", nil),
                                                         [pluginCrashPath lastPathComponent]],
                                                       NSLocalizedString(@"Delete Plugin",nil),
                                                       NSLocalizedString(@"Continue",nil),
