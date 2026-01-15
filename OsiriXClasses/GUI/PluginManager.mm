@@ -610,11 +610,11 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
             
             @try
             {
-                NSString *pathResolved = [PluginManager pathResolved: [path stringByAppendingPathComponent: name]];
+                NSString *pathResolved2 = [PluginManager pathResolved: [path stringByAppendingPathComponent: name]];
                 
-                [PluginManager startProtectForCrashWithPath: pathResolved];
+                [PluginManager startProtectForCrashWithPath: pathResolved2];
                 
-                NSBundle *plugin = [NSBundle bundleWithPath: pathResolved];
+                NSBundle *plugin = [NSBundle bundleWithPath: pathResolved2];
                 
                 if (plugin == nil)
                 {
@@ -636,7 +636,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                         Class filterClass = [plugin principalClass];
                         if (filterClass)
                         {
-                            [pluginsBundleDictionary setObject: plugin forKey: pathResolved];
+                            [pluginsBundleDictionary setObject: plugin forKey: pathResolved2];
                             
                             NSString *version = nil;
 #if 1

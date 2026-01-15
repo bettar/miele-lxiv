@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="22690"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24506"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="24506"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -28,7 +28,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="242" y="378" width="647" height="498"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1410"/>
             <value key="minSize" type="size" width="250" height="107"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="647" height="498"/>
@@ -113,7 +113,7 @@
                                                                     </binding>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn editable="NO" width="115.5" minWidth="10" maxWidth="3.4028230607370965e+38" headerToolTip="Project version" id="mSF-iX-ilQ" userLabel="Build">
+                                                            <tableColumn editable="NO" width="116" minWidth="10" maxWidth="3.4028230607370965e+38" headerToolTip="Project version" id="mSF-iX-ilQ" userLabel="Build">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Build">
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -191,16 +191,16 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <webView translatesAutoresizingMaskIntoConstraints="NO" id="46">
-                                            <rect key="frame" x="20" y="45" width="561" height="327"/>
+                                            <rect key="frame" x="20" y="45" width="561" height="323"/>
                                             <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12" javaEnabled="NO">
                                                 <nil key="identifier"/>
                                             </webPreferences>
                                         </webView>
                                         <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="48">
-                                            <rect key="frame" x="124" y="377" width="204" height="25"/>
+                                            <rect key="frame" x="127" y="377" width="197" height="24"/>
                                             <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="51" id="110">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="menu"/>
+                                                <font key="font" metaFont="message"/>
                                                 <menu key="menu" title="OtherViews" id="49">
                                                     <items>
                                                         <menuItem title="Item1" state="on" id="51"/>
@@ -217,7 +217,7 @@
                                             </connections>
                                         </popUpButton>
                                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="950" translatesAutoresizingMaskIntoConstraints="NO" id="68">
-                                            <rect key="frame" x="18" y="384" width="109" height="16"/>
+                                            <rect key="frame" x="18" y="381" width="109" height="16"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Available plugins:" id="111">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -225,7 +225,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="69">
-                                            <rect key="frame" x="441" y="6" width="147" height="32"/>
+                                            <rect key="frame" x="445" y="9" width="136" height="24"/>
                                             <buttonCell key="cell" type="push" title="Download &amp; Install" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="112">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -235,10 +235,10 @@
                                             </connections>
                                         </button>
                                         <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="72">
-                                            <rect key="frame" x="271" y="5" width="32" height="32"/>
+                                            <rect key="frame" x="268" y="5" width="32" height="32"/>
                                         </progressIndicator>
                                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="950" translatesAutoresizingMaskIntoConstraints="NO" id="73">
-                                            <rect key="frame" x="328" y="17" width="93" height="16"/>
+                                            <rect key="frame" x="325" y="17" width="93" height="16"/>
                                             <textFieldCell key="cell" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="downloading..." id="113">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
