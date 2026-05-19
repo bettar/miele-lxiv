@@ -811,7 +811,7 @@
 	[yReslicedView restoreScaleValue];
 }
 
--(void) refreshViews;
+-(void) refreshViews
 {
 	[self saveCrossPositions];
 	[self reslice:originalCrossPositionX :originalCrossPositionY :originalView];

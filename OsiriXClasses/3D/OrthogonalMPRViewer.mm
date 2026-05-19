@@ -58,7 +58,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 static NSString*	SyncSeriesImageName                     = @"Sync.pdf";
 static NSString*	SyncLockSeriesImageName                 = @"SyncLock.pdf";
 
-static BOOL activateSyncSeriesToolbarItem ;
+static BOOL activateSyncSeriesToolbarItem;
 static SyncSeriesScope globalSyncSeriesScope;
 
 @implementation OrthogonalMPRViewer
@@ -2527,12 +2527,12 @@ return YES;
     [[viewer syncSeriesToolbarItem] setImage: ([viewer syncSeriesState] == SyncSeriesStateEnable)?[NSImage imageNamed: SyncLockSeriesImageName]:[NSImage imageNamed: SyncSeriesImageName]];
 }
 
-+ (void) evaluteSyncSeriesToolbarItemActivationWhenInit:(id)currentViewer;
++ (void) evaluteSyncSeriesToolbarItemActivationWhenInit:(id)currentViewer
 {
     activateSyncSeriesToolbarItem =  [[OrthogonalMPRViewer MPRViewersWithout:currentViewer] count] > 0 ;
 }
 
-+ (void) evaluteSyncSeriesToolbarItemActivationBeforeClose:(id)currentViewer;
++ (void) evaluteSyncSeriesToolbarItemActivationBeforeClose:(id)currentViewer
 {
     activateSyncSeriesToolbarItem =  [[OrthogonalMPRViewer MPRViewersWithout:currentViewer] count] > 1 ;
 }

@@ -6851,7 +6851,7 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 	}
 }
 
-- (BOOL)canResize;
+- (BOOL)canResize
 {
 	if (type == tLayerROI)
 		return canResizeLayer;
@@ -8003,7 +8003,8 @@ static float Sign(NSPoint p1, NSPoint p2, NSPoint p3)
 			finalString = [finalString substringToIndex: 4096];
 		
 		if (stringTex)
-            [stringTex setString: finalString withAttributes:stanStringAttrib];
+            [stringTex setString: finalString
+                  withAttributes: stanStringAttrib];
 		else
 		{
 			stringTex = [[StringTexture alloc]

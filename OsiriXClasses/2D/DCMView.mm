@@ -981,7 +981,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
             
             // Use the 'history' array of the browser controller, if available (with the distant studies)
             if ([[[BrowserController currentBrowser] comparativePatientUID] compare: [study patientUID] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame && [[BrowserController currentBrowser] comparativeStudies] != nil)
+            {
                 allStudiesArray = [BrowserController currentBrowser].comparativeStudies;
+            }
             else
             {
                 DicomDatabase *db = [[BrowserController currentBrowser] database];
@@ -10331,7 +10333,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 		
 #pragma mark Made in...
 
-        // Add one more annotation in fixed poiìsition, not contolled by the Preferences layout
+        // Add one more annotation in fixed position, not controlled by the Preferences layout
 		yRaster = NSMaxY(rr) - 2;
 		xRaster = NSMaxX(rr) - 2;
         if (fullText) {
@@ -11655,9 +11657,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 
 #pragma mark Mouse position
 
-    NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
+    NSPoint eventLocation = [[self window] convertPointFromScreen: [NSEvent mouseLocation]]; // convertScreenToBase
     eventLocation = [self convertPointToBacking: [self convertPoint:eventLocation fromView:nil]];
-    
+
     if (xFlipped)
         eventLocation.x = drawingFrameRect.size.width - eventLocation.x;
     
@@ -17632,7 +17634,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                     break;
 				default:
 					returnedVal = NO;
-				break;
+                    break;
 			}
 		}
 		else

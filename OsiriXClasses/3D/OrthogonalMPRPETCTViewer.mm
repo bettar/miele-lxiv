@@ -947,8 +947,9 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 
 #pragma mark - NSToolbar Related Methods
 
-- (void) setupToolbar {
-    // Create a new toolbar instance, and attach it to our document window 
+- (void) setupToolbar
+{
+    // Create a new toolbar instance, and attach it to our document window
     toolbar = [[NSToolbar alloc] initWithIdentifier: PETCT_ToolbarIdentifier];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 

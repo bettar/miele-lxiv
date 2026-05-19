@@ -1312,7 +1312,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	mprView3.LOD = LOD;
 }
 
-- (void) setLOD: (float)lod;
+- (void) setLOD: (float)lod
 {
 	if (lod < 1) lod = 1;
 	
@@ -1717,7 +1717,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	}
 }
 
-- (void)Apply3DOpacityString:(NSString*)str;
+- (void)Apply3DOpacityString:(NSString*)str
 {
 	NSDictionary *aOpacity;
 	NSArray *array;
@@ -1765,7 +1765,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[mprView3 updateViewMPR];	
 }
 
-- (void)Apply2DOpacityString:(NSString*)str;
+- (void)Apply2DOpacityString:(NSString*)str
 {
 	NSDictionary *aOpacity;
 	NSArray *array;
@@ -3147,7 +3147,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
     return array;
 }
 
-- (void)updateToolbarItems;
+- (void)updateToolbarItems
 {
 	NSArray *toolbarItems = [toolbar items];
 	for(NSToolbarItem *item in toolbarItems)
@@ -3399,7 +3399,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 
 #pragma mark - Axis Colors
 
-- (void)setColorAxis1:(NSColor*)color;
+- (void)setColorAxis1:(NSColor*)color
 {
 	[colorAxis1 release];
 	colorAxis1 = [color retain];
@@ -3413,7 +3413,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis1 alphaComponent] forKey:@"MPR_AXIS_1_ALPHA"];
 }
 
-- (void)setColorAxis2:(NSColor*)color;
+- (void)setColorAxis2:(NSColor*)color
 {
 	[colorAxis2 release];
 	colorAxis2 = [color retain];
@@ -3427,7 +3427,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis2 alphaComponent] forKey:@"MPR_AXIS_2_ALPHA"];
 }
 
-- (void)setColorAxis3:(NSColor*)color;
+- (void)setColorAxis3:(NSColor*)color
 {
 	[colorAxis3 release];
 	colorAxis3 = [color retain];

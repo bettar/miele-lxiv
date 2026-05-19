@@ -518,7 +518,7 @@ extern int splitPosition[ 3];
     CGFloat pixelsPerMm = self.pixelsPerMm;
     N3AffineTransform pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
 
-    // Don't display cross lines on transverse views, to keep coherence with streched mode
+    // Don't display cross lines on transverse views, to keep coherence with stretched mode
 #if 0
 	if (displayCrossLines &&
         _reformationDisplayStyle == 0);//CPRTransverseViewStraightenedReformationDisplayStyle)

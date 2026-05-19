@@ -596,7 +596,7 @@
 
 // set string after initial creation
 - (void) setString:(NSString *)str
-    withAttributes:(NSDictionary *)attribs;
+    withAttributes:(NSDictionary *)attribs
 {
 	if (str == nil)
         str = @"";

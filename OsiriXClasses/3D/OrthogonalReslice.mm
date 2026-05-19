@@ -659,7 +659,7 @@
 	sign = -sign;
 } 
 
-- (void)freeYCache;
+- (void)freeYCache
 {
 	if (Ycache)
         free(Ycache);
@@ -667,12 +667,12 @@
     Ycache = nil;
 }
 
-- (BOOL)useYcache;
+- (BOOL)useYcache
 {
 	return useYcache;
 }
 
-- (void)setUseYcache:(BOOL)boo;
+- (void)setUseYcache:(BOOL)boo
 {
 	useYcache = boo;
 	if (!boo)

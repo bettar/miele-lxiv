@@ -728,7 +728,7 @@ static bool isGrantedNotificationAccess = false;
         return NO;
     
     if (version.majorVersion == 26 &&
-        version.minorVersion > 2)
+        version.minorVersion > 4)
     {
         return NO;
     }

@@ -820,7 +820,7 @@ static NSHost *currentHost = nil;
 	[defaultValuesDic setObject:@"0" forKey:@"points3DcolorGreen"];
 	[defaultValuesDic setObject:@"0" forKey:@"points3DcolorBlue"];
 	[defaultValuesDic setObject:@"1" forKey:@"points3DcolorAlpha"];
-	[defaultValuesDic setObject:@"1" forKey:@"MagneticWindows"];
+	[defaultValuesDic setObject:@"0" forKey:@"MagneticWindows"];
 	[defaultValuesDic setObject:@(MPR_LAYOUT_2_1) forKey:MPR2DViewsPosition_KEY];
 	
 	[defaultValuesDic setObject:@"1" forKey:@"StoreThumbnailsInDB"];

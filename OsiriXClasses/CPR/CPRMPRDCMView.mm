@@ -116,7 +116,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 }
 
 // TODO: consolidate into new class MPRDCMViewBase
-- (BOOL)is2DTool:(ToolMode)tool;
+- (BOOL)is2DTool:(ToolMode)tool
 {
 	switch( tool)
 	{

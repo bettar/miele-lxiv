@@ -95,7 +95,7 @@ unsigned int minimumStep;
 }
 
 // TODO: consolidate
-- (BOOL)is2DTool:(ToolMode)tool;
+- (BOOL)is2DTool:(ToolMode)tool
 {
 	switch( tool)
 	{

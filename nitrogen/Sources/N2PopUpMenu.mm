@@ -526,7 +526,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
     
 //    if (!_noMouseMovedToWindowLocationOnNextRefresh)
-        [_puView mouseMovedToWindowLocation:[self.window convertScreenToBase:[NSEvent mouseLocation]]];
+        [_puView mouseMovedToWindowLocation:[self.window convertPointFromScreen: [NSEvent mouseLocation]]]; // convertScreenToBase
 //    --_noMouseMovedToWindowLocationOnNextRefresh;
   
     _refreshing = NO;

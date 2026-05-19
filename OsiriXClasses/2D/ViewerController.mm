@@ -745,7 +745,7 @@ return YES;
     else if ([item action] == @selector( navigator:))
     {
         BOOL isRgb = [[[self imageView] curDCM] isRGB];
-        NSLog(@"%s %d, isRgb:%d", __FUNCTION__, __LINE__, isRgb);
+        //NSLog(@"%s %d, isRgb:%d", __FUNCTION__, __LINE__, isRgb);
         
 #ifndef DEBUG_NAVIGATOR_PANEL
         if (isRgb)
@@ -6514,7 +6514,7 @@ static ViewerController *draggedController = nil;
 								[theNewROI setCanColorizeLayer: NO];
 								[theNewROI setCanResizeLayer: YES];
 								
-								NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
+								NSPoint eventLocation = [[self window] convertPointFromScreen: [NSEvent mouseLocation]]; // convertScreenToBase
 								eventLocation = [imageView convertPoint:eventLocation fromView:nil];
 								NSPoint imageLocation = [imageView ConvertFromNSView2GL:eventLocation];
 								

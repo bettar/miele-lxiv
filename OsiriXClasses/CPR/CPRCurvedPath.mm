@@ -409,7 +409,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
                  transform:N3AffineTransformMakeTranslation(0, 0, vector.z)];
 }
 
-- (CPRCurvedPathControlToken)controlTokenNearPoint:(NSPoint)point transform:(N3AffineTransform)transform;
+- (CPRCurvedPathControlToken)controlTokenNearPoint:(NSPoint)point transform:(N3AffineTransform)transform
 {
     N3Vector nodeVector;
     
