@@ -94,6 +94,7 @@
 		4384743021AC842200FA56C2 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		43879B7721D64C7600DEF6A9 /* AYDcmPrintSCU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43879B7621D64C7600DEF6A9 /* AYDcmPrintSCU.cpp */; };
 		43879B7921D64CB500DEF6A9 /* AYPrintManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43879B7821D64CB500DEF6A9 /* AYPrintManager.cpp */; };
+		4389764F3039BB9000BC09DA /* NSUserDefaults+Defaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4389764E3039BB9000BC09DA /* NSUserDefaults+Defaults.mm */; };
 		438F75A12CB41DF7009D5C1B /* echoscu in Copy Executables */ = {isa = PBXBuildFile; fileRef = 438F759D2CB41D87009D5C1B /* echoscu */; };
 		43977C2E23D340920044054B /* loupe.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 43977C2D23D340920044054B /* loupe.vsh */; };
 		43977C3023D340AF0044054B /* loupe.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43977C2F23D340AF0044054B /* loupe.fsh */; };
@@ -595,7 +596,6 @@
 		AB10FAB411293378009EB238 /* N2Alignment.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA611293378009EB238 /* N2Alignment.mm */; };
 		AB10FAB611293378009EB238 /* N2Resizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA811293378009EB238 /* N2Resizer.mm */; };
 		AB10FAB811293378009EB238 /* N2Shell.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAAA11293378009EB238 /* N2Shell.mm */; };
-		AB10FABA11293378009EB238 /* N2UserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAAC11293378009EB238 /* N2UserDefaults.mm */; };
 		AB10FB201129338A009EB238 /* N2ButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FACB1129338A009EB238 /* N2ButtonCell.mm */; };
 		AB10FB221129338A009EB238 /* N2Button.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FACD1129338A009EB238 /* N2Button.mm */; };
 		AB10FB241129338A009EB238 /* N2DisclosureBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FACF1129338A009EB238 /* N2DisclosureBox.mm */; };
@@ -1583,6 +1583,8 @@
 		43748A9E21B0212E00A1446C /* Photos.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Photos.icns; sourceTree = "<group>"; };
 		43879B7621D64C7600DEF6A9 /* AYDcmPrintSCU.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AYDcmPrintSCU.cpp; path = DICOMPrint/AYDcmPrintSCU.cpp; sourceTree = "<group>"; };
 		43879B7821D64CB500DEF6A9 /* AYPrintManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AYPrintManager.cpp; path = DICOMPrint/AYPrintManager.cpp; sourceTree = "<group>"; };
+		4389764D3039BB9000BC09DA /* NSUserDefaults+Defaults.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+Defaults.h"; sourceTree = "<group>"; };
+		4389764E3039BB9000BC09DA /* NSUserDefaults+Defaults.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSUserDefaults+Defaults.mm"; sourceTree = "<group>"; };
 		438AE1A921B5177700C5E98F /* miele-lxiv-Deployment.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "miele-lxiv-Deployment.entitlements"; sourceTree = "<group>"; };
 		438AE1AA21B51E1400C5E98F /* miele-lxiv-Development.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "miele-lxiv-Development.entitlements"; sourceTree = "<group>"; };
 		438AE1AB21B5651B00C5E98F /* LXIV Launcher-Deployment.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Deployment.entitlements"; path = "LXIV Launcher/LXIV Launcher-Deployment.entitlements"; sourceTree = "<group>"; };
@@ -2432,8 +2434,6 @@
 		AB10FAA811293378009EB238 /* N2Resizer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2Resizer.mm; path = nitrogen/Sources/N2Resizer.mm; sourceTree = "<group>"; };
 		AB10FAA911293378009EB238 /* N2Shell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Shell.h; path = nitrogen/Sources/N2Shell.h; sourceTree = "<group>"; };
 		AB10FAAA11293378009EB238 /* N2Shell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2Shell.mm; path = nitrogen/Sources/N2Shell.mm; sourceTree = "<group>"; };
-		AB10FAAB11293378009EB238 /* N2UserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2UserDefaults.h; path = nitrogen/Sources/N2UserDefaults.h; sourceTree = "<group>"; };
-		AB10FAAC11293378009EB238 /* N2UserDefaults.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2UserDefaults.mm; path = nitrogen/Sources/N2UserDefaults.mm; sourceTree = "<group>"; };
 		AB10FACA1129338A009EB238 /* N2ButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ButtonCell.h; path = nitrogen/Sources/N2ButtonCell.h; sourceTree = "<group>"; };
 		AB10FACB1129338A009EB238 /* N2ButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ButtonCell.mm; path = nitrogen/Sources/N2ButtonCell.mm; sourceTree = "<group>"; };
 		AB10FACC1129338A009EB238 /* N2Button.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Button.h; path = nitrogen/Sources/N2Button.h; sourceTree = "<group>"; };
@@ -4267,15 +4267,6 @@
 			name = Client;
 			sourceTree = "<group>";
 		};
-		597BB95812A7FB8700D0A172 /* Deprecated */ = {
-			isa = PBXGroup;
-			children = (
-				AB10FAAB11293378009EB238 /* N2UserDefaults.h */,
-				AB10FAAC11293378009EB238 /* N2UserDefaults.mm */,
-			);
-			name = Deprecated;
-			sourceTree = "<group>";
-		};
 		59BDEC17117C927D007F1F2C /* LXIV Launcher */ = {
 			isa = PBXGroup;
 			children = (
@@ -4478,6 +4469,8 @@
 		AB10FA9611293361009EB238 /* Nitrogen */ = {
 			isa = PBXGroup;
 			children = (
+				4389764D3039BB9000BC09DA /* NSUserDefaults+Defaults.h */,
+				4389764E3039BB9000BC09DA /* NSUserDefaults+Defaults.mm */,
 				7154B80E14ED5402000EF7E4 /* N2Stuff.h */,
 				AB10FA9F11293378009EB238 /* N2Debug.h */,
 				AB10FAA011293378009EB238 /* N2Debug.mm */,
@@ -4510,7 +4503,6 @@
 				592CFEEF1212F84F00176E39 /* Connections */,
 				AB10FAD61129338A009EB238 /* Exceptions */,
 				AB10FAC91129338A009EB238 /* Controls */,
-				597BB95812A7FB8700D0A172 /* Deprecated */,
 			);
 			name = Nitrogen;
 			sourceTree = "<group>";
@@ -6515,6 +6507,7 @@
 				CE94FC031053FFD3006D92E4 /* CurveFitter.mm in Sources */,
 				CEBA709D10C70039003A6186 /* GetPrimaryMACAddress.mm in Sources */,
 				841721B910D8D745001A833F /* AsyncSocket.mm in Sources */,
+				4389764F3039BB9000BC09DA /* NSUserDefaults+Defaults.mm in Sources */,
 				841721BB10D8D745001A833F /* DDData.mm in Sources */,
 				841721BD10D8D745001A833F /* DDNumber.mm in Sources */,
 				841721BF10D8D745001A833F /* DDRange.mm in Sources */,
@@ -6537,7 +6530,6 @@
 				AB10FAB411293378009EB238 /* N2Alignment.mm in Sources */,
 				AB10FAB611293378009EB238 /* N2Resizer.mm in Sources */,
 				AB10FAB811293378009EB238 /* N2Shell.mm in Sources */,
-				AB10FABA11293378009EB238 /* N2UserDefaults.mm in Sources */,
 				AB10FB201129338A009EB238 /* N2ButtonCell.mm in Sources */,
 				AB10FB221129338A009EB238 /* N2Button.mm in Sources */,
 				AB10FB241129338A009EB238 /* N2DisclosureBox.mm in Sources */,
