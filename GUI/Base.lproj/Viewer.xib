@@ -2833,8 +2833,8 @@ Gw
             </view>
             <point key="canvasLocation" x="375" y="-308"/>
         </window>
-        <customView id="789" userLabel="Subtraction">
-            <rect key="frame" x="0.0" y="-1" width="187" height="37"/>
+        <customView misplaced="YES" id="789" userLabel="Subtraction">
+            <rect key="frame" x="0.0" y="-2" width="187" height="38"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1974">
@@ -4473,7 +4473,7 @@ Gw
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <button tag="1" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1416">
-                        <rect key="frame" x="413" y="19" width="85" height="24"/>
+                        <rect key="frame" x="419" y="19" width="85" height="24"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" tag="1" inset="2" id="2318">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -4489,7 +4489,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1418">
-                        <rect key="frame" x="316" y="19" width="85" height="24"/>
+                        <rect key="frame" x="322" y="19" width="85" height="24"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="2319">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -4502,9 +4502,9 @@ Gw
                         </connections>
                     </button>
                     <box title="Warning" translatesAutoresizingMaskIntoConstraints="NO" id="1422">
-                        <rect key="frame" x="20" y="53" width="478" height="177"/>
+                        <rect key="frame" x="20" y="53" width="484" height="177"/>
                         <view key="contentView" id="5Wc-Bd-suC">
-                            <rect key="frame" x="0.0" y="0.0" width="478" height="165"/>
+                            <rect key="frame" x="0.0" y="0.0" width="484" height="165"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <imageView translatesAutoresizingMaskIntoConstraints="NO" id="1424">
@@ -4516,14 +4516,14 @@ Gw
                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyUpOrDown" image="SUV" id="2320"/>
                                 </imageView>
                                 <imageView translatesAutoresizingMaskIntoConstraints="NO" id="1425">
-                                    <rect key="frame" x="424" y="116" width="39" height="39"/>
+                                    <rect key="frame" x="430" y="116" width="39" height="39"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="39" id="avO-YU-SoN"/>
                                     </constraints>
                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyUpOrDown" image="SUV" id="2321"/>
                                 </imageView>
                                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1426">
-                                    <rect key="frame" x="52" y="19" width="399" height="132"/>
+                                    <rect key="frame" x="52" y="19" width="405" height="132"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="2322">
                                         <font key="font" metaFont="miniSystemBold"/>
                                         <string key="title">Following formula is used:
@@ -4581,9 +4581,9 @@ DO NOT USE THESE VALUES FOR CLINICAL DECISIONS !</string>
                         </cells>
                     </matrix>
                     <form verticalHuggingPriority="750" mode="track" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1430">
-                        <rect key="frame" x="32" y="238" width="441" height="172"/>
+                        <rect key="frame" x="32" y="238" width="447" height="172"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="441" height="22"/>
+                        <size key="cellSize" width="447" height="22"/>
                         <size key="intercellSpacing" width="1" height="8"/>
                         <formCell key="prototype" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="justified" title="Field:" id="2387">
                             <font key="font" metaFont="system"/>
@@ -4627,7 +4627,7 @@ DO NOT USE THESE VALUES FOR CLINICAL DECISIONS !</string>
                         </cells>
                     </form>
                     <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1439">
-                        <rect key="frame" x="233" y="416" width="242" height="11"/>
+                        <rect key="frame" x="239" y="416" width="242" height="11"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Modifying this value WILL change the SUV values!" id="2323">
                             <font key="font" metaFont="miniSystemBold"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -4643,7 +4643,7 @@ DO NOT USE THESE VALUES FOR CLINICAL DECISIONS !</string>
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2497">
-                        <rect key="frame" x="477" y="303" width="33" height="16"/>
+                        <rect key="frame" x="483" y="303" width="33" height="16"/>
                         <buttonCell key="cell" type="roundRect" title="Edit" bezelStyle="roundedRect" alignment="center" controlSize="mini" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2498">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="label" size="9"/>
@@ -4653,7 +4653,7 @@ DO NOT USE THESE VALUES FOR CLINICAL DECISIONS !</string>
                         </connections>
                     </button>
                     <button tag="1" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2526">
-                        <rect key="frame" x="477" y="272" width="33" height="16"/>
+                        <rect key="frame" x="483" y="272" width="33" height="16"/>
                         <buttonCell key="cell" type="roundRect" title="Edit" bezelStyle="roundedRect" alignment="center" controlSize="mini" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2527">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="label" size="9"/>

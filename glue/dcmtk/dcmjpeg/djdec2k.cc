@@ -21,7 +21,7 @@ OFBool DJDecoderJP2k::canChangeCoding(
 {
   E_TransferSyntax myXfer = supportedTransferSyntax();
   DcmXfer newRep(newRepType);
-  if (newRep.isNotEncapsulated() && (oldRepType == myXfer))
+  if (!newRep.usesEncapsulatedFormat() && (oldRepType == myXfer))
 	return OFTrue; // decompress requested
 
   if (newRep.getXfer() == EXS_JPEG2000LosslessOnly && (oldRepType == myXfer))
@@ -91,7 +91,7 @@ OFBool DJDecoderJP2kLossLess::canChangeCoding(
 {
   E_TransferSyntax myXfer = supportedTransferSyntax();
   DcmXfer newRep(newRepType);
-  if (newRep.isNotEncapsulated() && (oldRepType == myXfer))
+  if (!newRep.usesEncapsulatedFormat() && (oldRepType == myXfer))
 	return OFTrue; // decompress requested
 
   if (newRep.getXfer() == EXS_JPEG2000 && (oldRepType == myXfer))

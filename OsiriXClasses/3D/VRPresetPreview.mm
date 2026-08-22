@@ -681,7 +681,7 @@
 	[super drawRect:aRect];
 }
 
-- (void)setSelected;
+- (void)setSelected
 {
 	if (isEmpty)
         return;

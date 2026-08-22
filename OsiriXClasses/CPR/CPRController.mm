@@ -1729,7 +1729,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 }
 
 
-- (void)UpdateWLWWMenu:(NSNotification*)note;
+- (void)UpdateWLWWMenu:(NSNotification*)note
 {
     [[wlwwPopup menu] removeAllItems];
 	

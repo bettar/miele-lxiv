@@ -342,18 +342,21 @@ void DcmQueryRetrieveGetOurContext::getNextImage(DcmQueryRetrieveDatabaseStatus 
         snprintf( outfname, sizeof(outfname), "%s/QR-CGET-%d-%d.dcm", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], seed++, getpid());
         unlink( outfname);
         
-        if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated())
+        if (!filexfer.usesEncapsulatedFormat() &&
+            !preferredXfer.usesEncapsulatedFormat())
         {
             // do nothing
         }
-        else if (filexfer.isNotEncapsulated() && preferredXfer.isEncapsulated())
+        else if (!filexfer.usesEncapsulatedFormat() &&
+                 preferredXfer.usesEncapsulatedFormat())
         {
             status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
             
             if( status)
                 strcpy( subImgFileName, outfname);
         }
-        else if (filexfer.isEncapsulated() && preferredXfer.isEncapsulated())
+        else if (filexfer.usesEncapsulatedFormat() &&
+                 preferredXfer.usesEncapsulatedFormat())
         {
             // The file is already compressed, we will re-compress the file.....
             if( strcmp( filexfer.getXferID(), preferredXfer.getXferID()) != 0)
@@ -395,7 +398,7 @@ void DcmQueryRetrieveGetOurContext::getNextImage(DcmQueryRetrieveDatabaseStatus 
                 }
             }
         }
-        else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated())
+        else if (filexfer.usesEncapsulatedFormat() && !preferredXfer.usesEncapsulatedFormat())
         {
             cond = decompressFileFormat(fileformat, subImgFileName);
         }

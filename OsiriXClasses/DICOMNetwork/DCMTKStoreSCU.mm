@@ -767,7 +767,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
      * or deflated explicit VR) and we prefer deflated explicit VR, then try
      * to find a presentation context for deflated explicit VR first.
      */
-    if (filexfer.isNotEncapsulated() &&
+    if (!filexfer.usesEncapsulatedFormat() &&
         opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit)
     {
         filexfer = EXS_DeflatedLittleEndianExplicit;
@@ -785,16 +785,19 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	DcmXfer proposedTransfer(pc.acceptedTransferSyntax);
 	 if (presId != 0)
 	 {
-		if (filexfer.isNotEncapsulated() && proposedTransfer.isNotEncapsulated())
+		if (!filexfer.usesEncapsulatedFormat() &&
+            !proposedTransfer.usesEncapsulatedFormat())
 		{
 			// do nothing
 			status = NO;
 		}
-		else if (filexfer.isEncapsulated() && proposedTransfer.isNotEncapsulated())
+		else if (filexfer.usesEncapsulatedFormat() &&
+                 !proposedTransfer.usesEncapsulatedFormat())
 		{
 			status = decompressFile(dcmff, fname, outfname);
 		}
-		else if (filexfer.isNotEncapsulated() && proposedTransfer.isEncapsulated())
+		else if (!filexfer.usesEncapsulatedFormat() &&
+                 proposedTransfer.usesEncapsulatedFormat())
 		{
 			status = compressFile(dcmff, fname, outfname);
 		}

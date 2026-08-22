@@ -278,7 +278,7 @@ static void action_Compress(int argc, const char *argv[], NSString *path)
             
             BOOL alreadyCompressed = NO;
             
-            if (original_xfer.isEncapsulated()) // DICOM file is already compressed
+            if (original_xfer.usesEncapsulatedFormat()) // DICOM file is already compressed
             {
                 switch( compression)
                 {

@@ -16466,7 +16466,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
     
     [nc addObserver: self
            selector: @selector(changeLabelGLFontNotification:)
-               name:  OsirixLabelGLFontChangeNotification
+               name: OsirixLabelGLFontChangeNotification
              object: nil];
     
     [nc	addObserver: self

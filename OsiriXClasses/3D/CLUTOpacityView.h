@@ -126,7 +126,7 @@
 - (void)niceDisplay;
 - (IBAction)niceDisplay:(id)sender;
 - (IBAction)sendToBack:(id)sender;
-- (IBAction)setZoomFator:(id)sender;
+- (IBAction)setZoomFactor:(id)sender;
 - (IBAction)scroll:(id)sender;
 - (IBAction)removeAllCurves:(id)sender;
 - (void)addCurveIfNeeded;

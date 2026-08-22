@@ -139,7 +139,7 @@
 		
 		float height = ((value*boundsRect.size.height)/maxValue)/bin;
 		
-		NSRect   histRect=NSMakeRect( index * maxX, 0, (bin * maxX)+1.0, height);
+		NSRect histRect=NSMakeRect( index * maxX, 0, (bin * maxX)+1.0, height);
 		
 		long fullwl = [[curROI pix] fullwl];
 		long fullww = [[curROI pix] fullww];
@@ -159,9 +159,7 @@
 		
 		if( colVal < 0) colVal = 0;
 		if( colVal > 1.0) colVal = 1.0;
-		
-		[[NSColor colorWithDeviceRed:colVal green:colVal blue:colVal alpha:1.0] set];
-		
+				
 		if( index  == curMousePosition) 
 		{
 			//[[NSColor redColor] set];
@@ -171,10 +169,13 @@
 		else
 		{
 			//[[NSColor blackColor] set];
-			[binColor set];
+			//[binColor set];
+            [[NSColor colorWithDeviceRed:colVal green:colVal blue:colVal alpha:1.0] set];
 		}
 		
 		NSRectFill(histRect);
+        [textColor set];
+        NSFrameRect(histRect);
 		
 		index += bin-1;
 	}

@@ -24,7 +24,8 @@
 
 @implementation CLUTOpacityView
 
-- (id)initWithFrame:(NSRect)frame {
+- (id)initWithFrame:(NSRect)frame
+{
     self = [super initWithFrame:frame];
     if (self)
 	{
@@ -201,7 +202,7 @@
 	[self simplifyHistogram];
 }
 
-- (void)simplifyHistogram;
+- (void)simplifyHistogram
 {
 	if(!histogram)
         return;
@@ -241,7 +242,7 @@
 	}
 }
 
-- (void)drawBinHistogramInRect:(NSRect)rect;
+- (void)drawBinHistogramInRect:(NSRect)rect
 {
 	int max = 0;
 	for (int i=2; i<histogramSize; i++)
@@ -265,7 +266,7 @@
 	free( rects);
 }
 
-- (void)drawHistogramInRect:(NSRect)rect;
+- (void)drawHistogramInRect:(NSRect)rect
 {
 	NSAffineTransform *transform = [self transform];
 	
@@ -312,7 +313,7 @@
 
 #pragma mark - Curves
 
-- (void)newCurve;
+- (void)newCurve
 {
 	NSMutableArray *theNewCurve = [NSMutableArray arrayWithCapacity:4];
 
@@ -351,7 +352,7 @@
 			pt3.x += shift;
 			pt4.x += shift;
 			i=-1;
-			needsShift = NO; // FIXME:
+			needsShift = NO;
 		}
 	}
 	
@@ -412,7 +413,7 @@
 //	}
 //}
 
-- (void)fillCurvesInRect:(NSRect)rect;
+- (void)fillCurvesInRect:(NSRect)rect
 {	
 	NSAffineTransform* transform = [self transform];
 	
@@ -457,8 +458,8 @@
 
 #pragma mark -
 
-- (void)drawCurvesInRect:(NSRect)rect;
-{		
+- (void)drawCurvesInRect:(NSRect)rect
+{
 	NSAffineTransform* transform = [self transform];
 	
 	for (int i=(long)[curves count]-1; i>=0; i--)
@@ -584,7 +585,7 @@
 
 #pragma mark -
 
-- (void)addCurveAtindex:(int)curveIndex withPoints:(NSArray*)pointsArray colors:(NSArray*)colorsArray;
+- (void)addCurveAtindex:(int)curveIndex withPoints:(NSArray*)pointsArray colors:(NSArray*)colorsArray
 {
 	[[undoManager prepareWithInvocationTarget:self] deleteCurveAtIndex:curveIndex];
 	[curves insertObject:pointsArray atIndex:curveIndex];
@@ -600,7 +601,7 @@
 	[pointColors removeObjectAtIndex:curveIndex];
 }
 
-- (void)moveCurveAtIndex:(int)i0 toIndex:(int)i1;
+- (void)moveCurveAtIndex:(int)i0 toIndex:(int)i1
 {
 	[[undoManager prepareWithInvocationTarget:self] moveCurveAtIndex:i1 toIndex:i0];
 	
@@ -623,7 +624,7 @@
 	}
 }
 
-- (void)sendToBackCurveAtIndex:(int)i;
+- (void)sendToBackCurveAtIndex:(int)i
 {
 	if(i != (long)[curves count]-1)
 	{
@@ -633,7 +634,7 @@
 	}
 }
 
-- (void)sendToFrontCurveAtIndex:(int)i;
+- (void)sendToFrontCurveAtIndex:(int)i
 {
 	if(i != 0)
 	{
@@ -643,12 +644,12 @@
 	}
 }
 
-- (int)selectedCurveIndex;
+- (int)selectedCurveIndex
 {
 	return selectedCurveIndex;
 }
 
-- (void)selectCurveAtIndex:(int)i;
+- (void)selectCurveAtIndex:(int)i
 {
 	if([curves count]==0)
         return;
@@ -768,7 +769,7 @@
 
 #pragma mark - Points
 
-- (BOOL)selectPointAtPosition:(NSPoint)position;
+- (BOOL)selectPointAtPosition:(NSPoint)position
 {
 	for (int i=0; i<[curves count]; i++)
 	{
@@ -799,19 +800,19 @@
 	return NO;
 }
 
-- (void)unselectPoints;
+- (void)unselectPoints
 {
 	selectedPoint.y = -1.0;
 	clutChanged = NO;
 	[self updateView];
 }
 
-- (BOOL)isAnyPointSelected;
+- (BOOL)isAnyPointSelected
 {
 	return (selectedPoint.y>=0.0);
 }
 
-- (void)changePointColor:(NSNotification *)notification;
+- (void)changePointColor:(NSNotification *)notification
 {
 	if ([self isAnyPointSelected])
 	{
@@ -842,7 +843,7 @@
 	}
 }
 
-- (void)setColor:(NSColor*)color forPointAtIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex;
+- (void)setColor:(NSColor*)color forPointAtIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex
 {
 	NSColor *currentColor = [[[pointColors objectAtIndex:curveIndex] objectAtIndex:pointIndex] colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
 	NSColor *newColor = [color colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
@@ -857,7 +858,7 @@
 	}
 }
 
-- (NSPoint)legalizePoint:(NSPoint)point inCurve:(NSArray*)aCurve atIndex:(int)j;
+- (NSPoint)legalizePoint:(NSPoint)point inCurve:(NSArray*)aCurve atIndex:(int)j
 {
 	if(point.y<0.0) point.y = 0.0;
 	if(point.y>=0.999) point.y = 0.999;
@@ -910,7 +911,7 @@ NSRect rect = drawingRect;
 	[label drawAtPoint:labelPosition];
 }
 
-- (void)addPoint:(NSPoint)point atIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex withColor:(NSColor*)color;
+- (void)addPoint:(NSPoint)point atIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex withColor:(NSColor*)color
 {
 	[[undoManager prepareWithInvocationTarget:self] removePointAtIndex:pointIndex inCurveAtIndex:curveIndex];
 	
@@ -918,7 +919,7 @@ NSRect rect = drawingRect;
 	[[pointColors objectAtIndex:curveIndex] insertObject:color atIndex:pointIndex];
 }
 
-- (void)removePointAtIndex:(int)ip inCurveAtIndex:(int)ic;
+- (void)removePointAtIndex:(int)ip inCurveAtIndex:(int)ic
 {
 	NSMutableArray *theCurve = [curves objectAtIndex:ic];
 	if([theCurve count]<=3)
@@ -937,7 +938,7 @@ NSRect rect = drawingRect;
 	[self updateView];
 }
 
-- (void)replacePointAtIndex:(int)ip inCurveAtIndex:(int)ic withPoint:(NSPoint)point;
+- (void)replacePointAtIndex:(int)ip inCurveAtIndex:(int)ic withPoint:(NSPoint)point
 {
 	[[undoManager prepareWithInvocationTarget:self] replacePointAtIndex:ip inCurveAtIndex:ic withPoint:[[[curves objectAtIndex:ic] objectAtIndex:ip] pointValue]];
 	[[curves objectAtIndex:ic] replaceObjectAtIndex:ip withObject:[NSValue valueWithPoint:point]];
@@ -945,7 +946,7 @@ NSRect rect = drawingRect;
 
 #pragma mark - Control Point
 
-- (NSPoint)controlPointForCurveAtIndex:(int)i;
+- (NSPoint)controlPointForCurveAtIndex:(int)i
 {
 	NSPoint controlPoint;
 	NSArray *aCurve = [curves objectAtIndex:i];
@@ -968,7 +969,7 @@ NSRect rect = drawingRect;
 	return controlPoint;
 }
 
-- (BOOL)selectControlPointAtPosition:(NSPoint)position;
+- (BOOL)selectControlPointAtPosition:(NSPoint)position
 {
 	NSPoint controlPoint;
 	
@@ -990,7 +991,7 @@ NSRect rect = drawingRect;
 
 #pragma mark - Lines selection
 
-- (BOOL)clickOnLineAtPosition:(NSPoint)position;
+- (BOOL)clickOnLineAtPosition:(NSPoint)position
 {
     int ii, jj;
 	NSPoint pt0, pt1, p0, p1;
@@ -1110,7 +1111,7 @@ NSRect rect = drawingRect;
 	}
 }
 
-- (void)mouseUp:(NSEvent *)theEvent;
+- (void)mouseUp:(NSEvent *)theEvent
 {
 	if(isRemoveSelectedCurveButtonHighlighted)
 	{
@@ -1560,7 +1561,7 @@ NSRect rect = drawingRect;
 	}
 }
 
-- (IBAction)setZoomFator:(id)sender
+- (IBAction)setZoomFactor:(id)sender
 {
 	zoomFactor = [sender floatValue];
 	[self updateView];
@@ -1569,7 +1570,7 @@ NSRect rect = drawingRect;
 - (IBAction)scroll:(id)sender
 {
 //	zoomFixedPoint = [sender floatValue] / [sender maxValue] * [self bounds].size.width;
-zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.width;
+    zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.width;
 	[self updateView];
 }
 
@@ -1579,7 +1580,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[self updateView];
 }
 
-- (void)addCurveIfNeeded;
+- (void)addCurveIfNeeded
 {
 	if([curves count]==0)
 	{
@@ -1589,7 +1590,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 #pragma mark - Custom GUI
 
-- (void)drawSideBar:(NSRect)rect;
+- (void)drawSideBar:(NSRect)rect
 {
 	[backgroundColor set];
 	NSRectFill(rect);
@@ -1641,7 +1642,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 //	
 //	[line stroke];
 //}
-- (void)drawCloseButton:(NSRect)rect;
+- (void)drawCloseButton:(NSRect)rect
 {
 	NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:rect];
 	[path setLineWidth:1.5];
@@ -1673,7 +1674,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[line stroke];
 }
 
-- (void)drawAddCurveButton:(NSRect)rect;
+- (void)drawAddCurveButton:(NSRect)rect
 {
 	NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:rect];
 	[path setLineWidth:1.5];
@@ -1703,7 +1704,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[line stroke];
 }
 
-- (void)drawRemoveSelectedCurveButton:(NSRect)rect;
+- (void)drawRemoveSelectedCurveButton:(NSRect)rect
 {
 	NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:rect];
 	[path setLineWidth:1.5];
@@ -1727,7 +1728,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[line stroke];
 }
 
-- (void)drawSaveButton:(NSRect)rect;
+- (void)drawSaveButton:(NSRect)rect
 {
 	NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:rect];
 	[path setLineWidth:1.5];
@@ -1745,7 +1746,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[dot fill];
 }
 
-- (BOOL)clickInSideBarAtPosition:(NSPoint)position;
+- (BOOL)clickInSideBarAtPosition:(NSPoint)position
 {
 	return NSPointInRect(position,sideBarRect);
 }
@@ -2021,7 +2022,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	}	
 }
 
-- (void)saveWithName:(NSString*)name;
+- (void)saveWithName:(NSString*)name
 {
 	NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity:2];
 	[clut setObject:[self convertCurvesForPlist] forKey:@"curves"];
