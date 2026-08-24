@@ -85,6 +85,8 @@
 	
 	vImage_Buffer						srcf, dst8;
 	vImage_Buffer						srcfBlending, dst8Blending;
+    void                                *flipBuffer, *flipBlendingBuffer;
+    size_t                              flipBufferSize, flipBlendingBufferSize;
 	
     vtkRenderer							*aRenderer;
     vtkCamera							*aCamera;
@@ -93,8 +95,15 @@
 	long								ifrom, ito, isize;
 	BOOL								isRGB;
 	
-	NSLock								*processorsLock;
-	volatile int						numberOfThreadsForCompute;
+    /*  before:
+        A busy-wait loop that burns a CPU core while slab-render workers finish. CPU-intensive worker polling
+     
+        now:
+        Switched to condition-based waiting so rendering yields the processor instead of polling. `NSCondition` signaling, avoids a busy-wait core during slab rendering.
+     */
+    NSCondition                         *processorsCondition;
+	
+    volatile int						numberOfThreadsForCompute;
 }
 
 -(void) setImageData:(long) w :(long) h :(long) c :(float) sX :(float) sY :(float) t :(BOOL) flip;

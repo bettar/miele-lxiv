@@ -32,8 +32,10 @@ extern short Altivec;
 	
 	if( dst8.data) free( dst8.data);
 	if( dst8Blending.data) free( dst8Blending.data);
+    if( flipBuffer) free( flipBuffer);
+    if( flipBlendingBuffer) free( flipBlendingBuffer);
 	
-	[processorsLock release];
+    [processorsCondition release];
 	
 	[super dealloc];
 }
@@ -49,6 +51,10 @@ extern short Altivec;
 		height = 0;
 		dst8.data = 0;
 		dst8Blending.data = 0;
+        flipBuffer = 0;
+        flipBlendingBuffer = 0;
+        flipBufferSize = 0;
+        flipBlendingBufferSize = 0;
 		
 		imagePtr = 0;
 		imageBlendingPtr = 0;
@@ -198,6 +204,12 @@ extern short Altivec;
 	}
 }
 
+/*  before:
+    The thick-slab renderer repeatedly allocates a full volume and copies every slice solely to reverse slice order on each window/level update.
+    
+    now:
+    The renderer now retains one reusable reverse-order buffer per source stream and swaps it with the conversion buffer, eliminating full-volume heap churn during interactive WL/WW adjustments.
+ */
 -(void) setWLWW: (float) l :(float) w
 {
 	wl = l;
@@ -207,16 +219,25 @@ extern short Altivec;
 	
 	if( flipData == NO)
 	{
-		long size;
-		unsigned char *tempPtr = (unsigned char*) malloc( height * width * count);
-		
-		size = height * width;
+        size_t volumeSize = height * width * count;
+        long size = height * width;
+
+        if (flipBufferSize != volumeSize)
+        {
+            free(flipBuffer);
+            flipBuffer = malloc(volumeSize);
+            flipBufferSize = flipBuffer ? volumeSize : 0;
+        }
+
+        if (!flipBuffer)
+            return;
 		
 		for (int i=0; i < count; i++)
-			memcpy(tempPtr+ (count-i-1)*size, (unsigned char*) dst8.data + i*size, size);
+			memcpy((unsigned char*) flipBuffer + (count-i-1)*size, (unsigned char*) dst8.data + i*size, size);
 
-        free( dst8.data);
-		dst8.data = tempPtr;
+        void *convertedBuffer = dst8.data;
+		dst8.data = flipBuffer;
+        flipBuffer = convertedBuffer;
 //		reader->SetImportVoidPointer(dst8.data);
 	}
 }
@@ -229,16 +250,25 @@ extern short Altivec;
 		
 		if( flipData == NO)
 		{
-			long size;
-			unsigned char *tempPtr = (unsigned char*) malloc( height * width * count);
-			
-			size = height * width;
+            size_t volumeSize = height * width * count;
+            long size = height * width;
+
+            if (flipBlendingBufferSize != volumeSize)
+            {
+                free(flipBlendingBuffer);
+                flipBlendingBuffer = malloc(volumeSize);
+                flipBlendingBufferSize = flipBlendingBuffer ? volumeSize : 0;
+            }
+
+            if (!flipBlendingBuffer)
+                return;
 			
 			for (int  i=0; i < count; i++)
-				memcpy( tempPtr+ (count-i-1)*size, (unsigned char*) dst8Blending.data + i*size, size);
+				memcpy((unsigned char*) flipBlendingBuffer + (count-i-1)*size, (unsigned char*) dst8Blending.data + i*size, size);
 
-            free( dst8Blending.data);
-			dst8Blending.data = tempPtr;
+            void *convertedBuffer = dst8Blending.data;
+			dst8Blending.data = flipBlendingBuffer;
+            flipBlendingBuffer = convertedBuffer;
 		}
 	}
 }
@@ -398,9 +428,10 @@ extern short Altivec;
 		*dstFloatBi++ = dstFloatBv4;
 	}
 	
-	[processorsLock lock];
-	numberOfThreadsForCompute--;
-	[processorsLock unlock];
+    [processorsCondition lock];
+    numberOfThreadsForCompute--;
+    [processorsCondition signal];
+    [processorsCondition unlock];
 }
 
 -(unsigned char*) renderSlab
@@ -472,10 +503,12 @@ extern short Altivec;
     }
     else
     {
-        if( processorsLock == nil)
-            processorsLock = [[NSLock alloc] init];
+        if (processorsCondition == nil)
+            processorsCondition = [[NSCondition alloc] init];
         
+        [processorsCondition lock];
         numberOfThreadsForCompute = [[NSProcessInfo processInfo] processorCount];
+        [processorsCondition unlock];
         long i;
         for (i = 0; i < [[NSProcessInfo processInfo] processorCount]-1; i++)
         {
@@ -492,14 +525,10 @@ extern short Altivec;
                           [NSNumber numberWithInt: i], @"pos",
                           nil]];
         
-        BOOL done = NO;
-        while ( done == NO) {
-            [processorsLock lock];
-            if (numberOfThreadsForCompute <= 0)
-                done = YES;
-
-            [processorsLock unlock];
-        }
+        [processorsCondition lock];
+        while (numberOfThreadsForCompute > 0)
+            [processorsCondition wait];
+        [processorsCondition unlock];
     }
     
     src.height = height;		src.width = width;			src.rowBytes = width*4;		src.data = dstFloatR;
