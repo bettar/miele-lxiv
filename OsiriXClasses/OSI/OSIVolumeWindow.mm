@@ -135,9 +135,8 @@ NSString* const OSIVolumeWindowDidChangeDataNotification = @"OSIVolumeWindowDidC
     
     floatVolumeData = [_generatedFloatVolumeDatas objectForKey:dimensionAndIndexKey];
     if (floatVolumeData) {
-        if ([floatVolumeData isDataValid]) {
+        if ([floatVolumeData isDataValid])
             return floatVolumeData;
-        }
     }
     
     pixList = [_viewerController pixList:[[indexes objectAtIndex:0] integerValue]];

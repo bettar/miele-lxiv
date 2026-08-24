@@ -14,6 +14,7 @@
 
 
 #import "VRViewVPRO.h"
+#import "alertTransition.h"
 
 #import "VRControllerVPRO.h"
 #import "DCMPix.h"
@@ -2844,7 +2845,7 @@ public:
 		
 		if( roiPts->GetNumberOfPoints() < 3)
 		{
-			NSRunAlertPanel(NSLocalizedString(@"3D Cut", nil), NSLocalizedString(@"Draw an ROI on the 3D image and then press Return (include) or Delete (exclude) keys.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			NSRunAlertPanel2(NSLocalizedString(@"3D Cut", nil), NSLocalizedString(@"Draw an ROI on the 3D image and then press Return (include) or Delete (exclude) keys.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		}
 		else
 		{
@@ -4733,11 +4734,11 @@ public:
 					memcpy( data, [volumeData bytes], volumeSize);
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList userInfo: 0];
 				}
-				else NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"No saved data are available.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+				else NSRunAlertPanel2(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"No saved data are available.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 				
 				[volumeData release];
 			}
-			else NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"No saved data are available.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			else NSRunAlertPanel2(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"No saved data are available.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		break;
 		
 		case 0:	// Save

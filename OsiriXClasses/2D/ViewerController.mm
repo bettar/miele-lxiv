@@ -209,60 +209,6 @@ static BOOL DisplayUseInvertedPolarity = NO;
 
 BOOL SyncButtonBehaviorIsBetweenStudies = NO;
 
-NSAlert* getAlertPanel2(NSString *title,
-                           NSString *msgFormat,
-                           NSString *defaultButton,
-                           NSString *alternateButton,
-                           NSString *otherButton)
-{
-    NSAlert *alert = [NSAlert new];
-    [alert setMessageText:title];
-    [alert setInformativeText:msgFormat];
-    
-    if (defaultButton)
-        [alert addButtonWithTitle:defaultButton];
-    
-    if (alternateButton)
-        [alert addButtonWithTitle:alternateButton];
-    
-    if (otherButton)
-        [alert addButtonWithTitle:otherButton];
-    
-    return alert;
-}
-
-NSInteger NSRunAlertPanel2(NSString *title,
-                           NSString *msgFormat,
-                           NSString *defaultButton,
-                           NSString *alternateButton,
-                           NSString *otherButton)
-{
-    NSAlert *alert = getAlertPanel2(title, msgFormat, defaultButton, alternateButton, otherButton);
-    return [alert runModal];
-}
-
-NSInteger NSRunInformationalAlertPanel2(NSString *title,
-                           NSString *msgFormat,
-                           NSString *defaultButton,
-                           NSString *alternateButton,
-                           NSString *otherButton)
-{
-    NSAlert *alert = getAlertPanel2(title, msgFormat, defaultButton, alternateButton, otherButton);
-    [alert setAlertStyle:NSAlertStyleInformational];
-    return [alert runModal];
-}
-
-NSInteger NSRunCriticalAlertPanel2(NSString *title,
-                           NSString *msgFormat,
-                           NSString *defaultButton,
-                           NSString *alternateButton,
-                           NSString *otherButton)
-{
-    NSAlert *alert = getAlertPanel2(title, msgFormat, defaultButton, alternateButton, otherButton);
-    [alert setAlertStyle:NSAlertStyleCritical];
-    return [alert runModal];
-}
-
 #pragma mark -
 
 // compares the names of 2 ROIs.

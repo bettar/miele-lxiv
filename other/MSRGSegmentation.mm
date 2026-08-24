@@ -17,6 +17,7 @@ PURPOSE.
 #define id Id
 #include "itkImage.h"
 #include "MSRGImageHelper.h"
+#import "alertTransition.h"
 #include "MorphoHelper.h"
 #include "itkMSRGFilter.h"
 #undef id
@@ -122,7 +123,7 @@ int i,j,k,l;
 	}
 	
 	NSLog(@"Memory problem in: MSRGSegmentation/buildMarkerWithStackHeigt !");
-	NSRunAlertPanel( NSLocalizedString( @"Memory Error", nil), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
+	NSRunAlertPanel2( NSLocalizedString( @"Memory Error", nil), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
 	return NO;
 }
 -(BOOL) buildMarkerBufferWithStackHeigth
@@ -187,7 +188,7 @@ int i,j,k,l;
 	}
 	
 	NSLog(@"Memory problem in: MSRGSegmentation/buildMarkerWithStackHeigt !");
-	NSRunAlertPanel( NSLocalizedString( @"Memory Error", nil), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
+	NSRunAlertPanel2( NSLocalizedString( @"Memory Error", nil), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
 	return NO;
 }
 
@@ -227,7 +228,7 @@ int i,j,k,l;
 	 }
 	 
 	 NSLog(@"Memory problem in : MSRGSegmentation/buildCriteriaBufferFor2DColorImageWithStackHeigt !");
-	 NSRunAlertPanel( NSLocalizedString( @"Memory Error", nil), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
+	 NSRunAlertPanel2( NSLocalizedString( @"Memory Error", nil), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
 	 */
 	return NO;
 	
@@ -268,7 +269,7 @@ int i,j,k,l;
 	 }
 	 
 	 NSLog(@"Memory problem in : MSRGSegmentation/buildCriteriaBufferWithStackHeigt !");
-	 NSRunAlertPanel( NSLocalizedString( @"Memory Error", nil), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
+	 NSRunAlertPanel2( NSLocalizedString( @"Memory Error", nil), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
 	 
 	 */
 	return NO;

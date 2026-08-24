@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "LLScoutViewer.h"
+#import "alertTransition.h"
 #import "LLScoutView.h"
 #import "LLScoutOrthogonalReslice.h"
 #import "Notifications.h"
@@ -77,7 +78,7 @@
 	BOOL error = !samePixelSpacing || !sameImagesCount || !sameImagesLocations;
 	
 	if(error)
-		NSRunAlertPanel(NSLocalizedString(@"Error", nil),  alertMessage, NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunAlertPanel2(NSLocalizedString(@"Error", nil),  alertMessage, NSLocalizedString(@"OK", nil), nil, nil);
 	
 	return !error;
 }

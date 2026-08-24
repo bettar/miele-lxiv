@@ -14,6 +14,8 @@ PURPOSE.
 
 
 #import "MSRGWindowController.h"
+#import "alertTransition.h"
+
 #define min(x,y) ((x<y)? x:y)
 @implementation MSRGWindowController
 - (id) initWithMarkerViewer:(ViewerController*) v andViewersList:(NSMutableArray*)list 
@@ -130,14 +132,14 @@ PURPOSE.
 		{
 			if ( [note object]==BoundingROIStart)
 			{
-				NSRunAlertPanel( NSLocalizedString( @"Bounding Box Removed", nil), NSLocalizedString( @"You've just removed your bounding box !", 0), nil, nil, nil);
+				NSRunAlertPanel2( NSLocalizedString( @"Bounding Box Removed", nil), NSLocalizedString( @"You've just removed your bounding box !", 0), nil, nil, nil);
 				[ActivateBoundingBoxButton setState:NSOffState];
 			}
 		} else
 		{
 			if (( [note object]==BoundingROIStart) || ( [note object]==BoundingROIEnd))
 			{
-				NSRunAlertPanel( NSLocalizedString( @"Bounding Volume Removed", nil), NSLocalizedString( @"You've just removed your bounding Volume !", 0), nil, nil, nil);
+				NSRunAlertPanel2( NSLocalizedString( @"Bounding Volume Removed", nil), NSLocalizedString( @"You've just removed your bounding Volume !", 0), nil, nil, nil);
 				[ActivateBoundingBoxButton setState:NSOffState];
 			}
 			
@@ -175,13 +177,13 @@ PURPOSE.
 	if (!isBoundingBox)		
 	{
 		[ActivateBoundingBoxButton setState:NSOffState];
-		NSRunAlertPanel( NSLocalizedString( @"NO Bounding Volume", nil), NSLocalizedString( @"Sorry, but there is no ROI with name: Bounding Box on the current slice", 0), nil, nil, nil);
+		NSRunAlertPanel2( NSLocalizedString( @"NO Bounding Volume", nil), NSLocalizedString( @"Sorry, but there is no ROI with name: Bounding Box on the current slice", 0), nil, nil, nil);
 		
 	}
 	if ((isBoundingBox) && (BoundingROIStart==BoundingROIEnd))	
 	{
 		[ActivateBoundingBoxButton setState:NSOffState];
-		NSRunAlertPanel( NSLocalizedString( @"No bounding Volume", nil), NSLocalizedString( @"Sorry, but there is just one ROI with name: Bounding Box on the stack", 0), nil, nil, nil);
+		NSRunAlertPanel2( NSLocalizedString( @"No bounding Volume", nil), NSLocalizedString( @"Sorry, but there is just one ROI with name: Bounding Box on the stack", 0), nil, nil, nil);
 		
 	} 
 	
@@ -209,7 +211,7 @@ PURPOSE.
 	if (!isBoundingBox)		
 	{
 		[ActivateBoundingBoxButton setState:NSOffState];
-		NSRunAlertPanel( NSLocalizedString( @"NO Bounding Box", nil), NSLocalizedString( @"Sorry, but there is no ROI with name: Bounding Box on the current slice", 0), nil, nil, nil);
+		NSRunAlertPanel2( NSLocalizedString( @"NO Bounding Box", nil), NSLocalizedString( @"Sorry, but there is no ROI with name: Bounding Box on the current slice", 0), nil, nil, nil);
 		// create one
 		/*
 		 DCMPix	*curPix = [[viewer pixList] objectAtIndex: [[viewer imageView] curImage]];	
