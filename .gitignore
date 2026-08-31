@@ -2,6 +2,7 @@ Miele_LXIV.xcodeproj/xcuserdata/
 Miele_LXIV.xcodeproj/project.xcworkspace/xcuserdata/
 *.xcworkspace
 *.DS_Store
+.github/agents/
 __MACOSX/
 Binaries/__MACOSX/
 build/

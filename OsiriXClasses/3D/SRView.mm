@@ -643,11 +643,11 @@ typedef struct _xyzArray
 	
 			if (aRenderer->GetActors()->IsItemPresent( outlineRect))
 			{
-				aRenderer->RemoveActor( outlineRect);
+				aRenderer->RemoveViewProp( outlineRect);
 				wasPresent = YES;
 			}
 			
-			aRenderer->RemoveActor(textX);
+			aRenderer->RemoveViewProp(textX);
 			[self display];
 			for (long i = 0; i < numberOfFrames; i++)
 			{
@@ -694,9 +694,9 @@ typedef struct _xyzArray
 			}
 			
 			if (wasPresent)
-				aRenderer->AddActor(outlineRect);
+				aRenderer->AddViewProp(outlineRect);
 			
-			aRenderer->AddActor(textX);
+			aRenderer->AddViewProp(textX);
 			
 //			[self endRenderImageWithBestQuality];
 			
@@ -1677,9 +1677,9 @@ typedef struct _xyzArray
 	if (c == ' ')
 	{
 		if (aRenderer->GetActors()->IsItemPresent( outlineRect))
-			aRenderer->RemoveActor( outlineRect);
+			aRenderer->RemoveViewProp( outlineRect);
 		else
-			aRenderer->AddActor( outlineRect);
+			aRenderer->AddViewProp( outlineRect);
 			
 		[self setNeedsDisplay: YES];
 	}
@@ -1986,7 +1986,7 @@ typedef struct _xyzArray
 	if (isoExtractor[ actor])
 	{
         if (iso[ actor])
-            aRenderer->RemoveActor( iso[ actor]);
+            aRenderer->RemoveViewProp( iso[ actor]);
         
 		if (isoExtractor[ actor])
             isoExtractor[ actor]->Delete();
@@ -2020,7 +2020,7 @@ typedef struct _xyzArray
 {
 	if (BisoExtractor[ actor])
 	{
-		aRenderer->RemoveActor( Biso[ actor]);
+		aRenderer->RemoveViewProp( Biso[ actor]);
 		
 		if (BisoExtractor[ actor])
             BisoExtractor[ actor]->Delete();
@@ -2192,7 +2192,7 @@ typedef struct _xyzArray
 	iso[ actor]->SetUserMatrix( matrice);
  	iso[ actor]->PickableOff();
 
-    aRenderer->AddActor( iso[ actor]);
+    aRenderer->AddViewProp( iso[ actor]);
     [self setNeedsDisplay:YES];
 	
 	//NSLog(@"ChangeActor OUT");
@@ -2337,7 +2337,7 @@ typedef struct _xyzArray
                               [blendingFirstObject originZ] * matriceBlending->Element[2][2]);
     
 	Biso[ actor]->SetUserMatrix( matriceBlending);
-    aRenderer->AddActor( Biso[ actor]);
+    aRenderer->AddViewProp( Biso[ actor]);
 	[self setNeedsDisplay:YES];
 	//NSLog(@"BLENDING ChangeActor OUT");
 }
@@ -2554,7 +2554,7 @@ typedef struct _xyzArray
 		textX->SetTextScaleModeToNone();
 		textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 		textX->GetPositionCoordinate()->SetValue( 2., 2.);
-		aRenderer->AddActor2D(textX);
+		aRenderer->AddViewProp(textX);
 		
 		for (long i = 0; i < NUM_SR_LABELS; i++)
 		{
@@ -2567,7 +2567,7 @@ typedef struct _xyzArray
 			oText[ i]->GetTextProperty()->SetShadow( true);
 			oText[ i]->GetTextProperty()->SetShadowOffset(1, 1);
 			
-			aRenderer->AddActor2D( oText[ i]);
+			aRenderer->AddViewProp( oText[ i]);
 		}
         
 		oText[ 0]->GetPositionCoordinate()->SetValue( 0.01, 0.5);
@@ -2586,7 +2586,7 @@ typedef struct _xyzArray
 	//    aCamera->ComputeViewPlaneNormal();    
 		
 		aCamera->Dolly(1.5);
-		aRenderer->AddActor( outlineRect);
+		aRenderer->AddViewProp( outlineRect);
 		aRenderer->SetActiveCamera(aCamera);
 		aCamera->SetFocalPoint (0, 0, 0);
 		aCamera->SetPosition (1, 0, 0);
@@ -2624,13 +2624,13 @@ typedef struct _xyzArray
 		{
 			orientationWidget->Off();
 			for (long i = 0; i < NUM_SR_LABELS; i++)
-                aRenderer->RemoveActor2D( oText[ i]);
+                aRenderer->RemoveViewProp( oText[ i]);
 		}
 		else if ([self renderWindow]->GetStereoRender() == false)
 		{
 			orientationWidget->On();
 			for (long i = 0; i < NUM_SR_LABELS; i++)
-                aRenderer->AddActor2D( oText[ i]);
+                aRenderer->AddViewProp( oText[ i]);
 		}
 	}
     
@@ -2706,7 +2706,7 @@ typedef struct _xyzArray
 	
 	if (aRenderer->GetActors()->IsItemPresent( outlineRect))
 	{
-		aRenderer->RemoveActor( outlineRect);
+		aRenderer->RemoveViewProp( outlineRect);
 		wasPresent = YES;
 	}
 	
@@ -2715,7 +2715,7 @@ typedef struct _xyzArray
 	theIm = [self nsimage:YES];
 	
 	if (wasPresent)
-		aRenderer->AddActor(outlineRect);
+		aRenderer->AddViewProp(outlineRect);
 	
 	return theIm;
 }
@@ -3039,9 +3039,9 @@ typedef struct _xyzArray
 //	textShadow->SetPosition(x+radius-.1,y+radius,z+radius);
 //	textShadow->GetProperty()->SetColor(0, 0, 0);
 //
-//	aRenderer->AddActor(textShadow);
+//	aRenderer->AddViewProp(textShadow);
 //	textShadow->SetCamera(aCamera);
-//	aRenderer->AddActor(text);
+//	aRenderer->AddViewProp(text);
 //	text->SetCamera(aCamera);
 //
 //	void* textPointer = text;
@@ -3057,7 +3057,7 @@ typedef struct _xyzArray
 {
 	void* actorPointer = actor;
 	[point3DActorArray addObject:[NSValue valueWithPointer:actorPointer]];
-	aRenderer->AddActor(actor);
+	aRenderer->AddViewProp(actor);
 	//actor->Delete();
 }
 
@@ -3109,13 +3109,13 @@ typedef struct _xyzArray
 		text = (vtkFollower*)[objectText pointerValue];
 		if (on)
 		{
-			aRenderer->AddActor(actor);
-			aRenderer->AddActor(text);
+			aRenderer->AddViewProp(actor);
+			aRenderer->AddViewProp(text);
 		}
 		else
 		{
-			aRenderer->RemoveActor(actor);
-			aRenderer->RemoveActor(text);
+			aRenderer->RemoveViewProp(actor);
+			aRenderer->RemoveViewProp(text);
 		}	
 	}
 	[self unselectAllActors];
@@ -3180,7 +3180,7 @@ typedef struct _xyzArray
 	// point to remove
 	vtkActor *actor = (vtkActor*)[[point3DActorArray objectAtIndex:index] pointerValue];
 	// remove from Renderer
-	aRenderer->RemoveActor(actor);
+	aRenderer->RemoveViewProp(actor);
 	// remove the highlight bounding box
 	[self unselectAllActors];
 	// remove from list
@@ -3191,7 +3191,7 @@ typedef struct _xyzArray
 	
 	
 	vtkFollower *text = (vtkFollower*)[[point3DTextArray objectAtIndex:index] pointerValue];
-	aRenderer->RemoveActor(text);
+	aRenderer->RemoveViewProp(text);
 	text->Delete();
 	[point3DTextArray removeObjectAtIndex:index];
 	[point3DPositionsStringsArray removeObjectAtIndex:index];
@@ -3427,14 +3427,14 @@ typedef struct _xyzArray
 //	textShadow->SetPosition(x+radius-.1,y+radius,z+radius);
 //	textShadow->GetProperty()->SetColor(0, 0, 0);
 //
-//	aRenderer->AddActor(textShadow);
+//	aRenderer->AddViewProp(textShadow);
 //	textShadow->SetCamera(aCamera);
 
 	void* textPointer = text;
 	if (index<[point3DTextArray count])
 	{
 		vtkFollower* text0 = (vtkFollower*)[[point3DTextArray objectAtIndex:index] pointerValue];
-		aRenderer->RemoveActor(text0);
+		aRenderer->RemoveViewProp(text0);
 		[point3DTextArray replaceObjectAtIndex:index withObject:[NSValue valueWithPointer:textPointer]];
 		text0->Delete();
 	}
@@ -3445,7 +3445,7 @@ typedef struct _xyzArray
 - (void) displayAnnotationFor3DPointAtIndex:(unsigned int) index
 {
 	vtkFollower* text = (vtkFollower*)[[point3DTextArray objectAtIndex:index] pointerValue];
-	aRenderer->AddActor(text);
+	aRenderer->AddViewProp(text);
 	text->SetCamera(aCamera);
 	[self setNeedsDisplay:YES];
 }
@@ -3453,7 +3453,7 @@ typedef struct _xyzArray
 - (void) hideAnnotationFor3DPointAtIndex:(unsigned int) index
 {
 	vtkFollower* text = (vtkFollower*)[[point3DTextArray objectAtIndex:index] pointerValue];
-	aRenderer->RemoveActor(text);
+	aRenderer->RemoveViewProp(text);
 	[self setNeedsDisplay:YES];
 }
 

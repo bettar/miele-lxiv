@@ -28,6 +28,7 @@
     if (self)
 	{
         color = [[NSColor clearColor] retain];
+        [self setBounds:[self frame]];
     }
     return self;
 }
@@ -45,8 +46,10 @@
 	[color retain];
 }
 
-- (void)drawRect:(NSRect)rect
+- (void)drawRect:(NSRect)rect1
 {
+    NSRect rect = [self frame];
+
     [color set];
 	NSRectFill(rect);
 	

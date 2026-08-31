@@ -58,6 +58,10 @@
 #include "vtkSphereSource.h"
 #include "vtkAssemblyPath.h"
 #include "vtkDoubleArray.h"
+#include <vtkDataArray.h>
+#include "vtkPointData.h"
+#include "vtkImageData.h"
+#include "vtkUnsignedShortArray.h"
 
 #define id Id
 #include "itkImage.h"
@@ -89,6 +93,13 @@
 #import "vtkMath.h"
 #import "thickSlabTypes.h"
 #import "alertTransition.h"
+
+#include <vtkSmartPointer.h>
+#include <vtkImageData.h>
+#include <vtkColorTransferFunction.h>
+#include <vtkPiecewiseFunction.h>
+#include <vtkVolumeProperty.h>
+#include <vtkVolume.h>
 
 #define MAXDYNAMICVALUE 32000.
 
@@ -566,8 +577,8 @@ public:
                 [Oval2DPix release];
                 Oval2DPix = nil;
                 
-                aRenderer->RemoveActor( Oval2DText);
-                aRenderer->RemoveActor2D( Oval2DActor);
+                aRenderer->RemoveViewProp( Oval2DText);
+                aRenderer->RemoveViewProp( Oval2DActor);
                 Oval2DRadius = 0;
                 [self setNeedsDisplay: YES];
             }
@@ -908,9 +919,11 @@ public:
     if (textureMapper == nil)
     {
         textureMapper = vtkGPUVolumeRayCastMapper::New();
+#ifdef FIX_VOLUME_VTK970
+        textureMapper->SetInputConnection(volumeProducer->GetOutputPort());
+#else
         textureMapper->SetInputConnection(reader->GetOutputPort());
-        textureMapper->Update();
-        
+#endif
         unsigned long vramMB = [vtkMieleView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
         textureMapper->SetMaxMemoryInBytes( vramMB*1024*1024);
 
@@ -925,14 +938,56 @@ public:
 
 - (void) allocateCPUMapper
 {
+#ifdef NDEBUG
+    vtkImageData *image = reader->GetOutput();
+    vtkDataArray *scalars = image->GetPointData()->GetScalars();
+
+    NSLog(@"CPU-1 reader output=%p scalars=%p tuples=%lld",
+          image, scalars,
+          scalars ? (long long)scalars->GetNumberOfTuples() : -1LL);
+#endif
+    
     if (volumeMapper == nil)
     {
+#ifdef FIX_VOLUME_VTK970_DEBUG
+        {
+            vtkDataArray *scalars = volumeImage->GetPointData()->GetScalars();
+
+            NSLog(@"volumeImage=%p scalars=%p class=%s type=%d tuples=%lld data=%p",
+                  volumeImage,
+                  scalars,
+                  scalars ? scalars->GetClassName() : "(null)",
+                  scalars ? scalars->GetDataType() : -1,
+                  scalars ? (long long)scalars->GetNumberOfTuples() : -1LL,
+                  scalars ? scalars->GetVoidPointer(0) : nil);
+        }
+#endif
+        
         volumeMapper = vtkMieleFixedPointVolumeRayCastMapper::New();
+#ifdef FIX_VOLUME_VTK970
+        volumeMapper->SetInputConnection(volumeProducer->GetOutputPort());
+#else
         volumeMapper->SetInputConnection(reader->GetOutputPort());
+#endif
     }
+
+#ifdef NDEBUG
+    image = reader->GetOutput();
+    scalars = image->GetPointData()->GetScalars();
+    NSLog(@"CPU-2 after connection output=%p scalars=%p tuples=%lld",
+          image, scalars,
+          scalars ? (long long)scalars->GetNumberOfTuples() : -1LL);
+
+    volumeMapper->Update();
+
+    image = reader->GetOutput();
+    scalars = image->GetPointData()->GetScalars();
+    NSLog(@"CPU-3 after mapper update output=%p scalars=%p tuples=%lld",
+          image, scalars,
+          scalars ? (long long)scalars->GetNumberOfTuples() : -1LL);
+#endif
     
-	volumeMapper->Update();
-    volume->SetMapper( volumeMapper);
+    volume->SetMapper(volumeMapper);
 }
 
 - (void) instantiateEngine: (EngineType) e
@@ -1035,7 +1090,90 @@ public:
 	[www start];
 	
 	[self instantiateEngine: engine];
-	
+#if 1
+    {
+        vtkVolumeMapper *activeMapper =
+            (engine == ENGINE_CPU) ? static_cast<vtkVolumeMapper *>(volumeMapper)
+                                   : static_cast<vtkVolumeMapper *>(textureMapper);
+
+        vtkImageData *readerOutput = reader->GetOutput();
+        vtkImageData *mapperInput =
+            activeMapper ? vtkImageData::SafeDownCast(activeMapper->GetInput()) : nil;
+
+        vtkDataArray *readerScalars =
+            readerOutput->GetPointData()->GetScalars();
+        vtkDataArray *mapperScalars =
+            mapperInput ? mapperInput->GetPointData()->GetScalars() : nil;
+
+        NSLog(@"VTK wiring reader=%p output=%p tuples=%lld mapper=%p input=%p tuples=%lld",
+              reader, readerOutput,
+              readerScalars ? (long long)readerScalars->GetNumberOfTuples() : -1LL,
+              activeMapper, mapperInput,
+              mapperScalars ? (long long)mapperScalars->GetNumberOfTuples() : -1LL);
+    }
+#endif
+#if 0
+    {
+        const unsigned short *voxels = (const unsigned short *)data8;
+        const size_t voxelCount = (size_t)dst8.width * dst8.height;
+        unsigned short maximum = 0;
+
+        for (size_t i = 0; i < voxelCount; ++i)
+            if (voxels[i] > maximum)
+                maximum = voxels[i];
+
+        NSLog(@"data8 voxels=%zu maximum=%u output tuples=%lld",
+              voxelCount, maximum,
+              reader->GetOutput()->GetPointData()->GetScalars()->GetNumberOfTuples());
+    }
+#endif
+#if 0
+    {
+        auto* outputScalars = reader->GetOutput()->GetPointData()->GetScalars();
+        auto* outputData = static_cast<unsigned short*>(outputScalars->GetVoidPointer(0));
+
+        NSLog(@"import=%p output=%p data8=%p voxels=(%u,%u,%u)",
+              reader->GetImportVoidPointer(), outputData, data8,
+              outputData[0], outputData[1], outputData[1000]);
+    }
+#endif
+#if 0
+    if (engine == ENGINE_GPU_OPEN_GL && textureMapper)
+        NSLog(@"GPU supported=%d", textureMapper->IsRenderSupported([self renderWindow], volumeProperty));
+#endif
+#if 0
+    {
+        int extent[6];
+        double scalarRange[2];
+        double volumeBounds[6];
+
+        reader->GetOutput()->GetExtent(extent);
+        reader->GetOutput()->GetScalarRange(scalarRange);
+        volume->GetBounds(volumeBounds);
+
+        NSLog(@"VTK volume: engine=%ld mapper=%s extent=(%d,%d,%d,%d,%d,%d) components=%d range=(%g,%g) bounds=(%g,%g,%g,%g,%g,%g)",
+              (long)engine,
+              volume->GetMapper()->GetClassName(),
+              extent[0], extent[1], extent[2], extent[3], extent[4], extent[5],
+              reader->GetOutput()->GetNumberOfScalarComponents(),
+              scalarRange[0], scalarRange[1],
+              volumeBounds[0], volumeBounds[1], volumeBounds[2],
+              volumeBounds[3], volumeBounds[4], volumeBounds[5]);
+    }
+    {
+        double position[3], focalPoint[3], clippingRange[2];
+        vtkCamera *camera = aRenderer->GetActiveCamera();
+        camera->GetPosition(position);
+        camera->GetFocalPoint(focalPoint);
+        camera->GetClippingRange(clippingRange);
+
+        NSLog(@"draw=%d visible=%d camera=(%g,%g,%g) focal=(%g,%g,%g) clip=(%g,%g)",
+              aRenderer->GetDraw(), volume->GetVisibility(),
+              position[0], position[1], position[2],
+              focalPoint[0], focalPoint[1], focalPoint[2],
+              clippingRange[0], clippingRange[1]);
+    }
+#endif
     switch (engine)
     {
         case ENGINE_CPU:
@@ -1049,7 +1187,11 @@ public:
         case ENGINE_BOTH:
             break;
     }
-    
+#if 1
+    NSLog(@"engine=%ld mapper=%s",
+          (long)engine,
+          volume->GetMapper() ? volume->GetMapper()->GetClassName() : "(null)");
+#endif
     [self display];
     
 	[www end];
@@ -1540,9 +1682,9 @@ public:
 			if (croppingBox && croppingBox->GetEnabled())
                 croppingBox->Off();
             
-			aRenderer->RemoveActor(outlineRect);
+			aRenderer->RemoveViewProp(outlineRect);
 			if (textX)
-				aRenderer->RemoveActor(textX);
+				aRenderer->RemoveViewProp(textX);
 			
 			for (int i = 0; i < numberOfFrames; i++)
 			{
@@ -1758,6 +1900,23 @@ public:
 	volumeProperty->SetDiffuse(diffuse);
 	volumeProperty->SetSpecular(specular);
 	volumeProperty->SetSpecularPower(specularpower);
+#if 0
+    volumeProperty->ShadeOff();
+#endif
+#if 0
+    {
+        double opacityRange[2];
+        volumeProperty->GetScalarOpacity()->GetRange(opacityRange);
+
+        NSLog(@"opacity range=(%g,%g) opacity[0]=%g opacity[2394]=%g color[2394]=(%g,%g,%g)",
+              opacityRange[0], opacityRange[1],
+              volumeProperty->GetScalarOpacity()->GetValue(0),
+              volumeProperty->GetScalarOpacity()->GetValue(2394),
+              colorTransferFunction->GetColor(2394)[0],
+              colorTransferFunction->GetColor(2394)[1],
+              colorTransferFunction->GetColor(2394)[2]);
+    }
+#endif
 }
 
 - (void) getShadingValues:(float*) ambient :(float*) diffuse :(float*) specular :(float*) specularpower
@@ -2929,12 +3088,12 @@ public:
                              length/(10.*factor)];
 		
 		Line2DText->SetInput( [localizedText UTF8String]);
-		aRenderer->AddActor(Line2DText);
+		aRenderer->AddViewProp(Line2DText);
 		measureLength = length/(10.*factor);
 	}
 	else
 	{
-		aRenderer->RemoveActor(Line2DText);
+		aRenderer->RemoveViewProp(Line2DText);
 		measureLength = 0;
 	}
     
@@ -3026,12 +3185,12 @@ public:
             
             Oval2DText->SetInput( [localizedText UTF8String]);
             
-            aRenderer->AddActor( Oval2DText);
+            aRenderer->AddViewProp( Oval2DText);
             
             [circle release];
         }
         else
-            aRenderer->RemoveActor( Oval2DText);
+            aRenderer->RemoveViewProp( Oval2DText);
     }
     
 	[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
@@ -3477,7 +3636,7 @@ public:
                 Oval2DData->SetRadius( Oval2DRadius);
                 Oval2DData->SetCenter( Oval2DCenter.x, Oval2DCenter.y, 0);
                 
-                aRenderer->AddActor2D( Oval2DActor);
+                aRenderer->AddViewProp( Oval2DActor);
                 
                 [self computeLength];
                 
@@ -4265,8 +4424,8 @@ public:
         {
             [self deleteMouseDownTimer];
             
-            aRenderer->RemoveActor( Oval2DText);
-            aRenderer->RemoveActor2D( Oval2DActor);
+            aRenderer->RemoveViewProp( Oval2DText);
+            aRenderer->RemoveViewProp( Oval2DActor);
             Oval2DRadius = 0;
             
 			if (bestRenderingWasGenerated)
@@ -5619,8 +5778,8 @@ public:
                 skipRenderingVR = true;
                 
                 // Delete current ROI
-                aRenderer->RemoveActor( Oval2DText);
-                aRenderer->RemoveActor2D( Oval2DActor);
+                aRenderer->RemoveViewProp( Oval2DText);
+                aRenderer->RemoveViewProp( Oval2DActor);
                 Oval2DRadius = 0;
                 
                 [self computeLength];
@@ -5753,7 +5912,7 @@ public:
 //          pts->Delete();
 //			Oval2DData->SetLines( rect);
 //          rect->Delete();
-//			aRenderer->RemoveActor( Oval2DText);
+//			aRenderer->RemoveViewProp( Oval2DText);
 //			measureLength = 0;
 //			
 //			[self display];
@@ -5786,7 +5945,7 @@ public:
 			Line2DData->SetLines( rect);
             rect->Delete();
             
-			aRenderer->RemoveActor( Line2DText);
+			aRenderer->RemoveViewProp( Line2DText);
 			measureLength = 0;
 			
 			[self display];
@@ -6228,7 +6387,7 @@ public:
 	}
 	
 	if (textX)
-		aRenderer->AddActor(textX);
+		aRenderer->AddViewProp(textX);
 	
 	[splash setCancel:NO];
 	
@@ -6256,9 +6415,9 @@ public:
 		if (croppingBox->GetEnabled())
             croppingBox->Off();
 	
-	aRenderer->RemoveActor(outlineRect);
+	aRenderer->RemoveViewProp(outlineRect);
 	if (textX)
-		aRenderer->RemoveActor(textX);
+		aRenderer->RemoveViewProp(textX);
 	
 	// RAY CASTING SETTINGS
 	if (best)
@@ -6579,7 +6738,6 @@ public:
 		blendingData = [bC volumePtr];
 
 		blendingFirstObject = [blendingPixList objectAtIndex:0];
-
 		float blendingSliceThickness = [blendingFirstObject sliceInterval];
 		
 		if (blendingSliceThickness == 0)
@@ -6587,7 +6745,8 @@ public:
 			NSLog(@"Blending slice interval = slice thickness!");
 			blendingSliceThickness = [blendingFirstObject sliceThickness];
 		}
-		// PLAN 
+
+		// PLAN
 		[blendingFirstObject orientation:blendingcosines];
 		
 		isBlendingRGB = NO;
@@ -6649,20 +6808,29 @@ public:
 		blendingWw = [blendingFirstObject ww];
 		
 		blendingReader = vtkImageImport::New();
-		blendingReader->SetWholeExtent(0, [blendingFirstObject pwidth]-1, 0, [blendingFirstObject pheight]-1, 1, [blendingPixList count]-2);
+        
+        blendingReader->SetWholeExtent(0, [blendingFirstObject pwidth]-1,
+                                       0, [blendingFirstObject pheight]-1,
+                                       1, [blendingPixList count]-2); //AVOID VTK BUG
 		blendingReader->SetDataExtentToWholeExtent();
 		
 		if (isBlendingRGB)
 		{
+#ifdef FIX_VOLUME_VTK970
+            // TBC
+#endif
 			blendingReader->SetDataScalarTypeToUnsignedChar();
 			blendingReader->SetNumberOfScalarComponents( 4);
-			blendingReader->SetImportVoidPointer( blendingData );					//AVOID VTK BUG
+			blendingReader->SetImportVoidPointer( blendingData );
 		}
 		else 
 		{
+#ifdef FIX_VOLUME_VTK970
+            // TBC
+#endif
+            blendingReader->SetDataScalarTypeToUnsignedShort();
 			blendingReader->SetNumberOfScalarComponents( 1);
-			blendingReader->SetDataScalarTypeToUnsignedShort();
-			blendingReader->SetImportVoidPointer( blendingData8 );					//AVOID VTK BUG
+			blendingReader->SetImportVoidPointer( blendingData8 );
 		}
 
         blendingReader->Update();
@@ -6676,14 +6844,17 @@ public:
 		blendingReader->SetDataSpacing(factor*[blendingFirstObject pixelSpacingX],
                                        factor*[blendingFirstObject pixelSpacingY],
                                        factor*blendingSliceThickness);
-		
-		blendingColorTransferFunction = vtkColorTransferFunction::New();
+#ifdef FIX_VOLUME_VTK970
+            // TBC
+#endif
+        
+		blendingColorTransferFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
 		
 		
 		blendingOpacityTransferFunction = vtkPiecewiseFunction::New();
 		[self setBlendingFactor:blendingFactor];
 		
-		blendingVolumeProperty = vtkVolumeProperty::New();
+		blendingVolumeProperty = vtkSmartPointer<vtkVolumeProperty>::New();;
 		
 		if (isBlendingRGB)
 		{
@@ -6698,7 +6869,6 @@ public:
 			blendingVolumeProperty->SetScalarOpacity( 3, blendingOpacityTransferFunction);
 			
 			blendingVolumeProperty->SetComponentWeight( 0, 0);
-			
 		}
 		else
 		{
@@ -6810,6 +6980,9 @@ public:
         
 		blendingVolumeMapper = vtkMieleFixedPointVolumeRayCastMapper::New();
 		blendingVolumeMapper->SetInputConnection(blendingReader->GetOutputPort());
+#ifdef FIX_VOLUME_VTK970
+        // TBC
+#endif
 		blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 		blendingVolumeMapper->Update();
 		blendingVolume->SetMapper( blendingVolumeMapper);
@@ -6870,6 +7043,29 @@ public:
 			reader->GetOutput()->Modified();
 		}
 		reader->Update();
+#if 0
+        {
+            vtkImageData *output = reader->GetOutput();
+            vtkDataArray *scalars = output->GetPointData()->GetScalars();
+
+            int importedExtent[6];
+            output->GetExtent(importedExtent);
+
+            const vtkIdType expectedTuples =
+                static_cast<vtkIdType>(importedExtent[1] - importedExtent[0] + 1) *
+                static_cast<vtkIdType>(importedExtent[3] - importedExtent[2] + 1) *
+                static_cast<vtkIdType>(importedExtent[5] - importedExtent[4] + 1);
+
+            NSLog(@"VTK import requested=(%d,%d,%d,%d,%d,%d) output=(%d,%d,%d,%d,%d,%d) "
+                  "expected=%lld actual=%lld components=%d",
+                  extent[0], extent[1], extent[2], extent[3], extent[4], extent[5],
+                  importedExtent[0], importedExtent[1], importedExtent[2],
+                  importedExtent[3], importedExtent[4], importedExtent[5],
+                  (long long)expectedTuples,
+                  scalars ? (long long)scalars->GetNumberOfTuples() : -1LL,
+                  scalars ? scalars->GetNumberOfComponents() : 0);
+        }
+#endif
 		if (volumeMapper)
         {
             volumeMapper->Delete();
@@ -7035,20 +7231,6 @@ public:
 - (BOOL) setPixSource:(NSMutableArray*) pix
                      :(float*) volumeData
 {
-#ifndef NDEBUG // CRASH with 3D MIP
-    // VRView is not a subclass of NSOpenGLContext
-    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    NSLog(@"%s %d, class:%@, OpenGL context:%p, version <%s>", __FUNCTION__, __LINE__,
-          NSStringFromClass([self class]),
-          cgl_ctx,
-          glGetString(GL_VERSION));
-    // Legacy:  2.1 APPLE-12.1.0
-    //   Core:  4.1 APPLE-19.5.1
-    //   Core: <4.1 Metal - 83.1>
-
-    //NSLog(@"OpenGL renderer <%s>", glGetString(GL_RENDERER)); // Apple Software Renderer
-#endif
-    
 	if ([[[self window] windowController] isKindOfClass:[VRController class]])
 		[[self window] setAcceptsMouseMovedEvents: YES];
 	
@@ -7076,7 +7258,9 @@ public:
 	
 	isRGB = NO;
 	if ([firstObject isRGB])
-		isRGB = YES;
+    {
+        isRGB = YES;
+    }
 	else
 	{
 		// Convert float to short !!!
@@ -7114,32 +7298,89 @@ public:
 	
 	try
 	{
-#ifndef NDEBUG
-        NSLog(@"%s %d vtkImageImport, isRGB:%d", __FUNCTION__, __LINE__, isRGB);
-#endif
 		reader = vtkImageImport::New();
 		
 		if (isRGB)
 		{
+#ifdef FIX_VOLUME_VTK970
+            // TBC
+#endif
 			reader->SetImportVoidPointer(data);
-			reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 1, [pixList count]-2);	//AVOID VTK BUG
+			reader->SetWholeExtent(0, [firstObject pwidth]-1,
+                                   0, [firstObject pheight]-1,
+                                   1, [pixList count]-2); //AVOID VTK BUG
 			reader->SetDataExtentToWholeExtent();
 			reader->SetDataScalarTypeToUnsignedChar();
 			reader->SetNumberOfScalarComponents( 4);
 		}
 		else 
 		{
-			reader->SetImportVoidPointer(data8);
-			reader->SetWholeExtent( 0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 1, [pixList count]-2);	//AVOID VTK BUG
-			reader->SetDataExtentToWholeExtent();
-		//	reader->SetDataScalarTypeToFloat();
-			reader->SetDataScalarTypeToUnsignedShort();
-			reader->SetNumberOfScalarComponents( 1);
-		//	reader->SetImportVoidPointer(data);
-		}
-		
-		reader->Update();
-		[firstObject orientation:cosines];
+            const int extent[6] = {
+                0, (int)[firstObject pwidth] - 1,
+                0, (int)[firstObject pheight] - 1,
+                1, (int)[pixList count] - 2}; // AVOID VTK BUG
+
+#ifdef FIX_VOLUME_VTK970
+            const vtkIdType voxelCount =
+                static_cast<vtkIdType>(extent[1] - extent[0] + 1) *
+                static_cast<vtkIdType>(extent[3] - extent[2] + 1) *
+                static_cast<vtkIdType>(extent[5] - extent[4] + 1);
+
+            volumeImage = vtkImageData::New();
+            volumeImage->SetExtent(extent[0],extent[1],extent[2],extent[3],extent[4],extent[5]);
+            //volumeImage->SetSpacing(/* existing spacing values */);
+            volumeImage->AllocateScalars(VTK_UNSIGNED_SHORT, 1);
+
+            volumeProducer = vtkTrivialProducer::New();
+            volumeProducer->SetOutput(volumeImage);
+            
+            vtkUnsignedShortArray *scalars =
+                vtkUnsignedShortArray::SafeDownCast(volumeImage->GetPointData()->GetScalars());
+
+            scalars->SetArray(reinterpret_cast<unsigned short *>(data8), voxelCount, 1);
+#else
+            reader->SetDataScalarTypeToUnsignedShort();
+            reader->SetNumberOfScalarComponents( 1);
+            reader->SetImportVoidPointer(data8);
+            reader->SetWholeExtent(extent);
+            reader->SetDataExtentToWholeExtent();
+#endif
+        }
+
+		reader->Update(); // first hit, okay
+#ifdef FIX_VOLUME_VTK970_DEBUG
+        NSLog(@"IMPORT tuples=%lld",
+              (long long)reader->GetOutput()->GetPointData()->GetScalars()->GetNumberOfTuples());
+        {
+            const int *requestedExtent = reader->GetDataExtent();
+            const int *wholeExtent = reader->GetWholeExtent();
+
+            vtkImageData *output = reader->GetOutput();
+            vtkDataArray *scalars = output->GetPointData()->GetScalars();
+
+            int importedExtent[6];
+            output->GetExtent(importedExtent);
+
+            const vtkIdType expectedTuples =
+                static_cast<vtkIdType>(importedExtent[1] - importedExtent[0] + 1) *
+                static_cast<vtkIdType>(importedExtent[3] - importedExtent[2] + 1) *
+                static_cast<vtkIdType>(importedExtent[5] - importedExtent[4] + 1);
+
+            NSLog(@"VTK import whole=(%d,%d,%d,%d,%d,%d) data=(%d,%d,%d,%d,%d,%d) "
+                  "output=(%d,%d,%d,%d,%d,%d) expected=%lld actual=%lld components=%d",
+                  wholeExtent[0], wholeExtent[1], wholeExtent[2],
+                  wholeExtent[3], wholeExtent[4], wholeExtent[5],
+                  requestedExtent[0], requestedExtent[1], requestedExtent[2],
+                  requestedExtent[3], requestedExtent[4], requestedExtent[5],
+                  importedExtent[0], importedExtent[1], importedExtent[2],
+                  importedExtent[3], importedExtent[4], importedExtent[5],
+                  (long long)expectedTuples,
+                  scalars ? (long long)scalars->GetNumberOfTuples() : -1LL,
+                  scalars ? scalars->GetNumberOfComponents() : 0);
+        }
+#endif
+
+        [firstObject orientation:cosines];
 		
 		factor = 1.0;
 		
@@ -7155,60 +7396,67 @@ public:
 		factor = superSampling / [firstObject pixelSpacingX];
 		
 		if ([firstObject pixelSpacingX] == 0 || [firstObject pixelSpacingY] == 0)
+        {
             reader->SetDataSpacing( 1, 1, sliceThickness);
+#ifdef FIX_VOLUME_VTK970
+            if (!isRGB)
+            volumeImage->SetSpacing( 1, 1, sliceThickness);
+#endif
+        }
 		else
+        {
             reader->SetDataSpacing(factor*[firstObject pixelSpacingX],
                                    factor*[firstObject pixelSpacingY],
                                    factor*sliceThickness);
-		
-		opacityTransferFunction = vtkPiecewiseFunction::New();
-		opacityTransferFunction->AddPoint(0, 0);
-		
-		float opacityAdapter = 1;
-		
-		if (renderingMode == MPR_PROJECTION_MODE_VR)
-			opacityAdapter = superSampling;
-		
-		opacityTransferFunction->AddPoint(255., 1. / opacityAdapter);
-		
-#ifndef NDEBUG
-        NSLog(@"%s %d vtkColorTransferFunction", __FUNCTION__, __LINE__);
+#ifdef FIX_VOLUME_VTK970
+            if (!isRGB)
+            volumeImage->SetSpacing(factor*[firstObject pixelSpacingX],
+                                   factor*[firstObject pixelSpacingY],
+                                   factor*sliceThickness);
 #endif
-		colorTransferFunction = vtkColorTransferFunction::New();
+        }
 		
+        opacityTransferFunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
+        {
+            opacityTransferFunction->AddPoint(0, 0);
+            float opacityAdapter = 1;
+            if (renderingMode == MPR_PROJECTION_MODE_VR)
+                opacityAdapter = superSampling;
+            
+            opacityTransferFunction->AddPoint(255., 1. / opacityAdapter);
+        }
+
+        colorTransferFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
         if ([[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
         {
-            red = vtkColorTransferFunction::New();
+            red = vtkSmartPointer<vtkColorTransferFunction>::New();
             red->AddRGBPoint( 255, 1, 0, 0 );
             red->AddRGBPoint(   0, 0, 0, 0 );
             
-            green = vtkColorTransferFunction::New();
+            green = vtkSmartPointer<vtkColorTransferFunction>::New();
             green->AddRGBPoint( 255, 0, 1, 0 );
             green->AddRGBPoint(   0, 0, 0, 0 );
             
-            blue = vtkColorTransferFunction::New();
+            blue = vtkSmartPointer<vtkColorTransferFunction>::New();
             blue->AddRGBPoint( 255, 0, 0, 1 );
             blue->AddRGBPoint(   0, 0, 0, 0 );
         }
         else
         {
-            red = vtkColorTransferFunction::New();
+            red = vtkSmartPointer<vtkColorTransferFunction>::New();
             red->AddRGBPoint(   0, 0, 0, 0 );
             red->AddRGBPoint( 255, 1, 0, 0 );
             
-            green = vtkColorTransferFunction::New();
+            green = vtkSmartPointer<vtkColorTransferFunction>::New();
             green->AddRGBPoint(   0, 0, 0, 0 );
             green->AddRGBPoint( 255, 0, 1, 0 );
             
-            blue = vtkColorTransferFunction::New();
+            blue = vtkSmartPointer<vtkColorTransferFunction>::New();
             blue->AddRGBPoint(   0, 0, 0, 0 );
             blue->AddRGBPoint( 255, 0, 0, 1 );
 		}
 
-#ifndef NDEBUG        
-        NSLog(@"%s %d vtkVolumeProperty", __FUNCTION__, __LINE__);
-#endif
-		volumeProperty = vtkVolumeProperty::New();
+		volumeProperty = vtkSmartPointer<vtkVolumeProperty>::New();;
 		if (isRGB)
 		{
 			volumeProperty->IndependentComponentsOn();
@@ -7225,7 +7473,7 @@ public:
 		}
 		else
 		{
-			volumeProperty->SetColor( colorTransferFunction);	//	if (isRGB == NO)
+			volumeProperty->SetColor( colorTransferFunction);
 			volumeProperty->SetScalarOpacity( opacityTransferFunction);
 		}
 		
@@ -7234,220 +7482,227 @@ public:
 		
 		if ([[NSApp currentEvent] modifierFlags] & NSEventModifierFlagOption)
             volumeProperty->SetInterpolationTypeToNearest();
-		else            volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();	//SetInterpolationTypeToLinear
+		else
+            volumeProperty->SetInterpolationTypeToLinear();//Eliminates blocky voxel edges
 			
 		LOD = 2.0;
 
-#ifndef NDEBUG
-        NSLog(@"%s %d vtkVolume", __FUNCTION__, __LINE__);
-#endif
-		volume = vtkVolume::New();
-		volume->SetProperty( volumeProperty);
-		
-		vtkMatrix4x4 *matrice = vtkMatrix4x4::New();
-		matrice->Element[0][0] = cosines[0];
-        matrice->Element[1][0] = cosines[1];
-        matrice->Element[2][0] = cosines[2];
-        matrice->Element[3][0] = 0;
-        
-		matrice->Element[0][1] = cosines[3];
-        matrice->Element[1][1] = cosines[4];
-        matrice->Element[2][1] = cosines[5];
-        matrice->Element[3][1] = 0;
-        
-		matrice->Element[0][2] = cosines[6];
-        matrice->Element[1][2] = cosines[7];
-        matrice->Element[2][2] = cosines[8];
-        matrice->Element[3][2] = 0;
-        
-		matrice->Element[0][3] = 0;
-        matrice->Element[1][3] = 0;
-        matrice->Element[2][3] = 0;
-        matrice->Element[3][3] = 1;
-		
-		volume->SetPosition(factor*[firstObject originX] * matrice->Element[0][0] +
-                            factor*[firstObject originY] * matrice->Element[1][0] +
-                            factor*[firstObject originZ] * matrice->Element[2][0],
-                            
-							factor*[firstObject originX] * matrice->Element[0][1] +
-                            factor*[firstObject originY] * matrice->Element[1][1] +
-                            factor*[firstObject originZ] * matrice->Element[2][1],
-                            
-							factor*[firstObject originX] * matrice->Element[0][2] +
-                            factor*[firstObject originY] * matrice->Element[1][2] +
-                            factor*[firstObject originZ] * matrice->Element[2][2]);
+		volume = vtkSmartPointer<vtkVolume>::New();
+        vtkMatrix4x4 *matrice = vtkMatrix4x4::New();
+        {
+            volume->SetProperty( volumeProperty);
+            
+            matrice->Element[0][0] = cosines[0];
+            matrice->Element[1][0] = cosines[1];
+            matrice->Element[2][0] = cosines[2];
+            matrice->Element[3][0] = 0;
+            
+            matrice->Element[0][1] = cosines[3];
+            matrice->Element[1][1] = cosines[4];
+            matrice->Element[2][1] = cosines[5];
+            matrice->Element[3][1] = 0;
+            
+            matrice->Element[0][2] = cosines[6];
+            matrice->Element[1][2] = cosines[7];
+            matrice->Element[2][2] = cosines[8];
+            matrice->Element[3][2] = 0;
+            
+            matrice->Element[0][3] = 0;
+            matrice->Element[1][3] = 0;
+            matrice->Element[2][3] = 0;
+            matrice->Element[3][3] = 1;
+            
+            volume->SetPosition(factor*[firstObject originX] * matrice->Element[0][0] +
+                                factor*[firstObject originY] * matrice->Element[1][0] +
+                                factor*[firstObject originZ] * matrice->Element[2][0],
+                                
+                                factor*[firstObject originX] * matrice->Element[0][1] +
+                                factor*[firstObject originY] * matrice->Element[1][1] +
+                                factor*[firstObject originZ] * matrice->Element[2][1],
+                                
+                                factor*[firstObject originX] * matrice->Element[0][2] +
+                                factor*[firstObject originY] * matrice->Element[1][2] +
+                                factor*[firstObject originZ] * matrice->Element[2][2]);
+            
+            volume->SetUserMatrix( matrice);
+            matrice->Delete();
+            
+            volume->PickableOff();
+        }
 
-        volume->SetUserMatrix( matrice);
-		matrice->Delete();
-		
-		volume->PickableOff();
-#ifndef NDEBUG
-        NSLog(@"%s %d vtkOutlineFilter", __FUNCTION__, __LINE__);
+        outlineData = vtkOutlineFilter::New();
+        {
+#ifdef FIX_VOLUME_VTK970
+            if (isRGB)
+                outlineData->SetInputConnection(reader->GetOutputPort());
+            else
+                outlineData->SetInputConnection(volumeProducer->GetOutputPort());
+#else
+            outlineData->SetInputConnection(reader->GetOutputPort());
 #endif
-		outlineData = vtkOutlineFilter::New();
-		outlineData->SetInputConnection(reader->GetOutputPort());
-		outlineData->Update();
+            //outlineData->Update(); // second hit unwanted
+        }
 		
-#ifndef NDEBUG
-        NSLog(@"%s %d vtkPolyDataMapper", __FUNCTION__, __LINE__);
-#endif
 		mapOutline = vtkPolyDataMapper::New();
-		mapOutline->SetInputConnection(outlineData->GetOutputPort());
-		mapOutline->Update();
-
-#ifndef NDEBUG
-        NSLog(@"%s %d vtkActor", __FUNCTION__, __LINE__);
-#endif
+        {
+            mapOutline->SetInputConnection(outlineData->GetOutputPort());
+            //mapOutline->Update();
+        }
+        
 		outlineRect = vtkActor::New();
-		outlineRect->SetMapper(mapOutline);
-		outlineRect->GetProperty()->SetColor(0,1,0);
-		outlineRect->GetProperty()->SetOpacity(0.5);
-		outlineRect->SetUserMatrix( matrice);
-		outlineRect->SetPosition(factor*[firstObject originX] * matrice->Element[0][0] +
-                                 factor*[firstObject originY] * matrice->Element[1][0] +
-                                 factor*[firstObject originZ] * matrice->Element[2][0],
-                                 
-								 factor*[firstObject originX] * matrice->Element[0][1] +
-                                 factor*[firstObject originY] * matrice->Element[1][1] +
-                                 factor*[firstObject originZ] * matrice->Element[2][1],
-                                 
-								 factor*[firstObject originX] * matrice->Element[0][2] +
-                                 factor*[firstObject originY] * matrice->Element[1][2] +
-                                 factor*[firstObject originZ] * matrice->Element[2][2]);
-		outlineRect->PickableOff();
+        {
+            outlineRect->SetMapper(mapOutline);
+            outlineRect->GetProperty()->SetColor(0,1,0);
+            outlineRect->GetProperty()->SetOpacity(0.5);
+            outlineRect->SetUserMatrix( matrice);
+            outlineRect->SetPosition(factor*[firstObject originX] * matrice->Element[0][0] +
+                                     factor*[firstObject originY] * matrice->Element[1][0] +
+                                     factor*[firstObject originZ] * matrice->Element[2][0],
+                                     
+                                     factor*[firstObject originX] * matrice->Element[0][1] +
+                                     factor*[firstObject originY] * matrice->Element[1][1] +
+                                     factor*[firstObject originZ] * matrice->Element[2][1],
+                                     
+                                     factor*[firstObject originX] * matrice->Element[0][2] +
+                                     factor*[firstObject originY] * matrice->Element[1][2] +
+                                     factor*[firstObject originZ] * matrice->Element[2][2]);
+            outlineRect->PickableOff();
+        }
 		
 		cropcallback = nil;
 		croppingBox = nil;
 		if ([[controller style] isEqualToString: @"noNib"] == NO)
 		{
 			croppingBox = vtkBoxWidget::New();
-			
-			croppingBox->GetHandleProperty()->SetColor(0, 1, 0);
-			croppingBox->SetProp3D( volume);
-			croppingBox->SetPlaceFactor( 1.0);
-			croppingBox->SetHandleSize( 0.005);
-			croppingBox->PlaceWidget();
-			croppingBox->SetInteractor( [self getInteractor]);
-			croppingBox->SetRotationEnabled( true);
-			croppingBox->SetInsideOut( true);
-			croppingBox->OutlineCursorWiresOff();
-            
-            croppingBox->SetDefaultRenderer( aRenderer);
-            
+            {
+                croppingBox->GetHandleProperty()->SetColor(0, 1, 0);
+                croppingBox->SetProp3D( volume);
+                croppingBox->SetPlaceFactor( 1.0);
+                croppingBox->SetHandleSize( 0.005);
+                croppingBox->PlaceWidget();
+                croppingBox->SetInteractor( [self getInteractor]);
+                croppingBox->SetRotationEnabled( true);
+                croppingBox->SetInsideOut( true);
+                croppingBox->OutlineCursorWiresOff();
+                croppingBox->SetDefaultRenderer( aRenderer);
+            }
 			
 			cropcallback = vtkMyCallbackVR::New();
-			cropcallback->setBlendingVolume( nil);
-			croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
+            {
+                cropcallback->setBlendingVolume( nil);
+                croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
+            }
 		}
 		
-#ifndef NDEBUG
-        NSLog(@"%s %d vtkTextActor", __FUNCTION__, __LINE__);
-#endif
 		textWLWW = vtkTextActor::New();
-		if (ww < 50)
-            snprintf(WLWWString, sizeof(WLWWString), "WL: %0.4f WW: %0.4f ", wl, ww);
-		else
-            snprintf(WLWWString, sizeof(WLWWString), "WL: %0.f WW: %0.f ", wl, ww);
-        
-		textWLWW->SetInput( WLWWString);
-		textWLWW->SetTextScaleModeToNone();									//vtkviewPort
-		textWLWW->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
-		int *wsize = [self renderWindow]->GetSize();
-		textWLWW->GetPositionCoordinate()->SetValue( 2., wsize[ 1]-15);
-		textWLWW->GetTextProperty()->SetShadow(true);
-		textWLWW->GetTextProperty()->SetShadowOffset(1, 1);
+        {
+            if (ww < 50)
+                snprintf(WLWWString, sizeof(WLWWString), "WL: %0.4f WW: %0.4f ", wl, ww);
+            else
+                snprintf(WLWWString, sizeof(WLWWString), "WL: %0.f WW: %0.f ", wl, ww);
+            
+            textWLWW->SetInput( WLWWString);
+            textWLWW->SetTextScaleModeToNone();									//vtkviewPort
+            textWLWW->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
+            int *wsize = [self renderWindow]->GetSize();
+            textWLWW->GetPositionCoordinate()->SetValue( 2., wsize[ 1]-15);
+            textWLWW->GetTextProperty()->SetShadow(true);
+            textWLWW->GetTextProperty()->SetShadowOffset(1, 1);
+        }
 		
-		aRenderer->AddActor2D(textWLWW);
+		aRenderer->AddViewProp(textWLWW);
 		
 		if (isViewportResizable)
 		{
 			textX = vtkTextActor::New();
-			textX->SetInput( "X ");
-			textX->SetTextScaleModeToNone();
-			textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
-			textX->GetPositionCoordinate()->SetValue( 2., 2.);
-			textX->GetTextProperty()->SetShadow(true);
-			textX->GetTextProperty()->SetShadowOffset(1, 1);
-		
-			aRenderer->AddActor2D(textX);
+            {
+                textX->SetInput("X ");
+                textX->SetTextScaleModeToNone();
+                textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
+                textX->GetPositionCoordinate()->SetValue( 2., 2.);
+                textX->GetTextProperty()->SetShadow(true);
+                textX->GetTextProperty()->SetShadowOffset(1, 1);
+            }
+
+            aRenderer->AddViewProp(textX);
 		}
 		
 		for (long i = 0; i < NUM_VR_LABELS; i++)
 		{
-			oText[ i] = vtkTextActor::New();
-			oText[ i]->SetInput( "X ");
-			oText[ i]->SetTextScaleModeToNone();
-			oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-			oText[ i]->GetTextProperty()->SetBold( true);
-			oText[ i]->GetTextProperty()->SetShadow(true);
-			oText[ i]->GetTextProperty()->SetShadowOffset(1, 1);
+			oText[i] = vtkTextActor::New();
+            {
+                oText[i]->SetInput("X ");
+                oText[i]->SetTextScaleModeToNone();
+                oText[i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
+                oText[i]->GetTextProperty()->SetBold( true);
+                oText[i]->GetTextProperty()->SetShadow(true);
+                oText[i]->GetTextProperty()->SetShadowOffset(1, 1);
+            }
 			
-			aRenderer->AddActor2D( oText[ i]);
+			aRenderer->AddViewProp( oText[ i]);
 		}
         
-		oText[ 0]->GetPositionCoordinate()->SetValue( 0.01, 0.5);
+		oText[0]->GetPositionCoordinate()->SetValue( 0.01, 0.5);
         
-		oText[ 1]->GetPositionCoordinate()->SetValue( 0.99, 0.5);
-		oText[ 1]->GetTextProperty()->SetJustificationToRight();
+		oText[1]->GetPositionCoordinate()->SetValue( 0.99, 0.5);
+		oText[1]->GetTextProperty()->SetJustificationToRight();
 		
-		oText[ 2]->GetPositionCoordinate()->SetValue( 0.5, 0.03);
-		oText[ 2]->GetTextProperty()->SetVerticalJustificationToTop();
+		oText[2]->GetPositionCoordinate()->SetValue( 0.5, 0.03);
+		oText[2]->GetTextProperty()->SetVerticalJustificationToTop();
         
-		oText[ 3]->GetPositionCoordinate()->SetValue( 0.5, 0.97);
+		oText[3]->GetPositionCoordinate()->SetValue( 0.5, 0.97);
         
-        oText[ 4]->GetPositionCoordinate()->SetValue( 0.99, 0.01);
-        oText[ 4]->GetTextProperty()->SetBold( false);
-        oText[ 4]->GetTextProperty()->SetJustificationToRight();
+        oText[4]->GetPositionCoordinate()->SetValue( 0.99, 0.01);
+        oText[4]->GetTextProperty()->SetBold( false);
+        oText[4]->GetTextProperty()->SetJustificationToRight();
         
 		aCamera = vtkCamera::New();
-		aCamera->SetViewUp (0, 1, 0);
-		aCamera->SetFocalPoint (0, 0, 0);
-		aCamera->SetPosition (0, 0, 1);
-		aCamera->SetRoll(180);
-		aCamera->SetParallelProjection( true);
-		
-		aCamera->Dolly(1.5);
-		
+        {
+            aCamera->SetViewUp (0, 1, 0);
+            aCamera->SetFocalPoint (0, 0, 0);
+            aCamera->SetPosition (0, 0, 1);
+            aCamera->SetRoll(180);
+            aCamera->SetParallelProjection( true);
+            aCamera->Dolly(1.5);
+        }
+
         // Note: it also affects "3D MPR" because of the "hidden" VR object
-		aRenderer->AddVolume( volume);
+        aRenderer->AddVolume( volume); // same as AddViewProp(volume) but with special handling for volumes
 
 		aRenderer->SetActiveCamera(aCamera);
 		aRenderer->ResetCamera();
-		
-		// 3D Cut ROI
-#ifndef NDEBUG
-        NSLog(@"%s %d vtkPoints", __FUNCTION__, __LINE__);
-#endif
-		vtkPoints *pts = vtkPoints::New();
-		vtkCellArray *rect = vtkCellArray::New();
+
+        // 3D Cut ROI
 		
 		ROI3DData = vtkPolyData::New();
-        
-		ROI3DData->SetPoints( pts);
-		pts->Delete();
-        
-		ROI3DData->SetLines( rect);
-		rect->Delete();
+        {
+            vtkPoints *pts = vtkPoints::New();
+            ROI3DData->SetPoints( pts);
+            pts->Delete();
+            
+            vtkCellArray *rect = vtkCellArray::New();
+            ROI3DData->SetLines( rect);
+            rect->Delete();
+        }
 		
-#ifndef NDEBUG
-        NSLog(@"%s %d vtkPolyDataMapper2D", __FUNCTION__, __LINE__);
-#endif
 		ROI3D = vtkPolyDataMapper2D::New();
-		ROI3D->SetInputData( ROI3DData);
+        {
+            ROI3D->SetInputData( ROI3DData);
+        }
 		
-#ifndef NDEBUG
-        NSLog(@"%s %d vtkActor2D", __FUNCTION__, __LINE__);
-#endif
 		ROI3DActor = vtkActor2D::New();
-		ROI3DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
-		ROI3DActor->SetMapper( ROI3D);
-		ROI3DActor->GetProperty()->SetPointSize( 1);	//vtkProperty2D
-		ROI3DActor->GetProperty()->SetLineWidth( 2);
-		ROI3DActor->GetProperty()->SetColor(0.3, 1, 0);
-		
-		aRenderer->AddActor2D( ROI3DActor);
+        {
+            ROI3DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
+            ROI3DActor->SetMapper( ROI3D);
+            ROI3DActor->GetProperty()->SetPointSize( 1);	//vtkProperty2D
+            ROI3DActor->GetProperty()->SetLineWidth( 2);
+            ROI3DActor->GetProperty()->SetColor(0.3, 1, 0);
+            
+            aRenderer->AddViewProp( ROI3DActor);
+        }
 		
         // 2D Oval
+        
 		Oval2DData = vtkRegularPolygonSource::New();
 		Oval2DData->SetNumberOfSides( 50);
         Oval2DData->SetRadius( 200);
@@ -7475,19 +7730,20 @@ public:
 		Oval2DText->GetTextProperty()->SetShadow(true);
 		Oval2DText->GetTextProperty()->SetShadowOffset(1, 1);
 		
-//		aRenderer->AddActor2D( Oval2DActor);
+//		aRenderer->AddViewProp( Oval2DActor);
         
 		// 2D Line
-		pts = vtkPoints::New();
-		rect = vtkCellArray::New();
 		
 		Line2DData = vtkPolyData::New();
-        
-		Line2DData->SetPoints( pts);
-		pts->Delete();
-        
-		Line2DData->SetLines( rect);
-		rect->Delete();
+        {
+            vtkPoints *pts = vtkPoints::New();
+            Line2DData->SetPoints( pts);
+            pts->Delete();
+            
+            vtkCellArray *rect = vtkCellArray::New();
+            Line2DData->SetLines( rect);
+            rect->Delete();
+        }
 		
 		Line2D = vtkPolyDataMapper2D::New();
 		Line2D->SetInputData( Line2DData);
@@ -7500,7 +7756,7 @@ public:
 		Line2DActor->GetProperty()->SetColor(1,1,0);
 
 		Line2DText = vtkTextActor::New();
-		Line2DText->SetInput( " ");
+		Line2DText->SetInput(" ");
 		Line2DText->SetTextScaleModeToNone();
 		Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 		Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
@@ -7509,22 +7765,14 @@ public:
 		Line2DText->GetTextProperty()->SetShadow(true);
 		Line2DText->GetTextProperty()->SetShadowOffset(1, 1);
 		
-		aRenderer->AddActor2D( Line2DActor);
+		aRenderer->AddViewProp( Line2DActor);
 			
 		[self saView:self];
 		
 		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 		[self getVTKRenderWindow]->MakeCurrent();
 		[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
-		
-#ifndef NDEBUG
-        CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-        printf("VRView.mm:%d OpenGL context:%p, version %s\n", __LINE__, cgl_ctx, glGetString(GL_VERSION));
-        // if WITH_OPENGL_32
-        //      version 4.1 APPLE-19.5.1
-        // else
-        //      version 2.1 APPLE-19.5.1
-#endif
+
 		[self setNeedsDisplay:YES];
 		
 //		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"dontShow3DCubeOrientation"] == NO)
@@ -7533,7 +7781,6 @@ public:
         if ([[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
             [self changeColorWith: [NSColor colorWithCalibratedRed: 1 green: 1 blue: 1  alpha:1]];
 	}
-	
 	catch (...)
 	{
 		NSLog( @"setPixSource VRView C++ exception");
@@ -8102,13 +8349,13 @@ public:
 		{
 			orientationWidget->Off();
 			for (long i = 0; i < NUM_VR_LABELS; i++)
-                aRenderer->RemoveActor2D( oText[ i]);
+                aRenderer->RemoveViewProp( oText[ i]);
 		}
 		else
 		{
 			orientationWidget->On();
 			for (long i = 0; i < NUM_VR_LABELS; i++)
-                aRenderer->AddActor2D( oText[ i]);
+                aRenderer->AddViewProp( oText[ i]);
 		}
 	}
 	
@@ -8758,7 +9005,7 @@ public:
 {
 	void* actorPointer = actor;
 	[point3DActorArray addObject:[NSValue valueWithPointer:actorPointer]];
-	aRenderer->AddActor(actor);
+	aRenderer->AddViewProp(actor);
 }
 
 - (void) addRandomPoints: (int) n : (int) r
@@ -9097,9 +9344,9 @@ public:
 	{
 		actor = (vtkActor*)[object pointerValue];
 		if (on)
-			aRenderer->AddActor(actor);
+			aRenderer->AddViewProp(actor);
 		else
-			aRenderer->RemoveActor(actor);
+			aRenderer->RemoveViewProp(actor);
 	}
     
 	[self unselectAllActors];
@@ -9164,7 +9411,7 @@ public:
 	// point to remove
 	vtkActor *actor = (vtkActor*)[[point3DActorArray objectAtIndex:index] pointerValue];
 	// remove from Renderer
-	aRenderer->RemoveActor(actor);
+	aRenderer->RemoveViewProp(actor);
 	// remove the highlight bounding box
 	[self unselectAllActors];
 	// kill the actor himself
@@ -9785,10 +10032,33 @@ public:
 	if (volumeMapper == nil)
     {
         volumeMapper = vtkMieleFixedPointVolumeRayCastMapper::New();
+#ifdef FIX_VOLUME_VTK970_DEBUG
+        {
+            vtkDataArray *scalars = volumeImage->GetPointData()->GetScalars();
+
+            NSLog(@"volumeImage=%p scalars=%p class=%s type=%d tuples=%lld data=%p",
+                  volumeImage,
+                  scalars,
+                  scalars ? scalars->GetClassName() : "(null)",
+                  scalars ? scalars->GetDataType() : -1,
+                  scalars ? (long long)scalars->GetNumberOfTuples() : -1LL,
+                  scalars ? scalars->GetVoidPointer(0) : nil);
+        }
+#endif
+        
+#ifdef FIX_VOLUME_VTK970
+        if (isRGB)
+            volumeMapper->SetInputConnection(reader->GetOutputPort());
+        else
+            volumeMapper->SetInputConnection(volumeProducer->GetOutputPort());
+#else
         volumeMapper->SetInputConnection(reader->GetOutputPort());
+#endif
     }
     
+#if 0 // FIX_VOLUME_VTK970
     volumeMapper->Update();
+#endif
     return volumeMapper;
 }
 

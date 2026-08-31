@@ -13,17 +13,27 @@
 #include "vtkRenderWindow.h"
 #include "vtkRenderer.h"
 #include "vtkTimerLog.h"
-#include "vtkOpenGLRenderWindow.h"
+//#include "vtkOpenGLRenderWindow.h"
 #include "vtkImageData.h"
 
 #include "vtkMieleFixedPointVolumeRayCastMIPHelper.h"
 
+#include "vtkFixedPointRayCastImage.h"
+#include "vtkDataArray.h"
+#include "vtkPointData.h"
+
 #ifndef NDEBUG
 #include "vtkRayCastImageDisplayHelper.h"
-#include "vtkFixedPointRayCastImage.h"
 #endif
 
 #include <cmath>
+#include <algorithm>
+#include <iostream>
+
+#include "vtkVersion.h"
+
+static_assert(VTK_MAJOR_VERSION == 9 && VTK_MINOR_VERSION == 7,
+              "vtkMieleFixedPointVolumeRayCastMapper must compile against VTK 9.7 headers");
 
 extern bool skipRenderingVR; // Moved to VRView.mm
 
@@ -74,10 +84,42 @@ void vtkMieleFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume 
     this->PerImageInitialization(ren, vol, 0, dummyOrigin, dummySpacing, dummyExtent);
 
     this->PerVolumeInitialization(ren, vol);
+#ifndef NDEBUG
+    {
+        vtkImageData *input = vtkImageData::SafeDownCast(this->GetInput());
+        vtkDataArray *inputScalars = input->GetPointData()->GetScalars();
+
+        std::cerr << "CPU input tuples="
+                  << (inputScalars ? inputScalars->GetNumberOfTuples() : -1)
+                  << " current tuples="
+                  << (this->CurrentScalars ? this->CurrentScalars->GetNumberOfTuples() : -1)
+                  << " scalarMode=" << this->GetScalarMode()
+                  << std::endl;
+    }
+#endif
+#ifndef NDEBUG
+    {
+        double mapperRange[2];
+        this->GetCurrentScalars()->GetRange(mapperRange);
+
+        std::cerr << "CPU mapper scalars=" << this->GetCurrentScalars()->GetClassName()
+                  << " components=" << this->GetCurrentScalars()->GetNumberOfComponents()
+                  << " range=(" << mapperRange[0] << "," << mapperRange[1] << ")"
+                  << std::endl;
+    }
+    {
+        auto* mapperData =
+          static_cast<unsigned short*>(this->GetCurrentScalars()->GetVoidPointer(0));
+
+        std::cerr << "mapper data=" << static_cast<void*>(mapperData)
+                  << " voxels=(" << mapperData[0] << "," << mapperData[1]
+                  << "," << mapperData[1000] << ")" << std::endl;
+    }
+#endif
 
     vtkRenderWindow* renWin = ren->GetRenderWindow(); // vtkCocoaRenderWindow
 
-#if 1 // @@@ TBC (not in VTK)
+#if 0 // @@@ TBC (not in VTK)
   #if 0 // original
     vtkOpenGLRenderWindow *rw = (vtkOpenGLRenderWindow *)renWin;
     //if (!rw->Initialized)
@@ -114,9 +156,45 @@ void vtkMieleFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume 
       return;
     }
 
+#if 1
     if (!skipRenderingVR)  // Our addition
-        this->RenderSubVolume(); // #g93
+#endif
+    {
+#ifndef NDEBUG
+        {
+            if (this->CurrentScalars)
+            {
+                double scalarRange[2];
+                this->CurrentScalars->GetRange(scalarRange);
 
+                std::cerr << "CPU mapper tuples="
+                          << this->CurrentScalars->GetNumberOfTuples()
+                          << " components=" << this->CurrentScalars->GetNumberOfComponents()
+                          << " range=(" << scalarRange[0] << "," << scalarRange[1] << ")"
+                          << " first=" << this->CurrentScalars->GetTuple1(0)
+                          << std::endl;
+            }
+        }
+#endif
+        this->RenderSubVolume(); // #g93
+    }
+
+#ifndef NDEBUG
+    {
+        int imageSize[2];
+        this->RayCastImage->GetImageMemorySize(imageSize);
+
+        unsigned short maxAlpha = 0;
+        unsigned short* image = this->RayCastImage->GetImage();
+        for (int i = 0; i < imageSize[0] * imageSize[1]; ++i)
+            maxAlpha = std::max(maxAlpha, image[4 * i + 3]);
+
+        //NSLog(@"CPU ray-cast image=%dx%d maxAlpha=%u", imageSize[0], imageSize[1], maxAlpha);
+        std::cerr << "CPU ray-cast image=" << imageSize[0] << "x" << imageSize[1]
+                  << " maxAlpha=" << maxAlpha << std::endl;
+    }
+#endif
+    
     if (renWin && renWin->CheckAbortStatus())
     {
         this->AbortRender();

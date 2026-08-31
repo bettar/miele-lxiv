@@ -1446,25 +1446,25 @@ return YES;
 //- (void) displayROIVolumeAtIndex: (int) index
 //{
 //	vtkRenderer *viewRenderer = [view renderer];
-//	viewRenderer->AddActor((vtkActor*)[[[roiVolumes objectAtIndex:index] roiVolumeActor] pointerValue]);
+//	viewRenderer->AddViewProp((vtkActor*)[[[roiVolumes objectAtIndex:index] roiVolumeActor] pointerValue]);
 //}
 
 - (void) displayROIVolume: (ROIVolume*) v
 {
 	vtkRenderer *viewRenderer = [view renderer];
-	viewRenderer->AddActor((vtkActor*)[[v roiVolumeActor] pointerValue]);
+	viewRenderer->AddViewProp((vtkActor*)[[v roiVolumeActor] pointerValue]);
 }
 
 //- (void) hideROIVolumeAtIndex: (int) index
 //{
 //	vtkRenderer *viewRenderer = [view renderer];
-//	viewRenderer->RemoveActor((vtkActor*)[[[roiVolumes objectAtIndex:index] roiVolumeActor] pointerValue]);
+//	viewRenderer->RemoveViewProp((vtkActor*)[[[roiVolumes objectAtIndex:index] roiVolumeActor] pointerValue]);
 //}
 
 - (void) hideROIVolume: (ROIVolume*) v
 {
 	vtkRenderer *viewRenderer = [view renderer];
-	viewRenderer->RemoveActor((vtkActor*)[[v roiVolumeActor] pointerValue]);
+	viewRenderer->RemoveViewProp((vtkActor*)[[v roiVolumeActor] pointerValue]);
 }
 
 - (void) displayROIVolumes

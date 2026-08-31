@@ -852,8 +852,8 @@ typedef GreaterPathNodeOnF NodeCompare;
         return ERROR_CANNOTFINDPATH;
     }
     
-    std::cout   << "x= " << pta.x << " y= " << pta.y <<  " z= " << pta.z << std::endl
-                << "x= " << ptb.x << " y= " << ptb.y <<  " z= " << ptb.z << std::endl;
+    //std::cout   << "x= " << pta.x << " y= " << pta.y <<  " z= " << pta.z << std::endl
+    //            << "x= " << ptb.x << " y= " << ptb.y <<  " z= " << ptb.z << std::endl;
 
     // get the boundaries for threshold
     int posA = (int)pta.z*inputWidth*inputHeight+(int)pta.y*inputWidth+(int)pta.x,

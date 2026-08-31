@@ -39,9 +39,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	
-extern NSString* RectString(NSRect r) __deprecated; // use NSStringFromRect
-extern NSString* PointString(NSPoint p) __deprecated; // use NSStringFromPoint
 
 extern void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, id arg, ...);
 extern void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf);

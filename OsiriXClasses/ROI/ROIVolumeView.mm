@@ -313,7 +313,7 @@
 	
     if (roiVolumeActor)
     {
-        aRenderer->RemoveActor( roiVolumeActor);
+        aRenderer->RemoveViewProp( roiVolumeActor);
         roiVolumeActor->Delete();
     }
 	
@@ -593,7 +593,7 @@
             aRenderer = [self renderer];
             
             if( roiVolumeActor) {
-                aRenderer->RemoveActor( roiVolumeActor);
+                aRenderer->RemoveViewProp( roiVolumeActor);
                 roiVolumeActor->Delete();
                 roiVolumeActor = nil;
             }
@@ -643,7 +643,7 @@
 			// The balls
 //			
 //            if( ballActor) {
-//                aRenderer->RemoveActor( ballActor);
+//                aRenderer->RemoveViewProp( ballActor);
 //                ballActor->Delete();
 //                ballActor = nil;
 //            }
@@ -691,13 +691,13 @@
 //                if( profile)
 //                    profile->Delete();
 //                
-//                aRenderer->AddActor( ballActor);
+//                aRenderer->AddViewProp( ballActor);
 //			}
             
 			roiVolumeActor->GetProperty()->FrontfaceCullingOn();
 			roiVolumeActor->GetProperty()->BackfaceCullingOn();
 			
-			aRenderer->AddActor( roiVolumeActor);
+			aRenderer->AddViewProp( roiVolumeActor);
 			
 			// *********************** Orientation Cube
 			
@@ -789,7 +789,7 @@
 {
 	aRenderer = [self renderer];
 	
-	aRenderer->AddActor((vtkActor*)[roiActorPointer pointerValue]);
+	aRenderer->AddViewProp((vtkActor*)[roiActorPointer pointerValue]);
 	
     aCamera = vtkCamera::New();
 	aCamera->Zoom(1.5);
@@ -816,15 +816,15 @@
 {
 	if( roiVolumeActor)
 	{
-//		if( sp == NO) aRenderer->RemoveActor( ballActor);
-//		else aRenderer->AddActor( ballActor);
+//		if( sp == NO) aRenderer->RemoveViewProp( ballActor);
+//		else aRenderer->AddViewProp( ballActor);
 		
         sS = YES;
         
 		if( sS == NO)
-            aRenderer->RemoveActor( roiVolumeActor);
+            aRenderer->RemoveViewProp( roiVolumeActor);
 		else
-            aRenderer->AddActor( roiVolumeActor);
+            aRenderer->AddViewProp( roiVolumeActor);
 		
 		if( w)
             roiVolumeActor->GetProperty()->SetRepresentationToWireframe();

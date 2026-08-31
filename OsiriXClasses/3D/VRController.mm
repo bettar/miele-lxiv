@@ -2728,25 +2728,25 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 //{
 //	vtkRenderer *viewRenderer = [view renderer];
 //	//NSLog(@"[[roiVolumes objectAtIndex:index] name] : %@", [[roiVolumes objectAtIndex:index] name]);
-//	viewRenderer->AddActor((vtkActor*)[[[roiVolumes objectAtIndex:index] roiVolumeActor] pointerValue]);
+//	viewRenderer->AddViewProp((vtkActor*)[[[roiVolumes objectAtIndex:index] roiVolumeActor] pointerValue]);
 //}
 //
 //- (void) hideROIVolumeAtIndex: (int) index
 //{
 //	vtkRenderer *viewRenderer = [view renderer];
-//	viewRenderer->RemoveActor((vtkActor*)[[[roiVolumes objectAtIndex:index] roiVolumeActor] pointerValue]);
+//	viewRenderer->RemoveViewProp((vtkActor*)[[[roiVolumes objectAtIndex:index] roiVolumeActor] pointerValue]);
 //}
 
 - (void) displayROIVolume: (ROIVolume*) v
 {
 	vtkRenderer *viewRenderer = [view renderer];
-	viewRenderer->AddActor((vtkActor*)[[v roiVolumeActor] pointerValue]);
+	viewRenderer->AddViewProp((vtkActor*)[[v roiVolumeActor] pointerValue]);
 }
 - (void) hideROIVolume: (ROIVolume*) v
 {
 	vtkRenderer *viewRenderer = [view renderer];
 	if ([v isRoiVolumeActorComputed])
-		viewRenderer->RemoveActor((vtkActor*)[[v roiVolumeActor] pointerValue]);
+		viewRenderer->RemoveViewProp((vtkActor*)[[v roiVolumeActor] pointerValue]);
 }
 
 - (void) displayROIVolumes
@@ -3279,7 +3279,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[settings writeToFile:path atomically:YES];
 }
 
-- (NSArray*)find3DSettingsGroups;
+- (NSArray*)find3DSettingsGroups
 {
 	// path 1 : /Miele-LXIV Data/3DPRESETS/
 	NSMutableString *path1 = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
@@ -3331,7 +3331,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
     return [name1 caseInsensitiveCompare:name2];
 }
 
-- (NSArray*)find3DSettingsForGroupName:(NSString*)groupName;
+- (NSArray*)find3DSettingsForGroupName:(NSString*)groupName
 {
 	// path 1 : /Miele-LXIV Data/3DPRESETS/
 	NSMutableString *path1 = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
@@ -3376,12 +3376,12 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	return [settingsList sortedArrayUsingFunction:sort3DSettingsDict context:NULL];
 }
 
-- (void)updatePresetsGroupPopUpButton;
+- (void)updatePresetsGroupPopUpButton
 {
 	[self updatePresetsGroupPopUpButtonSelectingGroupWithName:@""];
 }
 
-- (void)updatePresetsGroupPopUpButtonSelectingGroupWithName:(NSString*)groupName;
+- (void)updatePresetsGroupPopUpButtonSelectingGroupWithName:(NSString*)groupName
 {
 	[presetsGroupPopUpButton setEnabled:YES];
 	
@@ -3403,7 +3403,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	[self displayPresetsForSelectedGroup:presetsGroupPopUpButton];
 }
 
-- (void)load3DSettings;
+- (void)load3DSettings
 {
 	[self load3DSettings:self];
 }
@@ -3893,13 +3893,13 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	needToMovePresetsPanelToUserDefinedPosition = YES;
 }
 
-- (void)updatePresetInfoPanel;
+- (void)updatePresetInfoPanel
 {
-	if ([selectedPresetPreview index] < 0)
-        NSLog( @" ******** [selectedPresetPreview index] < 0");
-    
     if (selectedPresetPreview == nil)
         return;
+ 
+    if ([selectedPresetPreview index] < 0)
+        NSLog(@" ******** [selectedPresetPreview index] < 0");
     
 	NSDictionary *presetDictionary = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
 	

@@ -323,7 +323,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		}
 
 		//std::cout << "address of the actor " << &iso[actor] << std::endl;
-		aRenderer->AddActor( iso[ actor]);
+		aRenderer->AddViewProp( iso[ actor]);
 		
 		[self setNeedsDisplay:YES];
 		
@@ -462,7 +462,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				orientationWidget->Off();
 
             for (int i = 0; i < 4; i++)
-                aRenderer->RemoveActor2D( oText[ i]);
+                aRenderer->RemoveViewProp( oText[ i]); // RemoveActor
 
             [self setNeedsDisplay:YES];
 			break;
@@ -477,7 +477,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				orientationWidget->Off();
 
             for (int i = 0; i < 4; i++)
-                aRenderer->RemoveActor2D( oText[ i]);
+                aRenderer->RemoveViewProp( oText[ i]); // RemoveActor
 
             [self setNeedsDisplay:YES];
 			break;
@@ -492,7 +492,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 				orientationWidget->Off();
 
             for (int i = 0; i < 4; i++)
-                aRenderer->RemoveActor2D( oText[ i]);
+                aRenderer->RemoveViewProp( oText[ i]); // RemoveActor
 
             [self setNeedsDisplay:YES];
 			break;
@@ -520,7 +520,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
             orientationWidget->Off();
         
         for (long i = 0; i < NUM_SR_LABELS; i++)
-            aRenderer->RemoveActor2D( oText[ i]);
+            aRenderer->RemoveViewProp( oText[ i]); // RemoveActor
     }
     else
     {
@@ -543,7 +543,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	
 	if( aRenderer->GetActors()->IsItemPresent( iso[0]))
 	{
-		[rightView renderer]->AddActor(iso[0]);
+		[rightView renderer]->AddViewProp(iso[0]); // AddActor
 		[self changeActor:(long) 0
                          :first.resolution
                          :first.transparency
@@ -557,13 +557,13 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
                          :first.smoothVal];
 	}
 	else{
-		[rightView renderer] -> RemoveActor(iso[0]);
+		[rightView renderer] -> RemoveViewProp(iso[0]);
 
 
 	}
 	if( aRenderer->GetActors()->IsItemPresent( iso[1]))
 	{
-		[rightView renderer]->AddActor(iso[1]);
+		[rightView renderer]->AddViewProp(iso[1]); // AddActor
 		[self changeActor:(long) 1
                          :second.resolution
                          :second.transparency
@@ -577,7 +577,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
                          :second.smoothVal];
 	}
 	else{
-		[rightView renderer] -> RemoveActor(iso[1]);
+		[rightView renderer] -> RemoveViewProp(iso[1]);
 	}
 
     [self setNeedsDisplay:YES];
@@ -590,11 +590,11 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	[self setDisplayStereo3DPoints: [rightView renderer]: YES];
 	
 	if ( aRenderer->GetActors()->IsItemPresent( outlineRect))
-		[rightView renderer]->AddActor(outlineRect);
+		[rightView renderer]->AddViewProp(outlineRect);
 
     if ( aRenderer->GetActors()->IsItemPresent( iso[0]))
 	{
-		[rightView renderer]->AddActor(iso[0]);
+		[rightView renderer]->AddViewProp(iso[0]);
 		[self changeActor:(long) 0
                          :first.resolution
                          :first.transparency
@@ -609,7 +609,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	}
 	if ( aRenderer->GetActors()->IsItemPresent( iso[1]))
 	{
-		[rightView renderer]->AddActor(iso[1]);
+		[rightView renderer]->AddViewProp(iso[1]);
 		[self changeActor:(long) 1
                          :second.resolution
                          :second.transparency
@@ -664,7 +664,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		orientationWidget->Off();
 
     for (int i = 0; i < 4; i++)
-        aRenderer->RemoveActor2D( oText[ i]);
+        aRenderer->RemoveViewProp( oText[ i]);
 	
 	NSRect contentRectLeftScreen;
 	NSRect contentRectRightScreen;
@@ -716,7 +716,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		orientationWidget->Off();
     
 	for(int i = 0; i < 4; i++)
-        aRenderer->RemoveActor2D( oText[ i]);
+        aRenderer->RemoveViewProp( oText[ i]);
 	
 	unsigned int windowStyle = NSWindowStyleMaskBorderless;
 	NSRect contentRectLeftScreen;
@@ -846,7 +846,7 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		orientationWidget->On();
 
 	for(int i = 0; i < 4; i++)
-        aRenderer->AddActor2D( oText[ i]);
+        aRenderer->AddViewProp( oText[ i]);
 
 	[self setNeedsDisplay:YES];
 	
@@ -918,7 +918,8 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	
 	if( orientationWidget)
 		orientationWidget->Off();
-	for(int i = 0; i < 4; i++) aRenderer->RemoveActor2D( oText[ i]);
+	for (int i = 0; i < 4; i++)
+        aRenderer->RemoveViewProp( oText[ i]);
 	
 	unsigned int windowStyle = NSWindowStyleMaskBorderless;
 	NSRect contentRectLeftScreen;
@@ -1073,10 +1074,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	
 	if (aRenderer->GetActors()->IsItemPresent( outlineRect))
 	{
-		aRenderer->RemoveActor( outlineRect);
+		aRenderer->RemoveViewProp( outlineRect);
 		//Added SilvanWidmer
 		if (self.StereoVisionOn)
-			[rightView renderer]->RemoveActor(outlineRect);
+			[rightView renderer]->RemoveViewProp(outlineRect);
 
         wasPresent = YES;
 	}
@@ -1088,10 +1089,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	theIm = [self nsimage:YES];
 	
 	if( wasPresent){
-		aRenderer->AddActor(outlineRect);
+		aRenderer->AddViewProp(outlineRect);
 		//Added SilvanWidmer
 		if (self.StereoVisionOn)
-			[rightView renderer]->AddActor(outlineRect);
+			[rightView renderer]->AddViewProp(outlineRect);
 	}
 	
 	return theIm;
@@ -1355,14 +1356,14 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	{
 		if (aRenderer->GetActors()->IsItemPresent( outlineRect))
 		{
-			aRenderer->RemoveActor( outlineRect);
+			aRenderer->RemoveViewProp( outlineRect);
 			if (self.StereoVisionOn)
-				[rightView renderer]->RemoveActor(outlineRect);
+				[rightView renderer]->RemoveViewProp(outlineRect);
 		}
 		else{
-			aRenderer->AddActor( outlineRect);
+			aRenderer->AddViewProp( outlineRect);
 			if (self.StereoVisionOn)
-				[rightView renderer]->AddActor(outlineRect);
+				[rightView renderer]->AddViewProp(outlineRect);
 		}
 		
 		[self setNeedsDisplay: YES];
@@ -2037,13 +2038,13 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 		text = (vtkFollower*)[objectText pointerValue];
 		if(on)
 		{
-			theRenderer->AddActor(actor);
-			theRenderer->AddActor(text);
+			theRenderer->AddViewProp(actor);
+			theRenderer->AddViewProp(text);
 		}
 		else
 		{
-			theRenderer->RemoveActor(actor);
-			theRenderer->RemoveActor(text);
+			theRenderer->RemoveViewProp(actor);
+			theRenderer->RemoveViewProp(text);
 		}	
 	}
 
@@ -2063,10 +2064,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	// point to remove
 	vtkActor *actor = (vtkActor*)[[point3DActorArray objectAtIndex:index] pointerValue];
 	// remove from Renderer
-	aRenderer->RemoveActor(actor);
+	aRenderer->RemoveViewProp(actor);
 	//Added SilvanWidmer 21-08-09
 	if (self.StereoVisionOn)
-		[rightView renderer]->RemoveActor(actor);
+		[rightView renderer]->RemoveViewProp(actor);
 
     // remove the highlight bounding box
 	[self unselectAllActors];
@@ -2079,10 +2080,10 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 	
 	
 	vtkFollower *text = (vtkFollower*)[[point3DTextArray objectAtIndex:index] pointerValue];
-	aRenderer->RemoveActor(text);
+	aRenderer->RemoveViewProp(text);
 	//Added SilvanWidmer 21-08-09
 	if (self.StereoVisionOn)
-		[rightView renderer]->RemoveActor(text);
+		[rightView renderer]->RemoveViewProp(text);
 
     text->Delete();
 	[point3DTextArray removeObjectAtIndex:index];
@@ -2096,13 +2097,13 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 - (void) hideAnnotationFor3DPointAtIndex:(unsigned int) index
 {
 	vtkFollower* text = (vtkFollower*)[[point3DTextArray objectAtIndex:index] pointerValue];
-	aRenderer->RemoveActor(text);
+	aRenderer->RemoveViewProp(text);
 	
 	[self setNeedsDisplay:YES];
 	//Added SilvanWidmer 21-08-09
 	if (self.StereoVisionOn)
 	{	
-		[rightView renderer]->RemoveActor(text);
+		[rightView renderer]->RemoveViewProp(text);
 		[rightView setNeedsDisplay:YES];
 	}
 }
@@ -2111,9 +2112,9 @@ static void updateRight(vtkObject*, unsigned long eid, void* clientdata, void *c
 {
 	void* actorPointer = actor;
 	[point3DActorArray addObject:[NSValue valueWithPointer:actorPointer]];
-	aRenderer->AddActor(actor);
+	aRenderer->AddViewProp(actor);
 	if (self.StereoVisionOn)
-		[rightView renderer]->AddActor(actor);
+		[rightView renderer]->AddViewProp(actor);
 	//actor->Delete();
 }
 

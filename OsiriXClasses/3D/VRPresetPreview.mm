@@ -490,7 +490,7 @@
 	textWLWW->SetTextScaleModeToNone();												//vtkviewPort
 	textWLWW->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
 	textWLWW->GetPositionCoordinate()->SetValue( 0,0);
-//	aRenderer->AddActor2D(textWLWW);
+//	aRenderer->AddViewProp(textWLWW);
 	
 	textX = vtkTextActor::New();
 //	if (isViewportResizable)
@@ -500,7 +500,7 @@
 //	textX->SetTextScaleModeToNone();
 //	textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 //	textX->GetPositionCoordinate()->SetValue( 2., 2.);
-//	aRenderer->AddActor2D(textX);
+//	aRenderer->AddViewProp(textX);
 	
 	for (long i = 0; i < NUM_VR_LABELS; i++)
 	{
@@ -512,7 +512,7 @@
 		oText[ i]->GetTextProperty()->SetBold( true);
 //		oText[ i]->GetTextProperty()->SetShadow( true);
 //		
-//		aRenderer->AddActor2D( oText[ i]);
+//		aRenderer->AddViewProp( oText[ i]);
 	}
 //	oText[ 0]->GetPositionCoordinate()->SetValue( 0.01, 0.5);
 //	oText[ 1]->GetPositionCoordinate()->SetValue( 0.99, 0.5);
@@ -539,7 +539,7 @@
 //	_cocoaRenderWindow->SetLineSmoothing( true);
 //	_cocoaRenderWindow->SetPolygonSmoothing(true);
     //aRenderer->AddVolume( volume);
-//	aRenderer->AddActor(outlineRect);
+//	aRenderer->AddViewProp(outlineRect);
 
 	aRenderer->SetActiveCamera(aCamera);
 	aRenderer->ResetCamera();
@@ -567,7 +567,7 @@
 //	ROI3DActor->GetProperty()->SetLineWidth( 2);
 //	ROI3DActor->GetProperty()->SetColor(0.3,1,0);
 //	
-//	aRenderer->AddActor2D( ROI3DActor);
+//	aRenderer->AddViewProp( ROI3DActor);
 	
     // Oval
     
@@ -603,7 +603,7 @@
 //	Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
 //	Line2DText->GetTextProperty()->SetShadow( YES);
 //	
-//	aRenderer->AddActor2D( Line2DActor);
+//	aRenderer->AddViewProp( Line2DActor);
 	
 	firstTime = NO;
 	

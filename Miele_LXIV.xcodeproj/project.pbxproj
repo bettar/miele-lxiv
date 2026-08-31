@@ -8147,7 +8147,7 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.5",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.7",
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
@@ -8256,7 +8256,7 @@
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.4",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.5",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.7",
 					"$(SRCROOT)/Binaries/GLEW/include",
 				);
 				USE_HEADERMAP = NO;
@@ -8684,7 +8684,7 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.5",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.7",
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
@@ -8793,7 +8793,7 @@
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.4",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.5",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.7",
 					"$(SRCROOT)/Binaries/GLEW/include",
 				);
 				USE_HEADERMAP = NO;
@@ -9302,7 +9302,7 @@
 					"$(SRCROOT)/Binaries/libpng/include",
 					"$(SRCROOT)/Binaries/libtiff/include",
 					"$(SRCROOT)/Binaries/libjpeg/include",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.5",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.7",
 					"$(SRCROOT)/Binaries/DCMTK/include",
 					"$(SRCROOT)/Binaries/openjpeg/include/**",
 					"$(SRCROOT)/Binaries/openssl/include",
@@ -9408,7 +9408,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.4",
-					"$(SRCROOT)/Binaries/VTK/include/vtk-9.5",
+					"$(SRCROOT)/Binaries/VTK/include/vtk-9.7",
 					"$(SRCROOT)/Binaries/GLEW/include",
 				);
 				USE_HEADERMAP = NO;

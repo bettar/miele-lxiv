@@ -33,6 +33,8 @@
 //#include "vtkOpenGLRenderer.h"
 #undef id
 
+#include "vtkVersion.h"
+
 #import "vtkMieleView.h"
 
 #import "AppDefaults.h"
@@ -43,7 +45,7 @@
 {
     if (self = [super initWithFrame:frame])
     {
-        [self initializeVTKSupport];
+        //[self initializeVTKSupport];
     }
 
     return self;
@@ -84,6 +86,20 @@
     [super drawRect:theRect];
 }
 
+- (void)viewDidMoveToWindow
+{
+    [super viewDidMoveToWindow];
+
+    if ([self window] && !_cocoaRenderWindow)
+    {
+        [self initializeVTKSupport];
+    }
+    else if (_cocoaRenderWindow)
+    {
+        _cocoaRenderWindow->SetRootWindow([self window]);
+    }
+}
+
 - (void)initializeVTKSupport
 {
 #if 0 //ndef NDEBUG
@@ -92,8 +108,13 @@
 #endif
 
     // The usual VTK object creation
+#if 0
     vtkRenderer *ren = vtkRenderer::New();
     vtkRenderWindow *renWin = vtkRenderWindow::New();
+#else
+    auto ren = vtkSmartPointer<vtkRenderer>::New();
+    auto renWin = vtkSmartPointer<vtkRenderWindow>::New();
+#endif
 
     // Originally commented out. Try to fix #g93 but it does the opposite: MPR becomes broken like CPR
     //renWin->InitializeFromCurrentContext();
@@ -139,13 +160,17 @@
     
     if (ren)
         ren->Delete();
-    
+
+#if VTK_MAJOR_VERSION == 9 && VTK_MINOR_VERSION == 7
+    // TODO
+#else
     if (renWin)
         renWin->Delete();
     
     if (renWinInt)
         renWinInt->Delete();
-    
+#endif
+
     [self setRenderer:NULL];
     [self setVTKRenderWindow:NULL];
     

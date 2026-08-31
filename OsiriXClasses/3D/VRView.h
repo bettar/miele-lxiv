@@ -27,44 +27,19 @@
 #import "vtkMieleView.h"
 
 #define id Id
-//#include "vtkCommand.h"
-//#include "vtkActor.h"
-//#include "vtkPolyData.h"
-//#include "vtkRenderer.h"
-//#include "vtkRenderWindow.h"
-//#include "vtkRenderWindowInteractor.h"
-//#include "vtkVolume16Reader.h"
 #include "vtkPolyDataMapper.h"
-//#include "vtkActor.h"
 #include "vtkOutlineFilter.h"
-//#include "vtkImageReader.h"
 #include "vtkImageImport.h"
 #include "vtkCamera.h"
-//#include "vtkStripper.h"
-//#include "vtkLookupTable.h"
-//#include "vtkImageDataGeometryFilter.h"
 #include "vtkProperty.h"
-//#include "vtkPolyDataNormals.h"
-//#include "vtkContourFilter.h"
 #include "vtkImageData.h"
-//#include "vtkImageMapToColors.h"
-//#include "vtkImageActor.h"
-//#include "vtkLight.h"
 #include "vtkPlane.h"
 #include "vtkPlanes.h"
-//#include "vtkPlaneSource.h"
 #include "vtkBoxWidget.h"
 #include "vtkPiecewiseFunction.h"
 #include "vtkColorTransferFunction.h"
 #include "vtkVolumeProperty.h"
 
-//#ifdef TRY_NEW_VTK_API
-//#include "vtkGPUVolumeRayCastMapper.h"
-//#else
-//#include "vtkVolumeRayCastMapper.h"  // @@@ TBC: vtkFixedPointVolumeRayCastMapper ?
-//#endif
-
-//#include "vtkVolumeRayCastMIPFunction.h"
 #include "vtkTransform.h"
 #include "vtkPolyDataMapper2D.h"
 #include "vtkTextActor.h"
@@ -72,14 +47,19 @@
 #include "vtkImageFlip.h"
 #include "vtkAnnotatedCubeActor.h"
 #include "vtkOrientationMarkerWidget.h"
-////#include "vtkVolumeTextureMapper2D.h"  // VTK_LEGACY_REMOVE
-//#include "vtkSmartVolumeMapper.h"
 #include "vtkGPUVolumeRayCastMapper.h"
 
 #include "vtkMieleFixedPointVolumeRayCastMapper.h"
+#include "vtkTrivialProducer.h"
 
 #include "vtkProperty2D.h"
 #include "vtkRegularPolygonSource.h"
+
+#include "vtkVersion.h"
+#if VTK_MAJOR_VERSION == 9 && VTK_MINOR_VERSION == 7
+#define FIX_VOLUME_VTK970
+//#define FIX_VOLUME_VTK970_DEBUG
+#endif
 
 #ifdef _STEREO_VISION_
 #import	 "vtkCocoaGLView.h"
@@ -278,18 +258,23 @@ typedef char* VTKStereoVRView;
 	vtkMieleFixedPointVolumeRayCastMapper *volumeMapper;  // CPU
 	vtkGPUVolumeRayCastMapper	          *textureMapper; // GPU
 	
-	vtkVolume					*volume;
-	vtkVolumeProperty			*volumeProperty;
-	vtkColorTransferFunction	*colorTransferFunction;
+#ifdef FIX_VOLUME_VTK970
+    vtkImageData *volumeImage;
+    vtkTrivialProducer *volumeProducer;
+#endif
+    
+    vtkSmartPointer<vtkVolume>					volume;
+    vtkSmartPointer<vtkVolumeProperty>			volumeProperty;
+    vtkSmartPointer<vtkColorTransferFunction>	colorTransferFunction;
 	vtkTextActor				*textWLWW, *textX;
 	BOOL						isViewportResizable;
 	vtkTextActor				*oText[NUM_VR_LABELS];
 	char						WLWWString[ 200];
 	vtkImageImport				*reader;
 
-    vtkPiecewiseFunction		*opacityTransferFunction;
+    vtkSmartPointer<vtkPiecewiseFunction>		opacityTransferFunction;
 	
-	vtkColorTransferFunction	*red, *green, *blue;
+    vtkSmartPointer<vtkColorTransferFunction>	red, green, blue;
 	BOOL						noWaitDialog, isRGB, isBlendingRGB, ROIUPDATE;
 	WaitRendering				*splash;
 	
