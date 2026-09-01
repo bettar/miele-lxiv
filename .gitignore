@@ -1,5 +1,6 @@
-Miele_LXIV.xcodeproj/xcuserdata/
-Miele_LXIV.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*/*.xcodeproj/xcuserdata/
+*/*/*.xcodeproj/xcuserdata/
 *.xcworkspace
 *.DS_Store
 .github/agents/
@@ -22,8 +23,6 @@ Binaries/Icons/Logo.tif
 Binaries/Icons/Logo-AdHoc-AppStore.tif
 Binaries/ILCrashReporter.framework/
 Binaries/ITK
-Binaries/ITKHeaders
-Binaries/ITKLibs
 Binaries/Jasper*
 Binaries/KDU SDK/libkdu_v73R.a
 Binaries/libPapyrusToolkit.a
@@ -42,8 +41,6 @@ Binaries/OsiriX Lite.app.zip
 Binaries/PAGES/
 Binaries/ReportsToPDF/odt2pdf/build/odt2pdf
 Binaries/VTK
-Binaries/VTKHeaders
-Binaries/VTKLibs
 Binaries/weasis/
 Binaries/zlib
 Binaries/._OsiriX Report.template
@@ -51,7 +48,6 @@ Index/
 options.h
 url.h
 
-nitrogen/Nitrogen.xcodeproj/xcuserdata/admin.xcuserdatad/xcschemes/xcschememanagement.plist
 CMake*
 CPack*
 doxy/

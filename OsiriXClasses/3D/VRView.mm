@@ -2232,6 +2232,11 @@ public:
 		isViewportResizable = YES;
 		
 		data8 = nil;
+
+#ifdef FIX_VOLUME_VTK970
+        volumeImage = nil;
+        volumeProducer = nil;
+#endif
 		
 		opacityTransferFunction = nil;
 		volumeProperty = nil;
@@ -2666,12 +2671,16 @@ public:
 	[self setBlendingPixSource: nil];
 	
 //	cbStart->Delete();
-    if (opacityTransferFunction)
-        opacityTransferFunction->Delete();
-    
-    if (volumeProperty)
-        volumeProperty->Delete();
-	
+#ifdef FIX_VOLUME_VTK970
+    if (volume)
+    {
+        if (aRenderer)
+            aRenderer->RemoveVolume(volume);
+        volume->SetMapper(nullptr);
+        volume = nullptr;
+    }
+#endif
+
 	if (orientationWidget)
 		orientationWidget->Delete();
 	
@@ -2683,18 +2692,6 @@ public:
     
 //	if (shearWarpMapper) shearWarpMapper->Delete();
 	
-    if (red)
-        red->Delete();
-    
-	if (green)
-        green->Delete();
-    
-	if (blue)
-        blue->Delete();
-    
-	if (volume)
-        volume->Delete();
-    
     if (outlineData)
         outlineData->Delete();
     
@@ -2724,8 +2721,11 @@ public:
         if (oText[ i])
             oText[ i]->Delete();
     
-	if (colorTransferFunction) colorTransferFunction->Delete();
 	if (reader) reader->Delete();
+#ifdef FIX_VOLUME_VTK970
+    if (volumeProducer) volumeProducer->Delete();
+    if (volumeImage) volumeImage->Delete();
+#endif
     if (aCamera) aCamera->Delete();
 //	aRenderer->Delete();
 	
@@ -10081,9 +10081,6 @@ public:
 
 - (void)setVolume:(vtkVolume*)aVolume
 {
-	if (volume)
-        volume->Delete();
-    
 	volume = aVolume;
 }
 
