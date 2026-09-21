@@ -129,10 +129,11 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 											nil];
 	[defaultsParameters retain];
 	
-	urlHelp = [NSArray arrayWithObjects:	@"http://www.itk.org/Doxygen16/html/classitk_1_1ConnectedThresholdImageFilter.html#_details",
-											@"http://www.itk.org/Doxygen16/html/classitk_1_1ConnectedThresholdImageFilter.html#_details",
-											@"http://www.itk.org/Doxygen16/html/classitk_1_1NeighborhoodConnectedImageFilter.html#_details",
-											@"http://www.itk.org/Doxygen16/html/classitk_1_1ConfidenceConnectedImageFilter.html#_details",
+	urlHelp = [NSArray arrayWithObjects:
+        @"https://docs.itk.org/projects/doxygen/en/stable/classitk_1_1ConnectedThresholdImageFilter.html#_details",
+        @"https://docs.itk.org/projects/doxygen/en/stable/classitk_1_1ConnectedThresholdImageFilter.html#_details",
+        @"https://docs.itk.org/projects/doxygen/en/stable/classitk_1_1NeighborhoodConnectedImageFilter.html#_details",
+        @"https://docs.itk.org/projects/doxygen/en/stable/classitk_1_1ConfidenceConnectedImageFilter.html#_details",
 											nil];
 	[urlHelp retain];
 	

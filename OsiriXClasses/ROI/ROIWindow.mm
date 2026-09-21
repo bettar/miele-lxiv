@@ -77,12 +77,12 @@
 	[panel setCanSelectHiddenExtension:NO];
     [panel setAllowedFileTypes: @[@"roi"]];
 	
-    NSMutableArray *selectedROIs = [NSMutableArray arrayWithObject:curROI];
-    [panel setNameFieldStringValue: [[selectedROIs objectAtIndex:0] name]];
+    NSMutableArray *selectedROIs1 = [NSMutableArray arrayWithObject:curROI];
+    [panel setNameFieldStringValue: [[selectedROIs1 objectAtIndex:0] name]];
 
 	if ([panel runModal] == NSModalResponseOK)
 	{
-		[NSKeyedArchiver archiveRootObject: selectedROIs toFile :[panel filename]];
+		[NSKeyedArchiver archiveRootObject: selectedROIs1 toFile :[panel filename]];
 	}
 }
 

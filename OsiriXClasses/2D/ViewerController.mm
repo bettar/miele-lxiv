@@ -15987,7 +15987,7 @@ long				x, y;
 
 - (IBAction) roiPropagateSlab:(id) sender
 {
-	NSMutableArray  *selectedROIs = [NSMutableArray  array];
+	NSMutableArray  *selectedROIs3 = [NSMutableArray  array];
 	
 	if ([[pixList[curMovieIndex] objectAtIndex:[imageView curImage]] stack] < 2)
 	{
@@ -16011,7 +16011,7 @@ long				x, y;
 			
 			if (mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 			{
-				[selectedROIs addObject: [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i]];
+				[selectedROIs3 addObject: [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i]];
 			}
 		}
 		
@@ -16032,15 +16032,15 @@ long				x, y;
                 upToImage = [pixList[curMovieIndex] count];
 		}
 		
-		if ([selectedROIs count] > 0)
+		if ([selectedROIs3 count] > 0)
 		{
 			for (x = startImage; x < upToImage; x++)
 			{
 				if (x != [imageView curImage])
 				{
-					for (long i = 0; i < [selectedROIs count]; i++)
+					for (long i = 0; i < [selectedROIs3 count]; i++)
 					{
-						ROI *newROI = [[[selectedROIs objectAtIndex: i] copy] autorelease];
+						ROI *newROI = [[[selectedROIs3 objectAtIndex: i] copy] autorelease];
 						
 						newROI.isAliased = NO;
 						
@@ -16108,7 +16108,7 @@ long				x, y;
 	if ([sender tag] != 1)
         return;
 
-	NSMutableArray  *selectedROIs = [NSMutableArray  array];
+	NSMutableArray  *selectedROIs4 = [NSMutableArray  array];
 	
 	switch( [[roiPropaDim selectedCell] tag])
 	{
@@ -16123,7 +16123,7 @@ long				x, y;
 			
 					if (mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 					{
-						[selectedROIs addObject: [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i]];
+						[selectedROIs4 addObject: [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i]];
 					}
 				}
 				
@@ -16159,7 +16159,7 @@ long				x, y;
 					startImage = 0;
 				}
 				
-				if ([selectedROIs count] > 0)
+				if ([selectedROIs4 count] > 0)
 				{
 					for (x = startImage; x < upToImage; x++)
 					{
@@ -16167,9 +16167,9 @@ long				x, y;
 						{
 							if ([[roiPropaCopy selectedCell] tag] == 1)
 							{
-								for (long i = 0; i < [selectedROIs count]; i++)
+								for (long i = 0; i < [selectedROIs4 count]; i++)
 								{
-									ROI *newROI = [[[selectedROIs objectAtIndex: i] copy] autorelease];
+									ROI *newROI = [[[selectedROIs4 objectAtIndex: i] copy] autorelease];
 									
                                     newROI.pix = [pixList[ curMovieIndex] objectAtIndex: x];
                                     newROI.curView = imageView;
@@ -16179,9 +16179,9 @@ long				x, y;
 							}
 							else
 							{
-								for (long i = 0; i < [selectedROIs count]; i++)
+								for (long i = 0; i < [selectedROIs4 count]; i++)
 								{
-									[[roiList[curMovieIndex] objectAtIndex: x] addObject: [selectedROIs objectAtIndex: i]];
+									[[roiList[curMovieIndex] objectAtIndex: x] addObject: [selectedROIs4 objectAtIndex: i]];
 								}
 							}
 						}
@@ -16217,11 +16217,11 @@ long				x, y;
 			
 					if (mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 					{
-						[selectedROIs addObject: [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i]];
+						[selectedROIs4 addObject: [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i]];
 					}
 				}
 				
-				if ([selectedROIs count] > 0)
+				if ([selectedROIs4 count] > 0)
 				{
 					for (x = 0; x < maxMovieIndex; x++)
 					{
@@ -16229,9 +16229,9 @@ long				x, y;
 						{
 							if ([[roiPropaCopy selectedCell] tag] == 1)
 							{
-								for (long i = 0; i < [selectedROIs count]; i++)
+								for (long i = 0; i < [selectedROIs4 count]; i++)
 								{
-									ROI *newROI = [[[selectedROIs objectAtIndex: i] copy] autorelease];
+									ROI *newROI = [[[selectedROIs4 objectAtIndex: i] copy] autorelease];
                                     newROI.pix = [pixList[ x] objectAtIndex: [imageView curImage]];
                                     newROI.curView = imageView;
                                     
@@ -16240,9 +16240,9 @@ long				x, y;
 							}
 							else
 							{
-								for (long i = 0; i < [selectedROIs count]; i++)
+								for (long i = 0; i < [selectedROIs4 count]; i++)
 								{
-									[[roiList[ x] objectAtIndex: [imageView curImage]] addObject: [selectedROIs objectAtIndex: i]];
+									[[roiList[ x] objectAtIndex: [imageView curImage]] addObject: [selectedROIs4 objectAtIndex: i]];
 								}
 							}
 						}
@@ -17039,11 +17039,11 @@ long				x, y;
 	for (int i = 0; i < maxMovieIndex; i++)
 		[self saveROI: i];
 	
-	NSArray *selectedROIs = [self roiApplyWindow: self];
+	NSArray *selectedROIs5 = [self roiApplyWindow: self];
 	
     [imageView delete3DROIsAliases];
     
-	for (ROI *selectedROI in selectedROIs)
+	for (ROI *selectedROI in selectedROIs5)
 	{
 		NSInteger index = [self imageIndexOfROI: selectedROI];
 		

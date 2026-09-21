@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="25098" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="25098"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -30,16 +30,16 @@
         <window title="Segmentation Parameters" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" visibleAtLaunch="NO" animationBehavior="default" id="6" userLabel="Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" utility="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="360" height="585"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1440"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1410"/>
             <value key="minSize" type="size" width="213" height="113"/>
-            <view key="contentView" id="5">
+            <view key="contentView" misplaced="YES" id="5">
                 <rect key="frame" x="0.0" y="0.0" width="360" height="585"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Results" translatesAutoresizingMaskIntoConstraints="NO" id="9">
-                        <rect key="frame" x="4" y="29" width="351" height="285"/>
+                        <rect key="frame" x="7" y="37" width="343" height="281"/>
                         <view key="contentView" id="BEs-gT-xnL">
-                            <rect key="frame" x="4" y="5" width="343" height="265"/>
+                            <rect key="frame" x="0.0" y="0.0" width="343" height="269"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="13">
@@ -65,9 +65,9 @@
                                     </cells>
                                 </matrix>
                                 <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" mode="highlight" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="15">
-                                    <rect key="frame" x="31" y="13" width="134" height="42"/>
+                                    <rect key="frame" x="31" y="13" width="131" height="38"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="134" height="16"/>
+                                    <size key="cellSize" width="131" height="14"/>
                                     <size key="intercellSpacing" width="4" height="10"/>
                                     <buttonCell key="prototype" type="check" title="Switch" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="-1" inset="2" id="190">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -87,7 +87,7 @@
                                     </cells>
                                 </matrix>
                                 <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" mode="track" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="20">
-                                    <rect key="frame" x="172" y="7" width="67" height="46"/>
+                                    <rect key="frame" x="169" y="3" width="67" height="46"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="67" height="19"/>
                                     <size key="intercellSpacing" width="8" height="8"/>
@@ -112,7 +112,7 @@
                                     </cells>
                                 </matrix>
                                 <slider verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="66">
-                                    <rect key="frame" x="159" y="103" width="158" height="17"/>
+                                    <rect key="frame" x="161" y="104" width="154" height="16"/>
                                     <constraints>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="93" id="FoS-pL-H5T"/>
                                     </constraints>
@@ -126,7 +126,7 @@
                                     </connections>
                                 </slider>
                                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="67">
-                                    <rect key="frame" x="72" y="106" width="64" height="14"/>
+                                    <rect key="frame" x="72" y="107" width="64" height="14"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="# of points:" id="174">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -134,7 +134,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="68">
-                                    <rect key="frame" x="315" y="106" width="25" height="11"/>
+                                    <rect key="frame" x="315" y="107" width="25" height="11"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="High" id="175">
                                         <font key="font" metaFont="miniSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -142,7 +142,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="69">
-                                    <rect key="frame" x="137" y="106" width="22" height="11"/>
+                                    <rect key="frame" x="137" y="107" width="22" height="11"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Low" id="176">
                                         <font key="font" metaFont="miniSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -150,7 +150,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="71">
-                                    <rect key="frame" x="78" y="80" width="58" height="14"/>
+                                    <rect key="frame" x="78" y="78" width="58" height="14"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="ROI name:" id="177">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -158,7 +158,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="72">
-                                    <rect key="frame" x="142" y="78" width="196" height="19"/>
+                                    <rect key="frame" x="142" y="74" width="196" height="22"/>
                                     <constraints>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="10" id="hjv-2t-eFp"/>
                                     </constraints>
@@ -172,9 +172,9 @@
                                     </connections>
                                 </textField>
                                 <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="76">
-                                    <rect key="frame" x="32" y="125" width="188" height="15"/>
+                                    <rect key="frame" x="32" y="126" width="181" height="14"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="74" height="15"/>
+                                    <size key="cellSize" width="70.5" height="14"/>
                                     <size key="intercellSpacing" width="40" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="192">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -212,7 +212,7 @@
                                     </connections>
                                 </matrix>
                                 <button verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="156">
-                                    <rect key="frame" x="15" y="240" width="173" height="18"/>
+                                    <rect key="frame" x="16" y="241" width="170" height="20"/>
                                     <buttonCell key="cell" type="check" title="Preview Result when clicking" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="179">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
@@ -227,7 +227,7 @@
                                     </connections>
                                 </button>
                                 <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="195">
-                                    <rect key="frame" x="15" y="219" width="208" height="16"/>
+                                    <rect key="frame" x="16" y="220" width="205" height="14"/>
                                     <buttonCell key="cell" type="check" title="Directly generate ROI when clicking" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="196">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
@@ -251,7 +251,7 @@
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="197">
-                                    <rect key="frame" x="15" y="195" width="185" height="16"/>
+                                    <rect key="frame" x="16" y="196" width="182" height="14"/>
                                     <buttonCell key="cell" type="check" title="Merge with existing Brush ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="198">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
@@ -266,7 +266,7 @@
                                     </connections>
                                 </button>
                                 <button horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="228">
-                                    <rect key="frame" x="15" y="173" width="139" height="16"/>
+                                    <rect key="frame" x="16" y="174" width="136" height="14"/>
                                     <buttonCell key="cell" type="check" title="Propagate result in 4D" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="229">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
@@ -317,15 +317,15 @@
                         </constraints>
                     </box>
                     <box horizontalHuggingPriority="1000" verticalHuggingPriority="249" title="Parameters" translatesAutoresizingMaskIntoConstraints="NO" id="122">
-                        <rect key="frame" x="4" y="318" width="351" height="257"/>
+                        <rect key="frame" x="7" y="326" width="343" height="249"/>
                         <view key="contentView" id="Dmc-Dy-ObL">
-                            <rect key="frame" x="4" y="5" width="343" height="237"/>
+                            <rect key="frame" x="0.0" y="0.0" width="343" height="237"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="113">
-                                    <rect key="frame" x="7" y="182" width="231" height="32"/>
+                                    <rect key="frame" x="7" y="184" width="228" height="30"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="231" height="15"/>
+                                    <size key="cellSize" width="228" height="14"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="193">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -386,7 +386,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="124">
-                                    <rect key="frame" x="79" y="153" width="85" height="22"/>
+                                    <rect key="frame" x="83" y="155" width="93" height="20"/>
                                     <popUpButtonCell key="cell" type="push" title="Interval" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="126" id="186">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
@@ -469,7 +469,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <button horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="152">
-                                    <rect key="frame" x="171" y="149" width="22" height="25"/>
+                                    <rect key="frame" x="190" y="151" width="17" height="24"/>
                                     <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" inset="2" id="188">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -482,7 +482,7 @@
                                     </connections>
                                 </button>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="238">
-                                    <rect key="frame" x="208" y="61" width="127" height="17"/>
+                                    <rect key="frame" x="210" y="60" width="123" height="16"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" state="on" alignment="left" maxValue="1000" doubleValue="100" tickMarkPosition="above" numberOfTickMarks="10" sliderType="linear" id="239">
                                         <font key="font" metaFont="miniSystem"/>
                                     </sliderCell>
@@ -528,7 +528,7 @@
                         </view>
                     </box>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="17">
-                        <rect key="frame" x="260" y="2" width="98" height="27"/>
+                        <rect key="frame" x="264" y="9" width="86" height="20"/>
                         <buttonCell key="cell" type="push" title="Compute" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="180">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>

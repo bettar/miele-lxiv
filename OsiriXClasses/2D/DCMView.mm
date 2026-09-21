@@ -1652,22 +1652,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 {
 	NSSavePanel *panel = [NSSavePanel savePanel];
 	
-	NSMutableArray *selectedROIs = [NSMutableArray  array];
+	NSMutableArray *selectedROIs2 = [NSMutableArray  array];
 	
 	for (ROI *r in curRoiList)
 	{
 		if ([r ROImode] == ROI_selected)
-			[selectedROIs addObject: r];
+			[selectedROIs2 addObject: r];
 	}
 	
-	if ([selectedROIs count] > 0)
+	if ([selectedROIs2 count] > 0)
 	{
 		[panel setCanSelectHiddenExtension:NO];
         [panel setAllowedFileTypes: @[@"roi"]];
-        [panel setNameFieldStringValue: [[selectedROIs objectAtIndex:0] name]];
+        [panel setNameFieldStringValue: [[selectedROIs2 objectAtIndex:0] name]];
 		if ([panel runModal] == NSModalResponseOK)
 		{
-			[NSKeyedArchiver archiveRootObject: selectedROIs toFile: [panel filename]];
+			[NSKeyedArchiver archiveRootObject: selectedROIs2 toFile: [panel filename]];
 		}
 	}
 	else

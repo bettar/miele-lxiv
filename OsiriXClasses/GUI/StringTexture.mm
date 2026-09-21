@@ -332,7 +332,7 @@
             bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect: NSMakeRect(0.0f, 0.0f, frameSize.width, frameSize.height)];
         }
 		else
-            NSLog(@"StringTexture: frameSize.width > 0 && frameSize.height > 0");
+            NSLog(@"StringTexture: frameSize.width <= 0 || frameSize.height <= 0");
 
 #if 0 //def DEBUG_TEXTURE_BITMAP
 //#include "../../../priv/snippets/1.mm"

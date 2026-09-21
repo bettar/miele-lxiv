@@ -2547,7 +2547,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 }
 
 + (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) ROIorigin
-{	
+{
 	unsigned char *map = nil;
 	float *tempImage = nil;
 	
