@@ -656,5 +656,16 @@ static BOOL protectedReentryWindowDidResize = NO;
 	return 0.0;
 }
 	
+- (void)showImagesInMenu:(NSMenu *)menu
+{
+    for (NSMenuItem *item in menu.itemArray)
+    {
+        if (@available(macOS 27.0, *))
+            item.preferredImageVisibility = NSMenuItemImageVisibilityVisible;
+
+        if (item.submenu)
+            [self showImagesInMenu:item.submenu];
+    }
+}
 
 @end

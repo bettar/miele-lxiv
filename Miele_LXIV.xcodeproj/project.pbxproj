@@ -96,6 +96,7 @@
 		43879B7921D64CB500DEF6A9 /* AYPrintManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43879B7821D64CB500DEF6A9 /* AYPrintManager.cpp */; };
 		4389764F3039BB9000BC09DA /* NSUserDefaults+Defaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4389764E3039BB9000BC09DA /* NSUserDefaults+Defaults.mm */; };
 		438F75A12CB41DF7009D5C1B /* echoscu in Copy Executables */ = {isa = PBXBuildFile; fileRef = 438F759D2CB41D87009D5C1B /* echoscu */; };
+		4394CF093062947F00B0CDDD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4394CF083062947F00B0CDDD /* Media.xcassets */; };
 		43977C2E23D340920044054B /* loupe.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 43977C2D23D340920044054B /* loupe.vsh */; };
 		43977C3023D340AF0044054B /* loupe.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43977C2F23D340AF0044054B /* loupe.fsh */; };
 		4398390B23DD7F2C0019B0A8 /* GLProgram.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4398390A23DD7F2C0019B0A8 /* GLProgram.mm */; };
@@ -1591,6 +1592,7 @@
 		438AE1AC21B5651C00C5E98F /* LXIV Launcher-Distribution.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Distribution.entitlements"; path = "LXIV Launcher/LXIV Launcher-Distribution.entitlements"; sourceTree = "<group>"; };
 		438F759D2CB41D87009D5C1B /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = echoscu; sourceTree = "<group>"; };
 		438F759F2CB41DD9009D5C1B /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = "../../../install/project68/20230320_UB/dcmtk-3.6.8/bin/echoscu"; sourceTree = "<group>"; };
+		4394CF083062947F00B0CDDD /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		43953FD52AB2E03A0080F497 /* thickSlabTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = thickSlabTypes.h; sourceTree = "<group>"; };
 		43977C2D23D340920044054B /* loupe.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = loupe.vsh; sourceTree = "<group>"; };
 		43977C2F23D340AF0044054B /* loupe.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = loupe.fsh; sourceTree = "<group>"; };
@@ -3290,6 +3292,7 @@
 				CE9E11CF13DBB5DD008B2848 /* OsiriX.sdef */,
 				B7CDAC730AB3003200068D70 /* PAGES */,
 				43CC5BA5216511E200F1B1CA /* Assets.xcassets */,
+				4394CF083062947F00B0CDDD /* Media.xcassets */,
 			);
 			name = Resources;
 			sourceTree = SOURCE_ROOT;
@@ -5685,6 +5688,7 @@
 				ABBB64BF063587B200D9531F /* Logo.tif in Resources */,
 				ABBB64C0063587B200D9531F /* MIP.tif in Resources */,
 				ABBB64C2063587B200D9531F /* Movie.pdf in Resources */,
+				4394CF093062947F00B0CDDD /* Media.xcassets in Resources */,
 				ABBB64C3063587B200D9531F /* MPR.tif in Resources */,
 				ABBB64C4063587B200D9531F /* MPR3D.tif in Resources */,
 				ABBB64C5063587B200D9531F /* Next.tif in Resources */,

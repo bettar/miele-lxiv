@@ -55,8 +55,8 @@ static NSString*	MailToolbarItemIdentifier				= @"Mail.icns";
 static NSString*	ResetToolbarItemIdentifier				= @"Reset.pdf";
 static NSString*	FlipVolumeToolbarItemIdentifier			= @"FlipData.tif";
 static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
-static NSString*	SyncSeriesImageName                     = @"Sync.pdf";
-static NSString*	SyncLockSeriesImageName                 = @"SyncLock.pdf";
+static NSString*	SyncSeriesImageName                     = @"Sync";
+static NSString*	SyncLockSeriesImageName                 = @"SyncLock";
 
 static BOOL activateSyncSeriesToolbarItem;
 static SyncSeriesScope globalSyncSeriesScope;

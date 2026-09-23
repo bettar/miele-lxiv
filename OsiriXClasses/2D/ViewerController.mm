@@ -164,7 +164,8 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 static NSString*	MailToolbarItemIdentifier			= @"Mail.icns";
 //static NSString*	iChatBroadCastToolbarItemIdentifier = @"iChat.icns";
 static NSString*	StatusToolbarItemIdentifier			= @"status";
-static NSString*	SyncSeriesToolbarItemIdentifier		= @"Sync.pdf";
+static NSString*    SyncSeriesToolbarItemIdentifier     = @"Sync";
+static NSString*    SyncLockSeriesToolbarItemIdentifier = @"SyncLock";
 static NSString*	ResetToolbarItemIdentifier			= @"Reset.pdf";
 static NSString*	RevertToolbarItemIdentifier			= @"Revert.tif";
 static NSString*	FlipDataToolbarItemIdentifier		= @"FlipData.tif";
@@ -3042,7 +3043,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 										  forWindowController:self ];
 		   
 	}
-	
+
+    [self showImagesInMenu: contextualMenu];
+    
 	return contextualMenu;
 }
 
@@ -6941,12 +6944,15 @@ static ViewerController *draggedController = nil;
     }
 	else if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier])
     {
-        if (SYNCSERIES) {
-            [toolbarItem setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
-        }
-        else {
-            [toolbarItem setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
-        }
+        NSImage *syncImage;
+        if (SYNCSERIES)
+            syncImage = [NSImage imageNamed: SyncLockSeriesToolbarItemIdentifier];
+        else
+            syncImage = [NSImage imageNamed: SyncSeriesToolbarItemIdentifier];
+        
+        [syncImage setTemplate:YES];
+        toolbarItem.image = syncImage;
+
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -8448,7 +8454,7 @@ static NSMutableArray *poolOf2DViewers = nil;
             }
         if (samestudyviewer) {
             [imageView setSyncRelativeDiff:[[samestudyviewer imageView] syncRelativeDiff]];
-            [[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
+            [[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncLockSeriesToolbarItemIdentifier]];
             [imageView setSyncSeriesIndex: 0];
             wedidsomethingsmart = YES;
         }
@@ -17563,7 +17569,7 @@ long				x, y;
 			float offset = [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation] - [sliceLocation floatValue];
             
 			[imageView setSyncRelativeDiff:offset];
-			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
+			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncLockSeriesToolbarItemIdentifier]];
 			
 			[imageView setSyncSeriesIndex: 0];
 		}
@@ -17577,7 +17583,7 @@ long				x, y;
 	{
 		if ([imageView syncro] != SYNCHRO_OFF)
 		{
-			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
+			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncLockSeriesToolbarItemIdentifier]];
 		}
 		else
 		{
@@ -17601,7 +17607,7 @@ long				x, y;
         
         for (ViewerController *v in [ViewerController getDisplayed2DViewers])
         {
-            [[v findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
+            [[v findSyncSeriesButton] setImage: [NSImage imageNamed: SyncLockSeriesToolbarItemIdentifier]];
             [v.imageView setSyncSeriesIndex: 0];
         }
     }
@@ -22451,15 +22457,17 @@ static BOOL viewerControllerPlaying = NO;
 	}
 		
 	//
-	for (id item in [popupRoi itemArray])
+	for (NSMenuItem* item in [popupRoi itemArray])
 	{
 		if ([item image] == nil)
 		{
 			[item setImage: [self imageForROI: [item tag]]];
 			[[item image] setSize:ToolsMenuIconSize];
+            if (@available(macOS 27.0, *))
+                item.preferredImageVisibility = NSMenuItemImageVisibilityVisible;
 		}
 	}
-	
+    	
 	for (id item in [ReconstructionRoi itemArray])
 	{
 		if ([item image] == nil)
