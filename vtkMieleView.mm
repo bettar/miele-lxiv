@@ -137,6 +137,7 @@
         // platform nature of VTK, but this usage is correct.
         _cocoaRenderWindow->SetRootWindow([self window]);
         _cocoaRenderWindow->SetWindowId(self);
+        _cocoaRenderWindow->Initialize();
         
         // The usual VTK connections
         _cocoaRenderWindow->AddRenderer(ren);

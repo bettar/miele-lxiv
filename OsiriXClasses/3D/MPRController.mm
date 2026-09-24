@@ -3016,6 +3016,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setLabel: NSLocalizedString(@"Best",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Best",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"BestRendering.pdf"]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(bestRendering:)];
     }

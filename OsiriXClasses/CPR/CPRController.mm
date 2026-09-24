@@ -4030,6 +4030,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Curved Path",nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"Export this curved path in a file",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"curvedPath.icns"]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(saveBezierPath:)];
     }

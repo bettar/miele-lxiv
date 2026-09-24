@@ -2538,6 +2538,9 @@ public:
     _cocoaRenderWindow->UpdateContext();
     _cocoaRenderWindow->MakeCurrent();
 
+    if (!_cocoaRenderWindow->GetInitialized())
+        _cocoaRenderWindow->OpenGLInit();
+
     volumeMapper->Render( aRenderer, volume); // #i18 stack 5, #g93
     skipRenderingVR = true;
 }
@@ -2553,8 +2556,11 @@ public:
 		
 		_cocoaRenderWindow->UpdateContext();
 		_cocoaRenderWindow->MakeCurrent();
+        
+        if (!_cocoaRenderWindow->GetInitialized())
+            _cocoaRenderWindow->OpenGLInit();
+
 		blendingVolumeMapper->Render( aRenderer, blendingVolume);
-		
 		skipRenderingVR = true;
 	}
 }

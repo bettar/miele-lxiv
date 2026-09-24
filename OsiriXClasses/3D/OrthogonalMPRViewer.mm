@@ -1054,7 +1054,13 @@ return YES;
 	[toolbarItem setLabel: NSLocalizedString(@"Email",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Email",nil)];
     [toolbarItem setToolTip: NSLocalizedString(@"Email this image",nil)];
+#if 0 //def FIXUP_TB_ITEM_SIZE
 	[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
+    [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#else
+    [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"envelope"
+                                     accessibilityDescription:toolbarItem.label]];
+#endif
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(sendMail:)];
     }

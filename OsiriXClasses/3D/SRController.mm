@@ -755,6 +755,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 	[toolbarItem setPaletteLabel:NSLocalizedString( @"Surface Settings",nil)];
     [toolbarItem setToolTip:NSLocalizedString( @"change Surface Settings",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: SRSettingsToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+    [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(ChangeSettings:)];
     }
@@ -764,6 +767,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Fusion Surface Settings",nil)];
     [toolbarItem setToolTip: NSLocalizedString(@"change Fusion Surface Settings",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: BSRSettingsToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+    [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(BChangeSettings:)];
     }
@@ -773,6 +779,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientation Cube",nil)];
 	[toolbarItem setToolTip:NSLocalizedString(@"Show orientation cube",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: OrientationToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+    [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(switchOrientationWidget:)];
     }
@@ -787,8 +796,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 	[toolbarItem setLabel: NSLocalizedString(@"Fly Thru",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Fly Thru",nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Fly Thru Set up",nil)];
-	
 	[toolbarItem setImage: [NSImage imageNamed: FlyThruToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+    [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(flyThruControllerInit:)];
     }
@@ -850,6 +861,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
         [toolbarItem setPaletteLabel:NSLocalizedString(@"Save as DICOM",nil)];
         [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
         [toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
         [toolbarItem setTarget: view];
         [toolbarItem setAction: @selector(exportDICOMFile:)];
     }

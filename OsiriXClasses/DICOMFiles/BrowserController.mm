@@ -20061,13 +20061,14 @@ redoZIPpassword:
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Email", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Email", nil)];
-		//[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
+#if 0 //def FIXUP_TB_ITEM_SIZE
+        [toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"envelope"
                                          accessibilityDescription:toolbarItem.label]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
-		[toolbarItem setTarget: self];
+        [toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(sendMail:)];
 	}
     else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier])

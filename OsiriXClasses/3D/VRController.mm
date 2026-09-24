@@ -1919,8 +1919,13 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         
 	[toolbarItem setLabel: NSLocalizedString(@"Email",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Email",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Email this image",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
+    [toolbarItem setToolTip: NSLocalizedString(@"Email this image",nil)];
+#if 0
+    [toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
+#else
+    [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"envelope"
+                                         accessibilityDescription:toolbarItem.label]];
+#endif
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(sendMail:)];
     }
@@ -2022,6 +2027,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientation Cube",nil)];
 	[toolbarItem setToolTip:NSLocalizedString(@"Show orientation cube",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: OrientationToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+    [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(switchOrientationWidget:)];
     }

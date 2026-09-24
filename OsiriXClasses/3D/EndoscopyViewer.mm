@@ -929,6 +929,9 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setToolTip: NSLocalizedString(@"Fly Thru Set up",nil)];
 		
 		[toolbarItem setImage: [NSImage imageNamed: FlyThruToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(flyThruControllerInit:)];	
     }
@@ -1011,6 +1014,9 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setToolTip:NSLocalizedString(@"Path Assistant", nil)];
 		
 		[toolbarItem setImage:[NSImage imageNamed:PathAssistantToolbarItemIdentifier]];
+#ifdef FIXUP_TB_ITEM_SIZE
+        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#endif
 		// Target is not set, it will be the first responder
 		[toolbarItem setTarget:self];
 		[toolbarItem setAction:@selector(showPathAssistantPanel:)];
