@@ -283,9 +283,9 @@ static NSString* BrowserControllerClassHelperContext = @"BrowserControllerClassH
 
 static NSString* 	Database_ToolbarIdentifier			= @"DicomDatabase Toolbar Identifier";
 
-static NSString*	ImportToolbarItemIdentifier			= @"Import.pdf";
+static NSString*	ImportToolbarItemIdentifier			= @"Import";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.pdf";
-static NSString*	ExportToolbarItemIdentifier			= @"Export.pdf";
+static NSString*	ExportToolbarItemIdentifier			= @"Export";
 static NSString*	ExportROIAndKeyImagesToolbarItemIdentifier	= @"ExportROIAndKeyImages.tif";
 static NSString*	AnonymizerToolbarItemIdentifier		= @"Anonymizer.pdf";
 static NSString*	QueryToolbarItemIdentifier			= @"QueryRetrieve.pdf";
@@ -20017,9 +20017,6 @@ redoZIPpassword:
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Import",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Import a DICOM file or folder", @"Import a DICOM file or folder")];
 		[toolbarItem setImage: [NSImage imageNamed: ImportToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
         [toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(selectFilesAndFoldersToAdd:)];
     }
@@ -20073,9 +20070,6 @@ redoZIPpassword:
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Export selected study/series to a DICOM folder", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
         [toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportDICOMFile:)];
     }

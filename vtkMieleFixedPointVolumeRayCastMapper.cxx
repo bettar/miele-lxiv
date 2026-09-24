@@ -223,7 +223,7 @@ void vtkMieleFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume 
 #endif
 
 #ifdef WITH_OPENGL_32
-    this->DisplayRenderedImage(ren, vol); // Issue i18, g93 ?
+    this->DisplayRenderedImage(ren, vol); // Issue i18, g93 ? // FIXME:
 #endif
 
     this->Timer->StopTimer();

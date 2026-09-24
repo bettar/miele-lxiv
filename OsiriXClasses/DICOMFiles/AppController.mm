@@ -4088,10 +4088,14 @@ API_AVAILABLE(macos(10.14))
     }
 }
 
+//  The fix should **not** be limited to macOS 27
+// `NSApplicationDidChangeScreenParametersNotification` has never meant “close every 2D viewer”; it can be emitted for display reconfiguration, resolution/backing-scale changes, and other normal screen updates. Closing viewers in response is unsafe on all supported macOS versions—the newer system merely exposes it more reliably.
 -(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
 {
+#if 0
     //NSLog( @"--- applicationDidChangeScreenParameters");
     [[AppController sharedAppController] closeAllViewers: self];
+#endif
     
     [AppController resetThumbnailsList];
 }

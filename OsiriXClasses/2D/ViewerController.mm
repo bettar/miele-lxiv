@@ -22463,8 +22463,10 @@ static BOOL viewerControllerPlaying = NO;
 		{
 			[item setImage: [self imageForROI: [item tag]]];
 			[[item image] setSize:ToolsMenuIconSize];
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_VERSION_14_0
             if (@available(macOS 27.0, *))
                 item.preferredImageVisibility = NSMenuItemImageVisibilityVisible;
+#endif
 		}
 	}
     	
