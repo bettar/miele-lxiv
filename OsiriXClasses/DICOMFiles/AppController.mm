@@ -2920,9 +2920,8 @@ static BOOL initialized = NO;
                 //NSLog(@"Preference Panes Dir___: %@", NSSearchPathForDirectoriesInDomains(NSPreferencePanesDirectory, NSUserDomainMask, YES).firstObject);
                 NSLog(@"MAC_OS_X_VERSION_MAX_ALLOWED: %i", MAC_OS_X_VERSION_MAX_ALLOWED); // MAC_OS_VERSION_14_0
                 NSLog(@"MAC_OS_X_VERSION_MIN_REQUIRED: %i", MAC_OS_X_VERSION_MIN_REQUIRED); // MAC_OS_X_VERSION_10_14
-                NSLog(@"NSAppKitVersionNumber: %f", NSAppKitVersionNumber); // 2566.000000
+                NSLog(@"NSAppKitVersionNumber: %f", NSAppKitVersionNumber); // 2775.100000
 #endif
-                NSLog(@"NSAppKitVersionNumber: %f", NSAppKitVersionNumber);
                 NSString *bundleIdentifier = [d objectForKey:@"CFBundleIdentifier"];
                 NSLog(@"Defaults file__________: %@/Preferences/%@.plist",
                       NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES).firstObject,

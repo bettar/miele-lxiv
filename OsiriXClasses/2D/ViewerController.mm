@@ -6841,7 +6841,9 @@ static ViewerController *draggedController = nil;
 		[toolbarItem setLabel: NSLocalizedString(@"Movie Export", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Movie Export", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Export this series in a Movie file", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: QTSaveToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: QTSaveToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"arrow.up.right.video"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -6923,7 +6925,9 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Meta-Data", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Meta-Data", nil)];
             [toolbarItem setToolTip: NSLocalizedString(@"View meta-data of this image", nil)];
-        [toolbarItem setImage: [NSImage imageNamed: XMLToolbarItemIdentifier]];
+        //[toolbarItem setImage: [NSImage imageNamed: XMLToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"text.document"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -6935,9 +6939,12 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Browse", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Browse", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Browse this series", nil)];
+#if 0 //def FIXUP_TB_ITEM_SIZE
         [toolbarItem setImage: [NSImage imageNamed: PlayToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
+#else
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"play.circle"
+                                         accessibilityDescription:toolbarItem.label]];
 #endif
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(PlayStop:)];
@@ -6945,10 +6952,16 @@ static ViewerController *draggedController = nil;
 	else if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier])
     {
         NSImage *syncImage;
-        if (SYNCSERIES)
-            syncImage = [NSImage imageNamed: SyncLockSeriesToolbarItemIdentifier];
-        else
-            syncImage = [NSImage imageNamed: SyncSeriesToolbarItemIdentifier];
+        if (SYNCSERIES) {
+            //syncImage = [NSImage imageNamed: SyncLockSeriesToolbarItemIdentifier];
+            syncImage = [NSImage imageWithSystemSymbolName:@"arrow.trianglehead.2.clockwise.rotate.90.circle.fill"
+                                  accessibilityDescription:toolbarItem.label];
+        }
+        else {
+            //syncImage = [NSImage imageNamed: SyncSeriesToolbarItemIdentifier];
+            syncImage = [NSImage imageWithSystemSymbolName:@"arrow.trianglehead.2.clockwise.rotate.90.circle"
+                                  accessibilityDescription:toolbarItem.label];
+        }
         
         [syncImage setTemplate:YES];
         toolbarItem.image = syncImage;
@@ -17569,13 +17582,15 @@ long				x, y;
 			float offset = [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation] - [sliceLocation floatValue];
             
 			[imageView setSyncRelativeDiff:offset];
-			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncLockSeriesToolbarItemIdentifier]];
-			
+			//[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncLockSeriesToolbarItemIdentifier]];
+            [[self findSyncSeriesButton] setImage: [NSImage imageWithSystemSymbolName:@"arrow.trianglehead.2.clockwise.rotate.90.circle.fill" accessibilityDescription:@"Sync Series"]];
+
 			[imageView setSyncSeriesIndex: 0];
 		}
 		else
 		{
-			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
+			//[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
+            [[self findSyncSeriesButton] setImage: [NSImage imageWithSystemSymbolName:@"arrow.trianglehead.2.clockwise.rotate.90.circle" accessibilityDescription:@"Sync Series"]];
 			[imageView setSyncSeriesIndex: -1];
 		}
 	}
@@ -17583,11 +17598,14 @@ long				x, y;
 	{
 		if ([imageView syncro] != SYNCHRO_OFF)
 		{
-			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncLockSeriesToolbarItemIdentifier]];
+			//[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncLockSeriesToolbarItemIdentifier]];
+            [[self findSyncSeriesButton] setImage: [NSImage imageWithSystemSymbolName:@"arrow.trianglehead.2.clockwise.rotate.90.circle.fill" accessibilityDescription:@"Sync Series"]];
 		}
 		else
 		{
-			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
+			//[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
+            [[self findSyncSeriesButton] setImage: [NSImage imageWithSystemSymbolName:@"arrow.trianglehead.2.clockwise.rotate.90.circle" accessibilityDescription:@"Sync Series"]];
+
 		}
 	}
 }
@@ -22463,10 +22481,8 @@ static BOOL viewerControllerPlaying = NO;
 		{
 			[item setImage: [self imageForROI: [item tag]]];
 			[[item image] setSize:ToolsMenuIconSize];
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_VERSION_14_0
             if (@available(macOS 27.0, *))
                 item.preferredImageVisibility = NSMenuItemImageVisibilityVisible;
-#endif
 		}
 	}
     	

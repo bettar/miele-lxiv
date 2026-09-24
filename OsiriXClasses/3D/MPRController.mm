@@ -3023,7 +3023,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Movie Export",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: @"QTExport.pdf"]];
+		//[toolbarItem setImage: [NSImage imageNamed: @"QTExport.pdf"]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"arrow.up.right.video"
+                                         accessibilityDescription:toolbarItem.label]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportQuicktime:)];
     }

@@ -1971,7 +1971,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString(@"Movie Export",nil)];
     [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a Movie file",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: QTExportToolbarItemIdentifier]];
+	//[toolbarItem setImage: [NSImage imageNamed: QTExportToolbarItemIdentifier]];
+    [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"arrow.up.right.video"
+                                         accessibilityDescription:toolbarItem.label]];
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(exportQuicktime:)];
     }

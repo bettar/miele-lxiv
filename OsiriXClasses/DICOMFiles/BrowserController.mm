@@ -19787,6 +19787,7 @@ redoZIPpassword:
                 icon = [self reportIcon];	// Keep this line! Because item can be nil! see updateReportToolbarIcon function
 
 			[item setImage:icon];
+            [[item image] setSize:NSMakeSize(48,48)];
 		}
 #else
 		[item setImage:[NSImage imageNamed:@"Report.icns"]];
@@ -19797,7 +19798,6 @@ redoZIPpassword:
 		N2LogExceptionWithStackTrace(e);
 	}
 }
-
 
 - (void)reportToolbarItemWillPopUp: (NSNotification *)notif
 {
@@ -20016,7 +20016,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Import",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Import",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Import a DICOM file or folder", @"Import a DICOM file or folder")];
-		[toolbarItem setImage: [NSImage imageNamed: ImportToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: ImportToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"arrow.down.to.line"
+                                         accessibilityDescription:toolbarItem.label]];
         [toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(selectFilesAndFoldersToAdd:)];
     }
@@ -20024,7 +20026,9 @@ redoZIPpassword:
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Movie Export", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Movie Export", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: QTSaveToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: QTSaveToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"arrow.up.right.video"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -20057,7 +20061,9 @@ redoZIPpassword:
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Email", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Email", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"envelope"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -20069,7 +20075,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Export",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Export selected study/series to a DICOM folder", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"arrow.up.to.line"
+                                         accessibilityDescription:toolbarItem.label]];
         [toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
@@ -20090,7 +20098,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Viewers",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Viewers",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Bring Viewers windows to the front", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: ViewersToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: ViewersToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"rectangle.3.group"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -20102,7 +20112,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Anonymize",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Anonymize",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Anonymize selected study/series to a DICOM folder", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: AnonymizerToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: AnonymizerToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"person.fill.questionmark"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -20114,7 +20126,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Query",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Query",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Query and retrieve a DICOM study from a DICOM node\rShift + click to query selected patient.",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: QueryToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: QueryToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"text.magnifyingglass"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -20127,7 +20141,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Send",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Send",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Send selected study/series to a DICOM node",@"Send selected study/series to a DICOM node")];
-		[toolbarItem setImage: [NSImage imageNamed: SendToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: SendToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"paperplane"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -20139,7 +20155,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"2D Viewer",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"2D Viewer",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"View selected study/series",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: ViewerToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: ViewerToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"lungs"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -20161,7 +20179,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"4D Viewer",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"4D Viewer",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Load multiple series into an animated 4D series",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: MovieToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: MovieToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"lungs"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -20173,7 +20193,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Delete",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Delete",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Delete selected images from the database",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: TrashToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: TrashToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"trash"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -20198,7 +20220,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"ROIs & Keys", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"ROIs & Keys", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"View all Key Images and ROIs", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesAndROIsToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesAndROIsToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"squareshape.controlhandles.on.squareshape.controlhandles"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -20210,7 +20234,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Meta-Data", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Meta-Data", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"View meta-data of this image", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: XMLToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: XMLToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"text.document"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
@@ -20222,7 +20248,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Burn",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Burn",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Burn a DICOM-compatible CD or DVD",@"Burn a DICOM-compatible CD or DVD")];
-		[toolbarItem setImage: [NSImage imageNamed: BurnerToolbarItemIdentifier]];
+        //[toolbarItem setImage: [NSImage imageNamed: BurnerToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"burn"
+                                         accessibilityDescription:toolbarItem.label]];
 #ifdef FIXUP_TB_ITEM_SIZE
         [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
