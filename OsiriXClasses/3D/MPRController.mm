@@ -3002,12 +3002,12 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(showWindow:)];
     }
-	else if ([itemIdent isEqualToString: @"Export.icns"])
+	else if ([itemIdent isEqualToString: @"Export.pdf"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"DICOM",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"DICOM",nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: @"Export.icns"]];
+		[toolbarItem setImage: [NSImage imageNamed: @"Export.pdf"]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
@@ -3016,10 +3016,9 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setLabel: NSLocalizedString(@"Best",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Best",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"BestRendering.pdf"]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
-		[toolbarItem setTarget: self];
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
+
+        [toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(bestRendering:)];
     }
 	else if ([itemIdent isEqualToString: @"QTExport.pdf"])
@@ -3128,12 +3127,17 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
         }
     }
     
+    // Turn off the automatic system-drawn border capsule
+    if (@available(macOS 16.0, *)) {
+        toolbarItem.bordered = NO;
+    }
+    
 	return toolbarItem;
 }
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbThickSlab", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"ViewsPosition", @"Reset.pdf", @"Export.icns", @"BestRendering.pdf", @"QTExport.pdf", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbThickSlab", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"ViewsPosition", @"Reset.pdf", @"Export.pdf", @"BestRendering.pdf", @"QTExport.pdf", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3142,7 +3146,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.pdf", @"Export.icns", @"BestRendering.pdf", @"QTExport.pdf", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"ViewsPosition", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.pdf", @"Export.pdf", @"BestRendering.pdf", @"QTExport.pdf", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"ViewsPosition", nil];
     for (id key in [PluginManager installedPlugins])
     {
         if ([[[PluginManager installedPlugins] objectForKey:key] respondsToSelector:@selector(toolbarAllowedIdentifiersForViewer:)])

@@ -36,24 +36,10 @@
 #import "DicomDatabase.h"
 #import "PluginManager.h"
 #import "alertTransition.h"
+#import "NSToolbarItem+ToolbarIdentifiers.h"
 
 #define	NAVIGATORMODE_BASIC 1
 #define NAVIGATORMODE_2POINT 2
-
-static NSString* 	Endoscopy_ToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
-static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
-static NSString*	endoMPRToolsToolbarItemIdentifier		= @"MPRTools";
-static NSString*	FlyThruToolbarItemIdentifier			= @"FlyThru.pdf";
-static NSString*	EngineToolbarItemIdentifier				= @"Engine";
-static NSString*	CroppingToolbarItemIdentifier			= @"Cropping.pdf";
-static NSString*	WLWW3DToolbarItemIdentifier				= @"WLWW3D";
-static NSString*	WLWW2DToolbarItemIdentifier				= @"WLWW2D";
-static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
-static NSString*	ShadingToolbarItemIdentifier			= @"Shading";
-static NSString*	LODToolbarItemIdentifier				= @"LOD";
-//assistant
-static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
-//static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 @implementation EndoscopyViewer
 
@@ -929,9 +915,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setToolTip: NSLocalizedString(@"Fly Thru Set up",nil)];
 		
 		[toolbarItem setImage: [NSImage imageNamed: FlyThruToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(flyThruControllerInit:)];	
     }
@@ -976,7 +960,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setLabel: NSLocalizedString(@"DICOM File",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Save as DICOM",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Export this image in a DICOM file",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageNamed: @"Export"]]; // Media.xcassets
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 		// target is not set, it will be the first responder
 		[toolbarItem setTarget: vrController.view];
 		[toolbarItem setAction: @selector(exportDICOMFile:)];
@@ -1014,10 +999,9 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setToolTip:NSLocalizedString(@"Path Assistant", nil)];
 		
 		[toolbarItem setImage:[NSImage imageNamed:PathAssistantToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
-		// Target is not set, it will be the first responder
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
+
+        // Target is not set, it will be the first responder
 		[toolbarItem setTarget:self];
 		[toolbarItem setAction:@selector(showPathAssistantPanel:)];
     }
@@ -1035,6 +1019,11 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
             if (item)
                 toolbarItem = item;
         }
+    }
+    
+    // Turn off the automatic system-drawn border capsule
+    if (@available(macOS 16.0, *)) {
+        toolbarItem.bordered = NO;
     }
     
     return toolbarItem;

@@ -4710,6 +4710,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 {
 	startWW = curDCM.ww;
 	startWL = curDCM.wl;
+    
+    // Handles invalid initial `WL/WW` during the normal mouse-down path
+    float fullWW = curDCM.fullww;
+    float fullWL = curDCM.fullwl;
+    if (startWW <= 0 ||
+        (startWL == 0 && startWW <= 1 && fullWW > 1))
+    {
+        startWW = fullWW;
+        startWL = fullWL;
+    }
+    
 	startMin = curDCM.wl - curDCM.ww/2;
 	startMax = curDCM.wl + curDCM.ww/2;
 	
@@ -6586,7 +6597,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 - (void)mouseDraggedWindowLevel:(NSEvent *)event
 {
 	NSPoint current = [self convertPoint: event.locationInWindow fromView: nil];
-	// Not blending
+    
+    // handles cases where mouse-down initialization was skipped and prevents the first-drag jump.
+    if (startWW <= 0 ||
+        (startWL == 0 && startWW <= 1 && curDCM.ww > 1))
+    {
+        [self setStartWLWW];
+        start = previous = current;
+    }
+    
+    // Not blending
 	//if (!(blendingView != nil))
 	{
 		float WWAdapter = startWW / 80.00;
@@ -8937,7 +8957,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                 currTextureWidth + offsetX,
                                 currTextureHeight + offsetY,
                                 false,		// OVERLAP
+#ifdef WITH_OPENGL_32
+                                false); // use normalized texture coordinates
+#else
                                 ef.EXT_texture_rectangle);
+#endif
             
             offsetY += currTextureHeight; // offset drawing position for next texture vertically
         } // for y
@@ -15660,7 +15684,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
 #endif
 						pBuffer = (unsigned char*) baseAddr + // Normal
 								  offsetY * rowBytes * 4 +
-								  offsetX;
+								  offsetX * sizeof(float);
 					}
 					else
 					{
@@ -15826,6 +15850,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                             checkOpenGLErrors(__LINE__);
 #endif
 
+#ifdef WITH_OPENGL_32
+                            // Copilot: preserves raw DICOM float values for shader WL/WW; the prior normalized/rectangle setup was incompatible with the Development shader path
+                            glTexImage2D(GL_TEXTURE_2D, 0,
+                                         GL_R32F,
+                                         currWidth, currHeight, 0,
+                                         GL_RED, GL_FLOAT,
+                                         pBuffer);
+#else
                             if (checkExtension("GL_APPLE_float_pixels"))
                             {
 #ifdef WITH_OPENGL_32
@@ -15854,6 +15886,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void * _Nulla
                                              GL_RED, GL_FLOAT,
                                              pBuffer);
                             }
+#endif
 #endif
                             checkOpenGLErrors(__LINE__);
 

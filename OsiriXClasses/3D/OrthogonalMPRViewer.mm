@@ -38,25 +38,7 @@
 #import "AppDefaults.h"
 #import "url.h"
 #import "alertTransition.h"
-
-static NSString* 	MPROrtho_ToolbarIdentifier				= @"MPROrtho Viewer Toolbar Identifier";
-
-static NSString*	AdjustSplitViewToolbarItemIdentifier	= @"sameSizeSplitView";
-//static NSString*	TurnSplitViewToolbarItemIdentifier		= @"turnSplitView";
-static NSString*	PhotosToolbarItemIdentifier				= @"Photos";
-static NSString*	ToolsToolbarItemIdentifier				= @"Tools";
-static NSString*	ThickSlabToolbarItemIdentifier			= @"ThickSlab";
-static NSString*	WLWWToolbarItemIdentifier				= @"WLWW";
-static NSString*	BlendingToolbarItemIdentifier			= @"2DBlending";
-static NSString*	MovieToolbarItemIdentifier				= @"Movie";
-static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
-static NSString*	SyncSeriesToolbarItemIdentifier         = @"Sync";
-static NSString*	MailToolbarItemIdentifier				= @"Mail.icns";
-static NSString*	ResetToolbarItemIdentifier				= @"Reset.pdf";
-static NSString*	FlipVolumeToolbarItemIdentifier			= @"FlipData.tif";
-static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
-static NSString*	SyncSeriesImageName                     = @"Sync";
-static NSString*	SyncLockSeriesImageName                 = @"SyncLock";
+#import "NSToolbarItem+ToolbarIdentifiers.h"
 
 static BOOL activateSyncSeriesToolbarItem;
 static SyncSeriesScope globalSyncSeriesScope;
@@ -1054,9 +1036,9 @@ return YES;
 	[toolbarItem setLabel: NSLocalizedString(@"Email",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Email",nil)];
     [toolbarItem setToolTip: NSLocalizedString(@"Email this image",nil)];
-#if 0 //def FIXUP_TB_ITEM_SIZE
+#ifdef TB_ORIGINAL_ICONS
 	[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
-    [[toolbarItem image] setSize:NSMakeSize(48,48)];
+    [[toolbarItem image] setSize:TB_ICON_SIZE];
 #else
     [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"envelope"
                                      accessibilityDescription:toolbarItem.label]];
@@ -1069,7 +1051,8 @@ return YES;
 	[toolbarItem setLabel: NSLocalizedString(@"DICOM File",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString( @"Save as DICOM",nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Export this image in a DICOM file",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+    [toolbarItem setImage: [NSImage imageNamed: @"Export"]]; // Media.xcassets
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
@@ -1150,7 +1133,7 @@ return YES;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"3D Panel",nil)];
 		[toolbarItem setImage:[NSImage imageNamed:VRPanelToolbarItemIdentifier]];
-
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(Panel3D:)];
     }
@@ -1158,7 +1141,8 @@ return YES;
 		[toolbarItem setLabel: NSLocalizedString(@"Flip Volume", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Flip Volume", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Flip Volume", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: FlipVolumeToolbarItemIdentifier]];
+		[toolbarItem setImage: [NSImage imageNamed: @"FlipData.tif"]];
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(flipVolume)];
     }
@@ -1193,6 +1177,11 @@ return YES;
             if (item)
                 toolbarItem = item;
         }
+    }
+    
+    // Turn off the automatic system-drawn border capsule
+    if (@available(macOS 16.0, *)) {
+        toolbarItem.bordered = NO;
     }
     
     return toolbarItem;

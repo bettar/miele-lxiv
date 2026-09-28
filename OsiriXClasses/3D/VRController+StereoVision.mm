@@ -44,6 +44,7 @@
 #import "VRPresetPreview.h"
 #import "Notifications.h"
 #import "OSIWindow.h"
+//#import "NSToolbarItem+ToolbarIdentifiers.h" // TODO
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -63,7 +64,7 @@ static NSString*	WLWWToolbarItemIdentifier = @"WLWW";
 static NSString*	LODToolbarItemIdentifier = @"LOD";
 static NSString*	BlendingToolbarItemIdentifier = @"2DBlending";
 static NSString*	MovieToolbarItemIdentifier = @"Movie";
-static NSString*	ExportToolbarItemIdentifier = @"Export.icns";
+static NSString*	ExportToolbarItemIdentifier = @"Export.pdf";
 static NSString*	MailToolbarItemIdentifier = @"Mail.icns";
 static NSString*	ShadingToolbarItemIdentifier	= @"Shading";
 static NSString*	EngineToolbarItemIdentifier = @"Engine";
@@ -275,7 +276,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[toolbarItem setLabel:NSLocalizedString( @"DICOM File",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"DICOM",nil)];
         [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageNamed: @"Export"]]; // Media.xcassets
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 		[toolbarItem setTarget: view];
 		[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
@@ -302,7 +304,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[toolbarItem setLabel: NSLocalizedString(@"Orientation",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientation Cube",nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"Show orientation cube",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: OrientationToolbarItemIdentifier]];
+		[toolbarItem setImage: [NSImage imageNamed: @"OrientationWidget.tif"]];
 		[toolbarItem setTarget: view];
 		[toolbarItem setAction: @selector(switchOrientationWidget:)];
     }
@@ -431,6 +433,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[toolbarItem release];
 		toolbarItem = nil;
 	}
+    
+    // Turn off the automatic system-drawn border capsule
+    if (@available(macOS 16.0, *)) {
+        toolbarItem.bordered = NO;
+    }
 	
 	return [toolbarItem autorelease];
 }

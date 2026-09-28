@@ -36,26 +36,7 @@
 #import "AppDefaults.h"
 #import "url.h"
 #import "alertTransition.h"
-
-static NSString* 	MIP_ToolbarIdentifier				= @"SR Toolbar Identifier";
-
-static NSString*	QTExportToolbarItemIdentifier		= @"QTExport.pdf";
-static NSString*	PhotosToolbarItemIdentifier			= @"Photos.icns";
-static NSString*	StereoIdentifier					= @"Stereo.icns";
-//static NSString*	QTExportVRToolbarItemIdentifier		= @"QTExportVR.icns";
-static NSString*	SRSettingsToolbarItemIdentifier		= @"SRSettings.tif";
-static NSString*	BSRSettingsToolbarItemIdentifier	= @"BSRSettings.tif";
-static NSString*	ToolsToolbarItemIdentifier			= @"Tools";
-static NSString*	Export3DFileFormat					= @"3DExportFileFormat";
-static NSString*	FlyThruToolbarItemIdentifier		= @"FlyThru.pdf";
-static NSString*	OrientationToolbarItemIdentifier	= @"OrientationWidget.tif";
-static NSString*	ToggleDisplay3DpointsItemIdentifier	= @"Point.tif";
-static NSString*	PerspectiveToolbarItemIdentifier	= @"Perspective";
-static NSString*	ResetToolbarItemIdentifier			= @"Reset.pdf";
-static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.pdf";
-static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
-static NSString*	OrientationsViewToolbarItemIdentifier = @"OrientationsView";
-static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorView";
+#import "NSToolbarItem+ToolbarIdentifiers.h"
 
 @implementation SRController
 
@@ -618,8 +599,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 
 #pragma mark - NSToolbar Related Methods
 
-- (void) setupToolbar {
-    // Create a new toolbar instance, and attach it to our document window 
+- (void) setupToolbar
+{
+    // Create a new toolbar instance, and attach it to our document window
     toolbar = [[NSToolbar alloc] initWithIdentifier: MIP_ToolbarIdentifier];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
@@ -738,7 +720,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
         [toolbarItem setLabel: NSLocalizedString(@"Photos",nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Photos",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Export this series to Photos",nil)];
-        [toolbarItem setImage: [NSImage imageNamed: PhotosToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageNamed: @"Photos.icns"]];
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(export2iPhoto:)];
     }
@@ -755,10 +737,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 	[toolbarItem setPaletteLabel:NSLocalizedString( @"Surface Settings",nil)];
     [toolbarItem setToolTip:NSLocalizedString( @"change Surface Settings",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: SRSettingsToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-    [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
-	[toolbarItem setTarget: self];
+    [[toolbarItem image] setSize:NSMakeSize(24,24)];
+    [toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(ChangeSettings:)];
     }
 	else if ([itemIdent isEqualToString: BSRSettingsToolbarItemIdentifier])
@@ -767,9 +747,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Fusion Surface Settings",nil)];
     [toolbarItem setToolTip: NSLocalizedString(@"change Fusion Surface Settings",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: BSRSettingsToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-    [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+    [[toolbarItem image] setSize:NSMakeSize(24,24)];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(BChangeSettings:)];
     }
@@ -778,10 +756,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 	[toolbarItem setLabel: NSLocalizedString(@"Orientation",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientation Cube",nil)];
 	[toolbarItem setToolTip:NSLocalizedString(@"Show orientation cube",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: OrientationToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-    [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+	[toolbarItem setImage: [NSImage imageNamed: @"OrientationWidget.tif"]];
+    [[toolbarItem image] setSize:NSMakeSize(24,24)];
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(switchOrientationWidget:)];
     }
@@ -797,9 +773,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Fly Thru",nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Fly Thru Set up",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: FlyThruToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-    [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+    [[toolbarItem image] setSize:NSMakeSize(24,24)];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(flyThruControllerInit:)];
     }
@@ -826,9 +800,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"ROI Manager",nil)];
     [toolbarItem setToolTip: NSLocalizedString(@"ROI Manager",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: ROIManagerToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-    [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+    [[toolbarItem image] setSize:NSMakeSize(24,24)];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(roiGetManager:)];
     }
@@ -860,10 +832,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
         [toolbarItem setLabel:NSLocalizedString( @"DICOM File",nil)];
         [toolbarItem setPaletteLabel:NSLocalizedString(@"Save as DICOM",nil)];
         [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
-        [toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+        [toolbarItem setImage: [NSImage imageNamed: @"Export"]]; // Media.xcassets
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
         [toolbarItem setTarget: view];
         [toolbarItem setAction: @selector(exportDICOMFile:)];
     }
@@ -881,6 +851,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
             if (item)
                 toolbarItem = item;
         }
+    }
+    
+    // Turn off the automatic system-drawn border capsule
+    if (@available(macOS 16.0, *)) {
+        toolbarItem.bordered = NO;
     }
     
     return toolbarItem;

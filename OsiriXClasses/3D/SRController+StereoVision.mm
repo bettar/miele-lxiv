@@ -31,6 +31,7 @@
 #import "ROIVolume.h"
 #import "BrowserController.h"
 #import "Notifications.h"
+//#import "NSToolbarItem+ToolbarIdentifiers.h" // TODO
 
 //static NSString* 	MIP_ToolbarIdentifier				= @"SR Toolbar Identifier";
 
@@ -48,7 +49,7 @@ static NSString*	ToggleDisplay3DpointsItemIdentifier	= @"Point.tiff";
 static NSString*	PerspectiveToolbarItemIdentifier	= @"Perspective";
 static NSString*	ResetToolbarItemIdentifier			= @"Reset.pdf";
 static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.pdf";
-static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
+static NSString*	ExportToolbarItemIdentifier			= @"Export.pdf";
 static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorView";
 
@@ -219,7 +220,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[toolbarItem setLabel: NSLocalizedString(@"Orientation",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientation Cube",nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"Show orientation cube",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: OrientationToolbarItemIdentifier]];
+		[toolbarItem setImage: [NSImage imageNamed: @"OrientationWidget.tif"]];
 		[toolbarItem setTarget: view];
 		[toolbarItem setAction: @selector(switchOrientationWidget:)];
 	}
@@ -287,7 +288,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[toolbarItem setLabel:NSLocalizedString( @"DICOM File",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Save as DICOM",nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageNamed: @"Export"]]; // Media.xcassets
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 		[toolbarItem setTarget: view];
 		[toolbarItem setAction: @selector(exportDICOMFile:)];
 	}
@@ -296,6 +298,12 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[toolbarItem release];
 		toolbarItem = nil;
 	}
+    
+    // Turn off the automatic system-drawn border capsule
+    if (@available(macOS 16.0, *)) {
+        toolbarItem.bordered = NO;
+    }
+    
 	return [toolbarItem autorelease];
 }
 	

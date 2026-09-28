@@ -1,0 +1,182 @@
+//
+//  NSToolbarItem+ToolbarIdentifiers.h
+//  Miele_LXIV
+//
+//  Created by Alex Bettarini on 26/09/2026.
+//  Copyright © 2026 bettar. All rights reserved.
+//
+
+/* Objective-C handles NSToolbarItemIdentifier as a NSString type alias (specifically NSToolbarItemIdentifier or NSString *) and not as a C string (const char*). This means that when you define toolbar identifiers, you should use NSString literals instead of C strings. Here's how you can define your toolbar identifiers in Objective-C:
+*/
+
+#ifndef NSToolbarItem_ToolbarIdentifiers_h
+#define NSToolbarItem_ToolbarIdentifiers_h
+
+#import <AppKit/AppKit.h>
+
+#define TB_ORIGINAL_ICONS
+
+#ifdef TB_ORIGINAL_ICONS
+#define TB_ICON_SIZE            NSMakeSize(32,32)
+#else
+#define TB_ICON_SIZE            NSMakeSize(24,24)
+#endif
+
+#pragma mark - BrowserController
+
+extern NSToolbarItemIdentifier const Database_ToolbarIdentifier;
+
+extern NSToolbarItemIdentifier const ImportToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ExportToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const QTSaveToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ExportROIAndKeyImagesToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const AnonymizerToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const QueryToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SendToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ViewerToolbarItemIdentifier;
+//extern NSToolbarItemIdentifier const CDRomToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const MovieToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const TrashToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ReportToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const BurnerToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ToggleDrawerToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SearchToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const TimeIntervalToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ModalityFilterToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const XMLToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const MailToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const OpenKeyImagesAndROIsToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const OpenKeyImagesToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const OpenROIsToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ViewersToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const WebServerSingleNotification;
+extern NSToolbarItemIdentifier const AddStudiesToUserItemIdentifier;
+
+#pragma mark - ViewerController
+
+extern NSToolbarItemIdentifier const Viewer_ToolbarIdentifier;
+
+extern NSToolbarItemIdentifier const QTSaveToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const PhotosToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const PlayToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const PauseToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const XMLToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SpeedToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ToolsToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const WLWWToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const FusionToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const FilterToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const BlendingToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const MovieToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SerieToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const PatientToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SubtractionToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const Send2PACSToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ReconstructionToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const RGBFactorToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ExportToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const MailToolbarItemIdentifier;
+//extern NSToolbarItemIdentifier const iChatBroadCastToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const StatusToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SyncSeriesToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SyncLockSeriesToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ResetToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const RevertToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const FlipDataToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const DatabaseWindowToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const KeyImagesToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const TileWindowsToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SUVToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ROIManagerToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ReportToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const FlipVerticalToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const FlipHorizontalToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const VRPanelToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ShutterToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const PropagateSettingsToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const OrientationToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const WindowsTilingToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SeriesPopupToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const AnnotationsToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const PrintToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const LUT12BitToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const NavigatorToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ThreeDPositionToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const CobbAngleToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SetPixelValueItemIdentifier;
+extern NSToolbarItemIdentifier const GrowingRegionItemIdentifier;
+
+#pragma mark - XMLController
+
+extern NSToolbarItemIdentifier const XML_ToolbarIdentifier;
+
+extern NSToolbarItemIdentifier const ExportTextToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ExpandAllItemsToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const CollapseAllItemsToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const EditingToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SortSeriesToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const VerifyToolbarItemIdentifier;
+
+#pragma mark - EndoscopyViewer
+
+extern NSToolbarItemIdentifier const Endoscopy_ToolbarIdentifier;
+
+extern NSToolbarItemIdentifier const endo3DToolsToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const endoMPRToolsToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const FlyThruToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const EngineToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const CroppingToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const WLWW3DToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const WLWW2DToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ShadingToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const LODToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const PathAssistantToolbarItemIdentifier;
+
+#pragma mark - OrthogonalMPRPETCTViewer
+
+extern NSToolbarItemIdentifier const PETCT_ToolbarIdentifier;
+
+extern NSToolbarItemIdentifier const SameHeightSplitViewToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SameWidthSplitViewToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ThickSlabToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const FlipVolumeToolbarItemIdentifier;
+
+#pragma mark - OrthogonalMPRViewer
+
+extern NSToolbarItemIdentifier const MPROrtho_ToolbarIdentifier;
+
+extern NSToolbarItemIdentifier const AdjustSplitViewToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const SyncSeriesImageName;
+extern NSToolbarItemIdentifier const SyncLockSeriesImageName;
+
+#pragma mark - SRController
+
+extern NSToolbarItemIdentifier const MIP_ToolbarIdentifier;
+
+extern NSToolbarItemIdentifier const QTExportToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const StereoIdentifier;
+extern NSToolbarItemIdentifier const SRSettingsToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const BSRSettingsToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const Export3DFileFormat;
+extern NSToolbarItemIdentifier const ToggleDisplay3DpointsItemIdentifier;
+extern NSToolbarItemIdentifier const PerspectiveToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const OrientationsViewToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const BackgroundColorViewToolbarItemIdentifier;
+
+#pragma mark - VRController
+
+extern NSToolbarItemIdentifier const VRStandard_ToolbarIdentifier;
+extern NSToolbarItemIdentifier const VRPanel_ToolbarIdentifier;
+
+extern NSToolbarItemIdentifier const CaptureToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ModeToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ScissorStateToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ConvolutionViewToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const PresetsPanelToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const ClippingRangeViewToolbarItemIdentifier;
+extern NSToolbarItemIdentifier const CLUTEditorsViewToolbarItemIdentifier;
+
+#pragma mark - CPRController TODO:
+#pragma mark - MPRController TODO:
+
+#endif /* NSToolbarItem_ToolbarIdentifiers_h */

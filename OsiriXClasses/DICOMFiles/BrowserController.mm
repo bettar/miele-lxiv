@@ -146,6 +146,7 @@
 
 #import "Reports.h" // for ReportType
 #import "alertTransition.h"
+#import "NSToolbarItem+ToolbarIdentifiers.h"
 
 static BrowserController *browserWindow = nil;
 
@@ -168,6 +169,28 @@ NSString* asciiString(NSString* str)
 {
     return [str ASCIIString];
 }
+
+#pragma mark -
+
+#import <AppKit/AppKit.h>
+
+// --- Inline Subclass Definition for OsiriX Toolbar Views ---
+@interface MySquaredToolbarView : NSView
+@end
+
+@implementation MySquaredToolbarView
+
+// Overriding the read-only property allows AppKit's drawing engine
+// to pull the custom layout rules dynamically.
+- (NSViewCornerConfiguration *)cornerConfiguration {
+    if (@available(macOS 15.0, *)) { // Fallbacks gracefully to system defaults on older OS targets
+        NSViewCornerRadius *sharpRadius = [NSViewCornerRadius fixedRadius:2.0];
+        return [NSViewCornerConfiguration configurationWithRadius:sharpRadius];
+    }
+    return nil;
+}
+
+@end
 
 #pragma mark -
 
@@ -280,34 +303,6 @@ static NSString* BrowserControllerClassHelperContext = @"BrowserControllerClassH
     if (!helper)
         helper = [[BrowserControllerClassHelper alloc] init];
 }
-
-static NSString* 	Database_ToolbarIdentifier			= @"DicomDatabase Toolbar Identifier";
-
-static NSString*	ImportToolbarItemIdentifier			= @"Import";
-static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.pdf";
-static NSString*	ExportToolbarItemIdentifier			= @"Export";
-static NSString*	ExportROIAndKeyImagesToolbarItemIdentifier	= @"ExportROIAndKeyImages.tif";
-static NSString*	AnonymizerToolbarItemIdentifier		= @"Anonymizer.pdf";
-static NSString*	QueryToolbarItemIdentifier			= @"QueryRetrieve.pdf";
-static NSString*	SendToolbarItemIdentifier			= @"Send.pdf";
-static NSString*	ViewerToolbarItemIdentifier			= @"Viewer.pdf";
-//static NSString*	CDRomToolbarItemIdentifier			= @"cd.icns";
-static NSString*	MovieToolbarItemIdentifier			= @"Movie.pdf";
-static NSString*	TrashToolbarItemIdentifier			= @"trash.icns";
-static NSString*	ReportToolbarItemIdentifier			= @"Report.icns";
-static NSString*	BurnerToolbarItemIdentifier			= @"Burner.icns";
-static NSString*	ToggleDrawerToolbarItemIdentifier   = @"StartupDisk.tif";
-static NSString*	SearchToolbarItemIdentifier			= @"Search";
-static NSString*	TimeIntervalToolbarItemIdentifier	= @"TimeInterval";
-static NSString*    ModalityFilterToolbarItemIdentifier = @"ModalityFilter";
-static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
-static NSString*	MailToolbarItemIdentifier			= @"Mail.icns";
-static NSString*	OpenKeyImagesAndROIsToolbarItemIdentifier	= @"ROIsAndKeys.tif";
-static NSString*	OpenKeyImagesToolbarItemIdentifier	= @"Keys.tif";
-static NSString*	OpenROIsToolbarItemIdentifier	= @"ROIs.tif";
-static NSString*	ViewersToolbarItemIdentifier	= @"windows.tif";
-static NSString*	WebServerSingleNotification	= @"Safari.tif";
-static NSString*	AddStudiesToUserItemIdentifier	= @"NSUserAccounts";
 
 static NSTimeInterval gLastActivity = 0;
 static BOOL dontShowOpenSubSeries = NO;
@@ -7222,7 +7217,7 @@ static NSConditionLock *threadLock = nil;
 		{
 			if ([[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"])
 			{
-				[self delItem:  nil];
+				[self delItem: nil];
 			}
 			else
 			{
@@ -13756,12 +13751,12 @@ constrainSplitPosition:(CGFloat)proposedPosition
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer
 {
-	/*return*/ [self viewerDICOMInt:  movieViewer dcmFile: selectedLines viewer: viewer tileWindows: YES protocol: nil];
+	/*return*/ [self viewerDICOMInt: movieViewer dcmFile: selectedLines viewer: viewer tileWindows: YES protocol: nil];
 }
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer tileWindows: (BOOL) tileWindows
 {
-	/*return*/ [self viewerDICOMInt:  movieViewer dcmFile: selectedLines viewer: viewer tileWindows: tileWindows protocol: nil];
+	/*return*/ [self viewerDICOMInt: movieViewer dcmFile: selectedLines viewer: viewer tileWindows: tileWindows protocol: nil];
 }
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer tileWindows: (BOOL) tileWindows protocol: (NSDictionary*) protocol
@@ -16170,7 +16165,7 @@ static NSArray*	openSubSeriesArray = nil;
         {
             [deleteInProgress unlock];
             
-            NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(emptyDeleteQueueThread) object:  nil] autorelease];
+            NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(emptyDeleteQueueThread) object: nil] autorelease];
             t.name = NSLocalizedString( @"Deleting files...", nil);
             t.status = N2LocalizedSingularPluralCount(deleteQueueArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
             t.progress = 0;
@@ -16212,7 +16207,10 @@ static NSArray*	openSubSeriesArray = nil;
 
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination
 {
-	return [BrowserController unzipFile:  file withPassword:  pass destination:  destination showGUI: YES];
+	return [BrowserController unzipFile: file
+                           withPassword: pass
+                            destination: destination
+                                showGUI: YES];
 }
 
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination showGUI: (BOOL) showGUI
@@ -17933,7 +17931,7 @@ redoZIPpassword:
 		{
 			NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 			[dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithFormat:  @"studyInstanceUID == %@", uid]];
+			[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", uid]];
 			
 			NSError *error = nil;
 			NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
@@ -19044,7 +19042,7 @@ redoZIPpassword:
 			NSString *photometricInterpretation = @"MONOCHROME2";
 			switch (pixelType)
 			{
-				case 0:  spp = 3;
+				case 0: spp = 3;
 					numberBytes = 1;
 					photometricInterpretation = @"RGB";
 					break;
@@ -19851,9 +19849,7 @@ redoZIPpassword:
 			if ([event modifierFlags] & NSEventModifierFlagOption)
 			{
 				[toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-                [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+                [[toolbarItem image] setSize:TB_ICON_SIZE];
 				[toolbarItem setAction: @selector(viewerDICOMKeyImages:)];
 				
 				[toolbarItem setLabel: NSLocalizedString(@"Keys", nil)];
@@ -19863,9 +19859,7 @@ redoZIPpassword:
 			else if ([event modifierFlags] & NSEventModifierFlagShift)
 			{
 				[toolbarItem setImage: [NSImage imageNamed: OpenROIsToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-                [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+                [[toolbarItem image] setSize:TB_ICON_SIZE];
 				[toolbarItem setAction: @selector(viewerDICOMROIsImages:)];
 				
 				[toolbarItem setLabel: NSLocalizedString(@"ROIs", nil)];
@@ -19875,9 +19869,7 @@ redoZIPpassword:
 			else
 			{
 				[toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesAndROIsToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-                [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+                [[toolbarItem image] setSize:TB_ICON_SIZE];
 				[toolbarItem setAction: @selector(viewerKeyImagesAndROIsImages:)];
 				
 				[toolbarItem setLabel: NSLocalizedString(@"ROIs & Keys", nil)];
@@ -19891,9 +19883,7 @@ redoZIPpassword:
 			if ([event modifierFlags] & NSEventModifierFlagOption)
 			{
 				[toolbarItem setImage: [NSImage imageNamed: ExportROIAndKeyImagesToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-                [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+                [[toolbarItem image] setSize:TB_ICON_SIZE];
 				[toolbarItem setAction: @selector(exportROIAndKeyImagesAsDICOMSeries:)];
 				
 				[toolbarItem setLabel: NSLocalizedString(@"Export Keys", nil)];
@@ -19903,9 +19893,7 @@ redoZIPpassword:
 			else if ([event modifierFlags] & NSEventModifierFlagShift)
 			{
 				[toolbarItem setImage: [NSImage imageNamed: ExportROIAndKeyImagesToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-                [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+                [[toolbarItem image] setSize:TB_ICON_SIZE];
 				[toolbarItem setAction: @selector(exportROIAndKeyImagesAsDICOMSeries:)];
 				
 				[toolbarItem setLabel: NSLocalizedString(@"Export ROIs", nil)];
@@ -19915,9 +19903,7 @@ redoZIPpassword:
 			else
 			{
 				[toolbarItem setImage: [NSImage imageNamed: ExportROIAndKeyImagesToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-                [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+                [[toolbarItem image] setSize:TB_ICON_SIZE];
 				[toolbarItem setAction: @selector(exportROIAndKeyImagesAsDICOMSeries:)];
 				
 				[toolbarItem setLabel: NSLocalizedString(@"Export ROIs & Keys", nil)];
@@ -20003,7 +19989,15 @@ redoZIPpassword:
 #endif
 }
 
-//#define FIXUP_TB_ITEM_SIZE
+// Action handler for the single segmented control bubble
+- (void)navigationSegmentClicked:(NSSegmentedControl *)sender {
+    NSInteger clickedIndex = sender.selectedSegment;
+    if (clickedIndex == 0) {
+        NSLog(@"Back bubble button pressed");
+    } else if (clickedIndex == 1) {
+        NSLog(@"Forward bubble button pressed");
+    }
+}
 
 - (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
       itemForItemIdentifier: (NSString *) itemIdent
@@ -20011,14 +20005,18 @@ redoZIPpassword:
 {
     NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
 	
-	if ([itemIdent isEqualToString: ImportToolbarItemIdentifier])
+    if ([itemIdent isEqualToString: ImportToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Import",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Import",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Import a DICOM file or folder", @"Import a DICOM file or folder")];
-		//[toolbarItem setImage: [NSImage imageNamed: ImportToolbarItemIdentifier]];
+#ifdef TB_ORIGINAL_ICONS
+		[toolbarItem setImage: [NSImage imageNamed: @"Import"]]; // Media.xcassets
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"arrow.down.to.line"
                                          accessibilityDescription:toolbarItem.label]];
+#endif
         [toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(selectFilesAndFoldersToAdd:)];
     }
@@ -20026,11 +20024,12 @@ redoZIPpassword:
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Movie Export", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Movie Export", nil)];
-		//[toolbarItem setImage: [NSImage imageNamed: QTSaveToolbarItemIdentifier]];
+#ifdef TB_ORIGINAL_ICONS
+        [toolbarItem setImage: [NSImage imageNamed: @"QTExport.pdf"]];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"arrow.up.right.video"
                                          accessibilityDescription:toolbarItem.label]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportQuicktime:)];
@@ -20039,9 +20038,12 @@ redoZIPpassword:
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Notification", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Notification", nil)];
+#ifdef TB_ORIGINAL_ICONS
 		[toolbarItem setImage: [NSImage imageNamed: WebServerSingleNotification]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"bell"
+                                         accessibilityDescription:toolbarItem.label]];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(sendEmailNotification:)];
@@ -20050,9 +20052,12 @@ redoZIPpassword:
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Add Studies", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Add Studies", nil)];
+#ifdef TB_ORIGINAL_ICONS
 		[toolbarItem setImage: [NSImage imageNamed: AddStudiesToUserItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-                [[toolbarItem image] setSize:NSMakeSize(48,48)];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"plus.rectangle.on.rectangle"
+                                         accessibilityDescription:toolbarItem.label]];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(addStudiesToUser:)];
@@ -20061,9 +20066,9 @@ redoZIPpassword:
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Email", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Email", nil)];
-#if 0 //def FIXUP_TB_ITEM_SIZE
+#ifdef TB_ORIGINAL_ICONS
         [toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
 #else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"envelope"
                                          accessibilityDescription:toolbarItem.label]];
@@ -20076,9 +20081,13 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Export",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Export selected study/series to a DICOM folder", nil)];
-		//[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+#ifdef TB_ORIGINAL_ICONS
+        [toolbarItem setImage: [NSImage imageNamed: @"Export"]]; // Media.xcassets
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"arrow.up.to.line"
                                          accessibilityDescription:toolbarItem.label]];
+#endif
         [toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
@@ -20088,9 +20097,7 @@ redoZIPpassword:
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export ROIs & Keys",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Export ROI and Key images of selected study/series as a DICOM Series", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: ExportROIAndKeyImagesToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportROIAndKeyImagesAsDICOMSeries:)];
     }
@@ -20099,11 +20106,12 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Viewers",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Viewers",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Bring Viewers windows to the front", nil)];
-		//[toolbarItem setImage: [NSImage imageNamed: ViewersToolbarItemIdentifier]];
+#ifdef TB_ORIGINAL_ICONS
+        [toolbarItem setImage: [NSImage imageNamed: ViewersToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"rectangle.3.group"
                                          accessibilityDescription:toolbarItem.label]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(tileWindows:)];
@@ -20113,11 +20121,12 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Anonymize",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Anonymize",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Anonymize selected study/series to a DICOM folder", nil)];
-		//[toolbarItem setImage: [NSImage imageNamed: AnonymizerToolbarItemIdentifier]];
+#ifdef TB_ORIGINAL_ICONS
+        [toolbarItem setImage: [NSImage imageNamed: AnonymizerToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"person.fill.questionmark"
                                          accessibilityDescription:toolbarItem.label]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(anonymizeDICOM:)];
@@ -20127,11 +20136,12 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Query",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Query",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Query and retrieve a DICOM study from a DICOM node\rShift + click to query selected patient.",nil)];
-		//[toolbarItem setImage: [NSImage imageNamed: QueryToolbarItemIdentifier]];
+#ifdef TB_ORIGINAL_ICONS
+        [toolbarItem setImage: [NSImage imageNamed: QueryToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"text.magnifyingglass"
                                          accessibilityDescription:toolbarItem.label]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(queryDICOM:)];
@@ -20142,11 +20152,12 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Send",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Send",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Send selected study/series to a DICOM node",@"Send selected study/series to a DICOM node")];
-		//[toolbarItem setImage: [NSImage imageNamed: SendToolbarItemIdentifier]];
+#ifdef TB_ORIGINAL_ICONS
+        [toolbarItem setImage: [NSImage imageNamed: SendToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"paperplane"
                                          accessibilityDescription:toolbarItem.label]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(export2PACS:)];
@@ -20156,11 +20167,12 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"2D Viewer",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"2D Viewer",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"View selected study/series",nil)];
-		//[toolbarItem setImage: [NSImage imageNamed: ViewerToolbarItemIdentifier]];
+#ifdef TB_ORIGINAL_ICONS
+        [toolbarItem setImage: [NSImage imageNamed: ViewerToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"lungs"
                                          accessibilityDescription:toolbarItem.label]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(viewerDICOM:)];
@@ -20180,11 +20192,12 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"4D Viewer",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"4D Viewer",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Load multiple series into an animated 4D series",nil)];
-		//[toolbarItem setImage: [NSImage imageNamed: MovieToolbarItemIdentifier]];
-        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"lungs"
+#ifdef TB_ORIGINAL_ICONS
+        [toolbarItem setImage: [NSImage imageNamed: @"Movie.pdf"]];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
+        [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"person.3.sequence"
                                          accessibilityDescription:toolbarItem.label]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(MovieViewerDICOM:)];
@@ -20194,11 +20207,12 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Delete",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Delete",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Delete selected images from the database",nil)];
-		//[toolbarItem setImage: [NSImage imageNamed: TrashToolbarItemIdentifier]];
+#ifdef TB_ORIGINAL_ICONS
+        [toolbarItem setImage: [NSImage imageNamed: TrashToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"trash"
                                          accessibilityDescription:toolbarItem.label]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(delItem:)];
@@ -20209,11 +20223,10 @@ redoZIPpassword:
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Report",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Create/Open a report for selected study",nil)];
 		[self setToolbarReportIconForItem: toolbarItem];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
-        [[toolbarItem view] setSize:NSMakeSize(48,48)];
-#endif
-		[toolbarItem setTarget: self];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+        //[[toolbarItem view] setSize:NSMakeSize(32,32)];
+
+        [toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(generateReport:)];
     }
 	else if ([itemIdent isEqualToString: OpenKeyImagesAndROIsToolbarItemIdentifier])
@@ -20221,11 +20234,12 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"ROIs & Keys", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"ROIs & Keys", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"View all Key Images and ROIs", nil)];
-		//[toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesAndROIsToolbarItemIdentifier]];
+#ifdef TB_ORIGINAL_ICONS
+        [toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesAndROIsToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"squareshape.controlhandles.on.squareshape.controlhandles"
                                          accessibilityDescription:toolbarItem.label]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(viewerKeyImagesAndROIsImages:)];
@@ -20235,11 +20249,12 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Meta-Data", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Meta-Data", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"View meta-data of this image", nil)];
-		//[toolbarItem setImage: [NSImage imageNamed: XMLToolbarItemIdentifier]];
+#ifdef TB_ORIGINAL_ICONS
+        [toolbarItem setImage: [NSImage imageNamed: XMLToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"text.document"
                                          accessibilityDescription:toolbarItem.label]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(viewXML:)];
@@ -20249,11 +20264,12 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Burn",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Burn",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Burn a DICOM-compatible CD or DVD",@"Burn a DICOM-compatible CD or DVD")];
-        //[toolbarItem setImage: [NSImage imageNamed: BurnerToolbarItemIdentifier]];
+#ifdef TB_ORIGINAL_ICONS
+        [toolbarItem setImage: [NSImage imageNamed: BurnerToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+#else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"burn"
                                          accessibilityDescription:toolbarItem.label]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
 #endif
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(burnDICOM:)];
@@ -20263,10 +20279,9 @@ redoZIPpassword:
 		[toolbarItem setLabel: NSLocalizedString(@"Albums & Sources",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Albums & Sources",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Toggle Albums & Sources drawer",nil)];
-		[toolbarItem setImage: [NSImage imageNamed:  ToggleDrawerToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+		[toolbarItem setImage: [NSImage imageNamed: ToggleDrawerToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
+
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(drawerToggle:)];
     } 
@@ -20307,8 +20322,8 @@ redoZIPpassword:
 			else
 				[toolbarItem setToolTip: itemIdent];
 			
-			//			NSLog( @"ICON:");
-			//			NSLog( [info objectForKey:PINFO_TB_ICON]);
+//			NSLog( @"ICON:");
+//			NSLog( [info objectForKey:PINFO_TB_ICON]);
 			
 			NSImage	*image = [[[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:[info objectForKey:PINFO_TB_ICON]]] autorelease];
 			if (!image)
@@ -20330,6 +20345,12 @@ redoZIPpassword:
             }
         }
 	}
+
+    // Turn off the automatic system-drawn border capsule
+    // FIXME: the Albums header gets a transparent background
+    if (@available(macOS 16.0, *)) {
+        toolbarItem.bordered = NO;
+    }
     
 	return toolbarItem;
 }
@@ -20338,12 +20359,15 @@ redoZIPpassword:
 {
     return [NSArray arrayWithObjects:
 //          ToggleDrawerToolbarItemIdentifier, // removed from default items because we have a dedicated button on the bottom left of this window
+            
 			ImportToolbarItemIdentifier,
 			ExportToolbarItemIdentifier,
+            NSToolbarFlexibleSpaceItemIdentifier,
+            QueryToolbarItemIdentifier,
+            SendToolbarItemIdentifier,
+            NSToolbarFlexibleSpaceItemIdentifier,
 			MailToolbarItemIdentifier,
 			QTSaveToolbarItemIdentifier,
-			QueryToolbarItemIdentifier,
-			SendToolbarItemIdentifier,
 			AnonymizerToolbarItemIdentifier,
 			BurnerToolbarItemIdentifier,
 			XMLToolbarItemIdentifier,
@@ -20372,14 +20396,14 @@ redoZIPpassword:
 			 NSToolbarFlexibleSpaceItemIdentifier,
 			 NSToolbarSpaceItemIdentifier,
 			 NSToolbarSeparatorItemIdentifier,
-			 ImportToolbarItemIdentifier,
+             ImportToolbarItemIdentifier,
+            ExportToolbarItemIdentifier,
 //			 CDRomToolbarItemIdentifier,
 			 MailToolbarItemIdentifier,
 			 WebServerSingleNotification,
 			 AddStudiesToUserItemIdentifier,
 			 QTSaveToolbarItemIdentifier,
 			 QueryToolbarItemIdentifier,
-			 ExportToolbarItemIdentifier,
              ExportROIAndKeyImagesToolbarItemIdentifier,
 			 AnonymizerToolbarItemIdentifier,
 			 SendToolbarItemIdentifier,
@@ -20393,8 +20417,8 @@ redoZIPpassword:
 			 ToggleDrawerToolbarItemIdentifier,
 			 nil];
 	
-	NSArray*		allPlugins = [[PluginManager installedPluginsInfoDict] allKeys];
-	NSMutableSet*	pluginsItems = [NSMutableSet setWithCapacity: [allPlugins count]];
+	NSArray* allPlugins = [[PluginManager installedPluginsInfoDict] allKeys];
+	NSMutableSet* pluginsItems = [NSMutableSet setWithCapacity: [allPlugins count]];
 	
 	for (NSString *plugin in allPlugins)
 	{
@@ -20438,8 +20462,8 @@ redoZIPpassword:
 
 - (void)toolbarWillAddItem:(NSNotification *) notif
 {
-    // Optional delegate method:  Before an new item is added to the toolbar, this notification is posted.
-    // This is the best place to notice a new item is going into the toolbar.  For instance, if you need to 
+    // Optional delegate method: Before an new item is added to the toolbar, this notification is posted.
+    // This is the best place to notice a new item is going into the toolbar.  For instance, if you need to
     // cache a reference to the toolbar item or need to set up some initial state, this is the best place 
     // to do it.  The notification object is the toolbar to which the item is being added.  The item being 
     // added is found by referencing the @"item" key in the userInfo 
@@ -20455,7 +20479,7 @@ redoZIPpassword:
 
 - (void)toolbarDidRemoveItem: (NSNotification *)notif
 {
-    // Optional delegate method:  After an item is removed from a toolbar, this notification is sent.   This allows 
+    // Optional delegate method: After an item is removed from a toolbar, this notification is sent.   This allows
     // the chance to tear down information related to the item that may have been cached.   The notification object
     // is the toolbar from which the item is being removed.  The item being added is found by referencing the @"item"
     // key in the userInfo 
@@ -21493,7 +21517,7 @@ redoZIPpassword:
 	
 	// FIND ALL STUDIES of this patient
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientUID BEGINSWITH[cd] %@)", [study valueForKey:@"patientUID"]];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@)", [study valueForKey:@"patientUID"]];
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	dbRequest.entity = [model.entitiesByName objectForKey:@"Study"];
 	dbRequest.predicate = predicate;

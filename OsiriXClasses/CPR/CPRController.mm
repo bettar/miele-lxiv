@@ -4015,12 +4015,12 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(showWindow:)];
     }
-	else if ([itemIdent isEqualToString: @"Export.icns"])
+	else if ([itemIdent isEqualToString: @"Export.pdf"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"DICOM",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"DICOM",nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: @"Export.icns"]];
+		[toolbarItem setImage: [NSImage imageNamed: @"Export.pdf"]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
@@ -4030,9 +4030,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Curved Path",nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"Export this curved path in a file",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"curvedPath.icns"]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(saveBezierPath:)];
     }
@@ -4178,12 +4176,17 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
         }
     }
     
+    // Turn off the automatic system-drawn border capsule
+    if (@available(macOS 16.0, *)) {
+        toolbarItem.bordered = NO;
+    }
+    
 	return toolbarItem;
 }
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbPathAssistant", @"testDelNode", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"BestRendering.pdf", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbPathAssistant", @"testDelNode", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.pdf", @"Export.pdf", @"curvedPath.icns", @"BestRendering.pdf", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -4192,7 +4195,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbPathAssistant", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"BestRendering.pdf", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbPathAssistant", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.pdf", @"Export.pdf", @"curvedPath.icns", @"BestRendering.pdf", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
     
     for (id key in [PluginManager installedPlugins])
     {
@@ -4228,7 +4231,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 			return NO;
 	}
 	
-	if ([[toolbarItem itemIdentifier] isEqualToString: @"Export.icns"])
+	if ([[toolbarItem itemIdentifier] isEqualToString: @"Export.pdf"])
 	{
 		if ([curvedPath.nodes count] < 3)
 			return NO;

@@ -54,41 +54,9 @@
 #define CLUTDATABASE        @"/CLUTs/"
 
 #import "alertTransition.h"
+#import "NSToolbarItem+ToolbarIdentifiers.h"
 
 //#define HOROS_WAY
-
-static NSString* 	VRStandard_ToolbarIdentifier = @"VR Toolbar Identifier";
-static NSString* 	VRPanel_ToolbarIdentifier = @"VRPanel Toolbar Identifier";
-
-static NSString*	QTExportToolbarItemIdentifier = @"QTExport.pdf";
-static NSString*	PhotosToolbarItemIdentifier = @"Photos.icns";
-//static NSString*	QTExportVRToolbarItemIdentifier = @"QTExportVR.icns";
-static NSString*	StereoIdentifier = @"Stereo.icns";
-static NSString*	CaptureToolbarItemIdentifier = @"BestRendering.pdf";
-static NSString*	CroppingToolbarItemIdentifier = @"Cropping.pdf";
-static NSString*	OrientationToolbarItemIdentifier= @"OrientationWidget.tif";
-static NSString*	ToolsToolbarItemIdentifier = @"Tools";
-static NSString*	WLWWToolbarItemIdentifier = @"WLWW";
-static NSString*	LODToolbarItemIdentifier = @"LOD";
-static NSString*	BlendingToolbarItemIdentifier = @"2DBlending";
-static NSString*	MovieToolbarItemIdentifier = @"Movie";
-static NSString*	ExportToolbarItemIdentifier = @"Export.icns";
-static NSString*	MailToolbarItemIdentifier = @"Mail.icns";
-static NSString*	ShadingToolbarItemIdentifier	= @"Shading";
-static NSString*	EngineToolbarItemIdentifier = @"Engine";
-static NSString*	PerspectiveToolbarItemIdentifier= @"Perspective";
-static NSString*	ResetToolbarItemIdentifier = @"Reset.pdf";
-static NSString*	RevertToolbarItemIdentifier = @"Revert.tif";
-static NSString*	ModeToolbarItemIdentifier = @"Mode";
-static NSString*	FlyThruToolbarItemIdentifier	= @"FlyThru.pdf";
-static NSString*	ScissorStateToolbarItemIdentifier	= @"ScissorState";
-static NSString*	ROIManagerToolbarItemIdentifier = @"ROIManager.pdf";
-static NSString*	OrientationsViewToolbarItemIdentifier = @"OrientationsView";
-static NSString*	ConvolutionViewToolbarItemIdentifier = @"ConvolutionView";
-static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorView";
-static NSString*	PresetsPanelToolbarItemIdentifier = @"3DPresetsPanel.tif";
-static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
-static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 @implementation VRController
 
@@ -1935,18 +1903,17 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Reset",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Reset to initial 3D view",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: ResetToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-    [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+    [[toolbarItem image] setSize:NSMakeSize(24,24)];
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(resetImage:)];
     }
-	else if ([itemIdent isEqualToString: RevertToolbarItemIdentifier]) {
-		 
+	else if ([itemIdent isEqualToString: RevertToolbarItemIdentifier])
+    {
 		 [toolbarItem setLabel: NSLocalizedString(@"Revert",nil)];
 		 [toolbarItem setPaletteLabel: NSLocalizedString(@"Revert",nil)];
 		 [toolbarItem setToolTip: NSLocalizedString(@"Revert series by re-loading images from disk",nil)];
 		 [toolbarItem setImage: [NSImage imageNamed: RevertToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 		 [toolbarItem setTarget: self];
 		 [toolbarItem setAction: @selector(revertSeries:)];
 	 }
@@ -1987,7 +1954,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setLabel: NSLocalizedString(@"Photos",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString(@"Photos",nil)];
 	[toolbarItem setToolTip:NSLocalizedString(@"Export this image to Photos",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: PhotosToolbarItemIdentifier]];
+	[toolbarItem setImage: [NSImage imageNamed: @"Photos.icns"]];
+    [[toolbarItem image] setSize:NSMakeSize(24,24)];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(export2iPhoto:)];
     }
@@ -1996,7 +1964,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setLabel:NSLocalizedString(@"DICOM File",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString(@"DICOM",nil)];
     [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+    [toolbarItem setImage: [NSImage imageNamed: @"Export"]]; // Media.xcassets
+    [[toolbarItem image] setSize:NSMakeSize(24,24)];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
@@ -2015,9 +1984,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Cropping Cube",nil)];
 	[toolbarItem setToolTip:NSLocalizedString(@"Show and manipulate cropping cube",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: CroppingToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-    [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+    [[toolbarItem image] setSize:NSMakeSize(24,24)];
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(showCropCube:)];
     }
@@ -2026,10 +1993,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setLabel: NSLocalizedString(@"Orientation",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientation Cube",nil)];
 	[toolbarItem setToolTip:NSLocalizedString(@"Show orientation cube",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: OrientationToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-    [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+	[toolbarItem setImage: [NSImage imageNamed: @"OrientationWidget.tif"]];
+    [[toolbarItem image] setSize:NSMakeSize(24,24)];
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(switchOrientationWidget:)];
     }
@@ -2039,9 +2004,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Best Rendering",nil)];
     [toolbarItem setToolTip: NSLocalizedString(@"Render this image at the best resolution",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: CaptureToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-    [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+    [[toolbarItem image] setSize:NSMakeSize(24,24)];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(bestRendering:)];
     }
@@ -2122,9 +2085,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[toolbarItem setToolTip: NSLocalizedString(@"Fly Thru Set up",nil)];
 	
 		[toolbarItem setImage: [NSImage imageNamed: FlyThruToolbarItemIdentifier]];
-#ifdef FIXUP_TB_ITEM_SIZE
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
-#endif
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(flyThruControllerInit:)];
     }
@@ -2134,6 +2095,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"ROI Manager",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"ROI Manager",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: ROIManagerToolbarItemIdentifier]];
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(roiGetManager:)];
     }
@@ -2172,6 +2134,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
             if (item)
                 toolbarItem = item;
         }
+    }
+    
+    // Turn off the automatic system-drawn border capsule
+    if (@available(macOS 16.0, *)) {
+        toolbarItem.bordered = NO;
     }
     
 	return toolbarItem;

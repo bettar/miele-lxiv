@@ -96,6 +96,11 @@
 		43879B7921D64CB500DEF6A9 /* AYPrintManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43879B7821D64CB500DEF6A9 /* AYPrintManager.cpp */; };
 		4389764F3039BB9000BC09DA /* NSUserDefaults+Defaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4389764E3039BB9000BC09DA /* NSUserDefaults+Defaults.mm */; };
 		438F75A12CB41DF7009D5C1B /* echoscu in Copy Executables */ = {isa = PBXBuildFile; fileRef = 438F759D2CB41D87009D5C1B /* echoscu */; };
+		4393C08D3067DE090083E3C6 /* NSToolbarItem+ToolbarIdentifiers.h in Headers */ = {isa = PBXBuildFile; fileRef = 4393C08C3067DE090083E3C6 /* NSToolbarItem+ToolbarIdentifiers.h */; };
+		4393C08E3067DE090083E3C6 /* NSToolbarItem+ToolbarIdentifiers.h in Headers */ = {isa = PBXBuildFile; fileRef = 4393C08C3067DE090083E3C6 /* NSToolbarItem+ToolbarIdentifiers.h */; };
+		4393C0913067DF7F0083E3C6 /* NSToolbarItem+ToolbarIdentifiers.m in Sources */ = {isa = PBXBuildFile; fileRef = 4393C0903067DF7F0083E3C6 /* NSToolbarItem+ToolbarIdentifiers.m */; };
+		4393C0933067DF7F0083E3C6 /* NSToolbarItem+ToolbarIdentifiers.m in Sources */ = {isa = PBXBuildFile; fileRef = 4393C0903067DF7F0083E3C6 /* NSToolbarItem+ToolbarIdentifiers.m */; };
+		4393C0953067DF7F0083E3C6 /* NSToolbarItem+ToolbarIdentifiers.m in Sources */ = {isa = PBXBuildFile; fileRef = 4393C0903067DF7F0083E3C6 /* NSToolbarItem+ToolbarIdentifiers.m */; };
 		4394CF093062947F00B0CDDD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4394CF083062947F00B0CDDD /* Media.xcassets */; };
 		43977C2E23D340920044054B /* loupe.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 43977C2D23D340920044054B /* loupe.vsh */; };
 		43977C3023D340AF0044054B /* loupe.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 43977C2F23D340AF0044054B /* loupe.fsh */; };
@@ -1592,6 +1597,8 @@
 		438AE1AC21B5651C00C5E98F /* LXIV Launcher-Distribution.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "LXIV Launcher-Distribution.entitlements"; path = "LXIV Launcher/LXIV Launcher-Distribution.entitlements"; sourceTree = "<group>"; };
 		438F759D2CB41D87009D5C1B /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = echoscu; sourceTree = "<group>"; };
 		438F759F2CB41DD9009D5C1B /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = "../../../install/project68/20230320_UB/dcmtk-3.6.8/bin/echoscu"; sourceTree = "<group>"; };
+		4393C08C3067DE090083E3C6 /* NSToolbarItem+ToolbarIdentifiers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSToolbarItem+ToolbarIdentifiers.h"; sourceTree = "<group>"; };
+		4393C0903067DF7F0083E3C6 /* NSToolbarItem+ToolbarIdentifiers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSToolbarItem+ToolbarIdentifiers.m"; sourceTree = "<group>"; };
 		4394CF083062947F00B0CDDD /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		43953FD52AB2E03A0080F497 /* thickSlabTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = thickSlabTypes.h; sourceTree = "<group>"; };
 		43977C2D23D340920044054B /* loupe.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = loupe.vsh; sourceTree = "<group>"; };
@@ -3248,6 +3255,8 @@
 				43475BF02344C55300BEE02C /* mieleTypes.h */,
 				43C9A5DB2377FF0800FB28AE /* mgl.h */,
 				43999E2B238A8DA2003CBC24 /* cprTypes.h */,
+				4393C08C3067DE090083E3C6 /* NSToolbarItem+ToolbarIdentifiers.h */,
+				4393C0903067DF7F0083E3C6 /* NSToolbarItem+ToolbarIdentifiers.m */,
 			);
 			name = "Other Sources";
 			sourceTree = SOURCE_ROOT;
@@ -5366,6 +5375,7 @@
 				7E0B3A530675273600908593 /* DCMAttribute.h in Headers */,
 				7E0B3A5F0675273C00908593 /* DCMAttributeTag.h in Headers */,
 				7E0B3A6A0675273E00908593 /* DCMDataContainer.h in Headers */,
+				4393C08E3067DE090083E3C6 /* NSToolbarItem+ToolbarIdentifiers.h in Headers */,
 				7E0B3A760675274000908593 /* DCMObject.h in Headers */,
 				7E0B3A820675274100908593 /* DCMValueRepresentation.h in Headers */,
 				BFEB763D0677FDA700F242F3 /* DCMTagDictionary.h in Headers */,
@@ -5395,6 +5405,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4393C08D3067DE090083E3C6 /* NSToolbarItem+ToolbarIdentifiers.h in Headers */,
 				CEC4467C10664C2B0061B338 /* ViewerController.h in Headers */,
 				434B46191A19F322008CF8CF /* options.h in Headers */,
 			);
@@ -6294,6 +6305,7 @@
 				BFAEB40B06BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.mm in Sources */,
 				BFAEB41B06BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.mm in Sources */,
 				7EBB310A0887269B00BF6B39 /* DCMNetServiceDelegate.mm in Sources */,
+				4393C0913067DF7F0083E3C6 /* NSToolbarItem+ToolbarIdentifiers.m in Sources */,
 				7E82C64008D9FF35000BAFF9 /* DCMLimitedObject.mm in Sources */,
 				7E8340DC08E9F7C500E41C5E /* DCMPresentationState.mm in Sources */,
 				BFDDE5C2091717F80033317B /* DCMEncapsulatedPDF.mm in Sources */,
@@ -6306,6 +6318,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4393C0933067DF7F0083E3C6 /* NSToolbarItem+ToolbarIdentifiers.m in Sources */,
 				59F1A4C8104BA5BE009E3215 /* MieleAPIHeaders.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6548,6 +6561,7 @@
 				AB10FB3E1129338A009EB238 /* N2ColumnLayout.mm in Sources */,
 				AB10FB401129338A009EB238 /* N2CellDescriptor.mm in Sources */,
 				AB10FB421129338A009EB238 /* N2Step.mm in Sources */,
+				4393C0953067DF7F0083E3C6 /* NSToolbarItem+ToolbarIdentifiers.m in Sources */,
 				AB10FB441129338A009EB238 /* N2Steps.mm in Sources */,
 				AB10FB461129338A009EB238 /* N2StepView.mm in Sources */,
 				AB10FB481129338A009EB238 /* N2StepsView.mm in Sources */,
@@ -8079,7 +8093,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20260901;
+				CURRENT_PROJECT_VERSION = 202609028;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8181,7 +8195,7 @@
 					"$(PROJECT_DIR)",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 9.53.169;
+				MARKETING_VERSION = 9.54.170;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -8622,7 +8636,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20260901;
+				CURRENT_PROJECT_VERSION = 202609028;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8722,7 +8736,7 @@
 					"$(PROJECT_DIR)",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 9.53.169;
+				MARKETING_VERSION = 9.54.170;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -9300,7 +9314,6 @@
 					OSIRIX_VIEWER,
 					WITH_GLM,
 					WITH_GLEW,
-					FIXUP_TB_ITEM_SIZE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -9344,7 +9357,7 @@
 					"$(PROJECT_DIR)",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 9.53.169;
+				MARKETING_VERSION = 9.54.170;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -9453,7 +9466,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
-				CURRENT_PROJECT_VERSION = 20260901;
+				CURRENT_PROJECT_VERSION = 202609028;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 57BXF7EQEM;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

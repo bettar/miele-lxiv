@@ -44,17 +44,7 @@
 #import "DicomDatabase.h"
 #import "PluginManager.h"
 #import "alertTransition.h"
-
-static NSString* 	XML_ToolbarIdentifier					= @"XML Toolbar Identifier";
-
-static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
-static NSString*	ExportTextToolbarItemIdentifier			= @"ExportText";
-static NSString*	ExpandAllItemsToolbarItemIdentifier		= @"add-large";
-static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
-static NSString*	SearchToolbarItemIdentifier				= @"Search";
-static NSString*	EditingToolbarItemIdentifier			= @"Editing";
-static NSString*	SortSeriesToolbarItemIdentifier			= @"SortSeries";
-static NSString*	VerifyToolbarItemIdentifier				= @"Validator";
+#import "NSToolbarItem+ToolbarIdentifiers.h"
 
 static BOOL showWarning = YES;
 
@@ -1605,8 +1595,10 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
     if ([itemIdent isEqualToString: ExportToolbarItemIdentifier]) {
 		[toolbarItem setLabel: NSLocalizedString(@"Export XML",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export XML",nil)];
-			[toolbarItem setToolTip: NSLocalizedString(@"Export these XML Data in a XML File",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+        [toolbarItem setToolTip: NSLocalizedString(@"Export these XML Data in a XML File",nil)];
+        [toolbarItem setImage: [NSImage imageNamed: @"Export"]]; // Media.xcassets
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
+
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportXML:)];
     }
@@ -1628,7 +1620,8 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 		[toolbarItem setLabel: NSLocalizedString(@"Export Text", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export Text", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Export these XML Data in a Text File", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageNamed: @"Export"]]; // Media.xcassets
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportText:)];
     }
@@ -1681,6 +1674,11 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
         }
     }
 	
+    // Turn off the automatic system-drawn border capsule
+    if (@available(macOS 16.0, *)) {
+        toolbarItem.bordered = NO;
+    }
+    
     return toolbarItem;
 }
 

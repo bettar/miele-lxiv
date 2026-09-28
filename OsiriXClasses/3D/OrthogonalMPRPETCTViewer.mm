@@ -34,24 +34,7 @@
 #import "AppDefaults.h"
 #import "url.h"
 #import "alertTransition.h"
-
-static NSString* 	PETCT_ToolbarIdentifier						= @"PETCT Viewer Toolbar Identifier";
-
-static NSString*	SameHeightSplitViewToolbarItemIdentifier	= @"sameHeightSplitView";
-static NSString*	SameWidthSplitViewToolbarItemIdentifier		= @"sameWidthSplitView";
-//static NSString*	TurnSplitViewToolbarItemIdentifier			= @"turnSplitView";
-static NSString*	ToolsToolbarItemIdentifier					= @"Tools";
-static NSString*	ThickSlabToolbarItemIdentifier				= @"ThickSlab";
-static NSString*	BlendingToolbarItemIdentifier				= @"2DBlending";
-static NSString*	MovieToolbarItemIdentifier					= @"Movie";
-static NSString*	ExportToolbarItemIdentifier					= @"Export.icns";
-static NSString*	SyncSeriesToolbarItemIdentifier             = @"Sync";
-static NSString*	MailToolbarItemIdentifier					= @"Mail.icns";
-static NSString*	ResetToolbarItemIdentifier					= @"Reset.pdf";
-static NSString*	FlipVolumeToolbarItemIdentifier				= @"Revert.tif";
-static NSString*	WLWWToolbarItemIdentifier					= @"WLWW";
-static NSString*	VRPanelToolbarItemIdentifier				= @"MIP.tif";
-static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
+#import "NSToolbarItem+ToolbarIdentifiers.h"
 
 @implementation OrthogonalMPRPETCTViewer
 
@@ -1047,9 +1030,9 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
         [toolbarItem setLabel: NSLocalizedString(@"Email",nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Email",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Email this image",nil)];
-#if 0 //def FIXUP_TB_ITEM_SIZE
+#ifdef TB_ORIGINAL_ICONS
         [toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
-        [[toolbarItem image] setSize:NSMakeSize(48,48)];
+        [[toolbarItem image] setSize:TB_ICON_SIZE];
 #else
         [toolbarItem setImage: [NSImage imageWithSystemSymbolName:@"envelope"
                                          accessibilityDescription:toolbarItem.label]];
@@ -1062,7 +1045,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
         [toolbarItem setLabel: NSLocalizedString(@"DICOM File",nil)];
         [toolbarItem setPaletteLabel:NSLocalizedString( @"Save as DICOM",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Export this image in a DICOM file",nil)];
-        [toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
+        [toolbarItem setImage: [NSImage imageNamed: @"Export"]]; // Media.xcassets
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(exportDICOMFile:)];
     }
@@ -1097,7 +1081,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"3D Panel",nil)];
 		[toolbarItem setImage:[NSImage imageNamed:VRPanelToolbarItemIdentifier]];
-
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
+        
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(Panel3D:)];
     }
@@ -1163,7 +1148,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		[toolbarItem setLabel: NSLocalizedString(@"Flip Volume", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Flip Volume", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Flip Volume", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: FlipVolumeToolbarItemIdentifier]];
+		[toolbarItem setImage: [NSImage imageNamed: @"Revert.tif"]];
+        [[toolbarItem image] setSize:NSMakeSize(24,24)];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(flipVolume)];
     }
@@ -1200,6 +1186,11 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
             if (item)
                 toolbarItem = item;
         }
+    }
+    
+    // Turn off the automatic system-drawn border capsule
+    if (@available(macOS 16.0, *)) {
+        toolbarItem.bordered = NO;
     }
     
     return toolbarItem;
