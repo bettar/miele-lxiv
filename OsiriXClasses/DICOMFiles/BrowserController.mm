@@ -10742,12 +10742,15 @@ constrainSplitPosition:(CGFloat)proposedPosition
     
     CGFloat rcs = oMatrix.cellSize.width + oMatrix.intercellSpacing.width;
     
-    NSSize size = thumbnailsScrollView.bounds.size;
+    //NSSize size = thumbnailsScrollView.bounds.size;
+    NSSize visibleSize = thumbnailsScrollView.contentView.bounds.size;
+    NSSize size = visibleSize;
     size.width += oMatrix.intercellSpacing.width;
     
     if (rcs > 0)
     {
-        NSInteger hcells = (NSInteger)roundf(size.width/rcs);
+        //NSInteger hcells = (NSInteger)roundf(size.width/rcs);
+        NSInteger hcells = MAX((NSInteger)floorf(size.width/rcs), 1);
         
         if (hcells > 0)
         {
@@ -10771,6 +10774,12 @@ constrainSplitPosition:(CGFloat)proposedPosition
                 }
                 
                 [oMatrix sizeToCells];
+                NSSize matrixSize = oMatrix.frame.size;
+                matrixSize.width = MAX(matrixSize.width, visibleSize.width);
+                matrixSize.height = MAX(matrixSize.height, visibleSize.height);
+                [oMatrix setFrameSize:matrixSize];
+                [thumbnailsScrollView reflectScrolledClipView:thumbnailsScrollView.contentView];
+                                 
                 [oMatrix selectCellWithTag:selectedCellTag];
             }
         }
@@ -19785,7 +19794,7 @@ redoZIPpassword:
                 icon = [self reportIcon];	// Keep this line! Because item can be nil! see updateReportToolbarIcon function
 
 			[item setImage:icon];
-            [[item image] setSize:NSMakeSize(48,48)];
+            [[item image] setSize:TB_ICON_SIZE];
 		}
 #else
 		[item setImage:[NSImage imageNamed:@"Report.icns"]];
