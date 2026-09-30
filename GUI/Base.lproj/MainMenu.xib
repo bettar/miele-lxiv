@@ -2780,7 +2780,7 @@ CA
                                                                         <subviews>
                                                                             <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="366" id="14751">
                                                                                 <rect key="frame" x="8" y="174" width="370" height="21"/>
-                                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                                                 <textFieldCell key="cell" controlSize="mini" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Multiline Label" id="14752">
                                                                                     <font key="font" metaFont="system" size="20"/>
                                                                                     <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2796,7 +2796,7 @@ CA
                                                                                     <rect key="frame" x="0.0" y="0.0" width="367" height="371"/>
                                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                                     <subviews>
-                                                                                        <matrix verticalHuggingPriority="750" fixedFrame="YES" mode="list" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12411" customClass="BrowserMatrix">
+                                                                                        <matrix verticalHuggingPriority="750" mode="list" allowsEmptySelection="NO" autosizesCells="NO" id="12411" customClass="BrowserMatrix">
                                                                                             <rect key="frame" x="0.0" y="0.0" width="424" height="432"/>
                                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -2895,12 +2895,8 @@ CA
                                                                         <constraints>
                                                                             <constraint firstAttribute="trailing" secondItem="12410" secondAttribute="trailing" id="0LG-1t-JLK"/>
                                                                             <constraint firstItem="12410" firstAttribute="top" secondItem="14635" secondAttribute="top" id="3L0-CA-ags"/>
-                                                                            <constraint firstAttribute="trailing" secondItem="14751" secondAttribute="trailing" constant="10" id="4ss-d9-Rna"/>
-                                                                            <constraint firstItem="14751" firstAttribute="centerX" secondItem="14635" secondAttribute="centerX" id="DJv-tD-qoa"/>
                                                                             <constraint firstAttribute="bottom" secondItem="12410" secondAttribute="bottom" id="Q6x-4o-7zO"/>
-                                                                            <constraint firstItem="14751" firstAttribute="centerY" secondItem="14635" secondAttribute="centerY" id="Zls-mh-DGy"/>
                                                                             <constraint firstItem="12410" firstAttribute="leading" secondItem="14635" secondAttribute="leading" constant="2" id="ect-d4-V5i"/>
-                                                                            <constraint firstItem="14751" firstAttribute="leading" secondItem="14635" secondAttribute="leading" constant="10" id="qTO-6K-WC0"/>
                                                                         </constraints>
                                                                     </customView>
                                                                     <button fixedFrame="YES" id="14622">
@@ -2922,9 +2918,9 @@ CA
                                                             </splitView>
                                                         </subviews>
                                                         <constraints>
-                                                            <constraint firstAttribute="bottom" secondItem="14624" secondAttribute="bottom" id="2xc-wn-otd"/>
+                                                            <constraint firstAttribute="bottom" secondItem="14624" secondAttribute="bottom" priority="999" id="2xc-wn-otd"/>
                                                             <constraint firstItem="14624" firstAttribute="leading" secondItem="14637" secondAttribute="leading" id="8pM-oC-xmF"/>
-                                                            <constraint firstItem="14624" firstAttribute="top" secondItem="14637" secondAttribute="top" id="REp-hp-ITv"/>
+                                                            <constraint firstItem="14624" firstAttribute="top" secondItem="14637" secondAttribute="top" priority="999" id="REp-hp-ITv"/>
                                                             <constraint firstItem="14624" firstAttribute="centerX" secondItem="14637" secondAttribute="centerX" id="adE-3E-TaA"/>
                                                         </constraints>
                                                     </customView>
