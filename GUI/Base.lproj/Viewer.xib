@@ -1639,7 +1639,7 @@ To edit a Color Look Up Table from the menu: select it while holding down the al
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="102" id="VKY-SV-f7Y"/>
                         <constraint firstAttribute="width" relation="lessThanOrEqual" constant="150" id="YoD-K1-uAM"/>
                     </constraints>
-                    <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="1" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2160">
+                    <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="0" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2160">
                         <font key="font" usesAppearanceFont="YES"/>
                     </sliderCell>
                     <connections>

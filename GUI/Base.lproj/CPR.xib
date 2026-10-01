@@ -1388,7 +1388,7 @@ Gw
                 </slider>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="847">
                     <rect key="frame" x="41" y="-16" width="95" height="40"/>
-                    <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="1" allowsTickMarkValuesOnly="YES" sliderType="linear" id="852">
+                    <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="0" allowsTickMarkValuesOnly="YES" sliderType="linear" id="852">
                         <font key="font" usesAppearanceFont="YES"/>
                     </sliderCell>
                     <connections>

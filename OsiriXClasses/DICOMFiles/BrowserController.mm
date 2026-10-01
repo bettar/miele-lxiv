@@ -283,8 +283,9 @@ static NSString* BrowserControllerClassHelperContext = @"BrowserControllerClassH
 - (void)disableAnimationSlider
 {
     [animationSlider setEnabled:NO];
-    [animationSlider setMaxValue:0];
-    [animationSlider setNumberOfTickMarks:1];
+    [animationSlider setNumberOfTickMarks:0];
+    [animationSlider setMinValue:0];
+    [animationSlider setMaxValue:1];
     [animationSlider setIntValue:0];
 }
 
@@ -292,8 +293,12 @@ static NSString* BrowserControllerClassHelperContext = @"BrowserControllerClassH
 - (void)enableAnimationSlider:(long) noi
 {
     [animationSlider setEnabled:YES];
-    [animationSlider setMaxValue: noi-1];
-    [animationSlider setNumberOfTickMarks: noi];
+    [animationSlider setNumberOfTickMarks:0];
+    [animationSlider setMinValue:0];
+    [animationSlider setMaxValue:MAX(noi-1, 1)];
+    if (noi > 1)
+        [animationSlider setNumberOfTickMarks:noi];
+    
     [animationSlider setIntValue:0]; // noi/2
 }
 
@@ -14274,15 +14279,31 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	openSubSeriesArray = [toOpenArray retain];
 	
-	if ([[NSApp mainWindow] level] > NSModalPanelWindowLevel){ NSBeep(); return nil;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
-	if ([[NSApp keyWindow] level] > NSModalPanelWindowLevel) { NSBeep(); return nil;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
+	if ([[NSApp mainWindow] level] > NSModalPanelWindowLevel)
+    { NSBeep(); return nil;} // To avoid the problem of displaying this sheet when the user is in fullscreen mode
 	
-	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subTo"];
-	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subMax"];
+    if ([[NSApp keyWindow] level] > NSModalPanelWindowLevel)
+    { NSBeep(); return nil;} // To avoid the problem of displaying this sheet when the user is in fullscreen mode
 	
+//	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subTo"];
+//	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subMax"];
+
+    NSInteger frameCount = [[toOpenArray objectAtIndex:0] count];
+    NSInteger maximum = MAX(frameCount, 1);
+    [subFromSlider setNumberOfTickMarks:0];
+    [subToSlider setNumberOfTickMarks:0];
+    [self setValue:[NSNumber numberWithInteger:maximum] forKey:@"subMax"];
+    [self setValue:[NSNumber numberWithInteger:maximum] forKey:@"subTo"];
+    
 	[self setValue:@1 forKey:@"subFrom"];
 	[self setValue:@1 forKey:@"subInterval"];
-	
+
+    if (frameCount > 1)
+    {
+        [subFromSlider setNumberOfTickMarks:30];
+        [subToSlider setNumberOfTickMarks:30];
+    }
+    
     if (!subSeriesWindowIsOn)
     {
         subSeriesWindowIsOn = YES;

@@ -760,7 +760,7 @@ Gw
                     <constraints>
                         <constraint firstAttribute="width" constant="95" id="mS1-5v-AL2"/>
                     </constraints>
-                    <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="1" allowsTickMarkValuesOnly="YES" sliderType="linear" id="327">
+                    <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="0" allowsTickMarkValuesOnly="YES" sliderType="linear" id="327">
                         <font key="font" size="12" name="Helvetica"/>
                     </sliderCell>
                     <connections>

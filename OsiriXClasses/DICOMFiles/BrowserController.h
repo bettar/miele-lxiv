@@ -168,6 +168,7 @@ extern NSString * const SeriesViewer_DragType;
     IBOutlet NSView                 *comparativeScrollView;
 	
 	int								subFrom, subTo, subInterval, subMax;
+    IBOutlet NSSlider               *subFromSlider, *subToSlider;
 	
 	IBOutlet NSWindow				*subOpenWindow;
 	IBOutlet NSMatrix				*subOpenMatrix3D, *subOpenMatrix4D, *supOpenButtons;

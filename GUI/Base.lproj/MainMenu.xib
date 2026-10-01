@@ -2080,7 +2080,7 @@ CA
                                     </button>
                                     <slider verticalHuggingPriority="750" horizontalCompressionResistancePriority="1" translatesAutoresizingMaskIntoConstraints="NO" id="1293">
                                         <rect key="frame" x="0.0" y="6" width="416" height="16"/>
-                                        <sliderCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" continuous="YES" alignment="left" maxValue="100" doubleValue="49.494949494949495" tickMarkPosition="above" numberOfTickMarks="100" allowsTickMarkValuesOnly="YES" sliderType="linear" id="13340">
+                                        <sliderCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" continuous="YES" alignment="left" maxValue="1" tickMarkPosition="above" allowsTickMarkValuesOnly="YES" sliderType="linear" id="13340">
                                             <font key="font" usesAppearanceFont="YES"/>
                                         </sliderCell>
                                         <connections>
@@ -3045,8 +3045,10 @@ CA
                 <outlet property="subOpenMatrix3D" destination="12805" id="12941"/>
                 <outlet property="subOpenMatrix4D" destination="12937" id="12942"/>
                 <outlet property="subOpenWindow" destination="12799" id="12837"/>
+                <outlet property="subFromSlider" destination="14475" id="subFromSliderOutlet"/>
                 <outlet property="subSeriesOKButton" destination="14470" id="14536"/>
                 <outlet property="subSeriesWindow" destination="12366" id="12381"/>
+                <outlet property="subToSlider" destination="14478" id="subToSliderOutlet"/>
                 <outlet property="supOpenButtons" destination="12840" id="12845"/>
                 <outlet property="thumbnailsScrollView" destination="12410" id="12415"/>
                 <outlet property="timeIntervalView" destination="11606" id="11631"/>
@@ -3890,7 +3892,7 @@ Gw
                     <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14475">
                         <rect key="frame" x="117" y="209" width="296" height="15"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="30" sliderType="linear" id="14498">
+                        <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="0" sliderType="linear" id="14498">
                             <font key="font" usesAppearanceFont="YES"/>
                         </sliderCell>
                         <connections>
@@ -3919,7 +3921,7 @@ Gw
                     <slider verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="14478">
                         <rect key="frame" x="117" y="196" width="296" height="15"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tag="1" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="30" sliderType="linear" id="14495">
+                        <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tag="1" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="0" sliderType="linear" id="14495">
                             <font key="font" usesAppearanceFont="YES"/>
                         </sliderCell>
                         <connections>

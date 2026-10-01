@@ -1298,7 +1298,7 @@ Gw
                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="465">
                     <rect key="frame" x="38" y="6" width="95" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="1" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2067">
+                    <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="0" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2067">
                         <font key="font" usesAppearanceFont="YES"/>
                     </sliderCell>
                     <connections>

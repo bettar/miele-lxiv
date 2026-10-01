@@ -900,7 +900,7 @@ Gw
                 </button>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="222">
                     <rect key="frame" x="37" y="4" width="98" height="17"/>
-                    <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="1" allowsTickMarkValuesOnly="YES" sliderType="linear" id="266">
+                    <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="0" allowsTickMarkValuesOnly="YES" sliderType="linear" id="266">
                         <font key="font" size="12" name="Helvetica"/>
                     </sliderCell>
                 </slider>
