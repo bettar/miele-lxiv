@@ -40,14 +40,10 @@
 		[[self window] setFrame: NSMakeRect( [[self window] frame].origin.x, [[self window] frame].origin.y - [winList count] * (5 + [[self window] frame].size.height), [[self window] frame].size.width, [[self window] frame].size.height) display: NO];
 	}
 
-    [super showWindow: sender];
-	[[self window] makeKeyAndOrderFront: sender];
-	
+    [[self window] orderFront:sender];
 	[self run];
-	
 	[[self window] display];
 	[[self window] flushWindow];
-	[[self window] makeKeyAndOrderFront: sender];
 	
 	displayedTime = [NSDate timeIntervalSinceReferenceDate];
 }
@@ -56,9 +52,14 @@
 {
 	supportCancel = c;
 	
-	[abort setHidden: !c];					[abort display];
-	[currentTimeText setHidden: !c];		[currentTimeText display];
-	[lastTimeText setHidden: !c];			[lastTimeText display];
+	[abort setHidden: !c];
+    [abort display];
+	
+    [currentTimeText setHidden: !c];
+    [currentTimeText display];
+	
+    [lastTimeText setHidden: !c];
+    [lastTimeText display];
 }
 
 - (void) thread:(id) sender

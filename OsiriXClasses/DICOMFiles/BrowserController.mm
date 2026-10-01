@@ -14285,9 +14285,6 @@ static NSArray*	openSubSeriesArray = nil;
     if ([[NSApp keyWindow] level] > NSModalPanelWindowLevel)
     { NSBeep(); return nil;} // To avoid the problem of displaying this sheet when the user is in fullscreen mode
 	
-//	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subTo"];
-//	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subMax"];
-
     NSInteger frameCount = [[toOpenArray objectAtIndex:0] count];
     NSInteger maximum = MAX(frameCount, 1);
     [subFromSlider setNumberOfTickMarks:0];

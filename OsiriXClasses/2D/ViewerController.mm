@@ -19801,11 +19801,6 @@ static BOOL viewerControllerPlaying = NO;
 	
 	// ****
 	
-//	[printFrom setMaxValue: [pixList[ curMovieIndex] count]];
-//	[printTo setMaxValue: [pixList[ curMovieIndex] count]];
-//
-//	[printFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
-//	[printTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
     NSInteger frameCount = [pixList[curMovieIndex] count];
     ConfigureFrameRangeSlider(printFrom, frameCount);
     ConfigureFrameRangeSlider(printTo, frameCount);
@@ -20175,12 +20170,6 @@ static BOOL viewerControllerPlaying = NO;
 	if ([sliderFusion isEnabled])
 		[quicktimeInterval setIntValue: [sliderFusion intValue]];
 	
-//	[quicktimeFrom setMaxValue: [pixList[ curMovieIndex] count]];
-//	[quicktimeTo setMaxValue: [pixList[ curMovieIndex] count]];
-//
-//	[quicktimeFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
-//	[quicktimeTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
-
     NSInteger frameCount = [pixList[curMovieIndex] count];
     ConfigureFrameRangeSlider(quicktimeFrom, frameCount);
     ConfigureFrameRangeSlider(quicktimeTo, frameCount);
@@ -20875,12 +20864,7 @@ static BOOL viewerControllerPlaying = NO;
 
 	if ([sliderFusion isEnabled])
 		[dcmInterval setIntValue: [sliderFusion intValue]];
-	
-//	[dcmFrom setMaxValue: [pixList[ curMovieIndex] count]];
-//	[dcmTo setMaxValue: [pixList[ curMovieIndex] count]];
-//	
-//	[dcmFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
-//	[dcmTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
+
     NSInteger frameCount = [pixList[curMovieIndex] count];
     ConfigureFrameRangeSlider(dcmFrom, frameCount);
     ConfigureFrameRangeSlider(dcmTo, frameCount);
