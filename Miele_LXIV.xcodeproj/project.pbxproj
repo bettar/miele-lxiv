@@ -5491,6 +5491,7 @@
 			buildPhases = (
 				AB28B42B05B7921E00A9906C /* Resources */,
 				437002F821CD3C5400C91D62 /* Copy Executables */,
+				432D9EF130A47F03000E9416 /* Fix dsr2html rpath */,
 				43E35C0429B775F70068526F /* Copy Builtin Plugins */,
 				7183153F161065BE0098576F /* Replace Weasis ext-config.properties */,
 				59BDEE70117CB3A6007F1F2C /* Zip Launcher into Resources */,
@@ -6115,6 +6116,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		432D9EF130A47F03000E9416 /* Fix dsr2html rpath */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Fix dsr2html rpath";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "/bin/bash \"$PROJECT_DIR/doc/build-steps/fix-dsr2html-rpath.sh\"\n\n";
+		};
 		437636D02173BB7800C331D0 /* Fixup */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -8271,7 +8290,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "miele-lxiv";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SDKROOT = macosx27.0;
+				SDKROOT = macosx;
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.4",
@@ -8812,7 +8831,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "miele-lxiv";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SDKROOT = macosx27.0;
+				SDKROOT = macosx;
 				STRIP_STYLE = debugging;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.4",
@@ -9432,7 +9451,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bettarini.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "miele-lxiv";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SDKROOT = macosx27.0;
+				SDKROOT = macosx;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Binaries/ITK/include/ITK-5.4",
 					"$(SRCROOT)/Binaries/VTK/include/vtk-9.7",
