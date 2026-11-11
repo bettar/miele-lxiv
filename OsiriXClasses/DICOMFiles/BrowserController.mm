@@ -7020,16 +7020,25 @@ static NSConditionLock *threadLock = nil;
             if (NSPointInRect(mouseLocation, imageFrame))
             {
                 NSDate* now = [NSDate date];
-                NSDate* today0 = [NSDate dateWithTimeIntervalSinceReferenceDate:floor([now timeIntervalSinceReferenceDate]/(60*60*24))*(60*60*24)];
+                NSDate* today0 = [NSDate dateWithTimeIntervalSinceReferenceDate: floor([now timeIntervalSinceReferenceDate]/(60*60*24))*(60*60*24)];
                 NSDate* acqDate = [item valueForKey:@"date"];
                 NSTimeInterval acqInterval = [now timeIntervalSinceDate:acqDate];
                 NSTimeInterval addInterval = [now timeIntervalSinceDate:[item valueForKey:@"dateAdded"]];
                 
-                if (acqInterval <= 60*10) return NSLocalizedString(@"Acquired within the last 10 minutes", nil);
-                else if (acqInterval <= 60*60) return NSLocalizedString(@"Acquired within the last hour", nil);
-                else if (acqInterval <= 4*60*60) return NSLocalizedString(@"Acquired within the last 4 hours", nil); 
-                else if ([acqDate timeIntervalSinceDate:today0] >= 0) return NSLocalizedString(@"Acquired today", nil); // today
-                else if (addInterval <= 60) return NSLocalizedString(@"Added within the last 60 seconds", nil);
+                if (acqInterval <= 60*10)
+                    return NSLocalizedString(@"Acquired within the last 10 minutes", nil);
+                
+                if (acqInterval <= 60*60)
+                    return NSLocalizedString(@"Acquired within the last hour", nil);
+                
+                if (acqInterval <= 4*60*60)
+                    return NSLocalizedString(@"Acquired within the last 4 hours", nil);
+                
+                if ([acqDate timeIntervalSinceDate:today0] >= 0)
+                    return NSLocalizedString(@"Acquired today", nil);
+                
+                if (addInterval <= 60)
+                    return NSLocalizedString(@"Added within the last 60 seconds", nil);
             }
         }
     } @catch (NSException* e) {

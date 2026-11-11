@@ -181,7 +181,6 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
                                              long *decompressedBufferSize,
                                              int *colorModel)
 {
-    opj_dparameters_t parameters;
 	int width, height;
 	OPJ_BOOL hasAlpha, fails = OPJ_FALSE;
 	OPJ_CODEC_FORMAT codec_format;
@@ -194,6 +193,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
 	decode_info_t decodeInfo;
 	memset(&decodeInfo, 0, sizeof(decode_info_t));
     
+    opj_dparameters_t parameters;
 	opj_set_default_decoder_parameters(&parameters);   
 	parameters.decod_format = buffer_format(jp2Data);
     

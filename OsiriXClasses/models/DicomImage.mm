@@ -998,7 +998,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     [_thumbnail release]; _thumbnail = nil;
 }
 
--(NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase
+-(NSString*) completePathWithDownload:(BOOL) download
+              supportNonLocalDatabase:(BOOL) supportNonLocalDatabase
 {
     @try
     {
